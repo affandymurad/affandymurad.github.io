@@ -10085,22 +10085,310 @@ p.lead {
   }
 }
 .social-icons .social-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   height: 3.5rem;
   width: 3.5rem;
-  background-color: #495057;
-  color: #fff;
-  border-radius: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1.5rem;
+  margin-bottom: 1.5rem;
   margin-right: 1.5rem;
+  border-radius: 50px;
+  box-shadow:  20px 20px 60px #d9d9d9, 
+  -20px -20px 60px #ffffff;
+  cursor: pointer;
 }
 .social-icons .social-icon:last-child {
   margin-right: 0;
 }
-.social-icons .social-icon:hover {
-  background-color: #0f4b81;
+
+.social-icons .social-icon svg {
+  width:25px
+}
+
+.skill-icon {
+  height: 4.5rem;
+  width: 4.5rem;
+  display: inline-flex;
+  justify-content: center;
+  vertical-align: top;
+  text-align: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-right: 1.5rem;
+  border-radius: 20px;
+  box-shadow:  20px 20px 60px #d9d9d9, 
+  -20px -20px 60px #ffffff;
+  cursor: pointer;
+}
+
+.skill-icon:last-child {
+  margin-right: 0;
+}
+
+.skill-icon svg {
+  width:35px
+}
+
+.linkedin {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.linkedin:hover {
+	fill: #0077B5;
+	transition: .5s
+}
+
+.androidstudio {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.androidstudio:hover {
+	fill: #3DDC84;
+	transition: .5s
+}
+
+.vscode {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.vscode:hover {
+	fill: #007ACC;
+	transition: .5s
+}
+
+.xcode {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.xcode:hover {
+	fill: #1575F9;
+	transition: .5s
+}
+
+.github {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.github:hover {
+	fill: #181717;
+	transition: .5s
+}
+
+.wikipedia {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.wikipedia:hover {
+	fill: #000000;
+	transition: .5s
+}
+
+.medium {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.medium:hover {
+	fill: #12100E;
+	transition: .5s
+}
+
+.pdf {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.pdf:hover {
+	fill: #F31E16;
+	transition: .5s
+}
+
+.arduino {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.arduino:hover {
+	fill: #00979D;
+	transition: .5s
+}
+
+.java {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.java:hover {
+	fill: #F89A18;
+	transition: .5s
+}
+
+.kotlin {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.kotlin:hover {
+	fill: #878BFD;
+	transition: .5s
+}
+
+.swift {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.swift:hover {
+	fill: #FA7343;
+	transition: .5s
+}
+
+.dart {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.dart:hover {
+	fill: #0175C2;
+	transition: .5s
+}
+
+.javascript {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.javascript:hover {
+	fill: #F7DF1E;
+	transition: .5s
+}
+
+.android {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.android:hover {
+	fill: #3DDC84;
+	transition: .5s
+}
+
+.flutter {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.flutter:hover {
+	fill: #4DD3FD;
+	transition: .5s
+}
+
+.ios {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.ios:hover {
+	fill: #999999;
+	transition: .5s
+}
+
+.react {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.react:hover {
+	fill: #61DAFB;
+	transition: .5s
+}
+
+.apple {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.apple:hover {
+	fill: #999999;
+	transition: .5s
+}
+
+.microsoft {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.microsoft:hover {
+	fill: #0078D6;
+	transition: .5s
+}
+
+.ubuntu {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.ubuntu:hover {
+	fill: #E95420;
+	transition: .5s
+}
+
+.git {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.git:hover {
+	fill: #F05032;
+	transition: .5s
+}
+
+.subversion {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.subversion:hover {
+	fill: #809CC9;
+	transition: .5s
+}
+
+.npm {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.npm:hover {
+	fill: #CB3837;
+	transition: .5s
+}
+
+.gradle {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.gradle:hover {
+	fill: #02303A;
+	transition: .5s
+}
+
+.cocoapod {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.cocoapod:hover {
+	fill: #EE3322;
+	transition: .5s
 }
 
 .dev-icons {
