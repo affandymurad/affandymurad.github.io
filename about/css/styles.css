@@ -10123,6 +10123,28 @@ p.lead {
   cursor: pointer;
 }
 
+.details {
+  height: 27.5rem;
+  width: 22.5rem;
+  display: inline-flex;
+  justify-content: center;
+  vertical-align: top;
+  text-align: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-right: 1.5rem;
+  border-radius: 20px;
+  box-shadow:  20px 20px 60px #d9d9d9, 
+  -20px -20px 60px #ffffff;
+  cursor: pointer;
+}
+
+.details svg {
+  width:25px
+}
+
+
 .skill-icon:last-child {
   margin-right: 0;
 }
@@ -10388,6 +10410,16 @@ p.lead {
 
 .cocoapod:hover {
 	fill: #EE3322;
+	transition: .5s
+}
+
+.play {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.play:hover {
+	fill: #414141;
 	transition: .5s
 }
 
