@@ -10144,6 +10144,27 @@ p.lead {
   width:25px
 }
 
+.experience {
+  height: 30.5rem;
+  width: 22.5rem;
+  display: inline-flex;
+  justify-content: center;
+  vertical-align: top;
+  text-align: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-right: 1.5rem;
+  border-radius: 20px;
+  box-shadow:  20px 20px 60px #d9d9d9, 
+  -20px -20px 60px #ffffff;
+  cursor: pointer;
+}
+
+.details svg {
+  width:25px
+}
+
 
 .skill-icon:last-child {
   margin-right: 0;
