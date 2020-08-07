@@ -10123,9 +10123,17 @@ p.lead {
   cursor: pointer;
 }
 
+.skill-icon:last-child {
+  margin-right: 0;
+}
+
+.skill-icon svg {
+  width:35px
+}
+
 .details {
   height: 27.5rem;
-  width: 22.5rem;
+  width: 20.5rem;
   display: inline-flex;
   justify-content: center;
   vertical-align: top;
@@ -10146,7 +10154,7 @@ p.lead {
 
 .experience {
   height: 30.5rem;
-  width: 22.5rem;
+  width: 20.5rem;
   display: inline-flex;
   justify-content: center;
   vertical-align: top;
@@ -10161,17 +10169,30 @@ p.lead {
   cursor: pointer;
 }
 
-.details svg {
+.experience svg {
   width:25px
 }
 
 
-.skill-icon:last-child {
-  margin-right: 0;
+.education {
+  height: 35.5rem;
+  width: 20.5rem;
+  display: inline-flex;
+  justify-content: center;
+  vertical-align: top;
+  text-align: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-right: 1.5rem;
+  border-radius: 20px;
+  box-shadow:  20px 20px 60px #d9d9d9, 
+  -20px -20px 60px #ffffff;
+  cursor: pointer;
 }
 
-.skill-icon svg {
-  width:35px
+.education svg {
+  width:25px
 }
 
 .linkedin {
