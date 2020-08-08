@@ -10195,6 +10195,16 @@ p.lead {
   width:25px
 }
 
+.wikimedia {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.wikimedia:hover {
+	fill: #950600;
+	transition: .5s
+}
+
 .linkedin {
   fill: #0f4c81;
 	transition: .5s
