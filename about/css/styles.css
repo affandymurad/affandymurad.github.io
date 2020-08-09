@@ -10345,6 +10345,16 @@ p.lead {
 	transition: .5s
 }
 
+.python {
+  fill: #0f4c81;
+	transition: .5s
+}
+
+.python:hover {
+	fill: #FDD341;
+	transition: .5s
+}
+
 .android {
   fill: #0f4c81;
 	transition: .5s
