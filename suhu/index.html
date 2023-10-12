@@ -1,0 +1,174 @@
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="format-detection" content="telephone=no">
+
+        <title>°C X °F</title>
+
+        <meta name="description" content="°C x°F">
+        <link rel="stylesheet" href="css/style.css" />
+        <!-- <link rel="stylesheet" href="css/bootstrap.min.css" /> -->
+        <script src="js/script.js"></script>
+
+    </head>
+
+    <body>
+        <div id="celfar">
+            <header>
+                <h1>Celsius to Fahrenheit Conversion | (°C to °F)</h1>
+            </header>
+            <br/><br/>
+
+            <main>
+                <form id="calcform" name="calcform" autocomplete="off">
+                    <div id="unitnav">
+                        <div class="mb-3 row">
+                        </div>
+                        <div class="row">
+                            <label id="lb1" class="col-sm-3 col-form-label">&nbsp;</label>
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <textarea id="y" rows="1" class="form-control form-control-lg" readonly>Celsius (&deg;C)</textarea>
+                                </div>
+                            </div>
+                            <div id="to" class="mb-3 col-form-label">to</div>
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <textarea id="y" rows="1" class="form-control form-control-lg" readonly>Fahrenheit (&deg;F)</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="x" class="col-sm-3 col-form-label">Celsius</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input type="number" lang="en" step="any" id="x" name="celciusFahrenheit" onkeyup="calcCtoF()"
+                                    class="form-control form-control-lg" required autofocus>
+                                <span class="input-group-text">&deg;C</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label id="lb1" class="col-sm-3 col-form-label">&nbsp;</label>
+                        <div class="col-sm-9">
+                            <button type="reset" title="Reset" class="btn btn-secondary" onclick="resetCtoF()"><span>&times;</span> Reset</button>
+                            <button type="button" title="Swap conversion" class="btn btn-secondary" onclick="switchFarCel()"><span>&#8645;</span> Swap</button>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="y" class="col-sm-3 col-form-label">Fahrenheit</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <textarea id="y" rows="1" class="form-control form-control-lg" name="celciusFahrenheitVal" readonly></textarea>
+                                <span class="input-group-text">&deg;F</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pf1" class="row">
+                        <label for="txt" class="col-sm-3 col-form-label">Calculation</label>
+                        <div class="col-sm-9">
+                            <textarea name="celciusFahrenheitWay" rows="3" class="form-control" readonly></textarea>
+                        </div>
+                    </div>
+                </form>
+            </main>
+
+            <br/><br/>
+
+            <div class="how">
+                <h2>How to convert Celsius to Fahrenheit</h2>
+                <p>0 degrees Celsius is equal to 32 degrees Fahrenheit:</p>
+                <p class="math">0 &deg;C = 32 &deg;F</p>
+                <p>The temperature <i>T</i> in degrees Fahrenheit (&deg;F) is equal to the temperature <i>T</i> in
+                    degrees Celsius (&deg;C) times 9/5 plus 32:</p>
+                <p class="math"><i>T</i><sub>(&deg;F)</sub> = <i>T</i><sub>(&deg;C)</sub> &times; 9/5 + 32 </p>
+                <p>or</p>
+                <p class="math"><i>T</i><sub>(&deg;F)</sub> = <i>T</i><sub>(&deg;C)</sub> &times; 1.8 + 32 </p>
+                <br/><br/>
+            </div>
+        </div>
+
+        <div id="farcel" style="display: none">
+            <header>
+                <h1>Fahrenheit to Celcius Conversion | (°F to °C)</h1>
+            </header>
+            <br/><br/>
+
+            <main>
+                <form id="calcform" name="calcform" autocomplete="off">
+                    <div id="unitnav">
+                        <div class="mb-3 row">
+                        </div>
+                        <div class="row">
+                            <label id="lb1" class="col-sm-3 col-form-label">&nbsp;</label>
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <textarea id="y" rows="1" class="form-control form-control-lg" readonly>Fahrenheit (&deg;F)</textarea>
+                                </div>
+                            </div>
+                            <div id="to" class="mb-3 col-form-label">to</div>
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <textarea id="y" rows="1" class="form-control form-control-lg" readonly>Celsius (&deg;C)</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="x" class="col-sm-3 col-form-label">Fahrenheit</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input type="number" lang="en" step="any" id="x" name="fahrenheitCelcius" onkeyup="calcFtoC()"
+                                    class="form-control form-control-lg" required autofocus>
+                                <span class="input-group-text">&deg;F</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label id="lb1" class="col-sm-3 col-form-label">&nbsp;</label>
+                        <div class="col-sm-9">
+                            <button type="reset" title="Reset" class="btn btn-secondary" onclick="resetFtoC()"><span>&times;</span> Reset</button>
+                            <button type="button" title="Swap conversion" class="btn btn-secondary" onclick="switchCelFar()"><span>&#8645;</span> Swap</button>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="y" class="col-sm-3 col-form-label">Celsius</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <textarea id="y" rows="1" class="form-control form-control-lg" name="fahrenheitCelciusVal" readonly></textarea>
+                                <span class="input-group-text">&deg;C</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pf1" class="row">
+                        <label for="txt" class="col-sm-3 col-form-label">Calculation</label>
+                        <div class="col-sm-9">
+                            <textarea name="fahrenheitCelciusWay" rows="3" class="form-control" readonly></textarea>
+                        </div>
+                    </div>
+                </form>
+            </main>
+
+            <br/><br/>
+
+            <div class="how">
+                <h2>How to convert Fahrenheit to Celsius</h2>
+                <p>0 degrees Fahrenheit is equal to -17.77778 degrees Celsius:</p>
+                <p class="math">0 &deg;F = -17.77778 &deg;C</p>
+                <p>The temperature <i>T</i> in degrees Celsius (&deg;C) is equal to the temperature <i>T</i> in degrees Fahrenheit (&deg;F) minus 32, times 5/9:</p>
+                <p class="math"><i>T</i><sub>(&deg;C)</sub> = (<i>T</i><sub>(&deg;F)</sub> - 32) &times; 5/9</p>
+                <p>or</p>
+                <p class="math"><i>T</i><sub>(&deg;C)</sub> = (<i>T</i><sub>(&deg;F)</sub> - 32) / (9/5)</p>
+                <p>or</p>
+                <p class="math"><i>T</i><sub>(&deg;C)</sub> = (<i>T</i><sub>(&deg;F)</sub> - 32) / 1.8</p>
+                <br/><br/>
+            </div>
+        </div>
+    </body>
+
+    </html>
