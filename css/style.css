@@ -1,0 +1,388 @@
+/* style.css */
+
+:root {
+    --primary-color: #3E4E50;
+    --secondary-color: #A9B4C2;
+    --accent-color: #D5A021;
+    --text-color: #333333;
+    --bg-color: #F5F5F5;
+    --header-bg: #3E4E50;
+    --header-text: #FFFFFF;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    transition: background-color 0.3s, color 0.3s;
+    min-width: 320px;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 1rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+header h1 {
+    font-size: 2.0rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+header p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+}
+
+/* Hamburger Menu */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--header-text);
+    cursor: pointer;
+}
+
+/* Website Icon */
+.website-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem;
+}
+
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+nav ul li {
+    margin: 0.5rem 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--header-text);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--accent-color);
+}
+
+/* Dark Mode Toggle Button */
+#darkModeToggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--header-text);
+    transition: color 0.3s;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+#darkModeToggle:hover {
+    color: var(--accent-color);
+}
+
+#darkModeToggle .fa-sun {
+    display: none;
+}
+
+#darkModeToggle .fa-moon {
+    display: inline-block;
+}
+
+body.dark-mode #darkModeToggle .fa-sun {
+    display: inline-block;
+}
+
+body.dark-mode #darkModeToggle .fa-moon {
+    display: none;
+}
+
+/* Main Content Styles */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+section {
+    margin-bottom: 2rem;
+    background-color: #FFFFFF;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+article {
+    margin-bottom: 1.5rem;
+}
+
+h3 {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+ul {
+    padding-left: 1.5rem;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #F5F5F5;
+    --header-bg: #2C3639;
+    --header-text: #FFFFFF;
+    --primary-color: #A9B4C2;
+    --secondary-color: #5C6B73;
+    --accent-color: #F0C04D;
+}
+
+body.dark-mode section {
+    background-color: #333333;
+}
+
+body.dark-mode .menu-toggle {
+    color: var(--header-text);
+}
+
+/* Add these styles to your existing CSS file */
+
+.social-icons {
+    margin-top: 1rem;
+}
+
+.social-icons a {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-color);
+}
+
+.company-logo {
+    width: 100%;
+    max-width: 200px;
+    height: 50%;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.portfolio-thumbnail {
+    width: 100%;
+    max-width: 200px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.demo-link {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.demo-link:hover {
+    background-color: var(--primary-color);
+}
+
+/* Adjust existing styles */
+article {
+    margin-bottom: 2rem;
+}
+
+/* Dark mode adjustments */
+body.dark-mode .social-icons a {
+    color: var(--secondary-color);
+}
+
+body.dark-mode .social-icons a:hover {
+    color: var(--accent-color);
+}
+
+body.dark-mode .demo-link {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+body.dark-mode .demo-link:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Add these styles to your existing CSS file */
+
+#translateToggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--header-text);
+    transition: color 0.3s;
+    position: absolute;
+    top: 1rem;
+    right: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#translateToggle:hover {
+    color: var(--accent-color);
+}
+
+#currentLang {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Add this to your existing CSS */
+@media print {
+    body {
+        max-width: none;
+    }
+}
+
+/* Update the media query for responsive design */
+/* Responsive Design */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+        margin-top: 2rem;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 0.25rem 0;
+    }
+
+    #darkModeToggle {
+        position: static;
+    }
+
+    section {
+        padding: 1rem;
+    }
+
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--header-bg);
+        padding: 1rem;
+    }
+
+    nav ul.show {
+        display: flex;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+
+    #darkModeToggle {
+        top: 1rem;
+        right: 4rem;
+    }
+
+    #translateToggle {
+        right: 4rem;
+    }
+
+    /* Add these menu toggle styles to your existing CSS file */
+
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--header-text);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .menu-toggle .bar {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: var(--header-text);
+        margin: 5px auto;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .menu-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .menu-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+}
