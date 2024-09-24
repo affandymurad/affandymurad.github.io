@@ -249,10 +249,6 @@
             if (userAgent.indexOf("android") > -1) return "Android";
             if (userAgent.indexOf("ios") > -1 || userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) return "iOS";
 
-            if (platform.indexOf("win") > -1) return "Windows";
-            if (platform.indexOf("mac") > -1) return "macOS";
-            if (platform.indexOf("linux") > -1 || platform.indexOf("x11") > -1) return "Linux";
-
             return "Unknown OS";
         }
 
