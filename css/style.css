@@ -210,35 +210,100 @@ body.dark-mode .menu-toggle {
     object-fit: contain;
 }
 
-.portfolio-thumbnail {
-    width: 100%;
-    max-width: 200px;
-    height: 150px;
-    object-fit: cover;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-}
-
-.demo-link {
+/* Portfolio Styles */
+.portfolio-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .portfolio-item {
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .portfolio-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .portfolio-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--secondary-color);
+  }
+  
+  .portfolio-icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 1rem;
+    object-fit: contain;
+  }
+  
+  .portfolio-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+  }
+  
+  .portfolio-content {
+    padding: 1rem;
+  }
+  
+  .portfolio-content p {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+  }
+  
+  .demo-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .demo-link {
     display: inline-block;
     background-color: var(--accent-color);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     text-decoration: none;
-    margin-top: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.demo-link:hover {
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .demo-link:hover {
     background-color: var(--primary-color);
-}
-
+  }
 /* Adjust existing styles */
 article {
     margin-bottom: 2rem;
 }
 
+/* Portfolio Dark mode adjustments */
+body.dark-mode .portfolio-item {
+    background-color: transparent;
+  }
+  
+  body.dark-mode .portfolio-header h3 {
+    color: var(--accent-color);
+  }
+  
+  body.dark-mode .portfolio-content p {
+    color: var(--text-color);
+  }
+  
+  body.dark-mode .demo-link {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+body.dark-mode .demo-link:hover {
+    background-color: var(--secondary-color);
+}
 /* Dark mode adjustments */
 body.dark-mode .social-icons a {
     color: var(--secondary-color);
@@ -246,15 +311,6 @@ body.dark-mode .social-icons a {
 
 body.dark-mode .social-icons a:hover {
     color: var(--accent-color);
-}
-
-body.dark-mode .demo-link {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-}
-
-body.dark-mode .demo-link:hover {
-    background-color: var(--secondary-color);
 }
 
 /* Add these styles to your existing CSS file */
@@ -385,4 +441,26 @@ body.dark-mode .demo-link:hover {
     .menu-toggle.active .bar:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
     }
+
+    /* Responsive adjustments */
+    .portfolio-header {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid var(--secondary-color);
+      }
+    
+      .portfolio-icon {
+        margin-bottom: 0.5rem;
+      }
+    
+      .demo-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+    
+      .demo-link {
+        text-align: center;
+      }
 }
