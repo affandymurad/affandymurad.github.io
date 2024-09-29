@@ -27,6 +27,11 @@ function promptPrintPage() {
         const images = sectionContent.querySelectorAll('img');
         images.forEach(img => img.remove());
         main.appendChild(sectionContent);
+
+        // Remove all img elements
+        const buttons = sectionContent.querySelectorAll('a');
+        buttons.forEach(btn => btn.remove());
+        main.appendChild(sectionContent);
     });
     doc.body.appendChild(main);
 

@@ -13,6 +13,7 @@
     <script src="js/translate.js"></script>
     <script src="js/print.js"></script>
     <script src="js/b.min.js" defer></script>
+    <script src="js/smooth-scroll.js"></script>
 </head>
 
 <body>
@@ -65,7 +66,7 @@
         <section id="pengalaman">
             <h2 data-translate="pengalamanKerja" aria-label="Pengalaman Kerja" lang="id">Pengalaman Kerja</h2>
             <article>
-                <img src="images/korindo.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/korindo.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -75,7 +76,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/hcs.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/hcs.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -85,7 +86,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/ccid.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/ccid.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -95,7 +96,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/otten.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/otten.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -105,7 +106,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/docotel.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/docotel.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -115,7 +116,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/wmid.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/wmid.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -125,7 +126,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/ebworx.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/ebworx.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>Mobile App Developer - MobileSoft Solutions</h3>
                 <p>Juni 2017 - Desember 2019</p>
                 <ul>
@@ -135,7 +136,7 @@
                 </ul>
             </article>
             <article>
-                <img src="images/bankdki.svg" alt="Bank DKI Logo" class="company-logo">
+                <img src="images/company/bankdki.svg" alt="Bank DKI Logo" class="company-logo">
                 <h3 data-translate="jobTitle1"></h3>
                 <p data-translate="jobDate1"></p>
                 <ul>
@@ -146,35 +147,209 @@
             </article>
         </section>
 
-        <section id="portofolio">
-            <h2>Portofolio</h2>
-            <article>
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3Ctext x='100' y='75' font-family='Arial' font-size='16' fill='%23333' text-anchor='middle' dominant-baseline='middle'%3EFitTrack Pro%3C/text%3E%3C/svg%3E"
-                    alt="FitTrack Pro Thumbnail" class="portfolio-thumbnail">
-                <h3>FitTrack Pro</h3>
-                <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal</p>
-                <a href="#" target="_blank" class="demo-link">Lihat Demo</a>
-            </article>
-            <article>
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3Ctext x='100' y='75' font-family='Arial' font-size='16' fill='%23333' text-anchor='middle' dominant-baseline='middle'%3EEcoShop%3C/text%3E%3C/svg%3E"
-                    alt="EcoShop Thumbnail" class="portfolio-thumbnail">
-                <h3>EcoShop</h3>
-                <p>Platform e-commerce untuk produk ramah lingkungan dengan sistem reward berkelanjutan</p>
-                <a href="#" target="_blank" class="demo-link">Lihat Demo</a>
-            </article>
-            <article>
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3Ctext x='100' y='75' font-family='Arial' font-size='16' fill='%23333' text-anchor='middle' dominant-baseline='middle'%3ETaskMaster%3C/text%3E%3C/svg%3E"
-                    alt="TaskMaster Thumbnail" class="portfolio-thumbnail">
-                <h3>TaskMaster</h3>
-                <p>Aplikasi manajemen tugas dengan integrasi kalender dan notifikasi cerdas</p>
-                <a href="#" target="_blank" class="demo-link">Lihat Demo</a>
-            </article>
+        <section id="portofolio" class="section">
+            <h2 data-translate="portofolio" aria-label="Portofolio" lang="id">Portofolio</h2>
+            <ul class="portfolio-list">
+                <li class="portfolio-item">
+                    <div class="portfolio-header">
+                      <img src="images/portfolio/ehac_icon.svg" alt="FitTrack Pro Icon" class="portfolio-icon">
+                      <h3>eHAC Indonesia</h3>
+                    </div>
+                    <div class="portfolio-content">
+                      <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif memudahkan pengguna memantau kemajuan mereka.</p>
+                      <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li class="portfolio-item">
+                    <div class="portfolio-header">
+                      <img src="images/portfolio/kursvalas_icon.svg" alt="FitTrack Pro Icon" class="portfolio-icon">
+                      <h3>Kurs Valas</h3>
+                    </div>
+                    <div class="portfolio-content">
+                      <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif memudahkan pengguna memantau kemajuan mereka.</p>
+                      <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li class="portfolio-item">
+                    <div class="portfolio-header">
+                      <img src="images/portfolio/commutrain_icon.svg" alt="FitTrack Pro Icon" class="portfolio-icon">
+                      <h3>Commutrain</h3>
+                    </div>
+                    <div class="portfolio-content">
+                      <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif memudahkan pengguna memantau kemajuan mereka.</p>
+                      <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li class="portfolio-item">
+                    <div class="portfolio-header">
+                      <img src="images/portfolio/otten_icon.svg" alt="FitTrack Pro Icon" class="portfolio-icon">
+                      <h3>Otten Coffee</h3>
+                    </div>
+                    <div class="portfolio-content">
+                      <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif memudahkan pengguna memantau kemajuan mereka.</p>
+                      <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li class="portfolio-item">
+                    <div class="portfolio-header">
+                      <img src="images/portfolio/rhb_icon.svg" alt="FitTrack Pro Icon" class="portfolio-icon">
+                      <h3>FitTrack Pro</h3>
+                    </div>
+                    <div class="portfolio-content">
+                      <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif memudahkan pengguna memantau kemajuan mereka.</p>
+                      <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                      </div>
+                    </div>
+                  </li>
+
+                <li class="portfolio-item">
+                  <div class="portfolio-header">
+                    <img src="images/portfolio/rhb_icon.svg" alt="FitTrack Pro Icon" class="portfolio-icon">
+                    <h3>FitTrack Pro</h3>
+                  </div>
+                  <div class="portfolio-content">
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                      <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                      <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                      <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                  </div>
+                </li>
+            
+                <li class="portfolio-item">
+                  <div class="portfolio-header">
+                    <img src="images/portfolio/rhbkh_icon.svg" alt="RHB KH App Icon" class="portfolio-icon">
+                    <h3>RHB KH App</h3>
+                  </div>
+                  <div class="portfolio-content">
+                    <p>Aplikasi perbankan mobile dengan fitur keamanan tinggi dan antarmuka yang user-friendly.</p>
+                    <div class="demo-buttons">
+                      <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                      <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                      <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                  </div>
+                </li>
+            
+            <!-- <div class="portfolio-grid">
+
+
+
+                <div class="portfolio-item">
+                    <img src="images/portfolio/kursvalas_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/portfolio/otten_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/portfolio/commutrain_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/portfolio/siapin_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/portfolio/lsc_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/portfolio/games_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/portfolio/gakkum_icon.svg"
+                        alt="FitTrack Pro Screenshot" class="portfolio-img">
+                    <h3>FitTrack Pro</h3>
+                    <p>Aplikasi pelacak kebugaran dengan fitur AI untuk rekomendasi latihan personal. Dasbor intuitif
+                        memudahkan pengguna memantau kemajuan mereka.</p>
+                    <div class="demo-buttons">
+                        <a href="#" class="demo-link" target="_blank">Lihat Demo</a>
+                        <a href="#" class="demo-link" target="_blank">Unduh APK</a>
+                        <a href="#" class="demo-link" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div> -->
         </section>
 
         <section id="pendidikan">
             <h2>Pendidikan</h2>
             <article>
-                <img src="images/gunadarma.svg" alt="MobileSoft Solutions Logo" class="company-logo">
+                <img src="images/company/gunadarma.svg" alt="MobileSoft Solutions Logo" class="company-logo">
                 <h3>S1 Teknik Informatika</h3>
                 <p>Universitas Teknologi Indonesia, 2013 - 2017</p>
             </article>
@@ -245,13 +420,19 @@
             const userAgent = window.navigator.userAgent.toLowerCase();
             const platform = window.navigator.platform.toLowerCase();
 
-            if (userAgent.indexOf("win") > -1) return "Windows";
-            if (userAgent.indexOf("mac") > -1) return "macOS";
-            if (userAgent.indexOf("linux") > -1) return "Linux";
-            if (userAgent.indexOf("android") > -1) return "Android";
-            if (userAgent.indexOf("ios") > -1 || userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) return "iOS";
+            if (userAgent.includes('win')) return 'Windows';
+            if (userAgent.includes('mac')) return 'MacOS';
+            if (userAgent.includes('linux')) return 'Linux';
+            if (userAgent.includes('android')) return 'Android';
+            if (userAgent.includes('ios')) return 'iOS';
 
-            return "Unknown OS";
+            if (platform.includes('win')) return 'Windows';
+            if (platform.includes('mac')) return 'MacOS';
+            if (platform.includes('linux')) return 'Linux';
+            if (platform.includes('android')) return 'Android';
+            if (platform.includes('iphone') || platform.includes('ipad') || platform.includes('ipod')) return 'iOS';
+
+            return 'Unknown';
         }
 
         document.addEventListener('DOMContentLoaded', function () {
