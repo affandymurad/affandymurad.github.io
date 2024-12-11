@@ -18,22 +18,66 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            justify-content: center;
             margin-bottom: 20px;
         }
 
-        .license-selector label {
+        .license-option {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
-            background-color: #f4f4f4;
-            padding: 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .license-option img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .license-option input {
+            display: none;
+        }
+
+        .license-option input:checked+img {
+            opacity: 1;
+            border: 2px solid #007bff;
             border-radius: 5px;
         }
 
         #result {
             background-color: #f0f0f0;
-            padding: 15px;
+            padding: 16px;
             border-radius: 5px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .result-item {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .result-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .result-item span {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
         }
     </style>
 </head>
@@ -41,38 +85,43 @@
 <body>
     <h1>Creative Commons License Mixer</h1>
 
-    <div class="license-selector">
-        <label>
+    <div class="license-selector" onchange="handleLicenseChange(event)">
+        <label class="license-option">
             <input type="checkbox" value="cc-0">
-            CC0
+            <img src="license/cc-0.png" alt="CC0">
+            CC0/PD
         </label>
-        <label>
+        <label class="license-option">
             <input type="checkbox" value="cc-by">
+            <img src="license/cc-by.png" alt="CC BY">
             CC BY
         </label>
-        <label>
+        <label class="license-option">
             <input type="checkbox" value="cc-by-sa">
+            <img src="license/cc-by-sa.png" alt="CC BY-SA">
             CC BY-SA
         </label>
-        <label>
+        <label class="license-option">
             <input type="checkbox" value="cc-by-nc">
+            <img src="license/cc-by-nc.png" alt="CC BY-NC">
             CC BY-NC
         </label>
-        <label>
+        <label class="license-option">
             <input type="checkbox" value="cc-by-nd">
+            <img src="license/cc-by-nd.png" alt="CC BY-ND">
             CC BY-ND
         </label>
-        <label>
+        <label class="license-option">
             <input type="checkbox" value="cc-by-nc-sa">
+            <img src="license/cc-by-nc-sa.png" alt="CC BY-NC-SA">
             CC BY-NC-SA
         </label>
-        <label>
+        <label class="license-option">
             <input type="checkbox" value="cc-by-nc-nd">
+            <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND">
             CC BY-NC-ND
         </label>
     </div>
-
-    <button onclick="mixLicenses()">Mix Licenses</button>
 
     <div>
         <h2>Result</h2>
@@ -201,20 +250,51 @@
             return result;
         }
 
-        function mixLicenses() {
-            // Get selected licenses
-            const checkboxes = document.querySelectorAll('.license-selector input:checked');
-            const selectedLicenses = Array.from(checkboxes).map(cb => cb.value);
+        // function mixLicenses() {
+        //     // Get selected licenses
+        //     const checkboxes = document.querySelectorAll('.license-selector input:checked');
+        //     const selectedLicenses = Array.from(checkboxes).map(cb => cb.value);
 
-            // Mix licenses
-            const result = ccMixer(selectedLicenses);
+        //     // Mix licenses
+        //     const result = ccMixer(selectedLicenses);
 
-            // Display results
-            const resultDiv = document.getElementById('result');
-            if (result.length === 0 || checkboxes.length === 0) {
-                resultDiv.innerHTML = 'No compatible licenses found.';
-            } else {
-                resultDiv.innerHTML = 'Compatible Licenses: ' + result.join(', ');
+        //     // Display results
+        //     const resultDiv = document.getElementById('result');
+        //     if (result.length === 0 || checkboxes.length === 0) {
+        //         resultDiv.innerHTML = 'No compatible licenses found.';
+        //     } else {
+        //         resultDiv.innerHTML = 'Compatible Licenses: ' + result.join(', ');
+        //     }
+        // }
+
+        function handleLicenseChange(event) {
+            if (event.target.type === 'checkbox') {
+                const checkboxes = document.querySelectorAll('.license-selector input:checked');
+                const selectedLicenses = Array.from(checkboxes).map(cb => cb.value);
+                const result = ccMixer(selectedLicenses);
+
+                // Display results
+                // const resultDiv = document.getElementById('result');
+                // if (result.length === 0 || checkboxes.length === 0) {
+                //     resultDiv.innerHTML = 'No compatible licenses found.';
+                // } else {
+                //     resultDiv.innerHTML = 'Compatible Licenses: ' + result.join(', ');
+                // }
+                // Your logic here
+                // Display results as images
+                const resultDiv = document.getElementById('result');
+                if (result.length === 0 || checkboxes.length === 0) {
+                    resultDiv.innerHTML = 'No compatible licenses found.';
+                } else {
+                    console.log(result)
+                    const imageHtml = result.map(license =>
+                        `<div class="result-item">
+                         <img src="license/${license}.png" alt="${license}">
+                         <span>${license}</span>
+                         </div>`
+                    ).join('');
+                    resultDiv.innerHTML = imageHtml;
+                }
             }
         }
     </script>
