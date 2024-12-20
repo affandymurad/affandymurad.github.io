@@ -94,6 +94,33 @@
             font-size: 0.9em;
             color: #666;
         }
+
+        /* Test */
+        .container2 {
+            display: flex;
+            gap: 20px;
+            /* Ensure consistent layout */
+            align-items: flex-start;
+        }
+
+        .column {
+            flex: 1 1 45%;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .column h2 {
+            text-align: center;
+            color: #6200ea;
+        }
+
+        .images {
+            display: grid;
+            gap: 10px;
+        }
     </style>
 </head>
 
@@ -142,6 +169,34 @@
                     <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND">
                     CC BY-NC-ND
                 </label>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="container2">
+            <!-- Commercial Column -->
+            <div class="column">
+                <h2>Commercial</h2>
+                <div class="images">
+                    <img src="license/cc-0.png" alt="CC-0">
+                    <img src="license/cc-by.png" alt="CC-BY">
+                    <img src="license/cc-by-sa.png" alt="CC-BY-SA">
+                    <img src="license/cc-by-nc.png" alt="CC-BY-NC">
+                    <img src="license/cc-by-nd.png" alt="CC-BY-ND">
+                    <img src="license/cc-by-nc-sa.png" alt="CC-BY-NC-SA">
+                    <img src="license/cc-by-nc-nd.png" alt="CC-BY-NC-ND">
+                </div>
+            </div>
+
+            <!-- Non-Commercial Column -->
+            <div class="column">
+                <h2>Non-Commercial</h2>
+                <div class="images">
+                    <img src="license/cc-by-nc.png" alt="CC-BY-NC">
+                    <img src="license/cc-by-nc-sa.png" alt="CC-BY-NC-SA">
+                    <img src="license/cc-by-nc-nd.png" alt="CC-BY-NC-ND">
+                </div>
             </div>
         </div>
         <script>
