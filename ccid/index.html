@@ -8,10 +8,16 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 500px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 8px;
             line-height: 1.6;
+        }
+
+        .outer-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
         }
 
         .container {
@@ -19,6 +25,7 @@
             gap: 20px;
             /* Ensure consistent layout */
             align-items: flex-start;
+            width: 500px;
         }
 
         .license-selector {
@@ -28,6 +35,7 @@
             gap: 10px;
             justify-content: center;
             margin-bottom: 20px;
+            width: 120px;
         }
 
         .license-option {
@@ -61,7 +69,8 @@
             flex-grow: 1;
         }
 
-        #result {
+        #result,
+        #result2 {
             background-color: #f0f0f0;
             padding: 16px;
             border-radius: 5px;
@@ -94,111 +103,106 @@
             font-size: 0.9em;
             color: #666;
         }
-
-        /* Test */
-        .container2 {
-            display: flex;
-            gap: 20px;
-            /* Ensure consistent layout */
-            align-items: flex-start;
-        }
-
-        .column {
-            flex: 1 1 45%;
-            margin: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .column h2 {
-            text-align: center;
-            color: #6200ea;
-        }
-
-        .images {
-            display: grid;
-            gap: 10px;
-        }
     </style>
 </head>
 
 <body>
     <h2>Creative Commons License Mixer</h1>
 
-        <div class="container">
-            <div class="result-container">
-                <h2>Result</h2>
-                <div id="result"></div>
+        <div class="outer-container">
+            <div class="container">
+                <div class="result-container">
+                    <h2>Hasil Jus</h2>
+                    <div id="result"></div>
+                </div>
+
+                <div class="license-selector" onchange="handleLicenseChange(event)">
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-0">
+                        <img src="license/cc-0.png" alt="CC0">
+                        CC0/PD
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by">
+                        <img src="license/cc-by.png" alt="CC BY">
+                        CC BY
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-sa">
+                        <img src="license/cc-by-sa.png" alt="CC BY-SA">
+                        CC BY-SA
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nc">
+                        <img src="license/cc-by-nc.png" alt="CC BY-NC">
+                        CC BY-NC
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nd">
+                        <img src="license/cc-by-nd.png" alt="CC BY-ND">
+                        CC BY-ND
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nc-sa">
+                        <img src="license/cc-by-nc-sa.png" alt="CC BY-NC-SA">
+                        CC BY-NC-SA
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nc-nd">
+                        <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND">
+                        CC BY-NC-ND
+                    </label>
+                </div>
             </div>
 
-            <div class="license-selector" onchange="handleLicenseChange(event)">
-                <label class="license-option">
-                    <input type="checkbox" value="cc-0">
-                    <img src="license/cc-0.png" alt="CC0">
-                    CC0/PD
-                </label>
-                <label class="license-option">
-                    <input type="checkbox" value="cc-by">
-                    <img src="license/cc-by.png" alt="CC BY">
-                    CC BY
-                </label>
-                <label class="license-option">
-                    <input type="checkbox" value="cc-by-sa">
-                    <img src="license/cc-by-sa.png" alt="CC BY-SA">
-                    CC BY-SA
-                </label>
-                <label class="license-option">
-                    <input type="checkbox" value="cc-by-nc">
-                    <img src="license/cc-by-nc.png" alt="CC BY-NC">
-                    CC BY-NC
-                </label>
-                <label class="license-option">
-                    <input type="checkbox" value="cc-by-nd">
-                    <img src="license/cc-by-nd.png" alt="CC BY-ND">
-                    CC BY-ND
-                </label>
-                <label class="license-option">
-                    <input type="checkbox" value="cc-by-nc-sa">
-                    <img src="license/cc-by-nc-sa.png" alt="CC BY-NC-SA">
-                    CC BY-NC-SA
-                </label>
-                <label class="license-option">
-                    <input type="checkbox" value="cc-by-nc-nd">
-                    <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND">
-                    CC BY-NC-ND
-                </label>
+            <div class="container">
+                <div class="result-container">
+                    <h2>Hasil Rujak</h2>
+                    <div id="result2"></div>
+                </div>
+
+                <div class="license-selector" onchange="handleLicenseChange2(event)">
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-0">
+                        <img src="license/cc-0.png" alt="CC0">
+                        CC0/PD
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by">
+                        <img src="license/cc-by.png" alt="CC BY">
+                        CC BY
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-sa">
+                        <img src="license/cc-by-sa.png" alt="CC BY-SA">
+                        CC BY-SA
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nc">
+                        <img src="license/cc-by-nc.png" alt="CC BY-NC">
+                        CC BY-NC
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nd">
+                        <img src="license/cc-by-nd.png" alt="CC BY-ND">
+                        CC BY-ND
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nc-sa">
+                        <img src="license/cc-by-nc-sa.png" alt="CC BY-NC-SA">
+                        CC BY-NC-SA
+                    </label>
+                    <label class="license-option">
+                        <input type="checkbox" value="cc-by-nc-nd">
+                        <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND">
+                        CC BY-NC-ND
+                    </label>
+                </div>
             </div>
         </div>
 
         <br />
 
-        <div class="container2">
-            <!-- Commercial Column -->
-            <div class="column">
-                <h2>Commercial</h2>
-                <div class="images">
-                    <img src="license/cc-0.png" alt="CC-0">
-                    <img src="license/cc-by.png" alt="CC-BY">
-                    <img src="license/cc-by-sa.png" alt="CC-BY-SA">
-                    <img src="license/cc-by-nc.png" alt="CC-BY-NC">
-                    <img src="license/cc-by-nd.png" alt="CC-BY-ND">
-                    <img src="license/cc-by-nc-sa.png" alt="CC-BY-NC-SA">
-                    <img src="license/cc-by-nc-nd.png" alt="CC-BY-NC-ND">
-                </div>
-            </div>
-
-            <!-- Non-Commercial Column -->
-            <div class="column">
-                <h2>Non-Commercial</h2>
-                <div class="images">
-                    <img src="license/cc-by-nc.png" alt="CC-BY-NC">
-                    <img src="license/cc-by-nc-sa.png" alt="CC-BY-NC-SA">
-                    <img src="license/cc-by-nc-nd.png" alt="CC-BY-NC-ND">
-                </div>
-            </div>
-        </div>
         <script>
             function ccMixer(inArray) {
                 // Core function copied from the original server code
@@ -366,6 +370,53 @@
                         resultDiv.innerHTML = imageHtml;
                     }
                 }
+            }
+
+            function handleLicenseChange2(event) {
+                const resultDiv = document.getElementById('result2');
+                const checkboxes = event.target.parentElement.parentElement.querySelectorAll('input[type="checkbox"]');
+                const selectedLicenses = Array.from(checkboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+
+
+                if (selectedLicenses.length === 0) {
+                    resultDiv.innerHTML = 'No compatible licenses found.';
+                    return;
+                }
+
+                // Check if any NC licenses are selected
+                const hasNCLicense = selectedLicenses.some(license =>
+                    license === "cc-by-nc" ||
+                    license === "cc-by-nc-sa" ||
+                    license === "cc-by-nc-nd"
+                );
+
+                var resultLicenses = [];
+                if (hasNCLicense) {
+                    // Return only NC licenses
+                    resultLicenses = ["cc-by-nc", "cc-by-nc-sa", "cc-by-nc-nd"];
+                } else {
+                    // Return all BY licenses except CC0
+                    resultLicenses = [
+                        "cc-by",
+                        "cc-by-sa",
+                        "cc-by-nc",
+                        "cc-by-nd",
+                        "cc-by-nc-sa",
+                        "cc-by-nc-nd"
+                    ];
+
+                }
+
+                const imageHtml = resultLicenses.map(license =>
+                    `<div class="result-item">
+                         <img src="license/${license}.png" alt="${license}">
+                         <span>${license}</span>
+                         </div>`
+                ).join('');
+                resultDiv.innerHTML = imageHtml;
+
             }
         </script>
 </body>
