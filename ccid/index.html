@@ -482,7 +482,7 @@
             // Script Rujak
             const ncLicenses = ['cc-by-nc', 'cc-by-nc-sa', 'cc-by-nc-nd'];
             const standardLicenses = {
-                'cc-by': 'license/cc-0.png',
+                'cc-by': 'license/cc-by.png',
                 'cc-by-sa': 'license/cc-by-sa.png',
                 'cc-by-nc': 'license/cc-by-nc.png',
                 'cc-by-nd': 'license/cc-by-nd.png',
@@ -490,6 +490,83 @@
                 'cc-by-nc-nd': 'license/cc-by-nc-nd.png'
             };
 
+            // Touch event handling
+            let draggedItem = null;
+            let touchTimeout = null;
+
+            document.querySelectorAll('.draggable').forEach(draggable => {
+                draggable.addEventListener('touchstart', handleTouchStart, { passive: false });
+                draggable.addEventListener('touchmove', handleTouchMove, { passive: false });
+                draggable.addEventListener('touchend', handleTouchEnd);
+            });
+
+            function handleTouchStart(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                draggedItem = this;
+                draggedItem.style.opacity = '0.5';
+
+                // Create visual feedback
+                draggedItem.style.position = 'relative';
+                updateTouchPosition(touch, draggedItem);
+            }
+
+            function handleTouchMove(e) {
+                e.preventDefault();
+                if (!draggedItem) return;
+
+                const touch = e.touches[0];
+                updateTouchPosition(touch, draggedItem);
+
+                // Check if over drop zone
+                const dropZone = getTouchedDropZone(touch);
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.classList.remove('hover');
+                });
+                if (dropZone) {
+                    dropZone.classList.add('hover');
+                }
+            }
+
+            function handleTouchEnd(e) {
+                if (!draggedItem) return;
+
+                const touch = e.changedTouches[0];
+                const dropZone = getTouchedDropZone(touch);
+
+                if (dropZone && !dropZone.classList.contains('filled')) {
+                    const license = draggedItem.dataset.license;
+                    dropZone.innerHTML = draggedItem.innerHTML +
+                        '<button class="clear-btn" onclick="clearZone(event)">×</button>';
+                    dropZone.classList.add('filled');
+                    dropZone.dataset.license = license;
+                    updateHasil();
+                }
+
+                // Reset dragged item
+                draggedItem.style.opacity = '1';
+                draggedItem.style.position = 'static';
+                draggedItem.style.transform = 'none';
+                draggedItem = null;
+
+                // Remove hover effects
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.classList.remove('hover');
+                });
+            }
+
+            function updateTouchPosition(touch, element) {
+                const x = touch.pageX - element.offsetWidth / 2;
+                const y = touch.pageY - element.offsetHeight / 2;
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            }
+
+            function getTouchedDropZone(touch) {
+                const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
+                return elements.find(el => el.classList.contains('drop-zone'));
+            }
+
+            // Original drag and drop functions
             function allowDrop(ev) {
                 ev.preventDefault();
                 ev.currentTarget.classList.add('hover');
@@ -534,7 +611,6 @@
                     return;
                 }
 
-                // Check if any NC licenses are present
                 const hasNcLicense = filledZones.some(zone =>
                     ncLicenses.includes(zone.dataset.license)
                 );
