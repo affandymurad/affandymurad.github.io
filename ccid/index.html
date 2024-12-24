@@ -103,6 +103,109 @@
             font-size: 0.9em;
             color: #666;
         }
+
+        /* Style Rujak*/
+        .container2 {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 150px);
+            grid-template-rows: repeat(2, 150px);
+            gap: 10px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #ccc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #f9f9f9;
+        }
+
+        .drop-zone.hover {
+            border-color: #666;
+            background: #f0f0f0;
+        }
+
+        .items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .draggable {
+            cursor: move;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 88px;
+            text-align: center;
+        }
+
+        .clear-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .drop-zone.filled .clear-btn {
+            display: block;
+        }
+
+        img {
+            max-width: 88px;
+            height: auto;
+        }
+
+        .hasil-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .hasil-box {
+            border: 2px solid #ccc;
+            padding: 20px;
+            min-height: 150px;
+            width: 310px;
+            background: #f9f9f9;
+        }
+
+        .compatible-licenses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .no-licenses {
+            color: #666;
+            text-align: center;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -112,7 +215,7 @@
         <div class="outer-container">
             <div class="container">
                 <div class="result-container">
-                    <h2>Hasil Jus</h2>
+                    <h2>Simulasi Jus</h2>
                     <div id="result"></div>
                 </div>
 
@@ -155,50 +258,54 @@
                 </div>
             </div>
 
-            <div class="container">
-                <div class="result-container">
-                    <h2>Hasil Rujak</h2>
-                    <div id="result2"></div>
+            <div class="container2">
+                <div class="left-section">
+                    <h2>Simulasi Rujak</h2>
+                    <div class="grid">
+                        <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+
+                    <div class="hasil-label">Hasil Rujak</div>
+                    <div class="hasil-box">
+                        <div class="no-licenses">No compatible licenses found.</div>
+                    </div>
                 </div>
 
-                <div class="license-selector" onchange="handleLicenseChange2(event)">
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-0">
-                        <img src="license/cc-0.png" alt="CC0">
+                <div class="items">
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc0">
+                        <img src="license/cc-0.png" alt="CC0" />
                         CC0/PD
-                    </label>
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-by">
-                        <img src="license/cc-by.png" alt="CC BY">
+                    </div>
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc-by">
+                        <img src="license/cc-by.png" alt="CC BY" />
                         CC BY
-                    </label>
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-by-sa">
-                        <img src="license/cc-by-sa.png" alt="CC BY-SA">
+                    </div>
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc-by-sa">
+                        <img src="license/cc-by-sa.png" alt="CC BY-SA" />
                         CC BY-SA
-                    </label>
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-by-nc">
-                        <img src="license/cc-by-nc.png" alt="CC BY-NC">
+                    </div>
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc-by-nc">
+                        <img src="license/cc-by-nc.png" alt="CC BY-NC" />
                         CC BY-NC
-                    </label>
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-by-nd">
-                        <img src="license/cc-by-nd.png" alt="CC BY-ND">
+                    </div>
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc-by-nd">
+                        <img src="license/cc-by-nd.png" alt="CC BY-ND" />
                         CC BY-ND
-                    </label>
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-by-nc-sa">
-                        <img src="license/cc-by-nc-sa.png" alt="CC BY-NC-SA">
+                    </div>
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc-by-nc-sa">
+                        <img src="license/cc-by-nc-sa.png" alt="CC BY-NC-SA" />
                         CC BY-NC-SA
-                    </label>
-                    <label class="license-option">
-                        <input type="checkbox" value="cc-by-nc-nd">
-                        <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND">
+                    </div>
+                    <div class="draggable" draggable="true" ondragstart="drag(event)" data-license="cc-by-nc-nd">
+                        <img src="license/cc-by-nc-nd.png" alt="CC BY-NC-ND" />
                         CC BY-NC-ND
-                    </label>
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <br />
@@ -372,52 +479,85 @@
                 }
             }
 
-            function handleLicenseChange2(event) {
-                const resultDiv = document.getElementById('result2');
-                const checkboxes = event.target.parentElement.parentElement.querySelectorAll('input[type="checkbox"]');
-                const selectedLicenses = Array.from(checkboxes)
-                    .filter(checkbox => checkbox.checked)
-                    .map(checkbox => checkbox.value);
+            // Script Rujak
+            const ncLicenses = ['cc-by-nc', 'cc-by-nc-sa', 'cc-by-nc-nd'];
+            const standardLicenses = {
+                'cc-by': 'license/cc-0.png',
+                'cc-by-sa': 'license/cc-by-sa.png',
+                'cc-by-nc': 'license/cc-by-nc.png',
+                'cc-by-nd': 'license/cc-by-nd.png',
+                'cc-by-nc-sa': 'license/cc-by-nc-sa.png',
+                'cc-by-nc-nd': 'license/cc-by-nc-nd.png'
+            };
 
+            function allowDrop(ev) {
+                ev.preventDefault();
+                ev.currentTarget.classList.add('hover');
+            }
 
-                if (selectedLicenses.length === 0) {
-                    resultDiv.innerHTML = 'No compatible licenses found.';
+            function drag(ev) {
+                const draggable = ev.target.closest('.draggable');
+                ev.dataTransfer.setData("text", draggable.innerHTML);
+                ev.dataTransfer.setData("license", draggable.dataset.license);
+            }
+
+            function drop(ev) {
+                ev.preventDefault();
+                const dropZone = ev.currentTarget;
+                dropZone.classList.remove('hover');
+
+                if (!dropZone.classList.contains('filled')) {
+                    const data = ev.dataTransfer.getData("text");
+                    const license = ev.dataTransfer.getData("license");
+                    dropZone.innerHTML = data + '<button class="clear-btn" onclick="clearZone(event)">×</button>';
+                    dropZone.classList.add('filled');
+                    dropZone.dataset.license = license;
+                    updateHasil();
+                }
+            }
+
+            function clearZone(ev) {
+                const dropZone = ev.target.parentElement;
+                dropZone.innerHTML = '';
+                dropZone.classList.remove('filled');
+                delete dropZone.dataset.license;
+                updateHasil();
+            }
+
+            function updateHasil() {
+                const hasilBox = document.querySelector('.hasil-box');
+                const dropZones = document.querySelectorAll('.drop-zone');
+                const filledZones = Array.from(dropZones).filter(zone => zone.classList.contains('filled'));
+
+                if (filledZones.length === 0) {
+                    hasilBox.innerHTML = '<div class="no-licenses">No compatible licenses found.</div>';
                     return;
                 }
 
-                // Check if any NC licenses are selected
-                const hasNCLicense = selectedLicenses.some(license =>
-                    license === "cc-by-nc" ||
-                    license === "cc-by-nc-sa" ||
-                    license === "cc-by-nc-nd"
+                // Check if any NC licenses are present
+                const hasNcLicense = filledZones.some(zone =>
+                    ncLicenses.includes(zone.dataset.license)
                 );
 
-                var resultLicenses = [];
-                if (hasNCLicense) {
-                    // Return only NC licenses
-                    resultLicenses = ["cc-by-nc", "cc-by-nc-sa", "cc-by-nc-nd"];
-                } else {
-                    // Return all BY licenses except CC0
-                    resultLicenses = [
-                        "cc-by",
-                        "cc-by-sa",
-                        "cc-by-nc",
-                        "cc-by-nd",
-                        "cc-by-nc-sa",
-                        "cc-by-nc-nd"
-                    ];
+                const compatibleLicenses = hasNcLicense ?
+                    Object.entries(standardLicenses).filter(([key]) => ncLicenses.includes(key)) :
+                    Object.entries(standardLicenses);
 
-                }
+                const licensesHtml = compatibleLicenses.map(([key, url]) => `
+                <div class="draggable">
+                    <img src="${url}" alt="${key}" />
+                    ${key.toUpperCase()}
+                </div>
+            `).join('');
 
-                const imageHtml = resultLicenses.map(license =>
-                    `<div class="result-item">
-                         <img src="license/${license}.png" alt="${license}">
-                         <span>${license}</span>
-                         </div>`
-                ).join('');
-                resultDiv.innerHTML = imageHtml;
-
+                hasilBox.innerHTML = `<div class="compatible-licenses">${licensesHtml}</div>`;
             }
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragleave', (ev) => {
+                    ev.currentTarget.classList.remove('hover');
+                });
+            });
         </script>
 </body>
 
