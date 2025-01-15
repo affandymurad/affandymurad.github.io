@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paspor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
+    <style>
+        /* Previous styles remain the same until media-container */
+        :root {
+            /* --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            */
+            /* Dark red for a strong, calm feel */
+            --primary-color: #8B0000;
+            /* Soft coral red for contrast */
+            --secondary-color: #CD5C5C;
+            --text-color: #333;
+            --bg-color: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+        }
+
+        .media-container img,
+        .media-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-container audio {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: calc(100% - 2rem);
+            margin: 0 1rem;
+            transform: translateY(-50%);
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .swiper-slide {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: scale-down;
+        }
+
+        .swiper-pagination-bullet {
+            background: #cccccc;
+            /* Default bullet color */
+            opacity: 0.6;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--primary-color) !important;
+            /* Active bullet color */
+            opacity: 1;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--primary-color);
+            /* Navigation arrows color */
+        }
+
+        .swiper-scrollbar {
+            background: #eeeeee;
+            /* Scrollbar track color */
+        }
+
+        .swiper-scrollbar-drag {
+            background: var(--primary-color);
+            /* Scrollbar handle color */
+        }
+
+        .caption {
+            padding: 1rem;
+        }
+
+        .caption h3 {
+            margin: 0 0 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .caption p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .attribution {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            display: none;
+            z-index: 100;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .media-container:hover .tooltip {
+            display: block;
+        }
+
+        .dynamic-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            font-size: 0.6rem;
+        }
+
+        .swiper-slide:hover .dynamic-caption {
+            transform: translateY(0);
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .attribution-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .icon {
+            height: 20px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .divider {
+            margin: 0 0.5rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .attribution-line {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Paspor</h1>
+        <p>Temukan kisah menarik di balik dokumen perjalanan paling penting di dunia dalam kurasi digital Paspor karya
+            Affandy Murad</p>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <p>Paspor lebih dari sekadar dokumen perjalanan - paspor merupakan gerbang menuju penjelajahan global dan
+                bagian menarik dari sejarah manusia. Dari <i>Safe Conduct</i> atau Jaminan Keamanan paling awal yang
+                dikenal di Persia kuno hingga dokumen biometrik berteknologi tinggi saat ini, paspor telah berkembang
+                seiring dengan peradaban
+                manusia.</p>
+        </div>
+
+        <div class="gallery">
+            <!-- Carousel Item -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg"
+                                    alt="Papirus Arab dengan izin keluar, 722 SM">
+                                <div class="dynamic-caption">
+                                    <h4>Papirus Arab</h4>
+                                    <p>Papirus Arab dengan izin keluar, tertanggal 24 Januari 722 SM, menunjuk pada
+                                        pengaturan kegiatan perjalanan. Dari Hermopolis Magna, Mesir</p>
+                                    <small>CC BY-SA 4.0 | Arabic papyrus with an exit permit, dated January 24, 722 CE,
+                                        pointing to the regulation of travel activities. From Hermopolis Magna, Egypt |
+                                        Osama Shukir Muhammed Amin FRCP(Glasg) | via Wikimedia
+                                        Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/First_Japanese_passport_1866.jpg"
+                                    alt="Paspor Jepang pertama tahun 1866">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Jepang pertama</h4>
+                                    <p>Paspor Jepang pertama tahun 1866</p>
+                                    <small>CC BY-SA 3.0 | First Japanese passport 1866 | World Imaging | via Wikimedia
+                                        Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Italian_passport_1872.jpg"
+                                    alt="Paspor Italia tahun 1872">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Italia</h4>
+                                    <p>Paspor Italia tahun 1872 untuk Giovanni Lepetich</p>
+                                    <small>CC0 1.0 | Italian passport 1872 | Crash48 | via Wikimedia
+                                        Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/QingPassport.jpg"
+                                    alt="Paspor Tiongkok tahun 1898">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Tiongkok</h4>
+                                    <p>Paspor Tiongkok dari Dinasti Qing, Tahun ke-24 Pemerintahan Guangxu, 1898</p>
+                                    <small>Public Domain | QingPassport | 呂海寰 (Lü Haihuan) | via Wikimedia
+                                        Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Ottoman-russian-empire-passport.jpg"
+                                    alt="Paspor Ottoman (passavant)">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Ottoman (passavant)</h4>
+                                    <p>Paspor Ottoman (passavant) yang dikeluarkan untuk subjek Rusia, tertanggal 24
+                                        Juli 1900</p>
+                                    <small> CC BY-SA 3.0 | Ottoman-russian-empire-passport | FurkanYalcin3 | via
+                                        Wikimedia
+                                        Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/WW2_Spanish_official_passport.jpg"
+                                    alt="Paspor Spanyol era Perang Dunia II">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Spanyol era Perang Dunia II</h4>
+                                    <p>Paspor resmi Spanyol pada masa Perang Dunia II yang dikeluarkan pada akhir tahun
+                                        1944 dan digunakan selama enam bulan terakhir perang oleh seorang pejabat yang
+                                        dikirim ke Berlin</p>
+                                    <small>Public Domain | WW2 Spanish official passport | Huddyhuddy | via Wikimedia
+                                        Commons</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <h3>Sejarah Paspor</h3>
+                    <p>Sejarah timbulnya Paspor diperkirakan sudah sejak tahun 450 SM, salah satu referensi yang
+                        dianggap mewakili keberadaan paspor ditemukan dalam kitab suci yaitu Nehemia 2: 7-9 disebutkan
+                        Nehemia perwakilan dari Raja Artahsasta I dari Persia, memerintahkan Nehemia untuk pergi ke
+                        Yudea dan Raja memberikan sebuah surat kepada "pemimpin di seberang sungai" yang meminta jaminan
+                        keselamatan bagi Nehemia selama ia menjelajahi daerah tersebut.</p>
+                    <br />
+                    <p>Istilah paspor sendiri berasal berasal dari <i>sea port</i> (pelabuhan laut). Di Eropa abad
+                        pertengahan,
+                        dokumen itu dikeluarkan bagi pelancong oleh penguasa setempat, dan biasannya berisi daftar kota
+                        di mana pemilik dokumen diijinkan lewat.</p>
+                    <br />
+                    <p>Paspor adalah dokumen perjalanan resmi yang dikeluarkan oleh pemerintah yang menyatakan identitas
+                        dan kewarganegaraan seseorang untuk perjalanan internasional. Paspor memungkinkan
+                        pemegangnya untuk memasuki dan tinggal sementara di negara asing, mengakses bantuan dan
+                        perlindungan lokal, dan memperoleh bantuan konsuler dari pemerintah mereka.</p>
+                </div>
+            </div>
+
+            <!-- Regular Image Item -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/archive/2/23/20160306194155%21Passport_design_world_map.png"
+                        alt="Peta dunia desain paspor">
+                    <div class="tooltip">Peta dunia berdasarkan warna sampul paspor</div>
+                </div>
+                <div class="caption">
+                    <h3>Peringkat Kekuatan Paspor</h3>
+                    <p>Untuk warna sampul paspor tiap negara dapat dilihat di gambar di atas</p>
+                    <br />
+                    <p>Berikut daftar peringkat dari Indeks Paspor Henley tahun 2024</p>
+                    <br />
+                    <p>Indonesia mengalami kenaikan dari peringkat 72 di tahun 2023 menjadi 65 di tahun 2024</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Peringkat</th>
+                                <th>Negara</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Singapura</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Italia, Jerman, Prancis, Jepang, Spanyol</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Austria, Finlandia, Irlandia, Luksemburg, Belanda, Korea Selatan, Swedia</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Belgia, Denamrk, Selandia Baru, Norwegia, Swiss, Inggris Raya</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Australia, Ceko, Portugal</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Yunani, Polandia</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Kanada, Hungaria, Malta</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>Amerika Serikat</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Estonia, Lituania, Uni Emirat Arab</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>Islandia, Latvia, Slowakia, Slovenia</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>65</td>
+                                <td>Indonesia</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="attribution">
+                        CC BY-SA 4.0 | Passport design world map | Twofortnights | via Wikimedia Commons |
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Item -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Paspor.JPG"
+                                    alt="Paspor Reguler">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Reguler</h4>
+                                    <p>paspor biasa yang diterbitkan negara untuk warga negaranya</p>
+                                    <small>Public Domain | ZakiriFadhlan | Wikimedia Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/United_States_emergency_passport.svg"
+                                    alt="Paspor Darurat">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Darurat</h4>
+                                    <p>Paspor darurat (juga disebut paspor sementara) dikeluarkan untuk orang-orang
+                                        dengan kebutuhan
+                                        mendesak untuk bepergian yang tidak memiliki paspor.</p>
+                                    <small>Public Domain | DeliciousBoson | Wikimedia Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Indonesian_Diplomatic_Passport.png"
+                                    alt="Paspor Diplomatik">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Diplomatik</h4>
+                                    <p>Berdasarkan Konvensi Wina tentang Hubungan Diplomatik, Konvensi Wina tentang
+                                        Hubungan Konsuler, dan kekebalan yang diberikan kepada pejabat negara asing
+                                        berdasarkan kebiasaan
+                                        internasional, diplomat dan individu lain yang bepergian untuk urusan
+                                        pemerintahan diberikan
+                                        paspor khusus yang menunjukkan status mereka.</p>
+                                    <small>Public Domain | Amadhannn | Wikimedia Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Macau_Sar_Passport_Old_and_New_Style.jpg"
+                                    alt="Paspor Regional">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Regional</h4>
+                                    <p>Republik Rakyat Tiongkok (RRT) memberi wewenang kepada Daerah Administratif
+                                        Khusus Hong Kong dan Makau untuk menerbitkan paspor bagi penduduk tetap mereka
+                                        yang berkewarganegaraan Tiongkok berdasarkan pengaturan " satu negara, dua
+                                        sistem ".</p>
+                                    <small>Public Domain | Long6115555 | Wikimedia Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Indonesian_Hajj_Passport.png"
+                                    alt="Paspor Haji">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Haji</h4>
+                                    <p>Khusus jamaah haji dan umrah, nama yang tertera dalam paspor harus menggunakan 3
+                                        kata misalnya "Affandy bin Muradi".</p>
+                                    <small>Public Domain | Amadhannn | Wikimedia Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Ukrainian_refugee_travel_document.jpg"
+                                    alt="Paspor Pengungsi">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor Pengungsi</h4>
+                                    <p>Dokumen perjalanan pengungsi (juga disebut dokumen perjalanan Konvensi 1951 atau
+                                        paspor Jenewa) adalah dokumen perjalanan yang dikeluarkan untuk pengungsi oleh
+                                        negara tempat mereka tinggal, yang memungkinkan mereka untuk bepergian ke luar
+                                        negara bagian tersebut dan kembali ke sana.</p>
+                                    <small>Public Domain | Kabinet Menteri Ukraina | via Wikimedia Commons</small>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Passaportoordinemalta.png"
+                                    alt="Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan">
+                                <div class="dynamic-caption">
+                                    <h4>Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan</h4>
+                                    <p>Beberapa entitas tanpa wilayah kedaulatan menerbitkan dokumen yang disebut
+                                        paspor, yang paling menonjol adalah Liga Iroquois, Pemerintah Sementara Aborigin
+                                        di Australia dan Ordo Militer Berdaulat Malta.</p>
+                                    <small>CC BY | Cav. Marco Lo Giudice | Wikimedia Commons</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <h3>Jenis Paspor</h3>
+                    <p>Jenis yang paling umum adalah paspor biasa yang diterbitkan
+                        untuk warga negara perorangan dan warga negara lainnya. Di masa lalu, beberapa negara
+                        menerbitkan paspor kolektif atau paspor keluarga. Saat ini, paspor biasanya
+                        diterbitkan untuk pelancong perorangan, bukan untuk kelompok. Selain paspor biasa yang
+                        diterbitkan untuk warga negara oleh pemerintah nasional, ada berbagai jenis paspor lain yang
+                        diterbitkan oleh pemerintah dalam situasi tertentu, yaitu:</p>
+                    <ul>
+                        <li>
+                            <h4>Paspor Darurat</h4>
+                        </li>
+                        <li>
+                            <h4>Paspor Diplomatik</h4>
+                        </li>
+                        <li>
+                            <h4>Paspor Regional</h4>
+                        </li>
+                        <li>
+                            <h4>Paspor Haji</h4>
+                        </li>
+                        <li>
+                            <h4>Paspor Pengungsi</h4>
+                        </li>
+                        <li>
+                            <h4>Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan</h4>
+                        </li>
+                    </ul>
+                    <br />
+                    <p>Sejak tahun 1998, banyak negara telah beralih ke paspor biometrik, yang berisi chip mikro
+                        tertanam untuk memfasilitasi otentikasi dan perlindungan terhadap pemalsuan. Hingga Juli
+                        2024, lebih dari 150 yurisdiksi menerbitkan "e-paspor" atau paspor elektronik tersebut, paspor
+                        non-biometrik yang
+                        diterbitkan sebelumnya biasanya tetap berlaku hingga kedaluwarsa.</p>
+                </div>
+            </div>
+
+            <!-- Regular Image Item -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/Stempel_Visa_di_Paspor_Indonesia.jpg"
+                        alt="Visa">
+                    <div class="tooltip">Contoh visa berbentuk stempel di Paspor Indonesia</div>
+                </div>
+                <div class="caption">
+                    <h3>Visa</h3>
+                    <p>Visa adalah sebuah dokumen izin masuk seseorang ke suatu negara yang bisa diperoleh di kedutaan
+                        di mana negara tersebut mempunyai Konsulat Jenderal atau kedutaan asing. Visa adalah tanda bukti
+                        ‘boleh berkunjung’ yang diberikan pada penduduk suatu negara jika memasuki wilayah negara lain
+                        yang mempersyaratkan adanya izin masuk. Bisa berbentuk stiker visa yang dapat diajukan di
+                        kedutaan atau konsulat negara yang akan dikunjungi atau berbentuk stempel pada paspor di negara
+                        tertentu. Terdapat 2 jenis visa, yaitu:</p>
+
+                    <ul>
+                        <li>
+                            <h4>Visa kunjungan saat kedatangan (<i>visa on-arrival</i>)</h4>
+                        </li>
+                        <li>
+                            <h4>Visa kunjungan sebelum kedatangan (<i>visa pre-arrival</i>)</h4>
+                        </li>
+                    </ul>
+                    <div class="attribution">
+                        CC BY-SA 4.0 | Stempel Visa di Paspor Indonesia | Affandy Murad | via Wikimedia Commons
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Item -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <video controls>
+                        <source
+                            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Walks_with_Tony-_Philadelphia_Passport_Agency.webm"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="tooltip">Philadelphia Passport Agency</div>
+                </div>
+                <div class="caption">
+                    <h3>Philadelphia Passport Agency</h3>
+                    <p>Paspor membuka peluang bagi warga Amerika untuk bepergian. Bergabunglah dengan Menteri Luar
+                        Negeri AS Antony Blinken untuk #WalksWithTony dan lihat bagaimana Badan Paspor Philadelphia
+                        membantu memfasilitasi perjalanan dan mendukung keselamatan serta perlindungan warga AS.</p>
+                    <div class="attribution">
+                        Public Domain | Walks with Tony- Philadelphia Passport Agency | U.S. Department of State | via
+                        Wikimedia Commons
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Item -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <audio controls>
+                        <source
+                            src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Ex-Indian_diplomat%27s_passport_revoked.ogg"
+                            type="audio/ogg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div class="tooltip">Ex-Indian diplomat's passport revoked
+                    </div>
+                </div>
+                <div class="caption">
+                    <h3>Paspor mantan diplomat India dicabut</h3>
+                    <p>Kementerian Luar Negeri telah mencabut paspor Tn. Harish Kumar Dogra yang dicopot dari jabatannya
+                        sebagai Komisaris Tinggi India untuk Selandia Baru pada bulan April. Pemerintah juga telah
+                        menangguhkan paspor istrinya dan pembantu rumah tangganya. Baca Selengkapnya di <a
+                            href="https://en.wikinews.org/wiki/Ex-Indian_diplomat%27s_passport_revoked"
+                            target="_blank">WikiNews</a>.
+                    <div class="attribution">
+                        Public Domain | Ex-Indian diplomat's passport revoked | NorkNork | via Wikimedia Commons
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="attribution-line">
+                <span>Judul: Paspor</span>
+                <span class="divider">|</span>
+                <span>Author: Affandy Murad</span>
+                <span class="divider">|</span>
+                <span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='white'%3E%3Cpath d='M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.2 17.2c-.9.4-2.8 1.3-5.2 1.3-5.4 0-8.2-3.6-8.2-8.4 0-4.2 2.7-8.1 8.2-8.1 2.5 0 4.3.8 5.2 1.3l-.9 2.7c-.9-.4-2.1-.9-4.3-.9-3.6 0-5.4 2.7-5.4 5.4 0 3.2 2.1 5.4 5.4 5.4 2.1 0 3.4-.5 4.3-.9l.9 2.2z'/%3E%3C/svg%3E"
+                        alt="Creative Commons Logo" class="icon">
+                    CC BY-SA 4.0
+                </span>
+                <span class="divider">|</span>
+                <span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='white'%3E%3Cpath d='M12.2 0C5.5 0 0 5.5 0 12.2c0 6.7 5.5 12.2 12.2 12.2 6.7 0 12.2-5.5 12.2-12.2C24.4 5.5 18.9 0 12.2 0zm0 22.5c-5.7 0-10.3-4.6-10.3-10.3C1.9 6.5 6.5 1.9 12.2 1.9c5.7 0 10.3 4.6 10.3 10.3 0 5.7-4.6 10.3-10.3 10.3zm-.5-8.3L6.9 9.4l1.4-1.4 3.4 3.4 5.4-5.4 1.4 1.4-6.8 6.8z'/%3E%3C/svg%3E"
+                        alt="Wikimedia Commons Logo" class="icon">
+                    Sumber: Wikimedia Commons
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const swipers = document.querySelectorAll('.swiper');
+            swipers.forEach(swiperElement => {
+                new Swiper(swiperElement, {
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
