@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportasi Umum di Jabodetabek</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
+    <style>
+        /* Previous styles remain the same until media-container */
+        :root {
+            /* --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            */
+            /* Dark red for a strong, calm feel */
+            --primary-color: #003D79;
+            --text-color: #333;
+            --bg-color: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2a/Peta_Rute_Halte_Halimun_20_01_2025.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem;
+            height: auto;
+            max-height: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Dark overlay to ensure text readability */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            /* Dark overlay */
+        }
+
+        /* Ensure header content stays above the overlay */
+        header * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-attribution {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+        }
+
+        .media-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .swiper-slide {
+            position: relative;
+            width: 50%;
+            height: 100%;
+            /* Add display property to help with image centering */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            /* cover will fill the space completely */
+            object-fit: cover;
+            /* or use contain to show the full image */
+            /* object-fit: contain; */
+
+            /* Optional: if you want to center the image */
+            object-position: center;
+        }
+
+        .swiper-pagination-bullet {
+            background: #cccccc;
+            /* Default bullet color */
+            opacity: 0.6;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--primary-color) !important;
+            /* Active bullet color */
+            opacity: 1;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--primary-color);
+            /* Navigation arrows color */
+        }
+
+        .swiper-scrollbar {
+            background: #eeeeee;
+            /* Scrollbar track color */
+        }
+
+        .swiper-scrollbar-drag {
+            background: var(--primary-color);
+            /* Scrollbar handle color */
+        }
+
+        .caption {
+            padding: 1rem;
+        }
+
+        .caption h3 {
+            margin: 0 0 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .caption p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        small {
+            margin: 0;
+            font-size: 0.6rem;
+        }
+
+        .attribution {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            display: none;
+            z-index: 100;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .media-container:hover .tooltip {
+            display: block;
+        }
+
+        .dynamic-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            font-size: 0.6rem;
+        }
+
+        .swiper-slide:hover .dynamic-caption {
+            transform: translateY(0);
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .attribution-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .icon {
+            height: 20px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .divider {
+            margin: 0 0.5rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .collapsible-section {
+            border: 1px solid #e5e5e5;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #2ecc71;
+        }
+
+        /* Unique colors for each section */
+        .facilities-header {
+            font-weight: bold;
+            color: var(--primary-color);
+            /* Use a defined color variable */
+            font-size: 1rem;
+        }
+
+        .collapsible-header:hover {
+            opacity: 0.9;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+        }
+
+        .collapsible-content.active {
+            max-height: 500px;
+        }
+
+        .collapsible-inner {
+            padding: 1rem;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.active {
+            transform: rotate(180deg);
+        }
+
+        /* Colored text styles */
+        .facility-item {
+            color: #27ae60;
+            /* Darker green */
+            font-weight: 500;
+        }
+
+        .schedule-item {
+            color: #2980b9;
+            /* Darker blue */
+            font-weight: 500;
+        }
+
+        .stations-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            /* Reduced gap */
+            width: 100%;
+            /* Make it full width of container */
+            margin: 6px 0;
+            /* Add some vertical spacing */
+        }
+
+        .station {
+            display: flex;
+            align-items: center;
+            min-width: 100px;
+            /* Ensure minimum width for readability */
+        }
+
+        .station-code {
+            font-weight: 500;
+            /* Medium weight instead of bold */
+            padding: 3px 8px;
+            /* Smaller padding */
+            border-radius: 3px;
+            /* Smaller radius */
+            margin-right: 8px;
+            color: white;
+            font-size: 12px;
+            /* Smaller font size */
+            text-align: center;
+            letter-spacing: 0.5px;
+            /* Better readability for code */
+        }
+
+        .station-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .station-name {
+            font-weight: 400;
+            /* Regular weight instead of bold */
+            font-size: 14px;
+            /* Smaller font size */
+            color: #4a5568;
+            /* Softer color for better readability */
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .attribution-line {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Transportasi Umum di Jabodetabek</h1>
+        <p class="header-attribution">
+            CC BY SA 4.0 | <a target="_blank"
+                href="https://commons.wikimedia.org/wiki/File:Peta_Rute_Halte_Halimun_20_01_2025.jpg"
+                style="color: white">Rute Halte Halimun 20 01 2025</a> | Affandy Murad | via Wikimedia Commons
+        </p>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <p>Transportasi umum di wilayah Jabodetabek (Jakarta, Bogor, Depok, Tangerang, dan Bekasi) memainkan peran
+                penting dalam mobilitas jutaan penduduk setiap harinya. Dalam era digital, berbagai platform dan
+                aplikasi telah dikembangkan untuk mempermudah akses informasi terkait jadwal, rute, dan layanan
+                transportasi umum. Kurasi digital ini bertujuan untuk menyajikan informasi yang akurat, terkini, dan
+                relevan mengenai pilihan transportasi umum di Jabodetabek, sehingga masyarakat dapat membuat keputusan
+                perjalanan yang lebih efisien dan nyaman.</p>
+        </div>
+
+        <div class="gallery">
+            <!-- Commuter Line -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Gerbang_Elektronik_Stasiun_Sudirman_18_01_2025.jpg"
+                                    alt="Gerbang Elektronik Stasiun Sudirman">
+                                <div class="dynamic-caption">
+                                    <h4>Gerbang Elektronik Stasiun Sudirman</h4>
+                                    <p>Gerbang Elektronik Stasiun Sudirman sebagai Stasiun Commuter Line</p>
+                                    <small>CC BY-SA 4.0 | <a target="_blank"
+                                            href="https://commons.wikimedia.org/wiki/File:Gerbang_Elektronik_Stasiun_Sudirman_18_01_2025.jpg"
+                                            style="color: white">Gerbang Elektronik Stasiun Sudirman 18 01 2025</a> |
+                                        Affandy Murad | via Wikimedia
+                                        Commons</small>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Logo_KAI_Commuter.svg"
+                        alt="Logo KAI Commuter" width="25%">
+                    <h3>KRL Commuter Line</h3>
+                    <p>KRL Commuter Line adalah sistem transportasi angkutan cepat komuter berbasis kereta rel listrik
+                        (KRL) yang dioperasikan oleh PT Kereta Commuter Indonesia (KAI Commuter), anak perusahaan
+                        dari PT Kereta Api Indonesia (Persero). KRL ini telah beroperasi di wilayah Jakarta sejak tahun
+                        1925, hingga kini melayani rute komuter di wilayah Jabodetabek serta lintas Yogyakarta–Solo.</p>
+                    <small>Logo: Public Domain | <a target="_blank"
+                            href="https://commons.wikimedia.org/wiki/File:Logo_KAI_Commuter.svg">Logo KAI Commuter</a> |
+                        PT Kereta Api
+                        Indonesia (Persero) | via
+                        Wikimedia Commons</small>
+                    <br />
+                    <h3>Jam Operasional</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Reguler</span>
+                            <div class="station-info">
+                                <div class="station-name">04.00 - 24.00 WIB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Tiket Elektronik</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Uang Elektronik</span>
+                            <div class="station-info">
+                                <div class="station-name">KMT Commuter Line, Flazz BCA, e-Money Mandiri, TapCash BNI,
+                                    Brizzi BRI, JakCard
+                                    DKI (saldo minimal Rp 5.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #ED1C24;">C-Access</span>
+                            <div class="station-info">
+                                <div class="station-name">Gopay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #5851DB;">Access by KAI</span>
+                            <div class="station-info">
+                                <div class="station-name">Kaipay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #00AA13;">GoTransit</span>
+                            <div class="station-info">
+                                <div class="station-name">Gopay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">JakLingko</span>
+                            <div class="station-info">
+                                <div class="station-name">QRIS</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Kanal Resmi</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">X</span>
+                            <div class="station-info">
+                                <div class="station-name">@CommuterLine</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #E4405F;">Instagram</span>
+                            <div class="station-info">
+                                <div class="station-name">@commuterline</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">Facebook</span>
+                            <div class="station-info">
+                                <div class="station-name">CommuterLine</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">Web</span>
+                            <div class="station-info">
+                                <div class="station-name">commuterline.id</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Relasi
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: #dc2626;">BOO</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Bogor Line</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: #26baed;">CKR</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Cikarang Loop Line</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: #98ca3f;">RK</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Rangkasbitung Line</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: #964B00;">TNG</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Tangerang Line</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: #ef509a;">TPK</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Tanjung Priok Line</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transjakarta -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Gerbang_Elektronik_Halte_Halimun_25_01_2025.jpg"
+                                    alt="Gerbang Elektronik Halte Halimun">
+                                <div class="dynamic-caption">
+                                    <h4>Gerbang Elektronik Halte Halimun</h4>
+                                    <p>Gerbang Elektronik Halte Halimun sebagai Halte Transjakarta</p>
+                                    <small>CC BY-SA 4.0 | <a target="_blank"
+                                            href="https://commons.wikimedia.org/wiki/File:Gerbang_Elektronik_Halte_Halimun_25_01_2025.jpg"
+                                            style="color: white">Gerbang Elektronik Halte Halimun 25 01 2025</a> |
+                                        Affandy Murad | via Wikimedia
+                                        Commons</small>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/TransJakarta_Logo.svg"
+                        alt="Logo Transjakarta" width="25%">
+                    <h3>TransJakarta</h3>
+                    <p>TransJakarta adalah jaringan bus raya terpadu (BRT) pertama di Asia Tenggara dan Selatan, yang
+                        beroperasi sejak tahun 2004 di Jakarta, Indonesia. Sistem ini didesain berdasarkan sistem
+                        TransMilenio di Bogota, Kolombia. Transjakarta dirancang sebagai moda transportasi massal
+                        pendukung aktivitas ibu kota yang sangat padat. Transjakarta merupakan jaringan bus raya terpadu
+                        dengan jalur lintasan terpanjang di dunia (230,9 km), serta memiliki 252 halte yang tersebar
+                        dalam 14 koridor (rute utama). Transjakarta dioperasikan oleh PT. Transportasi Jakarta.</p>
+                    <small>Logo: Public Domain | <a target="_blank"
+                            href="https://commons.wikimedia.org/wiki/File:TransJakarta_Logo.svg">TransJakarta Logo</a> |
+                        PT Transportasi Jakarta | via Wikimedia
+                        Commons</small>
+                    <br />
+                    <h3>Jam Operasional</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Reguler</span>
+                            <div class="station-info">
+                                <div class="station-name">05.00 - 22.00 WIB</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #ED1C24;">AMARI</span>
+                            <div class="station-info">
+                                <div class="station-name">22.00 - 05.00 WIB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Tiket Elektronik</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Uang Elektronik</span>
+                            <div class="station-info">
+                                <div class="station-name">KMT Commuter Line, Flazz BCA, e-Money Mandiri, TapCash BNI,
+                                    Brizzi BRI, JakCard
+                                    DKI (saldo minimal Rp 5.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">TJ: Transjakarta</span>
+                            <div class="station-info">
+                                <div class="station-name">Astrapay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">JakLingko</span>
+                            <div class="station-info">
+                                <div class="station-name">QRIS</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Kanal Resmi</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">X</span>
+                            <div class="station-info">
+                                <div class="station-name">@pt_transjakarta</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #E4405F;">Instagram</span>
+                            <div class="station-info">
+                                <div class="station-name">@infotije</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">Facebook</span>
+                            <div class="station-info">
+                                <div class="station-name">Transjakarta</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">Web</span>
+                            <div class="station-info">
+                                <div class="station-name">transjakarta.co.id</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Layanan
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(208, 32, 39);">BRT</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Bus Rapid Transit Reguler</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(38, 70, 151);">Feeder</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Angkutan Pengumpan</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(252, 200, 27);">Royal</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Royaltrans</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(86, 42, 98);">SH1</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Khusus</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(188, 88, 39);">BW</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Bus Wisata</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(47, 164, 73);">JAK</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Miktrotrans</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(226, 39, 91);">Rusun</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Rumah Susun</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(204, 41, 144);">Jabodetabek</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Transjabodetabek</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(63, 149, 147);">AMARI</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Angkutan Malam Hari</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Koridor BRT
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(208, 32, 39);">1</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Blok M - Kota</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(38, 70, 151);">2</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Pulo Gadung - Monumen Nasional</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(252, 200, 27);">3</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Kalideres - Monumen Nasional via Veteran</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(86, 42, 98);">4</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Pulo Gadung - Galunggung</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(188, 88, 39);">5</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Kampung Melayu - Ancol</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(47, 164, 73);">6</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Kampung Melayu - Kampung Rambutan</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(226, 39, 91);">7</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Ragunan - Galunggung</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(204, 41, 144);">8</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Lebak Bulus - Pasar Baru</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(63, 149, 147);">9</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Pinang Ranti - Pluit</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(143, 26, 30);">10</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Tanjung Priok - PGC</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(47, 79, 162);">11</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Pulo Gebang - Kampung Melayu</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(98, 189, 115);">12</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Pluit - Tanjung Priok</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(92, 53, 157);">13</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Puri Beta - Tegal Mampang</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: rgb(255, 127, 0);">14</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Jakarta International Stadium - Senen</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MRT Jakarta -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Gerbang_Elektronik_Stasiun_MRT_Dukuh_Atas_BNI_18_01_2025.jpg"
+                                    alt="Gerbang Elektronik Stasiun MRT Dukuh Atas BNI">
+                                <div class="dynamic-caption">
+                                    <h4>Gerbang Elektronik Stasiun MRT Dukuh Atas BNI</h4>
+                                    <p>Gerbang Elektronik Stasiun MRT Dukuh Atas BNI</p>
+                                    <small>CC BY-SA 4.0 | <a target="_blank"
+                                            href="https://commons.wikimedia.org/wiki/File:Gerbang_Elektronik_Stasiun_MRT_Dukuh_Atas_BNI_18_01_2025.jpg"
+                                            style="color: white">Gerbang Elektronik Stasiun MRT Dukuh Atas BNI 18 01
+                                            2025</a> |
+                                        Affandy Murad | via Wikimedia
+                                        Commons</small>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/MRT_Jakarta_logo.svg"
+                        alt="Logo MRT Jakarta" width="25%">
+                    <h3>MRT Jakarta</h3>
+                    <p>Moda Raya Terpadu Jakarta (disingkat MRT Jakarta atau MRTJ, bahasa Inggris: Jakarta Mass Rapid
+                        Transit) adalah sistem transportasi rel angkutan cepat di Jakarta. Proses pembangunan moda
+                        transportasi ini dimulai tahun 2013. Jalur pertama layanan MRT Jakarta dioperasikan tanggal 24
+                        Maret 2019, menjadikannya layanan kereta bawah tanah pertama yang beroperasi di Indonesia.
+                        Layanan MRT Jakarta dioperasikan oleh PT MRT Jakarta (Perseroda), badan usaha milik daerah DKI
+                        Jakarta. Jalur yang telah beroperasi saat ini merupakan jalur sepanjang 15,7 km yang
+                        menghubungkan Stasiun Lebak Bulus dengan Stasiun Bundaran HI.</p>
+                    <small>Logo: Public Domain | <a target="_blank"
+                            href="https://commons.wikimedia.org/wiki/File:MRT_Jakarta_logo.svg">MRT Jakarta logo</a> |
+                        PT MRT Jakarta | via Wikimedia
+                        Commons</small>
+                    <br />
+                    <h3>Jam Operasional</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Reguler</span>
+                            <div class="station-info">
+                                <div class="station-name">05.00 - 24.00 WIB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Tiket Elektronik</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Uang Elektronik</span>
+                            <div class="station-info">
+                                <div class="station-name">Flazz BCA, e-Money Mandiri, TapCash BNI, Brizzi BRI, JakCard
+                                    DKI (saldo minimal Rp 14.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">MyMRTJ</span>
+                            <div class="station-info">
+                                <div class="station-name">Mastercard, Blu, i.saku, Kredivo, DANA, Astrapay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">MyMRTJ Lite</span>
+                            <div class="station-info">
+                                <div class="station-name">QRIS</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">JakLingko</span>
+                            <div class="station-info">
+                                <div class="station-name">QRIS</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Kanal Resmi</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">X</span>
+                            <div class="station-info">
+                                <div class="station-name">@mrtjakarta</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #E4405F;">Instagram</span>
+                            <div class="station-info">
+                                <div class="station-name">@mrtjktinfo</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">Facebook</span>
+                            <div class="station-info">
+                                <div class="station-name">jakartamrt</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #FF0000;">YouTube </span>
+                            <div class="station-info">
+                                <div class="station-name">MRTv</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">Web</span>
+                            <div class="station-info">
+                                <div class="station-name">jakartamrt.co.id</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Relasi
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: #dc2626;">NS</span>
+                                    <div class="station-info">
+                                        <div class="station-name">North-South Line</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comutter Line Basoetta -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Gerbang_Elektronik_Stasiun_Sudirman_Baru_BNI_City_Baseotta_18_01_2025.jpg"
+                                    alt="Gerbang Elektronik Stasiun Sudirman Baru BNI City">
+                                <div class="dynamic-caption">
+                                    <h4>Gerbang Elektronik Stasiun Sudirman Baru BNI City</h4>
+                                    <p>Gerbang Elektronik Stasiun Sudirman Baru BNI City sebagai Stasiun Commuter Line
+                                        Basoetta</p>
+                                    <small>CC BY-SA 4.0 | <a target="_blank"
+                                            href="https://commons.wikimedia.org/wiki/File:Gerbang_Elektronik_Stasiun_Sudirman_Baru_BNI_City_Baseotta_18_01_2025.jpg"
+                                            style="color: white">Gerbang Elektronik Stasiun Sudirman Baru BNI City
+                                            Baseotta 18 01 2025</a> |
+                                        Affandy Murad | via Wikimedia
+                                        Commons</small>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Logo_KAI_Commuter.svg"
+                        alt="Logo KAI Commuter" width="25%">
+                    <h3>Comutter Line Basoetta</h3>
+                    <p>Commuter Line Bandara Soekarno-Hatta (Basoetta), atau disebut juga Lin Soekarno-Hatta, adalah
+                        layanan kereta api ekspres bandara milik Kereta Api Indonesia yang dioperasikan oleh KAI
+                        Commuter dari dan menuju Bandara Soekarno Hatta (sebagai Airport Railink Station) dan
+                        Manggarai. Setiap satu perjalanan kereta ekspres ini menggunakan rangkaian KRL seri EA 203
+                        buatan PT INKA dan Bombardier Transportation.</p>
+                    <small>Logo: Public Domain | <a target="_blank"
+                            href="https://commons.wikimedia.org/wiki/File:Logo_KAI_Commuter.svg">Logo KAI Commuter</a> |
+                        PT Kereta Api
+                        Indonesia (Persero) | via
+                        Wikimedia Commons</small>
+                    <br />
+                    <h3>Jam Operasional</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Reguler</span>
+                            <div class="station-info">
+                                <div class="station-name">05.00 - 22.42 WIB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Tiket Elektronik</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Uang Elektronik</span>
+                            <div class="station-info">
+                                <div class="station-name">Flazz BCA, e-Money Mandiri, TapCash BNI, Brizzi BRI, JakCard
+                                    DKI (saldo minimal Rp 70.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #ED1C24;">C-Access</span>
+                            <div class="station-info">
+                                <div class="station-name">Gopay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #5851DB;">Access by KAI</span>
+                            <div class="station-info">
+                                <div class="station-name">Kaipay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Vending Machine</span>
+                            <div class="station-info">
+                                <div class="station-name">QRIS</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Kanal Resmi</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">X</span>
+                            <div class="station-info">
+                                <div class="station-name">@CommuterLine</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #E4405F;">Instagram</span>
+                            <div class="station-info">
+                                <div class="station-name">@kacommuterbandara</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">Facebook</span>
+                            <div class="station-info">
+                                <div class="station-name">CommuterLine</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #FF0000;">YouTube </span>
+                            <div class="station-info">
+                                <div class="station-name">Commuter Channel</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">Web</span>
+                            <div class="station-info">
+                                <div class="station-name">reservation.kci.id</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Relasi
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: #003D79;">BST</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Basoetta Line</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LRT Jabodebek -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/Gerbang_Elektronik_Stasiun_LRT_Jabodebek_Jati_Bening_Baru_18_01_2025.jpg"
+                                    alt="Gerbang Elektronik Stasiun LRT Jabodebek Jati Bening Baru">
+                                <div class="dynamic-caption">
+                                    <h4>Gerbang Elektronik Stasiun LRT Jabodebek Jati Bening Baru</h4>
+                                    <p>Gerbang Elektronik Stasiun Jati Bening Baru sebagai LRT Jabodebek</p>
+                                    <small>CC BY-SA 4.0 | <a target="_blank"
+                                            href="https://commons.wikimedia.org/wiki/File:Gerbang_Elektronik_Stasiun_LRT_Jabodebek_Jati_Bening_Baru_18_01_2025.jpg"
+                                            style="color: white">Gerbang Elektronik Stasiun LRT Jabodebek Jati Bening
+                                            Baru 18 01 2025</a> |
+                                        Affandy Murad | via Wikimedia
+                                        Commons</small>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Jabodebek_LRT.svg"
+                        alt="Logo Resmi Jabodebek LRT" width="25%">
+                    <h3>LRT Jabodebek</h3>
+                    <p>Lintas Rel Terpadu Jabodebek atau yang disingkat LRT Jabodebek adalah lintas rel terpadu yang
+                        berada di daerah Jabodebek. Sesuai namanya, lintas rel terpadu ini melayani daerah Jakarta,
+                        Bogor, Depok, dan Bekasi yang termasuk dalam DKI Jakarta dan Jawa Barat. LRT Jabodebek mulai
+                        beroperasi pada 28 Agustus 2023 setelah diresmikan oleh Presiden Republik Indonesia, Joko Widodo
+                        dan dioperasikan oleh PT Kereta Api Indonesia. Pembangunan LRT Jabodebek melibatkan empat
+                        perusahaan BUMN yakni PT Adhi Karya, PT Len Industri, PT INKA, dan PT Kereta Api Indonesia.</p>
+                    <small>Logo: Public Domain | <a target="_blank"
+                            href="https://commons.wikimedia.org/wiki/File:Jabodebek_LRT.svg">Jabodebek LRT</a>
+                        | PT Kereta Api Indonesia (Persero) | via Wikimedia
+                        Commons</small>
+                    <br />
+                    <h3>Jam Operasional</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Reguler</span>
+                            <div class="station-info">
+                                <div class="station-name">05.30 WIB - 22.00 WIB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Tiket Elektronik</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Uang Elektronik</span>
+                            <div class="station-info">
+                                <div class="station-name">Flazz BCA, e-Money Mandiri, TapCash BNI, Brizzi BRI, JakCard
+                                    DKI (saldo minimal Rp 10.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #ED1C24;">LinkAja</span>
+                            <div class="station-info">
+                                <div class="station-name">LinkAja (saldo minimal Rp 20.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #ED1C24;">C-Access</span>
+                            <div class="station-info">
+                                <div class="station-name">Gopay</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #5851DB;">Access by KAI</span>
+                            <div class="station-info">
+                                <div class="station-name">Kaipay</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Kanal Resmi</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">X</span>
+                            <div class="station-info">
+                                <div class="station-name">@lrtjabodebek</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #E4405F;">Instagram</span>
+                            <div class="station-info">
+                                <div class="station-name">@lrt_jabodebek</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">Facebook</span>
+                            <div class="station-info">
+                                <div class="station-name">lrtjabodebek</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #FF0000;">YouTube</span>
+                            <div class="station-info">
+                                <div class="station-name">SatuanKerjaLRTJabodebek</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">Web</span>
+                            <div class="station-info">
+                                <div class="station-name">lrtjabodebek.kai.id</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Relasi
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: #323a70;">HAR</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Cibubur Line</div>
+                                    </div>
+                                </div>
+                                <div class="station">
+                                    <span class="station-code" style="background: #0E6938;">JTM</span>
+                                    <div class="station-info">
+                                        <div class="station-name">Bekasi Line</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LRT Jakarta -->
+            <div class="gallery-item">
+                <div class="media-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Gerbang_Elektronik_Stasiun_LRTJ_Pulomas_18_01_2025.jpg"
+                                    alt="Gerbang Elektronik Stasiun LRTJ Pulomas">
+                                <div class="dynamic-caption">
+                                    <h4>Gerbang Elektronik Stasiun LRTJ Pulomas</h4>
+                                    <p>Gerbang Elektronik Stasiun Pulomas sebagai LRT Jakarta</p>
+                                    <small>CC BY-SA 4.0 | <a target="_blank"
+                                            href="https://upload.wikimedia.org/wikipedia/commons/f/f3/Gerbang_Elektronik_Stasiun_LRTJ_Pulomas_18_01_2025.jpg"
+                                            style="color: white">Gerbang Elektronik Stasiun LRTJ Pulomas 18 01 2025</a>
+                                        |
+                                        Affandy Murad | via Wikimedia
+                                        Commons</small>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+                <div class="caption">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Jakarta_LRT_logo.svg"
+                        alt="Logo LRT Jakarta" width="25%">
+                    <h3>LRT Jakarta</h3>
+                    <p>Lintas Raya Terpadu Jakarta (disingkat LRT Jakarta) adalah sistem lintas rel terpadu yang
+                        beroperasi di DKI Jakarta. Saat ini, LRT Jakarta memiliki jalur sepanjang 5,8 km (3,6 mi) yang
+                        melayani enam stasiun. LRT Jakarta dimiliki dan dikembangkan oleh Pemerintah Provinsi DKI
+                        Jakarta. Layanannya sendiri dioperasikan oleh PT LRT Jakarta yang merupakan anak usaha dari PT
+                        Jakarta Propertindo (Perseroda), sebuah badan usaha milik daerah DKI Jakarta. Pembangunan sistem
+                        LRT dimulai pada bulan Juni 2016 dan beroperasi penuh tanggal 1 Desember 2019.</p>
+                    <small>Logo: Public Domain | <a target="_blank"
+                            href="https://commons.wikimedia.org/wiki/File:Jabodebek_LRT.svg">Jabodebek LRT</a>
+                        | Jakarta LRT | via Wikimedia
+                        Commons</small>
+                    <br />
+                    <h3>Jam Operasional</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Reguler</span>
+                            <div class="station-info">
+                                <div class="station-name">05.30 WIB - 23.00 WIB</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Tiket Elektronik</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #003D79;">Uang Elektronik</span>
+                            <div class="station-info">
+                                <div class="station-name">Flazz BCA, e-Money Mandiri, TapCash BNI, Brizzi BRI, JakCard
+                                    DKI (saldo minimal Rp 5.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #ED1C24;">LinkAja</span>
+                            <div class="station-info">
+                                <div class="station-name">LinkAja (saldo minimal Rp 20.000)</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">JakLingko</span>
+                            <div class="station-info">
+                                <div class="station-name">QRIS</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h3>Kanal Resmi</h3>
+                    <div class="stations-container">
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">X</span>
+                            <div class="station-info">
+                                <div class="station-name">@lrtjkt</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #E4405F;">Instagram</span>
+                            <div class="station-info">
+                                <div class="station-name">@lrtjkt</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #1877F2;">Facebook</span>
+                            <div class="station-info">
+                                <div class="station-name">lrtjkt</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #FF0000;">YouTube </span>
+                            <div class="station-info">
+                                <div class="station-name">lrtjakartaofficial</div>
+                            </div>
+                        </div>
+                        <div class="station">
+                            <span class="station-code" style="background: #000000;">Web</span>
+                            <div class="station-info">
+                                <div class="station-name">lrtjakarta.co.id</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="collapsible-section">
+                    <div class="collapsible-header facilities-header" onclick="toggleSection(this)">
+                        Relasi
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            <div class="stations-container">
+                                <div class="station">
+                                    <span class="station-code" style="background: #F26324;">PGD</span>
+                                    <div class="station-info">
+                                        <div class="station-name">South Line</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regular Image Item -->
+            <!-- <div class="gallery-item">
+                <div class="media-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/archive/2/23/20160306194155%21Passport_design_world_map.png"
+                        alt="Peta dunia desain paspor">
+                    <div class="tooltip">Peta dunia berdasarkan warna sampul paspor</div>
+                </div>
+                <div class="caption">
+                    <h3>Peringkat Kekuatan Paspor</h3>
+                    <p>Untuk warna sampul paspor tiap negara dapat dilihat di gambar di atas</p>
+                    <br />
+                    <p>Berikut daftar peringkat dari Indeks Paspor Henley tahun 2024</p>
+                    <br />
+                    <p>Indonesia mengalami kenaikan dari peringkat 72 di tahun 2023 menjadi 65 di tahun 2024</p>
+
+                    <div class="attribution">
+                        CC BY-SA 4.0 | Passport design world map | Twofortnights | via Wikimedia Commons |
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="attribution-line">
+                <span>Judul: Transportasi Umum di Jabodetabek</span>
+                <span class="divider">|</span>
+                <span>Pembuat: Affandy Murad</span>
+                <span class="divider">|</span>
+                <span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Cc_by-sa_%281%29.svg"
+                        alt="Creative Commons Logo" class="icon">
+                    CC BY-SA 4.0
+                </span>
+                <span class="divider">|</span>
+                <span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Commons-logo.svg"
+                        alt="Wikimedia Commons Logo" class="icon">
+                    Sumber: Wikimedia Commons
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const swipers = document.querySelectorAll('.swiper');
+            swipers.forEach(swiperElement => {
+                new Swiper(swiperElement, {
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+
+            // Toggle active class on content
+            content.classList.toggle('active');
+            icon.classList.toggle('active');
+
+            // Optional: Close other sections when opening one
+            const allSections = document.querySelectorAll('.collapsible-content');
+            const allIcons = document.querySelectorAll('.toggle-icon');
+
+            allSections.forEach(section => {
+                if (section !== content && section.classList.contains('active')) {
+                    section.classList.remove('active');
+                }
+            });
+
+            allIcons.forEach(toggleIcon => {
+                if (toggleIcon !== icon && toggleIcon.classList.contains('active')) {
+                    toggleIcon.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
