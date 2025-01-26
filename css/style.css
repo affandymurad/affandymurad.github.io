@@ -1,13 +1,13 @@
 /* style.css */
 
 :root {
-    --primary-color: #3E4E50;
-    --secondary-color: #A9B4C2;
-    --accent-color: #D5A021;
-    --text-color: #333333;
-    --bg-color: #F5F5F5;
-    --header-bg: #3E4E50;
-    --header-text: #FFFFFF;
+    --primary-color: #2C3E50; /* Dark blue */
+    --secondary-color: #3498DB; /* Bright blue */
+    --accent-color: #E67E22; /* Bright orange */
+    --text-color: #2C3E50; /* Dark text for contrast */
+    --bg-color: #ECF0F1; /* Light gray background */
+    --header-bg: #2C3E50; /* Dark blue header */
+    --header-text: #FFFFFF; /* White header text */
 }
 
 * {
@@ -26,27 +26,24 @@ body {
 }
 
 /* Header Styles */
+/* Header Styles */
 header {
     background-color: var(--header-bg);
     color: var(--header-text);
     padding: 1rem;
-    text-align: center;
     position: sticky;
     top: 0;
     z-index: 1000;
     transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
 
 header h1 {
     font-size: 2.0rem;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-header p {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: var(--secondary-color);
+    margin: 0;
 }
 
 /* Hamburger Menu */
@@ -57,25 +54,47 @@ header p {
     font-size: 1.5rem;
     color: var(--header-text);
     cursor: pointer;
+    z-index: 1001;
 }
 
-/* Website Icon */
-.website-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 1rem;
+.menu-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--header-text);
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
 }
 
+.menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+
+/* Navigation Styles */
+/* Navigation Menu */
+nav {
+    display: flex;
+    align-items: center;
+}
 
 nav ul {
     display: flex;
-    justify-content: center;
     list-style: none;
-    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
 }
 
 nav ul li {
-    margin: 0.5rem 1rem;
+    margin: 0 1rem;
 }
 
 nav a {
@@ -90,6 +109,7 @@ nav a:hover {
 }
 
 /* Dark Mode Toggle Button */
+/* Dark Mode Toggle Button */
 #darkModeToggle {
     background-color: transparent;
     border: none;
@@ -97,9 +117,7 @@ nav a:hover {
     font-size: 1.5rem;
     color: var(--header-text);
     transition: color 0.3s;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    margin-left: 1rem;
 }
 
 #darkModeToggle:hover {
@@ -168,25 +186,20 @@ footer {
 
 /* Dark Mode Styles */
 body.dark-mode {
-    --bg-color: #121212;
-    --text-color: #F5F5F5;
-    --header-bg: #2C3639;
-    --header-text: #FFFFFF;
-    --primary-color: #A9B4C2;
-    --secondary-color: #5C6B73;
-    --accent-color: #F0C04D;
+    --bg-color: #1A1A1A; /* Dark background */
+    --text-color: #ECF0F1; /* Light text */
+    --header-bg: #2C3E50; /* Dark blue header */
+    --header-text: #FFFFFF; /* White header text */
+    --primary-color: #3498DB; /* Bright blue */
+    --secondary-color: #E67E22; /* Bright orange */
+    --accent-color: #E67E22; /* Bright orange */
 }
 
 body.dark-mode section {
-    background-color: #333333;
+    background-color: #2C3E50; /* Dark blue section background */
 }
 
-body.dark-mode .menu-toggle {
-    color: var(--header-text);
-}
-
-/* Add these styles to your existing CSS file */
-
+/* Social Icons */
 .social-icons {
     margin-top: 1rem;
 }
@@ -202,6 +215,7 @@ body.dark-mode .menu-toggle {
     color: var(--accent-color);
 }
 
+/* Company Logo */
 .company-logo {
     width: 100%;
     max-width: 200px;
@@ -214,51 +228,51 @@ body.dark-mode .menu-toggle {
 .portfolio-list {
     list-style: none;
     padding: 0;
-  }
-  
-  .portfolio-item {
+}
+
+.portfolio-item {
     margin-bottom: 0.5rem;
     background-color: transparent;
     border-radius: 12px;
     overflow: hidden;
-  }
-  
-  .portfolio-header {
+}
+
+.portfolio-header {
     display: flex;
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid var(--secondary-color);
-  }
-  
-  .portfolio-icon {
+}
+
+.portfolio-icon {
     width: 36px;
     height: 36px;
     margin-right: 1rem;
     object-fit: contain;
-  }
-  
-  .portfolio-header h3 {
+}
+
+.portfolio-header h3 {
     margin: 0;
     color: var(--primary-color);
-  }
-  
-  .portfolio-content {
+}
+
+.portfolio-content {
     padding: 1rem;
-  }
-  
-  .portfolio-content p {
+}
+
+.portfolio-content p {
     margin: 0 0 1rem;
     font-size: 0.9rem;
     color: var(--text-color);
-  }
-  
-  .demo-buttons {
+}
+
+.demo-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-  }
-  
-  .demo-link {
+}
+
+.demo-link {
     display: inline-block;
     background-color: var(--accent-color);
     color: white;
@@ -267,194 +281,40 @@ body.dark-mode .menu-toggle {
     text-decoration: none;
     font-size: 0.9rem;
     transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .demo-link:hover {
+}
+
+.demo-link:hover {
     background-color: var(--primary-color);
-  }
-/* Adjust existing styles */
-article {
-    margin-bottom: 2rem;
 }
 
-/* Portfolio Dark mode adjustments */
-body.dark-mode .portfolio-item {
-    background-color: transparent;
-  }
-  
-  body.dark-mode .portfolio-header h3 {
-    color: var(--accent-color);
-  }
-  
-  body.dark-mode .portfolio-content p {
-    color: var(--text-color);
-  }
-  
-  body.dark-mode .demo-link {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-}
-
-body.dark-mode .demo-link:hover {
-    background-color: var(--secondary-color);
-}
-/* Dark mode adjustments */
-body.dark-mode .social-icons a {
-    color: var(--secondary-color);
-}
-
-body.dark-mode .social-icons a:hover {
-    color: var(--accent-color);
-}
-
-/* Add these styles to your existing CSS file */
-
-#translateToggle {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: var(--header-text);
-    transition: color 0.3s;
-    position: absolute;
-    top: 1rem;
-    right: 4rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-#translateToggle:hover {
-    color: var(--accent-color);
-}
-
-#currentLang {
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-/* Add this to your existing CSS */
-@media print {
-    body {
-        max-width: none;
-    }
-}
-
-/* Update the media query for responsive design */
 /* Responsive Design */
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 2rem;
-        margin-top: 2rem;
-    }
-
-    header p {
-        font-size: 1rem;
-    }
-
-    nav ul {
-        flex-direction: column;
-    }
-
-    nav ul li {
-        margin: 0.25rem 0;
-    }
-
-    #darkModeToggle {
-        position: static;
-    }
-
-    section {
-        padding: 1rem;
-    }
-
+@media (max-width: 768px) {
     .menu-toggle {
         display: block;
+    }
+
+    nav {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 100%;
+        right: 0;
+        background-color: var(--header-bg);
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-end;
+        display: none;
+    }
+
+    nav.show {
+        display: flex;
     }
 
     nav ul {
-        display: none;
         flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: var(--header-bg);
+        width: 100%;
         padding: 1rem;
-    }
-
-    nav ul.show {
-        display: flex;
     }
 
     nav ul li {
         margin: 0.5rem 0;
     }
-
-    #darkModeToggle {
-        top: 1rem;
-        right: 4rem;
-    }
-
-    #translateToggle {
-        right: 4rem;
-    }
-
-    /* Add these menu toggle styles to your existing CSS file */
-
-    .menu-toggle {
-        display: block;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: var(--header-text);
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
-
-    .menu-toggle .bar {
-        display: block;
-        width: 25px;
-        height: 3px;
-        background-color: var(--header-text);
-        margin: 5px auto;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .menu-toggle.active .bar:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
-    }
-
-    .menu-toggle.active .bar:nth-child(2) {
-        opacity: 0;
-    }
-
-    .menu-toggle.active .bar:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg);
-    }
-
-    /* Responsive adjustments */
-    .portfolio-header {
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        border-bottom: 1px solid var(--secondary-color);
-      }
-    
-      .portfolio-icon {
-        margin-bottom: 0.5rem;
-      }
-    
-      .demo-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-    
-      .demo-link {
-        text-align: center;
-      }
 }
