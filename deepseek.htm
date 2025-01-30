@@ -78,6 +78,13 @@
             padding-bottom: 0.5rem;
         }
 
+        .section h2 i {
+            margin-right: 10px;
+            /* Add spacing between icon and text */
+            font-size: 1.2em;
+            /* Adjust icon size */
+        }
+
         .section ul {
             list-style: none;
         }
@@ -480,14 +487,17 @@
     <!-- Dark Mode Switch -->
     <div class="dark-mode-switch">
         <input type="checkbox" id="dark-mode-toggle">
-        <label for="dark-mode-toggle" id="dark-mode-label">🌙</label>
+        <label for="dark-mode-toggle" id="dark-mode-label">
+            <i class="fa-solid fa-moon"></i>
+        </label>
+        <!-- Default to Moon -->
     </div>
 
     <!-- Sticky Buttons -->
     <div class="sticky-buttons">
-        <button class="icon-button" data-target="portfolio">💻</button>
-        <button class="icon-button">💼</button>
-        <button class="icon-button" data-target="contact">📱</button>
+        <button class="icon-button" data-target="portfolio"><i class="fas fa-laptop-code"></i></button>
+        <button class="icon-button"><i class="fas fa-briefcase"></i></button>
+        <button class="icon-button" data-target="contact"><i class="fas fa-address-card"></i></button>
     </div>
 
     <!-- Container -->
@@ -501,7 +511,7 @@
 
         <!-- Contact Section -->
         <section class="section" id="contact">
-            <h2>Contact</h2>
+            <h2><i class="fas fa-address-card"></i> Contact</h2>
             <ul class="contact-info">
                 <li>📧 Email: <a href="sendto:affandymurad@gmail.com" target="_blank"
                         title="Email">affandymurad@gmail.com</a></li>
@@ -523,7 +533,7 @@
 
         <!-- Experience Section -->
         <section class="section">
-            <h2>Experience</h2>
+            <h2><i class="fas fa-briefcase"></i>Experience</h2>
             <ul>
                 <li class="experience-item">
                     <strong>IT Supervisor</strong> - Korindo Group - Indonesia &nbsp; <img
@@ -584,7 +594,7 @@
 
         <!-- Education Section -->
         <section class="section">
-            <h2>Education</h2>
+            <h2><i class="fas fa-graduation-cap"></i>Education</h2>
             <ul>
                 <li>
                     <strong>Bachelor of Computer Systems</strong><br>
@@ -599,7 +609,7 @@
 
         <!-- Certifications Section -->
         <section class="section">
-            <h2>Certifications</h2>
+            <h2><i class="fas fa-certificate"></i>Certifications</h2>
             <ul>
                 <li>Green Economy - Coursera</li>
                 <li>Project Management - Coursera</li>
@@ -611,7 +621,7 @@
 
         <!-- Achievements Section -->
         <section class="section">
-            <h2>Achievements</h2>
+            <h2><i class="fas fa-trophy"></i>Achievements</h2>
             <ul>
                 <li>🏆 Winner of Wikidata Competition</li>
                 <li>🏆 Winner of Social Media 4 Peace Competition (UNESCO x Wikimedia Indonesia)</li>
@@ -622,7 +632,7 @@
 
         <!-- Skills Section -->
         <section class="section">
-            <h2>Skills</h2>
+            <h2><i class="fas fa-tools"></i>Skills</h2>
             <ul>
                 <li>Programming: Python, Java, Swift, Kotlin</li>
                 <li>AI & Machine Learning</li>
@@ -634,7 +644,7 @@
 
         <!-- Portfolio Section -->
         <section class="section" id="portfolio">
-            <h2>Portfolio</h2>
+            <h2><i class="fas fa-laptop-code"></i>Portfolio</h2>
             <div class="portfolio-item">
                 <h3>Project 1: EHAC App</h3>
                 <p>Developed EHAC iOS/Android App for Indonesia's Ministry of Health.</p>
@@ -677,17 +687,23 @@
             // Deteksi mode gelap sistem
             const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
 
+            // Function to set icon
+            const updateDarkModeIcon = () => {
+                darkModeLabel.innerHTML = body.classList.contains("dark-mode")
+                    ? '<i class="fas fa-sun"></i>' // Sun icon for dark mode
+                    : '<i class="fas fa-moon"></i>'; // Moon icon for light mode
+            };
+
             // Terapkan mode gelap jika sistem dalam mode gelap
             const applySystemDarkMode = () => {
                 if (prefersDarkMode.matches) {
                     body.classList.add("dark-mode");
                     toggle.checked = true; // Set switch ke posisi "on"
-                    darkModeLabel.textContent = "☀️"; // Ikon matahari untuk mode gelap
                 } else {
                     body.classList.remove("dark-mode");
                     toggle.checked = false; // Set switch ke posisi "off"
-                    darkModeLabel.textContent = "🌙"; // Ikon bulan untuk mode terang
                 }
+                updateDarkModeIcon();
             };
 
             // Terapkan mode gelap awal sesuai dengan pengaturan sistem
@@ -699,7 +715,7 @@
             // Tambahkan event listener untuk toggle
             toggle.addEventListener("change", () => {
                 body.classList.toggle("dark-mode");
-                darkModeLabel.textContent = body.classList.contains("dark-mode") ? "☀️" : "🌙";
+                updateDarkModeIcon();
             });
 
             // Tambahkan event listener untuk tombol sticky (scroll ke section)
