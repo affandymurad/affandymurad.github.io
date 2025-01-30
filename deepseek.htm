@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Resume & Portfolio</title>
+    <title>Affandy Murad - Resume & Portfolio</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' fill='%233B82F6' rx='10' ry='10'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='50' fill='%23FFFFFF' text-anchor='middle'>AM</text></svg>"
+        type="image/svg+xml">
+    <script src="js/b.min.js" defer></script>
+    <link rel="stylesheet" href="css/all.min.css">
     <style>
-        /* Basic Reset */
         * {
             margin: 0;
             padding: 0;
@@ -14,69 +18,64 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
+            transition: all 0.3s ease;
+            background: #ECF0F1;
+            color: #1f2937;
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Dark Mode */
-        body.dark-mode {
-            background: #121212;
-            color: #ffffff;
-        }
-
-        body.dark-mode a {
-            color: #ff8c42;
-            /* Oranye yang nyaman di mata */
-        }
-
-        body.dark-mode .section {
-            background: #1e1e1e;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 20px;
         }
 
         /* Header */
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #F8F8F8;
+            border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
 
         header p {
-            font-size: 1.2rem;
-            color: #666;
-        }
-
-        .dark-mode header p {
-            color: #ff8c42;
-            /* Oranye yang nyaman di mata */
+            font-size: 1.3rem;
+            color: #4b5563;
         }
 
         /* Sections */
         .section {
-            background: #f9f9f9;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
+            background: #F8F8F8;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
         }
 
         .section h2 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
         }
 
         .section ul {
@@ -84,92 +83,394 @@
         }
 
         .section ul li {
-            margin-bottom: 10px;
+            margin-bottom: 1.2rem;
+            padding-left: 1rem;
+            border-left: 3px solid #e5e7eb;
+        }
+
+        .section ul li:hover {
+            border-left-color: #3b82f6;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: #111827;
+            color: #e5e7eb;
+        }
+
+        body.dark-mode header,
+        body.dark-mode .section {
+            background: #1f2937;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode header p {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .section h2 {
+            color: #f3f4f6;
+            border-bottom-color: #374151;
+        }
+
+        body.dark-mode .experience-item em {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .portfolio-item {
+            background: #374151;
+        }
+
+        body.dark-mode .portfolio-item h3 {
+            color: #f3f4f6;
+        }
+
+        body.dark-mode .section ul li {
+            border-left-color: #374151;
+        }
+
+        body.dark-mode .section ul li:hover {
+            border-left-color: #3b82f6;
+        }
+
+        body.dark-mode a {
+            color: #60a5fa;
         }
 
         /* Dark Mode Switch */
         .dark-mode-switch {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 8px;
+            right: 8px;
+            width: 45px;
+            height: 45px;
+            background: #F8F8F8;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-switch input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .dark-mode-switch:hover {
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .dark-mode-switch {
+            background: #374151;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .dark-mode-switch label {
             cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 2rem;
-            }
-
-            .section h2 {
-                font-size: 1.5rem;
-            }
+        body.dark-mode .buttons {
+            background: #374151 !important;
+            color: #f3f4f6 !important;
+            border-color: #4b5563;
         }
 
-        /* Company Icons */
-        .company-icon {
-            padding-top: 12px;
-            max-width: 30%;
-            max-height: 25px;
-            object-fit: contain;
+        body.dark-mode .buttons:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
         }
+
+        /* sticky buttons */
+        .sticky-buttons {
+            position: fixed;
+            top: 8px;
+            right: 62px;
+            /* Geser ke kiri dari tombol mode gelap */
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+            /* Pastikan berada di atas elemen lainnya */
+        }
+
+        .icon-button {
+            width: 45px;
+            height: 45px;
+            background: #F8F8F8;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            border: none;
+            outline: none;
+        }
+
+        .icon-button:hover {
+            transform: translateY(-2px);
+            background: #E5E7EB;
+        }
+
+        body.dark-mode .icon-button {
+            background: #374151;
+            color: #F3F4F6;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .icon-button:hover {
+            background: #4B5563;
+        }
+
 
         /* Portfolio Section */
         .portfolio-item {
-            margin-bottom: 20px;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 1rem;
         }
 
         .portfolio-item h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .portfolio-item p {
-            margin-bottom: 10px;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
         }
 
         .portfolio-item .buttons {
             display: flex;
-            gap: 10px;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
 
-        .portfolio-item .buttons a {
-            padding: 5px 10px;
-            background: #ff8c42;
-            color: #fff;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .portfolio-item .buttons a:hover {
-            background: #e67e22;
-        }
-
-        /* PDF Button */
+        .portfolio-item .buttons a,
         .section .buttons a {
-            display: inline-block;
-            padding: 5px 10px;
-            background: #ff8c42;
-            color: #fff;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-top: 10px;
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white !important;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
+        .portfolio-item .buttons a:hover,
         .section .buttons a:hover {
-            background: #e67e22;
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        /* Experience Items */
+        .experience-item {
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .experience-item strong {
+            color: inherit;
+            font-size: 1.1rem;
+            vertical-align: middle
+        }
+
+        .experience-item em {
+            color: #6b7280;
+            font-style: normal;
+            font-size: 0.9rem;
+        }
+
+        /* PDF Button - Updated */
+        .pdf-button {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px !important;
+            background: #3b82f6;
+            color: white !important;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+            text-decoration: none;
+        }
+
+        .pdf-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .pdf-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        body.dark-mode .pdf-button {
+            background: #374151 !important;
+            color: #f3f4f6 !important;
+            border-color: #4b5563;
+        }
+
+        body.dark-mode .pdf-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        /* Company Icons */
+        .company-icon {
+            padding: 4px;
+            max-width: 30%;
+            max-height: 25px;
+            object-fit: contain;
+            border: 1px solid lightgrey;
+            border-radius: 8px;
+            vertical-align: middle;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            background: #F8F8F8;
+            border-radius: 16px;
+            margin-top: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer p {
+            font-size: 1rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #3b82f6;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #2563eb;
+        }
+
+        /* Dark Mode for Footer */
+        body.dark-mode .footer {
+            background: #1f2937;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .footer p {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .footer-links a {
+            color: #60a5fa;
+        }
+
+        body.dark-mode .footer-links a:hover {
+            color: #3b82f6;
         }
 
         /* Hide buttons when printing */
+        /* Hide elements that shouldn't appear in print */
         @media print {
+            body {
+                background: white;
+                /* Set a plain white background for printing */
+                color: black;
+                /* Use black text for better readability */
+                font-size: 12pt;
+                /* Adjust font size for print */
+            }
 
-            .pdf-button,
-            .portfolio-item .buttons,
-            .dark-mode-switch {
+            /* Hide unnecessary elements */
+            .dark-mode-switch,
+            .sticky-buttons,
+            .buttons,
+            footer,
+            #title,
+            #subtitle,
+            #contact,
+            .company-icon {
                 display: none !important;
+                /* Hide dark mode switch, buttons, and footer */
+            }
+
+            /* Prevent empty elements from creating blank pages */
+            .empty-section,
+            .section:empty {
+                display: none !important;
+            }
+
+            /* Optimize layout for printing */
+            header,
+            .section {
+                box-shadow: none;
+                border-radius: 0;
+                margin-bottom: 1rem;
+                page-break-inside: avoid;
+                /* Avoid breaking sections across pages */
+            }
+
+            header h1 {
+                background-clip: initial;
+                -webkit-background-clip: initial;
+                -webkit-text-fill-color: initial;
+                font-size: 1.5rem;
+                color: black;
+            }
+
+            a {
+                text-decoration: none;
+                color: black;
+            }
+
+            ul {
+                padding-left: 1.5rem;
+            }
+
+            .portfolio-item {
+                background: none;
+            }
+
+            /* Prevent page breaks after headers or specific elements */
+            h1,
+            h2,
+            h3 {
+                page-break-after: avoid;
+            }
+
+            /* Ensure tables and lists don't break awkwardly */
+            table,
+            ul,
+            ol {
+                page-break-inside: avoid;
+            }
+
+            /* Remove extra margins and padding that could cause blank pages */
+            .page-break {
+                page-break-before: always;
+            }
+
+            /* Ensure no blank pages are created at the end */
+            body:after {
+                content: "";
+                display: none;
             }
         }
     </style>
@@ -178,29 +479,45 @@
 <body>
     <!-- Dark Mode Switch -->
     <div class="dark-mode-switch">
+        <input type="checkbox" id="dark-mode-toggle">
         <label for="dark-mode-toggle" id="dark-mode-label">🌙</label>
-        <input type="checkbox" id="dark-mode-toggle" style="display: none;">
+    </div>
+
+    <!-- Sticky Buttons -->
+    <div class="sticky-buttons">
+        <button class="icon-button" data-target="portfolio">💻</button>
+        <button class="icon-button">💼</button>
+        <button class="icon-button" data-target="contact">📱</button>
     </div>
 
     <!-- Container -->
     <div class="container">
         <!-- Header -->
         <header>
-            <h1>Your Name</h1>
-            <p>IT Supervisor | AI & Cybersecurity Enthusiast</p>
+            <h1 id="title">Affandy Murad</h1>
+            <p id="subtitle">IT professional specializing in mobile app development, and system optimization,
+                delivering impactful solutions for enhanced user experience and efficiency</p>
         </header>
 
         <!-- Contact Section -->
-        <section class="section">
+        <section class="section" id="contact">
             <h2>Contact</h2>
-            <ul>
-                <li>📧 Email: your.email@example.com</li>
-                <li>📞 Phone: +62 123 4567 890</li>
-                <li>🌐 LinkedIn: <a href="https://linkedin.com/in/yourprofile">linkedin.com/in/yourprofile</a></li>
-                <li>💻 GitHub: <a href="https://github.com/yourusername">github.com/yourusername</a></li>
+            <ul class="contact-info">
+                <li>📧 Email: <a href="sendto:affandymurad@gmail.com" target="_blank"
+                        title="Email">affandymurad@gmail.com</a></li>
             </ul>
-            <div class="buttons">
-                <a href="#" class="pdf-button" id="save-pdf">Save as PDF</a>
+            <div>
+                <a href="#" class="pdf-button" id="save-pdf" title="Print Web Page"><i class="fas fa-print"></i></a>
+                <a href="https://www.linkedin.com/in/affandy-murad/" class="pdf-button" target="_blank"
+                    title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/affandymurad" class="pdf-button" target="_blank" title="GitHub"><i
+                        class="fab fa-github"></i></a>
+                <a href="https://www.wikipedia.org/" class="pdf-button" target="_blank" title="Wikipedia"><i
+                        class="fab fa-wikipedia-w"></i></a>
+                <a href="https://www.google.com/" class="pdf-button" target="_blank" title="Google"><i
+                        class="fab fa-google"></i></a>
+                <a href="https://www.credly.com/" class="pdf-button" target="_blank" title="Credly"><i
+                        class="fas fa-certificate"></i></a>
             </div>
         </section>
 
@@ -208,19 +525,59 @@
         <section class="section">
             <h2>Experience</h2>
             <ul>
-                <li>
-                    <strong>IT Supervisor</strong> - Korindo Group &nbsp; <img src="images/company/korindo.svg"
-                        alt="Korindo Group" class="company-icon"><br>
-                    <em>Jan 2022 - Present</em><br>
-                    - Managed IT infrastructure and led a team of 5 engineers.<br>
-                    - Implemented cybersecurity measures to protect company data.
+                <li class="experience-item">
+                    <strong>IT Supervisor</strong> - Korindo Group - Indonesia &nbsp; <img
+                        src="images/company/korindo.svg" alt="Korindo Group" class="company-icon"><br>
+                    <em>June 2023 - Present</em><br>
+                    - Led development of mobile apps for financial services, improving user experience.<br>
+                    - Updated technical specs and ensured timely project delivery<br>
+                    - Achieved 20% higher user satisfaction and 15% faster development cycles.
                 </li>
-                <li>
-                    <strong>Associate Mobile Engineer</strong> - Hitachi Ebworx Sdn Bhd, Malaysia &nbsp; <img
-                        src="images/company/hcs.svg" alt="Hitachi Ebworx" class="company-icon"><br>
-                    <em>Jan 2021 - Dec 2021</em><br>
-                    - Developed mobile applications for enterprise clients.<br>
-                    - Collaborated with cross-functional teams to deliver projects on time.
+                <li class="experience-item">
+                    <strong>TSS Senior Executive</strong> - PT Hitachi Channel Solutions Indonesia - Indonesia &nbsp;
+                    <img src="images/company/hcs.svg" alt="Hitachi Ebworx" class="company-icon"><br>
+                    <em>September 2022 - June 2023</em><br>
+                    - Developed and maintained financial service EDC apps.<br>
+                    - Resolved system issues and optimized performance.<br>
+                    - Reduced downtime by 25% and boosted client satisfaction by 18%.
+                </li>
+                <li class="experience-item">
+                    <strong>iOS Developer</strong> - PT Otten Coffee Indonesia - Indonesia &nbsp;
+                    <img src="images/company/otten.svg" alt="Otten Coffee Logo" class="company-icon"><br>
+                    <em>November 2020 – September 2022</em><br>
+                    - Maintained iOS apps using Swift and VIPER architecture.<br>
+                    - Fixed bugs and implemented new features.<br>
+                    - Improved app performance by 30%, increasing user retention by 25%.
+                </li>
+                <li class="experience-item">
+                    <strong>Mobile Developer</strong> - PT Docotel Teknologi - Indonesia &nbsp;
+                    <img src="images/company/docotel.svg" alt="Docotel Logo" class="company-icon"><br>
+                    <em>November 2022 - September 2023</em><br>
+                    - Built and maintained mobile apps for clients.<br>
+                    - Delivered 15+ projects on time with 95% client satisfaction.<br>
+                    - Contributed to a 20% increase in company revenue.
+                </li>
+                <li class="experience-item">
+                    <strong>Part-Time Staff</strong> - Wikimedia Indonesia - Indonesia &nbsp;
+                    <img src="images/company/wmid.svg" alt="Wikimedia Indonesia Logo" class="company-icon"><br>
+                    <em>December 2019 - June 2020</em><br>
+                    - Created the competition’s concept including rules, procedures, and guidelines of Respati Project
+                    challenge.<br>
+                    - Managed the registration, competition flow, and official announcement to all participants.
+                </li>
+                <li class="experience-item">
+                    <strong>Associate Mobile Engineer</strong> - Hitachi eBWorx Sdn Bhd - Malaysia &nbsp;
+                    <img src="images/company/ebworx.svg" alt="Hitachi eBWorx Logo" class="company-icon"><br>
+                    <em>November 2016 – October 2017</em><br>
+                    - Developed financial service mobile apps.<br>
+                    - Reduced app bugs by 20% and improved deployment efficiency by 15%.
+                </li>
+                <li class="experience-item">
+                    <strong>Customer Service Officer</strong> - PT Bank DKI - Indonesia &nbsp;
+                    <img src="images/company/bankdki.svg" alt="Bank DKI Logo" class="company-icon"><br>
+                    <em>October 2015 – October 2016</em><br>
+                    - Managed customer accounts and promoted banking products.<br>
+                    - Achieved 10% higher retention and exceeded sales targets by 15%.<br>
                 </li>
             </ul>
         </section>
@@ -231,8 +588,11 @@
             <ul>
                 <li>
                     <strong>Bachelor of Computer Systems</strong><br>
-                    <em>Your University</em><br>
-                    GPA: 3.89/4.00
+                    <em>Gunadarma University</em><br>
+                    GPA: 3.89/4.00<br>
+                    Undergraduate Thesis: <em>Simulation of Flood Detector Via Wi-Fi Based On Arduino Mega 2560 and
+                        PCDuino with Ultrasonic Sensor and Camera</em><br>
+
                 </li>
             </ul>
         </section>
@@ -273,7 +633,7 @@
         </section>
 
         <!-- Portfolio Section -->
-        <section class="section">
+        <section class="section" id="portfolio">
             <h2>Portfolio</h2>
             <div class="portfolio-item">
                 <h3>Project 1: EHAC App</h3>
@@ -296,22 +656,76 @@
         </section>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Your Name. All rights reserved.</p>
+        <ul class="footer-links">
+            <div id="wcb" class="carbonbadge wcb-d"></div>
+            <li><a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/yourusername" target="_blank">GitHub</a></li>
+            <li><a href="mailto:your.email@example.com">Email</a></li>
+        </ul>
+    </footer>
+
     <!-- Dark Mode Script -->
     <script>
-        const toggle = document.getElementById('dark-mode-toggle');
-        const body = document.body;
-        const darkModeLabel = document.getElementById('dark-mode-label');
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggle = document.getElementById("dark-mode-toggle");
+            const body = document.body;
+            const darkModeLabel = document.getElementById("dark-mode-label");
 
-        toggle.addEventListener('change', () => {
-            body.classList.toggle('dark-mode');
-            darkModeLabel.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        });
+            // Deteksi mode gelap sistem
+            const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
 
-        // Save as PDF
-        document.getElementById('save-pdf').addEventListener('click', () => {
-            window.print();
+            // Terapkan mode gelap jika sistem dalam mode gelap
+            const applySystemDarkMode = () => {
+                if (prefersDarkMode.matches) {
+                    body.classList.add("dark-mode");
+                    toggle.checked = true; // Set switch ke posisi "on"
+                    darkModeLabel.textContent = "☀️"; // Ikon matahari untuk mode gelap
+                } else {
+                    body.classList.remove("dark-mode");
+                    toggle.checked = false; // Set switch ke posisi "off"
+                    darkModeLabel.textContent = "🌙"; // Ikon bulan untuk mode terang
+                }
+            };
+
+            // Terapkan mode gelap awal sesuai dengan pengaturan sistem
+            applySystemDarkMode();
+
+            // Dengarkan perubahan pada mode gelap sistem
+            prefersDarkMode.addEventListener("change", applySystemDarkMode);
+
+            // Tambahkan event listener untuk toggle
+            toggle.addEventListener("change", () => {
+                body.classList.toggle("dark-mode");
+                darkModeLabel.textContent = body.classList.contains("dark-mode") ? "☀️" : "🌙";
+            });
+
+            // Tambahkan event listener untuk tombol sticky (scroll ke section)
+            const buttons = document.querySelectorAll(".icon-button");
+
+            buttons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const targetId = button.getAttribute("data-target");
+                    const targetSection = document.getElementById(targetId);
+
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+                    }
+                });
+            });
+
+            // Save as PDF
+            document.getElementById('save-pdf').addEventListener('click', () => {
+                window.print();
+            });
         });
     </script>
+
 </body>
 
 </html>
