@@ -42,7 +42,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
             z-index: 1;
         }
 
@@ -51,42 +51,52 @@
             z-index: 2;
             padding: 20px;
             max-width: 90%;
+            margin-bottom: 20px;
         }
 
         .title {
-            font-size: 28px;
+            font-size: clamp(24px, 5vw, 32px);
             font-weight: bold;
             margin: 0 0 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
         }
 
         .description {
-            font-size: 16px;
+            font-size: clamp(14px, 3vw, 18px);
             line-height: 1.5;
             margin: 0 0 20px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            max-height: 30vh;
+            overflow: hidden;
         }
 
         .button-container {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
         }
 
         .read-more,
-        .wikidata-btn {
-            display: inline-block;
+        .wikidata-btn,
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
             padding: 10px 20px;
             background-color: #fff;
             color: #333;
             text-decoration: none;
             border-radius: 25px;
             font-weight: bold;
-            transition: background-color 0.3s;
+            font-size: clamp(12px, 2.5vw, 16px);
+            transition: background-color 0.3s, transform 0.2s;
+            white-space: nowrap;
         }
 
         .read-more:hover,
-        .wikidata-btn:hover {
+        .wikidata-btn:hover,
+        .share-btn:hover {
             background-color: #ddd;
+            transform: scale(1.05);
         }
 
         #language-controls {
@@ -94,15 +104,19 @@
             top: 10px;
             right: 10px;
             z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         #language {
             padding: 8px;
-            font-size: 16px;
+            font-size: clamp(12px, 2.5vw, 16px);
             border-radius: 4px;
             border: none;
             background-color: rgba(255, 255, 255, 0.9);
             color: #333;
+            max-width: 150px;
         }
 
         #fetch-btn {
@@ -115,7 +129,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #fff;
-            font-size: 24px;
+            font-size: clamp(20px, 4vw, 24px);
             z-index: 3;
             display: none;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -123,6 +137,34 @@
 
         .no-image {
             background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949') center/cover no-repeat;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .button-container {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #language-controls {
+                top: 5px;
+                right: 5px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .content {
+                max-width: 70%;
+            }
+
+            .button-container {
+                flex-direction: row;
+            }
         }
     </style>
 </head>
@@ -132,10 +174,10 @@
         <select id="language">
             <option value="en">English (en)</option>
             <option value="id">Indonesian (id)</option>
-            <option value="bew">Betawi (bew)</option>
             <option value="zh">Chinese (zh)</option>
             <option value="fr">French (fr)</option>
             <option value="es">Spanish (es)</option>
+            <option value="bew">Betawi (bew)</option>
         </select>
         <button id="fetch-btn">Fetch Articles</button>
     </div>
@@ -211,10 +253,9 @@
 
                 const description = document.createElement('p');
                 description.className = 'description';
-                // description.textContent = article.summary.length > 200
-                //     ? article.summary.slice(0, 200) + '...'
-                //     : article.summary;
-                description.textContent = article.summary;
+                description.textContent = article.summary.length > 200
+                    ? article.summary.slice(0, 200) + '...'
+                    : article.summary;
                 content.appendChild(description);
 
                 const buttonContainer = document.createElement('div');
@@ -235,6 +276,24 @@
                     wikidataBtn.target = '_blank';
                     buttonContainer.appendChild(wikidataBtn);
                 }
+
+                const shareBtn = document.createElement('a');
+                shareBtn.className = 'share-btn';
+                shareBtn.href = '#';
+                shareBtn.textContent = 'Share';
+                shareBtn.onclick = (e) => {
+                    e.preventDefault();
+                    if (navigator.share) {
+                        navigator.share({
+                            title: article.title,
+                            text: article.summary.slice(0, 200) + '...',
+                            url: article.url
+                        }).catch(err => console.error('Share failed:', err));
+                    } else {
+                        alert('Copy link to share: ' + article.url);
+                    }
+                };
+                buttonContainer.appendChild(shareBtn);
 
                 content.appendChild(buttonContainer);
                 slide.appendChild(content);
