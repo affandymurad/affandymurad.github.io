@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Wikipedia Articles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        #controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #language-select {
+            padding: 5px;
+        }
+
+        #permission-status {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .permitted {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .denied {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        #location-status {
+            margin: 10px 0;
+        }
+
+        .location-part {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button {
+            padding: 3px 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 0;
+        }
+
+        .article-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            list-style: none;
+        }
+
+        .article-card img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .article-card a {
+            text-decoration: none;
+            color: #0366d6;
+            display: block;
+            margin: 5px 0;
+        }
+
+        .article-card a:hover {
+            text-decoration: underline;
+        }
+
+        .description {
+            font-size: 0.9em;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .wikidata {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .distance {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        .error {
+            color: red;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Nearby Wikipedia Articles (10km radius)</h1>
+
+    <div id="controls">
+        <select id="language-select">
+            <option value="id">Indonesian (id)</option>
+            <option value="en">English (en)</option>
+            <option value="zh">Chinese (zh)</option>
+            <option value="es">Spanish (es)</option>
+        </select>
+        <button id="check-permission">Check Location & Search</button>
+        <span id="permission-status">Checking permission...</span>
+    </div>
+
+    <div id="location-status"></div>
+    <ul id="results"></ul>
+
+    <script>
+        const languageSelect = document.getElementById('language-select');
+        const checkPermissionBtn = document.getElementById('check-permission');
+        const permissionStatus = document.getElementById('permission-status');
+        const locationStatus = document.getElementById('location-status');
+        const resultsList = document.getElementById('results');
+        let currentLang = 'id';
+        let currentPosition = null;
+
+        async function checkLocationPermission() {
+            if (!navigator.permissions || !navigator.geolocation) {
+                permissionStatus.textContent = 'Permission API not supported';
+                return false;
+            }
+
+            const result = await navigator.permissions.query({ name: 'geolocation' });
+            updatePermissionStatus(result.state);
+            result.onchange = () => updatePermissionStatus(result.state);
+            return result.state === 'granted';
+        }
+
+        function updatePermissionStatus(state) {
+            permissionStatus.className = '';
+            permissionStatus.textContent = `Location permission: ${state}`;
+            permissionStatus.classList.add(state);
+        }
+
+        async function getLocationDetails(lat, lon) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`;
+                const response = await fetch(url, {
+                    headers: { 'User-Agent': 'NearbyWikipedia/1.0', 'Accept-Language': currentLang }
+                });
+                const data = await response.json();
+                if (data.address) {
+                    const { city, state, country, road, suburb } = data.address;
+                    return [road || suburb || '', city || '', state || '', country || ''].filter(Boolean);
+                }
+                return ['Unknown location'];
+            } catch (error) {
+                console.error('Error fetching location details:', error);
+                return ['Error fetching location details'];
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return (R * c).toFixed(1);
+        }
+
+        async function fetchArticleDetails(title, lang) {
+            try {
+                const url = `https://${lang}.wikipedia.org/w/api.php?` +
+                    `action=query&titles=${encodeURIComponent(title)}&` +
+                    `prop=extracts|pageimages|wbentityusage&exintro&explaintext&exsentences=2&` +
+                    `pithumbsize=250&format=json&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const pages = data.query.pages;
+                const page = Object.values(pages)[0];
+                return {
+                    description: page.extract || 'No description available',
+                    image: page.thumbnail?.source || null,
+                    wikidataId: page.wbentityusage ? Object.keys(page.wbentityusage)[0] : null
+                };
+            } catch (error) {
+                console.error('Error fetching article details:', error);
+                return { description: 'Error loading description', image: null, wikidataId: null };
+            }
+        }
+
+        async function fetchNearbyArticles(lat, lon, lang) {
+            try {
+                resultsList.innerHTML = '<li class="loading">Loading articles...</li>';
+                const radius = 10000;
+                const url = `https://${lang}.wikipedia.org/w/api.php?` +
+                    `action=query&list=geosearch&gscoord=${lat}|${lon}&` +
+                    `gsradius=${radius}&gslimit=100&format=json&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.query.geosearch;
+            } catch (error) {
+                resultsList.innerHTML = `<li class="error">Error loading articles: ${error.message}</li>`;
+                return [];
+            }
+        }
+
+        async function displayArticles(articles) {
+            resultsList.innerHTML = '';
+            if (articles.length === 0) {
+                resultsList.innerHTML = '<li>No articles found within 10km</li>';
+                return;
+            }
+
+            for (const article of articles) {
+                const details = await fetchArticleDetails(article.title, currentLang);
+                const distance = calculateDistance(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    article.lat,
+                    article.lon
+                );
+
+                const li = document.createElement('li');
+                li.className = 'article-card';
+
+                if (details.image) {
+                    const img = document.createElement('img');
+                    img.src = details.image;
+                    img.alt = article.title;
+                    img.onerror = () => img.style.display = 'none';
+                    li.appendChild(img);
+                }
+
+                const link = document.createElement('a');
+                link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
+                link.textContent = article.title;
+                link.target = '_blank';
+                li.appendChild(link);
+
+                const desc = document.createElement('div');
+                desc.className = 'description';
+                desc.textContent = details.description;
+                li.appendChild(desc);
+
+                const distbr = document.createElement('br');
+                li.appendChild(distbr);
+                const dist = document.createElement('div');
+                dist.className = 'distance';
+                dist.textContent = `${distance} km away`;
+                li.appendChild(dist);
+
+                if (details.wikidataId) {
+                    const wdbr = document.createElement('br');
+                    li.appendChild(wdbr);
+                    const wd = document.createElement('div');
+                    wd.className = 'wikidata';
+                    wd.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
+                    li.appendChild(wd);
+                }
+
+                resultsList.appendChild(li);
+            }
+        }
+
+        async function updateLocationDisplay(lat, lon, locationParts) {
+            locationStatus.innerHTML = `<p>Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
+            locationParts.forEach(part => {
+                const div = document.createElement('div');
+                div.className = 'location-part';
+
+                const span = document.createElement('span');
+                span.textContent = part;
+                div.appendChild(span);
+
+                const wdBtn = document.createElement('button');
+                wdBtn.textContent = 'Wikidata';
+                wdBtn.onclick = () => window.open(
+                    `https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part)}`,
+                    '_blank'
+                );
+                div.appendChild(wdBtn);
+
+                const wvBtn = document.createElement('button');
+                wvBtn.textContent = 'Wikivoyage';
+                wvBtn.onclick = () => window.open(
+                    `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part)}`,
+                    '_blank'
+                );
+                div.appendChild(wvBtn);
+
+                locationStatus.appendChild(div);
+            });
+        }
+
+        async function getLocation() {
+            if (!navigator.geolocation) {
+                locationStatus.innerHTML = '<p class="error">Geolocation not supported</p>';
+                return;
+            }
+
+            locationStatus.innerHTML = '<p class="loading">Getting your location...</p>';
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    currentPosition = position;
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Step 1: Get location details from Nominatim
+                    const locationParts = await getLocationDetails(lat, lon);
+
+                    // Step 2: Update location display
+                    await updateLocationDisplay(lat, lon, locationParts);
+
+                    // Step 3: Fetch and display nearby articles
+                    const articles = await fetchNearbyArticles(lat, lon, currentLang);
+                    await displayArticles(articles);
+
+                    updatePermissionStatus('granted');
+                },
+                (error) => {
+                    locationStatus.innerHTML = `<p class="error">Unable to get location: ${error.message}</p>`;
+                    if (error.code === error.PERMISSION_DENIED) {
+                        updatePermissionStatus('denied');
+                    }
+                    clearResults(); // Clear results on error
+                }
+            );
+        }
+
+        function clearResults() {
+            locationStatus.innerHTML = '';
+            resultsList.innerHTML = '';
+            currentPosition = null; // Reset position to force fresh geolocation
+        }
+
+        checkPermissionBtn.addEventListener('click', async () => {
+            await checkLocationPermission();
+            getLocation(); // Always trigger full fetch sequence on button click
+        });
+
+        languageSelect.addEventListener('change', (e) => {
+            currentLang = e.target.value;
+            clearResults(); // Clear results and reset position when language changes
+        });
+
+        checkLocationPermission();
+    </script>
+</body>
+
+</html>
