@@ -74,11 +74,13 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: flex-start;
         }
 
         .read-more,
         .wikidata-btn,
-        .share-btn {
+        .share-btn,
+        .wiktionary-btn {
             display: inline-flex;
             align-items: center;
             padding: 10px 20px;
@@ -94,9 +96,21 @@
 
         .read-more:hover,
         .wikidata-btn:hover,
-        .share-btn:hover {
+        .share-btn:hover,
+        .wiktionary-btn:hover {
             background-color: #ddd;
             transform: scale(1.05);
+        }
+
+        .wiktionary-section {
+            margin-top: 10px;
+            font-size: clamp(12px, 2.5vw, 14px);
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .wiktionary-section span {
+            margin-right: 5px;
         }
 
         #language-controls {
@@ -149,6 +163,13 @@
             .button-container {
                 flex-direction: column;
                 gap: 8px;
+                align-items: flex-start;
+                /* Ensure buttons align to the left */
+            }
+
+            .read-more {
+                order: -1;
+                /* Move "Read more" to the top on mobile */
             }
 
             #language-controls {
@@ -185,7 +206,7 @@
     <div id="container"></div>
 
     <script>
-        async function getRandomSummaries(language = 'en', targetCount = 50) {
+        async function getRandomSummaries(language = 'id', targetCount = 100) {
             const baseUrl = `https://${language}.wikipedia.org/w/api.php`;
             const summaries = [];
             const batchSize = 5;
@@ -228,6 +249,8 @@
 
         function displayArticles(articles) {
             const container = document.getElementById('container');
+            const language = document.getElementById('language').value;
+
             articles.forEach(article => {
                 const slide = document.createElement('div');
                 slide.className = 'article-slide';
@@ -294,10 +317,29 @@
                     }
                 };
                 buttonContainer.appendChild(shareBtn);
-                const spaceBr1 = document.createElement('br');
-                buttonContainer.appendChild(spaceBr1);
-                const spaceBr2 = document.createElement('br');
-                buttonContainer.appendChild(spaceBr2);
+
+                // Add Wiktionary section below Share button
+                const wiktionarySection = document.createElement('div');
+                wiktionarySection.className = 'wiktionary-section';
+
+                const wiktTitle = document.createElement('span');
+                wiktTitle.textContent = 'Wiktionary: ';
+                wiktionarySection.appendChild(wiktTitle);
+
+                const titleWords = article.title.split(' ').map(word =>
+                    word.replace(/[^\w\s]/g, '').toLowerCase()
+                ).filter(word => word.length > 0);
+
+                titleWords.forEach(word => {
+                    const wiktBtn = document.createElement('a');
+                    wiktBtn.className = 'wiktionary-btn';
+                    wiktBtn.href = `https://${language}.wiktionary.org/wiki/${encodeURIComponent(word)}`;
+                    wiktBtn.textContent = word;
+                    wiktBtn.target = '_blank';
+                    wiktionarySection.appendChild(wiktBtn);
+                });
+
+                buttonContainer.appendChild(wiktionarySection);
 
                 content.appendChild(buttonContainer);
                 slide.appendChild(content);
@@ -307,7 +349,7 @@
 
         async function loadArticles() {
             const language = document.getElementById('language').value;
-            const articles = await getRandomSummaries(language, 50);
+            const articles = await getRandomSummaries(language, 100);
             displayArticles(articles);
         }
 
