@@ -181,8 +181,8 @@
         function updatePermissionStatus(state) {
             permissionStatus.className = '';
             permissionStatus.textContent = `Izin lokasi: ${state === 'granted' ? 'diizinkan' :
-                    state === 'denied' ? 'ditolak' :
-                        'menunggu'
+                state === 'denied' ? 'ditolak' :
+                    'menunggu'
                 }`;
             permissionStatus.classList.add(state);
         }
@@ -261,7 +261,7 @@
             try {
                 const wikiUrl = `https://${lang}.wikipedia.org/w/api.php?` +
                     `action=query&titles=${encodeURIComponent(title)}&` +
-                    `prop=extracts|pageimages|wbentityusage&exintro&explaintext&exsentences=2&` +
+                    `prop=extracts|pageimages|pageprops&exintro&explaintext&exsentences=2&` +
                     `pithumbsize=250&format=json&origin=*`;
                 const wikiResponse = await fetch(wikiUrl);
                 const wikiData = await wikiResponse.json();
@@ -270,15 +270,23 @@
 
                 const wiktionaryDef = await fetchWiktionaryDefinition(title, lang);
 
+                // Get the Wikidata ID from pageprops (wikibase_item)
+                const wikidataId = page.pageprops?.wikibase_item || null;
+
                 return {
                     description: page.extract || 'Deskripsi tidak tersedia',
                     image: page.thumbnail?.source || null,
-                    wikidataId: page.wbentityusage ? Object.keys(page.wbentityusage)[0] : null,
+                    wikidataId: wikidataId,
                     wiktionaryDef: wiktionaryDef
                 };
             } catch (error) {
                 console.error('Error mengambil detail artikel:', error);
-                return { description: 'Gagal memuat deskripsi', image: null, wikidataId: null, wiktionaryDef: 'Gagal memuat definisi' };
+                return {
+                    description: 'Gagal memuat deskripsi',
+                    image: null,
+                    wikidataId: null,
+                    wiktionaryDef: 'Gagal memuat definisi'
+                };
             }
         }
 
