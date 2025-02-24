@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nearby Wikipedia Articles</title>
+    <title>Artikel WikiLokal Terdekat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -135,17 +135,17 @@
 </head>
 
 <body>
-    <h1>Nearby Wikipedia Articles (10km radius)</h1>
+    <h1>Artikel WikiLokal Terdekat (radius 10km)</h1>
     <div id="controls">
         <select id="language-select">
-            <option value="id">Indonesian (id)</option>
-            <option value="en">English (en)</option>
-            <option value="zh">Chinese (zh)</option>
-            <option value="es">Spanish (es)</option>
-            <option value="bew">Betawi (bew)</option>
+            <option value="id">Bahasa Indonesia (id)</option>
+            <option value="en">Bahasa Inggris (en)</option>
+            <option value="zh">Bahasa Mandarin (zh)</option>
+            <option value="es">Bahasa Spanyol (es)</option>
+            <option value="bew">Bahasa Betawi (bew)</option>
         </select>
-        <button id="check-permission">Check Location & Search</button>
-        <span id="permission-status">Checking permission...</span>
+        <button id="check-permission">Periksa Lokasi & Cari</button>
+        <span id="permission-status">Memeriksa izin...</span>
     </div>
     <div id="location-status"></div>
     <ul id="results"></ul>
@@ -161,34 +161,72 @@
 
         async function checkLocationPermission() {
             if (!navigator.permissions || !navigator.geolocation) {
-                permissionStatus.textContent = 'Permission API not supported';
+                permissionStatus.textContent = 'API Izin tidak didukung';
+                permissionStatus.className = 'denied';
                 return false;
             }
-            const result = await navigator.permissions.query({ name: 'geolocation' });
-            updatePermissionStatus(result.state);
-            result.onchange = () => updatePermissionStatus(result.state);
-            return result.state === 'granted';
+            try {
+                const result = await navigator.permissions.query({ name: 'geolocation' });
+                updatePermissionStatus(result.state);
+                result.onchange = () => updatePermissionStatus(result.state);
+                return result.state === 'granted';
+            } catch (error) {
+                console.error('Error memeriksa izin:', error);
+                permissionStatus.textContent = 'Gagal memeriksa izin';
+                permissionStatus.className = 'error';
+                return false;
+            }
         }
 
         function updatePermissionStatus(state) {
             permissionStatus.className = '';
-            permissionStatus.textContent = `Location permission: ${state}`;
+            permissionStatus.textContent = `Izin lokasi: ${state === 'granted' ? 'diizinkan' :
+                    state === 'denied' ? 'ditolak' :
+                        'menunggu'
+                }`;
             permissionStatus.classList.add(state);
         }
 
         async function getLocationDetails(lat, lon) {
             try {
-                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'NearbyWikipedia/1.0', 'Accept-Language': currentLang } });
-                const data = await response.json();
-                if (data.address) {
-                    const { city, state, country, road, suburb } = data.address;
-                    return [road || suburb || '', city || '', state || '', country || ''].filter(Boolean);
+                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+                const nominatimResponse = await fetch(nominatimUrl, {
+                    headers: { 'User-Agent': 'WikiLokal/1.0', 'Accept-Language': currentLang }
+                });
+                const data = await nominatimResponse.json();
+                if (!data.address) {
+                    return [{ name: 'Lokasi tidak diketahui', wikidataId: null }];
                 }
-                return ['Unknown location'];
+
+                const { city, state, country, road, suburb } = data.address;
+                const locationParts = [
+                    { name: road || suburb || '', type: 'road' },
+                    { name: city || '', type: 'city' },
+                    { name: state || '', type: 'state' },
+                    { name: country || '', type: 'country' }
+                ].filter(part => part.name);
+
+                const detailedParts = await Promise.all(locationParts.map(async (part) => {
+                    if (!part.name) return { name: part.name, wikidataId: null };
+                    try {
+                        const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
+                        const wikidataResponse = await fetch(wikidataUrl);
+                        const wikidataData = await wikidataResponse.json();
+                        const entity = wikidataData.search[0];
+                        return {
+                            name: part.name,
+                            wikidataId: entity ? entity.id : null
+                        };
+                    } catch (error) {
+                        console.error(`Error mengambil Wikidata untuk ${part.name}:`, error);
+                        return { name: part.name, wikidataId: null };
+                    }
+                }));
+
+                return detailedParts.filter(part => part.name);
             } catch (error) {
-                console.error('Error fetching location details:', error);
-                return ['Error fetching location details'];
+                console.error('Error mengambil detail lokasi:', error);
+                return [{ name: 'Gagal mengambil detail lokasi', wikidataId: null }];
             }
         }
 
@@ -212,10 +250,10 @@
                 const data = await response.json();
                 const pages = data.query.pages;
                 const page = Object.values(pages)[0];
-                return page.extract ? page.extract.trim() : 'No definition available';
+                return page.extract ? page.extract.trim() : 'Definisi tidak tersedia';
             } catch (error) {
-                console.error('Error fetching Wiktionary definition:', error);
-                return 'Error loading definition';
+                console.error('Error mengambil definisi Wiktionary:', error);
+                return 'Gagal memuat definisi';
             }
         }
 
@@ -233,20 +271,20 @@
                 const wiktionaryDef = await fetchWiktionaryDefinition(title, lang);
 
                 return {
-                    description: page.extract || 'No description available',
+                    description: page.extract || 'Deskripsi tidak tersedia',
                     image: page.thumbnail?.source || null,
                     wikidataId: page.wbentityusage ? Object.keys(page.wbentityusage)[0] : null,
                     wiktionaryDef: wiktionaryDef
                 };
             } catch (error) {
-                console.error('Error fetching article details:', error);
-                return { description: 'Error loading description', image: null, wikidataId: null, wiktionaryDef: 'Error loading definition' };
+                console.error('Error mengambil detail artikel:', error);
+                return { description: 'Gagal memuat deskripsi', image: null, wikidataId: null, wiktionaryDef: 'Gagal memuat definisi' };
             }
         }
 
         async function fetchNearbyArticles(lat, lon, lang) {
             try {
-                resultsList.innerHTML = '<li class="loading">Loading articles...</li>';
+                resultsList.innerHTML = '<li class="loading">Memuat artikel...</li>';
                 const radius = 10000;
                 const url = `https://${lang}.wikipedia.org/w/api.php?` +
                     `action=query&list=geosearch&gscoord=${lat}|${lon}&` +
@@ -255,7 +293,7 @@
                 const data = await response.json();
                 return data.query.geosearch;
             } catch (error) {
-                resultsList.innerHTML = `<li class="error">Error loading articles: ${error.message}</li>`;
+                resultsList.innerHTML = `<li class="error">Gagal memuat artikel: ${error.message}</li>`;
                 return [];
             }
         }
@@ -263,7 +301,7 @@
         async function displayArticles(articles) {
             resultsList.innerHTML = '';
             if (articles.length === 0) {
-                resultsList.innerHTML = '<li>No articles found within 10km</li>';
+                resultsList.innerHTML = '<li>Tidak ada artikel ditemukan dalam radius 10km</li>';
                 return;
             }
 
@@ -302,7 +340,7 @@
                 li.appendChild(distbr);
                 const dist = document.createElement('div');
                 dist.className = 'distance';
-                dist.textContent = `${distance} km away`;
+                dist.textContent = `${distance} km jauhnya`;
                 li.appendChild(dist);
 
                 if (details.wikidataId) {
@@ -313,10 +351,9 @@
                     wd.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
                     li.appendChild(wd);
 
-                    // Add Wiktionary section with title and cleaned words
                     const titleWords = article.title.split(' ').map(word =>
-                        word.replace(/[^\w\s]/g, '').toLowerCase() // Remove punctuation and convert to lowercase
-                    ).filter(word => word.length > 0); // Filter out empty strings
+                        word.replace(/[^\w\s]/g, '').toLowerCase()
+                    ).filter(word => word.length > 0);
 
                     const wiktDiv = document.createElement('div');
                     wiktDiv.className = 'wiktionary';
@@ -350,44 +387,53 @@
         }
 
         async function updateLocationDisplay(lat, lon, locationParts) {
-            locationStatus.innerHTML = `<p>Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
+            locationStatus.innerHTML = `<p>Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
             locationParts.forEach(part => {
                 const div = document.createElement('div');
                 div.className = 'location-part';
                 const span = document.createElement('span');
-                span.textContent = part;
+                span.textContent = part.name;
                 div.appendChild(span);
+
                 const wdBtn = document.createElement('button');
-                wdBtn.textContent = 'Wikidata';
-                wdBtn.onclick = () => window.open(`https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part)}`, '_blank');
+                wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
+                wdBtn.onclick = () => {
+                    if (part.wikidataId) {
+                        window.open(`https://www.wikidata.org/wiki/${part.wikidataId}`, '_blank');
+                    } else {
+                        window.open(`https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                    }
+                };
                 div.appendChild(wdBtn);
+
                 const wvBtn = document.createElement('button');
                 wvBtn.textContent = 'Wikivoyage';
-                wvBtn.onclick = () => window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part)}`, '_blank');
+                wvBtn.onclick = () => window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
                 div.appendChild(wvBtn);
+
                 locationStatus.appendChild(div);
             });
         }
 
         async function getLocation() {
             if (!navigator.geolocation) {
-                locationStatus.innerHTML = '<p class="error">Geolocation not supported</p>';
+                locationStatus.innerHTML = '<p class="error">Geolokasi tidak didukung</p>';
                 return;
             }
-            locationStatus.innerHTML = '<p class="loading">Getting your location...</p>';
+            locationStatus.innerHTML = '<p class="loading">Mengambil lokasi Anda...</p>';
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     currentPosition = position;
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
+                    updatePermissionStatus('granted');
                     const locationParts = await getLocationDetails(lat, lon);
                     await updateLocationDisplay(lat, lon, locationParts);
                     const articles = await fetchNearbyArticles(lat, lon, currentLang);
                     await displayArticles(articles);
-                    updatePermissionStatus('granted');
                 },
                 (error) => {
-                    locationStatus.innerHTML = `<p class="error">Unable to get location: ${error.message}</p>`;
+                    locationStatus.innerHTML = `<p class="error">Gagal mendapatkan lokasi: ${error.message}</p>`;
                     if (error.code === error.PERMISSION_DENIED) updatePermissionStatus('denied');
                     clearResults();
                 }
@@ -400,8 +446,9 @@
             currentPosition = null;
         }
 
-        checkPermissionBtn.addEventListener('click', async () => {
-            await checkLocationPermission();
+        // Ubah logika event listener agar tombol selalu memanggil getLocation
+        checkPermissionBtn.addEventListener('click', () => {
+            console.log('Tombol diklik'); // Untuk debugging
             getLocation();
         });
 
@@ -410,7 +457,10 @@
             clearResults();
         });
 
-        checkLocationPermission();
+        // Panggil saat halaman dimuat untuk memeriksa izin langsung
+        (async () => {
+            await checkLocationPermission();
+        })();
     </script>
 </body>
 
