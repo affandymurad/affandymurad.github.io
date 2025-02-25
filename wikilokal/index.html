@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artikel WikiLokal Terdekat</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -131,6 +132,43 @@
             color: red;
             grid-column: 1 / -1;
         }
+
+        /* New styles for popup and map */
+        .map-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .map-container {
+            width: 600px;
+            height: 400px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 
@@ -150,6 +188,7 @@
     <div id="location-status"></div>
     <ul id="results"></ul>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const languageSelect = document.getElementById('language-select');
         const checkPermissionBtn = document.getElementById('check-permission');
@@ -388,10 +427,101 @@
                     });
 
                     li.appendChild(wiktDiv);
+
+                    // New Route Button
+                    const routeDiv = document.createElement('div');
+                    routeDiv.style.marginTop = '5px';
+                    const routeBtn = document.createElement('button');
+                    routeBtn.textContent = 'Tampilkan Rute';
+                    routeBtn.style.padding = '3px 8px';
+                    routeBtn.style.fontSize = '0.8em';
+                    routeBtn.style.cursor = 'pointer';
+                    routeBtn.onclick = () => showRoutePopup(
+                        currentPosition.coords.latitude,
+                        currentPosition.coords.longitude,
+                        article.lat,
+                        article.lon,
+                        article.title
+                    );
+                    routeDiv.appendChild(routeBtn);
+                    li.appendChild(routeDiv);
+                    
                 }
 
                 resultsList.appendChild(li);
             }
+        }
+
+        // New function to show route popup
+        function showRoutePopup(startLat, startLon, endLat, endLon, title) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+
+            // Create popup container
+            const popup = document.createElement('div');
+            popup.className = 'map-popup';
+
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = 'X';
+            closeBtn.className = 'close-btn';
+            closeBtn.onclick = () => {
+                document.body.removeChild(popup);
+                document.body.removeChild(overlay);
+            };
+            popup.appendChild(closeBtn);
+
+            // Add map container
+            const mapContainer = document.createElement('div');
+            mapContainer.className = 'map-container';
+            popup.appendChild(mapContainer);
+
+            document.body.appendChild(popup);
+
+            // Initialize Leaflet map
+            const map = L.map(mapContainer).setView([startLat, startLon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add markers
+            const startMarker = L.marker([startLat, startLon]).addTo(map)
+                .bindPopup('Lokasi Anda');
+            const endMarker = L.marker([endLat, endLon]).addTo(map)
+                .bindPopup(title);
+
+            // Calculate route using OSRM (Open Source Routing Machine)
+            fetch(`http://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=full&geometries=geojson`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.routes && data.routes.length > 0) {
+                        const routeCoords = data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                        const route = L.polyline(routeCoords, { color: 'blue' }).addTo(map);
+
+                        // Fit map to bounds
+                        const bounds = L.latLngBounds([startLat, startLon], [endLat, endLon]);
+                        map.fitBounds(bounds, { padding: [50, 50] });
+
+                        // Animate marker along route
+                        let i = 0;
+                        const movingMarker = L.marker([startLat, startLon]).addTo(map);
+                        const animateRoute = setInterval(() => {
+                            if (i < routeCoords.length) {
+                                movingMarker.setLatLng(routeCoords[i]);
+                                i++;
+                            } else {
+                                clearInterval(animateRoute);
+                                movingMarker.remove();
+                            }
+                        }, 50);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching route:', error);
+                    mapContainer.innerHTML = '<p>Gagal memuat rute</p>';
+                });
         }
 
         async function fetchWikivoyageSitelink(qid, lang) {
