@@ -169,6 +169,20 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .map-container {
+                height: 300px;
+                width: 85%;
+                /* Smaller height on mobile */
+            }
+
+            .map-popup {
+                width: 70%;
+                padding: 5px;
+            }
+        }
     </style>
 </head>
 
@@ -445,7 +459,7 @@
                     );
                     routeDiv.appendChild(routeBtn);
                     li.appendChild(routeDiv);
-                    
+
                 }
 
                 resultsList.appendChild(li);
@@ -454,16 +468,13 @@
 
         // New function to show route popup
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
-            // Create overlay
             const overlay = document.createElement('div');
             overlay.className = 'overlay';
             document.body.appendChild(overlay);
 
-            // Create popup container
             const popup = document.createElement('div');
             popup.className = 'map-popup';
 
-            // Add close button
             const closeBtn = document.createElement('button');
             closeBtn.textContent = 'X';
             closeBtn.className = 'close-btn';
@@ -473,26 +484,36 @@
             };
             popup.appendChild(closeBtn);
 
-            // Add map container
             const mapContainer = document.createElement('div');
             mapContainer.className = 'map-container';
             popup.appendChild(mapContainer);
 
             document.body.appendChild(popup);
 
-            // Initialize Leaflet map
+            // Initialize map after container is added to DOM
             const map = L.map(mapContainer).setView([startLat, startLon], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
 
-            // Add markers
+            // Use a reliable tile layer with proper attribution
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(map).on('tileerror', (e) => {
+                console.error('Tile loading error:', e);
+                mapContainer.innerHTML = '<p>Gagal memuat peta. Periksa koneksi internet.</p>';
+            });
+
+            // Force map to resize after popup is visible
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+
             const startMarker = L.marker([startLat, startLon]).addTo(map)
                 .bindPopup('Lokasi Anda');
             const endMarker = L.marker([endLat, endLon]).addTo(map)
                 .bindPopup(title);
 
-            // Calculate route using OSRM (Open Source Routing Machine)
             fetch(`http://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=full&geometries=geojson`)
                 .then(response => response.json())
                 .then(data => {
@@ -500,11 +521,9 @@
                         const routeCoords = data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
                         const route = L.polyline(routeCoords, { color: 'blue' }).addTo(map);
 
-                        // Fit map to bounds
                         const bounds = L.latLngBounds([startLat, startLon], [endLat, endLon]);
                         map.fitBounds(bounds, { padding: [50, 50] });
 
-                        // Animate marker along route
                         let i = 0;
                         const movingMarker = L.marker([startLat, startLon]).addTo(map);
                         const animateRoute = setInterval(() => {
@@ -516,11 +535,13 @@
                                 movingMarker.remove();
                             }
                         }, 50);
+                    } else {
+                        mapContainer.innerHTML = '<p>Gagal memuat rute.</p>';
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching route:', error);
-                    mapContainer.innerHTML = '<p>Gagal memuat rute</p>';
+                    mapContainer.innerHTML = '<p>Gagal memuat rute. Periksa koneksi.</p>';
                 });
         }
 
