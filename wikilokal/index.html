@@ -394,9 +394,25 @@
             }
         }
 
+        async function fetchWikivoyageSitelink(qid, lang) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=sitelinks&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const entity = data.entities[qid];
+                const sitelinks = entity?.sitelinks || {};
+                const wikivoyageKey = `${lang}wikivoyage`;
+                const sitelink = sitelinks[wikivoyageKey]?.title || null;
+                return sitelink ? `https://${lang}.wikivoyage.org/wiki/${encodeURIComponent(sitelink)}` : null;
+            } catch (error) {
+                console.error(`Error fetching Wikivoyage sitelink for ${qid}:`, error);
+                return null;
+            }
+        }
+
         async function updateLocationDisplay(lat, lon, locationParts) {
             locationStatus.innerHTML = `<p>Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
-            locationParts.forEach(part => {
+            for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
                 const span = document.createElement('span');
@@ -416,11 +432,22 @@
 
                 const wvBtn = document.createElement('button');
                 wvBtn.textContent = 'Wikivoyage';
-                wvBtn.onclick = () => window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                wvBtn.onclick = async () => {
+                    if (part.wikidataId) {
+                        const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
+                        if (directLink) {
+                            window.open(directLink, '_blank');
+                        } else {
+                            window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                        }
+                    } else {
+                        window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                    }
+                };
                 div.appendChild(wvBtn);
 
                 locationStatus.appendChild(div);
-            });
+            }
         }
 
         async function getLocation() {
