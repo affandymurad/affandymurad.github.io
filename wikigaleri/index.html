@@ -738,7 +738,7 @@
                 authorDiv.appendChild(authorSpan);
                 if (details.authorUrl) {
                     const authorLink = document.createElement('a');
-                    authorLink.href = details.authorUrl.startsWith('http') ? details.authorUrl : `https://commons.wikimedia.org${details.authorUrl}`;
+                    authorLink.href = details.authorUrl.startsWith('http') ? details.authorUrl : `https://${details.authorUrl}`;
                     authorLink.textContent = details.author;
                     authorLink.target = '_blank';
                     authorDiv.appendChild(authorLink);
