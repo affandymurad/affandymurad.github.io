@@ -462,7 +462,7 @@
 </head>
 
 <body>
-    <h1>Foto WikiCommons Terdekat (radius 5km)</h1>
+    <h1>Foto WikiCommons Terdekat (radius 1km)</h1>
     <div id="controls">
         <select id="language-select">
             <option value="id">Bahasa Indonesia (id)</option>
@@ -633,7 +633,7 @@
         async function fetchNearbyPhotos(lat, lon) {
             try {
                 resultsList.innerHTML = '<li class="loading">Memuat foto...</li>';
-                const radius = 5000; // 5km
+                const radius = 1000; // 1km
                 const url = `https://commons.wikimedia.org/w/api.php?action=query&list=geosearch&gscoord=${lat}|${lon}&` +
                     `gsradius=${radius}&gslimit=100&gsnamespace=6&format=json&origin=*`;
                 const response = await fetch(url);
@@ -648,7 +648,7 @@
         async function displayPhotos(photos) {
             resultsList.innerHTML = '';
             if (photos.length === 0) {
-                resultsList.innerHTML = '<li>Tidak ada foto ditemukan dalam radius 5km</li>';
+                resultsList.innerHTML = '<li>Tidak ada foto ditemukan dalam radius 1km</li>';
                 return;
             }
 
