@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foto WikiCommons Terdekat</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #38bdf8;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.8rem;
+            text-align: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        #controls {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 600px) {
+            #controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        #language-select {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.95rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            flex-grow: 1;
+            max-width: 250px;
+        }
+
+        button {
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #check-permission::before {
+            content: "📍";
+        }
+
+        #permission-status {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .permitted {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+        }
+
+        .denied {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
+
+        .pending {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning-color);
+        }
+
+        #location-status {
+            margin-bottom: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        #location-status p {
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .location-part {
+            margin: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgba(219, 234, 254, 0.3);
+            border-radius: var(--radius);
+        }
+
+        .location-part span {
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .location-part button {
+            padding: 0.3rem 0.75rem;
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            font-size: 0.85rem;
+        }
+
+        .location-part button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.25rem;
+            padding: 0;
+        }
+
+        .photo-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .photo-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .photo-card a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            transition: color 0.2s;
+        }
+
+        .photo-card a:hover {
+            color: var(--secondary-color);
+        }
+
+        .description {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .distance {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(219, 234, 254, 0.5);
+            border-radius: 100px;
+        }
+
+        .distance::before {
+            content: "📍";
+            margin-right: 0.5rem;
+        }
+
+        .file-usage {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .file-usage span {
+            font-weight: 500;
+        }
+
+        .file-usage a {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .file-usage a:hover {
+            color: var(--secondary-color);
+        }
+
+        .categories {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .categories span {
+            font-weight: 500;
+        }
+
+        .categories a {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .categories a:hover {
+            color: var(--secondary-color);
+        }
+
+        .author {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .author a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .author a:hover {
+            color: var(--secondary-color);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .route-btn {
+            background-color: var(--accent-color);
+            flex: 1;
+        }
+
+        .route-btn::before {
+            content: "🗺️";
+            margin-right: 0.5rem;
+        }
+
+        .google-maps-btn {
+            background-color: #34c759;
+            flex: 1;
+        }
+
+        .google-maps-btn::before {
+            content: "🌍";
+            margin-right: 0.5rem;
+        }
+
+        .loading,
+        .error {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .loading {
+            color: var(--text-light);
+            animation: pulse 1.5s infinite;
+        }
+
+        .error {
+            color: var(--danger-color);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .map-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .popup-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .close-btn {
+            background: none;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            margin: 0;
+        }
+
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+
+        .map-container {
+            width: 80vw;
+            max-width: 800px;
+            height: 60vh;
+            max-height: 600px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .map-container {
+                width: 90vw;
+                height: 50vh;
+            }
+
+            #results {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Foto WikiCommons Terdekat (radius 5km)</h1>
+    <div id="controls">
+        <select id="language-select">
+            <option value="id">Bahasa Indonesia (id)</option>
+            <option value="en">Bahasa Inggris (en)</option>
+            <option value="zh">Bahasa Mandarin (zh)</option>
+            <option value="es">Bahasa Spanyol (es)</option>
+            <option value="bew">Bahasa Betawi (bew)</option>
+        </select>
+        <button id="check-permission">Periksa Lokasi & Cari</button>
+        <span id="permission-status">Memeriksa izin...</span>
+    </div>
+    <div id="location-status"></div>
+    <ul id="results"></ul>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script>
+        const languageSelect = document.getElementById('language-select');
+        const checkPermissionBtn = document.getElementById('check-permission');
+        const permissionStatus = document.getElementById('permission-status');
+        const locationStatus = document.getElementById('location-status');
+        const resultsList = document.getElementById('results');
+        let currentLang = 'id';
+        let currentPosition = null;
+        const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
+
+        async function checkLocationPermission() {
+            if (!navigator.permissions || !navigator.geolocation) {
+                permissionStatus.textContent = 'API Izin tidak didukung';
+                permissionStatus.className = 'denied';
+                return 'denied';
+            }
+            try {
+                const result = await navigator.permissions.query({ name: 'geolocation' });
+                updatePermissionStatus(result.state);
+                result.onchange = () => {
+                    updatePermissionStatus(result.state);
+                    if (result.state !== 'granted') {
+                        currentPosition = null;
+                    }
+                };
+                return result.state;
+            } catch (error) {
+                console.error('Error memeriksa izin:', error);
+                permissionStatus.textContent = 'Gagal memeriksa izin';
+                permissionStatus.className = 'error';
+                return 'error';
+            }
+        }
+
+        function updatePermissionStatus(state) {
+            permissionStatus.className = '';
+            permissionStatus.textContent = `Izin lokasi: ${state === 'granted' ? 'diizinkan' :
+                state === 'denied' ? 'ditolak' : 'menunggu'}`;
+            permissionStatus.classList.add(state === 'granted' ? 'permitted' : state === 'denied' ? 'denied' : 'pending');
+        }
+
+        async function getLocationDetails(lat, lon) {
+            try {
+                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+                const nominatimResponse = await fetch(nominatimUrl, {
+                    headers: { 'User-Agent': 'WikiCommonsNearby/1.0', 'Accept-Language': currentLang }
+                });
+                const data = await nominatimResponse.json();
+                if (!data.address) {
+                    return [{ name: 'Lokasi tidak diketahui', wikidataId: null }];
+                }
+
+                const { city, state, country, road, suburb } = data.address;
+                const locationParts = [
+                    { name: road || suburb || '', type: 'road' },
+                    { name: city || '', type: 'city' },
+                    { name: state || '', type: 'state' },
+                    { name: country || '', type: 'country' }
+                ].filter(part => part.name);
+
+                const detailedParts = await Promise.all(locationParts.map(async (part) => {
+                    if (!part.name) return { name: part.name, wikidataId: null };
+                    try {
+                        const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
+                        const wikidataResponse = await fetch(wikidataUrl);
+                        const wikidataData = await wikidataResponse.json();
+                        const entity = wikidataData.search[0];
+                        return {
+                            name: part.name,
+                            wikidataId: entity ? entity.id : null
+                        };
+                    } catch (error) {
+                        console.error(`Error mengambil Wikidata untuk ${part.name}:`, error);
+                        return { name: part.name, wikidataId: null };
+                    }
+                }));
+
+                return detailedParts.filter(part => part.name);
+            } catch (error) {
+                console.error('Error mengambil detail lokasi:', error);
+                return [{ name: 'Gagal mengambil detail lokasi', wikidataId: null }];
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return (R * c).toFixed(1);
+        }
+
+        async function fetchPhotoDetails(title) {
+            try {
+                const url = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&` +
+                    `prop=imageinfo|categories|globalusage&iiprop=url|extmetadata&iiurlwidth=250&gulimit=10&format=json&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const pages = data.query.pages;
+                const page = Object.values(pages)[0];
+                const imageInfo = page.imageinfo[0];
+                const extMetadata = imageInfo.extmetadata;
+
+                // Extract author and link
+                let author = 'Pembuat tidak diketahui';
+                let authorUrl = null;
+                if (extMetadata.Artist) {
+                    const artistHtml = extMetadata.Artist.value;
+                    const linkMatch = artistHtml.match(/href="([^"]+)"/);
+                    author = artistHtml.replace(/<[^>]+>/g, '').trim() || 'Pembuat tidak diketahui';
+                    authorUrl = linkMatch ? linkMatch[1] : null;
+                }
+
+                // Extract file usage on other wikis
+                const globalUsage = page.globalusage || [];
+                const fileUsage = globalUsage.slice(0, 3).map(usage => ({
+                    title: usage.title,
+                    url: `https://${usage.wiki}/wiki/${encodeURIComponent(usage.title)}`
+                }));
+
+                // Extract categories
+                const categories = page.categories || [];
+                const categoryList = categories.slice(0, 3).map(cat => ({
+                    title: cat.title.replace('Category:', ''),
+                    url: `https://commons.wikimedia.org/wiki/${encodeURIComponent(cat.title)}`
+                }));
+
+                return {
+                    imageUrl: imageInfo.thumburl || placeholderImage,
+                    description: extMetadata.ImageDescription?.value || 'Deskripsi tidak tersedia',
+                    author: author,
+                    authorUrl: authorUrl,
+                    fileUsage: fileUsage,
+                    categories: categoryList
+                };
+            } catch (error) {
+                console.error('Error mengambil detail foto:', error);
+                return {
+                    imageUrl: placeholderImage,
+                    description: 'Gagal memuat deskripsi',
+                    author: 'Pembuat tidak diketahui',
+                    authorUrl: null,
+                    fileUsage: [],
+                    categories: []
+                };
+            }
+        }
+
+        async function fetchNearbyPhotos(lat, lon) {
+            try {
+                resultsList.innerHTML = '<li class="loading">Memuat foto...</li>';
+                const radius = 5000; // 5km
+                const url = `https://commons.wikimedia.org/w/api.php?action=query&list=geosearch&gscoord=${lat}|${lon}&` +
+                    `gsradius=${radius}&gslimit=100&gsnamespace=6&format=json&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.query.geosearch;
+            } catch (error) {
+                resultsList.innerHTML = `<li class="error">Gagal memuat foto: ${error.message}</li>`;
+                return [];
+            }
+        }
+
+        async function displayPhotos(photos) {
+            resultsList.innerHTML = '';
+            if (photos.length === 0) {
+                resultsList.innerHTML = '<li>Tidak ada foto ditemukan dalam radius 5km</li>';
+                return;
+            }
+
+            for (const photo of photos) {
+                const details = await fetchPhotoDetails(photo.title);
+                const distance = calculateDistance(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    photo.lat,
+                    photo.lon
+                );
+
+                const li = document.createElement('li');
+                li.className = 'photo-card';
+
+                const img = document.createElement('img');
+                img.src = details.imageUrl;
+                img.alt = photo.title;
+                img.onerror = () => img.src = placeholderImage;
+                li.appendChild(img);
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'photo-content';
+
+                const link = document.createElement('a');
+                link.href = `https://commons.wikimedia.org/wiki/${encodeURIComponent(photo.title)}`;
+                link.textContent = photo.title.replace('File:', '');
+                link.target = '_blank';
+                contentDiv.appendChild(link);
+
+                const desc = document.createElement('div');
+                desc.className = 'description';
+                desc.innerHTML = details.description;
+                contentDiv.appendChild(desc);
+
+                const dist = document.createElement('div');
+                dist.className = 'distance';
+                dist.textContent = `${distance} km jauhnya`;
+                contentDiv.appendChild(dist);
+
+                const usageDiv = document.createElement('div');
+                usageDiv.className = 'file-usage';
+                const usageTitle = document.createElement('span');
+                usageTitle.textContent = 'File usage on other wikis:';
+                usageDiv.appendChild(usageTitle);
+
+                if (details.fileUsage.length > 0) {
+                    details.fileUsage.forEach(usage => {
+                        const usageLink = document.createElement('a');
+                        usageLink.href = usage.url;
+                        usageLink.textContent = usage.title;
+                        usageLink.target = '_blank';
+                        usageDiv.appendChild(usageLink);
+                    });
+                } else {
+                    const noUsage = document.createElement('span');
+                    noUsage.textContent = 'Tidak digunakan di wiki lain';
+                    usageDiv.appendChild(noUsage);
+                }
+                contentDiv.appendChild(usageDiv);
+
+                const catDiv = document.createElement('div');
+                catDiv.className = 'categories';
+                const catTitle = document.createElement('span');
+                catTitle.textContent = 'Category:';
+                catDiv.appendChild(catTitle);
+
+                if (details.categories.length > 0) {
+                    details.categories.forEach(category => {
+                        const catLink = document.createElement('a');
+                        catLink.href = category.url;
+                        catLink.textContent = category.title;
+                        catLink.target = '_blank';
+                        catDiv.appendChild(catLink);
+                    });
+                } else {
+                    const noCats = document.createElement('span');
+                    noCats.textContent = 'Tidak ada kategori';
+                    catDiv.appendChild(noCats);
+                }
+                contentDiv.appendChild(catDiv);
+
+                const authorDiv = document.createElement('div');
+                authorDiv.className = 'author';
+                const authorSpan = document.createElement('span');
+                authorSpan.textContent = 'Pembuat: ';
+                authorDiv.appendChild(authorSpan);
+                if (details.authorUrl) {
+                    const authorLink = document.createElement('a');
+                    authorLink.href = details.authorUrl.startsWith('http') ? details.authorUrl : `https://commons.wikimedia.org${details.authorUrl}`;
+                    authorLink.textContent = details.author;
+                    authorLink.target = '_blank';
+                    authorDiv.appendChild(authorLink);
+                } else {
+                    const authorText = document.createElement('span');
+                    authorText.textContent = details.author;
+                    authorDiv.appendChild(authorText);
+                }
+                contentDiv.appendChild(authorDiv);
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'card-actions';
+
+                const routeBtn = document.createElement('button');
+                routeBtn.className = 'route-btn';
+                routeBtn.textContent = 'Tampilkan Rute';
+                routeBtn.onclick = () => showRoutePopup(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    photo.lat,
+                    photo.lon,
+                    photo.title.replace('File:', '')
+                );
+                actionsDiv.appendChild(routeBtn);
+
+                const googleMapsBtn = document.createElement('button');
+                googleMapsBtn.className = 'google-maps-btn';
+                googleMapsBtn.textContent = 'Buka di Google Maps';
+                googleMapsBtn.onclick = () => window.open(
+                    `https://www.google.com/maps?q=${photo.lat},${photo.lon}`,
+                    '_blank'
+                );
+                actionsDiv.appendChild(googleMapsBtn);
+
+                contentDiv.appendChild(actionsDiv);
+                li.appendChild(contentDiv);
+                resultsList.appendChild(li);
+            }
+        }
+
+        function showRoutePopup(startLat, startLon, endLat, endLon, title) {
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+
+            const popup = document.createElement('div');
+            popup.className = 'map-popup';
+
+            const popupHeader = document.createElement('div');
+            popupHeader.className = 'popup-header';
+
+            const popupTitle = document.createElement('div');
+            popupTitle.className = 'popup-title';
+            popupTitle.textContent = `Rute ke ${title}`;
+            popupHeader.appendChild(popupTitle);
+
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '×';
+            closeBtn.className = 'close-btn';
+            closeBtn.onclick = () => {
+                document.body.removeChild(popup);
+                document.body.removeChild(overlay);
+            };
+            popupHeader.appendChild(closeBtn);
+
+            popup.appendChild(popupHeader);
+
+            const mapContainer = document.createElement('div');
+            mapContainer.className = 'map-container';
+            popup.appendChild(mapContainer);
+
+            document.body.appendChild(popup);
+
+            const map = L.map(mapContainer).setView([startLat, startLon], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(map);
+
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+
+            const startMarker = L.marker([startLat, startLon]).addTo(map)
+                .bindPopup('Lokasi Anda');
+            const endMarker = L.marker([endLat, endLon]).addTo(map)
+                .bindPopup(title);
+
+            L.Routing.control({
+                waypoints: [
+                    L.latLng(startLat, startLon),
+                    L.latLng(endLat, endLon)
+                ],
+                routeWhileDragging: false,
+                show: true,
+                lineOptions: {
+                    styles: [{ color: 'blue', weight: 4 }]
+                },
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                }),
+                fitSelectedRoutes: true,
+                showAlternatives: false
+            }).addTo(map);
+        }
+
+        async function fetchWikivoyageSitelink(qid, lang) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=sitelinks&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const entity = data.entities[qid];
+                const sitelinks = entity?.sitelinks || {};
+                const wikivoyageKey = `${lang}wikivoyage`;
+                const sitelink = sitelinks[wikivoyageKey]?.title || null;
+                return sitelink ? `https://${lang}.wikivoyage.org/wiki/${encodeURIComponent(sitelink)}` : null;
+            } catch (error) {
+                console.error(`Error fetching Wikivoyage sitelink for ${qid}:`, error);
+                return null;
+            }
+        }
+
+        async function updateLocationDisplay(lat, lon, locationParts) {
+            locationStatus.innerHTML = `<p>Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
+            for (const part of locationParts) {
+                const div = document.createElement('div');
+                div.className = 'location-part';
+                const span = document.createElement('span');
+                span.textContent = part.name;
+                div.appendChild(span);
+
+                const wdBtn = document.createElement('button');
+                wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
+                wdBtn.onclick = () => {
+                    if (part.wikidataId) {
+                        window.open(`https://www.wikidata.org/wiki/${part.wikidataId}`, '_blank');
+                    } else {
+                        window.open(`https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                    }
+                };
+                div.appendChild(wdBtn);
+
+                const wvBtn = document.createElement('button');
+                wvBtn.textContent = 'Wikivoyage';
+                wvBtn.onclick = async () => {
+                    if (part.wikidataId) {
+                        const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
+                        if (directLink) {
+                            window.open(directLink, '_blank');
+                        } else {
+                            window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                        }
+                    } else {
+                        window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                    }
+                };
+                div.appendChild(wvBtn);
+
+                locationStatus.appendChild(div);
+            }
+        }
+
+        async function getLocation() {
+            if (!navigator.geolocation) {
+                locationStatus.innerHTML = '<p class="error">Geolokasi tidak didukung</p>';
+                return;
+            }
+            locationStatus.innerHTML = '<p class="loading">Mengambil lokasi Anda...</p>';
+            return new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        currentPosition = position;
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        updatePermissionStatus('granted');
+                        const locationParts = await getLocationDetails(lat, lon);
+                        await updateLocationDisplay(lat, lon, locationParts);
+                        const photos = await fetchNearbyPhotos(lat, lon);
+                        await displayPhotos(photos);
+                        resolve();
+                    },
+                    (error) => {
+                        locationStatus.innerHTML = `<p class="error">Gagal mendapatkan lokasi: ${error.message}</p>`;
+                        updatePermissionStatus('denied');
+                        console.error('Geolocation error:', error);
+                        reject(error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+        }
+
+        async function searchPhotos() {
+            const permissionState = await checkLocationPermission();
+            if (permissionState === 'granted' && currentPosition) {
+                const lat = currentPosition.coords.latitude;
+                const lon = currentPosition.coords.longitude;
+                const locationParts = await getLocationDetails(lat, lon);
+                await updateLocationDisplay(lat, lon, locationParts);
+                const photos = await fetchNearbyPhotos(lat, lon);
+                await displayPhotos(photos);
+            } else if (permissionState === 'prompt' || permissionState === 'denied' || !currentPosition) {
+                await getLocation();
+            }
+        }
+
+        languageSelect.addEventListener('change', () => {
+            currentLang = languageSelect.value;
+            if (currentPosition) {
+                searchPhotos();
+            }
+        });
+
+        checkPermissionBtn.addEventListener('click', async () => {
+            await searchPhotos();
+        });
+
+        window.onload = async () => {
+            const initialPermission = await checkLocationPermission();
+            if (initialPermission === 'granted') {
+                await getLocation();
+            }
+        };
+    </script>
+</body>
+
+</html>
