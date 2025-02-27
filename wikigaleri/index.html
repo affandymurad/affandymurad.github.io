@@ -50,6 +50,13 @@
             border-bottom: 2px solid var(--border-color);
         }
 
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
         #controls {
             background-color: var(--card-bg);
             border-radius: var(--radius);
@@ -463,19 +470,31 @@
 
 <body>
     <h1>Foto WikiCommons Terdekat (radius 1km)</h1>
-    <div id="controls">
-        <select id="language-select">
-            <option value="id">Bahasa Indonesia (id)</option>
-            <option value="en">Bahasa Inggris (en)</option>
-            <option value="zh">Bahasa Mandarin (zh)</option>
-            <option value="es">Bahasa Spanyol (es)</option>
-            <option value="bew">Bahasa Betawi (bew)</option>
-        </select>
-        <button id="check-permission">Periksa Lokasi & Cari</button>
-        <span id="permission-status">Memeriksa izin...</span>
-    </div>
-    <div id="location-status"></div>
-    <ul id="results"></ul>
+
+    <section id="control-section" aria-label="Pengaturan">
+        <h2>Pengaturan</h2>
+        <div id="controls">
+            <select id="language-select">
+                <option value="id">Bahasa Indonesia (id)</option>
+                <option value="en">Bahasa Inggris (en)</option>
+                <option value="zh">Bahasa Mandarin (zh)</option>
+                <option value="es">Bahasa Spanyol (es)</option>
+                <option value="bew">Bahasa Betawi (bew)</option>
+            </select>
+            <button id="check-permission">Periksa Lokasi & Cari</button>
+            <span id="permission-status">Memeriksa izin...</span>
+        </div>
+    </section>
+
+    <section id="location-section" aria-label="Status Lokasi">
+        <h2>Status Lokasi</h2>
+        <div id="location-status"></div>
+    </section>
+
+    <section id="results-section" aria-label="Hasil Pencarian">
+        <h2>Hasil Pencarian</h2>
+        <ul id="results"></ul>
+    </section>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
@@ -522,25 +541,30 @@
 
         async function getLocationDetails(lat, lon) {
             try {
-                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
                 const nominatimResponse = await fetch(nominatimUrl, {
                     headers: { 'User-Agent': 'WikiCommonsNearby/1.0', 'Accept-Language': currentLang }
                 });
                 const data = await nominatimResponse.json();
                 if (!data.address) {
-                    return [{ name: 'Lokasi tidak diketahui', wikidataId: null }];
+                    return [{ name: 'Lokasi tidak diketahui', type: 'unknown', wikidataId: null }];
                 }
 
-                const { city, state, country, road, suburb } = data.address;
+                const { road, postcode, city, state, country, suburb } = data.address;
                 const locationParts = [
-                    { name: road || suburb || '', type: 'road' },
+                    { name: road || '', type: 'road' },
+                    { name: postcode || '', type: 'postcode' },
+                    { name: suburb || '', type: 'suburb' },
                     { name: city || '', type: 'city' },
                     { name: state || '', type: 'state' },
                     { name: country || '', type: 'country' }
                 ].filter(part => part.name);
 
                 const detailedParts = await Promise.all(locationParts.map(async (part) => {
-                    if (!part.name) return { name: part.name, wikidataId: null };
+                    if (!part.name) return { name: part.name, type: part.type, wikidataId: null };
+                    if (part.type === 'road' || part.type === 'postcode') {
+                        return { name: part.name, type: part.type, wikidataId: null };
+                    }
                     try {
                         const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
                         const wikidataResponse = await fetch(wikidataUrl);
@@ -548,18 +572,19 @@
                         const entity = wikidataData.search[0];
                         return {
                             name: part.name,
+                            type: part.type,
                             wikidataId: entity ? entity.id : null
                         };
                     } catch (error) {
                         console.error(`Error mengambil Wikidata untuk ${part.name}:`, error);
-                        return { name: part.name, wikidataId: null };
+                        return { name: part.name, type: part.type, wikidataId: null };
                     }
                 }));
 
                 return detailedParts.filter(part => part.name);
             } catch (error) {
                 console.error('Error mengambil detail lokasi:', error);
-                return [{ name: 'Gagal mengambil detail lokasi', wikidataId: null }];
+                return [{ name: 'Gagal mengambil detail lokasi', type: 'unknown', wikidataId: null }];
             }
         }
 
@@ -585,7 +610,6 @@
                 const imageInfo = page.imageinfo[0];
                 const extMetadata = imageInfo.extmetadata;
 
-                // Extract author and link
                 let author = 'Pembuat tidak diketahui';
                 let authorUrl = null;
                 if (extMetadata.Artist) {
@@ -595,14 +619,12 @@
                     authorUrl = linkMatch ? linkMatch[1] : null;
                 }
 
-                // Extract file usage on other wikis
                 const globalUsage = page.globalusage || [];
                 const fileUsage = globalUsage.slice(0, 3).map(usage => ({
                     title: usage.title,
                     url: `https://${usage.wiki}/wiki/${encodeURIComponent(usage.title)}`
                 }));
 
-                // Extract categories
                 const categories = page.categories || [];
                 const categoryList = categories.slice(0, 3).map(cat => ({
                     title: cat.title.replace('Category:', ''),
@@ -633,7 +655,7 @@
         async function fetchNearbyPhotos(lat, lon) {
             try {
                 resultsList.innerHTML = '<li class="loading">Memuat foto...</li>';
-                const radius = 1000; // 1km
+                const radius = 1000;
                 const url = `https://commons.wikimedia.org/w/api.php?action=query&list=geosearch&gscoord=${lat}|${lon}&` +
                     `gsradius=${radius}&gslimit=100&gsnamespace=6&format=json&origin=*`;
                 const response = await fetch(url);
@@ -870,35 +892,45 @@
                 const div = document.createElement('div');
                 div.className = 'location-part';
                 const span = document.createElement('span');
-                span.textContent = part.name;
+                const labels = {
+                    'road': 'Jalan',
+                    'postcode': 'Kode Pos',
+                    'suburb': 'Kelurahan',
+                    'city': 'Kota',
+                    'state': 'Provinsi',
+                    'country': 'Negara'
+                };
+                span.textContent = `${labels[part.type] || part.type}: ${part.name}`;
                 div.appendChild(span);
 
-                const wdBtn = document.createElement('button');
-                wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
-                wdBtn.onclick = () => {
-                    if (part.wikidataId) {
-                        window.open(`https://www.wikidata.org/wiki/${part.wikidataId}`, '_blank');
-                    } else {
-                        window.open(`https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
-                    }
-                };
-                div.appendChild(wdBtn);
+                if (part.type !== 'road' && part.type !== 'postcode') {
+                    const wdBtn = document.createElement('button');
+                    wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
+                    wdBtn.onclick = () => {
+                        if (part.wikidataId) {
+                            window.open(`https://www.wikidata.org/wiki/${part.wikidataId}`, '_blank');
+                        } else {
+                            window.open(`https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                        }
+                    };
+                    div.appendChild(wdBtn);
 
-                const wvBtn = document.createElement('button');
-                wvBtn.textContent = 'Wikivoyage';
-                wvBtn.onclick = async () => {
-                    if (part.wikidataId) {
-                        const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
-                        if (directLink) {
-                            window.open(directLink, '_blank');
+                    const wvBtn = document.createElement('button');
+                    wvBtn.textContent = 'Wikivoyage';
+                    wvBtn.onclick = async () => {
+                        if (part.wikidataId) {
+                            const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
+                            if (directLink) {
+                                window.open(directLink, '_blank');
+                            } else {
+                                window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                            }
                         } else {
                             window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
                         }
-                    } else {
-                        window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
-                    }
-                };
-                div.appendChild(wvBtn);
+                    };
+                    div.appendChild(wvBtn);
+                }
 
                 locationStatus.appendChild(div);
             }

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with Location Features</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        html,
+        body,
+        #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #location-btn,
+        #status {
+            position: absolute;
+            z-index: 1000;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #location-btn {
+            top: 10px;
+            left: 10px;
+        }
+
+        #status {
+            top: 50px;
+            left: 10px;
+        }
+
+        .leaflet-bottom.leaflet-right {
+            margin-bottom: 40px;
+        }
+
+        /* Avoid overlap with status */
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <button id="location-btn">Get My Location</button>
+    <div id="status">Status: Not prompted</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Custom icon
+        const customIcon = L.icon({
+            iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // Example unique icon
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+        });
+
+        let marker = null;
+        const statusDiv = document.getElementById('status');
+        const locationBtn = document.getElementById('location-btn');
+
+        // Function to fetch Nominatim data and generate popup content
+        async function getLocationDetails(lat, lon) {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=18&addressdetails=1`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const address = data.address || {};
+
+            // Extract address components
+            const parts = {
+                house_number: address.house_number || '',
+                road: address.road || '',
+                city: address.city || address.town || address.village || '',
+                state: address.state || '',
+                country: address.country || ''
+            };
+
+            // Fetch Wikidata Q values (simplified, assumes Nominatim provides osm_id)
+            const osmId = data.osm_id ? `Q${data.osm_id}` : null; // Placeholder, real integration needs SPARQL or API
+            let content = '<b>You</b><br>';
+
+            for (const [key, value] of Object.entries(parts)) {
+                if (value) {
+                    const qValue = osmId || 'Qunknown'; // Replace with real Wikidata lookup if available
+                    content += `${key.replace('_', ' ')}: ${value} `;
+                    content += `<a href="https://www.wikidata.org/wiki/${qValue}" target="_blank">[${qValue}]</a> `;
+                    content += `<button onclick="window.open('https://en.wikivoyage.org/wiki/${value.replace(/ /g, '_')}', '_blank')">Wikivoyage</button><br>`;
+                }
+            }
+
+            return content;
+        }
+
+        // Handle location permission and marker placement
+        locationBtn.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                statusDiv.textContent = 'Status: Requesting...';
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        statusDiv.textContent = 'Status: Granted';
+
+                        // Remove existing marker if any
+                        if (marker) map.removeLayer(marker);
+
+                        // Add new marker and zoom
+                        marker = L.marker([latitude, longitude], { icon: customIcon })
+                            .addTo(map)
+                            .bindPopup('You', { maxWidth: 300, autoClose: false, closeOnClick: false });
+
+                        map.setView([latitude, longitude], 15); // Zoomed area
+
+                        // Fetch and update popup with detailed location
+                        const popupContent = await getLocationDetails(latitude, longitude);
+                        marker.setPopupContent(popupContent).openPopup();
+                    },
+                    (error) => {
+                        if (error.code === error.PERMISSION_DENIED) {
+                            statusDiv.textContent = 'Status: Revoked';
+                        } else {
+                            statusDiv.textContent = 'Status: Error - ' + error.message;
+                        }
+                    }
+                );
+            } else {
+                statusDiv.textContent = 'Status: Geolocation not supported';
+            }
+        });
+    </script>
+</body>
+
+</html>
