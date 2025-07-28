@@ -8,791 +8,286 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' fill='%233B82F6' rx='10' ry='10'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='50' fill='%23FFFFFF' text-anchor='middle'>AM</text></svg>"
         type="image/svg+xml">
-    <script src="js/b.min.js" defer></script>
     <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/b.min.js" defer></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .subtitle {
-            font-size: 1.2em;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            transition: all 0.3s ease;
-            background: #ECF0F1;
-            color: #1f2937;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: #F8F8F8;
-            border-radius: 16px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, #2563eb, #3b82f6);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        header p {
-            font-size: 1.3rem;
-            color: #4b5563;
-        }
-
-        /* Sections */
-        .section {
-            background: #F8F8F8;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-2px);
-        }
-
-        .section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: #4b5563;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 0.5rem;
-        }
-
-        .section h2 i {
-            margin-right: 10px;
-            /* Add spacing between icon and text */
-            font-size: 1.2em;
-            /* Adjust icon size */
-        }
-
-        .section ul {
-            list-style: none;
-        }
-
-        .section ul li {
-            margin-bottom: 1.2rem;
-            padding-left: 1rem;
-            border-left: 3px solid #e5e7eb;
-        }
-
-        .section ul li:hover {
-            border-left-color: #3b82f6;
-        }
-
-        /* Dark mode styles */
-        body.dark-mode {
-            background: #1e1e1e;
-            color: #e5e7eb;
-        }
-
-        body.dark-mode header,
-        body.dark-mode .section {
-            background: #1f2937;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        body.dark-mode header p {
-            color: #d1d5db;
-        }
-
-        body.dark-mode .section h2 {
-            color: #f3f4f6;
-            border-bottom-color: #374151;
-        }
-
-        body.dark-mode .experience-item em {
-            color: #d1d5db;
-        }
-
-        body.dark-mode .portfolio-item {
-            background: #374151;
-        }
-
-        body.dark-mode .portfolio-item h3 {
-            color: #f3f4f6;
-        }
-
-        body.dark-mode .section ul li {
-            border-left-color: #374151;
-        }
-
-        body.dark-mode .section ul li:hover {
-            border-left-color: #3b82f6;
-        }
-
-        body.dark-mode a {
-            color: #60a5fa;
-        }
-
-        /* Dark Mode Switch */
-        .dark-mode-switch {
-            position: fixed;
-            top: 8px;
-            right: 8px;
-            width: 45px;
-            height: 45px;
-            background: #F8F8F8;
-            color: #4b5563;
-            border-radius: 50%;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .dark-mode-switch input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .dark-mode-switch:hover {
-            transform: translateY(-2px);
-        }
-
-        body.dark-mode .dark-mode-switch {
-            background: #374151;
-            color: #F3F4F6;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .dark-mode-switch label {
-            cursor: pointer;
-            font-size: 1.2rem;
-            line-height: 1;
-        }
-
-        body.dark-mode .buttons {
-            background: #374151 !important;
-            color: #f3f4f6 !important;
-            border-color: #4b5563;
-        }
-
-        body.dark-mode .buttons:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-        }
-
-        /* sticky buttons */
-        .sticky-buttons {
-            position: fixed;
-            top: 8px;
-            right: 62px;
-            /* Geser ke kiri dari tombol mode gelap */
-            display: flex;
-            gap: 8px;
-            z-index: 1000;
-            /* Pastikan berada di atas elemen lainnya */
-        }
-
-        .icon-button {
-            width: 45px;
-            height: 45px;
-            background: #F8F8F8;
-            color: #4b5563;
-            border-radius: 50%;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
-            border: none;
-            outline: none;
-        }
-
-        .icon-button:hover {
-            transform: translateY(-2px);
-            background: #E5E7EB;
-        }
-
-        body.dark-mode .icon-button {
-            background: #374151;
-            color: #F3F4F6;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        body.dark-mode .icon-button:hover {
-            background: #4B5563;
-        }
-
-
-        /* Portfolio Section */
-        .portfolio-item {
-            padding: 1rem;
-            background: #f9fafb;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .portfolio-item h3 {
-            color: #1f2937;
-            margin-bottom: 0.5rem;
-        }
-
-        .portfolio-item .buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .portfolio-item .buttons a,
-        .section .buttons a {
-            padding: 0.5rem 1rem;
-            background: #3b82f6;
-            color: white !important;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .portfolio-item .buttons a:hover,
-        .section .buttons a:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-        }
-
-        /* Experience Items */
-        .experience-item {
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .experience-item strong {
-            color: inherit;
-            font-size: 1.1rem;
-            vertical-align: middle
-        }
-
-        .experience-item em {
-            color: #6b7280;
-            font-style: normal;
-            font-size: 0.9rem;
-        }
-
-        /* PDF Button - Updated */
-        .pdf-button {
-            display: inline-flex !important;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px !important;
-            background: #3b82f6;
-            color: white !important;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border: 1px solid #e5e7eb;
-            text-decoration: none;
-        }
-
-        .pdf-button:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-        }
-
-        .pdf-button svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        body.dark-mode .pdf-button {
-            background: #374151 !important;
-            color: #f3f4f6 !important;
-            border-color: #4b5563;
-        }
-
-        body.dark-mode .pdf-button:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-        }
-
-        /* Company Icons */
-        .company-icon {
-            padding: 4px;
-            max-width: 30%;
-            max-height: 25px;
-            object-fit: contain;
-            border: 1px solid lightgrey;
-            border-radius: 8px;
-            vertical-align: middle;
-            background-color: #f3f4f6;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 1rem;
-            background: #F8F8F8;
-            border-radius: 16px;
-            margin-top: 2rem;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .footer p {
-            font-size: 1rem;
-            color: #4b5563;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-links {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .footer-links a {
-            text-decoration: none;
-            color: #3b82f6;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .footer-links a:hover {
-            color: #2563eb;
-        }
-
-        /* Dark Mode for Footer */
-        body.dark-mode .footer {
-            background: #1f2937;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        body.dark-mode .footer p {
-            color: #d1d5db;
-        }
-
-        body.dark-mode .footer-links a {
-            color: #60a5fa;
-        }
-
-        body.dark-mode .footer-links a:hover {
-            color: #3b82f6;
-        }
-
-        /* Hide buttons when printing */
-        /* Hide elements that shouldn't appear in print */
-        @media print {
-            body {
-                background: white;
-                /* Set a plain white background for printing */
-                color: black;
-                /* Use black text for better readability */
-                font-size: 12pt;
-                /* Adjust font size for print */
-            }
-
-            /* Hide unnecessary elements */
-            .dark-mode-switch,
-            .sticky-buttons,
-            .buttons,
-            footer,
-            #title,
-            #subtitle,
-            #contact,
-            .company-icon {
-                display: none !important;
-                /* Hide dark mode switch, buttons, and footer */
-            }
-
-            /* Prevent empty elements from creating blank pages */
-            .empty-section,
-            .section:empty {
-                display: none !important;
-            }
-
-            /* Optimize layout for printing */
-            header,
-            .section {
-                box-shadow: none;
-                border-radius: 0;
-                margin-bottom: 1rem;
-                page-break-inside: avoid;
-                /* Avoid breaking sections across pages */
-            }
-
-            header h1 {
-                background-clip: initial;
-                -webkit-background-clip: initial;
-                -webkit-text-fill-color: initial;
-                font-size: 1.5rem;
-                color: black;
-            }
-
-            a {
-                text-decoration: none;
-            }
-
-            ul {
-                padding-left: 1.5rem;
-            }
-
-            .portfolio-item {
-                background: none;
-            }
-
-            /* Prevent page breaks after headers or specific elements */
-            h1,
-            h2,
-            h3 {
-                page-break-after: avoid;
-            }
-
-            /* Ensure tables and lists don't break awkwardly */
-            table,
-            ul,
-            ol {
-                page-break-inside: avoid;
-            }
-
-            /* Remove extra margins and padding that could cause blank pages */
-            .page-break {
-                page-break-before: always;
-            }
-
-            /* Ensure no blank pages are created at the end */
-            body:after {
-                content: "";
-                display: none;
-            }
-        }
     </style>
 </head>
 
 <body>
-    <!-- Sticky Buttons -->
-    <div class="sticky-buttons">
-        <!-- Dark Mode Switch -->
-        <div class="dark-mode-switch">
-            <input type="checkbox" id="dark-mode-toggle">
-            <label for="dark-mode-toggle" id="dark-mode-label">
-                <i class="fa-solid fa-moon"></i>
-            </label>
-            <!-- Default to Moon -->
+    <!-- Mobile Menu -->
+    <nav class="mobile-menu">
+        <div class="menu-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-        <button class="icon-button" data-target="portfolio"><i class="fas fa-laptop-code"></i></button>
-        <button class="icon-button"><i class="fas fa-briefcase"></i></button>
-        <button class="icon-button" data-target="contact"><i class="fas fa-address-card"></i></button>
-    </div>
+        <div class="menu-items" id="menu-items">
+            <a href="#contact" class="menu-item">Contact</a>
+            <a href="#experience" class="menu-item">Experience</a>
+            <a href="#education" class="menu-item">Education</a>
+            <a href="#skills" class="menu-item">Skills</a>
+            <a href="#portfolio" class="menu-item">Portfolio</a>
+        </div>
+    </nav>
 
-    <!-- Container -->
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="container">
-        <!-- Header -->
+        <!-- Header - Revamped -->
         <header>
-            <h1 id="title">Affandy Murad</h1>
-            <p id="subtitle">IT professional specializing in mobile app development, and system optimization,
-                delivering impactful solutions for enhanced user experience and efficiency</p>
+            <div class="profile-container">
+                <img src="https://pbs.twimg.com/profile_images/1907354832517967873/n3isExfo_400x400.jpg"
+                    alt="Affandy Murad Profile" class="profile-image">
+                <!-- <div class="status-badge">
+                    <div class="status-indicator"></div>
+                    Available for opportunities
+                </div> -->
+            </div>
+
+            <h1>Affandy Murad</h1>
+            <p class="subtitle">The App Crafter</p>
+            <div class="location-info">
+                <i class="fas fa-map-marker-alt"></i>
+                Jakarta, Indonesia
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="stat-number">5+</span>
+                    <span class="stat-label">Years Experience</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Projects Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Companies</span>
+                </div>
+            </div>
         </header>
 
         <!-- Contact Section -->
         <section class="section" id="contact">
-            <h2><i class="fas fa-address-card"></i> Contact</h2>
-            <ul class="contact-info">
-                <li>📧 Email: <a href="sendto:affandymurad@gmail.com" target="_blank"
-                        title="Email">affandymurad@gmail.com</a></li>
-            </ul>
-            <div>
-                <a href="#" class="pdf-button" id="save-pdf" title="Print Web Page"><i class="fas fa-print"></i></a>
-                <a href="https://www.linkedin.com/in/affandy-murad/" class="pdf-button" target="_blank"
-                    title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/affandymurad" class="pdf-button" target="_blank" title="GitHub"><i
-                        class="fab fa-github"></i></a>
-                <a href="https://www.wikipedia.org/" class="pdf-button" target="_blank" title="Wikipedia"><i
-                        class="fab fa-wikipedia-w"></i></a>
-                <a href="https://www.google.com/" class="pdf-button" target="_blank" title="Google"><i
-                        class="fab fa-google"></i></a>
-                <a href="https://www.credly.com/" class="pdf-button" target="_blank" title="Credly"><i
-                        class="fas fa-certificate"></i></a>
+            <h2><i class="fas fa-address-card"></i>Contact</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:affandymurad@gmail.com">affandymurad@gmail.com</a>
+                </div>
+            </div>
+            <div class="social-links">
+                <!-- <a href="#" class="social-link" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print
+                </a> -->
+                <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="https://github.com/affandymurad" class="social-link" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
         </section>
 
         <!-- Experience Section -->
-        <section class="section">
+        <section class="section" id="experience">
             <h2><i class="fas fa-briefcase"></i>Experience</h2>
-            <ul>
-                <li class="experience-item">
-                    <strong>Korindo Group</strong> - <em>Indonesia</em> &nbsp; <img src="images/company/korindo.svg"
-                        alt="Korindo Group" class="company-icon"><br>
-                    IT Supervisor - <em>June 2023 - Present</em><br>
-                    <!-- - Led development of mobile apps for financial services, improving user experience.<br>
-                    - Updated technical specs and ensured timely project delivery<br>
-                    - Achieved 20% higher user satisfaction and 15% faster development cycles. -->
-                </li>
-                <li class="experience-item">
-                    <strong>PT Hitachi Channel Solutions Indonesia</strong> - <em>Indonesia</em>
-                    &nbsp;
-                    <img src="images/company/hcs.svg" alt="Hitachi Ebworx" class="company-icon"><br>
-                    TSS Senior Executive - <em>September 2022 - June 2023</em><br>
-                    <!-- - Developed and maintained financial service EDC apps.<br>
-                    - Resolved system issues and optimized performance.<br>
-                    - Reduced downtime by 25% and boosted client satisfaction by 18%. -->
-                </li>
-                <li class="experience-item">
-                    <strong>PT Otten Coffee Indonesia</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/otten.svg" alt="Otten Coffee Logo" class="company-icon"><br>
-                    iOS Developer - <em>November 2020 – September 2022</em><br>
-                    <!-- - Maintained iOS apps using Swift and VIPER architecture.<br>
-                    - Fixed bugs and implemented new features.<br>
-                    - Improved app performance by 30%, increasing user retention by 25%. -->
-                </li>
-                <li class="experience-item">
-                    <strong>PT Docotel Teknologi</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/docotel.svg" alt="Docotel Logo" class="company-icon"><br>
-                    Mobile Developer - <em>November 2022 - September 2023</em><br>
-                    <!-- - Built and maintained mobile apps for clients.<br>
-                    - Delivered 15+ projects on time with 95% client satisfaction.<br>
-                    - Contributed to a 20% increase in company revenue. -->
-                </li>
-                <li class="experience-item">
-                    <strong>Hitachi eBWorx Sdn Bhd</strong> - <em>Malaysia</em> &nbsp;
-                    <img src="images/company/ebworx.svg" alt="Hitachi eBWorx Logo" class="company-icon"><br>
-                    Associate Mobile Engineer - <em>November 2016 – October 2017</em><br>
-                    <!-- - Developed financial service mobile apps.<br>
-                    - Reduced app bugs by 20% and improved deployment efficiency by 15%. -->
-                </li>
-                <li class="experience-item">
-                    <strong>PT Bank DKI</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/bankdki.svg" alt="Bank DKI Logo" class="company-icon"><br>
-                    Customer Service Officer - <em>October 2015 – October 2016</em><br>
-                    <!-- - Managed customer accounts and promoted banking products.<br>
-                    - Achieved 10% higher retention and exceeded sales targets by 15%.<br> -->
-                </li>
-            </ul>
-            <div>
-                <a href="https://www.linkedin.com/in/affandy-murad/" class="pdf-button" target="_blank"
-                    title="LinkedIn">Read more in LinkedIn <i class="fab fa-linkedin"> </i></a>
-            </div>
-        </section>
+            <div class="experience-grid">
+                <div class="experience-card">
+                    <div class="experience-header">
+                        <span class="company-name">Korindo Group</span>
+                        <img src="images/company/korindo.svg" alt="Korindo" class="company-icon">
+                    </div>
+                    <div class="position">IT Supervisor</div>
+                    <div class="duration">June 2023 - Present</div>
+                </div>
 
-        <!-- Community Section -->
-        <section class="section">
-            <h2><i class="fas fa-users"></i>Community</h2>
-            <ul>
-                <li class="experience-item">
-                    <strong>Wikimedia Indonesia</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/wmid.svg" alt="Wikimedia Indonesia Logo" class="company-icon"><br>
-                    Part-Time Staff - <em>December 2019 - June 2020</em><br>
-                    <!-- - Created the competition’s concept including rules, procedures, and guidelines of Respati Project
-                            challenge.<br>
-                            - Managed the registration, competition flow, and official announcement to all participants. -->
-                </li>
-                <li class="experience-item">
-                    <strong>BEM FIKTI Gunadarma University</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/bem_fikti_ug_icon.svg" alt="BEM FIKTI Logo" class="company-icon"><br>
-                    Member of Academic Division - <em>July 2012 - May 2014</em><br>
-                    <!-- - Created the competition’s concept including rules, procedures, and guidelines of Respati Project
-                            challenge.<br>
-                            - Managed the registration, competition flow, and official announcement to all participants. -->
-                </li>
-                <li class="experience-item">
-                    <strong>Google Student Ambassador</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/gsa_icon.svg" alt="GSA Logo" class="company-icon"><br>
-                    Google Student of Gunadarma - <em>June 2013 - June 2014</em><br>
-                    <!-- - Created the competition’s concept including rules, procedures, and guidelines of Respati Project
-                            challenge.<br>
-                            - Managed the registration, competition flow, and official announcement to all participants. -->
-                </li>
-            </ul>
-            <div>
-                <a href="https://www.linkedin.com/in/affandy-murad/" class="pdf-button" target="_blank"
-                    title="LinkedIn">Read more in LinkedIn <i class="fab fa-linkedin"> </i></a>
+                <div class="experience-card">
+                    <div class="experience-header">
+                        <span class="company-name">PT Hitachi Channel Solutions</span>
+                        <img src="images/company/hcs.svg" alt="HCS" class="company-icon">
+                    </div>
+                    <div class="position">TSS Senior Executive</div>
+                    <div class="duration">September 2022 - June 2023</div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="experience-header">
+                        <span class="company-name">PT Otten Coffee Indonesia</span>
+                        <img src="images/company/otten.svg" alt="Otten" class="company-icon">
+                    </div>
+                    <div class="position">iOS Developer</div>
+                    <div class="duration">November 2020 – September 2022</div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="experience-header">
+                        <span class="company-name">Hitachi eBWorx Sdn Bhd</span>
+                        <img src="images/company/ebworx.svg" alt="eBWorx" class="company-icon">
+                    </div>
+                    <div class="position">Associate Mobile Engineer</div>
+                    <div class="duration">November 2016 – October 2017</div>
+                </div>
             </div>
         </section>
 
         <!-- Education Section -->
-        <section class="section">
+        <section class="section" id="education">
             <h2><i class="fas fa-graduation-cap"></i>Education</h2>
-            <ul>
-                <li class="experience-item">
-                    <strong>Gunadarma University</strong> - <em>Indonesia</em> &nbsp;
-                    <img src="images/company/gunadarma.svg" alt="Gunadarma Logo" class="company-icon"><br>
-                    Bachelor of Computer Systems - GPA: <em>3.89/4.00</em><br>
-                    <!-- Undergraduate Thesis: <em>Simulation of Flood Detector Via Wi-Fi Based On Arduino Mega 2560 and
-                        PCDuino with Ultrasonic Sensor and Camera</em><br> -->
-
-                </li>
-            </ul>
+            <div class="experience-card">
+                <div class="experience-header">
+                    <span class="company-name">Gunadarma University</span>
+                    <img src="images/company/gunadarma.svg" alt="Gunadarma" class="company-icon">
+                </div>
+                <div class="position">Bachelor of Computer Systems</div>
+                <div class="duration">GPA: 3.89/4.00</div>
+            </div>
         </section>
 
-        <!-- Certifications Section -->
-        <section class="section">
-            <h2><i class="fas fa-certificate"></i>Certifications</h2>
-            <ul>
-                <li>Green Economy - Coursera</li>
-                <li>Project Management - Coursera</li>
-                <li>UI/UX Design - Coursera</li>
-                <li>Cybersecurity - Coursera</li>
-                <li>AI Certification - Singapore</li>
-            </ul>
+        <!-- Skills Section -->
+        <section class="section" id="skills">
+            <h2><i class="fas fa-tools"></i>Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Programming</h3>
+                    <p>Python, Java, Swift, Kotlin</p>
+                </div>
+                <div class="skill-category">
+                    <h3>Technologies</h3>
+                    <p>AI & Machine Learning, Cybersecurity</p>
+                </div>
+                <div class="skill-category">
+                    <h3>Management</h3>
+                    <p>Project Management, UI/UX Design</p>
+                </div>
+            </div>
         </section>
 
         <!-- Achievements Section -->
         <section class="section">
             <h2><i class="fas fa-trophy"></i>Achievements</h2>
-            <ul>
-                <li>🏆 Winner of Wikidata Competition</li>
-                <li>🏆 Winner of Social Media 4 Peace Competition (UNESCO x Wikimedia Indonesia)</li>
-                <li>📱 Developed EHAC iOS/Android App for Indonesia's Ministry of Health</li>
-                <li>🌐 Contributed to WikiTutur Project for preserving regional languages</li>
-            </ul>
-        </section>
-
-        <!-- Skills Section -->
-        <section class="section">
-            <h2><i class="fas fa-tools"></i>Skills</h2>
-            <ul>
-                <li>Programming: Python, Java, Swift, Kotlin</li>
-                <li>AI & Machine Learning</li>
-                <li>Cybersecurity</li>
-                <li>Project Management</li>
-                <li>UI/UX Design</li>
-            </ul>
+            <div class="simple-list">
+                <div class="simple-item">🏆 Winner of Wikidata Competition</div>
+                <div class="simple-item">🏆 Winner of Social Media 4 Peace Competition (UNESCO x Wikimedia Indonesia)
+                </div>
+                <div class="simple-item">📱 Developed EHAC iOS/Android App for Indonesia's Ministry of Health</div>
+            </div>
         </section>
 
         <!-- Portfolio Section -->
         <section class="section" id="portfolio">
             <h2><i class="fas fa-laptop-code"></i>Portfolio</h2>
-            <div class="portfolio-item">
-                <h3>Project 1: EHAC App</h3>
-                <p>Developed EHAC iOS/Android App for Indonesia's Ministry of Health.</p>
-                <div class="buttons">
-                    <a href="https://example.com/ios" target="_blank">iOS</a>
-                    <a href="https://example.com/android" target="_blank">Android</a>
-                    <a href="https://example.com/web" target="_blank">Web</a>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <h3>EHAC App</h3>
+                    <p>Healthcare mobile application for Indonesia's Ministry of Health.</p>
+                    <div class="portfolio-links">
+                        <a href="#" class="portfolio-link">iOS</a>
+                        <a href="#" class="portfolio-link">Android</a>
+                    </div>
                 </div>
-            </div>
-            <div class="portfolio-item">
-                <h3>Project 2: WikiTutur</h3>
-                <p>Contributed to WikiTutur Project for preserving regional languages.</p>
-                <div class="buttons">
-                    <a href="https://example.com/ios" target="_blank">iOS</a>
-                    <a href="https://example.com/android" target="_blank">Android</a>
-                    <a href="https://example.com/web" target="_blank">Web</a>
+                <div class="portfolio-item">
+                    <h3>WikiTutur</h3>
+                    <p>Project for preserving Indonesian regional languages.</p>
+                    <div class="portfolio-links">
+                        <a href="#" class="portfolio-link">Web</a>
+                        <a href="#" class="portfolio-link">Mobile</a>
+                    </div>
                 </div>
-            </div>
-            <div class="portfolio-item">
-                <h3>Project 3: Selidik</h3>
-                <p>Contributed to WikiTutur Project for preserving regional languages.</p>
-                <div class="buttons">
-                    <a href="https://example.com/ios" target="_blank">iOS</a>
-                    <a href="https://example.com/android" target="_blank">Android</a>
-                    <a href="https://example.com/web" target="_blank">Web</a>
+                <div class="portfolio-item">
+                    <h3>Financial Services Apps</h3>
+                    <p>Mobile banking and EDC applications development.</p>
+                    <div class="portfolio-links">
+                        <a href="#" class="portfolio-link">iOS</a>
+                        <a href="#" class="portfolio-link">Android</a>
+                    </div>
                 </div>
             </div>
         </section>
     </div>
 
     <!-- Footer -->
-
-
-    <!-- Dark Mode Script -->
+    <footer>
+        <div class="cc-icons">
+            <i class="fab fa-creative-commons"></i>
+            <i class="fab fa-creative-commons-by"></i>
+            <i class="fab fa-creative-commons-sa"></i>
+        </div>
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/deed" target="_blank" rel="noopener noreferrer"
+            class="icon-label">CC-BY-SA 4.0</a>
+        <span>@ 2025 Affandy Murad</span>
+    </footer>
+    <div id="wcb" class="carbonbadge wcb-d"></div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const toggle = document.getElementById("dark-mode-toggle");
+            const darkModeToggle = document.getElementById("dark-mode-toggle");
             const body = document.body;
-            const darkModeLabel = document.getElementById("dark-mode-label");
+            const menuToggle = document.getElementById("menu-toggle");
+            const menuItems = document.getElementById("menu-items");
 
-            // Deteksi mode gelap sistem
+            // Dark mode functionality
             const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
 
-            // Function to set icon
             const updateDarkModeIcon = () => {
-                darkModeLabel.innerHTML = body.classList.contains("dark-mode")
-                    ? '<i class="fas fa-sun"></i>' // Sun icon for dark mode
-                    : '<i class="fas fa-moon"></i>'; // Moon icon for light mode
+                const icon = darkModeToggle.querySelector("i");
+                icon.className = body.classList.contains("dark-mode")
+                    ? "fas fa-sun"
+                    : "fas fa-moon";
             };
 
-            // Terapkan mode gelap jika sistem dalam mode gelap
             const applySystemDarkMode = () => {
                 if (prefersDarkMode.matches) {
                     body.classList.add("dark-mode");
-                    toggle.checked = true; // Set switch ke posisi "on"
                 } else {
                     body.classList.remove("dark-mode");
-                    toggle.checked = false; // Set switch ke posisi "off"
                 }
                 updateDarkModeIcon();
             };
 
-            // Terapkan mode gelap awal sesuai dengan pengaturan sistem
             applySystemDarkMode();
-
-            // Dengarkan perubahan pada mode gelap sistem
             prefersDarkMode.addEventListener("change", applySystemDarkMode);
 
-            // Tambahkan event listener untuk toggle
-            toggle.addEventListener("change", () => {
+            darkModeToggle.addEventListener("click", () => {
                 body.classList.toggle("dark-mode");
                 updateDarkModeIcon();
             });
 
-            // Tambahkan event listener untuk tombol sticky (scroll ke section)
-            const buttons = document.querySelectorAll(".icon-button");
+            // Mobile menu functionality
+            menuToggle.addEventListener("click", () => {
+                menuItems.classList.toggle("active");
+                const icon = menuToggle.querySelector("i");
+                icon.className = menuItems.classList.contains("active")
+                    ? "fas fa-times"
+                    : "fas fa-bars";
+            });
 
-            buttons.forEach(button => {
-                button.addEventListener("click", () => {
-                    const targetId = button.getAttribute("data-target");
+            // Smooth scrolling for menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href').substring(1);
                     const targetSection = document.getElementById(targetId);
 
                     if (targetSection) {
                         targetSection.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
+                            behavior: 'smooth',
+                            block: 'start'
                         });
+
+                        // Close mobile menu after clicking
+                        menuItems.classList.remove("active");
+                        menuToggle.querySelector("i").className = "fas fa-bars";
                     }
                 });
             });
-
-            // Save as PDF
-            document.getElementById('save-pdf').addEventListener('click', () => {
-                window.print();
-            });
         });
     </script>
-
-    <footer class="footer">
-        <p>&copy; 2025 Your Name. All rights reserved.</p>
-        <div id="wcb" class="carbonbadge wcb-d"></div>
-        <ul class="footer-links">
-
-            <li><a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a></li>
-            <li><a href="https://github.com/yourusername" target="_blank">GitHub</a></li>
-            <li><a href="mailto:your.email@example.com">Email</a></li>
-        </ul>
-    </footer>
-
 </body>
 
 </html>

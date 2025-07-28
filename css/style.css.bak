@@ -1,0 +1,320 @@
+/* style.css */
+
+:root {
+    --primary-color: #2C3E50; /* Dark blue */
+    --secondary-color: #3498DB; /* Bright blue */
+    --accent-color: #E67E22; /* Bright orange */
+    --text-color: #2C3E50; /* Dark text for contrast */
+    --bg-color: #ECF0F1; /* Light gray background */
+    --header-bg: #2C3E50; /* Dark blue header */
+    --header-text: #FFFFFF; /* White header text */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    transition: background-color 0.3s, color 0.3s;
+    min-width: 320px;
+}
+
+/* Header Styles */
+/* Header Styles */
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+header h1 {
+    font-size: 2.0rem;
+    margin: 0;
+}
+
+/* Hamburger Menu */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--header-text);
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.menu-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--header-text);
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+
+/* Navigation Styles */
+/* Navigation Menu */
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--header-text);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--accent-color);
+}
+
+/* Dark Mode Toggle Button */
+/* Dark Mode Toggle Button */
+#darkModeToggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--header-text);
+    transition: color 0.3s;
+    margin-left: 1rem;
+}
+
+#darkModeToggle:hover {
+    color: var(--accent-color);
+}
+
+#darkModeToggle .fa-sun {
+    display: none;
+}
+
+#darkModeToggle .fa-moon {
+    display: inline-block;
+}
+
+body.dark-mode #darkModeToggle .fa-sun {
+    display: inline-block;
+}
+
+body.dark-mode #darkModeToggle .fa-moon {
+    display: none;
+}
+
+/* Main Content Styles */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+section {
+    margin-bottom: 2rem;
+    background-color: #FFFFFF;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+article {
+    margin-bottom: 1.5rem;
+}
+
+h3 {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+ul {
+    padding-left: 1.5rem;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    --bg-color: #1A1A1A; /* Dark background */
+    --text-color: #ECF0F1; /* Light text */
+    --header-bg: #2C3E50; /* Dark blue header */
+    --header-text: #FFFFFF; /* White header text */
+    --primary-color: #3498DB; /* Bright blue */
+    --secondary-color: #E67E22; /* Bright orange */
+    --accent-color: #E67E22; /* Bright orange */
+}
+
+body.dark-mode section {
+    background-color: #2C3E50; /* Dark blue section background */
+}
+
+/* Social Icons */
+.social-icons {
+    margin-top: 1rem;
+}
+
+.social-icons a {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-color);
+}
+
+/* Company Logo */
+.company-logo {
+    width: 100%;
+    max-width: 200px;
+    height: 50%;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+/* Portfolio Styles */
+.portfolio-list {
+    list-style: none;
+    padding: 0;
+}
+
+.portfolio-item {
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.portfolio-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--secondary-color);
+}
+
+.portfolio-icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 1rem;
+    object-fit: contain;
+}
+
+.portfolio-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.portfolio-content {
+    padding: 1rem;
+}
+
+.portfolio-content p {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.demo-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.demo-link {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.demo-link:hover {
+    background-color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    nav {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: var(--header-bg);
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-end;
+        display: none;
+    }
+
+    nav.show {
+        display: flex;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+}
