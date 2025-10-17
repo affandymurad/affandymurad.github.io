@@ -24,6 +24,17 @@
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
+        [data-theme="dark"] {
+            --primary-color: #60a5fa;
+            --secondary-color: #3b82f6;
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-light: #d1d5db;
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --border-color: #374151;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -38,6 +49,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         h1 {
@@ -57,28 +69,107 @@
             font-weight: 500;
         }
 
-        #controls {
+        /* Header dengan logo */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .wiki-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .header-title h1 {
+            margin: 0;
+            border: none;
+            padding: 0;
+            font-size: 1.4rem;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
             background-color: var(--card-bg);
             border-radius: var(--radius);
             padding: 1rem;
             box-shadow: var(--shadow);
             margin-bottom: 1.5rem;
+        }
+
+        .settings-row {
             display: flex;
+            gap: 1rem;
             flex-wrap: wrap;
-            gap: 0.75rem;
             align-items: center;
-            justify-content: space-between;
+            margin-bottom: 0.75rem;
         }
 
-        @media (max-width: 600px) {
-            #controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        .settings-row:last-child {
+            margin-bottom: 0;
         }
 
-        #language-select {
-            padding: 0.5rem 1rem;
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .setting-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select,
+        input[type="color"] {
+            padding: 0.6rem;
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
             font-family: inherit;
@@ -86,12 +177,55 @@
             background-color: var(--card-bg);
             color: var(--text-color);
             cursor: pointer;
-            flex-grow: 1;
-            max-width: 250px;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        select:hover,
+        input[type="color"]:hover {
+            border-color: var(--primary-color);
+        }
+
+        select:focus,
+        input[type="color"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Theme selector */
+        .theme-selector {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .theme-btn {
+            padding: 0.5rem 0.75rem;
+            border: 2px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .theme-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         button {
-            padding: 0.5rem 1.25rem;
+            padding: 0.6rem 1.25rem;
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -119,11 +253,10 @@
         }
 
         #permission-status {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1rem;
             border-radius: var(--radius);
             font-size: 0.9rem;
             font-weight: 500;
-            flex-grow: 1;
             text-align: center;
         }
 
@@ -162,7 +295,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             padding: 0.5rem;
-            background-color: rgba(219, 234, 254, 0.3);
+            background-color: rgba(37, 99, 235, 0.1);
             border-radius: var(--radius);
         }
 
@@ -184,9 +317,32 @@
             color: white;
         }
 
+        [data-theme="dark"] .location-part button {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        [data-theme="dark"] .location-part button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .coord-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .coord-link:hover {
+            color: var(--secondary-color);
+        }
+
         #results {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.25rem;
             padding: 0;
             list-style: none;
@@ -199,10 +355,8 @@
             box-shadow: var(--shadow);
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             border: 1px solid var(--border-color);
-            max-width: 100%;
-            margin: 0;
         }
 
         .article-card:hover {
@@ -212,10 +366,9 @@
         }
 
         .article-card img {
-            width: 200px;
-            height: 150px;
+            width: 100%;
+            height: 200px;
             object-fit: cover;
-            border-right: 1px solid var(--border-color);
         }
 
         .article-content {
@@ -247,8 +400,25 @@
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 10;
+            line-clamp: 10;
             -webkit-box-orient: vertical;
+            position: relative;
+        }
+
+        /* Wiktionary words dalam deskripsi */
+        .description .wikt-word {
+            background-color: rgba(37, 99, 235, 0.15);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .description .wikt-word:hover {
+            background-color: rgba(37, 99, 235, 0.25);
         }
 
         .distance {
@@ -258,7 +428,7 @@
             font-size: 0.85rem;
             font-weight: 500;
             padding: 0.25rem 0.75rem;
-            background-color: rgba(219, 234, 254, 0.5);
+            background-color: rgba(37, 99, 235, 0.1);
             border-radius: 100px;
         }
 
@@ -285,34 +455,6 @@
             color: var(--secondary-color);
         }
 
-        .wiktionary {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .wiktionary span {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        .wiktionary button {
-            background-color: white;
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 0.3rem 0.8rem;
-            font-size: 0.85rem;
-            border-radius: 100px;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        .wiktionary button:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
         .card-actions {
             padding-top: 0.75rem;
             border-top: 1px solid var(--border-color);
@@ -329,6 +471,125 @@
         .route-btn::before {
             content: "🗺️";
             margin-right: 0.5rem;
+        }
+
+        /* Search section */
+        .search-filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .search-filter-section h2 {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        /* Modal untuk Panduan */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            color: var(--text-color);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .modal-close:hover {
+            opacity: 0.7;
+        }
+
+        .guide-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-section h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        .guide-section p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .guide-section ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .guide-section li {
+            margin: 0.25rem 0;
+            font-size: 0.95rem;
         }
 
         .google-maps-btn {
@@ -378,7 +639,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
+            background: var(--card-bg);
             border-radius: var(--radius);
             overflow: hidden;
             z-index: 1000;
@@ -444,6 +705,38 @@
                 font-size: 1.5rem;
             }
 
+            .header-top {
+                flex-direction: column;
+            }
+
+            .header-left {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .settings-row {
+                flex-direction: column;
+            }
+
+            .setting-group {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .search-filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
             .article-card {
                 flex-direction: column;
             }
@@ -452,61 +745,507 @@
                 width: 100%;
                 height: 180px;
                 border-right: none;
-                border-bottom: 1px solid var(--border-color);
             }
 
             .article-content {
                 padding: 1.5rem;
             }
 
+            #results {
+                grid-template-columns: 1fr;
+            }
+
             .map-container {
                 width: 90vw;
                 height: 50vh;
+            }
+
+            .theme-selector {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .theme-btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 
 <body>
-    <h1>Artikel WikiLokal Terdekat (radius 1km)</h1>
+    <!-- Header dengan Logo -->
+    <div class="header-top">
+        <div class="header-left">
+            <div class="wiki-logo">W</div>
+            <div class="header-title">
+                <h1 id="main-title">Artikel WikiLokal Terdekat</h1>
+                <p id="main-subtitle">Jelajahi Wikipedia dalam radius 3km dari lokasi Anda</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="guide-btn" title="Lihat panduan">📖 Panduan</button>
+            <span id="permission-status" class="pending">Memeriksa izin...</span>
+            <button id="check-permission">Cari Artikel</button>
+        </div>
+    </div>
 
-    <section id="control-section" aria-label="Pengaturan">
-        <h2>Pengaturan</h2>
-        <div id="controls">
-            <select id="language-select">
-                <option value="id">Bahasa Indonesia (id)</option>
-                <option value="en">Bahasa Inggris (en)</option>
-                <option value="zh">Bahasa Mandarin (zh)</option>
-                <option value="es">Bahasa Spanyol (es)</option>
-                <option value="bew">Bahasa Betawi (bew)</option>
-            </select>
-            <button id="check-permission">Periksa Lokasi & Cari</button>
-            <span id="permission-status">Memeriksa izin...</span>
+    <!-- Settings Panel -->
+    <section class="settings-panel" aria-label="Pengaturan">
+        <div class="settings-row">
+            <div class="setting-group">
+                <label id="label-theme">Tema</label>
+                <div class="theme-selector">
+                    <button class="theme-btn active" data-theme="light" id="theme-light">☀️ Light</button>
+                    <button class="theme-btn" data-theme="dark" id="theme-dark">🌙 Dark</button>
+                    <button class="theme-btn" data-theme="system" id="theme-system">🖥️ System</button>
+                </div>
+            </div>
+            <div class="setting-group">
+                <label id="label-language">Bahasa</label>
+                <select id="language-select">
+                    <option value="id">Bahasa Indonesia (ID)</option>
+                    <option value="ms">Bahasa Melayu (MS)</option>
+                    <option value="en">Bahasa Inggris (EN)</option>
+                    <option value="bew">Bahasa Betawi (BEW)</option>
+                </select>
+            </div>
         </div>
     </section>
 
+    <!-- Location Status Section -->
     <section id="location-section" aria-label="Status Lokasi">
-        <h2>Status Lokasi</h2>
+        <h2 id="location-title">Status Lokasi</h2>
         <div id="location-status"></div>
     </section>
 
+    <!-- Results Section -->
     <section id="results-section" aria-label="Hasil Pencarian">
-        <h2>Hasil Pencarian</h2>
+        <h2 id="results-title">Hasil Pencarian</h2>
         <ul id="results"></ul>
     </section>
+
+    <!-- Modal Panduan -->
+    <div id="guide-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="guide-title">📖 Panduan Penggunaan</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+
+            <!-- Section 1: Fitur Utama -->
+            <div class="guide-section" data-section="features">
+                <h3 id="guide-features-title">🎯 Fitur Utama</h3>
+                <ul>
+                    <li>
+                        <strong id="guide-search-title">Cari Artikel:</strong>
+                        <span id="guide-search-desc">Klik tombol untuk menemukan artikel Wikipedia di sekitar lokasi
+                            Anda (radius 3km)</span>
+                    </li>
+                    <li>
+                        <strong id="guide-route-title">Rute:</strong>
+                        <span id="guide-route-desc">Lihat petunjuk arah ke lokasi artikel menggunakan Leaflet
+                            Routing</span>
+                    </li>
+                    <li>
+                        <strong id="guide-wikt-title">Wiktionary:</strong>
+                        <span id="guide-wikt-desc">Klik kata dalam deskripsi untuk mencari definisi</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 2: Pencarian & Penyaringan -->
+            <div class="guide-section" data-section="search">
+                <h3 id="guide-search-filter-title">🔍 Pencarian & Penyaringan</h3>
+                <ul>
+                    <li>
+                        <strong id="guide-searchbox-title">Kotak Pencarian:</strong>
+                        <span id="guide-searchbox-desc">Cari artikel berdasarkan nama/judul</span>
+                    </li>
+                    <li>
+                        <strong id="guide-sorting-title">Pengurutan:</strong>
+                        <span id="guide-sorting-desc">Urutkan hasil berdasarkan jarak terdekat atau nama</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 3: Pengaturan -->
+            <div class="guide-section" data-section="settings">
+                <h3 id="guide-settings-title">🌍 Pengaturan</h3>
+                <ul>
+                    <li>
+                        <strong id="guide-theme-title">Tema:</strong>
+                        <span id="guide-theme-desc">Pilih tema Light, Dark, atau ikuti preferensi sistem</span>
+                    </li>
+                    <li>
+                        <strong id="guide-lang-title">Bahasa:</strong>
+                        <span id="guide-lang-desc">Ubah bahasa untuk menampilkan konten dalam bahasa pilihan</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 4: Lokasi & Konten -->
+            <div class="guide-section" data-section="location">
+                <h3 id="guide-location-title">📍 Lokasi & Konten</h3>
+                <p id="guide-location-desc">Aplikasi menampilkan artikel dari Wikipedia dalam radius 3km dari lokasi
+                    Anda. Setiap artikel menampilkan:</p>
+                <ul>
+                    <li id="guide-content-image">Gambar sampul dari Wikipedia</li>
+                    <li id="guide-content-desc">Deskripsi singkat (kata-kata interaktif ke Wiktionary)</li>
+                    <li id="guide-content-distance">Jarak dari lokasi Anda</li>
+                    <li id="guide-content-wikidata">ID Wikidata untuk referensi lebih lanjut</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script>
+        // Translations
+        const translations = {
+            id: {
+                mainTitle: 'Artikel WikiLokal Terdekat',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi Anda',
+                theme: 'Tema',
+                language: 'Bahasa',
+                locationTitle: 'Status Lokasi',
+                resultsTitle: 'Hasil Pencarian',
+                checkLocation: 'Cari Artikel',
+                coordinates: 'Koordinat',
+                road: 'Jalan',
+                postcode: 'Kode Pos',
+                suburb: 'Kelurahan',
+                city: 'Kota',
+                state: 'Provinsi',
+                country: 'Negara',
+                wikidata: 'Wikidata',
+                wikivoyage: 'Wikivoyage',
+                showRoute: 'Tampilkan Rute',
+                openMaps: 'Buka di Google Maps',
+                distance: 'km jauhnya',
+                loading: 'Memuat artikel...',
+                noArticles: 'Tidak ada artikel ditemukan dalam radius 3km',
+                description: 'Deskripsi tidak tersedia',
+                failedLoad: 'Gagal memuat deskripsi',
+                permissionGranted: 'diizinkan',
+                permissionDenied: 'ditolak',
+                permissionPending: 'menunggu',
+                locationPermission: 'Izin lokasi: ',
+                routeTo: 'Rute ke ',
+                gettingLocation: 'Mengambil lokasi Anda...',
+                failedLocation: 'Gagal mendapatkan lokasi: ',
+                guideBtn: 'Panduan',
+                guideBtnTitle: 'Lihat panduan',
+                checkingPermission: 'Memeriksa izin...',
+                searchArticles: 'Cari Artikel',
+
+                // Modal Guide
+                guideTitle: '📖 Panduan Penggunaan',
+                guideMainFeatures: '🎯 Fitur Utama',
+                guideSearchArticle: 'Cari Artikel:',
+                guideSearchDesc: 'Klik tombol untuk menemukan artikel Wikipedia di sekitar lokasi Anda (radius 3km)',
+                guideRoute: 'Rute:',
+                guideRouteDesc: 'Lihat petunjuk arah ke lokasi artikel menggunakan Leaflet Routing',
+                guideWiktionary: 'Wiktionary:',
+                guideWiktionaryDesc: 'Klik kata dalam deskripsi untuk mencari definisi',
+                guideSearchFilter: '🔍 Pencarian & Penyaringan',
+                guideSearchBox: 'Kotak Pencarian:',
+                guideSearchBoxDesc: 'Cari artikel berdasarkan nama/judul',
+                guideSorting: 'Pengurutan:',
+                guideSortingDesc: 'Urutkan hasil berdasarkan jarak terdekat atau nama',
+                guideSettings: '🌍 Pengaturan',
+                guideTheme: 'Tema:',
+                guideThemeDesc: 'Pilih tema Light, Dark, atau ikuti preferensi sistem',
+                guideLanguage: 'Bahasa:',
+                guideLanguageDesc: 'Ubah bahasa untuk menampilkan konten dalam bahasa pilihan',
+                guideLocationContent: '📍 Lokasi & Konten',
+                guideLocationContentDesc: 'Aplikasi menampilkan artikel dari Wikipedia dalam radius 3km dari lokasi Anda. Setiap artikel menampilkan:',
+                guideContentImage: 'Gambar sampul dari Wikipedia',
+                guideContentDescription: 'Deskripsi singkat (kata-kata interaktif ke Wiktionary)',
+                guideContentDistance: 'Jarak dari lokasi Anda',
+                guideContentWikidata: 'ID Wikidata untuk referensi lebih lanjut'
+            },
+            ms: {
+                mainTitle: 'Artikel WikiLokal Terdekat',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi Anda',
+                theme: 'Tema',
+                language: 'Bahasa',
+                locationTitle: 'Status Lokasi',
+                resultsTitle: 'Hasil Carian',
+                checkLocation: 'Cari Artikel',
+                coordinates: 'Koordinat',
+                road: 'Jalan',
+                postcode: 'Kod Pos',
+                suburb: 'Kampung',
+                city: 'Kota',
+                state: 'Negeri',
+                country: 'Negara',
+                wikidata: 'Wikidata',
+                wikivoyage: 'Wikivoyage',
+                showRoute: 'Papar Laluan',
+                openMaps: 'Buka di Google Maps',
+                distance: 'km jauhnya',
+                loading: 'Memuatkan artikel...',
+                noArticles: 'Tiada artikel dijumpai dalam radius 3km',
+                description: 'Penerangan tidak tersedia',
+                failedLoad: 'Gagal memuatkan penerangan',
+                permissionGranted: 'dibenarkan',
+                permissionDenied: 'ditolak',
+                permissionPending: 'menunggu',
+                locationPermission: 'Kebenaran lokasi: ',
+                routeTo: 'Laluan ke ',
+                gettingLocation: 'Mendapatkan lokasi Anda...',
+                failedLocation: 'Gagal mendapatkan lokasi: ',
+                guideBtn: 'Panduan',
+                guideBtnTitle: 'Lihat panduan',
+                checkingPermission: 'Memeriksa kebenaran...',
+                searchArticles: 'Cari Artikel',
+
+                // Modal Guide
+                guideTitle: '📖 Panduan Penggunaan',
+                guideMainFeatures: '🎯 Ciri Utama',
+                guideSearchArticle: 'Cari Artikel:',
+                guideSearchDesc: 'Klik butang untuk mencari artikel Wikipedia di sekitar lokasi Anda (radius 3km)',
+                guideRoute: 'Laluan:',
+                guideRouteDesc: 'Lihat panduan arah ke lokasi artikel menggunakan Leaflet Routing',
+                guideWiktionary: 'Wiktionary:',
+                guideWiktionaryDesc: 'Klik perkataan dalam penerangan untuk mencari definisi',
+                guideSearchFilter: '🔍 Carian & Penapis',
+                guideSearchBox: 'Kotak Carian:',
+                guideSearchBoxDesc: 'Cari artikel berdasarkan nama/tajuk',
+                guideSorting: 'Penyusunan:',
+                guideSortingDesc: 'Susun hasil berdasarkan jarak terdekat atau nama',
+                guideSettings: '🌍 Tetapan',
+                guideTheme: 'Tema:',
+                guideThemeDesc: 'Pilih tema Light, Dark, atau ikuti keutamaan sistem',
+                guideLanguage: 'Bahasa:',
+                guideLanguageDesc: 'Ubah bahasa untuk memaparkan kandungan dalam bahasa pilihan',
+                guideLocationContent: '📍 Lokasi & Kandungan',
+                guideLocationContentDesc: 'Aplikasi memaparkan artikel dari Wikipedia dalam radius 3km dari lokasi Anda. Setiap artikel memaparkan:',
+                guideContentImage: 'Imej kulit dari Wikipedia',
+                guideContentDescription: 'Penerangan ringkas (perkataan interaktif ke Wiktionary)',
+                guideContentDistance: 'Jarak dari lokasi Anda',
+                guideContentWikidata: 'ID Wikidata untuk rujukan lanjut'
+            },
+            en: {
+                mainTitle: 'Nearest WikiLocal Articles',
+                mainSubtitle: 'Explore Wikipedia within 3km radius of your location',
+                theme: 'Theme',
+                language: 'Language',
+                locationTitle: 'Location Status',
+                resultsTitle: 'Search Results',
+                checkLocation: 'Search Articles',
+                coordinates: 'Coordinates',
+                road: 'Road',
+                postcode: 'Postcode',
+                suburb: 'Suburb',
+                city: 'City',
+                state: 'State',
+                country: 'Country',
+                wikidata: 'Wikidata',
+                wikivoyage: 'Wikivoyage',
+                showRoute: 'Show Route',
+                openMaps: 'Open in Google Maps',
+                distance: 'km away',
+                loading: 'Loading articles...',
+                noArticles: 'No articles found within 3km radius',
+                description: 'Description not available',
+                failedLoad: 'Failed to load description',
+                permissionGranted: 'granted',
+                permissionDenied: 'denied',
+                permissionPending: 'pending',
+                locationPermission: 'Location permission: ',
+                routeTo: 'Route to ',
+                gettingLocation: 'Getting your location...',
+                failedLocation: 'Failed to get location: ',
+                guideBtn: 'Guide',
+                guideBtnTitle: 'View guide',
+                checkingPermission: 'Checking permission...',
+                searchArticles: 'Search Articles',
+
+                // Modal Guide
+                guideTitle: '📖 User Guide',
+                guideMainFeatures: '🎯 Main Features',
+                guideSearchArticle: 'Search Articles:',
+                guideSearchDesc: 'Click the button to find Wikipedia articles around your location (3km radius)',
+                guideRoute: 'Route:',
+                guideRouteDesc: 'See directions to article locations using Leaflet Routing',
+                guideWiktionary: 'Wiktionary:',
+                guideWiktionaryDesc: 'Click words in the description to search for definitions',
+                guideSearchFilter: '🔍 Search & Filtering',
+                guideSearchBox: 'Search Box:',
+                guideSearchBoxDesc: 'Search articles by name/title',
+                guideSorting: 'Sorting:',
+                guideSortingDesc: 'Sort results by nearest distance or name',
+                guideSettings: '🌍 Settings',
+                guideTheme: 'Theme:',
+                guideThemeDesc: 'Choose Light, Dark theme, or follow system preference',
+                guideLanguage: 'Language:',
+                guideLanguageDesc: 'Change language to display content in your chosen language',
+                guideLocationContent: '📍 Location & Content',
+                guideLocationContentDesc: 'The app displays Wikipedia articles within 3km radius of your location. Each article shows:',
+                guideContentImage: 'Cover image from Wikipedia',
+                guideContentDescription: 'Brief description (interactive words link to Wiktionary)',
+                guideContentDistance: 'Distance from your location',
+                guideContentWikidata: 'Wikidata ID for further reference'
+            },
+            bew: {
+                mainTitle: 'Artikel WikiLokal Paling Deket',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi loe',
+                theme: 'Tema',
+                language: 'Bahasa',
+                locationTitle: 'Status Lokasi',
+                resultsTitle: 'Hasil Pencarian',
+                checkLocation: 'Cari Artikel',
+                coordinates: 'Koordinat',
+                road: 'Jalan',
+                postcode: 'Kode Pos',
+                suburb: 'Kelurahan',
+                city: 'Kota',
+                state: 'Provinsi',
+                country: 'Negara',
+                wikidata: 'Wikidata',
+                wikivoyage: 'Wikivoyage',
+                showRoute: 'Tampilin Rute',
+                openMaps: 'Buka di Google Maps',
+                distance: 'km jauhnya',
+                loading: 'Muatin artikel...',
+                noArticles: 'Gak ada artikel dalam radius 3km',
+                description: 'Deskripsi gak ada',
+                failedLoad: 'Gagal muatin deskripsi',
+                permissionGranted: 'diizinkan',
+                permissionDenied: 'ditolak',
+                permissionPending: 'nunggu',
+                locationPermission: 'Izin lokasi: ',
+                routeTo: 'Rute ke ',
+                gettingLocation: 'Ngambil lokasi loe...',
+                failedLocation: 'Gagal ngambil lokasi: ',
+                guideBtn: 'Panduan',
+                guideBtnTitle: 'Liat panduan',
+                checkingPermission: 'Ngecek izin...',
+                searchArticles: 'Cari Artikel',
+
+                // Modal Guide
+                guideTitle: '📖 Panduan Pemakaian',
+                guideMainFeatures: '🎯 Fitur Utama',
+                guideSearchArticle: 'Cari Artikel:',
+                guideSearchDesc: 'Klik tombol buat nemuin artikel Wikipedia di sekit lokasi loe (radius 3km)',
+                guideRoute: 'Rute:',
+                guideRouteDesc: 'Liat petunjuk arah ke lokasi artikel pake Leaflet Routing',
+                guideWiktionary: 'Wiktionary:',
+                guideWiktionaryDesc: 'Klik kata dalam deskripsi buat cari definisi',
+                guideSearchFilter: '🔍 Pencarian & Penyaringan',
+                guideSearchBox: 'Kotak Pencarian:',
+                guideSearchBoxDesc: 'Cari artikel berdasarkan nama/judul',
+                guideSorting: 'Pengurutan:',
+                guideSortingDesc: 'Urutkan hasil berdasarkan jarak deket atau nama',
+                guideSettings: '🌍 Pengaturan',
+                guideTheme: 'Tema:',
+                guideThemeDesc: 'Pilih tema Light, Dark, atau ikutin preferensi sistem',
+                guideLanguage: 'Bahasa:',
+                guideLanguageDesc: 'Ubah bahasa buat tampilin konten dalam bahasa pilihan',
+                guideLocationContent: '📍 Lokasi & Konten',
+                guideLocationContentDesc: 'Aplikasi tampilin artikel dari Wikipedia dalam radius 3km dari lokasi loe. Setiap artikel tampilin:',
+                guideContentImage: 'Gambar sampul dari Wikipedia',
+                guideContentDescription: 'Deskripsi singkat (kata-kata interaktif ke Wiktionary)',
+                guideContentDistance: 'Jarak dari lokasi loe',
+                guideContentWikidata: 'ID Wikidata buat referensi lanjutan'
+            }
+        };
+
+        // Selectors
         const languageSelect = document.getElementById('language-select');
         const checkPermissionBtn = document.getElementById('check-permission');
         const permissionStatus = document.getElementById('permission-status');
         const locationStatus = document.getElementById('location-status');
         const resultsList = document.getElementById('results');
+        const themeButtons = document.querySelectorAll('.theme-btn');
+
         let currentLang = 'id';
         let currentPosition = null;
+        let currentTheme = 'light';
         const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
 
+        // Translation function
+        function t(key) {
+            const translation = translations[currentLang]?.[key] || translations['id'][key];
+            if (!translation) {
+                console.warn(`Translation missing for key: ${key}`);
+                return key;
+            }
+            return translation;
+        }
+
+        // OPTIONAL: Tambahkan loading state yang lebih baik
+        function showLoading(message = null) {
+            const loadingMsg = message || t('loading');
+            resultsList.innerHTML = `
+        <li class="loading">
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+                <div>${loadingMsg}</div>
+            </div>
+        </li>
+    `;
+        }
+
+        function showError(message) {
+            resultsList.innerHTML = `
+        <li class="error">
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">⚠️</div>
+                <div>${message}</div>
+            </div>
+        </li>
+    `;
+        }
+
+        // Update all static labels
+        function updateLabels() {
+            document.getElementById('main-title').textContent = t('mainTitle');
+            document.getElementById('main-subtitle').textContent = t('mainSubtitle');
+            document.getElementById('label-theme').textContent = t('theme');
+            document.getElementById('label-language').textContent = t('language');
+            document.getElementById('location-title').textContent = t('locationTitle');
+            document.getElementById('results-title').textContent = t('resultsTitle');
+            document.getElementById('check-permission').textContent = t('checkLocation');
+        }
+
+        // Theme management
+        function setTheme(theme) {
+            currentTheme = theme;
+            if (theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            localStorage.setItem('wikilokal-theme', theme);
+            updateThemeButtons();
+        }
+
+        function updateThemeButtons() {
+            themeButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === currentTheme) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('wikilokal-theme') || 'light';
+            setTheme(savedTheme);
+        }
+
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTheme(btn.getAttribute('data-theme'));
+            });
+        });
+
+        // Check location permission
         async function checkLocationPermission() {
             if (!navigator.permissions || !navigator.geolocation) {
                 permissionStatus.textContent = 'API Izin tidak didukung';
@@ -533,11 +1272,13 @@
 
         function updatePermissionStatus(state) {
             permissionStatus.className = '';
-            permissionStatus.textContent = `Izin lokasi: ${state === 'granted' ? 'diizinkan' :
-                state === 'denied' ? 'ditolak' : 'menunggu'}`;
+            const stateText = state === 'granted' ? t('permissionGranted') :
+                state === 'denied' ? t('permissionDenied') : t('permissionPending');
+            permissionStatus.textContent = `${t('locationPermission')}${stateText}`;
             permissionStatus.classList.add(state === 'granted' ? 'permitted' : state === 'denied' ? 'denied' : 'pending');
         }
 
+        // Get location details from coordinates
         async function getLocationDetails(lat, lon) {
             try {
                 const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
@@ -587,6 +1328,7 @@
             }
         }
 
+        // Calculate distance between two coordinates
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -598,6 +1340,7 @@
             return (R * c).toFixed(1);
         }
 
+        // Get Wiktionary definition
         async function fetchWiktionaryDefinition(title, lang) {
             try {
                 const url = `https://${lang}.wiktionary.org/w/api.php?` +
@@ -607,13 +1350,50 @@
                 const data = await response.json();
                 const pages = data.query.pages;
                 const page = Object.values(pages)[0];
-                return page.extract ? page.extract.trim() : 'Definisi tidak tersedia';
+                return page.extract ? page.extract.trim() : t('description');
             } catch (error) {
                 console.error('Error mengambil definisi Wiktionary:', error);
-                return 'Gagal memuat definisi';
+                return t('failedLoad');
             }
         }
 
+        // Extract words dari deskripsi untuk Wiktionary
+        function highlightWiktionaryWords(description, lang) {
+            if (!description) return '';
+
+            // 1️⃣ Hapus tag HTML & script berbahaya
+            const sanitized = description
+                .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+                .replace(/<\/?[^>]+(>|$)/g, '');
+
+            // 2️⃣ Escape karakter HTML
+            const escapeHtml = (text) =>
+                text.replace(/[&<>"']/g, (m) => (
+                    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]
+                ));
+
+            // 3️⃣ Pisahkan teks jadi token (huruf, angka, tanda baca, spasi)
+            const tokens = sanitized.match(/[\p{L}\p{N}\-']+|[^\p{L}\p{N}\s]+|\s+/gu) || [];
+
+            // 4️⃣ Bungkus hanya kata alfabet ke <span>
+            const result = tokens.map(token => {
+                // hanya huruf (alfabet, aksen, tanda hubung, apostrof)
+                if (/^[\p{L}\-']+$/u.test(token)) {
+                    const safeWord = escapeHtml(token);
+                    return `<span class="wikt-word" onclick="openWiktionary('${safeWord}', '${lang}')">${safeWord}</span>`;
+                }
+                return escapeHtml(token);
+            }).join('');
+
+            return result;
+        }
+
+        // Open Wiktionary for word
+        function openWiktionary(word, lang) {
+            window.open(`https://${lang}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
+        }
+
+        // Fetch article details from Wikipedia
         async function fetchArticleDetails(title, lang) {
             try {
                 const wikiUrl = `https://${lang}.wikipedia.org/w/api.php?` +
@@ -625,49 +1405,74 @@
                 const pages = wikiData.query.pages;
                 const page = Object.values(pages)[0];
 
-                const wiktionaryDef = await fetchWiktionaryDefinition(title, lang);
-
                 const wikidataId = page.pageprops?.wikibase_item || null;
 
                 return {
-                    description: page.extract || 'Deskripsi tidak tersedia',
+                    description: page.extract || t('description'),
                     image: page.thumbnail?.source || placeholderImage,
-                    wikidataId: wikidataId,
-                    wiktionaryDef: wiktionaryDef
+                    wikidataId: wikidataId
                 };
             } catch (error) {
                 console.error('Error mengambil detail artikel:', error);
                 return {
-                    description: 'Gagal memuat deskripsi',
+                    description: t('failedLoad'),
                     image: placeholderImage,
-                    wikidataId: null,
-                    wiktionaryDef: 'Gagal memuat definisi'
+                    wikidataId: null
                 };
             }
         }
 
+        // Fetch nearby articles (3km radius)
         async function fetchNearbyArticles(lat, lon, lang) {
             try {
-                resultsList.innerHTML = '<li class="loading">Memuat artikel...</li>';
-                const radius = 1000;
+                showLoading(t('loading'));
+                const radius = 3000;
                 const url = `https://${lang}.wikipedia.org/w/api.php?` +
                     `action=query&list=geosearch&gscoord=${lat}|${lon}&` +
                     `gsradius=${radius}&gslimit=100&format=json&origin=*`;
+
                 const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
+
+                if (!data.query || !data.query.geosearch) {
+                    throw new Error('Invalid response from Wikipedia API');
+                }
+
                 return data.query.geosearch;
             } catch (error) {
-                resultsList.innerHTML = `<li class="error">Gagal memuat artikel: ${error.message}</li>`;
+                console.error('Error fetching articles:', error);
+                showError(`Gagal memuat artikel: ${error.message}`);
                 return [];
             }
         }
 
+        // Display articles in list
         async function displayArticles(articles) {
             resultsList.innerHTML = '';
             if (articles.length === 0) {
-                resultsList.innerHTML = '<li>Tidak ada artikel ditemukan dalam radius 1km</li>';
+                resultsList.innerHTML = `<li>${t('noArticles')}</li>`;
                 return;
             }
+
+            // Tampilkan jumlah artikel
+            const titleSection = document.getElementById('results-title');
+            titleSection.textContent = `${t('resultsTitle')} (${articles.length})`;
+
+            // Simpan artikel original untuk filter
+            window.allArticles = articles;
+            window.filteredArticles = articles;
+
+            await renderArticles(articles);
+        }
+
+        // Render articles ke DOM
+        async function renderArticles(articles) {
+            resultsList.innerHTML = '';
 
             for (const article of articles) {
                 const details = await fetchArticleDetails(article.title, currentLang);
@@ -680,6 +1485,8 @@
 
                 const li = document.createElement('li');
                 li.className = 'article-card';
+                li.dataset.distance = distance;
+                li.dataset.name = article.title.toLowerCase();
 
                 const img = document.createElement('img');
                 img.src = details.image;
@@ -698,50 +1505,29 @@
 
                 const desc = document.createElement('div');
                 desc.className = 'description';
-                desc.textContent = details.description;
+                desc.innerHTML = highlightWiktionaryWords(details.description, currentLang);
                 contentDiv.appendChild(desc);
 
                 const dist = document.createElement('div');
                 dist.className = 'distance';
-                dist.textContent = `${distance} km jauhnya`;
+                dist.textContent = `${distance} ${t('distance')}`;
                 contentDiv.appendChild(dist);
 
                 const wd = document.createElement('div');
                 wd.className = 'wikidata';
                 if (details.wikidataId) {
-                    wd.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
+                    wd.innerHTML = `${t('wikidata')}: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
                 } else {
-                    wd.textContent = 'Wikidata: Tidak tersedia';
+                    wd.textContent = `${t('wikidata')}: T/A`;
                 }
                 contentDiv.appendChild(wd);
-
-                const wiktDiv = document.createElement('div');
-                wiktDiv.className = 'wiktionary';
-                const wiktTitle = document.createElement('span');
-                wiktTitle.textContent = 'Wiktionary: ';
-                wiktDiv.appendChild(wiktTitle);
-
-                const titleWords = article.title.split(' ').map(word =>
-                    word.replace(/[^\w\s]/g, '').toLowerCase()
-                ).filter(word => word.length > 0);
-
-                titleWords.forEach(word => {
-                    const wiktBtn = document.createElement('button');
-                    wiktBtn.textContent = word;
-                    wiktBtn.onclick = () => window.open(
-                        `https://${currentLang}.wiktionary.org/wiki/${encodeURIComponent(word)}`,
-                        '_blank'
-                    );
-                    wiktDiv.appendChild(wiktBtn);
-                });
-                contentDiv.appendChild(wiktDiv);
 
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'card-actions';
 
                 const routeBtn = document.createElement('button');
                 routeBtn.className = 'route-btn';
-                routeBtn.textContent = 'Tampilkan Rute';
+                routeBtn.textContent = t('showRoute');
                 routeBtn.onclick = () => showRoutePopup(
                     currentPosition.coords.latitude,
                     currentPosition.coords.longitude,
@@ -751,21 +1537,53 @@
                 );
                 actionsDiv.appendChild(routeBtn);
 
-                const googleMapsBtn = document.createElement('button');
-                googleMapsBtn.className = 'google-maps-btn';
-                googleMapsBtn.textContent = 'Buka di Google Maps';
-                googleMapsBtn.onclick = () => window.open(
-                    `https://www.google.com/maps?q=${article.lat},${article.lon}`,
-                    '_blank'
-                );
-                actionsDiv.appendChild(googleMapsBtn);
-
                 contentDiv.appendChild(actionsDiv);
                 li.appendChild(contentDiv);
                 resultsList.appendChild(li);
             }
         }
 
+        // Filter dan sort articles
+        function filterAndSortArticles() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const sortBy = document.getElementById('sort-select').value;
+
+            if (!window.allArticles) return;
+
+            // Filter by search term
+            let filtered = window.allArticles.filter(article =>
+                article.title.toLowerCase().includes(searchTerm)
+            );
+
+            // Sort
+            if (sortBy === 'distance') {
+                // Calculate distances untuk sorting
+                filtered.sort((a, b) => {
+                    const distA = calculateDistance(
+                        currentPosition.coords.latitude,
+                        currentPosition.coords.longitude,
+                        a.lat,
+                        a.lon
+                    );
+                    const distB = calculateDistance(
+                        currentPosition.coords.latitude,
+                        currentPosition.coords.longitude,
+                        b.lat,
+                        b.lon
+                    );
+                    return parseFloat(distA) - parseFloat(distB);
+                });
+            } else if (sortBy === 'name') {
+                filtered.sort((a, b) => a.title.localeCompare(b.title));
+            } else if (sortBy === 'name-desc') {
+                filtered.sort((a, b) => b.title.localeCompare(a.title));
+            }
+
+            window.filteredArticles = filtered;
+            renderArticles(filtered);
+        }
+
+        // Show route popup with map
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
             const overlay = document.createElement('div');
             overlay.className = 'overlay';
@@ -779,7 +1597,7 @@
 
             const popupTitle = document.createElement('div');
             popupTitle.className = 'popup-title';
-            popupTitle.textContent = `Rute ke ${title}`;
+            popupTitle.textContent = `${t('routeTo')}${title}`;
             popupHeader.appendChild(popupTitle);
 
             const closeBtn = document.createElement('button');
@@ -835,6 +1653,7 @@
             }).addTo(map);
         }
 
+        // Get Wikivoyage sitelink
         async function fetchWikivoyageSitelink(qid, lang) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=sitelinks&origin=*`;
@@ -851,24 +1670,24 @@
             }
         }
 
+        // Update location display
         async function updateLocationDisplay(lat, lon, locationParts) {
-            locationStatus.innerHTML = `<p>Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
+            locationStatus.innerHTML = `<p><a class="coord-link" onclick="window.open('https://www.google.com/maps/@${lat},${lon},15z', '_blank')">${t('coordinates')}: ${lat.toFixed(4)}, ${lon.toFixed(4)}</a></p>`;
             for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
                 const span = document.createElement('span');
                 const labels = {
-                    'road': 'Jalan',
-                    'postcode': 'Kode Pos',
-                    'suburb': 'Kelurahan',
-                    'city': 'Kota',
-                    'state': 'Provinsi',
-                    'country': 'Negara'
+                    'road': t('road'),
+                    'postcode': t('postcode'),
+                    'suburb': t('suburb'),
+                    'city': t('city'),
+                    'state': t('state'),
+                    'country': t('country')
                 };
                 span.textContent = `${labels[part.type] || part.type}: ${part.name}`;
                 div.appendChild(span);
 
-                // Only add buttons for types other than 'road' and 'postcode'
                 if (part.type !== 'road' && part.type !== 'postcode') {
                     const wdBtn = document.createElement('button');
                     wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
@@ -882,7 +1701,7 @@
                     div.appendChild(wdBtn);
 
                     const wvBtn = document.createElement('button');
-                    wvBtn.textContent = 'Wikivoyage';
+                    wvBtn.textContent = t('wikivoyage');
                     wvBtn.onclick = async () => {
                         if (part.wikidataId) {
                             const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
@@ -902,12 +1721,13 @@
             }
         }
 
+        // Get user location
         async function getLocation() {
             if (!navigator.geolocation) {
-                locationStatus.innerHTML = '<p class="error">Geolokasi tidak didukung</p>';
+                locationStatus.innerHTML = `<p class="error">Geolokasi tidak didukung</p>`;
                 return;
             }
-            locationStatus.innerHTML = '<p class="loading">Mengambil lokasi Anda...</p>';
+            locationStatus.innerHTML = `<p class="loading">${t('gettingLocation')}</p>`;
             return new Promise((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
@@ -922,7 +1742,7 @@
                         resolve();
                     },
                     (error) => {
-                        locationStatus.innerHTML = `<p class="error">Gagal mendapatkan lokasi: ${error.message}</p>`;
+                        locationStatus.innerHTML = `<p class="error">${t('failedLocation')}${error.message}</p>`;
                         updatePermissionStatus('denied');
                         console.error('Geolocation error:', error);
                         reject(error);
@@ -936,37 +1756,194 @@
             });
         }
 
+        // Function untuk search/refresh articles
         async function searchArticles() {
-            const permissionState = await checkLocationPermission();
-            if (permissionState === 'granted' && currentPosition) {
-                const lat = currentPosition.coords.latitude;
-                const lon = currentPosition.coords.longitude;
-                const locationParts = await getLocationDetails(lat, lon);
-                await updateLocationDisplay(lat, lon, locationParts);
-                const articles = await fetchNearbyArticles(lat, lon, currentLang);
-                await displayArticles(articles);
-            } else if (permissionState === 'prompt' || permissionState === 'denied' || !currentPosition) {
+            try {
+                // Cek apakah geolocation tersedia
+                if (!navigator.geolocation) {
+                    locationStatus.innerHTML = `<p class="error">Geolokasi tidak didukung di browser ini</p>`;
+                    return;
+                }
+
+                // Reset current position untuk force refresh
+                currentPosition = null;
+
+                // Tampilkan loading state
+                permissionStatus.textContent = t('gettingLocation');
+                permissionStatus.className = 'pending';
+                locationStatus.innerHTML = `<p class="loading">${t('gettingLocation')}</p>`;
+                resultsList.innerHTML = `<li class="loading">${t('loading')}</li>`;
+
+                // Get location baru
                 await getLocation();
+
+            } catch (error) {
+                console.error('Error searching articles:', error);
+                locationStatus.innerHTML = `<p class="error">${t('failedLocation')}${error.message}</p>`;
+                resultsList.innerHTML = `<li class="error">Gagal memuat artikel: ${error.message}</li>`;
             }
         }
 
+        // ========================================
+        // FUNCTION UPDATE LANGUAGE
+        // ========================================
+        function updateLanguage(lang) {
+            const t = translations[lang];
+
+            // Update Header Right
+            const guideBtn = document.getElementById('guide-btn');
+            const checkBtn = document.getElementById('check-permission');
+
+            if (guideBtn) {
+                guideBtn.textContent = `📖 ${t.guideBtn}`;
+                guideBtn.title = t.guideBtnTitle;
+            }
+
+            if (checkBtn) {
+                checkBtn.textContent = `🔍 ${t.searchArticles}`;
+            }
+
+            // Update Modal Guide Title
+            const guideTitle = document.getElementById('guide-title');
+            if (guideTitle) guideTitle.textContent = t.guideTitle;
+
+            // Section 1: Fitur Utama
+            const featuresTitle = document.getElementById('guide-features-title');
+            const searchTitle = document.getElementById('guide-search-title');
+            const searchDesc = document.getElementById('guide-search-desc');
+            const routeTitle = document.getElementById('guide-route-title');
+            const routeDesc = document.getElementById('guide-route-desc');
+            const wiktTitle = document.getElementById('guide-wikt-title');
+            const wiktDesc = document.getElementById('guide-wikt-desc');
+
+            if (featuresTitle) featuresTitle.textContent = t.guideMainFeatures;
+            if (searchTitle) searchTitle.textContent = t.guideSearchArticle;
+            if (searchDesc) searchDesc.textContent = t.guideSearchDesc;
+            if (routeTitle) routeTitle.textContent = t.guideRoute;
+            if (routeDesc) routeDesc.textContent = t.guideRouteDesc;
+            if (wiktTitle) wiktTitle.textContent = t.guideWiktionary;
+            if (wiktDesc) wiktDesc.textContent = t.guideWiktionaryDesc;
+
+            // Section 2: Pencarian & Penyaringan
+            const searchFilterTitle = document.getElementById('guide-search-filter-title');
+            const searchboxTitle = document.getElementById('guide-searchbox-title');
+            const searchboxDesc = document.getElementById('guide-searchbox-desc');
+            const sortingTitle = document.getElementById('guide-sorting-title');
+            const sortingDesc = document.getElementById('guide-sorting-desc');
+
+            if (searchFilterTitle) searchFilterTitle.textContent = t.guideSearchFilter;
+            if (searchboxTitle) searchboxTitle.textContent = t.guideSearchBox;
+            if (searchboxDesc) searchboxDesc.textContent = t.guideSearchBoxDesc;
+            if (sortingTitle) sortingTitle.textContent = t.guideSorting;
+            if (sortingDesc) sortingDesc.textContent = t.guideSortingDesc;
+
+            // Section 3: Pengaturan
+            const settingsTitle = document.getElementById('guide-settings-title');
+            const themeTitle = document.getElementById('guide-theme-title');
+            const themeDesc = document.getElementById('guide-theme-desc');
+            const langTitle = document.getElementById('guide-lang-title');
+            const langDesc = document.getElementById('guide-lang-desc');
+
+            if (settingsTitle) settingsTitle.textContent = t.guideSettings;
+            if (themeTitle) themeTitle.textContent = t.guideTheme;
+            if (themeDesc) themeDesc.textContent = t.guideThemeDesc;
+            if (langTitle) langTitle.textContent = t.guideLanguage;
+            if (langDesc) langDesc.textContent = t.guideLanguageDesc;
+
+            // Section 4: Lokasi & Konten
+            const locationTitle = document.getElementById('guide-location-title');
+            const locationDesc = document.getElementById('guide-location-desc');
+            const contentImage = document.getElementById('guide-content-image');
+            const contentDesc = document.getElementById('guide-content-desc');
+            const contentDistance = document.getElementById('guide-content-distance');
+            const contentWikidata = document.getElementById('guide-content-wikidata');
+
+            if (locationTitle) locationTitle.textContent = t.guideLocationContent;
+            if (locationDesc) locationDesc.textContent = t.guideLocationContentDesc;
+            if (contentImage) contentImage.textContent = t.guideContentImage;
+            if (contentDesc) contentDesc.textContent = t.guideContentDescription;
+            if (contentDistance) contentDistance.textContent = t.guideContentDistance;
+            if (contentWikidata) contentWikidata.textContent = t.guideContentWikidata;
+        }
+
+        // Language change event
         languageSelect.addEventListener('change', () => {
             currentLang = languageSelect.value;
+            localStorage.setItem('wikilokal-language', currentLang);
+            updateLanguage(currentLang);
+            updateLabels();
             if (currentPosition) {
                 searchArticles();
             }
         });
 
+        // Modal close handler (jika belum ada)
+        const modalCloseBtn = document.querySelector('.modal-close');
+        const modal = document.getElementById('guide-modal');
+
+        if (modalCloseBtn && modal) {
+            modalCloseBtn.addEventListener('click', () => {
+                modal.classList.remove('show');
+            });
+        }
+
+
+        // Search button event - reset articles
         checkPermissionBtn.addEventListener('click', async () => {
             await searchArticles();
         });
 
+        // Guide button
+        document.getElementById('guide-btn').addEventListener('click', () => {
+            document.getElementById('guide-modal').classList.add('show');
+        });
+
+        // Close guide modal
+        function closeGuideModal() {
+            document.getElementById('guide-modal').classList.remove('show');
+        }
+
+        // Close modal saat klik overlay
+        document.getElementById('guide-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'guide-modal') {
+                closeGuideModal();
+            }
+        });
+
+        // Search input filter
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                filterAndSortArticles();
+            });
+        }
+
+        // Make functions available globally
+        window.closeGuideModal = closeGuideModal;
+
+        // Initialize on page load
         window.onload = async () => {
+            // Load saved language
+            const savedLang = localStorage.getItem('wikilokal-language') || 'id';
+            currentLang = savedLang;
+            updateLanguage(currentLang);
+            languageSelect.value = savedLang;
+
+            // Initialize theme
+            initTheme();
+
+            // Update labels
+            updateLabels();
+
+            // Check initial permission
             const initialPermission = await checkLocationPermission();
             if (initialPermission === 'granted') {
                 await getLocation();
             }
         };
+
+        // Make openWiktionary available globally
+        window.openWiktionary = openWiktionary;
     </script>
 </body>
 
