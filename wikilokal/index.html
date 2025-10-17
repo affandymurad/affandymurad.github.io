@@ -1391,27 +1391,37 @@
         function highlightWiktionaryWords(description, lang) {
             if (!description) return '';
 
-            // 1️⃣ Hapus tag HTML & script berbahaya
+            // 1️⃣ Sanitize input — remove scripts & HTML tags
             const sanitized = description
                 .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
                 .replace(/<\/?[^>]+(>|$)/g, '');
 
-            // 2️⃣ Escape karakter HTML
+            // 2️⃣ Escape HTML special characters
             const escapeHtml = (text) =>
                 text.replace(/[&<>"']/g, (m) => (
                     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]
                 ));
 
-            // 3️⃣ Pisahkan teks jadi token (huruf, angka, tanda baca, spasi)
+            // 3️⃣ Split text into tokens (letters, numbers, punctuation, spaces)
             const tokens = sanitized.match(/[\p{L}\p{N}\-']+|[^\p{L}\p{N}\s]+|\s+/gu) || [];
 
-            // 4️⃣ Bungkus hanya kata alfabet ke <span>
+            // 4️⃣ Track already-highlighted words (case-insensitive)
+            const seen = new Set();
+
+            // 5️⃣ Process tokens
             const result = tokens.map(token => {
-                // hanya huruf (alfabet, aksen, tanda hubung, apostrof)
+                // check if it's a word
                 if (/^[\p{L}\-']+$/u.test(token)) {
-                    const safeWord = escapeHtml(token);
-                    return `<span class="wikt-word" onclick="openWiktionary('${safeWord}', '${lang}')">${safeWord}</span>`;
+                    const lower = token.toLowerCase();
+
+                    // highlight only first occurrence
+                    if (!seen.has(lower)) {
+                        seen.add(lower);
+                        const safeWord = escapeHtml(token);
+                        return `<span class="wikt-word" onclick="openWiktionary('${safeWord}', '${lang}')">${safeWord}</span>`;
+                    }
                 }
+                // otherwise or if already seen — just escape as normal
                 return escapeHtml(token);
             }).join('');
 
