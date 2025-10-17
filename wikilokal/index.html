@@ -35,6 +35,36 @@
             --border-color: #374151;
         }
 
+        /* ✅ Fix Leaflet Routing Machine colors in dark mode */
+        [data-theme="dark"] .leaflet-routing-container {
+            background-color: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .leaflet-routing-container * {
+            color: var(--text-color) !important;
+        }
+
+        [data-theme="dark"] .leaflet-routing-alt,
+        [data-theme="dark"] .leaflet-routing-alt * {
+            background-color: var(--card-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        [data-theme="dark"] .leaflet-routing-collapse-btn {
+            background-color: var(--primary-color) !important;
+            color: #fff !important;
+        }
+
+        [data-theme="dark"] .leaflet-routing-container a {
+            color: var(--accent-color) !important;
+        }
+
+        [data-theme="dark"] .leaflet-routing-container a:hover {
+            color: var(--primary-color) !important;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -905,7 +935,7 @@
         const translations = {
             id: {
                 mainTitle: 'Artikel WikiLokal Terdekat',
-                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi Anda',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 1km dari lokasi Anda',
                 theme: 'Tema',
                 language: 'Bahasa',
                 locationTitle: 'Status Lokasi',
@@ -924,7 +954,7 @@
                 openMaps: 'Buka di Google Maps',
                 distance: 'km jauhnya',
                 loading: 'Memuat artikel...',
-                noArticles: 'Tidak ada artikel ditemukan dalam radius 3km',
+                noArticles: 'Tidak ada artikel ditemukan dalam radius 1km',
                 description: 'Deskripsi tidak tersedia',
                 failedLoad: 'Gagal memuat deskripsi',
                 permissionGranted: 'diizinkan',
@@ -967,7 +997,7 @@
             },
             ms: {
                 mainTitle: 'Artikel WikiLokal Terdekat',
-                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi Anda',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 1km dari lokasi Anda',
                 theme: 'Tema',
                 language: 'Bahasa',
                 locationTitle: 'Status Lokasi',
@@ -986,7 +1016,7 @@
                 openMaps: 'Buka di Google Maps',
                 distance: 'km jauhnya',
                 loading: 'Memuatkan artikel...',
-                noArticles: 'Tiada artikel dijumpai dalam radius 3km',
+                noArticles: 'Tiada artikel dijumpai dalam radius 1km',
                 description: 'Penerangan tidak tersedia',
                 failedLoad: 'Gagal memuatkan penerangan',
                 permissionGranted: 'dibenarkan',
@@ -1029,7 +1059,7 @@
             },
             en: {
                 mainTitle: 'Nearest WikiLocal Articles',
-                mainSubtitle: 'Explore Wikipedia within 3km radius of your location',
+                mainSubtitle: 'Explore Wikipedia within 1km radius of your location',
                 theme: 'Theme',
                 language: 'Language',
                 locationTitle: 'Location Status',
@@ -1048,7 +1078,7 @@
                 openMaps: 'Open in Google Maps',
                 distance: 'km away',
                 loading: 'Loading articles...',
-                noArticles: 'No articles found within 3km radius',
+                noArticles: 'No articles found within 1km radius',
                 description: 'Description not available',
                 failedLoad: 'Failed to load description',
                 permissionGranted: 'granted',
@@ -1091,7 +1121,7 @@
             },
             bew: {
                 mainTitle: 'Artikel WikiLokal Paling Deket',
-                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi loe',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 1km dari lokasi loe',
                 theme: 'Tema',
                 language: 'Bahasa',
                 locationTitle: 'Status Lokasi',
@@ -1110,7 +1140,7 @@
                 openMaps: 'Buka di Google Maps',
                 distance: 'km jauhnya',
                 loading: 'Muatin artikel...',
-                noArticles: 'Gak ada artikel dalam radius 3km',
+                noArticles: 'Gak ada artikel dalam radius ',
                 description: 'Deskripsi gak ada',
                 failedLoad: 'Gagal muatin deskripsi',
                 permissionGranted: 'diizinkan',
