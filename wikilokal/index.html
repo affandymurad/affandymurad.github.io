@@ -1430,7 +1430,8 @@
 
         // Open Wiktionary for word
         function openWiktionary(word, lang) {
-            window.open(`https://${lang}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
+            const lowerWord = word.toLowerCase();
+            window.open(`https://${lang}.wiktionary.org/wiki/${encodeURIComponent(lowerWord)}`, '_blank');
         }
 
         // Fetch article details from Wikipedia
