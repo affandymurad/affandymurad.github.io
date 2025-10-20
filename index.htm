@@ -32,6 +32,17 @@
             <a href="#portfolio" class="menu-item">Portfolio</a>
         </div>
     </nav>
+    <!-- 1. LANGUAGE DROPDOWN (tambahkan sebelum dark-mode-toggle) -->
+    <div class="language-dropdown" id="language-dropdown">
+        <button class="language-toggle" id="language-toggle">
+            <span class="lang-text">EN</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="language-menu" id="language-menu">
+            <button class="language-option" data-lang="EN">English</button>
+            <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
+        </div>
+    </div>
 
     <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="dark-mode-toggle">
@@ -42,8 +53,8 @@
         <!-- Header - Revamped -->
         <header>
             <div class="profile-container">
-                <img src="https://pbs.twimg.com/profile_images/1907354832517967873/n3isExfo_400x400.jpg"
-                    alt="Affandy Murad Profile" class="profile-image">
+                <img src="https://pbs.twimg.com/media/GnhJIodbUAA2rdk?format=jpg" alt="Affandy Murad Profile"
+                    class="profile-image">
                 <!-- <div class="status-badge">
                     <div class="status-indicator"></div>
                     Available for opportunities
@@ -101,57 +112,69 @@
             <h2><i class="fas fa-briefcase"></i>Experience</h2>
             <div class="experience-grid">
                 <div class="experience-card">
+                    <div class="country-badge">Indonesia</div>
                     <div class="experience-header">
-                        <span class="company-name">🇮🇩&nbsp;Korindo Group</span>
+                        <span class="company-name">Korindo Group</span>
                         <img src="images/company/logo_korindo.svg" alt="Korindo" class="company-icon">
                     </div>
                     <div class="position">IT Supervisor</div>
                     <div class="duration">June 2023 - Present</div>
+                    <div class="description">Managing IT infrastructure and team supervision</div>
                 </div>
 
                 <div class="experience-card">
+                    <div class="country-badge">Indonesia</div>
                     <div class="experience-header">
-                        <span class="company-name">🇮🇩&nbsp;PT Hitachi Channel Solutions</span>
+                        <span class="company-name">PT Hitachi Channel Solutions</span>
                         <img src="images/company/logo_hitachi.svg" alt="HCS" class="company-icon">
                     </div>
                     <div class="position">TSS Senior Executive</div>
                     <div class="duration">September 2022 - June 2023</div>
+                    <div class="description">Managing IT infrastructure and team supervision</div>
                 </div>
 
                 <div class="experience-card">
+                    <div class="country-badge">Indonesia</div>
                     <div class="experience-header">
-                        <span class="company-name">🇮🇩&nbsp;PT Docotel Teknologi Indonesia</span>
+                        <span class="company-name">PT Docotel Teknologi Indonesia</span>
                         <img src="images/company/logo_dti.svg" alt="HCS" class="company-icon">
                     </div>
                     <div class="position">Mobile Developer</div>
                     <div class="duration">September 2022 - June 2023</div>
+                    <div class="description">Managing IT infrastructure and team supervision</div>
                 </div>
 
                 <div class="experience-card">
+                    <div class="country-badge">Indonesia</div>
                     <div class="experience-header">
-                        <span class="company-name">🇮🇩&nbsp;PT Otten Coffee Indonesia</span>
+                        <span class="company-name">PT Otten Coffee Indonesia</span>
                         <img src="images/company/logo_otten.svg" alt="Otten" class="company-icon">
                     </div>
                     <div class="position">iOS Developer</div>
                     <div class="duration">November 2020 – September 2022</div>
+                    <div class="description">Managing IT infrastructure and team supervision</div>
                 </div>
 
                 <div class="experience-card">
+                    <div class="country-badge">Malaysia</div>
                     <div class="experience-header">
-                        <span class="company-name">🇲🇾&nbsp;Hitachi eBWorx Sdn Bhd</span>
+                        <span class="company-name">Hitachi eBWorx Sdn Bhd</span>
                         <img src="images/company/logo_hitachi.svg" alt="eBWorx" class="company-icon">
                     </div>
                     <div class="position">Associate Mobile Engineer</div>
                     <div class="duration">November 2016 – October 2017</div>
+                    <div class="description">Managing IT infrastructure and team supervision</div>
                 </div>
 
                 <div class="experience-card">
+                    <div class="country-badge">Indonesia</div>
                     <div class="experience-header">
-                        <span class="company-name">🇮🇩&nbsp;Bank Jakarta</span>
+                        <span class="company-name">Bank Jakarta</span>
                         <img src="images/company/logo_bank_jakarta.svg" alt="eBWorx" class="company-icon">
                     </div>
                     <div class="position">Customer Service Officer</div>
                     <div class="duration">November 2016 – October 2017</div>
+                    <div class="description">Managing IT infrastructure and team supervision</div>
                 </div>
             </div>
         </section>
@@ -160,8 +183,9 @@
         <section class="section" id="education">
             <h2><i class="fas fa-graduation-cap"></i>Education</h2>
             <div class="experience-card">
+                <div class="country-badge">🇮🇩 Indonesia</div>
                 <div class="experience-header">
-                    <span class="company-name">🇮🇩&nbsp;Gunadarma University</span>
+                    <span class="company-name">Gunadarma University</span>
                     <img src="images/company/logo_ug.svg" alt="Gunadarma" class="company-icon">
                 </div>
                 <div class="position">Bachelor of Computer Systems</div>
@@ -306,6 +330,111 @@
                 });
             });
         });
+
+        const translations = {
+            EN: {
+                experience: "Experience",
+                education: "Education",
+                skills: "Skills",
+                portfolio: "Portfolio",
+                achievements: "Achievements",
+                contact: "Contact",
+                descriptions: {
+                    korindo: "Managing IT infrastructure and team supervision",
+                    hitachi: "Technical support and customer service leadership",
+                    hitachiMY: "Mobile application development and engineering",
+                    docotel: "Mobile application development",
+                    otten: "iOS development and maintenance",
+                    bankjakarta: "Customer service and banking operations"
+                }
+            },
+            ID: {
+                experience: "Pengalaman",
+                education: "Pendidikan",
+                skills: "Keahlian",
+                portfolio: "Portofolio",
+                achievements: "Pencapaian",
+                contact: "Kontak",
+                descriptions: {
+                    korindo: "Mengelola infrastruktur IT dan supervisi tim",
+                    hitachi: "Kepemimpinan dukungan teknis dan layanan pelanggan",
+                    hitachiMY: "Pengembangan aplikasi mobile dan rekayasa",
+                    docotel: "Pengembangan aplikasi mobile",
+                    otten: "Pengembangan dan pemeliharaan iOS",
+                    bankjakarta: "Layanan pelanggan dan operasi perbankan"
+                }
+            }
+        };
+
+        let currentLang = 'EN';
+        const toggleBtn = document.getElementById('language-toggle');
+        const menu = document.getElementById('language-menu');
+        const options = document.querySelectorAll('.language-option');
+
+        // Toggle dropdown
+        toggleBtn.addEventListener('click', () => {
+            menu.classList.toggle('active');
+            toggleBtn.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('language-dropdown');
+            if (!dropdown.contains(e.target)) {
+                menu.classList.remove('active');
+                toggleBtn.classList.remove('active');
+            }
+        });
+
+        // Language selection
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.getAttribute('data-lang');
+
+                currentLang = lang;
+                document.querySelector('.lang-text').textContent = lang;
+
+                // Update active state
+                options.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+
+                // Close menu
+                menu.classList.remove('active');
+                toggleBtn.classList.remove('active');
+
+                updatePageLanguage();
+            });
+        });
+
+        // Set initial active state
+        document.querySelector(`[data-lang="EN"]`).classList.add('active');
+
+        function updatePageLanguage() {
+            const t = translations[currentLang];
+
+            // Update section titles
+            document.querySelectorAll('.section h2').forEach(h2 => {
+                const icon = h2.querySelector('i');
+
+                if (h2.textContent.includes('Experience')) h2.innerHTML = `<i class="${icon.className}"></i>${t.experience}`;
+                if (h2.textContent.includes('Education')) h2.innerHTML = `<i class="${icon.className}"></i>${t.education}`;
+                if (h2.textContent.includes('Skills')) h2.innerHTML = `<i class="${icon.className}"></i>${t.skills}`;
+                if (h2.textContent.includes('Portfolio')) h2.innerHTML = `<i class="${icon.className}"></i>${t.portfolio}`;
+            });
+
+            // Update descriptions
+            document.querySelectorAll('.description').forEach(desc => {
+                const parent = desc.closest('.experience-card');
+                const companyName = parent.querySelector('.company-name').textContent;
+
+                if (companyName.includes('Korindo')) desc.textContent = t.descriptions.korindo;
+                else if (companyName.includes('Hitachi Channel')) desc.textContent = t.descriptions.hitachi;
+                else if (companyName.includes('Hitachi eBWorx')) desc.textContent = t.descriptions.hitachiMY;
+                else if (companyName.includes('Docotel')) desc.textContent = t.descriptions.docotel;
+                else if (companyName.includes('Otten')) desc.textContent = t.descriptions.otten;
+                else if (companyName.includes('Bank')) desc.textContent = t.descriptions.bankjakarta;
+            });
+        }
     </script>
 </body>
 
