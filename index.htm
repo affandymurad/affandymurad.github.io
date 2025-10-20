@@ -273,6 +273,7 @@
             const body = document.body;
             const menuToggle = document.getElementById("menu-toggle");
             const menuItems = document.getElementById("menu-items");
+            const carbonBadge = document.getElementById("wcb");
 
             // Dark mode functionality
             const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
@@ -284,6 +285,14 @@
                     : "fas fa-moon";
             };
 
+            const updateCarbonBadge = () => {
+                if (body.classList.contains("dark-mode")) {
+                    carbonBadge.classList.add("wcb-d");
+                } else {
+                    carbonBadge.classList.remove("wcb-d");
+                }
+            };
+
             const applySystemDarkMode = () => {
                 if (prefersDarkMode.matches) {
                     body.classList.add("dark-mode");
@@ -291,6 +300,7 @@
                     body.classList.remove("dark-mode");
                 }
                 updateDarkModeIcon();
+                updateCarbonBadge();
             };
 
             applySystemDarkMode();
@@ -299,6 +309,7 @@
             darkModeToggle.addEventListener("click", () => {
                 body.classList.toggle("dark-mode");
                 updateDarkModeIcon();
+                updateCarbonBadge();
             });
 
             // Mobile menu functionality
