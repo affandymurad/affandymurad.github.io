@@ -862,6 +862,41 @@
                 <button class="modal-close">&times;</button>
             </div>
 
+            <!-- Section 0: Penafian Lokasi -->
+            <div class="guide-section" data-section="disclaimer">
+                <h3 id="guide-disclaimer-title">⚠️ Penafian Penggunaan Lokasi</h3>
+                <p id="guide-disclaimer-how"><strong id="guide-disclaimer-how-title">Bagaimana Wikilokal Menggunakan
+                        Lokasi Anda:</strong></p>
+                <p id="guide-disclaimer-how-desc">Wikilokal hanya menggunakan koordinat lokasi Anda
+                    <strong>sementara</strong> untuk menemukan artikel Wikipedia, Wikivoyage, dan Wiktionary yang
+                    memiliki data geografis di sekitar Anda. Data lokasi <strong>tidak disimpan</strong> dan
+                    <strong>tidak dibagikan</strong> ke pihak lain.
+                </p>
+
+                <br />
+                <p id="guide-disclaimer-warning-title"><strong>⚠️ Peringatan Penting:</strong></p>
+                <p id="guide-disclaimer-warning-desc">Hati-hati saat mengambil screenshot atau memotret layar. Alamat
+                    lengkap Anda mungkin terlihat dan dapat mengungkap lokasi Anda saat ini.</p>
+
+                <p id="guide-disclaimer-use-title"><strong id="guide-disclaimer-use-strong">Gunakan fitur ini hanya
+                        saat:</strong></p>
+                <ul>
+                    <li id="guide-disclaimer-use-safe">Anda berada di tempat yang aman</li>
+                    <li id="guide-disclaimer-use-conducive">Kondisi memungkinkan untuk berbagi lokasi</li>
+                </ul>
+
+                <br />
+                <p id="guide-disclaimer-privacy-title"><strong>🔒 Privasi Anda:</strong></p>
+                <ul>
+                    <li id="guide-disclaimer-privacy-law">Mematuhi hukum dan ketentuan privasi yang berlaku</li>
+                    <li id="guide-disclaimer-privacy-temp">Menggunakan data lokasi hanya untuk keperluan pencarian
+                        artikel</li>
+                    <li id="guide-disclaimer-privacy-no-save">Tidak menyimpan riwayat lokasi Anda</li>
+                </ul>
+            </div>
+
+            <br />
+
             <!-- Section 1: Fitur Utama -->
             <div class="guide-section" data-section="features">
                 <h3 id="guide-features-title">🎯 Fitur Utama</h3>
@@ -879,21 +914,6 @@
                     <li>
                         <strong id="guide-wikt-title">Wiktionary:</strong>
                         <span id="guide-wikt-desc">Klik kata dalam deskripsi untuk mencari definisi</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Section 2: Pencarian & Penyaringan -->
-            <div class="guide-section" data-section="search">
-                <h3 id="guide-search-filter-title">🔍 Pencarian & Penyaringan</h3>
-                <ul>
-                    <li>
-                        <strong id="guide-searchbox-title">Kotak Pencarian:</strong>
-                        <span id="guide-searchbox-desc">Cari artikel berdasarkan nama/judul</span>
-                    </li>
-                    <li>
-                        <strong id="guide-sorting-title">Pengurutan:</strong>
-                        <span id="guide-sorting-desc">Urutkan hasil berdasarkan jarak terdekat atau nama</span>
                     </li>
                 </ul>
             </div>
@@ -993,7 +1013,21 @@
                 guideContentImage: 'Gambar sampul dari Wikipedia',
                 guideContentDescription: 'Deskripsi singkat (kata-kata interaktif ke Wiktionary)',
                 guideContentDistance: 'Jarak dari lokasi Anda',
-                guideContentWikidata: 'ID Wikidata untuk referensi lebih lanjut'
+                guideContentWikidata: 'ID Wikidata untuk referensi lebih lanjut',
+
+                // Tambahkan di akhir object translations.id (sebelum kurung kurawal penutup)
+                guideDisclaimerTitle: '⚠️ Penafian Penggunaan Lokasi',
+                guideDisclaimerHow: 'Bagaimana Wikilokal Menggunakan Lokasi Anda:',
+                guideDisclaimerHowDesc: 'Wikilokal hanya menggunakan koordinat lokasi Anda sementara untuk menemukan artikel Wikipedia, Wikivoyage, dan Wiktionary yang memiliki data geografis di sekitar Anda. Data lokasi tidak disimpan dan tidak dibagikan ke pihak lain.',
+                guideDisclaimerWarningTitle: '⚠️ Peringatan Penting:',
+                guideDisclaimerWarningDesc: 'Hati-hati saat mengambil screenshot atau memotret layar. Alamat lengkap Anda mungkin terlihat dan dapat mengungkap lokasi Anda saat ini.',
+                guideDisclaimerUseTitle: 'Gunakan fitur ini hanya saat:',
+                guideDisclaimerUseSafe: 'Anda berada di tempat yang aman',
+                guideDisclaimerUseConducive: 'Kondisi memungkinkan untuk berbagi lokasi',
+                guideDisclaimerPrivacyTitle: '🔒 Privasi Anda:',
+                guideDisclaimerPrivacyLaw: 'Mematuhi hukum dan ketentuan privasi yang berlaku',
+                guideDisclaimerPrivacyTemp: 'Menggunakan data lokasi hanya untuk keperluan pencarian artikel',
+                guideDisclaimerPrivacyNoSave: 'Tidak menyimpan riwayat lokasi Anda'
             },
             ms: {
                 mainTitle: 'Artikel WikiLokal Terdekat',
@@ -1055,7 +1089,21 @@
                 guideContentImage: 'Imej kulit dari Wikipedia',
                 guideContentDescription: 'Penerangan ringkas (perkataan interaktif ke Wiktionary)',
                 guideContentDistance: 'Jarak dari lokasi Anda',
-                guideContentWikidata: 'ID Wikidata untuk rujukan lanjut'
+                guideContentWikidata: 'ID Wikidata untuk rujukan lanjut',
+
+                // Tambahkan di akhir object translations.ms
+                guideDisclaimerTitle: '⚠️ Penafian Penggunaan Lokasi',
+                guideDisclaimerHow: 'Bagaimana Wikilokal Menggunakan Lokasi Anda:',
+                guideDisclaimerHowDesc: 'Wikilokal hanya menggunakan koordinat lokasi Anda sementara untuk mencari artikel Wikipedia, Wikivoyage, dan Wiktionary yang mempunyai data geografi di sekitar Anda. Data lokasi tidak disimpan dan tidak dikongsi kepada pihak lain.',
+                guideDisclaimerWarningTitle: '⚠️ Amaran Penting:',
+                guideDisclaimerWarningDesc: 'Berhati-hati ketika mengambil tangkapan skrin. Alamat lengkap Anda mungkin kelihatan dan boleh mendedahkan lokasi semasa Anda.',
+                guideDisclaimerUseTitle: 'Gunakan ciri ini hanya apabila:',
+                guideDisclaimerUseSafe: 'Anda berada di tempat yang selamat',
+                guideDisclaimerUseConducive: 'Keadaan membenarkan untuk berkongsi lokasi',
+                guideDisclaimerPrivacyTitle: '🔒 Privasi Anda:',
+                guideDisclaimerPrivacyLaw: 'Mematuhi undang-undang dan ketentuan privasi yang berkuat kuasa',
+                guideDisclaimerPrivacyTemp: 'Menggunakan data lokasi hanya untuk keperluan pencarian artikel',
+                guideDisclaimerPrivacyNoSave: 'Tidak menyimpan sejarah lokasi Anda'
             },
             en: {
                 mainTitle: 'Nearest WikiLocal Articles',
@@ -1117,7 +1165,21 @@
                 guideContentImage: 'Cover image from Wikipedia',
                 guideContentDescription: 'Brief description (interactive words link to Wiktionary)',
                 guideContentDistance: 'Distance from your location',
-                guideContentWikidata: 'Wikidata ID for further reference'
+                guideContentWikidata: 'Wikidata ID for further reference',
+
+                // Tambahkan di akhir object translations.en
+                guideDisclaimerTitle: '⚠️ Location Usage Disclaimer',
+                guideDisclaimerHow: 'How Wikilokal Uses Your Location:',
+                guideDisclaimerHowDesc: 'Wikilokal only uses your location coordinates temporarily to find Wikipedia, Wikivoyage, and Wiktionary articles with geographic data around you. Location data is not stored and not shared with third parties.',
+                guideDisclaimerWarningTitle: '⚠️ Important Warning:',
+                guideDisclaimerWarningDesc: 'Be careful when taking screenshots. Your complete address may be visible and could expose your current location.',
+                guideDisclaimerUseTitle: 'Use this feature only when:',
+                guideDisclaimerUseSafe: 'You are in a safe place',
+                guideDisclaimerUseConducive: 'Conditions allow for location sharing',
+                guideDisclaimerPrivacyTitle: '🔒 Your Privacy:',
+                guideDisclaimerPrivacyLaw: 'Complying with applicable laws and privacy regulations',
+                guideDisclaimerPrivacyTemp: 'Using location data only for article search purposes',
+                guideDisclaimerPrivacyNoSave: 'Not storing your location history'
             },
             bew: {
                 mainTitle: 'Artikel WikiLokal Paling Deket',
@@ -1179,7 +1241,21 @@
                 guideContentImage: 'Gambar sampul dari Wikipedia',
                 guideContentDescription: 'Deskripsi singkat (kata-kata interaktif ke Wiktionary)',
                 guideContentDistance: 'Jarak dari lokasi loe',
-                guideContentWikidata: 'ID Wikidata buat referensi lanjutan'
+                guideContentWikidata: 'ID Wikidata buat referensi lanjutan',
+
+                // Tambahkan di akhir object translations.bew
+                guideDisclaimerTitle: '⚠️ Penafian Pemakaian Lokasi',
+                guideDisclaimerHow: 'Gimana Wikilokal Pake Lokasi Loe:',
+                guideDisclaimerHowDesc: 'Wikilokal cuman pake koordinat lokasi loe sementara buat nemuin artikel Wikipedia, Wikivoyage, sama Wiktionary yang punya data geografis di sekit loe. Data lokasi gak disimpen dan gak dibagi ke pihak laen.',
+                guideDisclaimerWarningTitle: '⚠️ Peringatan Penting:',
+                guideDisclaimerWarningDesc: 'Ati-ati kalo loe ngambil screenshot. Alamat lengkap loe bisa keliatan dan bisa ngebuka lokasi loe sekarang.',
+                guideDisclaimerUseTitle: 'Pake fitur ini cuman kalo:',
+                guideDisclaimerUseSafe: 'Loe lagi di tempat yang aman',
+                guideDisclaimerUseConducive: 'Kondisinya ngijinin buat bagi lokasi',
+                guideDisclaimerPrivacyTitle: '🔒 Privasi Loe:',
+                guideDisclaimerPrivacyLaw: 'Nurut sama hukum dan ketentuan privasi yang berlaku',
+                guideDisclaimerPrivacyTemp: 'Pake data lokasi cuman buat keperluan nyari artikel',
+                guideDisclaimerPrivacyNoSave: 'Gak nyimpen riwayat lokasi loe'
             }
         };
 
@@ -1848,6 +1924,33 @@
             const guideTitle = document.getElementById('guide-title');
             if (guideTitle) guideTitle.textContent = t.guideTitle;
 
+            // Section 0: Penafian Lokasi
+            const disclaimerTitle = document.getElementById('guide-disclaimer-title');
+            const disclaimerHowTitle = document.getElementById('guide-disclaimer-how-title');
+            const disclaimerHowDesc = document.getElementById('guide-disclaimer-how-desc');
+            const disclaimerWarningTitle = document.getElementById('guide-disclaimer-warning-title');
+            const disclaimerWarningDesc = document.getElementById('guide-disclaimer-warning-desc');
+            const disclaimerUseTitle = document.getElementById('guide-disclaimer-use-strong');
+            const disclaimerUseSafe = document.getElementById('guide-disclaimer-use-safe');
+            const disclaimerUseConducive = document.getElementById('guide-disclaimer-use-conducive');
+            const disclaimerPrivacyTitle = document.getElementById('guide-disclaimer-privacy-title');
+            const disclaimerPrivacyLaw = document.getElementById('guide-disclaimer-privacy-law');
+            const disclaimerPrivacyTemp = document.getElementById('guide-disclaimer-privacy-temp');
+            const disclaimerPrivacyNoSave = document.getElementById('guide-disclaimer-privacy-no-save');
+
+            if (disclaimerTitle) disclaimerTitle.textContent = t.guideDisclaimerTitle;
+            if (disclaimerHowTitle) disclaimerHowTitle.textContent = t.guideDisclaimerHow;
+            if (disclaimerHowDesc) disclaimerHowDesc.innerHTML = t.guideDisclaimerHowDesc;
+            if (disclaimerWarningTitle) disclaimerWarningTitle.innerHTML = t.guideDisclaimerWarningTitle;
+            if (disclaimerWarningDesc) disclaimerWarningDesc.textContent = t.guideDisclaimerWarningDesc;
+            if (disclaimerUseTitle) disclaimerUseTitle.textContent = t.guideDisclaimerUseTitle;
+            if (disclaimerUseSafe) disclaimerUseSafe.textContent = t.guideDisclaimerUseSafe;
+            if (disclaimerUseConducive) disclaimerUseConducive.textContent = t.guideDisclaimerUseConducive;
+            if (disclaimerPrivacyTitle) disclaimerPrivacyTitle.innerHTML = t.guideDisclaimerPrivacyTitle;
+            if (disclaimerPrivacyLaw) disclaimerPrivacyLaw.textContent = t.guideDisclaimerPrivacyLaw;
+            if (disclaimerPrivacyTemp) disclaimerPrivacyTemp.textContent = t.guideDisclaimerPrivacyTemp;
+            if (disclaimerPrivacyNoSave) disclaimerPrivacyNoSave.textContent = t.guideDisclaimerPrivacyNoSave;
+
             // Section 1: Fitur Utama
             const featuresTitle = document.getElementById('guide-features-title');
             const searchTitle = document.getElementById('guide-search-title');
@@ -1864,19 +1967,6 @@
             if (routeDesc) routeDesc.textContent = t.guideRouteDesc;
             if (wiktTitle) wiktTitle.textContent = t.guideWiktionary;
             if (wiktDesc) wiktDesc.textContent = t.guideWiktionaryDesc;
-
-            // Section 2: Pencarian & Penyaringan
-            const searchFilterTitle = document.getElementById('guide-search-filter-title');
-            const searchboxTitle = document.getElementById('guide-searchbox-title');
-            const searchboxDesc = document.getElementById('guide-searchbox-desc');
-            const sortingTitle = document.getElementById('guide-sorting-title');
-            const sortingDesc = document.getElementById('guide-sorting-desc');
-
-            if (searchFilterTitle) searchFilterTitle.textContent = t.guideSearchFilter;
-            if (searchboxTitle) searchboxTitle.textContent = t.guideSearchBox;
-            if (searchboxDesc) searchboxDesc.textContent = t.guideSearchBoxDesc;
-            if (sortingTitle) sortingTitle.textContent = t.guideSorting;
-            if (sortingDesc) sortingDesc.textContent = t.guideSortingDesc;
 
             // Section 3: Pengaturan
             const settingsTitle = document.getElementById('guide-settings-title');
