@@ -984,7 +984,7 @@
                 routeTo: 'Rute ke ',
                 gettingLocation: 'Mengambil lokasi Anda...',
                 failedLocation: 'Gagal mendapatkan lokasi: ',
-                guideBtn: 'Panduan',
+                guideBtn: 'Apa ini?',
                 guideBtnTitle: 'Lihat panduan',
                 checkingPermission: 'Memeriksa izin...',
                 searchArticles: 'Cari Artikel',
@@ -1060,7 +1060,7 @@
                 routeTo: 'Laluan ke ',
                 gettingLocation: 'Mendapatkan lokasi Anda...',
                 failedLocation: 'Gagal mendapatkan lokasi: ',
-                guideBtn: 'Panduan',
+                guideBtn: 'Apa ini?',
                 guideBtnTitle: 'Lihat panduan',
                 checkingPermission: 'Memeriksa kebenaran...',
                 searchArticles: 'Cari Artikel',
@@ -1136,7 +1136,7 @@
                 routeTo: 'Route to ',
                 gettingLocation: 'Getting your location...',
                 failedLocation: 'Failed to get location: ',
-                guideBtn: 'Guide',
+                guideBtn: 'What\'s this?',
                 guideBtnTitle: 'View guide',
                 checkingPermission: 'Checking permission...',
                 searchArticles: 'Search Articles',
@@ -1212,7 +1212,7 @@
                 routeTo: 'Rute ke ',
                 gettingLocation: 'Ngambil lokasi loe...',
                 failedLocation: 'Gagal ngambil lokasi: ',
-                guideBtn: 'Panduan',
+                guideBtn: 'Apaan ni?',
                 guideBtnTitle: 'Liat panduan',
                 checkingPermission: 'Ngecek izin...',
                 searchArticles: 'Cari Artikel',
@@ -1997,14 +1997,33 @@
             if (contentWikidata) contentWikidata.textContent = t.guideContentWikidata;
         }
 
-        // Language change event
-        languageSelect.addEventListener('change', () => {
+        // Ubah event listener language change
+        languageSelect.addEventListener('change', async () => {
             currentLang = languageSelect.value;
             localStorage.setItem('wikilokal-language', currentLang);
             updateLanguage(currentLang);
             updateLabels();
+
+            // Cek status izin lokasi
+            const permissionStatus = await checkLocationPermission();
+
+            if (permissionStatus !== 'granted') {
+                // Clear results jika lokasi belum diizinkan
+                locationStatus.innerHTML = '';
+                resultsList.innerHTML = `<li class="loading">${t('permissionPending')}</li>`;
+                return;
+            }
+
+            // Jika lokasi sudah diizinkan dan ada currentPosition
             if (currentPosition) {
-                searchArticles();
+                getLocationDetails(currentPosition.coords.latitude, currentPosition.coords.longitude)
+                    .then(locationParts => {
+                        updateLocationDisplay(
+                            currentPosition.coords.latitude,
+                            currentPosition.coords.longitude,
+                            locationParts
+                        );
+                    });
             }
         });
 
