@@ -2014,16 +2014,33 @@
                 return;
             }
 
-            // Jika lokasi sudah diizinkan dan ada currentPosition
+            // Jika lokasi sudah diizinkan dan ada currentPosition, refresh semua data
             if (currentPosition) {
-                getLocationDetails(currentPosition.coords.latitude, currentPosition.coords.longitude)
-                    .then(locationParts => {
-                        updateLocationDisplay(
-                            currentPosition.coords.latitude,
-                            currentPosition.coords.longitude,
-                            locationParts
-                        );
-                    });
+                // Clear existing articles
+                window.allArticles = null;
+                window.filteredArticles = null;
+
+                // Show loading
+                resultsList.innerHTML = `<li class="loading">${t('loading')}</li>`;
+
+                // Fetch location details dengan bahasa baru
+                const locationParts = await getLocationDetails(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude
+                );
+                await updateLocationDisplay(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    locationParts
+                );
+
+                // Fetch articles dengan bahasa baru
+                const articles = await fetchNearbyArticles(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    currentLang
+                );
+                await displayArticles(articles);
             }
         });
 
