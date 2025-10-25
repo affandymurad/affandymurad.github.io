@@ -2004,46 +2004,22 @@
             updateLanguage(currentLang);
             updateLabels();
 
-            // Cek status izin lokasi
-            const permissionStatus = await checkLocationPermission();
+            // Reset current position dan articles
+            currentPosition = null;
+            window.allArticles = null;
+            window.filteredArticles = null;
 
-            if (permissionStatus !== 'granted') {
-                // Clear results jika lokasi belum diizinkan
-                locationStatus.innerHTML = '';
-                resultsList.innerHTML = `<li class="loading">${t('permissionPending')}</li>`;
-                return;
-            }
+            // Clear location dan results
+            locationStatus.innerHTML = '';
+            resultsList.innerHTML = '';
 
-            // Jika lokasi sudah diizinkan dan ada currentPosition, refresh semua data
-            if (currentPosition) {
-                // Clear existing articles
-                window.allArticles = null;
-                window.filteredArticles = null;
+            // Update results title tanpa jumlah
+            const titleSection = document.getElementById('results-title');
+            titleSection.textContent = t('resultsTitle');
 
-                // Show loading
-                resultsList.innerHTML = `<li class="loading">${t('loading')}</li>`;
-
-                // Fetch location details dengan bahasa baru
-                const locationParts = await getLocationDetails(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude
-                );
-                await updateLocationDisplay(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude,
-                    locationParts
-                );
-
-                // Fetch articles dengan bahasa baru
-                const articles = await fetchNearbyArticles(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude,
-                    currentLang
-                );
-                await displayArticles(articles);
-            }
+            // Cek dan tampilkan status permission saja
+            await checkLocationPermission();
         });
-
         // Modal close handler (jika belum ada)
         const modalCloseBtn = document.querySelector('.modal-close');
         const modal = document.getElementById('guide-modal');
