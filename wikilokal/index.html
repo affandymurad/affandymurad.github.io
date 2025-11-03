@@ -834,9 +834,10 @@
                 <label id="label-language">Bahasa</label>
                 <select id="language-select">
                     <option value="id">Bahasa Indonesia (ID)</option>
+                    <option value="bew">Basa Betawi (BEW)</option>
+                    <option value="fr">Français (FR)</option>
                     <option value="ms">Bahasa Melayu (MS)</option>
-                    <option value="en">Bahasa Inggris (EN)</option>
-                    <option value="bew">Bahasa Betawi (BEW)</option>
+                    <option value="en">English (EN)</option>
                 </select>
             </div>
         </div>
@@ -984,7 +985,7 @@
                 routeTo: 'Rute ke ',
                 gettingLocation: 'Mengambil lokasi Anda...',
                 failedLocation: 'Gagal mendapatkan lokasi: ',
-                guideBtn: 'Panduan',
+                guideBtn: 'Apa ini?',
                 guideBtnTitle: 'Lihat panduan',
                 checkingPermission: 'Memeriksa izin...',
                 searchArticles: 'Cari Artikel',
@@ -1029,6 +1030,158 @@
                 guideDisclaimerPrivacyTemp: 'Menggunakan data lokasi hanya untuk keperluan pencarian artikel',
                 guideDisclaimerPrivacyNoSave: 'Tidak menyimpan riwayat lokasi Anda'
             },
+            bew: {
+                mainTitle: 'Artikel WikiLokal Paling Deket',
+                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi loe',
+                theme: 'Tema',
+                language: 'Bahasa',
+                locationTitle: 'Status Lokasi',
+                resultsTitle: 'Hasil Pencarian',
+                checkLocation: 'Cari Artikel',
+                coordinates: 'Koordinat',
+                road: 'Jalan',
+                postcode: 'Kode Pos',
+                suburb: 'Kelurahan',
+                city: 'Kota',
+                state: 'Provinsi',
+                country: 'Negara',
+                wikidata: 'Wikidata',
+                wikivoyage: 'Wikivoyage',
+                showRoute: 'Tampilin Rute',
+                openMaps: 'Buka di Google Maps',
+                distance: 'km jauhnya',
+                loading: 'Muatin artikel...',
+                noArticles: 'Gak ada artikel dalam radius ',
+                description: 'Deskripsi gak ada',
+                failedLoad: 'Gagal muatin deskripsi',
+                permissionGranted: 'diizinkan',
+                permissionDenied: 'ditolak',
+                permissionPending: 'nunggu',
+                locationPermission: 'Izin lokasi: ',
+                routeTo: 'Rute ke ',
+                gettingLocation: 'Ngambil lokasi loe...',
+                failedLocation: 'Gagal ngambil lokasi: ',
+                guideBtn: 'Apaan ni?',
+                guideBtnTitle: 'Liat panduan',
+                checkingPermission: 'Ngecek izin...',
+                searchArticles: 'Cari Artikel',
+
+                // Modal Guide
+                guideTitle: '📖 Panduan Pemakaian',
+                guideMainFeatures: '🎯 Fitur Utama',
+                guideSearchArticle: 'Cari Artikel:',
+                guideSearchDesc: 'Klik tombol buat nemuin artikel Wikipedia di sekit lokasi loe (radius 3km)',
+                guideRoute: 'Rute:',
+                guideRouteDesc: 'Liat petunjuk arah ke lokasi artikel pake Leaflet Routing',
+                guideWiktionary: 'Wiktionary:',
+                guideWiktionaryDesc: 'Klik kata dalam deskripsi buat cari definisi',
+                guideSearchFilter: '🔍 Pencarian & Penyaringan',
+                guideSearchBox: 'Kotak Pencarian:',
+                guideSearchBoxDesc: 'Cari artikel berdasarkan nama/judul',
+                guideSorting: 'Pengurutan:',
+                guideSortingDesc: 'Urutkan hasil berdasarkan jarak deket atau nama',
+                guideSettings: '🌍 Pengaturan',
+                guideTheme: 'Tema:',
+                guideThemeDesc: 'Pilih tema Light, Dark, atau ikutin preferensi sistem',
+                guideLanguage: 'Bahasa:',
+                guideLanguageDesc: 'Ubah bahasa buat tampilin konten dalam bahasa pilihan',
+                guideLocationContent: '📍 Lokasi & Konten',
+                guideLocationContentDesc: 'Aplikasi tampilin artikel dari Wikipedia dalam radius 3km dari lokasi loe. Setiap artikel tampilin:',
+                guideContentImage: 'Gambar sampul dari Wikipedia',
+                guideContentDescription: 'Deskripsi singkat (kata-kata interaktif ke Wiktionary)',
+                guideContentDistance: 'Jarak dari lokasi loe',
+                guideContentWikidata: 'ID Wikidata buat referensi lanjutan',
+
+                // Tambahkan di akhir object translations.bew
+                guideDisclaimerTitle: '⚠️ Penafian Pemakaian Lokasi',
+                guideDisclaimerHow: 'Gimana Wikilokal Pake Lokasi Loe:',
+                guideDisclaimerHowDesc: 'Wikilokal cuman pake koordinat lokasi loe sementara buat nemuin artikel Wikipedia, Wikivoyage, sama Wiktionary yang punya data geografis di sekit loe. Data lokasi gak disimpen dan gak dibagi ke pihak laen.',
+                guideDisclaimerWarningTitle: '⚠️ Peringatan Penting:',
+                guideDisclaimerWarningDesc: 'Ati-ati kalo loe ngambil screenshot. Alamat lengkap loe bisa keliatan dan bisa ngebuka lokasi loe sekarang.',
+                guideDisclaimerUseTitle: 'Pake fitur ini cuman kalo:',
+                guideDisclaimerUseSafe: 'Loe lagi di tempat yang aman',
+                guideDisclaimerUseConducive: 'Kondisinya ngijinin buat bagi lokasi',
+                guideDisclaimerPrivacyTitle: '🔒 Privasi Loe:',
+                guideDisclaimerPrivacyLaw: 'Nurut sama hukum dan ketentuan privasi yang berlaku',
+                guideDisclaimerPrivacyTemp: 'Pake data lokasi cuman buat keperluan nyari artikel',
+                guideDisclaimerPrivacyNoSave: 'Gak nyimpen riwayat lokasi loe'
+            },
+            fr: {
+                mainTitle: 'Articles WikiLokal les plus proches',
+                mainSubtitle: 'Explore Wikipédia dans un rayon de 3 km autour de toi',
+                theme: 'Thème',
+                language: 'Langue',
+                locationTitle: 'Statut de la localisation',
+                resultsTitle: 'Résultats de la recherche',
+                checkLocation: 'Chercher des articles',
+                coordinates: 'Coordonnées',
+                road: 'Rue',
+                postcode: 'Code postal',
+                suburb: 'Quartier',
+                city: 'Ville',
+                state: 'Région',
+                country: 'Pays',
+                wikidata: 'Wikidata',
+                wikivoyage: 'Wikivoyage',
+                showRoute: 'Afficher l’itinéraire',
+                openMaps: 'Ouvrir dans Google Maps',
+                distance: 'km de distance',
+                loading: 'Chargement des articles...',
+                noArticles: 'Aucun article dans un rayon de ',
+                description: 'Pas de description disponible',
+                failedLoad: 'Échec du chargement de la description',
+                permissionGranted: 'autorisée',
+                permissionDenied: 'refusée',
+                permissionPending: 'en attente',
+                locationPermission: 'Autorisation de localisation : ',
+                routeTo: 'Itinéraire vers ',
+                gettingLocation: 'Récupération de ta position...',
+                failedLocation: 'Échec de la localisation : ',
+                guideBtn: 'C’est quoi ça ?',
+                guideBtnTitle: 'Voir le guide',
+                checkingPermission: 'Vérification de l’autorisation...',
+                searchArticles: 'Rechercher des articles',
+
+                // Modal Guide
+                guideTitle: '📖 Guide d’utilisation',
+                guideMainFeatures: '🎯 Fonctions principales',
+                guideSearchArticle: 'Recherche d’articles :',
+                guideSearchDesc: 'Clique sur le bouton pour trouver des articles Wikipédia autour de toi (rayon de 3 km)',
+                guideRoute: 'Itinéraire :',
+                guideRouteDesc: 'Affiche la direction vers un article avec Leaflet Routing',
+                guideWiktionary: 'Wiktionnaire :',
+                guideWiktionaryDesc: 'Clique sur un mot dans la description pour voir sa définition',
+                guideSearchFilter: '🔍 Recherche et filtrage',
+                guideSearchBox: 'Champ de recherche :',
+                guideSearchBoxDesc: 'Recherche d’articles par nom ou titre',
+                guideSorting: 'Tri :',
+                guideSortingDesc: 'Trie les résultats par proximité ou par nom',
+                guideSettings: '🌍 Paramètres',
+                guideTheme: 'Thème :',
+                guideThemeDesc: 'Choisis le thème clair, sombre ou automatique selon le système',
+                guideLanguage: 'Langue :',
+                guideLanguageDesc: 'Change la langue pour afficher le contenu dans la langue souhaitée',
+                guideLocationContent: '📍 Localisation et contenu',
+                guideLocationContentDesc: 'L’application affiche les articles Wikipédia dans un rayon de 3 km autour de ta position. Chaque article contient :',
+                guideContentImage: 'Image de couverture provenant de Wikipédia',
+                guideContentDescription: 'Brève description (avec mots interactifs vers le Wiktionnaire)',
+                guideContentDistance: 'Distance depuis ta position',
+                guideContentWikidata: 'ID Wikidata pour référence complémentaire',
+
+                // Disclaimer
+                guideDisclaimerTitle: '⚠️ Avertissement sur l’utilisation de la localisation',
+                guideDisclaimerHow: 'Comment WikiLokal utilise ta position :',
+                guideDisclaimerHowDesc: 'WikiLokal n’utilise tes coordonnées que temporairement pour trouver les articles Wikipédia, Wikivoyage et Wiktionnaire à proximité. Tes données de localisation ne sont ni enregistrées ni partagées avec des tiers.',
+                guideDisclaimerWarningTitle: '⚠️ Attention importante :',
+                guideDisclaimerWarningDesc: 'Sois prudent(e) si tu fais une capture d’écran — ton adresse complète peut apparaître et révéler ta position actuelle.',
+                guideDisclaimerUseTitle: 'Utilise cette fonction seulement si :',
+                guideDisclaimerUseSafe: 'Tu es dans un endroit sûr',
+                guideDisclaimerUseConducive: 'Les conditions permettent de partager ta localisation',
+                guideDisclaimerPrivacyTitle: '🔒 Ta vie privée :',
+                guideDisclaimerPrivacyLaw: 'Conforme aux lois et règles de confidentialité en vigueur',
+                guideDisclaimerPrivacyTemp: 'Les données de localisation ne sont utilisées que pour la recherche d’articles',
+                guideDisclaimerPrivacyNoSave: 'Aucun historique de localisation n’est enregistré'
+            },
             ms: {
                 mainTitle: 'Artikel WikiLokal Terdekat',
                 mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi Anda',
@@ -1060,7 +1213,7 @@
                 routeTo: 'Laluan ke ',
                 gettingLocation: 'Mendapatkan lokasi Anda...',
                 failedLocation: 'Gagal mendapatkan lokasi: ',
-                guideBtn: 'Panduan',
+                guideBtn: 'Apa ini?',
                 guideBtnTitle: 'Lihat panduan',
                 checkingPermission: 'Memeriksa kebenaran...',
                 searchArticles: 'Cari Artikel',
@@ -1136,7 +1289,7 @@
                 routeTo: 'Route to ',
                 gettingLocation: 'Getting your location...',
                 failedLocation: 'Failed to get location: ',
-                guideBtn: 'Guide',
+                guideBtn: 'What\'s this?',
                 guideBtnTitle: 'View guide',
                 checkingPermission: 'Checking permission...',
                 searchArticles: 'Search Articles',
@@ -1181,82 +1334,6 @@
                 guideDisclaimerPrivacyTemp: 'Using location data only for article search purposes',
                 guideDisclaimerPrivacyNoSave: 'Not storing your location history'
             },
-            bew: {
-                mainTitle: 'Artikel WikiLokal Paling Deket',
-                mainSubtitle: 'Jelajahi Wikipedia dalam radius 3km dari lokasi loe',
-                theme: 'Tema',
-                language: 'Bahasa',
-                locationTitle: 'Status Lokasi',
-                resultsTitle: 'Hasil Pencarian',
-                checkLocation: 'Cari Artikel',
-                coordinates: 'Koordinat',
-                road: 'Jalan',
-                postcode: 'Kode Pos',
-                suburb: 'Kelurahan',
-                city: 'Kota',
-                state: 'Provinsi',
-                country: 'Negara',
-                wikidata: 'Wikidata',
-                wikivoyage: 'Wikivoyage',
-                showRoute: 'Tampilin Rute',
-                openMaps: 'Buka di Google Maps',
-                distance: 'km jauhnya',
-                loading: 'Muatin artikel...',
-                noArticles: 'Gak ada artikel dalam radius ',
-                description: 'Deskripsi gak ada',
-                failedLoad: 'Gagal muatin deskripsi',
-                permissionGranted: 'diizinkan',
-                permissionDenied: 'ditolak',
-                permissionPending: 'nunggu',
-                locationPermission: 'Izin lokasi: ',
-                routeTo: 'Rute ke ',
-                gettingLocation: 'Ngambil lokasi loe...',
-                failedLocation: 'Gagal ngambil lokasi: ',
-                guideBtn: 'Panduan',
-                guideBtnTitle: 'Liat panduan',
-                checkingPermission: 'Ngecek izin...',
-                searchArticles: 'Cari Artikel',
-
-                // Modal Guide
-                guideTitle: '📖 Panduan Pemakaian',
-                guideMainFeatures: '🎯 Fitur Utama',
-                guideSearchArticle: 'Cari Artikel:',
-                guideSearchDesc: 'Klik tombol buat nemuin artikel Wikipedia di sekit lokasi loe (radius 3km)',
-                guideRoute: 'Rute:',
-                guideRouteDesc: 'Liat petunjuk arah ke lokasi artikel pake Leaflet Routing',
-                guideWiktionary: 'Wiktionary:',
-                guideWiktionaryDesc: 'Klik kata dalam deskripsi buat cari definisi',
-                guideSearchFilter: '🔍 Pencarian & Penyaringan',
-                guideSearchBox: 'Kotak Pencarian:',
-                guideSearchBoxDesc: 'Cari artikel berdasarkan nama/judul',
-                guideSorting: 'Pengurutan:',
-                guideSortingDesc: 'Urutkan hasil berdasarkan jarak deket atau nama',
-                guideSettings: '🌍 Pengaturan',
-                guideTheme: 'Tema:',
-                guideThemeDesc: 'Pilih tema Light, Dark, atau ikutin preferensi sistem',
-                guideLanguage: 'Bahasa:',
-                guideLanguageDesc: 'Ubah bahasa buat tampilin konten dalam bahasa pilihan',
-                guideLocationContent: '📍 Lokasi & Konten',
-                guideLocationContentDesc: 'Aplikasi tampilin artikel dari Wikipedia dalam radius 3km dari lokasi loe. Setiap artikel tampilin:',
-                guideContentImage: 'Gambar sampul dari Wikipedia',
-                guideContentDescription: 'Deskripsi singkat (kata-kata interaktif ke Wiktionary)',
-                guideContentDistance: 'Jarak dari lokasi loe',
-                guideContentWikidata: 'ID Wikidata buat referensi lanjutan',
-
-                // Tambahkan di akhir object translations.bew
-                guideDisclaimerTitle: '⚠️ Penafian Pemakaian Lokasi',
-                guideDisclaimerHow: 'Gimana Wikilokal Pake Lokasi Loe:',
-                guideDisclaimerHowDesc: 'Wikilokal cuman pake koordinat lokasi loe sementara buat nemuin artikel Wikipedia, Wikivoyage, sama Wiktionary yang punya data geografis di sekit loe. Data lokasi gak disimpen dan gak dibagi ke pihak laen.',
-                guideDisclaimerWarningTitle: '⚠️ Peringatan Penting:',
-                guideDisclaimerWarningDesc: 'Ati-ati kalo loe ngambil screenshot. Alamat lengkap loe bisa keliatan dan bisa ngebuka lokasi loe sekarang.',
-                guideDisclaimerUseTitle: 'Pake fitur ini cuman kalo:',
-                guideDisclaimerUseSafe: 'Loe lagi di tempat yang aman',
-                guideDisclaimerUseConducive: 'Kondisinya ngijinin buat bagi lokasi',
-                guideDisclaimerPrivacyTitle: '🔒 Privasi Loe:',
-                guideDisclaimerPrivacyLaw: 'Nurut sama hukum dan ketentuan privasi yang berlaku',
-                guideDisclaimerPrivacyTemp: 'Pake data lokasi cuman buat keperluan nyari artikel',
-                guideDisclaimerPrivacyNoSave: 'Gak nyimpen riwayat lokasi loe'
-            }
         };
 
         // Selectors
@@ -1430,7 +1507,7 @@
                 return detailedParts.filter(part => part.name);
             } catch (error) {
                 console.error('Error mengambil detail lokasi:', error);
-                return [{ name: 'Gagal mengambil detail lokasi', wikidataId: null }];
+                return [{ name: error, wikidataId: null }];
             }
         }
 
@@ -1997,17 +2074,29 @@
             if (contentWikidata) contentWikidata.textContent = t.guideContentWikidata;
         }
 
-        // Language change event
-        languageSelect.addEventListener('change', () => {
+        // Ubah event listener language change
+        languageSelect.addEventListener('change', async () => {
             currentLang = languageSelect.value;
             localStorage.setItem('wikilokal-language', currentLang);
             updateLanguage(currentLang);
             updateLabels();
-            if (currentPosition) {
-                searchArticles();
-            }
-        });
 
+            // Reset current position dan articles
+            currentPosition = null;
+            window.allArticles = null;
+            window.filteredArticles = null;
+
+            // Clear location dan results
+            locationStatus.innerHTML = '';
+            resultsList.innerHTML = '';
+
+            // Update results title tanpa jumlah
+            const titleSection = document.getElementById('results-title');
+            titleSection.textContent = t('resultsTitle');
+
+            // Cek dan tampilkan status permission saja
+            await checkLocationPermission();
+        });
         // Modal close handler (jika belum ada)
         const modalCloseBtn = document.querySelector('.modal-close');
         const modal = document.getElementById('guide-modal');
