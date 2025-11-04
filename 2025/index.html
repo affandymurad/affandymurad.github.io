@@ -475,6 +475,22 @@
             color: #888;
         }
 
+        /* Dark mode - keep holiday colors the same */
+        body.dark-mode .day.holiday {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        body.dark-mode .day.cuti-bersama {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: #333;
+        }
+
+        body.dark-mode .day.today {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
         .back-home-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
@@ -854,6 +870,26 @@
         backHomeBtn.addEventListener('click', () => {
             window.location.href = '../';
         });
+
+        // Scroll to today button - only show if current year is 2025
+        const currentYear = new Date().getFullYear();
+
+        if (currentYear === 2025) {
+            scrollTodayBtn.addEventListener('click', () => {
+                const todayElement = document.getElementById('today-date');
+                if (todayElement) {
+                    todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    // Add temporary highlight animation
+                    todayElement.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        todayElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            });
+        } else {
+            scrollTodayBtn.style.display = 'none';
+        }
     </script>
 </body>
 
