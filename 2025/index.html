@@ -475,6 +475,10 @@
             color: #888;
         }
 
+        .back-home-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -513,6 +517,7 @@
         <div class="datetime-container">
             <div id="currentDateTime"></div>
             <div class="dark-mode-toggle">
+                <button class="toggle-btn back-home-btn" id="backHomeBtn">🏠 Kembali ke Affandy Murad</button>
                 <button class="toggle-btn scroll-today-btn" id="scrollTodayBtn">📅 Scroll ke Hari Ini</button>
                 <button class="toggle-btn" id="darkModeToggle">🌓 Toggle Dark Mode</button>
             </div>
@@ -844,6 +849,10 @@
                     document.body.classList.remove('dark-mode');
                 }
             }
+        });
+        const backHomeBtn = document.getElementById('backHomeBtn');
+        backHomeBtn.addEventListener('click', () => {
+            window.location.href = '../index.htm';
         });
     </script>
 </body>
