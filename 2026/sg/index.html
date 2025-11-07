@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Indonesia 2026</title>
+    <title>Singapore Public Holidays for 2026</title>
     <style>
         * {
             margin: 0;
@@ -526,29 +526,28 @@
 
 <body>
     <div class="container">
-        <h1>Kalender Indonesia 2026</h1>
+        <h1>Singapore Public Holidays for 2026</h1>
         <div class="info">
-            <strong>17 Hari Libur Nasional</strong> dan <strong>8 Hari Cuti Bersama</strong> berdasarkan <a
-                href="https://www.kemenkopmk.go.id/sites/default/files/pengumuman/2025-09/SKB%20Libur%20Nasional%20dan%20Cuti%20Bersama%20Tahun%202026.pdf"
-                target="_blank" style="color: #667eea; text-decoration: underline; font-weight: 600;">SKB Tiga
-                Menteri</a>
+            <strong>11 public holidays</strong> and <strong>3 replacement holidays</strong> according to <a
+                href="https://www.mom.gov.sg/newsroom/press-releases/2025/0616-public-holidays-for-2026" target="_blank"
+                style="color: #667eea; text-decoration: underline; font-weight: 600;">MOM official release</a>
         </div>
 
         <div class="datetime-container">
             <div id="currentDateTime"></div>
             <div class="dark-mode-toggle">
-                <button class="toggle-btn back-home-btn" id="backHomeBtn">🏠 Kembali ke Affandy Murad</button>
-                <button class="toggle-btn scroll-today-btn" id="scrollTodayBtn">📅 Scroll ke Hari Ini</button>
+                <button class="toggle-btn back-home-btn" id="backHomeBtn">🏠 Back to Affandy Murad</button>
+                <button class="toggle-btn scroll-today-btn" id="scrollTodayBtn">📅 Scroll to today</button>
                 <button class="toggle-btn" id="darkModeToggle">🌓 Toggle Dark Mode</button>
-                <button class="toggle-btn country-btn" id="malaysiaBtn" onclick="window.location.href='my'">
-                    <img src="flag/malaysia.svg" alt="Malaysia Flag"
+                <button class="toggle-btn country-btn" id="indonesiaBtn" onclick="window.location.href='../'">
+                    <img src="../flag/indonesia.svg" alt="Indonesia Flag"
+                        style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
+                    Indonesia
+                </button>
+                <button class="toggle-btn country-btn" id="malaysiaBtn" onclick="window.location.href='../my'">
+                    <img src="../flag/malaysia.svg" alt="Malaysia Flag"
                         style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
                     Malaysia
-                </button>
-                <button class="toggle-btn country-btn" id="singaporeBtn" onclick="window.location.href='sg'">
-                    <img src="flag/singapore.svg" alt="Singapore Flag"
-                        style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
-                    Singapura
                 </button>
             </div>
         </div>
@@ -557,42 +556,28 @@
     </div>
 
     <script>
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        const weekdays = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         const holidays = {
-            '2026-01-01': 'Tahun Baru 2026 Masehi',
-            '2026-01-16': 'Isra\' Mi\'raj Nabi Muhammad SAW',
-            '2026-02-17': 'Tahun Baru Imlek 2577 Kongzili',
-            '2026-03-19': 'Hari Suci Nyepi (Tahun Baru Saka 1948)',
-            '2026-03-21': 'Idul Fitri 1447 Hijriah',
-            '2026-03-22': 'Idul Fitri 1447 Hijriah',
-            '2026-04-03': 'Wafat Yesus Kristus',
-            '2026-04-05': 'Hari Kebangkitan Yesus Kristus (Paskah)',
-            '2026-05-01': 'Hari Buruh Internasional',
-            '2026-05-14': 'Kenaikan Yesus Kristus',
-            '2026-05-27': 'Idul Adha 1447 Hijriah',
-            '2026-05-31': 'Hari Raya Waisak 2570 Buddhist Era (BE)',
-            '2026-06-01': 'Hari Lahir Pancasila',
-            '2026-06-16': '1 Muharam Tahun Baru Islam 1448 Hijriah',
-            '2026-08-17': 'Proklamasi Kemerdekaan',
-            '2026-08-25': 'Maulid Nabi Muhammad SAW',
-            '2026-12-25': 'Kelahiran Yesus Kristus (Natal)'
+            "2026-01-01": "New Year's Day",
+            "2026-02-17": "Chinese New Year",
+            "2026-02-18": "Chinese New Year",
+            "2026-03-21": "Hari Raya Puasa",
+            "2026-04-03": "Good Friday",
+            "2026-05-01": "Labour Day",
+            "2026-05-27": "Hari Raya Haji",
+            "2026-05-31": "Vesak Day",
+            "2026-08-09": "National Day",
+            "2026-11-08": "Deepavali",
+            "2026-12-25": "Christmas Day"
         };
 
         const cutiBersama = {
-            '2026-02-16': 'Cuti Bersama Tahun Baru Imlek 2577 Kongzili',
-            '2026-03-18': 'Cuti Bersama Nyepi (Tahun Baru Saka 1948)',
-            '2026-03-20': 'Cuti Bersama Idul Fitri 1447 Hijriah',
-            '2026-03-23': 'Cuti Bersama Idul Fitri 1447 Hijriah',
-            '2026-03-24': 'Cuti Bersama Idul Fitri 1447 Hijriah',
-            '2026-05-15': 'Cuti Bersama Kenaikan Yesus Kristus',
-            '2026-05-28': 'Cuti Bersama Idul Adha 1447 Hijriah',
-            '2026-12-24': 'Cuti Bersama Natal'
+            '2026-06-01': 'Replacement Holiday of Vesak Day',
+            '2026-08-10': 'Replacement Holiday of National Day',
+            '2026-11-09': 'Replacement Holiday of Deepavali'
         };
 
         function getDaysInMonth(year, month) {
@@ -620,19 +605,19 @@
             legend.innerHTML = `
                 <div class="legend-item">
                     <div class="legend-color legend-holiday"></div>
-                    <span>Libur Nasional</span>
+                    <span>Public Holiday</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color legend-cuti"></div>
-                    <span>Cuti Bersama</span>
+                    <span>Replacement Holiday</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color legend-sunday"></div>
-                    <span>Hari Minggu</span>
+                    <span>Sunday</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: linear-gradient(135deg, #28a745, #20c997);"></div>
-                    <span>Hari Ini</span>
+                    <span>Today</span>
                 </div>
             `;
 
@@ -730,7 +715,7 @@
             holidaysDiv.className = 'month-holidays';
 
             const title = document.createElement('h4');
-            title.textContent = 'Keterangan Libur & Cuti Bersama';
+            title.textContent = 'Public Holiday & Replacement Holiday Information';
 
             const holidaysList = document.createElement('ul');
             holidaysList.className = 'holiday-list';
@@ -782,7 +767,7 @@
             if (!hasHolidays) {
                 const noHolidays = document.createElement('div');
                 noHolidays.className = 'no-holidays';
-                noHolidays.textContent = 'Tidak ada hari libur nasional atau cuti bersama';
+                noHolidays.textContent = 'There are no public holidays or replacement holidays';
                 holidaysDiv.appendChild(title);
                 holidaysDiv.appendChild(noHolidays);
             } else {
@@ -814,8 +799,8 @@
 
         function updateDateTime() {
             const now = new Date();
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
             const dayName = days[now.getDay()];
             const date = now.getDate();
