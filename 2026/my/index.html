@@ -708,18 +708,24 @@
                     dayDiv.classList.add('sunday');
                 }
 
-                if (holidays[dateString]) {
+                if (holidays[dateString] && cutiBersama[dateString]) {
+                    // Jika tanggal ada di keduanya
+                    dayDiv.classList.add('holiday', 'cuti-bersama');
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    const cutiList = Array.isArray(cutiBersama[dateString]) ? cutiBersama[dateString] : [cutiBersama[dateString]];
+                    tooltip.innerHTML = `<strong>${holidays[dateString]}</strong><br><br>${cutiList.join('<br><br>')}`;
+                    dayDiv.appendChild(tooltip);
+                } else if (holidays[dateString]) {
                     dayDiv.classList.add('holiday');
                     const tooltip = document.createElement('div');
                     tooltip.className = 'tooltip';
                     tooltip.textContent = holidays[dateString];
                     dayDiv.appendChild(tooltip);
                 } else if (cutiBersama[dateString]) {
-                    // Only add cuti-bersama if it's NOT already a national holiday
                     dayDiv.classList.add('cuti-bersama');
                     const tooltip = document.createElement('div');
                     tooltip.className = 'tooltip';
-                    // Join multiple state holidays with line breaks
                     tooltip.innerHTML = cutiBersama[dateString].join('<br><br>');
                     dayDiv.appendChild(tooltip);
                 }
@@ -787,7 +793,7 @@
             // Then add state holidays (cuti bersama) only if not already added as national holiday
             for (const [dateStr, names] of Object.entries(cutiBersama)) {
                 const date = new Date(dateStr);
-                if (date.getFullYear() === year && date.getMonth() === month && !addedDates.has(dateStr)) {
+                if (date.getFullYear() === year && date.getMonth() === month) {
                     // Handle array of names (multiple state holidays on same date)
                     const holidayNames = Array.isArray(names) ? names : [names];
 
