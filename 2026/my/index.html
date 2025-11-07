@@ -88,14 +88,13 @@
             background: #f8f9fa;
             font-weight: 600;
             color: #6c757d;
-            font-size: 0.85em;
+            font-size: 0.80em;
             transition: background 0.3s ease, color 0.3s ease;
         }
 
         .weekday {
             padding: 12px 8px;
             text-align: center;
-            border-right: 1px solid #e9ecef;
         }
 
         .weekday:last-child {
@@ -835,6 +834,7 @@
 
             return holidaysDiv;
         }
+
         function createCalendar() {
             const calendar = document.getElementById('calendar');
             const year = 2026;
@@ -924,7 +924,7 @@
         });
         const backHomeBtn = document.getElementById('backHomeBtn');
         backHomeBtn.addEventListener('click', () => {
-            window.location.href = '../';
+            window.location.href = '../../';
         });
 
         // Scroll to today button - only show if current year is 2026

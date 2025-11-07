@@ -88,18 +88,13 @@
             background: #f8f9fa;
             font-weight: 600;
             color: #6c757d;
-            font-size: 0.85em;
+            font-size: 0.80em;
             transition: background 0.3s ease, color 0.3s ease;
         }
 
         .weekday {
             padding: 12px 8px;
             text-align: center;
-            border-right: 1px solid #e9ecef;
-        }
-
-        .weekday:last-child {
-            border-right: none;
         }
 
         .days {
@@ -561,23 +556,23 @@
         const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         const holidays = {
-            "2026-01-01": "New Year's Day",
-            "2026-02-17": "Chinese New Year",
-            "2026-02-18": "Chinese New Year",
-            "2026-03-21": "Hari Raya Puasa",
-            "2026-04-03": "Good Friday",
-            "2026-05-01": "Labour Day",
-            "2026-05-27": "Hari Raya Haji",
-            "2026-05-31": "Vesak Day",
-            "2026-08-09": "National Day",
-            "2026-11-08": "Deepavali",
-            "2026-12-25": "Christmas Day"
+            "2026-01-01": ["New Year's Day"],
+            "2026-02-17": ["Chinese New Year (Day 1)"],
+            "2026-02-18": ["Chinese New Year (Day 2)"],
+            "2026-03-21": ["Hari Raya Puasa"],
+            "2026-04-03": ["Good Friday"],
+            "2026-05-01": ["Labour Day"],
+            "2026-05-27": ["Hari Raya Haji"],
+            "2026-05-31": ["Vesak Day"],
+            "2026-08-09": ["National Day"],
+            "2026-11-08": ["Deepavali"],
+            "2026-12-25": ["Christmas Day"]
         };
 
         const cutiBersama = {
-            '2026-06-01': 'Replacement Holiday of Vesak Day',
-            '2026-08-10': 'Replacement Holiday of National Day',
-            '2026-11-09': 'Replacement Holiday of Deepavali'
+            "2026-06-01": ["Replacement Holiday of Vesak Day"],
+            "2026-08-10": ["Replacement Holiday of National Day"],
+            "2026-11-09": ["Replacement Holiday of Deepavali"]
         };
 
         function getDaysInMonth(year, month) {
@@ -676,13 +671,13 @@
                     tooltip.className = 'tooltip';
                     tooltip.textContent = holidays[dateString];
                     dayDiv.appendChild(tooltip);
-                }
-
-                if (cutiBersama[dateString]) {
+                } else if (cutiBersama[dateString]) {
+                    // Only add cuti-bersama if it's NOT already a national holiday
                     dayDiv.classList.add('cuti-bersama');
                     const tooltip = document.createElement('div');
                     tooltip.className = 'tooltip';
-                    tooltip.textContent = cutiBersama[dateString];
+                    // Join multiple state holidays with line breaks
+                    tooltip.innerHTML = cutiBersama[dateString].join('<br><br>');
                     dayDiv.appendChild(tooltip);
                 }
 
@@ -715,13 +710,15 @@
             holidaysDiv.className = 'month-holidays';
 
             const title = document.createElement('h4');
-            title.textContent = 'Public Holiday & Replacement Holiday Information';
+            title.textContent = 'National Holiday & State Holiday Information';
 
             const holidaysList = document.createElement('ul');
             holidaysList.className = 'holiday-list';
 
             let hasHolidays = false;
+            const addedDates = new Set(); // Track dates we've already added
 
+            // First add national holidays
             for (const [dateStr, name] of Object.entries(holidays)) {
                 const date = new Date(dateStr);
                 if (date.getFullYear() === year && date.getMonth() === month) {
@@ -740,27 +737,34 @@
                     listItem.appendChild(nameSpan);
                     holidaysList.appendChild(listItem);
                     hasHolidays = true;
+                    addedDates.add(dateStr); // Mark this date as added
                 }
             }
 
-            for (const [dateStr, name] of Object.entries(cutiBersama)) {
+            // Then add state holidays (cuti bersama) only if not already added as national holiday
+            for (const [dateStr, names] of Object.entries(cutiBersama)) {
                 const date = new Date(dateStr);
-                if (date.getFullYear() === year && date.getMonth() === month) {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'holiday-item';
+                if (date.getFullYear() === year && date.getMonth() === month && !addedDates.has(dateStr)) {
+                    // Handle array of names (multiple state holidays on same date)
+                    const holidayNames = Array.isArray(names) ? names : [names];
 
-                    const dateSpan = document.createElement('span');
-                    dateSpan.className = 'cuti-date';
-                    dateSpan.textContent = date.getDate();
+                    holidayNames.forEach(name => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'holiday-item';
 
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'holiday-name';
-                    nameSpan.textContent = name;
+                        const dateSpan = document.createElement('span');
+                        dateSpan.className = 'cuti-date';
+                        dateSpan.textContent = date.getDate();
 
-                    listItem.appendChild(dateSpan);
-                    listItem.appendChild(nameSpan);
-                    holidaysList.appendChild(listItem);
-                    hasHolidays = true;
+                        const nameSpan = document.createElement('span');
+                        nameSpan.className = 'holiday-name';
+                        nameSpan.textContent = name;
+
+                        listItem.appendChild(dateSpan);
+                        listItem.appendChild(nameSpan);
+                        holidaysList.appendChild(listItem);
+                        hasHolidays = true;
+                    });
                 }
             }
 
@@ -877,7 +881,7 @@
         });
         const backHomeBtn = document.getElementById('backHomeBtn');
         backHomeBtn.addEventListener('click', () => {
-            window.location.href = '../';
+            window.location.href = '../../';
         });
 
         // Scroll to today button - only show if current year is 2026
