@@ -281,6 +281,7 @@
         <a href="https://creativecommons.org/licenses/by-sa/4.0/deed" target="_blank" rel="noopener noreferrer"
             class="icon-label">CC-BY-SA 4.0</a>
         <span>@ 2025 Affandy Murad</span>
+        <div id="wcb" class="carbonbadge wcb-d"></div>
     </footer>
 
     <script>
@@ -422,6 +423,15 @@
             const themeToggle = document.getElementById('theme-toggle');
             const themeMenu = document.getElementById('theme-menu');
             const themeOptions = document.querySelectorAll('.theme-option');
+            const carbonBadge = document.getElementById("wcb");
+
+            const updateCarbonBadge = () => {
+                if (body.classList.contains("dark-mode")) {
+                    carbonBadge.classList.add("wcb-d");
+                } else {
+                    carbonBadge.classList.remove("wcb-d");
+                }
+            };
 
             // Initialize theme
             const storedTheme = localStorage.getItem('theme') || 'system';
