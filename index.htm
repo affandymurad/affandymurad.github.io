@@ -10,10 +10,6 @@
         type="image/svg+xml">
     <link rel="stylesheet" href="css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/b.min.js" defer></script>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
-    <style>
-    </style>
 </head>
 
 <body>
@@ -25,130 +21,115 @@
             </button>
         </div>
         <div class="menu-items" id="menu-items">
-            <a href="#contact" class="menu-item">Contact</a>
-            <a href="#experience" class="menu-item">Experience</a>
-            <a href="#education" class="menu-item">Education</a>
-            <a href="#skills" class="menu-item">Skills</a>
-            <a href="#portfolio" class="menu-item">Portfolio</a>
+            <a href="#contact" class="menu-item" data-key="contact">Contact</a>
+            <a href="#experience" class="menu-item" data-key="experience">Experience</a>
+            <a href="#education" class="menu-item" data-key="education">Education</a>
+            <a href="#skills" class="menu-item" data-key="skills">Skills</a>
+            <a href="#portfolio" class="menu-item" data-key="portfolio">Portfolio</a>
         </div>
     </nav>
-    <!-- 1. LANGUAGE DROPDOWN (tambahkan sebelum dark-mode-toggle) -->
+
+    <!-- Language Dropdown -->
     <div class="language-dropdown" id="language-dropdown">
         <button class="language-toggle" id="language-toggle">
             <span class="lang-text">EN</span>
             <i class="fas fa-chevron-down"></i>
         </button>
         <div class="language-menu" id="language-menu">
-            <button class="language-option" data-lang="EN">English</button>
+            <button class="language-option active" data-lang="EN">English</button>
             <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
         </div>
     </div>
 
-    <!-- Dark Mode Toggle -->
-    <button class="dark-mode-toggle" id="dark-mode-toggle">
-        <i class="fas fa-moon"></i>
-    </button>
+    <!-- Theme Dropdown -->
+    <div class="theme-dropdown">
+        <button class="theme-toggle" id="theme-toggle">
+            <i class="fas fa-moon"></i>
+            <span>Dark</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="theme-menu" id="theme-menu">
+            <button class="theme-option" data-theme="light">
+                <i class="fas fa-sun"></i>
+                <span>Light</span>
+            </button>
+            <button class="theme-option" data-theme="dark">
+                <i class="fas fa-moon"></i>
+                <span>Dark</span>
+            </button>
+            <button class="theme-option active" data-theme="system"> <!-- Pindahkan class 'active' ke sini -->
+                <i class="fas fa-desktop"></i>
+                <span>System</span>
+            </button>
+        </div>
+    </div>
 
     <div class="container">
-        <!-- Header - Revamped -->
+        <!-- Header -->
         <header>
-            <div class="profile-container">
-                <img src="https://pbs.twimg.com/media/GnhJIodbUAA2rdk?format=jpg" alt="Affandy Murad Profile"
-                    class="profile-image">
-                <!-- <div class="status-badge">
-                    <div class="status-indicator"></div>
-                    Available for opportunities
-                </div> -->
-            </div>
+            <div class="header-content-wrapper">
+                <div class="profile-media-container">
+                    <img src="https://pbs.twimg.com/media/GnhJIodbUAA2rdk?format=jpg" alt="Affandy Murad Profile"
+                        class="profile-image">
+                    <div class="status-badge" data-key="statusBadge">
+                        <div class="status-indicator"></div>
+                        Available for opportunities
+                    </div>
+                </div>
 
-            <h1>Affandy Murad</h1>
-            <p class="subtitle">The App Crafter <i class="fab fa-android"></i>&nbsp;<i class="fab fa-apple"></i>&nbsp;<i
-                    class="fab fa-react"></i></p>
-            <div class="location-info">
-                <i class="fas fa-map-marker-alt"></i>
-                Jakarta, Indonesia
-            </div>
-
-            <div class="quick-stats">
-                <div class="social-links">
-                    <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                    <a href="https://github.com/affandymurad" class="social-link" target="_blank">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
+                <div class="profile-details-container">
+                    <h1>Affandy Murad</h1>
+                    <p class="subtitle">The App Crafter <i class="fab fa-android"></i>&nbsp;<i
+                            class="fab fa-apple"></i>&nbsp;<i class="fab fa-react"></i></p>
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Jakarta, Indonesia
+                    </div>
+                    <div class="quick-stats">
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
+                                <i class="fab fa-linkedin"></i> LinkedIn
+                            </a>
+                            <a href="https://github.com/affandymurad" class="social-link" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <!--
-                <div class="stat-item">
-                    <span class="stat-number">9+</span>
-                    <span class="stat-label">Years Experience</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">10+</span>
-                    <span class="stat-label">Projects Completed</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">6</span>
-                    <span class="stat-label">Companies</span>
-                </div>
-                -->
             </div>
         </header>
 
-        <!-- Contact Section 
-        <section class="section" id="contact">
-            <h2><i class="fas fa-address-card"></i>Contact</h2>
-            <div class="contact-grid">
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <a href="mailto:affandymurad@gmail.com">affandymurad@gmail.com</a>
-                </div>
-            </div>
-            <div class="social-links">
-               <a href="#" class="social-link" onclick="window.print()">
-                    <i class="fas fa-print"></i> Print
-                </a> 
-                <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
-                    <i class="fab fa-linkedin"></i> LinkedIn
-                </a>
-                <a href="https://github.com/affandymurad" class="social-link" target="_blank">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </div>
-        </section>
--->
-
         <!-- Portfolio Section -->
         <section class="section" id="portfolio">
-            <h2><i class="fas fa-laptop-code"></i>Portfolio</h2>
+            <h2 data-key="portfolio"><i class="fas fa-laptop-code"></i>Portfolio</h2>
             <div class="portfolio-grid">
                 <div class="portfolio-item">
-                    <h3>Public Holiday Calendar</h3>
-                    <p>Public Holiday Calendar for Indonesia, Malaysia, and Singapore</p>
+                    <h3 data-key="portfolio1Title">Public Holiday Calendar</h3>
+                    <p data-key="portfolio1Desc">Public Holiday Calendar for Indonesia, Malaysia, and Singapore</p>
                     <div class="portfolio-links">
                         <a href="2025" class="portfolio-link">2025</a>
                         <a href="2026" class="portfolio-link">2026</a>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <h3>EHAC App</h3>
-                    <p>Healthcare mobile application for Indonesia's Ministry of Health.</p>
+                    <h3 data-key="portfolio2Title">EHAC App</h3>
+                    <p data-key="portfolio2Desc">Healthcare mobile application for Indonesia's Ministry of Health.</p>
                     <div class="portfolio-links">
                         <a href="#" class="portfolio-link">iOS</a>
                         <a href="#" class="portfolio-link">Android</a>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <h3>WikiTutur</h3>
-                    <p>Project for preserving Indonesian regional languages.</p>
+                    <h3 data-key="portfolio3Title">WikiTutur</h3>
+                    <p data-key="portfolio3Desc">Project for preserving Indonesian regional languages.</p>
                     <div class="portfolio-links">
                         <a href="#" class="portfolio-link">Web</a>
                         <a href="#" class="portfolio-link">Mobile</a>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <h3>Financial Services Apps</h3>
-                    <p>Mobile banking and EDC applications development.</p>
+                    <h3 data-key="portfolio4Title">Financial Services Apps</h3>
+                    <p data-key="portfolio4Desc">Mobile banking and EDC applications development.</p>
                     <div class="portfolio-links">
                         <a href="#" class="portfolio-link">iOS</a>
                         <a href="#" class="portfolio-link">Android</a>
@@ -159,10 +140,10 @@
 
         <!-- Experience Section -->
         <section class="section" id="experience">
-            <h2><i class="fas fa-briefcase"></i>Experience</h2>
+            <h2 data-key="experience"><i class="fas fa-briefcase"></i>Experience</h2>
             <div class="experience-grid">
                 <div class="experience-card">
-                    <div class="country-badge">Indonesia</div>
+                    <div class="country-badge">🇮🇩 Indonesia</div>
                     <div class="experience-header">
                         <span class="company-name">Korindo Group</span>
                         <img src="images/company/logo_korindo.svg" alt="Korindo" class="company-icon">
@@ -173,7 +154,7 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">Indonesia</div>
+                    <div class="country-badge">🇮🇩 Indonesia</div>
                     <div class="experience-header">
                         <span class="company-name">PT Hitachi Channel Solutions</span>
                         <img src="images/company/logo_hitachi.svg" alt="HCS" class="company-icon">
@@ -184,7 +165,7 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">Indonesia</div>
+                    <div class="country-badge">🇮🇩 Indonesia</div>
                     <div class="experience-header">
                         <span class="company-name">PT Docotel Teknologi Indonesia</span>
                         <img src="images/company/logo_dti.svg" alt="HCS" class="company-icon">
@@ -195,7 +176,7 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">Indonesia</div>
+                    <div class="country-badge">🇮🇩 Indonesia</div>
                     <div class="experience-header">
                         <span class="company-name">PT Otten Coffee Indonesia</span>
                         <img src="images/company/logo_otten.svg" alt="Otten" class="company-icon">
@@ -206,7 +187,7 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">Malaysia</div>
+                    <div class="country-badge">🇲🇾 Malaysia</div>
                     <div class="experience-header">
                         <span class="company-name">Hitachi eBWorx Sdn Bhd</span>
                         <img src="images/company/logo_hitachi.svg" alt="eBWorx" class="company-icon">
@@ -217,7 +198,7 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">Indonesia</div>
+                    <div class="country-badge">🇮🇩 Indonesia</div>
                     <div class="experience-header">
                         <span class="company-name">Bank Jakarta</span>
                         <img src="images/company/logo_bank_jakarta.svg" alt="eBWorx" class="company-icon">
@@ -231,32 +212,34 @@
 
         <!-- Education Section -->
         <section class="section" id="education">
-            <h2><i class="fas fa-graduation-cap"></i>Education</h2>
+            <h2 data-key="education"><i class="fas fa-graduation-cap"></i>Education</h2>
             <div class="experience-card">
                 <div class="country-badge">🇮🇩 Indonesia</div>
                 <div class="experience-header">
                     <span class="company-name">Gunadarma University</span>
                     <img src="images/company/logo_ug.svg" alt="Gunadarma" class="company-icon">
                 </div>
-                <div class="position">Bachelor of Computer Systems</div>
+                <div class="position" data-key="educationDegree">Bachelor of Computer Systems</div>
                 <div class="duration">GPA: 3.89/4.00</div>
+                <div class="description" data-key="gunadarma">Focused on software engineering and systems architecture.
+                </div>
             </div>
         </section>
 
         <!-- Skills Section -->
         <section class="section" id="skills">
-            <h2><i class="fas fa-tools"></i>Skills</h2>
+            <h2 data-key="skills"><i class="fas fa-tools"></i>Skills</h2>
             <div class="skills-grid">
                 <div class="skill-category">
-                    <h3>Programming</h3>
+                    <h3 data-key="skillCat1">Programming</h3>
                     <p>Python, Java, Swift, Kotlin</p>
                 </div>
                 <div class="skill-category">
-                    <h3>Technologies</h3>
+                    <h3 data-key="skillCat2">Technologies</h3>
                     <p>AI & Machine Learning, Cybersecurity</p>
                 </div>
                 <div class="skill-category">
-                    <h3>Management</h3>
+                    <h3 data-key="skillCat3">Management</h3>
                     <p>Project Management, UI/UX Design</p>
                 </div>
             </div>
@@ -264,13 +247,25 @@
 
         <!-- Achievements Section -->
         <section class="section">
-            <h2><i class="fas fa-trophy"></i>Achievements</h2>
+            <h2 data-key="achievements"><i class="fas fa-trophy"></i>Achievements</h2>
             <div class="simple-list">
-                <div class="simple-item">🏆 Winner of Wikidata Competition</div>
-                <div class="simple-item">🏆 Winner of Social Media 4 Peace Competition (UNESCO x Wikimedia
-                    Indonesia)
+                <div class="simple-item" data-key="achieve1">🏆 Winner of Wikidata Competition</div>
+                <div class="simple-item" data-key="achieve2">🏆 Winner of Social Media 4 Peace Competition (UNESCO x
+                    Wikimedia Indonesia)
                 </div>
-                <div class="simple-item">📱 Developed EHAC iOS/Android App for Indonesia's Ministry of Health
+                <div class="simple-item" data-key="achieve3">📱 Developed EHAC iOS/Android App for Indonesia's Ministry
+                    of Health
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="section" id="contact">
+            <h2 data-key="contact"><i class="fas fa-address-card"></i>Contact</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:affandymurad@gmail.com">affandymurad@gmail.com</a>
                 </div>
             </div>
         </section>
@@ -287,53 +282,200 @@
             class="icon-label">CC-BY-SA 4.0</a>
         <span>@ 2025 Affandy Murad</span>
     </footer>
-    <div id="wcb" class="carbonbadge wcb-d"></div>
+
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const darkModeToggle = document.getElementById("dark-mode-toggle");
-            const body = document.body;
-            const menuToggle = document.getElementById("menu-toggle");
-            const menuItems = document.getElementById("menu-items");
-            const carbonBadge = document.getElementById("wcb");
+        const translations = {
+            EN: {
+                statusBadge: "Available for opportunities",
+                experience: "Experience",
+                education: "Education",
+                skills: "Skills",
+                portfolio: "Portfolio",
+                achievements: "Achievements",
+                contact: "Contact",
+                korindo: "Managing IT infrastructure and team supervision",
+                hitachi: "Technical support and customer service leadership",
+                docotel: "Mobile application development",
+                otten: "iOS development and maintenance",
+                hitachiMY: "Mobile application development and engineering",
+                bankjakarta: "Customer service and banking operations",
+                educationDegree: "Bachelor of Computer Systems",
+                gunadarma: "Focused on software engineering and systems architecture.",
+                portfolio1Title: "Public Holiday Calendar",
+                portfolio1Desc: "Public Holiday Calendar for Indonesia, Malaysia, and Singapore",
+                portfolio2Title: "EHAC App",
+                portfolio2Desc: "Healthcare mobile application for Indonesia's Ministry of Health.",
+                portfolio3Title: "WikiTutur",
+                portfolio3Desc: "Project for preserving Indonesian regional languages.",
+                portfolio4Title: "Financial Services Apps",
+                portfolio4Desc: "Mobile banking and EDC applications development.",
+                skillCat1: "Programming",
+                skillCat2: "Technologies",
+                skillCat3: "Management",
+                achieve1: "🏆 Winner of Wikidata Competition",
+                achieve2: "🏆 Winner of Social Media 4 Peace Competition (UNESCO x Wikimedia Indonesia)",
+                achieve3: "📱 Developed EHAC iOS/Android App for Indonesia's Ministry of Health"
+            },
+            ID: {
+                statusBadge: "Tersedia untuk peluang kerja",
+                experience: "Pengalaman",
+                education: "Pendidikan",
+                skills: "Keahlian",
+                portfolio: "Portofolio",
+                achievements: "Pencapaian",
+                contact: "Kontak",
+                korindo: "Mengelola infrastruktur IT dan supervisi tim",
+                hitachi: "Kepemimpinan dukungan teknis dan layanan pelanggan",
+                docotel: "Pengembangan aplikasi mobile",
+                otten: "Pengembangan dan pemeliharaan iOS",
+                hitachiMY: "Pengembangan aplikasi mobile dan rekayasa",
+                bankjakarta: "Layanan pelanggan dan operasi perbankan",
+                educationDegree: "Sarjana Sistem Komputer",
+                gunadarma: "Fokus pada rekayasa perangkat lunak dan arsitektur sistem.",
+                portfolio1Title: "Kalender Hari Libur Nasional",
+                portfolio1Desc: "Kalender Hari Libur Nasional untuk Indonesia, Malaysia, dan Singapura",
+                portfolio2Title: "Aplikasi EHAC",
+                portfolio2Desc: "Aplikasi kesehatan mobile untuk Kementerian Kesehatan Republik Indonesia.",
+                portfolio3Title: "WikiTutur",
+                portfolio3Desc: "Proyek untuk pelestarian bahasa daerah Indonesia.",
+                portfolio4Title: "Aplikasi Layanan Keuangan",
+                portfolio4Desc: "Pengembangan aplikasi mobile banking dan EDC.",
+                skillCat1: "Pemrograman",
+                skillCat2: "Teknologi",
+                skillCat3: "Manajemen",
+                achieve1: "🏆 Pemenang Kompetisi Wikidata",
+                achieve2: "🏆 Pemenang Kompetisi Media Sosial 4 Perdamaian (UNESCO x Wikimedia Indonesia)",
+                achieve3: "📱 Mengembangkan Aplikasi EHAC iOS/Android untuk Kemenkes RI"
+            }
+        };
 
-            // Dark mode functionality
-            const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
+        let currentLang = 'EN';
 
-            const updateDarkModeIcon = () => {
-                const icon = darkModeToggle.querySelector("i");
-                icon.className = body.classList.contains("dark-mode")
-                    ? "fas fa-sun"
-                    : "fas fa-moon";
-            };
+        function updatePageLanguage(lang) {
+            const t = translations[lang];
 
-            const updateCarbonBadge = () => {
-                if (body.classList.contains("dark-mode")) {
-                    carbonBadge.classList.add("wcb-d");
-                } else {
-                    carbonBadge.classList.remove("wcb-d");
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (t[key]) {
+                    if (el.tagName === 'H2') {
+                        const icon = el.querySelector('i');
+                        el.innerHTML = `<i class="${icon.className}"></i>${t[key]}`;
+                    } else {
+                        el.textContent = t[key];
+                    }
                 }
-            };
-
-            const applySystemDarkMode = () => {
-                if (prefersDarkMode.matches) {
-                    body.classList.add("dark-mode");
-                } else {
-                    body.classList.remove("dark-mode");
-                }
-                updateDarkModeIcon();
-                updateCarbonBadge();
-            };
-
-            applySystemDarkMode();
-            prefersDarkMode.addEventListener("change", applySystemDarkMode);
-
-            darkModeToggle.addEventListener("click", () => {
-                body.classList.toggle("dark-mode");
-                updateDarkModeIcon();
-                updateCarbonBadge();
             });
 
-            // Mobile menu functionality
+            document.querySelector('.lang-text').textContent = lang;
+
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.add('active');
+                }
+            });
+        }
+
+        function applyTheme(theme) {
+            const body = document.body;
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+            } else if (theme === 'light') {
+                body.classList.remove('dark-mode');
+            } else if (theme === 'system') {
+                body.classList.toggle('dark-mode', prefersDark);
+            }
+        }
+
+        function updateThemeUI(theme) {
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i:first-child');
+            const text = themeToggle.querySelector('span');
+
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-theme') === theme) {
+                    option.classList.add('active');
+                }
+            });
+
+            if (theme === 'light') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light';
+            } else if (theme === 'dark') {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Dark';
+            } else {
+                icon.className = 'fas fa-desktop';
+                text.textContent = 'System';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuToggle = document.getElementById("menu-toggle");
+            const menuItems = document.getElementById("menu-items");
+            const languageToggle = document.getElementById('language-toggle');
+            const languageMenu = document.getElementById('language-menu');
+            const languageOptions = document.querySelectorAll('.language-option');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeMenu = document.getElementById('theme-menu');
+            const themeOptions = document.querySelectorAll('.theme-option');
+
+            // Initialize theme
+            const storedTheme = localStorage.getItem('theme') || 'system';
+            applyTheme(storedTheme);
+            updateThemeUI(storedTheme);
+
+            // Theme dropdown toggle
+            themeToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                themeMenu.classList.toggle('active');
+                languageMenu.classList.remove('active');
+            });
+
+            // Theme selection
+            themeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const theme = option.getAttribute('data-theme');
+                    localStorage.setItem('theme', theme);
+                    applyTheme(theme);
+                    updateThemeUI(theme);
+                    themeMenu.classList.remove('active');
+                });
+            });
+
+            // Watch for system theme changes
+            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'system') {
+                    applyTheme('system');
+                }
+            });
+
+            // Language functionality
+            const storedLang = localStorage.getItem('language') || 'EN';
+            currentLang = storedLang;
+            updatePageLanguage(currentLang);
+
+            languageToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                languageMenu.classList.toggle('active');
+                themeMenu.classList.remove('active');
+            });
+
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const lang = option.getAttribute('data-lang');
+                    currentLang = lang;
+                    localStorage.setItem('language', lang);
+                    languageMenu.classList.remove('active');
+                    updatePageLanguage(currentLang);
+                });
+            });
+
+            // Mobile menu
             menuToggle.addEventListener("click", () => {
                 menuItems.classList.toggle("active");
                 const icon = menuToggle.querySelector("i");
@@ -342,7 +484,6 @@
                     : "fas fa-bars";
             });
 
-            // Smooth scrolling for menu items
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -355,118 +496,22 @@
                             block: 'start'
                         });
 
-                        // Close mobile menu after clicking
                         menuItems.classList.remove("active");
                         menuToggle.querySelector("i").className = "fas fa-bars";
                     }
                 });
             });
-        });
 
-        const translations = {
-            EN: {
-                experience: "Experience",
-                education: "Education",
-                skills: "Skills",
-                portfolio: "Portfolio",
-                achievements: "Achievements",
-                contact: "Contact",
-                descriptions: {
-                    korindo: "Managing IT infrastructure and team supervision",
-                    hitachi: "Technical support and customer service leadership",
-                    hitachiMY: "Mobile application development and engineering",
-                    docotel: "Mobile application development",
-                    otten: "iOS development and maintenance",
-                    bankjakarta: "Customer service and banking operations"
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!languageMenu.contains(e.target) && !languageToggle.contains(e.target)) {
+                    languageMenu.classList.remove('active');
                 }
-            },
-            ID: {
-                experience: "Pengalaman",
-                education: "Pendidikan",
-                skills: "Keahlian",
-                portfolio: "Portofolio",
-                achievements: "Pencapaian",
-                contact: "Kontak",
-                descriptions: {
-                    korindo: "Mengelola infrastruktur IT dan supervisi tim",
-                    hitachi: "Kepemimpinan dukungan teknis dan layanan pelanggan",
-                    hitachiMY: "Pengembangan aplikasi mobile dan rekayasa",
-                    docotel: "Pengembangan aplikasi mobile",
-                    otten: "Pengembangan dan pemeliharaan iOS",
-                    bankjakarta: "Layanan pelanggan dan operasi perbankan"
+                if (!themeMenu.contains(e.target) && !themeToggle.contains(e.target)) {
+                    themeMenu.classList.remove('active');
                 }
-            }
-        };
-
-        let currentLang = 'EN';
-        const toggleBtn = document.getElementById('language-toggle');
-        const menu = document.getElementById('language-menu');
-        const options = document.querySelectorAll('.language-option');
-
-        // Toggle dropdown
-        toggleBtn.addEventListener('click', () => {
-            menu.classList.toggle('active');
-            toggleBtn.classList.toggle('active');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('language-dropdown');
-            if (!dropdown.contains(e.target)) {
-                menu.classList.remove('active');
-                toggleBtn.classList.remove('active');
-            }
-        });
-
-        // Language selection
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                const lang = option.getAttribute('data-lang');
-
-                currentLang = lang;
-                document.querySelector('.lang-text').textContent = lang;
-
-                // Update active state
-                options.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-
-                // Close menu
-                menu.classList.remove('active');
-                toggleBtn.classList.remove('active');
-
-                updatePageLanguage();
             });
         });
-
-        // Set initial active state
-        document.querySelector(`[data-lang="EN"]`).classList.add('active');
-
-        function updatePageLanguage() {
-            const t = translations[currentLang];
-
-            // Update section titles
-            document.querySelectorAll('.section h2').forEach(h2 => {
-                const icon = h2.querySelector('i');
-
-                if (h2.textContent.includes('Experience')) h2.innerHTML = `<i class="${icon.className}"></i>${t.experience}`;
-                if (h2.textContent.includes('Education')) h2.innerHTML = `<i class="${icon.className}"></i>${t.education}`;
-                if (h2.textContent.includes('Skills')) h2.innerHTML = `<i class="${icon.className}"></i>${t.skills}`;
-                if (h2.textContent.includes('Portfolio')) h2.innerHTML = `<i class="${icon.className}"></i>${t.portfolio}`;
-            });
-
-            // Update descriptions
-            document.querySelectorAll('.description').forEach(desc => {
-                const parent = desc.closest('.experience-card');
-                const companyName = parent.querySelector('.company-name').textContent;
-
-                if (companyName.includes('Korindo')) desc.textContent = t.descriptions.korindo;
-                else if (companyName.includes('Hitachi Channel')) desc.textContent = t.descriptions.hitachi;
-                else if (companyName.includes('Hitachi eBWorx')) desc.textContent = t.descriptions.hitachiMY;
-                else if (companyName.includes('Docotel')) desc.textContent = t.descriptions.docotel;
-                else if (companyName.includes('Otten')) desc.textContent = t.descriptions.otten;
-                else if (companyName.includes('Bank')) desc.textContent = t.descriptions.bankjakarta;
-            });
-        }
     </script>
 </body>
 
