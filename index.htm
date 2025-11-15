@@ -389,6 +389,21 @@
             } else if (theme === 'system') {
                 body.classList.toggle('dark-mode', prefersDark);
             }
+            updateCarbonBadge(); // Tambahkan ini
+        }
+
+        // Tambahkan fungsi baru ini setelah applyTheme
+        function updateCarbonBadge() {
+            const body = document.body;
+            const carbonBadge = document.getElementById("wcb");
+
+            if (carbonBadge) {
+                if (body.classList.contains("dark-mode")) {
+                    carbonBadge.classList.add("wcb-d");
+                } else {
+                    carbonBadge.classList.remove("wcb-d");
+                }
+            }
         }
 
         function updateThemeUI(theme) {
@@ -424,15 +439,6 @@
             const themeToggle = document.getElementById('theme-toggle');
             const themeMenu = document.getElementById('theme-menu');
             const themeOptions = document.querySelectorAll('.theme-option');
-            const carbonBadge = document.getElementById("wcb");
-
-            const updateCarbonBadge = () => {
-                if (body.classList.contains("dark-mode")) {
-                    carbonBadge.classList.add("wcb-d");
-                } else {
-                    carbonBadge.classList.remove("wcb-d");
-                }
-            };
 
             // Initialize theme
             const storedTheme = localStorage.getItem('theme') || 'system';
