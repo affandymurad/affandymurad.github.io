@@ -356,23 +356,30 @@
         }
 
         .datetime-container {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin: 15px 0;
-            padding: 15px;
+            padding: 15px 20px;
             background: rgba(102, 126, 234, 0.08);
             border-radius: 10px;
             color: #2c3e50;
             font-size: 1.1em;
             font-weight: 500;
             transition: background 0.3s ease, color 0.3s ease;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        #currentDateTime {
+            flex: 1;
+            min-width: 300px;
         }
 
         .dark-mode-toggle {
             display: flex;
-            justify-content: center;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
             flex-wrap: wrap;
         }
 
@@ -400,6 +407,56 @@
 
         .scroll-today-btn {
             background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .theme-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .theme-select {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 35px 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .theme-select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .theme-select option {
+            background: white;
+            color: #333;
+            padding: 12px 15px;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        .theme-dropdown::after {
+            content: '▼';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: white;
+            font-size: 0.7em;
         }
 
         /* Dark mode styles */
@@ -490,6 +547,11 @@
             color: white;
         }
 
+        body.dark-mode .theme-select option {
+            background: #2a2a2a;
+            color: #e0e0e0;
+        }
+
         .back-home-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
@@ -537,8 +599,14 @@
             <div id="currentDateTime"></div>
             <div class="dark-mode-toggle">
                 <button class="toggle-btn back-home-btn" id="backHomeBtn">🏠 Back to Affandy Murad</button>
-                <button class="toggle-btn scroll-today-btn" id="scrollTodayBtn">📅 Scroll to today</button>
-                <button class="toggle-btn" id="darkModeToggle">🌓 Toggle Dark Mode</button>
+                <button class="toggle-btn scroll-today-btn" id="scrollTodayBtn">📅 Scroll ke Hari Ini</button>
+                <div class="theme-dropdown">
+                    <select class="theme-select" id="themeSelect">
+                        <option value="system">💻 System</option>
+                        <option value="light">☀️ Light</option>
+                        <option value="dark">🌙 Dark</option>
+                    </select>
+                </div>
                 <button class="toggle-btn country-btn" id="indonesiaBtn" onclick="window.location.href='../'">
                     <img src="../flag/indonesia.svg" alt="Indonesia Flag"
                         style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
@@ -890,44 +958,52 @@
             }
         });
 
-        const darkModeToggle = document.getElementById('darkModeToggle');
+        const themeSelect = document.getElementById('themeSelect');
 
-        // Dark mode with memory storage
-        let darkModeEnabled = false;
-        const savedDarkMode = document.cookie.split('; ').find(row => row.startsWith('darkMode='));
+        // Theme management with memory storage
+        let themeMode = 'system'; // default
+        const savedTheme = document.cookie.split('; ').find(row => row.startsWith('theme='));
 
-        if (savedDarkMode) {
-            darkModeEnabled = savedDarkMode.split('=')[1] === 'true';
-        } else {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            darkModeEnabled = prefersDark;
+        if (savedTheme) {
+            themeMode = savedTheme.split('=')[1];
         }
 
-        if (darkModeEnabled) {
-            document.body.classList.add('dark-mode');
-        }
-
-        darkModeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            darkModeEnabled = document.body.classList.contains('dark-mode');
-
-            // Save to cookie (expires in 365 days)
-            const expiryDate = new Date();
-            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-            document.cookie = `darkMode=${darkModeEnabled}; expires=${expiryDate.toUTCString()}; path=/`;
-        });
-
-        // Listen for system dark mode changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            const savedDarkMode = document.cookie.split('; ').find(row => row.startsWith('darkMode='));
-            if (!savedDarkMode) {
-                if (e.matches) {
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else if (theme === 'light') {
+                document.body.classList.remove('dark-mode');
+            } else { // system
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
                     document.body.classList.add('dark-mode');
                 } else {
                     document.body.classList.remove('dark-mode');
                 }
             }
+        }
+
+        // Set initial theme
+        themeSelect.value = themeMode;
+        applyTheme(themeMode);
+
+        themeSelect.addEventListener('change', (e) => {
+            themeMode = e.target.value;
+            applyTheme(themeMode);
+
+            // Save to cookie (expires in 365 days)
+            const expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+            document.cookie = `theme=${themeMode}; expires=${expiryDate.toUTCString()}; path=/`;
         });
+
+        // Listen for system dark mode changes (only if theme is set to system)
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (themeMode === 'system') {
+                applyTheme('system');
+            }
+        });
+
         const backHomeBtn = document.getElementById('backHomeBtn');
         backHomeBtn.addEventListener('click', () => {
             window.location.href = '../../';
