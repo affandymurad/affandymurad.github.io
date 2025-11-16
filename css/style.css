@@ -1,4 +1,4 @@
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -99,12 +99,9 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
-
             50% {
                 opacity: 0.5;
             }
@@ -145,22 +142,24 @@
 
         /* Mobile Menu */
         .mobile-menu {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             background: #1f2937;
             color: white;
-            z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: none;
+            z-index: 1000;
+            padding: 0;
         }
 
         .menu-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px 20px;
+            min-height: 60px;
         }
 
         .menu-toggle {
@@ -169,6 +168,7 @@
             color: white;
             font-size: 1.5rem;
             cursor: pointer;
+            padding: 5px;
         }
 
         .menu-items {
@@ -200,41 +200,45 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            z-index: 90;
+            z-index: 999;
         }
 
         .language-toggle {
             background: #2563eb;
             color: white;
-            padding: 8px 15px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            min-width: 85px;
         }
 
         .language-toggle:hover {
             background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
 
         .language-menu {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 8px);
             left: 0;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             overflow: hidden;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.2s ease-out;
-            min-width: 150px;
-            margin-top: 5px;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            min-width: 160px;
+            z-index: 1001;
         }
 
         .language-menu.active {
@@ -246,7 +250,7 @@
         .language-option {
             display: block;
             width: 100%;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border: none;
             background: none;
             text-align: left;
@@ -254,12 +258,18 @@
             transition: background 0.2s;
             color: #1f2937;
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .language-option:hover,
-        .language-option.active {
+        .language-option:hover {
             background: #f3f4f6;
             color: #2563eb;
+        }
+
+        .language-option.active {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 600;
         }
 
         /* Theme Dropdown */
@@ -267,42 +277,54 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 90;
+            z-index: 999;
         }
 
         .theme-toggle {
             background: #1f2937;
             color: white;
-            padding: 8px 15px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
-            min-width: 100px;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
         }
 
         .theme-toggle:hover {
             background: #374151;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle i:first-child {
+            font-size: 1.1rem;
+        }
+
+        .theme-toggle .fa-chevron-down {
+            font-size: 0.75rem;
+            margin-left: auto;
         }
 
         .theme-menu {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 8px);
             right: 0;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             overflow: hidden;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.2s ease-out;
-            min-width: 150px;
-            margin-top: 5px;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            min-width: 160px;
+            z-index: 1001;
         }
 
         .theme-menu.active {
@@ -314,9 +336,9 @@
         .theme-option {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border: none;
             background: none;
             text-align: left;
@@ -324,16 +346,23 @@
             transition: background 0.2s;
             color: #1f2937;
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .theme-option:hover,
-        .theme-option.active {
+        .theme-option:hover {
             background: #f3f4f6;
             color: #2563eb;
         }
 
+        .theme-option.active {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
         .theme-option i {
             width: 20px;
+            font-size: 1.1rem;
         }
 
         /* Sections */
@@ -651,6 +680,7 @@
         body.dark-mode .theme-menu,
         body.dark-mode .language-menu {
             background: #1f2937;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         body.dark-mode .theme-option,
@@ -659,43 +689,77 @@
         }
 
         body.dark-mode .theme-option:hover,
-        body.dark-mode .theme-option.active,
-        body.dark-mode .language-option:hover,
-        body.dark-mode .language-option.active {
+        body.dark-mode .language-option:hover {
             background: #374151;
             color: #60a5fa;
+        }
+
+        body.dark-mode .theme-option.active,
+        body.dark-mode .language-option.active {
+            background: #1e3a5f;
+            color: #60a5fa;
+        }
+
+        /* Tablet Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 100%;
+                padding: 0 30px;
+            }
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
             body {
-                padding-top: 115px;
-                /* Ubah dari 65px menjadi 115px untuk memberi ruang bagi dropdowns */
+                padding-top: 80px;
             }
 
             .mobile-menu {
                 display: block;
             }
 
+            /* Language Dropdown - Mobile */
             .language-dropdown {
-                top: 55px;
-                /* Ubah dari 10px menjadi 55px agar di bawah menu bar */
-                left: 10px;
+                top: 70px;
+                left: 15px;
+                right: auto; /* Pastikan tidak ada right */
             }
-
+            
+            .language-toggle {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+                min-width: 85px;
+            }
+            
+            .language-menu {
+                min-width: 150px;
+            }
+            
+            .language-option {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+            
+            /* Theme Dropdown - Mobile */
             .theme-dropdown {
-                top: 55px;
-                /* Ubah dari 10px menjadi 55px agar di bawah menu bar */
-                right: 10px;
+                top: 70px;
+                left: auto; /* Pastikan tidak ada left */
+                right: 15px;
             }
-
+            
             .theme-toggle {
-                min-width: auto;
-                padding: 8px 12px;
+                padding: 12px 16px;
+                font-size: 0.95rem;
+                min-width: 120px;
             }
-
-            .theme-toggle span {
-                display: none;
+            
+            .theme-menu {
+                min-width: 150px;
+            }
+            
+            .theme-option {
+                padding: 12px 16px;
+                font-size: 0.9rem;
             }
 
             header {
