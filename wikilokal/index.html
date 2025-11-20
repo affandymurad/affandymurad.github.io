@@ -90,6 +90,34 @@
             #controls {
                 grid-template-columns: 1fr;
             }
+
+            .header-top {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .header-left {
+                justify-content: center;
+            }
+
+            .header-right {
+                flex-direction: column;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+
+            .header-right button {
+                width: 100%;
+                justify-content: center;
+                font-size: 1rem;
+                padding: 0.85rem 1rem;
+            }
+
+            #main-subtitle {
+                font-size: 0.95rem;
+            }
         }
 
         .permission-badge {
@@ -692,6 +720,46 @@
             gap: 0.75rem;
             flex-wrap: wrap;
             align-items: center;
+            justify-content: flex-end;
+        }
+
+        .header-right button {
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Tombol Panduan */
+        #guide-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #guide-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Tombol Kembali ke Affandy Murad */
+        #creator-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #creator-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         /* Modal untuk Panduan */
@@ -824,6 +892,9 @@
         </div>
         <div class="header-right">
             <button id="guide-btn" title="Lihat panduan">📖 Panduan</button>
+            <button id="creator-btn" onclick="window.open('/')" title="Kunjungi Affandy Murad">
+                🏠 Kembali ke Affandy Murad
+            </button>
         </div>
     </div>
 
