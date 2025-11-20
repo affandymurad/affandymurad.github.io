@@ -1112,49 +1112,71 @@
         async function getLocationDetails(lat, lon) {
             try {
                 const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+
                 const nominatimResponse = await fetch(nominatimUrl, {
-                    headers: { 'User-Agent': 'WikiLokal/1.0', 'Accept-Language': currentLang }
+                    headers: {
+                        'User-Agent': 'WikiLokal/1.0',
+                        'Accept-Language': currentLang
+                    }
                 });
+
                 const data = await nominatimResponse.json();
+
                 if (!data.address) {
-                    return [{ name: 'Lokasi tidak diketahui', wikidataId: null }];
+                    return [{ name: 'Location unknown', wikidataId: null }];
                 }
 
-                const { road, postcode, city, state, country, suburb } = data.address;
+                // Ambil bagian-bagian alamat tanpa validasi negara mana pun
+                const { road, postcode, city, state, country, suburb, town, village } = data.address;
+
+                // Gunakan fallback global (karena di luar negeri penamaan berbeda)
                 const locationParts = [
-                    { name: road || '', type: 'road' },
-                    { name: postcode || '', type: 'postcode' },
-                    { name: suburb || '', type: 'suburb' },
-                    { name: city || '', type: 'city' },
-                    { name: state || '', type: 'state' },
-                    { name: country || '', type: 'country' }
+                    { name: road, type: 'road' },
+                    { name: postcode, type: 'postcode' },
+                    { name: suburb, type: 'suburb' },
+                    { name: town, type: 'town' },
+                    { name: village, type: 'village' },
+                    { name: city, type: 'city' },
+                    { name: state, type: 'state' },
+                    { name: country, type: 'country' }
                 ].filter(part => part.name);
 
-                const detailedParts = await Promise.all(locationParts.map(async (part) => {
-                    if (!part.name) return { name: part.name, type: part.type, wikidataId: null };
-                    if (part.type === 'road' || part.type === 'postcode') {
-                        return { name: part.name, type: part.type, wikidataId: null };
-                    }
-                    try {
-                        const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
-                        const wikidataResponse = await fetch(wikidataUrl);
-                        const wikidataData = await wikidataResponse.json();
-                        const entity = wikidataData.search[0];
-                        return {
-                            name: part.name,
-                            type: part.type,
-                            wikidataId: entity ? entity.id : null
-                        };
-                    } catch (error) {
-                        console.error(`Error mengambil Wikidata untuk ${part.name}:`, error);
-                        return { name: part.name, type: part.type, wikidataId: null };
-                    }
-                }));
+                // Proses Wikidata (kecuali untuk jalan & postcode)
+                const detailedParts = await Promise.all(
+                    locationParts.map(async (part) => {
+                        // Skip road dan postal code
+                        if (part.type === 'road' || part.type === 'postcode') {
+                            return { ...part, wikidataId: null };
+                        }
 
-                return detailedParts.filter(part => part.name);
+                        try {
+                            const wikidataUrl =
+                                `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
+
+                            const wikidataResponse = await fetch(wikidataUrl);
+                            const wikidataData = await wikidataResponse.json();
+
+                            const entity = (wikidataData.search && wikidataData.search.length > 0)
+                                ? wikidataData.search[0]
+                                : null;
+
+                            return {
+                                ...part,
+                                wikidataId: entity ? entity.id : null
+                            };
+
+                        } catch (err) {
+                            console.error(`Wikidata error for "${part.name}":`, err);
+                            return { ...part, wikidataId: null };
+                        }
+                    })
+                );
+
+                return detailedParts;
+
             } catch (error) {
-                console.error('Error mengambil detail lokasi:', error);
-                return [{ name: 'Gagal mengambil detail lokasi', wikidataId: null }];
+                console.error('Error retrieving location details:', error);
+                return [{ name: 'Failed to retrieve location details', wikidataId: null }];
             }
         }
 
