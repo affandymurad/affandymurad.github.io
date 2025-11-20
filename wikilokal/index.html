@@ -118,6 +118,14 @@
             #main-subtitle {
                 font-size: 0.95rem;
             }
+
+            #scroll-to-top {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
         }
 
         .permission-badge {
@@ -878,6 +886,87 @@
             margin: 0.25rem 0;
             font-size: 0.95rem;
         }
+
+        /* Floating scroll to top button */
+        #scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 100;
+            padding: 0;
+        }
+
+        #scroll-to-top:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        #scroll-to-top.show {
+            display: flex;
+        }
+
+        /* Wiktionary toggle */
+        .wiktionary-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .wiktionary-header:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .wiktionary-header span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .wiktionary-toggle {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: transform 0.3s ease;
+        }
+
+        .wiktionary-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .wiktionary-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .wiktionary-buttons.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+        }
     </style>
 </head>
 
@@ -910,6 +999,8 @@
             <select id="language-select">
                 <option value="id">Bahasa Indonesia (ID)</option>
                 <option value="en">Bahasa Inggris (EN)</option>
+                <option value="ms">Bahasa Melayu (MS)</option>
+                <option value="fr">Bahasa Prancis (FR)</option>
                 <option value="zh">Bahasa Mandarin (ZH)</option>
                 <option value="es">Bahasa Spanyol (ES)</option>
                 <option value="bew">Bahasa Betawi (BEW)</option>
@@ -1018,6 +1109,11 @@
         </div>
     </div>
 
+    <!-- Floating Scroll to Top Button -->
+    <button id="scroll-to-top" title="Kembali ke atas" aria-label="Scroll to top">
+        ↑
+    </button>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script>
@@ -1059,9 +1155,18 @@
             setTheme(themeSelect.value);
         });
 
-        // Update permission status UI
+        // Update permission status UI — versi yang sudah diperbaiki
         function updatePermissionStatus(state) {
             permissionStatus.className = 'permission-badge';
+
+            // PRIORITAS 1: Kalau sudah punya posisi, pasti sudah diizinkan
+            if (currentPosition) {
+                permissionStatus.textContent = '✓ Diizinkan';
+                permissionStatus.classList.add('granted');
+                return;
+            }
+
+            // PRIORITAS 2: Kalau belum punya posisi, baru ikuti status permission API
             if (state === 'granted') {
                 permissionStatus.textContent = '✓ Diizinkan';
                 permissionStatus.classList.add('granted');
@@ -1354,14 +1459,53 @@
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'article-content';
 
+                // Buat container judul + badge bahasa
+                const titleContainer = document.createElement('div');
+                titleContainer.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+`;
+
+                // Judul artikel
                 const link = document.createElement('a');
                 link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
                 link.textContent = article.title;
                 link.target = '_blank';
-                contentDiv.appendChild(link);
+                link.style.cssText = 'font-size:1.2rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
+                link.onmouseover = () => link.style.color = 'var(--secondary-color)';
+                link.onmouseout = () => link.style.color = 'var(--primary-color)';
+                titleContainer.appendChild(link);
+
+                // Badge bahasa (ID, EN, ZH, dll)
+                const langBadge = document.createElement('span');
+                langBadge.textContent = currentLang.toUpperCase();
+                langBadge.style.cssText = `
+                background: var(--primary-color);
+                color: white;
+                font-weight: bold;
+                font-size: 0.7rem;
+                padding: 0.15rem 0.5rem;
+                border-radius: 4px;
+                letter-spacing: 0.5px;
+                min-width: 32px;
+                text-align: center;
+            `;
+                titleContainer.appendChild(langBadge);
+
+                // Gantikan link lama dengan container baru
+                contentDiv.appendChild(titleContainer);
 
                 const desc = document.createElement('div');
                 desc.className = 'description';
+                desc.style.display = '-webkit-box';
+                desc.style.webkitBoxOrient = 'vertical';
+                desc.style.overflow = 'visible'; // Ubah dari hidden
+                desc.style.textOverflow = 'clip'; // Ubah dari ellipsis
+                // Hapus line-clamp agar semua deskripsi terlihat
                 desc.textContent = details.description;
                 contentDiv.appendChild(desc);
 
@@ -1381,9 +1525,25 @@
 
                 const wiktDiv = document.createElement('div');
                 wiktDiv.className = 'wiktionary';
+
+                // Header dengan toggle
+                const wiktHeader = document.createElement('div');
+                wiktHeader.className = 'wiktionary-header';
+
                 const wiktTitle = document.createElement('span');
-                wiktTitle.textContent = 'Wiktionary: ';
-                wiktDiv.appendChild(wiktTitle);
+                wiktTitle.textContent = 'Wiktionary';
+                wiktHeader.appendChild(wiktTitle);
+
+                const toggleIcon = document.createElement('span');
+                toggleIcon.className = 'wiktionary-toggle collapsed';
+                toggleIcon.textContent = '▼';
+                wiktHeader.appendChild(toggleIcon);
+
+                wiktDiv.appendChild(wiktHeader);
+
+                // Container untuk tombol-tombol
+                const wiktButtons = document.createElement('div');
+                wiktButtons.className = 'wiktionary-buttons hidden';
 
                 // Gabungkan judul + deskripsi untuk ekstraksi kata
                 const textSource = `${article.title} ${details.description}`.toLowerCase();
@@ -1407,11 +1567,11 @@
                     }
                 }
 
-                // Batasi maksimal 12 tombol agar tidak terlalu penuh
+                // Tampilkan semua unique words sebagai tombol
                 uniqueWords.forEach(word => {
                     const wiktBtn = document.createElement('button');
                     wiktBtn.textContent = word;
-                    wiktBtn.title = `Cari “${word}” di Wiktionary (${currentLang})`;
+                    wiktBtn.title = `Cari "${word}" di Wiktionary (${currentLang})`;
                     wiktBtn.onclick = (e) => {
                         e.stopPropagation();
                         window.open(
@@ -1419,7 +1579,7 @@
                             '_blank'
                         );
                     };
-                    wiktDiv.appendChild(wiktBtn);
+                    wiktButtons.appendChild(wiktBtn);
                 });
 
                 // Jika tidak ada kata yang layak, sembunyikan atau beri info
@@ -1428,8 +1588,16 @@
                     noDef.textContent = 'Tidak ada kata untuk Wiktionary';
                     noDef.style.color = 'var(--text-light)';
                     noDef.style.fontSize = '0.8rem';
-                    wiktDiv.appendChild(noDef);
+                    wiktButtons.appendChild(noDef);
                 }
+
+                wiktDiv.appendChild(wiktButtons);
+
+                // Toggle functionality
+                wiktHeader.onclick = () => {
+                    wiktButtons.classList.toggle('hidden');
+                    toggleIcon.classList.toggle('collapsed');
+                };
 
                 contentDiv.appendChild(wiktDiv);
 
@@ -1675,13 +1843,57 @@
 
         languageSelect.addEventListener('change', () => {
             currentLang = languageSelect.value;
+
+            // Bersihkan hasil lama
+            resultsList.innerHTML = '';
+            articleCount.textContent = '';
+
             if (currentPosition) {
-                searchArticles();
+                resultsList.innerHTML = `
+            <li style="text-align:center; padding:2rem; background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); color:var(--text-light);">
+                <div style="font-size:2rem; margin-bottom:0.5rem;">Language</div>
+                <strong>Bahasa diubah menjadi:</strong><br>
+                <strong style="color:var(--primary-color); font-size:1.1rem;">
+                    ${languageSelect.options[languageSelect.selectedIndex].text}
+                </strong><br><br>
+                Klik tombol <strong style="color:var(--accent-color);">"Periksa Lokasi & Cari"</strong><br>
+                untuk menampilkan artikel dalam bahasa baru
+            </li>
+        `;
+
+                permissionStatus.textContent = 'Diizinkan — Klik untuk cari ulang';
+                permissionStatus.className = 'permission-badge granted';
             }
         });
 
         checkPermissionBtn.addEventListener('click', async () => {
             await searchArticles();
+        });
+
+        // Scroll to top functionality
+        const scrollToTopBtn = document.getElementById('scroll-to-top');
+        const locationSection = document.getElementById('location-section');
+
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', () => {
+            if (!locationSection) return;
+
+            const locationSectionTop = locationSection.getBoundingClientRect().top;
+
+            // Show button when location section is above viewport
+            if (locationSectionTop < 0) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        // Scroll to top when button is clicked
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
 
         // Don't auto-load on page load, wait for user action
