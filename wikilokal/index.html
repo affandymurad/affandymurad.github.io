@@ -1121,15 +1121,12 @@
                 });
 
                 const data = await nominatimResponse.json();
-
                 if (!data.address) {
                     return [{ name: 'Location unknown', wikidataId: null }];
                 }
 
-                // Ambil bagian-bagian alamat tanpa validasi negara mana pun
                 const { road, postcode, city, state, country, suburb, town, village } = data.address;
 
-                // Gunakan fallback global (karena di luar negeri penamaan berbeda)
                 const locationParts = [
                     { name: road, type: 'road' },
                     { name: postcode, type: 'postcode' },
@@ -1141,34 +1138,89 @@
                     { name: country, type: 'country' }
                 ].filter(part => part.name);
 
-                // Proses Wikidata (kecuali untuk jalan & postcode)
+                function isGeoDescription(desc) {
+                    if (!desc) return false;
+                    const d = desc.toLowerCase();
+                    return (
+                        d.includes("kecamatan") ||
+                        d.includes("kelurahan") ||
+                        d.includes("district") ||
+                        d.includes("administrative") ||
+                        d.includes("city") ||
+                        d.includes("town") ||
+                        d.includes("village") ||
+                        d.includes("municipality") ||
+                        d.includes("settlement")
+                    );
+                }
+
+                function matchEntityByType(entity, type) {
+                    if (!entity?.description) return false;
+                    const desc = entity.description.toLowerCase();
+
+                    const typeKeywords = {
+                        suburb: ["kecamatan", "kelurahan", "district", "subdistrict"],
+                        town: ["town", "city", "settlement"],
+                        village: ["village", "desa", "kelurahan"],
+                        city: ["city", "kota", "municipality"],
+                        state: ["state", "province", "region"],
+                        country: ["country", "nation"]
+                    };
+
+                    return typeKeywords[type]?.some(k => desc.includes(k)) || false;
+                }
+
+                async function findBestWikidataMatch(name, type) {
+                    const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const results = data.search || [];
+                    if (!results.length) return null;
+
+                    // 1) Cari yang cocok dengan type
+                    const typeMatched = results.find(r => matchEntityByType(r, type));
+                    if (typeMatched) return typeMatched;
+
+                    // 2) Cari exact label match + geographic
+                    const exactGeo = results.find(r =>
+                        r.label?.toLowerCase() === name.toLowerCase() &&
+                        isGeoDescription(r.description)
+                    );
+                    if (exactGeo) return exactGeo;
+
+                    // 3) Cari entitas yang deskripsinya geografis
+                    const geoEntity = results.find(r => isGeoDescription(r.description));
+                    if (geoEntity) return geoEntity;
+
+                    // 4) fallback: ambil yg label sama tanpa cek deskripsi
+                    const exact = results.find(r =>
+                        r.label?.toLowerCase() === name.toLowerCase()
+                    );
+                    if (exact) return exact;
+
+                    // 5) fallback: ambil entity pertama yg bukan non-geo
+                    const nonGeoBlacklist = ["month", "family name", "given name"];
+                    const safeFirst = results.find(r =>
+                        !nonGeoBlacklist.includes((r.description || "").toLowerCase())
+                    );
+                    if (safeFirst) return safeFirst;
+
+                    // 6) fallback terakhir
+                    return results[0];
+                }
+
                 const detailedParts = await Promise.all(
                     locationParts.map(async (part) => {
-                        // Skip road dan postal code
                         if (part.type === 'road' || part.type === 'postcode') {
                             return { ...part, wikidataId: null };
                         }
 
-                        try {
-                            const wikidataUrl =
-                                `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
-
-                            const wikidataResponse = await fetch(wikidataUrl);
-                            const wikidataData = await wikidataResponse.json();
-
-                            const entity = (wikidataData.search && wikidataData.search.length > 0)
-                                ? wikidataData.search[0]
-                                : null;
-
-                            return {
-                                ...part,
-                                wikidataId: entity ? entity.id : null
-                            };
-
-                        } catch (err) {
-                            console.error(`Wikidata error for "${part.name}":`, err);
-                            return { ...part, wikidataId: null };
-                        }
+                        const entity = await findBestWikidataMatch(part.name, part.type);
+                        return {
+                            ...part,
+                            wikidataId: entity?.id ?? null
+                        };
                     })
                 );
 
