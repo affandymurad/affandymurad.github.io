@@ -1356,7 +1356,7 @@
                 }
 
                 // Batasi maksimal 12 tombol agar tidak terlalu penuh
-                uniqueWords.slice(0, 12).forEach(word => {
+                uniqueWords.forEach(word => {
                     const wiktBtn = document.createElement('button');
                     wiktBtn.textContent = word;
                     wiktBtn.title = `Cari “${word}” di Wiktionary (${currentLang})`;
