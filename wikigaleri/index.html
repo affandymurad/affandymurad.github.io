@@ -18,6 +18,7 @@
             --text-color: #1f2937;
             --text-light: #6b7280;
             --bg-color: #f9fafb;
+            --bg-secondary: #f3f4f6;
             --card-bg: #ffffff;
             --border-color: #e5e7eb;
             --radius: 8px;
@@ -57,23 +58,56 @@
             font-weight: 500;
         }
 
+        /* Ganti bagian #controls yang ada dengan ini */
         #controls {
             background-color: var(--card-bg);
             border-radius: var(--radius);
-            padding: 1rem;
+            padding: 1.25rem;
             box-shadow: var(--shadow);
             margin-bottom: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
+            display: grid;
+            grid-template-columns: repeat(2, auto) 1fr auto;
+            gap: 1rem;
             align-items: center;
-            justify-content: space-between;
         }
 
-        @media (max-width: 600px) {
+
+
+        @media (max-width: 968px) {
             #controls {
-                flex-direction: column;
-                align-items: stretch;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            #check-permission {
+                grid-column: 1 / -1;
+            }
+
+            .permission-badge {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #controls {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 0.85rem;
+            }
+
+            #language-select,
+            #check-permission,
+            .permission-badge {
+                width: 100%;
+                grid-column: 1;
+            }
+
+            #check-permission {
+                justify-content: center;
+            }
+
+            .permission-badge {
+                text-align: center;
             }
         }
 
@@ -118,28 +152,98 @@
             content: "📍";
         }
 
-        #permission-status {
+        /* Ganti styling permission status */
+        .permission-badge {
             padding: 0.5rem 1rem;
             border-radius: var(--radius);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            flex-grow: 1;
-            text-align: center;
+            white-space: nowrap;
         }
 
-        .permitted {
+        .permission-badge.granted {
             background-color: rgba(16, 185, 129, 0.15);
             color: var(--success-color);
         }
 
-        .denied {
+        .permission-badge.denied {
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--danger-color);
         }
 
-        .pending {
+        .permission-badge.pending {
             background-color: rgba(245, 158, 11, 0.15);
             color: var(--warning-color);
+        }
+
+        /* Hapus class .permitted, .denied, .pending yang lama */
+        /* Tambahkan setelah #location-status */
+        .coordinates-display {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary-color);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .coordinates-display::before {
+            content: "📍";
+            font-size: 1.2rem;
+        }
+
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            user-select: none;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            transition: background-color 0.2s;
+            background-color: var(--bg-secondary);
+        }
+
+        .location-header:hover {
+            background-color: var(--border-color);
+        }
+
+        .location-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .location-details {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .location-details.hidden {
+            max-height: 0;
+            opacity: 0;
         }
 
         #location-status {
@@ -184,13 +288,30 @@
             color: white;
         }
 
+        /* Update grid results untuk spacing yang lebih baik */
         #results {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.75rem;
             padding: 0;
+            list-style: none;
         }
 
+        @media (max-width: 1400px) {
+            #results {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #results {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+        }
+
+        /* Ganti .photo-card dan turunannya */
         .photo-card {
             background-color: var(--card-bg);
             border-radius: var(--radius);
@@ -202,111 +323,263 @@
             flex-direction: column;
             position: relative;
             border: 1px solid var(--border-color);
+            height: 100%;
         }
 
         .photo-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
             border-color: var(--primary-color);
         }
 
-        .photo-card img {
+        /* Container gambar dengan aspect ratio */
+        .photo-image-container {
+            position: relative;
             width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-            border-bottom: 1px solid var(--border-color);
+            padding-top: 66.67%;
+            /* Aspect ratio 3:2 */
+            overflow: hidden;
+            background-color: var(--border-color);
         }
 
+        .photo-card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Stats overlay di pojok kanan atas */
+        .photo-stats {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .stat-badge {
+            background: rgba(99, 102, 241, 0.95);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-badge .icon {
+            font-size: 0.85rem;
+        }
+
+        /* Content area */
         .photo-content {
-            padding: 1.5rem;
+            padding: 1.25rem;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
-        .photo-card a {
+        /* Title dengan styling yang lebih prominent */
+        .photo-title {
+            margin: 0;
+            padding: 0;
+        }
+
+        .photo-card a.photo-link {
             text-decoration: none;
-            color: var(--primary-color);
+            color: var(--text-color);
             font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            line-height: 1.4;
             display: block;
             transition: color 0.2s;
+            margin: 0;
         }
 
-        .photo-card a:hover {
-            color: var(--secondary-color);
+        .photo-card a.photo-link:hover {
+            color: var(--primary-color);
         }
 
+        /* Description dengan line clamp */
         .description {
-            font-size: 0.95rem;
-            color: var(--text-color);
+            font-size: 0.9rem;
+            color: var(--text-light);
             line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
             flex-grow: 1;
         }
 
+        /* Hapus CSS .distance yang lama, ganti dengan: */
         .distance {
+            position: absolute;
+            top: 12px;
+            left: 12px;
             display: inline-flex;
             align-items: center;
-            color: var(--text-light);
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 0.25rem 0.75rem;
-            background-color: rgba(219, 234, 254, 0.5);
-            border-radius: 100px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            background: rgba(99, 102, 241, 0.95);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .distance::before {
             content: "📍";
-            margin-right: 0.5rem;
+            margin-right: 0.4rem;
+            font-size: 0.85rem;
         }
 
-        .file-usage {
+        @media (max-width: 768px) {
+            .distance {
+                top: 8px;
+                left: 8px;
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
+
+            .metadata-toggle:hover {
+                margin-left: -1rem;
+                margin-right: -1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        /* Collapsible metadata section */
+        .metadata-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            cursor: pointer;
+            user-select: none;
+            border-top: 1px solid var(--border-color);
+            margin-top: 0.75rem;
+            transition: background-color 0.2s;
+        }
+
+        .metadata-toggle:hover {
+            background-color: var(--bg-secondary);
+            margin-left: -1.25rem;
+            margin-right: -1.25rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+
+        .metadata-toggle-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metadata-toggle-icon {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .metadata-toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .metadata-collapsible {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .metadata-collapsible.expanded {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        /* Update .photo-metadata untuk collapsible */
+        .photo-metadata {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-top: 0.75rem;
+        }
+
+        .metadata-item {
             font-size: 0.85rem;
             color: var(--text-light);
             display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
+            align-items: flex-start;
+            gap: 0.5rem;
         }
 
-        .file-usage span {
-            font-weight: 500;
+        .metadata-item .icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .file-usage a {
-            font-size: 0.85rem;
-            color: var(--primary-color);
-            text-decoration: none;
+        .metadata-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-right: 0.25rem;
         }
 
-        .file-usage a:hover {
-            color: var(--secondary-color);
-        }
-
-        .categories {
-            font-size: 0.85rem;
-            color: var(--text-light);
+        .metadata-content {
+            flex: 1;
             display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
+            flex-wrap: wrap;
+            gap: 0.35rem;
         }
 
-        .categories span {
-            font-weight: 500;
-        }
-
-        .categories a {
-            font-size: 0.85rem;
+        .metadata-link {
             color: var(--primary-color);
             text-decoration: none;
+            transition: color 0.2s;
+            word-break: break-word;
         }
 
-        .categories a:hover {
+        .metadata-link:hover {
             color: var(--secondary-color);
+            text-decoration: underline;
         }
 
+        .metadata-link::after {
+            content: "•";
+            margin-left: 0.35rem;
+            color: var(--text-light);
+        }
+
+        .metadata-link:last-child::after {
+            content: "";
+            margin: 0;
+        }
+
+        /* Versi simple - icon langsung di samping */
         .author {
             font-size: 0.85rem;
             color: var(--text-light);
@@ -315,60 +588,187 @@
             gap: 0.5rem;
         }
 
+        .author-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-right: 0.35rem;
+        }
+
+        .author-name {
+            color: var(--text-color);
+            display: inline;
+        }
+
         .author a {
             color: var(--primary-color);
             text-decoration: none;
+            font-weight: 500;
         }
 
         .author a:hover {
             color: var(--secondary-color);
+            text-decoration: underline;
         }
 
+        /* Card actions dengan icons */
         .card-actions {
             display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
+            gap: 0.5rem;
             padding-top: 1rem;
             border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .card-actions button {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .route-btn {
             background-color: var(--accent-color);
-            flex: 1;
         }
 
-        .route-btn::before {
-            content: "🗺️";
-            margin-right: 0.5rem;
+        .route-btn:hover {
+            background-color: #0ea5e9;
         }
 
         .google-maps-btn {
             background-color: #34c759;
-            flex: 1;
         }
 
-        .google-maps-btn::before {
-            content: "🌍";
-            margin-right: 0.5rem;
+        .google-maps-btn:hover {
+            background-color: #28a745;
         }
 
-        .loading,
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .photo-content {
+                padding: 1rem;
+            }
+
+            .photo-card a.photo-link {
+                font-size: 1rem;
+            }
+
+            .description {
+                font-size: 0.85rem;
+                -webkit-line-clamp: 2;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+
+            .card-actions button {
+                width: 100%;
+            }
+
+            .photo-stats {
+                top: 8px;
+                right: 8px;
+                gap: 6px;
+            }
+
+            .stat-badge {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .description {
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+            }
+        }
+
+        /* Loading animation yang lebih menarik */
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-secondary));
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .loading::before {
+            content: "📸";
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        /* Tambahkan di bagian .loading */
+        #progress-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Error state */
         .error {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 2rem;
-            background-color: var(--card-bg);
+            padding: 3rem 2rem;
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 2px dashed var(--danger-color);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .loading {
-            color: var(--text-light);
-            animation: pulse 1.5s infinite;
-        }
-
-        .error {
             color: var(--danger-color);
+        }
+
+        .error::before {
+            content: "⚠️";
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* Tambahkan setelah .error */
+        .error button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .error button:hover {
+            background-color: var(--secondary-color);
         }
 
         @keyframes pulse {
@@ -465,6 +865,29 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Empty state styling */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state::before {
+            content: "🔍";
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 
@@ -482,13 +905,22 @@
                 <option value="bew">Bahasa Betawi (bew)</option>
             </select>
             <button id="check-permission">Periksa Lokasi & Cari</button>
-            <span id="permission-status">Memeriksa izin...</span>
+            <!-- Ganti bagian ini di #controls -->
+            <span id="permission-status" class="permission-badge pending">Belum diperiksa</span>
         </div>
     </section>
 
+    <!-- Ganti section #location-section -->
     <section id="location-section" aria-label="Status Lokasi">
         <h2>Status Lokasi</h2>
-        <div id="location-status"></div>
+        <div id="location-status">
+            <div class="coordinates-display"></div>
+            <div class="location-header" onclick="toggleLocationDetails()">
+                <h3>Detail Lokasi</h3>
+                <span class="toggle-icon collapsed">▶</span>
+            </div>
+            <div class="location-details hidden" id="location-details-content"></div>
+        </div>
     </section>
 
     <section id="results-section" aria-label="Hasil Pencarian">
@@ -507,6 +939,21 @@
         let currentLang = 'id';
         let currentPosition = null;
         const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
+
+        // Tambahkan fungsi ini setelah deklarasi variable
+        function toggleLocationDetails() {
+            const detailsContent = document.getElementById('location-details-content');
+            const toggleIcon = document.querySelector('.toggle-icon');
+
+            detailsContent.classList.toggle('hidden');
+            toggleIcon.classList.toggle('collapsed');
+
+            if (detailsContent.classList.contains('hidden')) {
+                toggleIcon.textContent = '▶';
+            } else {
+                toggleIcon.textContent = '▼';
+            }
+        }
 
         async function checkLocationPermission() {
             if (!navigator.permissions || !navigator.geolocation) {
@@ -532,19 +979,48 @@
             }
         }
 
+        // Ganti fungsi updatePermissionStatus
         function updatePermissionStatus(state) {
-            permissionStatus.className = '';
-            permissionStatus.textContent = `Izin lokasi: ${state === 'granted' ? 'diizinkan' :
-                state === 'denied' ? 'ditolak' : 'menunggu'}`;
-            permissionStatus.classList.add(state === 'granted' ? 'permitted' : state === 'denied' ? 'denied' : 'pending');
+            permissionStatus.className = 'permission-badge';
+
+            if (currentPosition) {
+                permissionStatus.textContent = '✓ Diizinkan';
+                permissionStatus.classList.add('granted');
+                return;
+            }
+
+            if (state === 'granted') {
+                permissionStatus.textContent = '✓ Diizinkan';
+                permissionStatus.classList.add('granted');
+            } else if (state === 'denied') {
+                permissionStatus.textContent = '✗ Ditolak';
+                permissionStatus.classList.add('denied');
+            } else if (state === 'prompt') {
+                permissionStatus.textContent = '? Menunggu';
+                permissionStatus.classList.add('pending');
+            } else {
+                permissionStatus.textContent = 'Belum diperiksa';
+                permissionStatus.classList.add('pending');
+            }
         }
 
+        // Ganti fungsi getLocationDetails
+        // Ganti fungsi getLocationDetails dengan versi yang lebih robust
         async function getLocationDetails(lat, lon) {
             try {
                 const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+
+                // Fetch dengan timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
                 const nominatimResponse = await fetch(nominatimUrl, {
-                    headers: { 'User-Agent': 'WikiCommonsNearby/1.0', 'Accept-Language': currentLang }
+                    headers: { 'User-Agent': 'WikiCommonsNearby/1.0', 'Accept-Language': currentLang },
+                    signal: controller.signal
                 });
+
+                clearTimeout(timeoutId);
+
                 const data = await nominatimResponse.json();
                 if (!data.address) {
                     return [{ name: 'Lokasi tidak diketahui', type: 'unknown', wikidataId: null }];
@@ -560,31 +1036,59 @@
                     { name: country || '', type: 'country' }
                 ].filter(part => part.name);
 
-                const detailedParts = await Promise.all(locationParts.map(async (part) => {
-                    if (!part.name) return { name: part.name, type: part.type, wikidataId: null };
-                    if (part.type === 'road' || part.type === 'postcode') {
-                        return { name: part.name, type: part.type, wikidataId: null };
-                    }
-                    try {
-                        const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&origin=*`;
-                        const wikidataResponse = await fetch(wikidataUrl);
-                        const wikidataData = await wikidataResponse.json();
-                        const entity = wikidataData.search[0];
-                        return {
-                            name: part.name,
-                            type: part.type,
-                            wikidataId: entity ? entity.id : null
-                        };
-                    } catch (error) {
-                        console.error(`Error mengambil Wikidata untuk ${part.name}:`, error);
-                        return { name: part.name, type: part.type, wikidataId: null };
-                    }
-                }));
+                // Fetch Wikidata dengan timeout dan parallel execution
+                const fetchWithTimeout = (url, timeout = 2000) => {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-                return detailedParts.filter(part => part.name);
+                    return fetch(url, { signal: controller.signal })
+                        .then(response => {
+                            clearTimeout(timeoutId);
+                            return response;
+                        })
+                        .catch(error => {
+                            clearTimeout(timeoutId);
+                            throw error;
+                        });
+                };
+
+                const detailedParts = await Promise.allSettled(
+                    locationParts.map(async (part) => {
+                        if (!part.name || part.type === 'road' || part.type === 'postcode') {
+                            return { name: part.name, type: part.type, wikidataId: null };
+                        }
+
+                        try {
+                            const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&limit=1&origin=*`;
+                            const wikidataResponse = await fetchWithTimeout(wikidataUrl, 2000);
+                            const wikidataData = await wikidataResponse.json();
+                            const entity = wikidataData.search?.[0];
+                            return {
+                                name: part.name,
+                                type: part.type,
+                                wikidataId: entity?.id || null
+                            };
+                        } catch (error) {
+                            console.warn(`Skipping Wikidata for ${part.name}:`, error.message);
+                            return { name: part.name, type: part.type, wikidataId: null };
+                        }
+                    })
+                );
+
+                // Filter successful results
+                return detailedParts
+                    .filter(result => result.status === 'fulfilled')
+                    .map(result => result.value)
+                    .filter(part => part && part.name);
+
             } catch (error) {
                 console.error('Error mengambil detail lokasi:', error);
-                return [{ name: 'Gagal mengambil detail lokasi', type: 'unknown', wikidataId: null }];
+                // Return minimal location info instead of failing completely
+                return [{
+                    name: `Lokasi sekitar ${lat.toFixed(2)}, ${lon.toFixed(2)}`,
+                    type: 'approximate',
+                    wikidataId: null
+                }];
             }
         }
 
@@ -599,16 +1103,39 @@
             return (R * c).toFixed(1);
         }
 
+        // Tambahkan cache di level global
+        const photoDetailsCache = new Map();
+
         async function fetchPhotoDetails(title) {
+            // Check cache first
+            if (photoDetailsCache.has(title)) {
+                return photoDetailsCache.get(title);
+            }
+
             try {
                 const url = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&` +
-                    `prop=imageinfo|categories|globalusage&iiprop=url|extmetadata&iiurlwidth=250&gulimit=10&format=json&origin=*`;
-                const response = await fetch(url);
+                    `prop=imageinfo|categories|globalusage&iiprop=url|extmetadata&iiurlwidth=250&gulimit=5&cllimit=5&format=json&origin=*`;
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
                 const data = await response.json();
                 const pages = data.query.pages;
                 const page = Object.values(pages)[0];
-                const imageInfo = page.imageinfo[0];
-                const extMetadata = imageInfo.extmetadata;
+
+                if (!page || page.missing) {
+                    throw new Error('Page not found');
+                }
+
+                const imageInfo = page.imageinfo?.[0];
+                if (!imageInfo) {
+                    throw new Error('No image info');
+                }
+
+                const extMetadata = imageInfo.extmetadata || {};
 
                 let author = 'Pembuat tidak diketahui';
                 let authorUrl = null;
@@ -631,7 +1158,7 @@
                     url: `https://commons.wikimedia.org/wiki/${encodeURIComponent(cat.title)}`
                 }));
 
-                return {
+                const result = {
                     imageUrl: imageInfo.thumburl || placeholderImage,
                     description: extMetadata.ImageDescription?.value || 'Deskripsi tidak tersedia',
                     author: author,
@@ -639,9 +1166,14 @@
                     fileUsage: fileUsage,
                     categories: categoryList
                 };
+
+                // Cache the result
+                photoDetailsCache.set(title, result);
+                return result;
+
             } catch (error) {
                 console.error('Error mengambil detail foto:', error);
-                return {
+                const fallback = {
                     imageUrl: placeholderImage,
                     description: 'Gagal memuat deskripsi',
                     author: 'Pembuat tidak diketahui',
@@ -649,156 +1181,326 @@
                     fileUsage: [],
                     categories: []
                 };
+                photoDetailsCache.set(title, fallback);
+                return fallback;
             }
         }
 
+        // Ganti fungsi fetchNearbyPhotos
         async function fetchNearbyPhotos(lat, lon) {
             try {
-                resultsList.innerHTML = '<li class="loading">Memuat foto...</li>';
+                resultsList.innerHTML = '<li class="loading">Memuat foto dari Wikimedia Commons...</li>';
                 const radius = 1000;
                 const url = `https://commons.wikimedia.org/w/api.php?action=query&list=geosearch&gscoord=${lat}|${lon}&` +
                     `gsradius=${radius}&gslimit=100&gsnamespace=6&format=json&origin=*`;
-                const response = await fetch(url);
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
+
+                if (!data.query || !data.query.geosearch) {
+                    throw new Error('Invalid response from Wikimedia Commons API');
+                }
+
                 return data.query.geosearch;
             } catch (error) {
-                resultsList.innerHTML = `<li class="error">Gagal memuat foto: ${error.message}</li>`;
+                console.error('Error fetching nearby photos:', error);
+
+                let errorMessage = 'Gagal memuat foto';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'Permintaan timeout. Silakan coba lagi.';
+                } else if (!navigator.onLine) {
+                    errorMessage = 'Tidak ada koneksi internet.';
+                } else {
+                    errorMessage = `Gagal memuat foto: ${error.message}`;
+                }
+
+                resultsList.innerHTML = `<li class="error">${errorMessage}<br><button onclick="searchPhotos()" style="margin-top: 1rem;">Coba Lagi</button></li>`;
                 return [];
             }
         }
 
+        // Ganti fungsi displayPhotos dengan batch processing
         async function displayPhotos(photos) {
             resultsList.innerHTML = '';
             if (photos.length === 0) {
-                resultsList.innerHTML = '<li>Tidak ada foto ditemukan dalam radius 1km</li>';
+                resultsList.innerHTML = '<li class="empty-state"><p>Tidak ada foto ditemukan dalam radius 1km</p></li>';
                 return;
             }
 
-            for (const photo of photos) {
-                const details = await fetchPhotoDetails(photo.title);
-                const distance = calculateDistance(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude,
-                    photo.lat,
-                    photo.lon
-                );
+            // Show loading with progress
+            const loadingLi = document.createElement('li');
+            loadingLi.className = 'loading';
+            loadingLi.innerHTML = 'Memuat detail foto...<br><span id="progress-text">0 / ' + photos.length + '</span>';
+            resultsList.appendChild(loadingLi);
 
-                const li = document.createElement('li');
-                li.className = 'photo-card';
+            const progressText = document.getElementById('progress-text');
 
-                const img = document.createElement('img');
-                img.src = details.imageUrl;
-                img.alt = photo.title;
-                img.onerror = () => img.src = placeholderImage;
-                li.appendChild(img);
+            // Process in batches of 5 untuk menghindari overload
+            const BATCH_SIZE = 5;
+            let processedCount = 0;
 
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'photo-content';
+            for (let i = 0; i < photos.length; i += BATCH_SIZE) {
+                const batch = photos.slice(i, i + BATCH_SIZE);
 
-                const link = document.createElement('a');
-                link.href = `https://commons.wikimedia.org/wiki/${encodeURIComponent(photo.title)}`;
-                link.textContent = photo.title.replace('File:', '');
-                link.target = '_blank';
-                contentDiv.appendChild(link);
+                // Process batch in parallel
+                const batchPromises = batch.map(async (photo) => {
+                    try {
+                        const details = await fetchPhotoDetails(photo.title);
+                        const distance = calculateDistance(
+                            currentPosition.coords.latitude,
+                            currentPosition.coords.longitude,
+                            photo.lat,
+                            photo.lon
+                        );
 
-                const desc = document.createElement('div');
-                desc.className = 'description';
-                desc.innerHTML = details.description;
-                contentDiv.appendChild(desc);
+                        return createPhotoCard(photo, details, distance);
+                    } catch (error) {
+                        console.error('Error creating card:', error);
+                        return null;
+                    }
+                });
 
-                const dist = document.createElement('div');
-                dist.className = 'distance';
-                dist.textContent = `${distance} km jauhnya`;
-                contentDiv.appendChild(dist);
+                const cards = await Promise.all(batchPromises);
 
-                const usageDiv = document.createElement('div');
-                usageDiv.className = 'file-usage';
-                const usageTitle = document.createElement('span');
-                usageTitle.textContent = 'File usage on other wikis:';
-                usageDiv.appendChild(usageTitle);
-
-                if (details.fileUsage.length > 0) {
-                    details.fileUsage.forEach(usage => {
-                        const usageLink = document.createElement('a');
-                        usageLink.href = usage.url;
-                        usageLink.textContent = usage.title;
-                        usageLink.target = '_blank';
-                        usageDiv.appendChild(usageLink);
-                    });
-                } else {
-                    const noUsage = document.createElement('span');
-                    noUsage.textContent = 'Tidak digunakan di wiki lain';
-                    usageDiv.appendChild(noUsage);
+                // Remove loading on first batch
+                if (i === 0) {
+                    resultsList.removeChild(loadingLi);
                 }
-                contentDiv.appendChild(usageDiv);
 
-                const catDiv = document.createElement('div');
-                catDiv.className = 'categories';
-                const catTitle = document.createElement('span');
-                catTitle.textContent = 'Category:';
-                catDiv.appendChild(catTitle);
+                // Add cards to DOM
+                cards.forEach(card => {
+                    if (card) {
+                        resultsList.appendChild(card);
+                        processedCount++;
+                        if (progressText) {
+                            progressText.textContent = `${processedCount} / ${photos.length}`;
+                        }
+                    }
+                });
 
-                if (details.categories.length > 0) {
-                    details.categories.forEach(category => {
-                        const catLink = document.createElement('a');
-                        catLink.href = category.url;
-                        catLink.textContent = category.title;
-                        catLink.target = '_blank';
-                        catDiv.appendChild(catLink);
-                    });
-                } else {
-                    const noCats = document.createElement('span');
-                    noCats.textContent = 'Tidak ada kategori';
-                    catDiv.appendChild(noCats);
+                // Small delay between batches to keep UI responsive
+                if (i + BATCH_SIZE < photos.length) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
                 }
-                contentDiv.appendChild(catDiv);
-
-                const authorDiv = document.createElement('div');
-                authorDiv.className = 'author';
-                const authorSpan = document.createElement('span');
-                authorSpan.textContent = 'Pembuat: ';
-                authorDiv.appendChild(authorSpan);
-                if (details.authorUrl) {
-                    const authorLink = document.createElement('a');
-                    authorLink.href = details.authorUrl.startsWith('http') ? details.authorUrl : `https://${details.authorUrl}`;
-                    authorLink.textContent = details.author;
-                    authorLink.target = '_blank';
-                    authorDiv.appendChild(authorLink);
-                } else {
-                    const authorText = document.createElement('span');
-                    authorText.textContent = details.author;
-                    authorDiv.appendChild(authorText);
-                }
-                contentDiv.appendChild(authorDiv);
-
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'card-actions';
-
-                const routeBtn = document.createElement('button');
-                routeBtn.className = 'route-btn';
-                routeBtn.textContent = 'Tampilkan Rute';
-                routeBtn.onclick = () => showRoutePopup(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude,
-                    photo.lat,
-                    photo.lon,
-                    photo.title.replace('File:', '')
-                );
-                actionsDiv.appendChild(routeBtn);
-
-                const googleMapsBtn = document.createElement('button');
-                googleMapsBtn.className = 'google-maps-btn';
-                googleMapsBtn.textContent = 'Buka di Google Maps';
-                googleMapsBtn.onclick = () => window.open(
-                    `https://www.google.com/maps?q=${photo.lat},${photo.lon}`,
-                    '_blank'
-                );
-                actionsDiv.appendChild(googleMapsBtn);
-
-                contentDiv.appendChild(actionsDiv);
-                li.appendChild(contentDiv);
-                resultsList.appendChild(li);
             }
+        }
+
+        // Extract card creation ke fungsi terpisah untuk reusability
+        function createPhotoCard(photo, details, distance) {
+            const li = document.createElement('li');
+            li.className = 'photo-card';
+
+            // Image container dengan stats overlay
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'photo-image-container';
+
+            const img = document.createElement('img');
+            img.src = details.imageUrl;
+            img.alt = photo.title.replace('File:', '');
+            img.loading = 'lazy';
+            img.onerror = () => img.src = placeholderImage;
+            imgContainer.appendChild(img);
+
+            // Stats overlay
+            const statsDiv = document.createElement('div');
+            statsDiv.className = 'photo-stats';
+
+            const usageBadge = document.createElement('div');
+            usageBadge.className = 'stat-badge';
+            usageBadge.innerHTML = `<span class="icon">📄</span> ${details.fileUsage.length}`;
+            usageBadge.title = 'Digunakan di wiki lain';
+            statsDiv.appendChild(usageBadge);
+
+            const catBadge = document.createElement('div');
+            catBadge.className = 'stat-badge';
+            catBadge.innerHTML = `<span class="icon">🏷️</span> ${details.categories.length}`;
+            catBadge.title = 'Jumlah kategori';
+            statsDiv.appendChild(catBadge);
+
+            // Distance badge di overlay (tambahkan setelah statsDiv)
+            const distanceDiv = document.createElement('div');
+            distanceDiv.className = 'distance';
+            distanceDiv.textContent = `${distance} km`;
+            imgContainer.appendChild(distanceDiv);
+
+            imgContainer.appendChild(statsDiv);
+            li.appendChild(imgContainer);
+
+            // Content area
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'photo-content';
+
+            // Title
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'photo-title';
+            const link = document.createElement('a');
+            link.className = 'photo-link';
+            link.href = `https://commons.wikimedia.org/wiki/${encodeURIComponent(photo.title)}`;
+            link.textContent = photo.title.replace('File:', '').replace(/\.(jpg|jpeg|png|gif|svg)$/i, '');
+            link.target = '_blank';
+            titleDiv.appendChild(link);
+            contentDiv.appendChild(titleDiv);
+
+            // Collapsible toggle button (langsung setelah title)
+            const metadataToggle = document.createElement('div');
+            metadataToggle.className = 'metadata-toggle';
+            metadataToggle.innerHTML = `
+    <div class="metadata-toggle-title">
+        <span>📊</span>
+        <span>Detail & Informasi</span>
+    </div>
+    <span class="metadata-toggle-icon collapsed">▶</span>
+`;
+
+            // Collapsible content wrapper
+            const metadataCollapsible = document.createElement('div');
+            metadataCollapsible.className = 'metadata-collapsible';
+
+            // Description (masuk ke dalam collapsible)
+            const desc = document.createElement('div');
+            desc.className = 'description';
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = details.description;
+            desc.textContent = tempDiv.textContent || tempDiv.innerText || 'Deskripsi tidak tersedia';
+            metadataCollapsible.appendChild(desc);
+
+            // Metadata section
+            const metadataDiv = document.createElement('div');
+            metadataDiv.className = 'photo-metadata';
+
+            // File usage
+            if (details.fileUsage.length > 0) {
+                const usageItem = document.createElement('div');
+                usageItem.className = 'metadata-item';
+                usageItem.innerHTML = '<span class="icon">🔄</span>';
+
+                const usageContent = document.createElement('div');
+                usageContent.className = 'metadata-content';
+
+                details.fileUsage.forEach(usage => {
+                    const usageLink = document.createElement('a');
+                    usageLink.className = 'metadata-link';
+                    usageLink.href = usage.url;
+                    usageLink.textContent = usage.title.length > 30 ? usage.title.substring(0, 30) + '...' : usage.title;
+                    usageLink.target = '_blank';
+                    usageLink.title = usage.title;
+                    usageContent.appendChild(usageLink);
+                });
+
+                usageItem.appendChild(usageContent);
+                metadataDiv.appendChild(usageItem);
+            }
+
+            // Categories
+            if (details.categories.length > 0) {
+                const catItem = document.createElement('div');
+                catItem.className = 'metadata-item';
+                catItem.innerHTML = '<span class="icon">🏷️</span>';
+
+                const catContent = document.createElement('div');
+                catContent.className = 'metadata-content';
+
+                details.categories.forEach(category => {
+                    const catLink = document.createElement('a');
+                    catLink.className = 'metadata-link';
+                    catLink.href = category.url;
+                    catLink.textContent = category.title.length > 25 ? category.title.substring(0, 25) + '...' : category.title;
+                    catLink.target = '_blank';
+                    catLink.title = category.title;
+                    catContent.appendChild(catLink);
+                });
+
+                catItem.appendChild(catContent);
+                metadataDiv.appendChild(catItem);
+            }
+
+            // Masukkan metadata ke dalam collapsible
+            metadataCollapsible.appendChild(metadataDiv);
+
+            // Author (masuk ke dalam collapsible)
+            const authorDiv = document.createElement('div');
+            authorDiv.className = 'author';
+
+            const authorIcon = document.createElement('span');
+            authorIcon.className = 'author-icon';
+            authorIcon.textContent = '👤';
+            authorDiv.appendChild(authorIcon);
+
+            const authorInfo = document.createElement('div');
+            authorInfo.className = 'author-info';
+
+            const authorLabel = document.createElement('span');
+            authorLabel.className = 'author-label';
+            authorLabel.textContent = 'Pembuat:';
+            authorInfo.appendChild(authorLabel);
+
+            const authorName = document.createElement('span');
+            authorName.className = 'author-name';
+
+            if (details.authorUrl) {
+                const authorLink = document.createElement('a');
+                authorLink.href = details.authorUrl.startsWith('http') ? details.authorUrl : `https://commons.wikimedia.org${details.authorUrl}`;
+                authorLink.textContent = details.author;
+                authorLink.target = '_blank';
+                authorName.appendChild(authorLink);
+            } else {
+                authorName.textContent = details.author;
+            }
+
+            authorInfo.appendChild(authorName);
+            authorDiv.appendChild(authorInfo);
+            metadataCollapsible.appendChild(authorDiv);
+
+            // Toggle functionality
+            metadataToggle.onclick = () => {
+                const icon = metadataToggle.querySelector('.metadata-toggle-icon');
+                metadataCollapsible.classList.toggle('expanded');
+                icon.classList.toggle('collapsed');
+            };
+
+            // Tambahkan ke contentDiv
+            contentDiv.appendChild(metadataToggle);
+            contentDiv.appendChild(metadataCollapsible);
+
+            // Actions (tetap di luar collapsible, langsung setelah metadataCollapsible)
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'card-actions';
+            // ... (kode actions seperti biasa)
+
+            const routeBtn = document.createElement('button');
+            routeBtn.className = 'route-btn';
+            routeBtn.innerHTML = '🗺️ Rute';
+            routeBtn.onclick = () => showRoutePopup(
+                currentPosition.coords.latitude,
+                currentPosition.coords.longitude,
+                photo.lat,
+                photo.lon,
+                photo.title.replace('File:', '')
+            );
+            actionsDiv.appendChild(routeBtn);
+
+            const googleMapsBtn = document.createElement('button');
+            googleMapsBtn.className = 'google-maps-btn';
+            googleMapsBtn.innerHTML = '🌍 Maps';
+            googleMapsBtn.onclick = () => window.open(
+                `https://www.google.com/maps?q=${photo.lat},${photo.lon}`,
+                '_blank'
+            );
+            actionsDiv.appendChild(googleMapsBtn);
+
+            contentDiv.appendChild(actionsDiv);
+            li.appendChild(contentDiv);
+
+            return li;
         }
 
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
@@ -886,8 +1588,14 @@
             }
         }
 
+        // Ganti fungsi updateLocationDisplay
         async function updateLocationDisplay(lat, lon, locationParts) {
-            locationStatus.innerHTML = `<p>Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>`;
+            const coordsDisplay = document.querySelector('.coordinates-display');
+            coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+
+            const detailsContent = document.getElementById('location-details-content');
+            detailsContent.innerHTML = '';
+
             for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
@@ -932,55 +1640,145 @@
                     div.appendChild(wvBtn);
                 }
 
-                locationStatus.appendChild(div);
+                detailsContent.appendChild(div);
             }
         }
 
+        // Ganti fungsi getLocation
         async function getLocation() {
             if (!navigator.geolocation) {
-                locationStatus.innerHTML = '<p class="error">Geolokasi tidak didukung</p>';
+                const coordsDisplay = document.querySelector('.coordinates-display');
+                coordsDisplay.textContent = 'Geolokasi tidak didukung oleh browser Anda';
+                coordsDisplay.style.color = 'var(--danger-color)';
+                updatePermissionStatus('denied');
                 return;
             }
-            locationStatus.innerHTML = '<p class="loading">Mengambil lokasi Anda...</p>';
+
+            const coordsDisplay = document.querySelector('.coordinates-display');
+            coordsDisplay.textContent = 'Mengambil lokasi Anda...';
+            coordsDisplay.style.color = 'var(--text-color)';
+
             return new Promise((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
-                        currentPosition = position;
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        updatePermissionStatus('granted');
-                        const locationParts = await getLocationDetails(lat, lon);
-                        await updateLocationDisplay(lat, lon, locationParts);
-                        const photos = await fetchNearbyPhotos(lat, lon);
-                        await displayPhotos(photos);
-                        resolve();
+                        try {
+                            currentPosition = position;
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+
+                            updatePermissionStatus('granted');
+
+                            // Update coordinates display immediately
+                            coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+
+                            // Get location details with timeout
+                            let locationParts = [];
+                            try {
+                                coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)} - Mengambil detail lokasi...`;
+                                locationParts = await Promise.race([
+                                    getLocationDetails(lat, lon),
+                                    new Promise((_, reject) =>
+                                        setTimeout(() => reject(new Error('Location details timeout')), 10000)
+                                    )
+                                ]);
+                                await updateLocationDisplay(lat, lon, locationParts);
+                            } catch (error) {
+                                console.warn('Error getting location details:', error);
+                                // Continue even if location details fail
+                                coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                                const detailsContent = document.getElementById('location-details-content');
+                                detailsContent.innerHTML = '<p style="color: var(--warning-color); padding: 0.5rem;">Gagal memuat detail lokasi, melanjutkan pencarian foto...</p>';
+                            }
+
+                            // Fetch photos
+                            try {
+                                const photos = await fetchNearbyPhotos(lat, lon);
+                                await displayPhotos(photos);
+                            } catch (error) {
+                                console.error('Error fetching photos:', error);
+                                resultsList.innerHTML = `<li class="error">Gagal memuat foto: ${error.message}</li>`;
+                            }
+
+                            resolve();
+                        } catch (error) {
+                            console.error('Error in getLocation:', error);
+                            coordsDisplay.textContent = `Error: ${error.message}`;
+                            coordsDisplay.style.color = 'var(--danger-color)';
+                            reject(error);
+                        }
                     },
                     (error) => {
-                        locationStatus.innerHTML = `<p class="error">Gagal mendapatkan lokasi: ${error.message}</p>`;
+                        let errorMessage = 'Gagal mendapatkan lokasi';
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = 'Izin lokasi ditolak. Silakan izinkan akses lokasi di pengaturan browser.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = 'Informasi lokasi tidak tersedia.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = 'Permintaan lokasi timeout. Silakan coba lagi.';
+                                break;
+                        }
+
+                        coordsDisplay.textContent = errorMessage;
+                        coordsDisplay.style.color = 'var(--danger-color)'; //disini
                         updatePermissionStatus('denied');
                         console.error('Geolocation error:', error);
                         reject(error);
                     },
                     {
                         enableHighAccuracy: true,
-                        timeout: 10000,
+                        timeout: 15000, // Increase timeout to 15 seconds
                         maximumAge: 0
                     }
                 );
             });
         }
 
+        // Ganti fungsi searchPhotos
         async function searchPhotos() {
-            const permissionState = await checkLocationPermission();
-            if (permissionState === 'granted' && currentPosition) {
-                const lat = currentPosition.coords.latitude;
-                const lon = currentPosition.coords.longitude;
-                const locationParts = await getLocationDetails(lat, lon);
-                await updateLocationDisplay(lat, lon, locationParts);
-                const photos = await fetchNearbyPhotos(lat, lon);
-                await displayPhotos(photos);
-            } else if (permissionState === 'prompt' || permissionState === 'denied' || !currentPosition) {
-                await getLocation();
+            try {
+                const permissionState = await checkLocationPermission();
+
+                if (permissionState === 'denied') {
+                    alert('Izin lokasi ditolak. Harap izinkan akses lokasi untuk menggunakan fitur ini.');
+                    return;
+                }
+
+                if (permissionState === 'granted' && currentPosition) {
+                    const lat = currentPosition.coords.latitude;
+                    const lon = currentPosition.coords.longitude;
+
+                    // Update UI immediately
+                    const coordsDisplay = document.querySelector('.coordinates-display');
+                    coordsDisplay.textContent = 'Memperbarui data...';
+
+                    try {
+                        const locationParts = await Promise.race([
+                            getLocationDetails(lat, lon),
+                            new Promise((_, reject) =>
+                                setTimeout(() => reject(new Error('Timeout')), 8000)
+                            )
+                        ]);
+                        await updateLocationDisplay(lat, lon, locationParts);
+                    } catch (error) {
+                        console.warn('Location details timeout, continuing with photos...');
+                        coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                    }
+
+                    const photos = await fetchNearbyPhotos(lat, lon);
+                    await displayPhotos(photos);
+                } else {
+                    await getLocation();
+                }
+            } catch (error) {
+                console.error('Error in searchPhotos:', error);
+                const coordsDisplay = document.querySelector('.coordinates-display');
+                if (coordsDisplay) {
+                    coordsDisplay.textContent = `Error: ${error.message}`;
+                    coordsDisplay.style.color = 'var(--danger-color)';
+                }
             }
         }
 
@@ -995,10 +1793,20 @@
             await searchPhotos();
         });
 
+        // Ganti window.onload
         window.onload = async () => {
-            const initialPermission = await checkLocationPermission();
-            if (initialPermission === 'granted') {
-                await getLocation();
+            try {
+                const initialPermission = await checkLocationPermission();
+
+                // Don't auto-fetch on load, let user click the button
+                console.log('WikiCommons Nearby ready. Permission:', initialPermission);
+
+                // Optional: uncomment if you want auto-load on granted permission
+                // if (initialPermission === 'granted') {
+                //     await getLocation();
+                // }
+            } catch (error) {
+                console.error('Error during initialization:', error);
             }
         };
     </script>
