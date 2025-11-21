@@ -530,16 +530,18 @@
 
         /* Badge bahasa dengan border saja */
         .language-badge {
-            background: transparent;
+            display: inline-flex;
+            align-items: center;
             color: var(--primary-color);
-            font-weight: 600;
             font-size: 0.75rem;
+            font-weight: 600;
             padding: 0.25rem 0.6rem;
+            background: transparent;
             border: 2px solid var(--primary-color);
             border-radius: 6px;
-            letter-spacing: 0.8px;
-            min-width: 38px;
-            text-align: center;
+            width: fit-content;
+            margin: 0;
+            letter-spacing: 0.5px;
             transition: all 0.2s ease;
         }
 
@@ -557,22 +559,67 @@
             text-overflow: clip;
         }
 
+        /* Update style untuk distance - border saja seperti badge bahasa */
         .distance {
             display: inline-flex;
             align-items: center;
-            color: var(--text-light);
-            font-size: 0.85rem;
-            font-weight: 500;
-            padding: 0.35rem 0.85rem;
-            background-color: var(--bg-secondary);
-            border-radius: 100px;
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
             width: fit-content;
-            margin-bottom: 0.25rem;
+            margin: 0;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .distance:hover {
+            background: var(--primary-color);
+            color: white;
         }
 
         .distance::before {
             content: "📍";
-            margin-right: 0.5rem;
+            margin-right: 0.35rem;
+            font-size: 0.9rem;
+        }
+
+        /* Container untuk judul, badge bahasa, dan distance */
+        .title-badges-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .title-wrapper {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .badges-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Responsive untuk mobile */
+        @media (max-width: 768px) {
+            .title-badges-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .badges-wrapper {
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
 
         .wikidata {
@@ -920,6 +967,19 @@
             border-color: var(--primary-color);
         }
 
+        /* Tombol wikigaleri */
+        #wikigaleri-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #wikigaleri-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
         /* Tombol Kembali ke Affandy Murad */
         #creator-btn {
             background-color: var(--bg-secondary);
@@ -1145,6 +1205,7 @@
             .description.collapsed {
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
+                line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -1217,6 +1278,9 @@
         </div>
         <div class="header-right">
             <button id="guide-btn" title="Lihat panduan">📖 Panduan</button>
+            <button id="wikigaleri-btn" onclick="window.location.href='../wikigaleri'" title=" Kunjungi Affandy Murad">
+                📸 Wikigaleri
+            </button>
             <button id="creator-btn" onclick="window.location.href='../'" title=" Kunjungi Affandy Murad">
                 🏠 Kembali ke Affandy Murad
             </button>
@@ -1701,18 +1765,14 @@
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'article-content';
 
-                // Buat container judul + badge bahasa
-                const titleContainer = document.createElement('div');
-                titleContainer.style.cssText = `
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-`;
-
                 // Judul artikel
+                const titleContainer = document.createElement('div');
+                titleContainer.className = 'title-badges-container';
+
+                // Wrapper untuk judul
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'title-wrapper';
+
                 const link = document.createElement('a');
                 link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
                 link.textContent = article.title;
@@ -1720,15 +1780,26 @@
                 link.style.cssText = 'font-size:1.2rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
                 link.onmouseover = () => link.style.color = 'var(--secondary-color)';
                 link.onmouseout = () => link.style.color = 'var(--primary-color)';
-                titleContainer.appendChild(link);
+                titleWrapper.appendChild(link);
+                titleContainer.appendChild(titleWrapper);
 
-                // Badge bahasa (ID, EN, ZH, dll)
+                // Wrapper untuk badges (distance + language)
+                const badgesWrapper = document.createElement('div');
+                badgesWrapper.className = 'badges-wrapper';
+
+                // Distance badge (pindah ke atas sebelum deskripsi)
+                const dist = document.createElement('div');
+                dist.className = 'distance';
+                dist.textContent = `${distance} km`;
+                badgesWrapper.appendChild(dist);
+
+                // Badge bahasa
                 const langBadge = document.createElement('span');
                 langBadge.className = 'language-badge';
                 langBadge.textContent = currentLang.toUpperCase();
-                titleContainer.appendChild(langBadge);
+                badgesWrapper.appendChild(langBadge);
 
-                // Gantikan link lama dengan container baru
+                titleContainer.appendChild(badgesWrapper);
                 contentDiv.appendChild(titleContainer);
 
                 // DARI SINI
@@ -1756,12 +1827,6 @@
                 // Wrap semua detail dalam satu container
                 const detailsSection = document.createElement('div');
                 detailsSection.className = 'details-section collapsed';
-
-                // Distance
-                const dist = document.createElement('div');
-                dist.className = 'distance';
-                dist.textContent = `${distance} km jauhnya`;
-                detailsSection.appendChild(dist);
 
                 // Wikidata
                 const wd = document.createElement('div');
