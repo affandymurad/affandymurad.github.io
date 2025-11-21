@@ -1135,6 +1135,72 @@
             margin-top: 0;
             padding: 0;
         }
+
+
+        @media (max-width: 768px) {
+            .description-container {
+                position: relative;
+            }
+
+            .description.collapsed {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .description.expanded {
+                display: block;
+            }
+
+            .description-toggle {
+                display: inline-block;
+                margin-top: 0.5rem;
+                padding: 0.35rem 0.75rem;
+                background-color: var(--bg-secondary);
+                color: var(--primary-color);
+                border: 1px solid var(--border-color);
+                border-radius: 100px;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-weight: 500;
+            }
+
+            .description-toggle:hover {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+            .details-section.collapsed {
+                max-height: 0;
+                overflow: hidden;
+                opacity: 0;
+                transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+                margin: 0;
+            }
+
+            .details-section.expanded {
+                max-height: 2000px;
+                opacity: 1;
+                transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+                margin-top: 0.5rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .description-toggle {
+                display: none;
+            }
+
+            .details-section {
+                display: block !important;
+                max-height: none !important;
+                opacity: 1 !important;
+            }
+        }
     </style>
 </head>
 
@@ -1665,21 +1731,39 @@
                 // Gantikan link lama dengan container baru
                 contentDiv.appendChild(titleContainer);
 
+                // DARI SINI
                 const desc = document.createElement('div');
-                desc.className = 'description';
-                desc.style.display = '-webkit-box';
-                desc.style.webkitBoxOrient = 'vertical';
-                desc.style.overflow = 'visible'; // Ubah dari hidden
-                desc.style.textOverflow = 'clip'; // Ubah dari ellipsis
-                // Hapus line-clamp agar semua deskripsi terlihat
+                desc.className = 'description collapsed';
                 desc.textContent = details.description;
-                contentDiv.appendChild(desc);
 
+                const descToggle = document.createElement('button');
+                descToggle.className = 'description-toggle';
+                descToggle.textContent = 'Selengkapnya ▼';
+                descToggle.onclick = (e) => {
+                    e.stopPropagation();
+                    desc.classList.toggle('collapsed');
+                    desc.classList.toggle('expanded');
+                    detailsSection.classList.toggle('collapsed');
+                    detailsSection.classList.toggle('expanded');
+                    descToggle.textContent = desc.classList.contains('collapsed')
+                        ? 'Selengkapnya ▼'
+                        : 'Sembunyikan ▲';
+                };
+
+                contentDiv.appendChild(desc);
+                contentDiv.appendChild(descToggle);
+
+                // Wrap semua detail dalam satu container
+                const detailsSection = document.createElement('div');
+                detailsSection.className = 'details-section collapsed';
+
+                // Distance
                 const dist = document.createElement('div');
                 dist.className = 'distance';
                 dist.textContent = `${distance} km jauhnya`;
-                contentDiv.appendChild(dist);
+                detailsSection.appendChild(dist);
 
+                // Wikidata
                 const wd = document.createElement('div');
                 wd.className = 'wikidata';
                 if (details.wikidataId) {
@@ -1687,8 +1771,39 @@
                 } else {
                     wd.textContent = 'Wikidata: Tidak tersedia';
                 }
-                contentDiv.appendChild(wd);
+                detailsSection.appendChild(wd);
 
+                // Card Actions (pindah ke sini)
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'card-actions';
+
+                const routeBtn = document.createElement('button');
+                routeBtn.className = 'route-btn';
+                routeBtn.textContent = 'Tampilkan Rute';
+                routeBtn.onclick = () => showRoutePopup(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    article.lat,
+                    article.lon,
+                    article.title
+                );
+                actionsDiv.appendChild(routeBtn);
+
+                const googleMapsBtn = document.createElement('button');
+                googleMapsBtn.className = 'google-maps-btn';
+                googleMapsBtn.textContent = 'Buka di Google Maps';
+                googleMapsBtn.onclick = () => window.open(
+                    `https://www.google.com/maps?q=${article.lat},${article.lon}`,
+                    '_blank'
+                );
+                actionsDiv.appendChild(googleMapsBtn);
+
+                detailsSection.appendChild(actionsDiv);
+
+                // Append detailsSection ke contentDiv
+                contentDiv.appendChild(detailsSection);
+
+                // Wiktionary
                 const wiktDiv = document.createElement('div');
                 wiktDiv.className = 'wiktionary';
 
@@ -1766,32 +1881,12 @@
                 };
 
                 contentDiv.appendChild(wiktDiv);
+                detailsSection.appendChild(wiktDiv);
 
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'card-actions';
+                // Append detailsSection ke contentDiv
+                contentDiv.appendChild(detailsSection);
+                // SAMPAI SINI
 
-                const routeBtn = document.createElement('button');
-                routeBtn.className = 'route-btn';
-                routeBtn.textContent = 'Tampilkan Rute';
-                routeBtn.onclick = () => showRoutePopup(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude,
-                    article.lat,
-                    article.lon,
-                    article.title
-                );
-                actionsDiv.appendChild(routeBtn);
-
-                const googleMapsBtn = document.createElement('button');
-                googleMapsBtn.className = 'google-maps-btn';
-                googleMapsBtn.textContent = 'Buka di Google Maps';
-                googleMapsBtn.onclick = () => window.open(
-                    `https://www.google.com/maps?q=${article.lat},${article.lon}`,
-                    '_blank'
-                );
-                actionsDiv.appendChild(googleMapsBtn);
-
-                contentDiv.appendChild(actionsDiv);
                 li.appendChild(contentDiv);
                 articleElements.push(li);
 
