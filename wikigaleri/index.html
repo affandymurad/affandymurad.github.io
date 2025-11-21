@@ -1663,9 +1663,20 @@
 
             if (details.authorUrl) {
                 const authorLink = document.createElement('a');
-                authorLink.href = details.authorUrl.startsWith('http') ? details.authorUrl : `https://commons.wikimedia.org${details.authorUrl}`;
+
+                let authorUrl = details.authorUrl?.trim() || '';
+
+                // Jika tidak ada URL atau bukan URL lengkap, buat link ke User page
+                if (!authorUrl || !/^https?:\/\//i.test(authorUrl)) {
+                    const userName = (details.author || '').replace(/^user:/i, '').trim();
+                    authorUrl = `https://commons.wikimedia.org/wiki/User:${encodeURIComponent(userName)}`;
+                }
+
+                authorLink.href = authorUrl;
                 authorLink.textContent = details.author;
                 authorLink.target = '_blank';
+                authorLink.rel = 'noopener noreferrer';
+
                 authorName.appendChild(authorLink);
             } else {
                 authorName.textContent = details.author;
