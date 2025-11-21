@@ -107,6 +107,10 @@
         }
 
         @media (max-width: 768px) {
+            #results {
+                grid-template-columns: 1fr;
+            }
+
             #controls {
                 grid-template-columns: 1fr;
                 padding: 1rem;
@@ -127,6 +131,13 @@
 
             .permission-badge {
                 text-align: center;
+            }
+        }
+
+        /* Extra small devices - 1 kolom */
+        @media (max-width: 480px) {
+            #results {
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -237,6 +248,7 @@
         }
 
         .progress-container {
+            grid-column: 1 / -1;
             text-align: center;
             padding: 2rem;
             background-color: var(--card-bg);
