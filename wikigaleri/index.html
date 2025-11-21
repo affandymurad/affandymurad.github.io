@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foto WikiCommons Terdekat</title>
+    <title>Wikigaleri</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <style>
@@ -23,6 +23,70 @@
             --border-color: #e5e7eb;
             --radius: 8px;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dark mode */
+        /* Dark mode - perbaiki kontras */
+        [data-theme="dark"] {
+            --primary-color: #60a5fa;
+            --secondary-color: #3b82f6;
+            --accent-color: #38bdf8;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --danger-color: #f87171;
+            --text-color: #f3f4f6;
+            --text-light: #9ca3af;
+            --bg-color: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Improve contrast for links in dark mode */
+        [data-theme="dark"] a {
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Improve button contrast in dark mode */
+        [data-theme="dark"] .location-part button {
+            background-color: var(--bg-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Improve coordinates display in dark mode */
+        [data-theme="dark"] .coordinates-display {
+            background-color: var(--bg-secondary);
+            border-left-color: var(--primary-color);
+        }
+
+        /* Improve location header in dark mode */
+        [data-theme="dark"] .location-header {
+            background-color: var(--bg-secondary);
+        }
+
+        [data-theme="dark"] .location-header:hover {
+            background-color: var(--border-color);
+        }
+
+        /* Smooth transition for theme changes */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .photo-card,
+        #controls,
+        #location-status,
+        .permission-badge,
+        .coordinates-display,
+        .location-header,
+        button,
+        select {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         * {
@@ -66,12 +130,98 @@
             box-shadow: var(--shadow);
             margin-bottom: 1.5rem;
             display: grid;
-            grid-template-columns: repeat(2, auto) 1fr auto;
+            grid-template-columns: auto auto 1fr auto;
             gap: 1rem;
-            align-items: center;
+            align-items: end;
         }
 
+        /* Update styling select untuk lebih konsisten */
+        select {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.95rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            width: 100%;
+            min-height: 38px;
+        }
 
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Perbaiki label styling */
+        #controls label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Container untuk dropdown */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        /* Perbaiki location-part untuk dark mode */
+        .location-part {
+            margin: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .location-part span {
+            font-weight: 500;
+            margin-right: auto;
+            color: var(--text-color);
+        }
+
+        .location-part button {
+            padding: 0.4rem 0.85rem;
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            font-size: 0.85rem;
+            min-width: fit-content;
+        }
+
+        .location-part button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Perbaiki button styling untuk dark mode */
+        button {
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            min-height: 38px;
+        }
 
         @media (max-width: 968px) {
             #controls {
@@ -93,6 +243,14 @@
                 grid-template-columns: 1fr;
                 padding: 1rem;
                 gap: 0.85rem;
+            }
+
+            #controls>div {
+                width: 100%;
+            }
+
+            #controls label {
+                font-size: 0.9rem;
             }
 
             #language-select,
@@ -122,22 +280,6 @@
             cursor: pointer;
             flex-grow: 1;
             max-width: 250px;
-        }
-
-        button {
-            padding: 0.5rem 1.25rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         button:hover {
@@ -257,35 +399,6 @@
         #location-status p {
             margin-bottom: 0.75rem;
             font-weight: 500;
-        }
-
-        .location-part {
-            margin: 0.75rem 0;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            background-color: rgba(219, 234, 254, 0.3);
-            border-radius: var(--radius);
-        }
-
-        .location-part span {
-            font-weight: 500;
-            margin-right: auto;
-        }
-
-        .location-part button {
-            padding: 0.3rem 0.75rem;
-            background-color: white;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            font-size: 0.85rem;
-        }
-
-        .location-part button:hover {
-            background-color: var(--primary-color);
-            color: white;
         }
 
         /* Update grid results untuk spacing yang lebih baik */
@@ -620,13 +733,13 @@
             text-decoration: underline;
         }
 
-        /* Card actions dengan icons */
+        /* Card actions dalam collapsible */
         .card-actions {
             display: flex;
             gap: 0.5rem;
-            padding-top: 1rem;
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
             border-top: 1px solid var(--border-color);
-            margin-top: auto;
         }
 
         .card-actions button {
@@ -888,24 +1001,80 @@
             color: var(--text-light);
             font-size: 1.1rem;
         }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+            z-index: 100;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .scroll-to-top:active {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <h1>Foto WikiCommons Terdekat (radius 1km)</h1>
+    <h1>Galeri WikiCommons Terdekat (radius 1km)</h1>
 
     <section id="control-section" aria-label="Pengaturan">
         <h2>Pengaturan</h2>
         <div id="controls">
-            <select id="language-select">
-                <option value="id">Bahasa Indonesia (id)</option>
-                <option value="en">Bahasa Inggris (en)</option>
-                <option value="zh">Bahasa Mandarin (zh)</option>
-                <option value="es">Bahasa Spanyol (es)</option>
-                <option value="bew">Bahasa Betawi (bew)</option>
-            </select>
+            <div class="control-group" style="max-width: 180px;">
+                <label for="theme-select">Tema</label>
+                <select id="theme-select">
+                    <option value="system">🖥️ System</option>
+                    <option value="light">☀️ Light</option>
+                    <option value="dark">🌙 Dark</option>
+                </select>
+            </div>
+            <div class="control-group" style="max-width: 280px;">
+                <label for="language-select">Bahasa Wikivoyage</label>
+                <select id="language-select">
+                    <option value="id">Bahasa Indonesia (id)</option>
+                    <option value="en">Bahasa Inggris (en)</option>
+                    <option value="zh">Bahasa Mandarin (zh)</option>
+                    <option value="es">Bahasa Spanyol (es)</option>
+                    <option value="bew">Bahasa Betawi (bew)</option>
+                </select>
+            </div>
             <button id="check-permission">Periksa Lokasi & Cari</button>
-            <!-- Ganti bagian ini di #controls -->
             <span id="permission-status" class="permission-badge pending">Belum diperiksa</span>
         </div>
     </section>
@@ -924,7 +1093,8 @@
     </section>
 
     <section id="results-section" aria-label="Hasil Pencarian">
-        <h2>Hasil Pencarian</h2>
+        <h2>Hasil Pencarian <span id="results-count"
+                style="color: var(--text-light); font-size: 1rem; font-weight: 400;"></span></h2>
         <ul id="results"></ul>
     </section>
 
@@ -938,7 +1108,46 @@
         const resultsList = document.getElementById('results');
         let currentLang = 'id';
         let currentPosition = null;
+
         const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
+
+        // Theme Management
+        const themeSelect = document.getElementById('theme-select');
+
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'system') {
+                const systemTheme = getSystemTheme();
+                document.documentElement.setAttribute('data-theme', systemTheme);
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            themeSelect.value = savedTheme;
+            applyTheme(savedTheme);
+        }
+
+        themeSelect.addEventListener('change', () => {
+            const selectedTheme = themeSelect.value;
+            localStorage.setItem('theme', selectedTheme);
+            applyTheme(selectedTheme);
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (themeSelect.value === 'system') {
+                applyTheme('system');
+            }
+        });
+
+        // Initialize theme on load
+        initTheme();
 
         // Tambahkan fungsi ini setelah deklarasi variable
         function toggleLocationDetails() {
@@ -1192,7 +1401,7 @@
                 resultsList.innerHTML = '<li class="loading">Memuat foto dari Wikimedia Commons...</li>';
                 const radius = 1000;
                 const url = `https://commons.wikimedia.org/w/api.php?action=query&list=geosearch&gscoord=${lat}|${lon}&` +
-                    `gsradius=${radius}&gslimit=100&gsnamespace=6&format=json&origin=*`;
+                    `gsradius=${radius}&gslimit=99&gsnamespace=6&format=json&origin=*`;
 
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -1231,10 +1440,16 @@
         // Ganti fungsi displayPhotos dengan batch processing
         async function displayPhotos(photos) {
             resultsList.innerHTML = '';
+            const resultsCount = document.getElementById('results-count');
+
             if (photos.length === 0) {
                 resultsList.innerHTML = '<li class="empty-state"><p>Tidak ada foto ditemukan dalam radius 1km</p></li>';
+                resultsCount.textContent = '(0 foto)';
                 return;
             }
+
+            // Update counter
+            resultsCount.textContent = `(${photos.length} foto)`;
 
             // Show loading with progress
             const loadingLi = document.createElement('li');
@@ -1456,25 +1671,14 @@
                 authorName.textContent = details.author;
             }
 
+            // ... (kode author sebelumnya)
             authorInfo.appendChild(authorName);
             authorDiv.appendChild(authorInfo);
             metadataCollapsible.appendChild(authorDiv);
 
-            // Toggle functionality
-            metadataToggle.onclick = () => {
-                const icon = metadataToggle.querySelector('.metadata-toggle-icon');
-                metadataCollapsible.classList.toggle('expanded');
-                icon.classList.toggle('collapsed');
-            };
-
-            // Tambahkan ke contentDiv
-            contentDiv.appendChild(metadataToggle);
-            contentDiv.appendChild(metadataCollapsible);
-
-            // Actions (tetap di luar collapsible, langsung setelah metadataCollapsible)
+            // Actions (pindahkan ke dalam collapsible, setelah author)
             const actionsDiv = document.createElement('div');
             actionsDiv.className = 'card-actions';
-            // ... (kode actions seperti biasa)
 
             const routeBtn = document.createElement('button');
             routeBtn.className = 'route-btn';
@@ -1497,7 +1701,19 @@
             );
             actionsDiv.appendChild(googleMapsBtn);
 
-            contentDiv.appendChild(actionsDiv);
+            metadataCollapsible.appendChild(actionsDiv);
+
+            // Toggle functionality
+            metadataToggle.onclick = () => {
+                const icon = metadataToggle.querySelector('.metadata-toggle-icon');
+                metadataCollapsible.classList.toggle('expanded');
+                icon.classList.toggle('collapsed');
+            };
+
+            // Tambahkan ke contentDiv
+            contentDiv.appendChild(metadataToggle);
+            contentDiv.appendChild(metadataCollapsible);
+
             li.appendChild(contentDiv);
 
             return li;
@@ -1796,20 +2012,44 @@
         // Ganti window.onload
         window.onload = async () => {
             try {
+                initTheme(); // Initialize theme first
                 const initialPermission = await checkLocationPermission();
-
-                // Don't auto-fetch on load, let user click the button
                 console.log('WikiCommons Nearby ready. Permission:', initialPermission);
 
-                // Optional: uncomment if you want auto-load on granted permission
-                // if (initialPermission === 'granted') {
-                //     await getLocation();
-                // }
+                // Initialize scroll to top button
+                const scrollToTopBtn = document.getElementById('scrollToTop');
+                const locationSection = document.getElementById('location-section');
+
+                if (scrollToTopBtn && locationSection) {
+                    window.addEventListener('scroll', () => {
+                        const locationSectionRect = locationSection.getBoundingClientRect();
+                        const isLocationSectionHidden = locationSectionRect.bottom < 0;
+
+                        if (isLocationSectionHidden && window.scrollY > 300) {
+                            scrollToTopBtn.classList.add('visible');
+                        } else {
+                            scrollToTopBtn.classList.remove('visible');
+                        }
+                    });
+
+                    scrollToTopBtn.addEventListener('click', () => {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    });
+                }
             } catch (error) {
                 console.error('Error during initialization:', error);
             }
         };
+
     </script>
+    <div class="scroll-to-top" id="scrollToTop" title="Kembali ke atas">
+        ↑
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 
 </html>
