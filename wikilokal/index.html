@@ -88,9 +88,6 @@
         }
 
         @media (max-width: 968px) {
-            #results {
-                grid-template-columns: 1fr;
-            }
 
             #controls {
                 grid-template-columns: 1fr 1fr;
@@ -107,9 +104,6 @@
         }
 
         @media (max-width: 768px) {
-            #results {
-                grid-template-columns: 1fr;
-            }
 
             #controls {
                 grid-template-columns: 1fr;
@@ -134,12 +128,6 @@
             }
         }
 
-        /* Extra small devices - 1 kolom */
-        @media (max-width: 480px) {
-            #results {
-                grid-template-columns: 1fr !important;
-            }
-        }
 
         @media (max-width: 968px) {
             #controls {
@@ -396,7 +384,6 @@
             background-color: var(--bg-secondary);
             border-radius: var(--radius);
             border-left: 4px solid var(--primary-color);
-            font-family: 'Courier New', monospace;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
@@ -490,10 +477,31 @@
 
         #results {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.25rem;
             padding: 0;
             list-style: none;
+        }
+
+        /* Tablet besar & desktop kecil - maksimal 2 kolom */
+        @media (min-width: 769px) and (max-width: 1200px) {
+            #results {
+                grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            }
+        }
+
+        /* Desktop besar - maksimal 3 kolom */
+        @media (min-width: 1201px) {
+            #results {
+                grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            }
+        }
+
+        /* Smartphone - tetap 1 kolom */
+        @media (max-width: 768px) {
+            #results {
+                grid-template-columns: 1fr;
+            }
         }
 
         .article-card {
@@ -573,6 +581,57 @@
             margin-bottom: 0.5rem;
             overflow: visible;
             text-overflow: clip;
+        }
+
+        /* Deskripsi collapsed untuk SEMUA ukuran layar (termasuk desktop) */
+        .description.collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .description.expanded {
+            display: block;
+        }
+
+        /* Tombol toggle tampil di semua mode */
+        .description-toggle {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            background-color: var(--bg-secondary);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .description-toggle:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Details section collapsed untuk SEMUA mode */
+        .details-section.collapsed {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+            margin: 0;
+        }
+
+        .details-section.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+            margin-top: 0.5rem;
         }
 
         /* Update style untuk distance - border saja seperti badge bahasa */
@@ -1223,70 +1282,138 @@
             padding: 0;
         }
 
-
-        @media (max-width: 768px) {
-            .description-container {
-                position: relative;
-            }
-
-            .description.collapsed {
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .description.expanded {
-                display: block;
-            }
-
-            .description-toggle {
-                display: inline-block;
-                margin-top: 0.5rem;
-                padding: 0.35rem 0.75rem;
-                background-color: var(--bg-secondary);
-                color: var(--primary-color);
-                border: 1px solid var(--border-color);
-                border-radius: 100px;
-                font-size: 0.85rem;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-weight: 500;
-            }
-
-            .description-toggle:hover {
-                background-color: var(--primary-color);
-                color: white;
-                border-color: var(--primary-color);
-            }
-
-            .details-section.collapsed {
-                max-height: 0;
-                overflow: hidden;
-                opacity: 0;
-                transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-                margin: 0;
-            }
-
-            .details-section.expanded {
-                max-height: 2000px;
-                opacity: 1;
-                transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-                margin-top: 0.5rem;
-            }
+        /* GANTI dengan ini untuk semua mode: */
+        .description-toggle {
+            display: inline-block;
+            /* Selalu tampil di semua ukuran layar */
+            margin-top: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            background-color: var(--bg-secondary);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
         }
 
-        @media (min-width: 769px) {
-            .description-toggle {
-                display: none;
+        .description-toggle:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .details-section.collapsed {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+            margin: 0;
+        }
+
+        .details-section.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state::before {
+            content: "📍";
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* CSS untuk control group dan label */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-light);
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+        }
+
+        /* Two column container dengan alignment yang lebih baik */
+        .two-column-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: start;
+            /* Penting: agar kedua kolom mulai dari atas yang sama */
+        }
+
+        /* Pastikan kedua section memiliki tinggi yang konsisten */
+        #control-section,
+        #location-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Heading dengan tinggi yang sama */
+        #control-section h2,
+        #location-section h2 {
+            margin-bottom: 1rem;
+            min-height: 2rem;
+            /* Pastikan heading sejajar */
+        }
+
+        /* Controls dengan layout yang lebih rapi */
+        #controls {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            flex-grow: 1;
+        }
+
+        /* Setiap control group dalam baris terpisah */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Location status matching height */
+        #location-status {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 300px;
+            /* Sesuaikan dengan tinggi controls */
+        }
+
+        @media (max-width: 968px) {
+            .two-column-container {
+                grid-template-columns: 1fr;
             }
 
-            .details-section {
-                display: block !important;
-                max-height: none !important;
-                opacity: 1 !important;
+            #location-status {
+                min-height: auto;
             }
         }
     </style>
@@ -1314,39 +1441,55 @@
         </div>
     </div>
 
-    <section id="control-section" aria-label="Pengaturan">
-        <h2>Pengaturan</h2>
-        <div id="controls">
-            <select id="theme-select">
-                <option value="light">☀️ Light</option>
-                <option value="dark">🌙 Dark</option>
-                <option value="system">🖥️ System</option>
-            </select>
-            <select id="language-select">
-                <option value="id">Bahasa Indonesia (ID)</option>
-                <option value="en">Bahasa Inggris (EN)</option>
-                <option value="ms">Bahasa Melayu (MS)</option>
-                <option value="fr">Bahasa Prancis (FR)</option>
-                <option value="zh">Bahasa Mandarin (ZH)</option>
-                <option value="es">Bahasa Spanyol (ES)</option>
-                <option value="bew">Bahasa Betawi (BEW)</option>
-            </select>
-            <button id="check-permission">Periksa Lokasi & Cari</button>
-            <span id="permission-status" class="permission-badge">Belum diperiksa</span>
-        </div>
-    </section>
+    <div class="two-column-container">
+        <section id="control-section" aria-label="Pengaturan">
+            <h2>Pengaturan</h2>
+            <div id="controls">
+                <div class="control-group">
+                    <label class="control-label">Tema</label>
+                    <select id="theme-select">
+                        <option value="light">☀️ Light</option>
+                        <option value="dark">🌙 Dark</option>
+                        <option value="system">🖥️ System</option>
+                    </select>
+                </div>
 
-    <section id="location-section" aria-label="Status Lokasi">
-        <h2>Status Lokasi</h2>
-        <div id="location-status">
-            <div class="coordinates-display"></div>
-            <div class="location-header" onclick="toggleLocationDetails()">
-                <h3>Detail Lokasi</h3>
-                <span class="toggle-icon collapsed">▶</span>
+                <div class="control-group">
+                    <label class="control-label">Bahasa Proyek Wikimedia</label>
+                    <select id="language-select">
+                        <option value="id">Bahasa Indonesia (ID)</option>
+                        <option value="en">Bahasa Inggris (EN)</option>
+                        <option value="ms">Bahasa Melayu (MS)</option>
+                        <option value="fr">Bahasa Prancis (FR)</option>
+                        <option value="zh">Bahasa Mandarin (ZH)</option>
+                        <option value="es">Bahasa Spanyol (ES)</option>
+                        <option value="bew">Bahasa Betawi (BEW)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Aksi</label>
+                    <button id="check-permission">Periksa Lokasi & Cari</button>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Status Izin</label>
+                    <span id="permission-status" class="permission-badge">Belum diperiksa</span>
+                </div>
             </div>
-            <div class="location-details hidden" id="location-details-content"></div>
-        </div>
-    </section>
+        </section>
+
+        <section id="location-section" aria-label="Status Lokasi">
+            <h2>Status Lokasi</h2>
+            <div id="location-status">
+                <div class="coordinates-display"></div>
+                <div class="location-header" onclick="toggleLocationDetails()">
+                    <h3>Detail Lokasi</h3>
+                    <span class="toggle-icon collapsed">▶</span>
+                </div>
+                <div class="location-details hidden" id="location-details-content"></div>
+            </div>
+        </section>
+    </div>
 
     <section id="results-section" aria-label="Hasil Pencarian">
         <h2>Hasil Pencarian <span id="article-count"></span></h2>
@@ -1508,7 +1651,7 @@
             }
         }
 
-        // Check permission when needed
+        // Update fungsi checkLocationPermission untuk handle browser restart
         async function checkLocationPermission() {
             if (!navigator.permissions || !navigator.geolocation) {
                 updatePermissionStatus('denied');
@@ -1516,7 +1659,10 @@
             }
             try {
                 const result = await navigator.permissions.query({ name: 'geolocation' });
+
+                // Update UI berdasarkan permission state saat ini
                 updatePermissionStatus(result.state);
+
                 result.onchange = () => {
                     updatePermissionStatus(result.state);
                     if (result.state !== 'granted') {
@@ -1749,21 +1895,21 @@
 
         async function displayArticles(articles) {
             if (articles.length === 0) {
-                resultsList.innerHTML = '<li>Tidak ada artikel ditemukan dalam radius 3km</li>';
+                resultsList.innerHTML = '<li class="empty-state"><p>Tidak ada artikel ditemukan dalam radius 3km</p></li>';
                 articleCount.textContent = '(0)';
                 return;
             }
 
             // Show progress
             resultsList.innerHTML = `
-                <li class="progress-container">
-                    <div class="progress-text">Memuat detail artikel...</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-                    </div>
-                    <div class="progress-count" id="progress-count">0 / ${articles.length}</div>
-                </li>
-            `;
+        <li class="progress-container">
+            <div class="progress-text">Memuat detail artikel...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="progress-count" id="progress-count">0 / ${articles.length}</div>
+        </li>
+    `;
 
             const progressFill = document.getElementById('progress-fill');
             const progressCount = document.getElementById('progress-count');
@@ -1814,7 +1960,7 @@
                 const badgesWrapper = document.createElement('div');
                 badgesWrapper.className = 'badges-wrapper';
 
-                // Distance badge (pindah ke atas sebelum deskripsi)
+                // Distance badge
                 const dist = document.createElement('div');
                 dist.className = 'distance';
                 dist.textContent = `${distance} km`;
@@ -1829,11 +1975,16 @@
                 titleContainer.appendChild(badgesWrapper);
                 contentDiv.appendChild(titleContainer);
 
-                // DARI SINI
+                // Deskripsi - COLLAPSED di awal
                 const desc = document.createElement('div');
                 desc.className = 'description collapsed';
                 desc.textContent = details.description;
 
+                // DEKLARASI detailsSection DI SINI (sebelum descToggle)
+                const detailsSection = document.createElement('div');
+                detailsSection.className = 'details-section collapsed';
+
+                // Tombol toggle
                 const descToggle = document.createElement('button');
                 descToggle.className = 'description-toggle';
                 descToggle.textContent = 'Selengkapnya ▼';
@@ -1851,10 +2002,6 @@
                 contentDiv.appendChild(desc);
                 contentDiv.appendChild(descToggle);
 
-                // Wrap semua detail dalam satu container
-                const detailsSection = document.createElement('div');
-                detailsSection.className = 'details-section collapsed';
-
                 // Wikidata
                 const wd = document.createElement('div');
                 wd.className = 'wikidata';
@@ -1865,7 +2012,7 @@
                 }
                 detailsSection.appendChild(wd);
 
-                // Card Actions (pindah ke sini)
+                // Card Actions
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'card-actions';
 
@@ -1891,9 +2038,6 @@
                 actionsDiv.appendChild(googleMapsBtn);
 
                 detailsSection.appendChild(actionsDiv);
-
-                // Append detailsSection ke contentDiv
-                contentDiv.appendChild(detailsSection);
 
                 // Wiktionary
                 const wiktDiv = document.createElement('div');
@@ -1923,11 +2067,11 @@
 
                 // Tokenisasi: pisah berdasarkan spasi dan tanda baca umum, bersihkan
                 const words = textSource
-                    .replace(/[^\p{L}\p{N}]+/gu, ' ')   // ganti semua tanda baca & simbol dengan spasi
+                    .replace(/[^\p{L}\p{N}]+/gu, ' ')
                     .split(/\s+/)
                     .map(w => w.trim())
-                    .filter(w => w.length >= 3)         // minimal 3 huruf
-                    .map(w => w.replace(/^\d+$/, ''))   // buang kata yang hanya angka
+                    .filter(w => w.length >= 3)
+                    .map(w => w.replace(/^\d+$/, ''))
                     .filter(Boolean);
 
                 // Deduplikasi sambil mempertahankan urutan pertama muncul
@@ -1972,12 +2116,10 @@
                     toggleIcon.classList.toggle('collapsed');
                 };
 
-                contentDiv.appendChild(wiktDiv);
                 detailsSection.appendChild(wiktDiv);
 
                 // Append detailsSection ke contentDiv
                 contentDiv.appendChild(detailsSection);
-                // SAMPAI SINI
 
                 li.appendChild(contentDiv);
                 articleElements.push(li);
@@ -1993,7 +2135,6 @@
             articleElements.forEach(el => resultsList.appendChild(el));
             articleCount.textContent = `(${articles.length})`;
         }
-
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
             const overlay = document.createElement('div');
             overlay.className = 'overlay';
@@ -2142,15 +2283,20 @@
                 updatePermissionStatus('denied');
                 return;
             }
+
             const coordsDisplay = document.querySelector('.coordinates-display');
             coordsDisplay.textContent = 'Mengambil lokasi Anda...';
+
             return new Promise((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
                         currentPosition = position;
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        updatePermissionStatus('granted'); // Update status to granted
+
+                        // PINDAHKAN KE SINI: Update status setelah berhasil dapat lokasi
+                        await checkLocationPermission();
+
                         const locationParts = await getLocationDetails(lat, lon);
                         await updateLocationDisplay(lat, lon, locationParts);
                         const articles = await fetchNearbyArticles(lat, lon, currentLang);
@@ -2160,7 +2306,7 @@
                     (error) => {
                         coordsDisplay.textContent = `Gagal mendapatkan lokasi: ${error.message}`;
                         coordsDisplay.style.color = 'var(--danger-color)';
-                        updatePermissionStatus('denied'); // Update status to denied
+                        updatePermissionStatus('denied');
                         console.error('Geolocation error:', error);
                         reject(error);
                     },
@@ -2249,10 +2395,17 @@
             });
         });
 
-        // Don't auto-load on page load, wait for user action
-        window.onload = () => {
-            // Just initialize, don't fetch location
+        // Tambahkan di window.onload atau saat halaman dimuat
+        window.onload = async () => {
             console.log('WikiLokal ready');
+
+            // Auto-check permission saat load
+            const permissionState = await checkLocationPermission();
+
+            // Jika sebelumnya pernah granted dan masih ada posisi, restore UI
+            if (permissionState === 'granted' || currentPosition) {
+                updatePermissionStatus('granted');
+            }
         };
 
         // Guide button
