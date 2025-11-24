@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konverter Faksimile Prasasti</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:active {
+            transform: translateY(-50%) scale(0.98);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .upload-section {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .upload-section:hover::before {
+            left: 100%;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: linear-gradient(135deg, #e8ebff 0%, #dde0ff 100%);
+            transform: scale(1.01);
+        }
+
+        .upload-section.dragover {
+            background: linear-gradient(135deg, #dde0ff 0%, #d0d5ff 100%);
+            border-color: #764ba2;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .upload-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .upload-text {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .upload-section.hidden {
+            display: none;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-preview {
+            display: none;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+            animation: slideIn 0.3s ease;
+        }
+
+        .file-preview.active {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-thumbnail {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 3px solid #667eea;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .file-path {
+            color: #666;
+            font-size: 0.85em;
+            font-family: 'Courier New', monospace;
+            background: #f0f2ff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            display: block;
+            margin-top: 8px;
+            word-break: break-all;
+            max-width: 100%;
+        }
+
+        .file-size {
+            color: #888;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .remove-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            min-height: 45px;
+            border-radius: 50%;
+            font-size: 1.8em;
+            line-height: 1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .remove-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+        }
+
+        .remove-btn:active {
+            transform: scale(1.05) rotate(90deg);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .controls.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .control-group {
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .control-group:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #ddd 0%, #ddd 50%, #ddd 100%);
+            outline: none;
+            margin-bottom: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+
+        .value-display {
+            text-align: center;
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.2em;
+            padding: 8px;
+            background: #f0f2ff;
+            border-radius: 8px;
+        }
+
+        .preview-section {
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .preview-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-box {
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .preview-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .preview-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .preview-content {
+            padding: 20px;
+            text-align: center;
+            background: #f9fafb;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-btn {
+            display: block;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff9e6 100%);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            color: #856404;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+        }
+
+        .info-box strong {
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            border: 5px solid #f3f4f6;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .back-btn {
+                position: static;
+                transform: none;
+                margin-bottom: 20px;
+                font-size: 0.9em;
+                padding: 10px 20px;
+            }
+
+            .back-btn:hover {
+                transform: scale(1.05);
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .upload-section {
+                padding: 30px 20px;
+            }
+
+            .file-preview {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .file-thumbnail {
+                width: 80px;
+                height: 80px;
+            }
+
+            .remove-btn {
+                width: 50px;
+                height: 50px;
+                min-width: 50px;
+                min-height: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../" target="_blank" class="back-btn">
+                ← 🏠 Kembali ke Affandy Murad
+            </a>
+            <h1>🗿 Konverter Faksimile Prasasti</h1>
+            <p>Ubah foto prasasti menjadi faksimile hitam-putih untuk dokumentasi ilmiah</p>
+        </div>
+
+        <div class="content">
+            <div class="upload-section" id="uploadArea">
+                <div class="upload-icon">📤</div>
+                <div class="upload-text">Klik atau Seret Gambar Prasasti di Sini</div>
+                <div class="upload-subtext">Format: JPG, PNG, WebP (Max 10MB)</div>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <div class="file-preview" id="filePreview">
+                <img id="fileThumbnail" class="file-thumbnail" alt="Thumbnail">
+                <div class="file-info">
+                    <div class="file-name" id="fileName"></div>
+                    <div class="file-size" id="fileSize"></div>
+                    <div class="file-path" id="filePath"></div>
+                </div>
+                <button class="remove-btn" id="removeBtn" type="button" title="Hapus gambar">×</button>
+            </div>
+
+            <div class="controls" id="controls">
+                <div class="control-group">
+                    <label>📊 Threshold (Ambang Batas)</label>
+                    <input type="range" id="threshold" min="0" max="255" value="128">
+                    <div class="value-display" id="thresholdValue">128</div>
+                </div>
+
+                <div class="control-group">
+                    <label>✨ Kontras</label>
+                    <input type="range" id="contrast" min="0" max="200" value="100">
+                    <div class="value-display" id="contrastValue">100%</div>
+                </div>
+
+                <div class="control-group">
+                    <label>💡 Kecerahan</label>
+                    <input type="range" id="brightness" min="-100" max="100" value="0">
+                    <div class="value-display" id="brightnessValue">0</div>
+                </div>
+
+                <div class="control-group">
+                    <label>🔍 Ketajaman</label>
+                    <input type="range" id="sharpness" min="0" max="3" step="0.1" value="1">
+                    <div class="value-display" id="sharpnessValue">1.0</div>
+                </div>
+
+                <div class="control-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="invert" style="width: 20px; height: 20px; cursor: pointer;">
+                        <span>🔄 Inversi Warna</span>
+                    </label>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        Tukar hitam ↔️ putih
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-section" id="previewSection">
+                <div class="preview-grid">
+                    <div class="preview-box">
+                        <div class="preview-header">📷 Gambar Asli</div>
+                        <div class="preview-content">
+                            <canvas id="originalCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="preview-box">
+                        <div class="preview-header">📜 Hasil Faksimile</div>
+                        <div class="preview-content">
+                            <canvas id="facsimileCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="download-btn" onclick="downloadFacsimile()">
+                    💾 Download Faksimile
+                </button>
+
+                <div class="info-box">
+                    <strong>💡 Tips Penggunaan:</strong>
+                    Sesuaikan <strong>Threshold</strong> untuk mengatur tingkat hitam-putih (nilai rendah = lebih
+                    hitam).
+                    Gunakan <strong>Kontras</strong> dan <strong>Kecerahan</strong> untuk meningkatkan keterbacaan.
+                    Tingkatkan <strong>Ketajaman</strong> untuk memperjelas garis tulisan.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p style="font-size: 1.2em; color: #333;">Memproses gambar...</p>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const filePreview = document.getElementById('filePreview');
+        const fileThumbnail = document.getElementById('fileThumbnail');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const filePath = document.getElementById('filePath');
+        const removeBtn = document.getElementById('removeBtn');
+        const originalCanvas = document.getElementById('originalCanvas');
+        const facsimileCanvas = document.getElementById('facsimileCanvas');
+        const previewSection = document.getElementById('previewSection');
+        const controls = document.getElementById('controls');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        const thresholdSlider = document.getElementById('threshold');
+        const contrastSlider = document.getElementById('contrast');
+        const brightnessSlider = document.getElementById('brightness');
+        const sharpnessSlider = document.getElementById('sharpness');
+        const invertCheckbox = document.getElementById('invert');
+
+        let originalImage = null;
+        let processTimeout = null;
+        let currentFileName = '';
+
+        // Upload area events
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Slider updates with smooth debouncing
+        function setupSlider(slider, valueDisplay, suffix = '') {
+            slider.addEventListener('input', (e) => {
+                valueDisplay.textContent = e.target.value + suffix;
+                debouncedProcess();
+            });
+        }
+
+        setupSlider(thresholdSlider, document.getElementById('thresholdValue'));
+        setupSlider(contrastSlider, document.getElementById('contrastValue'), '%');
+        setupSlider(brightnessSlider, document.getElementById('brightnessValue'));
+        setupSlider(sharpnessSlider, document.getElementById('sharpnessValue'));
+
+        // Checkbox invert
+        invertCheckbox.addEventListener('change', () => {
+            processImage();
+        });
+
+        // Remove button - using multiple event methods for cross-browser compatibility
+        removeBtn.addEventListener('click', handleRemove);
+        removeBtn.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            handleRemove();
+        });
+
+        function handleRemove() {
+            if (confirm('🗑️ Apakah Anda yakin ingin menghapus gambar ini?')) {
+                resetAll();
+            }
+        }
+
+        function debouncedProcess() {
+            clearTimeout(processTimeout);
+            processTimeout = setTimeout(() => {
+                processImage();
+            }, 100);
+        }
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('⚠️ Mohon pilih file gambar yang valid!');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('⚠️ Ukuran file terlalu besar! Maksimal 10MB.');
+                return;
+            }
+
+            loadingOverlay.classList.add('active');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    currentFileName = file.name;
+
+                    // Show file preview
+                    showFilePreview(e.target.result, file.name, file.size);
+
+                    displayOriginal(img);
+                    processImage();
+
+                    setTimeout(() => {
+                        controls.classList.add('active');
+                        previewSection.classList.add('active');
+                        loadingOverlay.classList.remove('active');
+                    }, 300);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showFilePreview(imageSrc, name, size) {
+            fileThumbnail.src = imageSrc;
+            fileName.textContent = name;
+
+            // Format file size
+            let sizeText = '';
+            if (size < 1024) {
+                sizeText = size + ' B';
+            } else if (size < 1024 * 1024) {
+                sizeText = (size / 1024).toFixed(2) + ' KB';
+            } else {
+                sizeText = (size / (1024 * 1024)).toFixed(2) + ' MB';
+            }
+            fileSize.textContent = `📦 Ukuran: ${sizeText}`;
+
+            // Show file path/name
+            filePath.textContent = `📁 Path: ${name}`;
+            filePath.style.display = 'block';
+
+            uploadArea.classList.add('hidden');
+            filePreview.classList.add('active');
+        }
+
+        function resetAll() {
+            // Reset image
+            originalImage = null;
+            currentFileName = '';
+
+            // Clear canvases
+            const ctx1 = originalCanvas.getContext('2d');
+            const ctx2 = facsimileCanvas.getContext('2d');
+            ctx1.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+            ctx2.clearRect(0, 0, facsimileCanvas.width, facsimileCanvas.height);
+
+            // Reset file input
+            fileInput.value = '';
+
+            // Reset sliders
+            thresholdSlider.value = 128;
+            contrastSlider.value = 100;
+            brightnessSlider.value = 0;
+            sharpnessSlider.value = 1;
+            invertCheckbox.checked = false;
+
+            document.getElementById('thresholdValue').textContent = '128';
+            document.getElementById('contrastValue').textContent = '100%';
+            document.getElementById('brightnessValue').textContent = '0';
+            document.getElementById('sharpnessValue').textContent = '1.0';
+
+            // Hide preview and controls
+            filePreview.classList.remove('active');
+            uploadArea.classList.remove('hidden');
+            controls.classList.remove('active');
+            previewSection.classList.remove('active');
+        }
+
+        function displayOriginal(img) {
+            const maxWidth = 800;
+            const scale = Math.min(1, maxWidth / img.width);
+
+            originalCanvas.width = img.width * scale;
+            originalCanvas.height = img.height * scale;
+
+            const ctx = originalCanvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, originalCanvas.width, originalCanvas.height);
+        }
+
+        function processImage() {
+            if (!originalImage) return;
+
+            const ctx = originalCanvas.getContext('2d');
+            let imageData = ctx.getImageData(0, 0, originalCanvas.width, originalCanvas.height);
+
+            // Get parameters
+            const threshold = parseInt(thresholdSlider.value);
+            const contrast = parseFloat(contrastSlider.value) / 100;
+            const brightness = parseInt(brightnessSlider.value);
+            const sharpness = parseFloat(sharpnessSlider.value);
+            const invert = invertCheckbox.checked;
+
+            // Apply processing
+            imageData = toGrayscale(imageData);
+            imageData = adjustBrightness(imageData, brightness);
+            imageData = adjustContrast(imageData, contrast);
+
+            if (sharpness > 0) {
+                imageData = sharpen(imageData, sharpness);
+            }
+
+            imageData = applyThreshold(imageData, threshold);
+
+            if (invert) {
+                imageData = invertColors(imageData);
+            }
+
+            // Draw result
+            facsimileCanvas.width = originalCanvas.width;
+            facsimileCanvas.height = originalCanvas.height;
+            const facCtx = facsimileCanvas.getContext('2d');
+            facCtx.putImageData(imageData, 0, 0);
+        }
+
+        function toGrayscale(imageData) {
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                data[i] = data[i + 1] = data[i + 2] = gray;
+            }
+            return imageData;
+        }
+
+        function adjustBrightness(imageData, brightness) {
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.max(0, Math.min(255, data[i] + brightness));
+                data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + brightness));
+                data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + brightness));
+            }
+            return imageData;
+        }
+
+        function adjustContrast(imageData, contrast) {
+            const data = imageData.data;
+            const factor = (259 * (contrast * 100 + 255)) / (255 * (259 - contrast * 100));
+
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.max(0, Math.min(255, factor * (data[i] - 128) + 128));
+                data[i + 1] = Math.max(0, Math.min(255, factor * (data[i + 1] - 128) + 128));
+                data[i + 2] = Math.max(0, Math.min(255, factor * (data[i + 2] - 128) + 128));
+            }
+            return imageData;
+        }
+
+        function sharpen(imageData, amount) {
+            const w = imageData.width;
+            const h = imageData.height;
+            const data = imageData.data;
+            const output = new Uint8ClampedArray(data);
+
+            const kernel = [
+                0, -amount, 0,
+                -amount, 1 + 4 * amount, -amount,
+                0, -amount, 0
+            ];
+
+            for (let y = 1; y < h - 1; y++) {
+                for (let x = 1; x < w - 1; x++) {
+                    const idx = (y * w + x) * 4;
+                    let sum = 0;
+
+                    for (let ky = -1; ky <= 1; ky++) {
+                        for (let kx = -1; kx <= 1; kx++) {
+                            const kidx = ((y + ky) * w + (x + kx)) * 4;
+                            const k = kernel[(ky + 1) * 3 + (kx + 1)];
+                            sum += data[kidx] * k;
+                        }
+                    }
+
+                    const sharpened = Math.max(0, Math.min(255, sum));
+                    output[idx] = output[idx + 1] = output[idx + 2] = sharpened;
+                }
+            }
+
+            for (let i = 0; i < data.length; i++) {
+                data[i] = output[i];
+            }
+
+            return imageData;
+        }
+
+        function applyThreshold(imageData, threshold) {
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const value = data[i] < threshold ? 0 : 255;
+                data[i] = data[i + 1] = data[i + 2] = value;
+            }
+            return imageData;
+        }
+
+        function invertColors(imageData) {
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = 255 - data[i];
+                data[i + 1] = 255 - data[i + 1];
+                data[i + 2] = 255 - data[i + 2];
+            }
+            return imageData;
+        }
+
+        function downloadFacsimile() {
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 10);
+            link.download = `faksimile-prasasti-${timestamp}.png`;
+            link.href = facsimileCanvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+
+</html>
