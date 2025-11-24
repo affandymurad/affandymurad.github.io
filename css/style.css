@@ -816,3 +816,10 @@
                 margin-top: 10px;
             }
         }
+
+        @media (max-width: 768px) {
+            .language-dropdown,
+            .theme-dropdown {
+                margin-top: 12px; /* bebas mau 10–20px */
+            }
+        }
