@@ -622,6 +622,12 @@
                 </div>
 
                 <div class="control-group">
+                    <label>📐 Ukuran Output (%)</label>
+                    <input type="range" id="resize" min="10" max="100" step="5" value="100">
+                    <div class="value-display" id="resizeValue">100%</div>
+                </div>
+
+                <div class="control-group">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                         <input type="checkbox" id="invert" style="width: 20px; height: 20px; cursor: pointer;">
                         <span>🔄 Inversi Warna</span>
@@ -690,6 +696,7 @@
         const contrastSlider = document.getElementById('contrast');
         const brightnessSlider = document.getElementById('brightness');
         const sharpnessSlider = document.getElementById('sharpness');
+        const resizeSlider = document.getElementById('resize');
         const invertCheckbox = document.getElementById('invert');
 
         let originalImage = null;
@@ -735,6 +742,7 @@
         setupSlider(contrastSlider, document.getElementById('contrastValue'), '%');
         setupSlider(brightnessSlider, document.getElementById('brightnessValue'));
         setupSlider(sharpnessSlider, document.getElementById('sharpnessValue'));
+        setupSlider(resizeSlider, document.getElementById('resizeValue'), '%');
 
         // Checkbox invert
         invertCheckbox.addEventListener('change', () => {
@@ -840,12 +848,14 @@
             contrastSlider.value = 100;
             brightnessSlider.value = 0;
             sharpnessSlider.value = 1;
+            resizeSlider.value = 100;
             invertCheckbox.checked = false;
 
             document.getElementById('thresholdValue').textContent = '128';
             document.getElementById('contrastValue').textContent = '100%';
             document.getElementById('brightnessValue').textContent = '0';
             document.getElementById('sharpnessValue').textContent = '1.0';
+            document.getElementById('resizeValue').textContent = '100%';
 
             // Hide preview and controls
             filePreview.classList.remove('active');
@@ -857,6 +867,10 @@
         function displayOriginal(img) {
             const maxWidth = 800;
             const scale = Math.min(1, maxWidth / img.width);
+
+            // Store original dimensions
+            originalCanvas.dataset.originalWidth = img.width;
+            originalCanvas.dataset.originalHeight = img.height;
 
             originalCanvas.width = img.width * scale;
             originalCanvas.height = img.height * scale;
@@ -876,6 +890,7 @@
             const contrast = parseFloat(contrastSlider.value) / 100;
             const brightness = parseInt(brightnessSlider.value);
             const sharpness = parseFloat(sharpnessSlider.value);
+            const resizePercent = parseInt(resizeSlider.value);
             const invert = invertCheckbox.checked;
 
             // Apply processing
@@ -893,11 +908,28 @@
                 imageData = invertColors(imageData);
             }
 
-            // Draw result
-            facsimileCanvas.width = originalCanvas.width;
-            facsimileCanvas.height = originalCanvas.height;
+            // Calculate new size based on ORIGINAL image dimensions and resize slider
+            const originalWidth = parseInt(originalCanvas.dataset.originalWidth) || originalCanvas.width;
+            const originalHeight = parseInt(originalCanvas.dataset.originalHeight) || originalCanvas.height;
+
+            const newWidth = Math.round(originalWidth * (resizePercent / 100));
+            const newHeight = Math.round(originalHeight * (resizePercent / 100));
+
+            // Draw result with resize
+            facsimileCanvas.width = newWidth;
+            facsimileCanvas.height = newHeight;
             const facCtx = facsimileCanvas.getContext('2d');
-            facCtx.putImageData(imageData, 0, 0);
+
+            // Create temporary canvas at original size for processed image
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = originalCanvas.width;
+            tempCanvas.height = originalCanvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.putImageData(imageData, 0, 0);
+
+            // Draw resized image to facsimile canvas
+            facCtx.imageSmoothingEnabled = false; // For sharp pixel art style
+            facCtx.drawImage(tempCanvas, 0, 0, newWidth, newHeight);
         }
 
         function toGrayscale(imageData) {
