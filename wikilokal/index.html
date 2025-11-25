@@ -1432,15 +1432,29 @@
             <div class="wiki-logo"></div>
             <div class="header-title">
                 <h1>Wikilokal</h1>
-                <p id="main-subtitle">Jelajahi Proyek Wikimedia (Wikipedia, Wikidata, Wikivoyage, Wiktionary, Nominatim)
+                <p id="main-subtitle">Jelajahi Proyek <img src="images/ic_wikimedia.svg" alt="Wikigaleri"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikimedia
+                    <br />
+                    (<img src="images/ic_wikipedia.svg" alt="Wikigaleri"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikipedia,
+                    <img src="images/ic_wikidata.svg" alt="Wikigaleri"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikidata,
+                    <img src="images/ic_wikivoyage.svg" alt="Wikigaleri"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikivoyage,
+                    <img src="images/ic_wiktionary.svg" alt="Wikigaleri"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wiktionary,
+                    <img src="images/ic_nominatim.svg" alt="Wikigaleri"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Nominatim)
                     dalam
-                    radius 3 km dari lokasi Anda</p>
+                    radius 3 km dari lokasi Anda
+                </p>
             </div>
         </div>
         <div class="header-right">
             <button id="guide-btn" title="Lihat panduan">📖 Panduan</button>
             <button id="wikigaleri-btn" onclick="window.location.href='../wikigaleri'" title=" Kunjungi Affandy Murad">
-                📸 Wikigaleri
+                <img src="images/ic_commons.svg" alt="Wikigaleri"
+                    style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikigaleri
             </button>
             <button id="creator-btn" onclick="window.location.href='../'" title=" Kunjungi Affandy Murad">
                 🏠 Kembali ke Affandy Murad
@@ -1490,7 +1504,9 @@
             <div id="location-status">
                 <div class="coordinates-display"></div>
                 <div class="location-header" onclick="toggleLocationDetails()">
-                    <h3>Detail Lokasi</h3>
+                    <h3><img src="images/ic_nominatim.svg" alt="Wikigaleri"
+                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em; margin-bottom: 0.35em;">
+                        Detail Lokasi</h3>
                     <span class="toggle-icon collapsed">▶</span>
                 </div>
                 <div class="location-details hidden" id="location-details-content"></div>
@@ -1910,6 +1926,7 @@
             // Show progress
             resultsList.innerHTML = `
         <li class="progress-container">
+            <img src="images/ic_wikipedia.svg" alt="Wikipedia"  style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em; margin-right: 0.35em; margin-bottom: 0.35em;> 
             <div class="progress-text">Memuat detail artikel...</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
@@ -1955,11 +1972,20 @@
 
                 const link = document.createElement('a');
                 link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
-                link.textContent = article.title;
                 link.target = '_blank';
-                link.style.cssText = 'font-size:1.2rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
+                link.style.cssText = 'display:inline-flex; align-items:center; gap:0.4em; font-size:1.2rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
+
+                const iconImg = document.createElement('img');
+                iconImg.src = 'images/ic_wikipedia.svg';
+                iconImg.alt = '';
+                iconImg.style.cssText = 'width:1.3em; height:1.3em;';
+
+                link.appendChild(iconImg);           // ikon dulu
+                link.appendChild(document.createTextNode(article.title)); // baru teks
+
                 link.onmouseover = () => link.style.color = 'var(--secondary-color)';
                 link.onmouseout = () => link.style.color = 'var(--primary-color)';
+
                 titleWrapper.appendChild(link);
                 titleContainer.appendChild(titleWrapper);
 
@@ -2012,11 +2038,43 @@
                 // Wikidata
                 const wd = document.createElement('div');
                 wd.className = 'wikidata';
+                wd.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 0.45em;               /* jarak antara ikon dan teks */
+    font-size: 0.95rem;
+    margin-top: 0.4em;
+`;
+
+                // Ikon Wikidata
+                const wdIcon = document.createElement('img');
+                wdIcon.src = 'images/ic_wikidata.svg';   // pastikan file-nya ada
+                wdIcon.alt = 'Wikidata';
+                wdIcon.title = 'Wikidata';
+                wdIcon.style.cssText = `
+                width: 1.3em;
+                height: 1.3em;
+                flex-shrink: 0;
+            `;
+
+                // Teks + link Wikidata (dibungkus span supaya styling lebih mudah)
+                const wdText = document.createElement('span');
+
                 if (details.wikidataId) {
-                    wd.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
+                    wdText.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" 
+                                 target="_blank" 
+                                 style="color:var(--primary-color); text-decoration:underline;">
+                                 ${details.wikidataId}
+                               </a>`;
                 } else {
-                    wd.textContent = 'Wikidata: Tidak tersedia';
+                    wdText.textContent = 'Wikidata: Tidak tersedia';
+                    wdText.style.color = '#888';
                 }
+
+                // Urutan: ikon dulu → teks
+                wd.appendChild(wdIcon);
+                wd.appendChild(wdText);
+
                 detailsSection.appendChild(wd);
 
                 // Card Actions
@@ -2050,21 +2108,61 @@
                 const wiktDiv = document.createElement('div');
                 wiktDiv.className = 'wiktionary';
 
-                // Header dengan toggle
+                // Header dengan toggle + ikon
                 const wiktHeader = document.createElement('div');
                 wiktHeader.className = 'wiktionary-header';
+                wiktHeader.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 0.5em;                  /* jarak ikon ↔ teks ↔ toggle */
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0.8em 0 0.4em 0;
+`;
 
+                // === Ikon Wiktionary (diletakkan paling kiri) ===
+                const wiktIcon = document.createElement('img');
+                wiktIcon.src = 'images/ic_wiktionary.svg';   // pastikan file ada
+                wiktIcon.alt = 'Wiktionary';
+                wiktIcon.title = 'Wiktionary';
+                wiktIcon.style.cssText = `
+    width: 1.35em;
+    height: 1.35em;
+    flex-shrink: 0;
+`;
+
+                // === Teks judul ===
                 const wiktTitle = document.createElement('span');
                 wiktTitle.textContent = 'Wiktionary';
-                wiktHeader.appendChild(wiktTitle);
 
+                // === Toggle icon (panah ▼ / ▲) ===
                 const toggleIcon = document.createElement('span');
                 toggleIcon.className = 'wiktionary-toggle collapsed';
                 toggleIcon.textContent = '▼';
+                toggleIcon.style.marginLeft = 'auto';   // dorong ke kanan
+
+                // Event toggle (kalau belum ada di tempat lain)
+                wiktHeader.onclick = () => {
+                    const isCollapsed = toggleIcon.classList.toggle('collapsed');
+                    toggleIcon.textContent = isCollapsed ? '▼' : '▲';
+                    // contoh: toggle konten di bawahnya
+                    const content = wiktDiv.querySelector('.wiktionary-content');
+                    if (content) content.style.display = isCollapsed ? 'none' : 'block';
+                };
+
+                // Susun urutan: ikon → judul → toggle (di kanan)
+                wiktHeader.appendChild(wiktIcon);
+                wiktHeader.appendChild(wiktTitle);
                 wiktHeader.appendChild(toggleIcon);
 
                 wiktDiv.appendChild(wiktHeader);
 
+                // ... nanti tambahkan konten Wiktionary di sini kalau perlu
+
+                // Tambahkan ke dokumen
+                detailsSection.appendChild(wiktDiv);   // atau ke parent yang sesuai
                 // Container untuk tombol-tombol
                 const wiktButtons = document.createElement('div');
                 wiktButtons.className = 'wiktionary-buttons hidden';
@@ -2251,7 +2349,21 @@
 
                 if (part.type !== 'road' && part.type !== 'postcode') {
                     const wdBtn = document.createElement('button');
+
+                    // Buat elemen img untuk ikon
+                    const wdIcon = document.createElement('img');
+                    wdIcon.src = 'images/ic_wikidata.svg';
+                    wdIcon.alt = 'Wikidata';
+                    wdIcon.style.cssText = `
+                        width: 1.2em;
+                        height: 1.2em;
+                        vertical-align: middle;
+                        margin-left: 0.35em;
+                    `;
+
                     wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
+                    // Tambahkan ikon di depan teks
+                    wdBtn.prepend(wdIcon);  // ini yang penting!
                     wdBtn.onclick = () => {
                         if (part.wikidataId) {
                             window.open(`https://www.wikidata.org/wiki/${part.wikidataId}`, '_blank');
@@ -2262,7 +2374,18 @@
                     div.appendChild(wdBtn);
 
                     const wvBtn = document.createElement('button');
+                    // Buat elemen img untuk ikon
+                    const wdVyIcon = document.createElement('img');
+                    wdVyIcon.src = 'images/ic_wikivoyage.svg';
+                    wdVyIcon.alt = 'Wikivoyage';
+                    wdVyIcon.style.cssText = `
+                        width: 1.2em;
+                        height: 1.2em;
+                        vertical-align: middle;
+                        margin-left: 0.35em;
+                    `;
                     wvBtn.textContent = 'Wikivoyage';
+                    wvBtn.prepend(wdVyIcon);  // ini yang penting!
                     wvBtn.onclick = async () => {
                         if (part.wikidataId) {
                             const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
