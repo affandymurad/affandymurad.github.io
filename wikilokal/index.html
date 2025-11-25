@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wikilokal</title>
+    <link rel="icon" href="wikilokal.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <style>
@@ -992,16 +993,21 @@
         }
 
         .wiki-logo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            width: 64px;
+            /* diperbesar */
+            height: 64px;
+            /* diperbesar */
+            background-color: #F8F7F3;
+            /* warna belakang */
+            background-image: url('wikilokal.png');
+            /* atau '/wikilokal.png' */
+            background-size: 80%;
+            /* agar logo tidak kepotong */
+            background-position: center;
+            background-repeat: no-repeat;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
+            /* tetap bulat */
+            display: block;
             flex-shrink: 0;
         }
 
@@ -1423,7 +1429,7 @@
     <!-- Header dengan Logo -->
     <div class="header-top">
         <div class="header-left">
-            <div class="wiki-logo">W</div>
+            <div class="wiki-logo"></div>
             <div class="header-title">
                 <h1>Wikilokal</h1>
                 <p id="main-subtitle">Jelajahi Proyek Wikimedia (Wikipedia, Wikidata, Wikivoyage, Wiktionary, OSM) dalam
