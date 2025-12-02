@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -12,581 +12,402 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-body: #f8f9fa;
+            --bg-card: white;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --sunday: #e53e3e;
+            --holiday: #feb2b2;
+            --cuti: #fed7d7;
+            --today-bg: #c6f6d5;
+            --today-text: #2f855a;
+            --header-bg: #4a5568;
+            --header-text: white;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            --hover-bg: #f7fafc;
+            --info-bg: #f8fafc;
+            --info-border: #d1e4ff;
+            --datetime-bg: #f9fafb;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --hover-bg: #334155;
+            --info-bg: #1e293b;
+            --info-border: #334155;
+            --datetime-bg: #1e293b;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-body);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
-            transition: background 0.3s ease;
+            color: var(--text-primary);
+            transition: background-color 0.3s;
+        }
+
+        body.dark-theme {
+            color: var(--text-primary);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 30px;
-            color: #2c3e50;
-            font-size: 2.5em;
-            font-weight: 300;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: color 0.3s ease;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-
-        .month {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-        }
-
-        .month:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-        }
-
-        .month-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.4em;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .month-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-        }
-
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #6c757d;
-            font-size: 0.80em;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        .weekday {
-            padding: 12px 8px;
-            text-align: center;
-        }
-
-        .weekday:last-child {
-            border-right: none;
-        }
-
-        .days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: #e9ecef;
-            transition: background 0.3s ease;
-        }
-
-        .day {
-            background: white;
-            padding: 12px 8px;
-            text-align: center;
-            min-height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .day:hover {
-            background: #f8f9fa;
-        }
-
-        .day.other-month {
-            color: #ccc;
-            background: #f8f9fa;
-        }
-
-        .day.sunday {
-            color: #dc3545;
-            font-weight: 500;
-        }
-
-        .day.holiday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            font-weight: bold;
-            border-radius: 8px;
-            margin: 2px;
-        }
-
-        .day.cuti-bersama {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: #333;
-            font-weight: bold;
-            border-radius: 8px;
-            margin: 2px;
-        }
-
-        .day.today {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            font-weight: bold;
-            border-radius: 8px;
-            margin: 2px;
-            box-shadow: 0 0 0 2px #28a745, 0 0 15px rgba(40, 167, 69, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 2px #28a745, 0 0 15px rgba(40, 167, 69, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 0 2px #28a745, 0 0 25px rgba(40, 167, 69, 0.5);
-            }
-
-            100% {
-                box-shadow: 0 0 0 2px #28a745, 0 0 15px rgba(40, 167, 69, 0.3);
-            }
-        }
-
-        .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.8em;
-            white-space: normal;
-            max-width: 250px;
-            min-width: 120px;
-            text-align: center;
-            line-height: 1.4;
-            z-index: 1000;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            word-wrap: break-word;
-        }
-
-        .tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 6px solid transparent;
-            border-top-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .day:nth-child(-n+7) .tooltip {
-            bottom: auto;
-            top: 100%;
-            margin-bottom: 0;
-            margin-top: 8px;
-        }
-
-        .day:nth-child(-n+7) .tooltip::after {
-            top: auto;
-            bottom: 100%;
-            border-top-color: transparent;
-            border-bottom-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .day:nth-child(7n+1) .tooltip {
-            left: 0;
-            transform: translateX(0);
-        }
-
-        .day:nth-child(7n+1) .tooltip::after {
-            left: 20px;
-            transform: translateX(0);
-        }
-
-        .day:nth-child(7n) .tooltip {
-            left: auto;
-            right: 0;
-            transform: translateX(0);
-        }
-
-        .day:nth-child(7n) .tooltip::after {
-            left: auto;
-            right: 20px;
-            transform: translateX(0);
-        }
-
-        .day:hover .tooltip {
-            opacity: 1;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-            font-size: 0.85em;
-        }
-
-        .month-holidays {
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-            padding: 15px;
-            font-size: 0.85em;
-            line-height: 1.5;
-            transition: background 0.3s ease, border-color 0.3s ease;
-        }
-
-        .month-holidays h4 {
-            margin-bottom: 10px;
-            color: #495057;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: color 0.3s ease;
-        }
-
-        .holiday-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .holiday-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-            padding: 4px 0;
-        }
-
-        .holiday-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .holiday-date {
-            font-weight: 600;
-            color: #dc3545;
-            min-width: 35px;
-        }
-
-        .cuti-date {
-            font-weight: 600;
-            color: #fd7e14;
-            min-width: 35px;
-        }
-
-        .holiday-name {
-            color: #495057;
-            flex: 1;
-            transition: color 0.3s ease;
-        }
-
-        .no-holidays {
-            color: #6c757d;
-            font-style: italic;
-            text-align: center;
-            padding: 10px 0;
-            transition: color 0.3s ease;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-color {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-        }
-
-        .legend-holiday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-
-        .legend-cuti {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-        }
-
-        .legend-sunday {
-            background: #dc3545;
+            margin-bottom: 24px;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--text-primary);
         }
 
         .info {
+            background: var(--info-bg);
+            border: 1px solid var(--info-border);
+            border-radius: 12px;
+            padding: 18px;
             text-align: center;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-            color: #2c3e50;
-            transition: background 0.3s ease, color 0.3s ease;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            font-size: 0.95em;
+        }
+
+        .info a {
+            color: #3b82f6;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        body.dark-theme .info a {
+            color: #93c5fd;
         }
 
         .datetime-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 15px 0;
-            padding: 15px 20px;
-            background: rgba(102, 126, 234, 0.08);
-            border-radius: 10px;
-            color: #2c3e50;
-            font-size: 1.1em;
-            font-weight: 500;
-            transition: background 0.3s ease, color 0.3s ease;
-            gap: 20px;
+            background: var(--datetime-bg);
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
+            gap: 20px;
+            color: var(--text-primary);
+            font-weight: 600;
+            border: 1px solid var(--border-color);
         }
 
-        #currentDateTime {
-            flex: 1;
-            min-width: 300px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .dark-mode-toggle {
+        .control-buttons {
             display: flex;
-            align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
-        .toggle-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .control-btn {
+            padding: 10px 18px;
             border: none;
-            padding: 10px 20px;
             border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .toggle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .toggle-btn:active {
-            transform: translateY(0);
-        }
-
-        .scroll-today-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-        }
-
-        .theme-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .theme-select {
-            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            border: none;
-            padding: 10px 35px 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-        }
-
-        .theme-select:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .theme-select:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-        }
-
-        .theme-select option {
-            background: white;
-            color: #333;
-            padding: 12px 15px;
-            font-size: 0.95em;
-            line-height: 1.8;
-        }
-
-        .theme-dropdown::after {
-            content: '▼';
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: white;
-            font-size: 0.7em;
-        }
-
-        /* Dark mode styles */
-        body.dark-mode {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
-
-        body.dark-mode .container {
-            background: rgba(30, 30, 30, 0.95);
-            color: #e0e0e0;
-        }
-
-        body.dark-mode h1 {
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .month {
-            background: #2a2a2a;
-        }
-
-        body.dark-mode .weekdays {
-            background: #1f1f1f;
-            color: #a0a0a0;
-        }
-
-        body.dark-mode .days {
-            background: #3a3a3a;
-        }
-
-        body.dark-mode .day {
-            background: #2a2a2a;
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .day:hover {
-            background: #3a3a3a;
-        }
-
-        body.dark-mode .day.other-month {
-            background: #1f1f1f;
-            color: #555;
-        }
-
-        body.dark-mode .month-holidays {
-            background: #1f1f1f;
-            border-top-color: #3a3a3a;
-        }
-
-        body.dark-mode .month-holidays h4 {
-            color: #b0b0b0;
-        }
-
-        body.dark-mode .holiday-name {
-            color: #b0b0b0;
-        }
-
-        body.dark-mode .info {
-            background: rgba(102, 126, 234, 0.15);
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .info a {
-            color: #8b9cff !important;
-        }
-
-        body.dark-mode .datetime-container {
-            background: rgba(102, 126, 234, 0.12);
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .no-holidays {
-            color: #888;
-        }
-
-        /* Dark mode - keep holiday colors the same */
-        body.dark-mode .day.holiday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-        }
-
-        body.dark-mode .day.cuti-bersama {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: #333;
-        }
-
-        body.dark-mode .day.today {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-        }
-
-        body.dark-mode .theme-select option {
-            background: #2a2a2a;
-            color: #e0e0e0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .back-home-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #4a5568;
+        }
+
+        .scroll-today-btn {
+            background: #38a169;
         }
 
         .country-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #4a5568;
+        }
+
+        .control-btn:hover {
+            opacity: 0.9;
+        }
+
+        .theme-select {
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            min-width: 140px;
+        }
+
+        body.dark-theme .theme-select {
+            background: var(--bg-body);
+            border-color: var(--border-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .month {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .month:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .month-header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.3em;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 12px;
+            flex-wrap: wrap;
+            font-size: 0.85em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-holiday {
+            background: var(--holiday);
+        }
+
+        .legend-cuti {
+            background: var(--cuti);
+        }
+
+        .legend-sunday {
+            background: var(--sunday);
+        }
+
+        .legend-today {
+            background: var(--today-bg);
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--hover-bg);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            padding: 10px 0;
+        }
+
+        .weekday {
+            text-align: center;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+        }
+
+        .day {
+            background: var(--bg-card);
+            padding: 12px 8px;
+            text-align: center;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .day:hover {
+            background: var(--hover-bg);
+        }
+
+        .day.other-month {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .day.sunday {
+            color: var(--sunday);
+            font-weight: 600;
+        }
+
+        .day.holiday {
+            background: var(--holiday);
+            color: #9b2c2c;
+            font-weight: 600;
+            border-radius: 6px;
+            margin: 2px;
+        }
+
+        .day.cuti-bersama {
+            background: var(--cuti);
+            color: #9b2c2c;
+            font-weight: 600;
+            border-radius: 6px;
+            margin: 2px;
+        }
+
+        .day.today {
+            background: var(--today-bg);
+            color: var(--today-text);
+            font-weight: 700;
+            border-radius: 6px;
+            margin: 2px;
+            box-shadow: 0 0 0 2px #48bb78;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px #48bb78;
+            }
+
+            50% {
+                box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.3);
+            }
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #1a202c;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            max-width: 220px;
+            text-align: center;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 6px;
+            white-space: normal;
+            line-height: 1.3;
+        }
+
+        .day:hover .tooltip {
+            opacity: 1;
+        }
+
+        .month-holidays {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85em;
+        }
+
+        .month-holidays h4 {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .holiday-list {
+            list-style: none;
+        }
+
+        .holiday-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .holiday-date {
+            font-weight: 600;
+            color: var(--sunday);
+            min-width: 30px;
+        }
+
+        .cuti-date {
+            font-weight: 600;
+            color: #dd6b20;
+            min-width: 30px;
+        }
+
+        .holiday-name {
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .no-holidays {
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+            padding: 10px 0;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
             h1 {
-                font-size: 2em;
+                font-size: 1.8em;
             }
 
             .calendar-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
             }
 
-            .legend {
-                gap: 15px;
+            .datetime-container {
+                flex-direction: column;
+                text-align: center;
             }
 
-            .legend-item {
-                font-size: 0.8em;
+            .control-buttons {
+                width: 100%;
+                flex-direction: column;
             }
 
-            #currentDateTime {
-                min-width: 100%;
-                font-size: 0.9em;
+            .control-btn,
+            .theme-select {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -597,31 +418,31 @@
         <h1>Malaysia National and State Holidays for 2026</h1>
         <div class="info">
             <strong>15 national holidays</strong> and <strong>34 state holidays</strong> according to <a
-                href="https://www.kabinet.gov.my/storage/2025/08/HKA-2026.pdf" target="_blank"
-                style="color: #667eea; text-decoration: underline; font-weight: 600;">Cabinet of Malaysia official
-                release</a>. This calendar does not include replacement holidays.
+                href="https://www.kabinet.gov.my/storage/2025/08/HKA-2026.pdf" target="_blank">Cabinet of Malaysia
+                official release</a>.
+            This calendar does not include replacement holidays.
         </div>
 
         <div class="datetime-container">
             <div id="currentDateTime"></div>
-            <div class="dark-mode-toggle">
-                <button class="toggle-btn back-home-btn" id="backHomeBtn">🏠 Back to Affandy Murad</button>
-                <button class="toggle-btn scroll-today-btn" id="scrollTodayBtn">📅 Scroll ke Hari Ini</button>
-                <div class="theme-dropdown">
-                    <select class="theme-select" id="themeSelect">
-                        <option value="system">💻 System</option>
-                        <option value="light">☀️ Light</option>
-                        <option value="dark">🌙 Dark</option>
-                    </select>
-                </div>
-                <button class="toggle-btn country-btn" id="indonesiaBtn" onclick="window.location.href='../'">
-                    <img src="../flag/indonesia.svg" alt="Indonesia Flag"
-                        style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
+            <div class="control-buttons">
+                <button class="control-btn back-home-btn" id="backHomeBtn">
+                    🏠 Back to Affandy Murad
+                </button>
+                <button class="control-btn scroll-today-btn" id="scrollTodayBtn">
+                    📅 Scroll to Today
+                </button>
+                <select class="theme-select" id="themeSelect">
+                    <option value="system">💻 System</option>
+                    <option value="light">☀️ Light</option>
+                    <option value="dark">🌙 Dark</option>
+                </select>
+                <button class="control-btn country-btn" onclick="window.location.href='../'">
+                    <img src="../flag/indonesia.svg" alt="ID" style="width:20px;height:20px;">
                     Indonesia
                 </button>
-                <button class="toggle-btn country-btn" id="singaporeBtn" onclick="window.location.href='../sg'">
-                    <img src="../flag/singapore.svg" alt="Singapore Flag"
-                        style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
+                <button class="control-btn country-btn" onclick="window.location.href='../sg'">
+                    <img src="../flag/singapore.svg" alt="SG" style="width:20px;height:20px;">
                     Singapore
                 </button>
             </div>
@@ -631,8 +452,8 @@
     </div>
 
     <script>
+        // --- DATA ---
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
         const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         const holidays = {
@@ -644,9 +465,9 @@
             '2026-05-27': 'Hari Raya Haji (Eid al-Adha)',
             '2026-05-28': 'Hari Raya Haji (Day 2)',
             '2026-05-31': 'Wesak Day',
-            '2026-06-01': 'His Majesty the Yang di-Pertuan Agong\'s Official Birthday',
+            '2026-06-01': 'Yang di-Pertuan Agong\'s Birthday',
             '2026-06-17': 'Awal Muharram (Islamic New Year)',
-            '2026-08-25': 'Maulidur Rasul (Prophet Muhammad\'s Birthday)',
+            '2026-08-25': 'Maulidur Rasul',
             '2026-08-31': 'National Day',
             '2026-09-16': 'Malaysia Day',
             '2026-11-08': 'Deepavali (Diwali)',
@@ -655,386 +476,271 @@
 
         const cutiBersama = {
             '2026-01-01': ['New Year\'s Day: National except Johor, Kedah, Kelantan, Perlis, Terengganu'],
-            '2026-01-14': ['Birthday of the Yang di-Pertuan Besar of Negeri Sembilan: Negeri Sembilan only'],
-            '2026-01-17': ['Isra\' and Mi\'raj: Kedah, Negeri Sembilan, Perlis, Terengganu only'],
+            '2026-01-14': ['Yang di-Pertuan Besar Birthday: Negeri Sembilan'],
+            '2026-01-17': ['Isra\' and Mi\'raj: Kedah, Negeri Sembilan, Perlis, Terengganu'],
             '2026-02-01': [
-                'Federal Territory Day: Kuala Lumpur, Labuan, Putrajaya only',
-                'Thaipusam: Johor, Kuala Lumpur, Negeri Sembilan, Penang, Perak, Putrajaya, Selangor only'
+                'Federal Territory Day: KL, Labuan, Putrajaya',
+                'Thaipusam: Johor, KL, NS, Penang, Perak, Putrajaya, Selangor'
             ],
-            '2026-02-19': ['First Day of Ramadan: Johor, Kedah only'],
-            '2026-02-20': ['Declaration of Independence Date Anniversary: Melaka only'],
-            '2026-03-04': ['Anniversary of Sultan of Terengganu\'s Coronation: Terengganu only'],
-            '2026-03-07': ['Nuzul Al-Quran: Kelantan, Pahang, Perak, Perlis, Penang, Sabah, Sarawak, Selangor, Terengganu only'],
+            '2026-02-19': ['First Day of Ramadan: Johor, Kedah'],
+            '2026-02-20': ['Declaration of Independence Anniversary: Melaka'],
+            '2026-03-04': ['Sultan of Terengganu Coronation Anniversary'],
+            '2026-03-07': ['Nuzul Al-Quran: Kelantan, Pahang, Perak, Perlis, Penang, Sabah, Sarawak, Selangor, Terengganu'],
             '2026-03-23': [
-                'Birthday of the Sultan of Johor: Johor only',
-                'Hari Raya Aidilfitri (Day 3): Kelantan only'
+                'Sultan of Johor Birthday',
+                'Hari Raya Aidilfitri (Day 3): Kelantan'
             ],
-            '2026-03-30': ['Birthday of the Yang di-Pertua Negeri of Sabah: Sabah only'],
-            '2026-04-03': ['Good Friday: Sabah, Sarawak only'],
-            '2026-04-26': ['Birthday of the Sultan of Terengganu: Terengganu only'],
-            '2026-05-17': ['Raja of Perlis\' Birthday: Perlis only'],
-            '2026-05-22': ['Hol Day of the late Sultan Ahmad Shah of Pahang: Pahang only'],
-            '2026-05-26': ['Day of Arafah: Kelantan only'],
-            '2026-05-30': ['Harvest Festival (Kaamatan) Day 1: Sabah only'],
-            '2026-05-31': ['Harvest Festival (Kaamatan) Day 2: Sabah only'],
-            '2026-06-01': ['Gawai Dayak Festival Day 1: Sarawak only'],
-            '2026-06-02': ['Gawai Dayak Festival Day 2: Sarawak only'],
-            '2026-06-21': ['Birthday of the Sultan of Kedah: Kedah only'],
-            '2026-07-07': ['George Town World Heritage City Day: Penang only'],
-            '2026-07-11': ['Birthday of the Yang di-Pertua Negeri of Penang: Penang only'],
-            '2026-07-21': ['Hol Day of the late Sultan Iskandar of Johor: Johor only'],
-            '2026-07-22': ['Sarawak Independence Day: Sarawak only'],
-            '2026-07-31': ['Birthday of the Sultan of Pahang: Pahang only'],
-            '2026-08-24': ['Birthday of the Yang di-Pertua Negeri of Melaka: Melaka only'],
-            '2026-09-29': ['Birthday of the Sultan of Kelantan (Day 1): Kelantan only'],
-            '2026-09-30': ['Birthday of the Sultan of Kelantan (Day 2): Kelantan only'],
-            '2026-10-10': ['Birthday of the Yang di-Pertua Negeri of Sarawak: Sarawak only'],
-            '2026-11-06': ['Birthday of the Sultan of Perak: Perak only'],
-            '2026-12-11': ['Birthday of the Sultan of Selangor: Selangor only'],
-            '2026-12-24': ['Christmas Eve: Sabah only']
+            '2026-03-30': ['Yang di-Pertua Negeri of Sabah Birthday'],
+            '2026-04-03': ['Good Friday: Sabah, Sarawak'],
+            '2026-04-26': ['Sultan of Terengganu Birthday'],
+            '2026-05-17': ['Raja of Perlis Birthday'],
+            '2026-05-22': ['Late Sultan Ahmad Shah Hol Day: Pahang'],
+            '2026-05-26': ['Day of Arafah: Kelantan'],
+            '2026-05-30': ['Kaamatan Day 1: Sabah'],
+            '2026-05-31': ['Kaamatan Day 2: Sabah'],
+            '2026-06-01': ['Gawai Dayak Day 1: Sarawak'],
+            '2026-06-02': ['Gawai Dayak Day 2: Sarawak'],
+            '2026-06-21': ['Sultan of Kedah Birthday'],
+            '2026-07-07': ['George Town Heritage Day: Penang'],
+            '2026-07-11': ['Yang di-Pertua Negeri of Penang Birthday'],
+            '2026-07-21': ['Late Sultan Iskandar Hol Day: Johor'],
+            '2026-07-22': ['Sarawak Independence Day'],
+            '2026-07-31': ['Sultan of Pahang Birthday'],
+            '2026-08-24': ['Yang di-Pertua Negeri of Melaka Birthday'],
+            '2026-09-29': ['Sultan of Kelantan Birthday (Day 1)'],
+            '2026-09-30': ['Sultan of Kelantan Birthday (Day 2)'],
+            '2026-10-10': ['Yang di-Pertua Negeri of Sarawak Birthday'],
+            '2026-11-06': ['Sultan of Perak Birthday'],
+            '2026-12-11': ['Sultan of Selangor Birthday'],
+            '2026-12-24': ['Christmas Eve: Sabah']
         };
-        function getDaysInMonth(year, month) {
-            return new Date(year, month + 1, 0).getDate();
-        }
 
-        function getFirstDayOfMonth(year, month) {
-            return new Date(year, month, 1).getDay();
-        }
+        // --- UTILS ---
+        const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+        const getFirstDayOfMonth = (y, m) => new Date(y, m, 1).getDay();
+        const formatDate = (y, m, d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
-        function formatDate(year, month, day) {
-            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        }
-
+        // --- CALENDAR RENDER ---
         function createMonth(year, month) {
             const monthDiv = document.createElement('div');
             monthDiv.className = 'month';
-
-            const header = document.createElement('div');
-            header.className = 'month-header';
-            header.textContent = `${months[month]} ${year}`;
-
-            const legend = document.createElement('div');
-            legend.className = 'legend';
-            legend.innerHTML = `
-                <div class="legend-item">
-                    <div class="legend-color legend-holiday"></div>
-                    <span>National Holiday</span>
+            monthDiv.innerHTML = `
+                <div class="month-header">${months[month]} ${year}</div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color legend-holiday"></div><span>National Holiday</span></div>
+                    <div class="legend-item"><div class="legend-color legend-cuti"></div><span>State Holiday</span></div>
+                    <div class="legend-item"><div class="legend-color legend-sunday"></div><span>Sunday</span></div>
+                    <div class="legend-item"><div class="legend-color legend-today"></div><span>Today</span></div>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color legend-cuti"></div>
-                    <span>State Holiday</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color legend-sunday"></div>
-                    <span>Sunday</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #28a745, #20c997);"></div>
-                    <span>Today</span>
-                </div>
+                <div class="weekdays">${weekdays.map(w => `<div class="weekday">${w}</div>`).join('')}</div>
+                <div class="days"></div>
             `;
 
-            const weekdaysDiv = document.createElement('div');
-            weekdaysDiv.className = 'weekdays';
-            weekdays.forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'weekday';
-                dayDiv.textContent = day;
-                weekdaysDiv.appendChild(dayDiv);
-            });
-
-            const daysDiv = document.createElement('div');
-            daysDiv.className = 'days';
-
+            const daysDiv = monthDiv.querySelector('.days');
             const daysInMonth = getDaysInMonth(year, month);
             const firstDay = getFirstDayOfMonth(year, month);
             const daysInPrevMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
 
             for (let i = firstDay - 1; i >= 0; i--) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day other-month';
-                dayDiv.textContent = daysInPrevMonth - i;
-                daysDiv.appendChild(dayDiv);
+                const d = document.createElement('div');
+                d.className = 'day other-month';
+                d.textContent = daysInPrevMonth - i;
+                daysDiv.appendChild(d);
             }
 
             for (let day = 1; day <= daysInMonth; day++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day';
-                dayDiv.textContent = day;
+                const d = document.createElement('div');
+                d.className = 'day';
+                d.textContent = day;
 
                 const today = new Date();
-                const isToday = year === today.getFullYear() &&
-                    month === today.getMonth() &&
-                    day === today.getDate();
-
+                const isToday = year === today.getFullYear() && month === today.getMonth() && day === today.getDate();
                 if (isToday) {
-                    dayDiv.classList.add('today');
-                    dayDiv.id = 'today-date';
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = 'Hari Ini';
-                    dayDiv.appendChild(tooltip);
+                    d.classList.add('today');
+                    d.id = 'today-date';
+                    const t = document.createElement('div');
+                    t.className = 'tooltip';
+                    t.textContent = 'Today';
+                    d.appendChild(t);
                 }
 
-                const dateString = formatDate(year, month, day);
-                const dayOfWeek = new Date(year, month, day).getDay();
+                const ds = formatDate(year, month, day);
+                const dow = new Date(year, month, day).getDay();
+                if (dow === 0) d.classList.add('sunday');
 
-                if (dayOfWeek === 0) {
-                    dayDiv.classList.add('sunday');
+                if (holidays[ds]) d.classList.add('holiday');
+                if (cutiBersama[ds]) d.classList.add('cuti-bersama');
+
+                if (holidays[ds] || cutiBersama[ds]) {
+                    const t = document.createElement('div');
+                    t.className = 'tooltip';
+                    let text = '';
+                    if (holidays[ds]) text += holidays[ds];
+                    if (cutiBersama[ds]) text += (text ? '<br><br>' : '') + cutiBersama[ds].join('<br>');
+                    t.innerHTML = text;
+                    d.appendChild(t);
                 }
 
-                if (holidays[dateString] && cutiBersama[dateString]) {
-                    // Jika tanggal ada di keduanya
-                    dayDiv.classList.add('holiday', 'cuti-bersama');
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    const cutiList = Array.isArray(cutiBersama[dateString]) ? cutiBersama[dateString] : [cutiBersama[dateString]];
-                    tooltip.innerHTML = `<strong>${holidays[dateString]}</strong><br><br>${cutiList.join('<br><br>')}`;
-                    dayDiv.appendChild(tooltip);
-                } else if (holidays[dateString]) {
-                    dayDiv.classList.add('holiday');
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = holidays[dateString];
-                    dayDiv.appendChild(tooltip);
-                } else if (cutiBersama[dateString]) {
-                    dayDiv.classList.add('cuti-bersama');
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.innerHTML = cutiBersama[dateString].join('<br><br>');
-                    dayDiv.appendChild(tooltip);
-                }
-
-                daysDiv.appendChild(dayDiv);
+                daysDiv.appendChild(d);
             }
 
             const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-            const remainingCells = totalCells - (firstDay + daysInMonth);
-
-            for (let day = 1; day <= remainingCells; day++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day other-month';
-                dayDiv.textContent = day;
-                daysDiv.appendChild(dayDiv);
+            const remaining = totalCells - (firstDay + daysInMonth);
+            for (let i = 1; i <= remaining; i++) {
+                const d = document.createElement('div');
+                d.className = 'day other-month';
+                d.textContent = i;
+                daysDiv.appendChild(d);
             }
 
-            const monthHolidaysDiv = createMonthHolidaysList(year, month);
-
-            monthDiv.appendChild(header);
-            monthDiv.appendChild(legend);
-            monthDiv.appendChild(weekdaysDiv);
-            monthDiv.appendChild(daysDiv);
-            monthDiv.appendChild(monthHolidaysDiv);
-
+            monthDiv.appendChild(createMonthHolidaysList(year, month));
             return monthDiv;
         }
 
         function createMonthHolidaysList(year, month) {
-            const holidaysDiv = document.createElement('div');
-            holidaysDiv.className = 'month-holidays';
-
+            const div = document.createElement('div');
+            div.className = 'month-holidays';
             const title = document.createElement('h4');
-            title.textContent = 'National Holiday & State Holiday Information';
+            title.textContent = 'National & State Holiday Information';
+            div.appendChild(title);
 
-            const holidaysList = document.createElement('ul');
-            holidaysList.className = 'holiday-list';
+            const list = document.createElement('ul');
+            list.className = 'holiday-list';
+            let has = false;
 
-            let hasHolidays = false;
-            const addedDates = new Set(); // Track dates we've already added
-
-            // First add national holidays
-            for (const [dateStr, name] of Object.entries(holidays)) {
-                const date = new Date(dateStr);
-                if (date.getFullYear() === year && date.getMonth() === month) {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'holiday-item';
-
-                    const dateSpan = document.createElement('span');
-                    dateSpan.className = 'holiday-date';
-                    dateSpan.textContent = date.getDate();
-
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'holiday-name';
-                    nameSpan.textContent = name;
-
-                    listItem.appendChild(dateSpan);
-                    listItem.appendChild(nameSpan);
-                    holidaysList.appendChild(listItem);
-                    hasHolidays = true;
-                    addedDates.add(dateStr); // Mark this date as added
-                }
-            }
-
-            // Then add state holidays (cuti bersama) only if not already added as national holiday
-            for (const [dateStr, names] of Object.entries(cutiBersama)) {
-                const date = new Date(dateStr);
-                if (date.getFullYear() === year && date.getMonth() === month) {
-                    // Handle array of names (multiple state holidays on same date)
-                    const holidayNames = Array.isArray(names) ? names : [names];
-
-                    holidayNames.forEach(name => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'holiday-item';
-
-                        const dateSpan = document.createElement('span');
-                        dateSpan.className = 'cuti-date';
-                        dateSpan.textContent = date.getDate();
-
+            const addHoliday = (dateStr, names, isCuti = false) => {
+                const d = new Date(dateStr);
+                if (d.getFullYear() === year && d.getMonth() === month) {
+                    (Array.isArray(names) ? names : [names]).forEach(name => {
+                        const li = document.createElement('li');
+                        li.className = 'holiday-item';
+                        const span = document.createElement('span');
+                        span.className = isCuti ? 'cuti-date' : 'holiday-date';
+                        span.textContent = d.getDate();
                         const nameSpan = document.createElement('span');
                         nameSpan.className = 'holiday-name';
                         nameSpan.textContent = name;
-
-                        listItem.appendChild(dateSpan);
-                        listItem.appendChild(nameSpan);
-                        holidaysList.appendChild(listItem);
-                        hasHolidays = true;
+                        li.appendChild(span);
+                        li.appendChild(nameSpan);
+                        list.appendChild(li);
+                        has = true;
                     });
                 }
-            }
+            };
 
-            if (!hasHolidays) {
-                const noHolidays = document.createElement('div');
-                noHolidays.className = 'no-holidays';
-                noHolidays.textContent = 'There are no public holidays or replacement holidays';
-                holidaysDiv.appendChild(title);
-                holidaysDiv.appendChild(noHolidays);
-            } else {
-                const items = Array.from(holidaysList.children);
+            Object.entries(holidays).forEach(([d, n]) => addHoliday(d, n, false));
+            Object.entries(cutiBersama).forEach(([d, n]) => addHoliday(d, n, true));
+
+            if (has) {
+                const items = Array.from(list.children);
                 items.sort((a, b) => {
-                    const dateA = parseInt(a.querySelector('.holiday-date, .cuti-date').textContent);
-                    const dateB = parseInt(b.querySelector('.holiday-date, .cuti-date').textContent);
-                    return dateA - dateB;
+                    const aD = parseInt(a.querySelector('.holiday-date, .cuti-date').textContent);
+                    const bD = parseInt(b.querySelector('.holiday-date, .cuti-date').textContent);
+                    return aD - bD;
                 });
-
-                holidaysList.innerHTML = '';
-                items.forEach(item => holidaysList.appendChild(item));
-
-                holidaysDiv.appendChild(title);
-                holidaysDiv.appendChild(holidaysList);
+                list.innerHTML = '';
+                items.forEach(i => list.appendChild(i));
+                div.appendChild(list);
+            } else {
+                const no = document.createElement('div');
+                no.className = 'no-holidays';
+                no.textContent = 'There are no public holidays or replacement holidays';
+                div.appendChild(no);
             }
 
-            return holidaysDiv;
+            return div;
         }
 
         function createCalendar() {
-            const calendar = document.getElementById('calendar');
-            const year = 2026;
-
-            for (let month = 0; month < 12; month++) {
-                calendar.appendChild(createMonth(year, month));
+            const cal = document.getElementById('calendar');
+            cal.innerHTML = '';
+            for (let m = 0; m < 12; m++) {
+                cal.appendChild(createMonth(2026, m));
             }
         }
 
+        // --- DATE & TIME ---
         function updateDateTime() {
             const now = new Date();
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
+            const monthsFull = months;
             const dayName = days[now.getDay()];
             const date = now.getDate();
-            const monthName = monthNames[now.getMonth()];
+            const monthName = monthsFull[now.getMonth()];
             const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
             const offset = -now.getTimezoneOffset();
-            const gmtOffset = (offset >= 0 ? '+' : '-') + Math.abs(Math.floor(offset / 60));
-
-            const dateTimeString = `${dayName}, ${date} ${monthName} ${year} ${hours}:${minutes}:${seconds} (GMT ${gmtOffset})`;
-            document.getElementById('currentDateTime').textContent = dateTimeString;
+            const gmt = (offset >= 0 ? '+' : '-') + Math.abs(Math.floor(offset / 60)).toString().padStart(2, '0');
+            document.getElementById('currentDateTime').textContent =
+                `${dayName}, ${date} ${monthName} ${year} ${h}:${m}:${s} (GMT ${gmt})`;
         }
 
-        createCalendar();
-
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-
-        // Scroll to today button
-        const scrollTodayBtn = document.getElementById('scrollTodayBtn');
-        scrollTodayBtn.addEventListener('click', () => {
-            const todayElement = document.getElementById('today-date');
-            if (todayElement) {
-                todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                // Add temporary highlight animation
-                todayElement.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    todayElement.style.transform = 'scale(1)';
-                }, 300);
+        // --- SCROLL TO TODAY ---
+        function setupScrollToday() {
+            const btn = document.getElementById('scrollTodayBtn');
+            if (new Date().getFullYear() !== 2026) {
+                btn.style.display = 'none';
+                return;
             }
-        });
-
-        const themeSelect = document.getElementById('themeSelect');
-
-        // Theme management with memory storage
-        let themeMode = 'system'; // default
-        const savedTheme = document.cookie.split('; ').find(row => row.startsWith('theme='));
-
-        if (savedTheme) {
-            themeMode = savedTheme.split('=')[1];
-        }
-
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else if (theme === 'light') {
-                document.body.classList.remove('dark-mode');
-            } else { // system
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (prefersDark) {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
-            }
-        }
-
-        // Set initial theme
-        themeSelect.value = themeMode;
-        applyTheme(themeMode);
-
-        themeSelect.addEventListener('change', (e) => {
-            themeMode = e.target.value;
-            applyTheme(themeMode);
-
-            // Save to cookie (expires in 365 days)
-            const expiryDate = new Date();
-            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-            document.cookie = `theme=${themeMode}; expires=${expiryDate.toUTCString()}; path=/`;
-        });
-
-        // Listen for system dark mode changes (only if theme is set to system)
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (themeMode === 'system') {
-                applyTheme('system');
-            }
-        });
-
-        const backHomeBtn = document.getElementById('backHomeBtn');
-        backHomeBtn.addEventListener('click', () => {
-            window.location.href = '../../';
-        });
-
-        // Scroll to today button - only show if current year is 2026
-        const currentYear = new Date().getFullYear();
-
-        if (currentYear === 2026) {
-            scrollTodayBtn.addEventListener('click', () => {
-                const todayElement = document.getElementById('today-date');
-                if (todayElement) {
-                    todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                    // Add temporary highlight animation
-                    todayElement.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        todayElement.style.transform = 'scale(1)';
-                    }, 300);
+            btn.addEventListener('click', () => {
+                const el = document.getElementById('today-date');
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.style.transform = 'scale(1.2)';
+                    setTimeout(() => el.style.transform = 'scale(1)', 300);
                 }
             });
-        } else {
-            scrollTodayBtn.style.display = 'none';
         }
+
+        // --- THEME ---
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.body.classList.toggle('dark-theme', theme === 'dark');
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('calendarTheme') || 'system';
+            const select = document.getElementById('themeSelect');
+            select.value = saved;
+
+            if (saved === 'system') {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(isDark ? 'dark' : 'light');
+            } else {
+                applyTheme(saved);
+            }
+
+            select.addEventListener('change', (e) => {
+                const val = e.target.value;
+                localStorage.setItem('calendarTheme', val);
+                if (val === 'system') {
+                    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    applyTheme(isDark ? 'dark' : 'light');
+                } else {
+                    applyTheme(val);
+                }
+            });
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (select.value === 'system') {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+
+        // --- NAVIGATION ---
+        document.getElementById('backHomeBtn').addEventListener('click', () => {
+            window.location.href = '../';
+        });
+
+        // --- INIT ---
+        createCalendar();
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        setupScrollToday();
+        initTheme();
     </script>
 </body>
 

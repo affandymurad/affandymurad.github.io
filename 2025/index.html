@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -12,194 +12,305 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-body: #f8f9fa;
+            --bg-card: white;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --sunday: #e53e3e;
+            --holiday: #feb2b2;
+            --cuti: #fed7d7;
+            --today-bg: #c6f6d5;
+            --today-text: #2f855a;
+            --header-bg: #4a5568;
+            --header-text: white;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            --hover-bg: #f7fafc;
+            --info-bg: #f8fafc;
+            --info-border: #dbeafe;
+            --datetime-bg: #f9fafb;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --hover-bg: #334155;
+            --info-bg: #1e293b;
+            --info-border: #334155;
+            --datetime-bg: #1e293b;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-body);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
-            transition: background 0.3s ease;
+            color: var(--text-primary);
+            transition: background-color 0.3s;
+        }
+
+        body.dark-theme {
+            color: var(--text-primary);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 30px;
-            color: #2c3e50;
-            font-size: 2.5em;
-            font-weight: 300;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: color 0.3s ease;
+            margin-bottom: 24px;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .info {
+            background: var(--info-bg);
+            border: 1px solid var(--info-border);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            font-size: 0.95em;
+        }
+
+        .info a {
+            color: #3b82f6;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        body.dark-theme .info a {
+            color: #93c5fd;
+        }
+
+        .datetime-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--datetime-bg);
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .back-home-btn {
+            background: #4a5568;
+        }
+
+        .scroll-today-btn {
+            background: #38a169;
+        }
+
+        .control-btn:hover {
+            opacity: 0.9;
         }
 
         .calendar-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
         }
 
         .month {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            /* HAPUS overflow: hidden agar tooltip tidak terpotong */
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .month:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
         }
 
         .month-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 16px;
             text-align: center;
-            font-size: 1.4em;
-            font-weight: 500;
-            position: relative;
+            font-weight: 600;
+            font-size: 1.3em;
         }
 
-        .month-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 12px;
+            flex-wrap: wrap;
+            font-size: 0.85em;
+            border-bottom: 1px solid var(--border-color);
         }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-holiday {
+            background: var(--holiday);
+        }
+
+        .legend-cuti {
+            background: var(--cuti);
+        }
+
+        .legend-sunday {
+            background: var(--sunday);
+        }
+
+        .legend-today {
+            background: var(--today-bg);
+        }
+
+        /* ← SOLID, bukan gradient */
 
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            background: #f8f9fa;
+            background: var(--hover-bg);
             font-weight: 600;
-            color: #6c757d;
+            color: var(--text-secondary);
             font-size: 0.85em;
-            transition: background 0.3s ease, color 0.3s ease;
+            padding: 10px 0;
         }
 
         .weekday {
-            padding: 12px 8px;
             text-align: center;
-            border-right: 1px solid #e9ecef;
-        }
-
-        .weekday:last-child {
-            border-right: none;
         }
 
         .days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 1px;
-            background: #e9ecef;
-            transition: background 0.3s ease;
+            background: var(--border-color);
         }
 
         .day {
-            background: white;
+            background: var(--bg-card);
             padding: 12px 8px;
             text-align: center;
-            min-height: 45px;
+            min-height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.9em;
             cursor: pointer;
-            transition: all 0.2s ease;
             position: relative;
+            transition: background 0.2s;
         }
 
         .day:hover {
-            background: #f8f9fa;
+            background: var(--hover-bg);
         }
 
         .day.other-month {
-            color: #ccc;
-            background: #f8f9fa;
+            color: var(--text-secondary);
+            opacity: 0.6;
         }
 
         .day.sunday {
-            color: #dc3545;
-            font-weight: 500;
+            color: var(--sunday);
+            font-weight: 600;
         }
 
         .day.holiday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            font-weight: bold;
-            border-radius: 8px;
+            background: var(--holiday);
+            color: #9b2c2c;
+            font-weight: 600;
+            border-radius: 6px;
             margin: 2px;
         }
 
         .day.cuti-bersama {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: #333;
-            font-weight: bold;
-            border-radius: 8px;
+            background: var(--cuti);
+            color: #9b2c2c;
+            font-weight: 600;
+            border-radius: 6px;
             margin: 2px;
         }
 
         .day.today {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            font-weight: bold;
-            border-radius: 8px;
+            background: var(--today-bg);
+            color: var(--today-text);
+            font-weight: 700;
+            border-radius: 6px;
             margin: 2px;
-            box-shadow: 0 0 0 2px #28a745, 0 0 15px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 0 0 2px #48bb78;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 2px #28a745, 0 0 15px rgba(40, 167, 69, 0.3);
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px #48bb78;
             }
 
             50% {
-                box-shadow: 0 0 0 2px #28a745, 0 0 25px rgba(40, 167, 69, 0.5);
-            }
-
-            100% {
-                box-shadow: 0 0 0 2px #28a745, 0 0 15px rgba(40, 167, 69, 0.3);
+                box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.3);
             }
         }
 
         .tooltip {
             position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.8em;
-            white-space: normal;
-            max-width: 250px;
-            min-width: 120px;
-            text-align: center;
-            line-height: 1.4;
-            z-index: 1000;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
             bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
+            background: #1a202c;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            max-width: 200px;
+            text-align: center;
+            z-index: 10000;
+            /* ← sangat tinggi */
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
             margin-bottom: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            word-wrap: break-word;
+            white-space: normal;
+            line-height: 1.3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .tooltip::after {
@@ -208,226 +319,66 @@
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
-            border: 6px solid transparent;
-            border-top-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .day:nth-child(-n+7) .tooltip {
-            bottom: auto;
-            top: 100%;
-            margin-bottom: 0;
-            margin-top: 8px;
-        }
-
-        .day:nth-child(-n+7) .tooltip::after {
-            top: auto;
-            bottom: 100%;
-            border-top-color: transparent;
-            border-bottom-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .day:nth-child(7n+1) .tooltip {
-            left: 0;
-            transform: translateX(0);
-        }
-
-        .day:nth-child(7n+1) .tooltip::after {
-            left: 20px;
-            transform: translateX(0);
-        }
-
-        .day:nth-child(7n) .tooltip {
-            left: auto;
-            right: 0;
-            transform: translateX(0);
-        }
-
-        .day:nth-child(7n) .tooltip::after {
-            left: auto;
-            right: 20px;
-            transform: translateX(0);
+            border: 5px solid transparent;
+            border-top-color: #1a202c;
         }
 
         .day:hover .tooltip {
             opacity: 1;
         }
 
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-            font-size: 0.85em;
-        }
-
         .month-holidays {
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-            padding: 15px;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
             font-size: 0.85em;
-            line-height: 1.5;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .month-holidays h4 {
             margin-bottom: 10px;
-            color: #495057;
+            color: var(--text-secondary);
             font-weight: 600;
-            font-size: 0.9em;
-            transition: color 0.3s ease;
         }
 
         .holiday-list {
             list-style: none;
-            margin: 0;
-            padding: 0;
         }
 
         .holiday-item {
             display: flex;
-            align-items: center;
             gap: 8px;
             margin-bottom: 6px;
-            padding: 4px 0;
-        }
-
-        .holiday-item:last-child {
-            margin-bottom: 0;
         }
 
         .holiday-date {
             font-weight: 600;
-            color: #dc3545;
-            min-width: 35px;
+            color: var(--sunday);
+            min-width: 30px;
         }
 
         .cuti-date {
             font-weight: 600;
-            color: #fd7e14;
-            min-width: 35px;
+            color: #dd6b20;
+            min-width: 30px;
         }
 
         .holiday-name {
-            color: #495057;
+            color: var(--text-primary);
             flex: 1;
-            transition: color 0.3s ease;
         }
 
         .no-holidays {
-            color: #6c757d;
+            color: var(--text-secondary);
             font-style: italic;
             text-align: center;
             padding: 10px 0;
-            transition: color 0.3s ease;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-color {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-        }
-
-        .legend-holiday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-
-        .legend-cuti {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-        }
-
-        .legend-sunday {
-            background: #dc3545;
-        }
-
-        .info {
-            text-align: center;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-            color: #2c3e50;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        /* CSS - Update styling datetime-container dan tambahkan dropdown */
-        .datetime-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 15px 0;
-            padding: 15px 25px;
-            background: rgba(102, 126, 234, 0.08);
-            border-radius: 10px;
-            color: #2c3e50;
-            font-size: 1.1em;
-            font-weight: 500;
-            transition: background 0.3s ease, color 0.3s ease;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        #currentDateTime {
-            flex: 0 0 auto;
-        }
-
-        .control-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .control-btn {
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            color: white;
-        }
-
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .control-btn:active {
-            transform: translateY(0);
-        }
-
-        .back-home-btn {
-            background: linear-gradient(135deg, #e91e63, #9c27b0);
-        }
-
-        .scroll-today-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-        }
-
-        .theme-dropdown {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .theme-label {
-            font-size: 0.9em;
-            font-weight: 500;
-            color: #2c3e50;
-            transition: color 0.3s ease;
-        }
-
+        /* Dropdown styling */
         .dropdown-wrapper {
             position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .dropdown-btn {
@@ -435,57 +386,32 @@
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--header-bg);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.9em;
-            font-weight: 500;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            min-width: 130px;
+            font-weight: 600;
+            transition: background 0.2s ease;
         }
 
         .dropdown-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .dropdown-btn:active {
-            transform: translateY(0);
-        }
-
-        .theme-icon {
-            font-size: 1.1em;
-        }
-
-        .theme-text {
-            flex: 1;
-            text-align: left;
-        }
-
-        .dropdown-arrow {
-            font-size: 0.7em;
-            transition: transform 0.3s ease;
-        }
-
-        .dropdown-wrapper.active .dropdown-arrow {
-            transform: rotate(180deg);
+            opacity: 0.9;
         }
 
         .dropdown-menu {
             position: absolute;
-            top: calc(100% + 8px);
+            top: calc(100% + 6px);
             right: 0;
-            background: white;
+            background: var(--bg-card);
             border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             overflow: hidden;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            transform: translateY(-8px);
+            transition: all 0.25s ease;
             z-index: 1000;
             min-width: 150px;
         }
@@ -500,189 +426,53 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 16px;
+            padding: 10px 16px;
             cursor: pointer;
-            transition: background 0.2s ease;
-            color: #2c3e50;
+            color: var(--text-primary);
             font-size: 0.9em;
+            transition: background 0.2s ease;
         }
 
         .dropdown-item:hover {
-            background: rgba(102, 126, 234, 0.1);
+            background: var(--hover-bg);
         }
 
         .dropdown-item.active {
-            background: rgba(102, 126, 234, 0.15);
+            background: var(--hover-bg);
             font-weight: 600;
         }
 
-        .item-icon {
-            font-size: 1.1em;
+        body.dark-theme .dropdown-item {
+            color: var(--text-primary);
         }
 
-        /* Dark mode styles */
-        body.dark-mode {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
-
-        body.dark-mode .container {
-            background: rgba(30, 30, 30, 0.95);
-            color: #e0e0e0;
-        }
-
-        body.dark-mode h1 {
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .month {
-            background: #2a2a2a;
-        }
-
-        body.dark-mode .weekdays {
-            background: #1f1f1f;
-            color: #a0a0a0;
-        }
-
-        body.dark-mode .days {
-            background: #3a3a3a;
-        }
-
-        body.dark-mode .day {
-            background: #2a2a2a;
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .day:hover {
-            background: #3a3a3a;
-        }
-
-        body.dark-mode .day.other-month {
-            background: #1f1f1f;
-            color: #555;
-        }
-
-        body.dark-mode .month-holidays {
-            background: #1f1f1f;
-            border-top-color: #3a3a3a;
-        }
-
-        body.dark-mode .month-holidays h4 {
-            color: #b0b0b0;
-        }
-
-        body.dark-mode .holiday-name {
-            color: #b0b0b0;
-        }
-
-        body.dark-mode .info {
-            background: rgba(102, 126, 234, 0.15);
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .info a {
-            color: #8b9cff !important;
-        }
-
-        body.dark-mode .datetime-container {
-            background: rgba(102, 126, 234, 0.12);
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .theme-label {
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .dropdown-menu {
-            background: #2a2a2a;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-
-        body.dark-mode .dropdown-item {
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .dropdown-item:hover {
-            background: rgba(102, 126, 234, 0.2);
-        }
-
-        body.dark-mode .dropdown-item.active {
-            background: rgba(102, 126, 234, 0.25);
-        }
-
-        body.dark-mode .no-holidays {
-            color: #888;
-        }
-
-        /* Dark mode - keep holiday colors the same */
-        body.dark-mode .day.holiday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-        }
-
-        body.dark-mode .day.cuti-bersama {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: #333;
-        }
-
-        body.dark-mode .day.today {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-        }
-
-        .back-home-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        body.dark-theme .dropdown-item:hover,
+        body.dark-theme .dropdown-item.active {
+            background: #334155;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
             h1 {
-                font-size: 2em;
+                font-size: 1.8em;
             }
 
             .calendar-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .legend {
-                gap: 15px;
-            }
-
-            .legend-item {
-                font-size: 0.8em;
             }
 
             .datetime-container {
                 flex-direction: column;
-                align-items: stretch;
                 text-align: center;
             }
 
-            #currentDateTime {
-                margin-bottom: 10px;
-            }
-
             .control-buttons {
+                width: 100%;
                 flex-direction: column;
-                width: 100%;
             }
 
-            .control-btn,
-            .theme-dropdown {
+            .control-btn {
                 width: 100%;
-            }
-
-            .dropdown-btn {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .dropdown-menu {
-                right: 0;
-                left: 0;
+                justify-content: center;
             }
         }
     </style>
@@ -694,8 +484,7 @@
         <div class="info">
             <strong>17 Hari Libur Nasional</strong> dan <strong>8 Hari Cuti Bersama</strong> berdasarkan <a
                 href="https://www.kemenkopmk.go.id/sites/default/files/artikel/2025-08/SKB%20Perubahan%20Libur%20Nasional%20dan%20Cuti%20Bersama%20Tahun%202025.pdf"
-                target="_blank" style="color: #667eea; text-decoration: underline; font-weight: 600;">SKB Tiga
-                Menteri</a>
+                target="_blank">SKB Tiga Menteri</a>
         </div>
 
         <div class="datetime-container">
@@ -707,27 +496,24 @@
                 <button class="control-btn scroll-today-btn" id="scrollTodayBtn">
                     📅 Scroll ke Hari Ini
                 </button>
-                <div class="theme-dropdown">
-                    <span class="theme-label">Tema:</span>
-                    <div class="dropdown-wrapper">
-                        <button class="dropdown-btn" id="themeDropdown">
-                            <span class="theme-icon" id="themeIcon">🌙</span>
-                            <span class="theme-text" id="themeText">Gelap</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" id="dropdownMenu">
-                            <div class="dropdown-item" data-theme="system">
-                                <span class="item-icon">💻</span>
-                                <span>Sistem</span>
-                            </div>
-                            <div class="dropdown-item" data-theme="light">
-                                <span class="item-icon">☀️</span>
-                                <span>Terang</span>
-                            </div>
-                            <div class="dropdown-item" data-theme="dark">
-                                <span class="item-icon">🌙</span>
-                                <span>Gelap</span>
-                            </div>
+                <div class="dropdown-wrapper">
+                    <button class="dropdown-btn" id="themeDropdown">
+                        <span class="theme-icon" id="themeIcon">🌙</span>
+                        <span class="theme-text" id="themeText">Gelap</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item" data-theme="system">
+                            <span class="item-icon">💻</span>
+                            <span>Sistem</span>
+                        </div>
+                        <div class="dropdown-item" data-theme="light">
+                            <span class="item-icon">☀️</span>
+                            <span>Terang</span>
+                        </div>
+                        <div class="dropdown-item" data-theme="dark">
+                            <span class="item-icon">🌙</span>
+                            <span>Gelap</span>
                         </div>
                     </div>
                 </div>
@@ -738,13 +524,9 @@
     </div>
 
     <script>
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-
+        // --- DATA ---
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         const weekdays = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-
         const holidays = {
             '2025-01-01': 'Tahun Baru 2025 Masehi',
             '2025-01-27': 'Isra\' Mi\'raj Nabi Muhammad SAW',
@@ -776,369 +558,263 @@
             '2025-12-26': 'Cuti Bersama Natal'
         };
 
-        function getDaysInMonth(year, month) {
-            return new Date(year, month + 1, 0).getDate();
-        }
+        // --- UTILS ---
+        const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+        const getFirstDayOfMonth = (y, m) => new Date(y, m, 1).getDay();
+        const formatDate = (y, m, d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
-        function getFirstDayOfMonth(year, month) {
-            return new Date(year, month, 1).getDay();
-        }
-
-        function formatDate(year, month, day) {
-            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        }
-
+        // --- RENDER ---
         function createMonth(year, month) {
             const monthDiv = document.createElement('div');
             monthDiv.className = 'month';
-
-            const header = document.createElement('div');
-            header.className = 'month-header';
-            header.textContent = `${months[month]} ${year}`;
-
-            const legend = document.createElement('div');
-            legend.className = 'legend';
-            legend.innerHTML = `
-                <div class="legend-item">
-                    <div class="legend-color legend-holiday"></div>
-                    <span>Libur Nasional</span>
+            monthDiv.innerHTML = `
+                <div class="month-header">${months[month]} ${year}</div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color legend-holiday"></div><span>Libur Nasional</span></div>
+                    <div class="legend-item"><div class="legend-color legend-cuti"></div><span>Cuti Bersama</span></div>
+                    <div class="legend-item"><div class="legend-color legend-sunday"></div><span>Hari Minggu</span></div>
+                    <div class="legend-item"><div class="legend-color legend-today"></div><span>Hari Ini</span></div>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color legend-cuti"></div>
-                    <span>Cuti Bersama</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color legend-sunday"></div>
-                    <span>Hari Minggu</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #28a745, #20c997);"></div>
-                    <span>Hari Ini</span>
-                </div>
+                <div class="weekdays">${weekdays.map(w => `<div class="weekday">${w}</div>`).join('')}</div>
+                <div class="days"></div>
             `;
 
-            const weekdaysDiv = document.createElement('div');
-            weekdaysDiv.className = 'weekdays';
-            weekdays.forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'weekday';
-                dayDiv.textContent = day;
-                weekdaysDiv.appendChild(dayDiv);
-            });
-
-            const daysDiv = document.createElement('div');
-            daysDiv.className = 'days';
-
+            const daysDiv = monthDiv.querySelector('.days');
             const daysInMonth = getDaysInMonth(year, month);
             const firstDay = getFirstDayOfMonth(year, month);
             const daysInPrevMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
 
             for (let i = firstDay - 1; i >= 0; i--) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day other-month';
-                dayDiv.textContent = daysInPrevMonth - i;
-                daysDiv.appendChild(dayDiv);
+                const d = document.createElement('div');
+                d.className = 'day other-month';
+                d.textContent = daysInPrevMonth - i;
+                daysDiv.appendChild(d);
             }
 
             for (let day = 1; day <= daysInMonth; day++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day';
-                dayDiv.textContent = day;
+                const d = document.createElement('div');
+                d.className = 'day';
+                d.textContent = day;
 
                 const today = new Date();
-                const isToday = year === today.getFullYear() &&
-                    month === today.getMonth() &&
-                    day === today.getDate();
-
+                const isToday = year === today.getFullYear() && month === today.getMonth() && day === today.getDate();
                 if (isToday) {
-                    dayDiv.classList.add('today');
-                    dayDiv.id = 'today-date';
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = 'Hari Ini';
-                    dayDiv.appendChild(tooltip);
+                    d.classList.add('today');
+                    d.id = 'today-date';
+                    const t = document.createElement('div');
+                    t.className = 'tooltip';
+                    t.textContent = 'Hari Ini';
+                    d.appendChild(t);
                 }
 
-                const dateString = formatDate(year, month, day);
-                const dayOfWeek = new Date(year, month, day).getDay();
+                const ds = formatDate(year, month, day);
+                const dow = new Date(year, month, day).getDay();
+                if (dow === 0) d.classList.add('sunday');
 
-                if (dayOfWeek === 0) {
-                    dayDiv.classList.add('sunday');
+                if (holidays[ds]) {
+                    d.classList.add('holiday');
+                    const t = document.createElement('div');
+                    t.className = 'tooltip';
+                    t.textContent = holidays[ds];
+                    d.appendChild(t);
                 }
 
-                if (holidays[dateString]) {
-                    dayDiv.classList.add('holiday');
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = holidays[dateString];
-                    dayDiv.appendChild(tooltip);
+                if (cutiBersama[ds]) {
+                    d.classList.add('cuti-bersama');
+                    const t = document.createElement('div');
+                    t.className = 'tooltip';
+                    t.textContent = cutiBersama[ds];
+                    d.appendChild(t);
                 }
 
-                if (cutiBersama[dateString]) {
-                    dayDiv.classList.add('cuti-bersama');
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = cutiBersama[dateString];
-                    dayDiv.appendChild(tooltip);
-                }
-
-                daysDiv.appendChild(dayDiv);
+                daysDiv.appendChild(d);
             }
 
             const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-            const remainingCells = totalCells - (firstDay + daysInMonth);
-
-            for (let day = 1; day <= remainingCells; day++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day other-month';
-                dayDiv.textContent = day;
-                daysDiv.appendChild(dayDiv);
+            const remaining = totalCells - (firstDay + daysInMonth);
+            for (let i = 1; i <= remaining; i++) {
+                const d = document.createElement('div');
+                d.className = 'day other-month';
+                d.textContent = i;
+                daysDiv.appendChild(d);
             }
 
-            const monthHolidaysDiv = createMonthHolidaysList(year, month);
-
-            monthDiv.appendChild(header);
-            monthDiv.appendChild(legend);
-            monthDiv.appendChild(weekdaysDiv);
-            monthDiv.appendChild(daysDiv);
-            monthDiv.appendChild(monthHolidaysDiv);
-
+            monthDiv.appendChild(createMonthHolidaysList(year, month));
             return monthDiv;
         }
 
         function createMonthHolidaysList(year, month) {
-            const holidaysDiv = document.createElement('div');
-            holidaysDiv.className = 'month-holidays';
-
+            const div = document.createElement('div');
+            div.className = 'month-holidays';
             const title = document.createElement('h4');
             title.textContent = 'Keterangan Libur & Cuti Bersama';
+            div.appendChild(title);
 
-            const holidaysList = document.createElement('ul');
-            holidaysList.className = 'holiday-list';
+            const list = document.createElement('ul');
+            list.className = 'holiday-list';
+            let has = false;
 
-            let hasHolidays = false;
-
-            for (const [dateStr, name] of Object.entries(holidays)) {
-                const date = new Date(dateStr);
-                if (date.getFullYear() === year && date.getMonth() === month) {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'holiday-item';
-
-                    const dateSpan = document.createElement('span');
-                    dateSpan.className = 'holiday-date';
-                    dateSpan.textContent = date.getDate();
-
+            const addHoliday = (dateStr, name, isCuti = false) => {
+                const d = new Date(dateStr);
+                if (d.getFullYear() === year && d.getMonth() === month) {
+                    const li = document.createElement('li');
+                    li.className = 'holiday-item';
+                    const span = document.createElement('span');
+                    span.className = isCuti ? 'cuti-date' : 'holiday-date';
+                    span.textContent = d.getDate();
                     const nameSpan = document.createElement('span');
                     nameSpan.className = 'holiday-name';
                     nameSpan.textContent = name;
-
-                    listItem.appendChild(dateSpan);
-                    listItem.appendChild(nameSpan);
-                    holidaysList.appendChild(listItem);
-                    hasHolidays = true;
+                    li.appendChild(span);
+                    li.appendChild(nameSpan);
+                    list.appendChild(li);
+                    has = true;
                 }
-            }
+            };
 
-            for (const [dateStr, name] of Object.entries(cutiBersama)) {
-                const date = new Date(dateStr);
-                if (date.getFullYear() === year && date.getMonth() === month) {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'holiday-item';
+            Object.entries(holidays).forEach(([d, n]) => addHoliday(d, n, false));
+            Object.entries(cutiBersama).forEach(([d, n]) => addHoliday(d, n, true));
 
-                    const dateSpan = document.createElement('span');
-                    dateSpan.className = 'cuti-date';
-                    dateSpan.textContent = date.getDate();
-
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'holiday-name';
-                    nameSpan.textContent = name;
-
-                    listItem.appendChild(dateSpan);
-                    listItem.appendChild(nameSpan);
-                    holidaysList.appendChild(listItem);
-                    hasHolidays = true;
-                }
-            }
-
-            if (!hasHolidays) {
-                const noHolidays = document.createElement('div');
-                noHolidays.className = 'no-holidays';
-                noHolidays.textContent = 'Tidak ada hari libur nasional atau cuti bersama';
-                holidaysDiv.appendChild(title);
-                holidaysDiv.appendChild(noHolidays);
-            } else {
-                const items = Array.from(holidaysList.children);
+            if (has) {
+                const items = Array.from(list.children);
                 items.sort((a, b) => {
-                    const dateA = parseInt(a.querySelector('.holiday-date, .cuti-date').textContent);
-                    const dateB = parseInt(b.querySelector('.holiday-date, .cuti-date').textContent);
-                    return dateA - dateB;
+                    const aD = parseInt(a.querySelector('.holiday-date, .cuti-date').textContent);
+                    const bD = parseInt(b.querySelector('.holiday-date, .cuti-date').textContent);
+                    return aD - bD;
                 });
-
-                holidaysList.innerHTML = '';
-                items.forEach(item => holidaysList.appendChild(item));
-
-                holidaysDiv.appendChild(title);
-                holidaysDiv.appendChild(holidaysList);
+                list.innerHTML = '';
+                items.forEach(i => list.appendChild(i));
+                div.appendChild(list);
+            } else {
+                const no = document.createElement('div');
+                no.className = 'no-holidays';
+                no.textContent = 'Tidak ada hari libur nasional atau cuti bersama';
+                div.appendChild(no);
             }
 
-            return holidaysDiv;
+            return div;
         }
 
         function createCalendar() {
-            const calendar = document.getElementById('calendar');
-            const year = 2025;
-
-            for (let month = 0; month < 12; month++) {
-                calendar.appendChild(createMonth(year, month));
+            const cal = document.getElementById('calendar');
+            cal.innerHTML = '';
+            for (let m = 0; m < 12; m++) {
+                cal.appendChild(createMonth(2025, m));
             }
         }
 
+        // --- DATE & TIME ---
         function updateDateTime() {
             const now = new Date();
             const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
+            const monthsFull = months;
             const dayName = days[now.getDay()];
             const date = now.getDate();
-            const monthName = monthNames[now.getMonth()];
+            const monthName = monthsFull[now.getMonth()];
             const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
             const offset = -now.getTimezoneOffset();
-            const gmtOffset = (offset >= 0 ? '+' : '-') + Math.abs(Math.floor(offset / 60));
-
-            const dateTimeString = `${dayName}, ${date} ${monthName} ${year} ${hours}:${minutes}:${seconds} (GMT ${gmtOffset})`;
-            document.getElementById('currentDateTime').textContent = dateTimeString;
+            const gmt = (offset >= 0 ? '+' : '-') + Math.abs(Math.floor(offset / 60)).toString().padStart(2, '0');
+            document.getElementById('currentDateTime').textContent =
+                `${dayName}, ${date} ${monthName} ${year} ${h}:${m}:${s} (GMT ${gmt})`;
         }
 
-        createCalendar();
+        // --- SCROLL TODAY ---
+        function setupScrollToday() {
+            const btn = document.getElementById('scrollTodayBtn');
+            if (new Date().getFullYear() !== 2025) {
+                btn.style.display = 'none';
+                return;
+            }
+            btn.addEventListener('click', () => {
+                const el = document.getElementById('today-date');
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.style.transform = 'scale(1.2)';
+                    setTimeout(() => el.style.transform = 'scale(1)', 300);
+                }
+            });
+        }
 
+        // --- THEME ---
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.body.classList.toggle('dark-theme', theme === 'dark');
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('themePreference') || 'system';
+            const btn = document.getElementById('themeDropdown');
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            const items = document.querySelectorAll('.dropdown-item');
+
+            const themes = {
+                system: { icon: '💻', text: 'Sistem' },
+                light: { icon: '☀️', text: 'Terang' },
+                dark: { icon: '🌙', text: 'Gelap' }
+            };
+
+            function updateUI(theme) {
+                icon.textContent = themes[theme].icon;
+                text.textContent = themes[theme].text;
+                items.forEach(i => i.classList.toggle('active', i.dataset.theme === theme));
+            }
+
+            if (saved === 'system') {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(isDark ? 'dark' : 'light');
+                updateUI('system');
+            } else {
+                applyTheme(saved);
+                updateUI(saved);
+            }
+
+            // Event dropdown
+            const wrapper = document.querySelector('.dropdown-wrapper');
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                wrapper.classList.toggle('active');
+            });
+
+            document.addEventListener('click', () => wrapper.classList.remove('active'));
+
+            items.forEach(item => {
+                item.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const theme = item.dataset.theme;
+                    localStorage.setItem('themePreference', theme);
+                    if (theme === 'system') {
+                        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        applyTheme(isDark ? 'dark' : 'light');
+                    } else {
+                        applyTheme(theme);
+                    }
+                    updateUI(theme);
+                    wrapper.classList.remove('active');
+                });
+            });
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (saved === 'system') {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+
+        // --- NAVIGATION ---
+        document.getElementById('backHomeBtn').addEventListener('click', () => {
+            window.location.href = 'https://affandymurad.github.io';
+        });
+
+        // --- INIT ---
+        createCalendar();
         updateDateTime();
         setInterval(updateDateTime, 1000);
-
-        // Scroll to today button
-        const scrollTodayBtn = document.getElementById('scrollTodayBtn');
-        scrollTodayBtn.addEventListener('click', () => {
-            const todayElement = document.getElementById('today-date');
-            if (todayElement) {
-                todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                // Add temporary highlight animation
-                todayElement.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    todayElement.style.transform = 'scale(1)';
-                }, 300);
-            }
-        });
-
-        // JavaScript - Update logic tema dropdown
-        const themeDropdown = document.getElementById('themeDropdown');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        const dropdownWrapper = document.querySelector('.dropdown-wrapper');
-        const themeIcon = document.getElementById('themeIcon');
-        const themeText = document.getElementById('themeText');
-        const dropdownItems = document.querySelectorAll('.dropdown-item');
-
-        // Theme configurations
-        const themes = {
-            system: { icon: '💻', text: 'Sistem' },
-            light: { icon: '☀️', text: 'Terang' },
-            dark: { icon: '🌙', text: 'Gelap' }
-        };
-
-        // Get saved theme or default to system
-        let currentTheme = localStorage.getItem('themePreference') || 'system';
-
-        // Apply theme function
-        function applyTheme(theme) {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            if (theme === 'system') {
-                if (prefersDark) {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
-            } else if (theme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-
-            // Update UI
-            themeIcon.textContent = themes[theme].icon;
-            themeText.textContent = themes[theme].text;
-
-            // Update active state
-            dropdownItems.forEach(item => {
-                if (item.dataset.theme === theme) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-
-            currentTheme = theme;
-            localStorage.setItem('themePreference', theme);
-        }
-
-        // Toggle dropdown
-        themeDropdown.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownWrapper.classList.toggle('active');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            dropdownWrapper.classList.remove('active');
-        });
-
-        // Handle theme selection
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const selectedTheme = item.dataset.theme;
-                applyTheme(selectedTheme);
-                dropdownWrapper.classList.remove('active');
-            });
-        });
-
-        // Listen to system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            if (currentTheme === 'system') {
-                applyTheme('system');
-            }
-        });
-
-        // Initialize theme on load
-        applyTheme(currentTheme);
-
-        const backHomeBtn = document.getElementById('backHomeBtn');
-        backHomeBtn.addEventListener('click', () => {
-            window.location.href = '../';
-        });
-
-        // Scroll to today button - only show if current year is 2025
-        const currentYear = new Date().getFullYear();
-
-        if (currentYear === 2025) {
-            scrollTodayBtn.addEventListener('click', () => {
-                const todayElement = document.getElementById('today-date');
-                if (todayElement) {
-                    todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                    // Add temporary highlight animation
-                    todayElement.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        todayElement.style.transform = 'scale(1)';
-                    }, 300);
-                }
-            });
-        } else {
-            scrollTodayBtn.style.display = 'none';
-        }
+        setupScrollToday();
+        initTheme();
     </script>
 </body>
 
