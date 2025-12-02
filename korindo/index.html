@@ -20,6 +20,25 @@
       color: #2d3748;
     }
 
+    /* Dark Theme Variables */
+    :root[data-theme="dark"] {
+      --bg-primary: #1a202c;
+      --bg-secondary: #2d3748;
+      --bg-card: #2d3748;
+      --text-primary: #f7fafc;
+      --text-secondary: #e2e8f0;
+      --border-color: #4a5568;
+      --input-bg: #1a202c;
+      --input-border: #4a5568;
+      --hover-bg: #4a5568;
+      --accent: #a0aec0;
+    }
+
+    body.dark-theme {
+      background-color: #1a202c;
+      color: #f7fafc;
+    }
+
     .container {
       max-width: 1400px;
       margin: 0 auto;
@@ -34,11 +53,23 @@
       text-align: center;
     }
 
+    body.dark-theme .header,
+    body.dark-theme .controls,
+    body.dark-theme .dept-card,
+    body.dark-theme .no-results {
+      background: #2d3748;
+      color: #f7fafc;
+    }
+
     h1 {
       font-size: 2.5em;
       color: #1a202c;
       margin-bottom: 8px;
       font-weight: 700;
+    }
+
+    body.dark-theme h1 {
+      color: #f7fafc;
     }
 
     .meta {
@@ -47,12 +78,20 @@
       font-size: 0.95em;
     }
 
+    body.dark-theme .meta {
+      color: #a0aec0;
+    }
+
     .meta em {
       display: block;
       margin-top: 8px;
       color: #6c757d;
       font-style: normal;
       font-weight: 500;
+    }
+
+    body.dark-theme .meta em {
+      color: #a0aec0;
     }
 
     .controls {
@@ -75,12 +114,25 @@
       border-radius: 12px;
       font-size: 16px;
       transition: all 0.3s;
+      background: white;
+      color: #2d3748;
+    }
+
+    body.dark-theme .search-box input {
+      background: #1a202c;
+      border-color: #4a5568;
+      color: #f7fafc;
     }
 
     .search-box input:focus {
       outline: none;
       border-color: #6c757d;
       box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+    }
+
+    body.dark-theme .search-box input:focus {
+      border-color: #6c757d;
+      box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.2);
     }
 
     .search-icon {
@@ -90,6 +142,10 @@
       transform: translateY(-50%);
       color: #a0aec0;
       font-size: 20px;
+    }
+
+    body.dark-theme .search-icon {
+      color: #a0aec0;
     }
 
     .filter-section {
@@ -112,6 +168,10 @@
       font-size: 14px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+
+    body.dark-theme .filter-label {
+      color: #e2e8f0;
     }
 
     .radio-group {
@@ -142,6 +202,12 @@
       color: #4a5568;
     }
 
+    body.dark-theme .radio-option label {
+      background: #1a202c;
+      border-color: #4a5568;
+      color: #e2e8f0;
+    }
+
     .radio-option input[type="radio"]:checked+label {
       background: #6c757d;
       border-color: #6c757d;
@@ -166,6 +232,13 @@
       cursor: pointer;
       appearance: none;
       transition: all 0.3s;
+      color: #2d3748;
+    }
+
+    body.dark-theme .select-wrapper select {
+      background: #1a202c;
+      border-color: #4a5568;
+      color: #f7fafc;
     }
 
     .select-wrapper select:focus {
@@ -184,6 +257,10 @@
       font-size: 12px;
     }
 
+    body.dark-theme .select-wrapper::after {
+      color: #a0aec0;
+    }
+
     .departments {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -198,9 +275,18 @@
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
+    body.dark-theme .dept-card {
+      background: #2d3748;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
     .dept-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    body.dark-theme .dept-card:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
 
     .dept-header {
@@ -212,11 +298,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .dept-header::before {
-      content: '📁';
-      font-size: 18px;
     }
 
     .contact-list {
@@ -232,8 +313,16 @@
       transition: background 0.2s;
     }
 
+    body.dark-theme .contact-item {
+      border-bottom-color: #4a5568;
+    }
+
     .contact-item:hover {
       background: #f7fafc;
+    }
+
+    body.dark-theme .contact-item:hover {
+      background: #4a5568;
     }
 
     .contact-item:last-child {
@@ -249,6 +338,10 @@
       font-weight: 500;
     }
 
+    body.dark-theme .contact-name {
+      color: #f7fafc;
+    }
+
     .contact-ext {
       background: #e9ecef;
       color: #495057;
@@ -256,6 +349,11 @@
       border-radius: 6px;
       font-weight: 600;
       font-size: 14px;
+    }
+
+    body.dark-theme .contact-ext {
+      background: #4a5568;
+      color: #e2e8f0;
     }
 
     .no-results {
@@ -266,6 +364,10 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
+    body.dark-theme .no-results {
+      background: #2d3748;
+    }
+
     .no-results-icon {
       font-size: 64px;
       margin-bottom: 16px;
@@ -274,6 +376,10 @@
     .no-results-text {
       color: #718096;
       font-size: 18px;
+    }
+
+    body.dark-theme .no-results-text {
+      color: #a0aec0;
     }
 
     @media (max-width: 768px) {
@@ -297,6 +403,46 @@
       .filter-group {
         width: 100%;
       }
+    }
+
+    /* Floating Action Button */
+    .fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #6c757d;
+      color: white;
+      border: none;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+      z-index: 1000;
+    }
+
+    .fab.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .fab:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    body.dark-theme .fab {
+      background: #4a5568;
+    }
+
+    body.dark-theme .fab:hover {
+      background: #2d3748;
     }
   </style>
 </head>
@@ -340,6 +486,19 @@
             </select>
           </div>
         </div>
+
+        <!-- Dropdown Tema -->
+        <div class="filter-group">
+          <span class="filter-label">Tema</span>
+          <div class="select-wrapper">
+            <select id="themeSelect">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -350,8 +509,9 @@
     </div>
   </div>
 
-  <script>
+  <button id="scrollToTopBtn" class="fab" aria-label="Kembali ke atas">↑</button>
 
+  <script>
     const rawData = [
       {
         dept: "GENERAL TRADING (APP)",
@@ -976,6 +1136,40 @@
       noResults.style.display = visibleCount === 0 ? 'block' : 'none';
     }
 
+    // --- Tema Switching ---
+    const themeSelect = document.getElementById('themeSelect');
+
+    function applyTheme(theme) {
+      if (theme === 'system') {
+        const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+        document.body.className = systemPrefersDark ? 'dark-theme' : '';
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.className = theme === 'dark' ? 'dark-theme' : '';
+      }
+    }
+
+    // Load saved theme or default to 'system'
+    const savedTheme = localStorage.getItem('phonebook-theme') || 'system';
+    themeSelect.value = savedTheme;
+    applyTheme(savedTheme);
+
+    // Listen for changes
+    themeSelect.addEventListener('change', () => {
+      const selected = themeSelect.value;
+      localStorage.setItem('phonebook-theme', selected);
+      applyTheme(selected);
+    });
+
+    // Optional: update theme if system preference changes (when in 'system' mode)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (themeSelect.value === 'system') {
+        applyTheme('system');
+      }
+    });
+
+    // Event listeners for filtering
     searchInput.addEventListener('input', filter);
     deptFilter.addEventListener('change', filter);
     filterTypeRadios.forEach(radio => {
@@ -987,6 +1181,40 @@
 
     populateFilters();
     render();
+
+    // --- Scroll-to-Top FAB ---
+    const fab = document.getElementById('scrollToTopBtn');
+    const controls = document.querySelector('.controls');
+
+    function toggleFab() {
+      const controlsRect = controls.getBoundingClientRect();
+      const controlsHeight = controlsRect.height;
+      const scrollY = window.scrollY;
+
+      // Tampilkan FAB jika bagian atas .controls sudah tidak terlihat penuh
+      // (misalnya jika discroll lebih dari tinggi controls + margin)
+      const threshold = controlsHeight + 50; // sedikit buffer
+
+      if (scrollY > threshold) {
+        fab.classList.add('show');
+      } else {
+        fab.classList.remove('show');
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // Event listeners
+    window.addEventListener('scroll', toggleFab);
+    fab.addEventListener('click', scrollToTop);
+
+    // Trigger once on load
+    toggleFab();
   </script>
 </body>
 
