@@ -177,7 +177,7 @@ header {
 .mobile-menu {
     display: none;
     position: fixed;
-    top: var(--header-height);
+    top: calc(var(--header-height) + 60px);
     left: 0;
     width: 100%;
     background: #FFFFFF;
@@ -713,7 +713,7 @@ body.dark-mode .skill-category h3 {
     body {
         padding-top: calc(var(--header-height) + 60px);
     }
-
+    
     /* Show hamburger on mobile */
     .menu-toggle {
         display: block;
