@@ -14,13 +14,85 @@
 </head>
 
 <body>
-    <!-- Mobile Menu -->
-    <nav class="mobile-menu">
-        <div class="menu-header">
-            <button class="menu-toggle" id="menu-toggle">
+    <!-- Fixed Header -->
+    <header>
+        <div class="header-content">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
+            <div class="desktop-controls">
+                <div class="language-dropdown" id="language-dropdown">
+                    <button class="language-toggle" id="language-toggle">
+                        <span class="lang-text">EN</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="language-menu" id="language-menu">
+                        <button class="language-option active" data-lang="EN">English</button>
+                        <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
+                    </div>
+                </div>
+                <div class="theme-dropdown">
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-desktop"></i>
+                        <span>System</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="theme-menu" id="theme-menu">
+                        <button class="theme-option active" data-theme="system">
+                            <i class="fas fa-desktop"></i>
+                            <span>System</span>
+                        </button>
+                        <button class="theme-option" data-theme="light">
+                            <i class="fas fa-sun"></i>
+                            <span>Light</span>
+                        </button>
+                        <button class="theme-option" data-theme="dark">
+                            <i class="fas fa-moon"></i>
+                            <span>Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </header>
+
+    <!-- Mobile Controls (below header on mobile) -->
+    <div class="mobile-controls" id="mobile-controls">
+        <div class="language-dropdown">
+            <button class="language-toggle" id="mobile-language-toggle">
+                <span class="lang-text">EN</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="language-menu" id="mobile-language-menu">
+                <button class="language-option active" data-lang="EN">English</button>
+                <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
+            </div>
+        </div>
+        <div class="theme-dropdown">
+            <button class="theme-toggle" id="mobile-theme-toggle">
+                <i class="fas fa-desktop"></i>
+                <span>System</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="theme-menu" id="mobile-theme-menu">
+                <button class="theme-option active" data-theme="system">
+                    <i class="fas fa-desktop"></i>
+                    <span>System</span>
+                </button>
+                <button class="theme-option" data-theme="light">
+                    <i class="fas fa-sun"></i>
+                    <span>Light</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <nav class="mobile-menu" id="mobile-menu">
         <div class="menu-items" id="menu-items">
             <a href="#contact" class="menu-item" data-key="contact">Contact</a>
             <a href="#experience" class="menu-item" data-key="experience">Experience</a>
@@ -30,74 +102,37 @@
         </div>
     </nav>
 
-    <!-- Language Dropdown -->
-    <div class="language-dropdown" id="language-dropdown">
-        <button class="language-toggle" id="language-toggle">
-            <span class="lang-text">EN</span>
-            <i class="fas fa-chevron-down"></i>
-        </button>
-        <div class="language-menu" id="language-menu">
-            <button class="language-option active" data-lang="EN">English</button>
-            <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
-        </div>
-    </div>
-
-    <!-- Theme Dropdown -->
-    <div class="theme-dropdown">
-        <button class="theme-toggle" id="theme-toggle">
-            <i class="fas fa-moon"></i>
-            <span>Dark</span>
-            <i class="fas fa-chevron-down"></i>
-        </button>
-        <div class="theme-menu" id="theme-menu">
-            <button class="theme-option" data-theme="light">
-                <i class="fas fa-sun"></i>
-                <span>Light</span>
-            </button>
-            <button class="theme-option" data-theme="dark">
-                <i class="fas fa-moon"></i>
-                <span>Dark</span>
-            </button>
-            <button class="theme-option active" data-theme="system"> <!-- Pindahkan class 'active' ke sini -->
-                <i class="fas fa-desktop"></i>
-                <span>System</span>
-            </button>
-        </div>
-    </div>
-
     <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="header-content-wrapper">
-                <div class="profile-media-container">
-                    <img src="images/profile.jpeg" alt="Affandy Murad Profile" class="profile-image">
-                    <div class="status-badge" data-key="statusBadge">
-                        <div class="status-indicator"></div>
-                        Available for opportunities
-                    </div>
+        <!-- Profile Section (replaces old header content) -->
+        <section class="profile-section">
+            <div class="profile-media-container">
+                <img src="images/profile.jpeg" alt="Affandy Murad Profile" class="profile-image">
+                <div class="status-badge" data-key="statusBadge">
+                    <div class="status-indicator"></div>
+                    Available for opportunities
                 </div>
+            </div>
 
-                <div class="profile-details-container">
-                    <h1>Affandy Murad</h1>
-                    <p class="subtitle">The App Crafter <i class="fab fa-android"></i>&nbsp;<i
-                            class="fab fa-apple"></i>&nbsp;<i class="fab fa-react"></i></p>
-                    <div class="location-info">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Jakarta, Indonesia
-                    </div>
-                    <div class="quick-stats">
-                        <div class="social-links">
-                            <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
-                                <i class="fab fa-linkedin"></i> LinkedIn
-                            </a>
-                            <a href="https://github.com/affandymurad" class="social-link" target="_blank">
-                                <i class="fab fa-github"></i> GitHub
-                            </a>
-                        </div>
+            <div class="profile-details-container">
+                <h1>Affandy Murad</h1>
+                <p class="subtitle">The App Crafter <i class="fab fa-android"></i>&nbsp;<i
+                        class="fab fa-apple"></i>&nbsp;<i class="fab fa-react"></i></p>
+                <div class="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Jakarta, Indonesia
+                </div>
+                <div class="quick-stats">
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://github.com/affandymurad" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
                     </div>
                 </div>
             </div>
-        </header>
+        </section>
 
         <!-- Portfolio Section -->
         <section class="section" id="portfolio">
@@ -142,7 +177,23 @@
             <h2 data-key="experience"><i class="fas fa-briefcase"></i>Experience</h2>
             <div class="experience-grid">
                 <div class="experience-card">
-                    <div class="country-badge">🇮🇩 Indonesia</div>
+                    <div class="country-badge">
+                        <span class="country-badge__content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M15.5,4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2v4.5H15.5V4Z"
+                                    fill="#ea3323"></path>
+                                <path d="M2.5,14H13.5c1.105,0,2-0.895,2-2v-4H0.5v4c0,1.105,0.895,2,2,2Z" fill="#fff">
+                                </path>
+                                <path
+                                    d="M2.5,14H13.5c1.105,0,2-0.895,2-2V4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2V12c0,1.105,0.895,2,2,2ZM1,4c0-0.827,0.673-1.5,1.5-1.5H13.5c0.827,0,1.5,0.673,1.5,1.5V12c0,0.827-0.673,1.5-1.5,1.5H2.5c-0.827,0-1.5-0.673-1.5-1.5V4Z"
+                                    opacity=".15"></path>
+                                <path
+                                    d="M13.5,2.5H2.5c-0.828,0-1.5,0.672-1.5,1.5v0.5c0-0.828,0.672-1.5,1.5-1.5H13.5c0.828,0,1.5,0.672,1.5,1.5v-0.5c0-0.828-0.672-1.5-1.5-1.5Z"
+                                    fill="#fff" opacity=".2"></path>
+                            </svg>
+                            <span>Indonesia</span>
+                        </span>
+                    </div>
                     <div class="experience-header">
                         <span class="company-name">Korindo Group</span>
                         <img src="images/company/logo_korindo.svg" alt="Korindo" class="company-icon">
@@ -153,7 +204,23 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">🇮🇩 Indonesia</div>
+                    <div class="country-badge">
+                        <span class="country-badge__content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M15.5,4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2v4.5H15.5V4Z"
+                                    fill="#ea3323"></path>
+                                <path d="M2.5,14H13.5c1.105,0,2-0.895,2-2v-4H0.5v4c0,1.105,0.895,2,2,2Z" fill="#fff">
+                                </path>
+                                <path
+                                    d="M2.5,14H13.5c1.105,0,2-0.895,2-2V4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2V12c0,1.105,0.895,2,2,2ZM1,4c0-0.827,0.673-1.5,1.5-1.5H13.5c0.827,0,1.5,0.673,1.5,1.5V12c0,0.827-0.673,1.5-1.5,1.5H2.5c-0.827,0-1.5-0.673-1.5-1.5V4Z"
+                                    opacity=".15"></path>
+                                <path
+                                    d="M13.5,2.5H2.5c-0.828,0-1.5,0.672-1.5,1.5v0.5c0-0.828,0.672-1.5,1.5-1.5H13.5c0.828,0,1.5,0.672,1.5,1.5v-0.5c0-0.828-0.672-1.5-1.5-1.5Z"
+                                    fill="#fff" opacity=".2"></path>
+                            </svg>
+                            <span>Indonesia</span>
+                        </span>
+                    </div>
                     <div class="experience-header">
                         <span class="company-name">PT Hitachi Channel Solutions</span>
                         <img src="images/company/logo_hitachi.svg" alt="HCS" class="company-icon">
@@ -164,7 +231,23 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">🇮🇩 Indonesia</div>
+                    <div class="country-badge">
+                        <span class="country-badge__content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M15.5,4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2v4.5H15.5V4Z"
+                                    fill="#ea3323"></path>
+                                <path d="M2.5,14H13.5c1.105,0,2-0.895,2-2v-4H0.5v4c0,1.105,0.895,2,2,2Z" fill="#fff">
+                                </path>
+                                <path
+                                    d="M2.5,14H13.5c1.105,0,2-0.895,2-2V4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2V12c0,1.105,0.895,2,2,2ZM1,4c0-0.827,0.673-1.5,1.5-1.5H13.5c0.827,0,1.5,0.673,1.5,1.5V12c0,0.827-0.673,1.5-1.5,1.5H2.5c-0.827,0-1.5-0.673-1.5-1.5V4Z"
+                                    opacity=".15"></path>
+                                <path
+                                    d="M13.5,2.5H2.5c-0.828,0-1.5,0.672-1.5,1.5v0.5c0-0.828,0.672-1.5,1.5-1.5H13.5c0.828,0,1.5,0.672,1.5,1.5v-0.5c0-0.828-0.672-1.5-1.5-1.5Z"
+                                    fill="#fff" opacity=".2"></path>
+                            </svg>
+                            <span>Indonesia</span>
+                        </span>
+                    </div>
                     <div class="experience-header">
                         <span class="company-name">PT Docotel Teknologi Indonesia</span>
                         <img src="images/company/logo_dti.svg" alt="HCS" class="company-icon">
@@ -175,7 +258,23 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">🇮🇩 Indonesia</div>
+                    <div class="country-badge">
+                        <span class="country-badge__content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M15.5,4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2v4.5H15.5V4Z"
+                                    fill="#ea3323"></path>
+                                <path d="M2.5,14H13.5c1.105,0,2-0.895,2-2v-4H0.5v4c0,1.105,0.895,2,2,2Z" fill="#fff">
+                                </path>
+                                <path
+                                    d="M2.5,14H13.5c1.105,0,2-0.895,2-2V4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2V12c0,1.105,0.895,2,2,2ZM1,4c0-0.827,0.673-1.5,1.5-1.5H13.5c0.827,0,1.5,0.673,1.5,1.5V12c0,0.827-0.673,1.5-1.5,1.5H2.5c-0.827,0-1.5-0.673-1.5-1.5V4Z"
+                                    opacity=".15"></path>
+                                <path
+                                    d="M13.5,2.5H2.5c-0.828,0-1.5,0.672-1.5,1.5v0.5c0-0.828,0.672-1.5,1.5-1.5H13.5c0.828,0,1.5,0.672,1.5,1.5v-0.5c0-0.828-0.672-1.5-1.5-1.5Z"
+                                    fill="#fff" opacity=".2"></path>
+                            </svg>
+                            <span>Indonesia</span>
+                        </span>
+                    </div>
                     <div class="experience-header">
                         <span class="company-name">PT Otten Coffee Indonesia</span>
                         <img src="images/company/logo_otten.svg" alt="Otten" class="company-icon">
@@ -186,7 +285,42 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">🇲🇾 Malaysia</div>
+                    <div class="country-badge">
+                        <span class="country-badge__content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <rect x="0.5" y="2" width="15" height="12" rx="2" ry="2" fill="#fff"></rect>
+                                <path
+                                    d="M0.819,2.924H15.181c-0.355,-0.554 -0.974,-0.924 -1.681,-0.924H2.5c-0.707,0 -1.326,0.37 -1.681,0.924Z"
+                                    fill="#bc271a"></path>
+                                <path
+                                    d="M0.516,3.846c-0.004,0.051 -0.016,0.101 -0.016,0.154v0.77H15.5v-0.77c0,-0.053 -0.012,-0.102 -0.016,-0.154H0.516Z"
+                                    fill="#bc271a"></path>
+                                <path fill="#bc271a" d="M0.5 5.692H15.5V6.615H0.5z"></path>
+                                <path fill="#bc271a" d="M0.5 7.538H15.5V8.462H0.5z"></path>
+                                <path fill="#bc271a" d="M0.5 9.385H15.5V10.308H0.5z"></path>
+                                <path
+                                    d="M0.5,12c0,0.053 0.012,0.102 0.016,0.154H15.484c0.004,-0.051 0.016,-0.101 0.016,-0.154v-0.77H0.5v0.77Z"
+                                    fill="#bc271a"></path>
+                                <path
+                                    d="M15.181,13.077H0.819c0.355,0.554 0.974,0.923 1.681,0.923H13.5c0.707,0 1.326,-0.369 1.681,-0.923Z"
+                                    fill="#bc271a"></path>
+                                <path d="M8,2H2.5c-1.105,0 -2,0.895 -2,2v5.385h7.5V2Z" fill="#010062"></path>
+                                <path
+                                    d="M13.5,2H2.5c-1.105,0 -2,0.895 -2,2V12c0,1.105 0.895,2 2,2H13.5c1.105,0 2,-0.895 2,-2V4c0,-1.105 -0.895,-2 -2,-2Zm1.5,12c0,0.827 -0.673,1.5 -1.5,1.5H2.5c-0.827,0 -1.5,-0.673 -1.5,-1.5V4c0,-0.827 0.673,-1.5 1.5,-1.5H13.5c0.827,0 1.5,0.673 1.5,1.5V12Z"
+                                    opacity=".15"></path>
+                                <path
+                                    d="M13.5,2.5H2.5c-0.828,0 -1.5,0.672 -1.5,1.5v0.5c0,-0.828 0.672,-1.5 1.5,-1.5H13.5c0.828,0 1.5,0.672 1.5,1.5v-0.5c0,-0.828 -0.672,-1.5 -1.5,-1.5Z"
+                                    fill="#fff" opacity=".2"></path>
+                                <path fill="#f6cd46"
+                                    d="M5.819 4.054L5.966 5.053 6.531 4.216 6.227 5.18 7.099 4.671 6.409 5.408 7.417 5.327 6.474 5.692 7.417 6.057 6.409 5.976 7.099 6.713 6.227 6.204 6.531 7.168 5.966 6.331 5.819 7.33 5.673 6.331 5.108 7.168 5.411 6.204 4.539 6.713 5.229 5.976 4.221 6.057 5.164 5.692 4.221 5.327 5.229 5.408 4.539 4.671 5.411 5.18 5.108 4.216 5.673 5.053 5.819 4.054z">
+                                </path>
+                                <path
+                                    d="M5,4.095c-0.882,-0.392 -1.915,0.006 -2.306,0.889 -0.392,0.882 0.006,1.915 0.889,2.306 0.452,0.2 0.966,0.2 1.418,0 -0.882,0.633 -2.111,0.431 -2.744,-0.452 -0.633,-0.882 -0.431,-2.111 0.452,-2.744 0.685,-0.492 1.607,-0.492 2.292,0Z"
+                                    fill="#f6cd46"></path>
+                            </svg>
+                            <span>Malaysia</span>
+                        </span>
+                    </div>
                     <div class="experience-header">
                         <span class="company-name">Hitachi eBWorx Sdn Bhd</span>
                         <img src="images/company/logo_hitachi.svg" alt="eBWorx" class="company-icon">
@@ -197,7 +331,23 @@
                 </div>
 
                 <div class="experience-card">
-                    <div class="country-badge">🇮🇩 Indonesia</div>
+                    <div class="country-badge">
+                        <span class="country-badge__content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M15.5,4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2v4.5H15.5V4Z"
+                                    fill="#ea3323"></path>
+                                <path d="M2.5,14H13.5c1.105,0,2-0.895,2-2v-4H0.5v4c0,1.105,0.895,2,2,2Z" fill="#fff">
+                                </path>
+                                <path
+                                    d="M2.5,14H13.5c1.105,0,2-0.895,2-2V4c0-1.105-0.895-2-2-2H2.5c-1.105,0-2,0.895-2,2V12c0,1.105,0.895,2,2,2ZM1,4c0-0.827,0.673-1.5,1.5-1.5H13.5c0.827,0,1.5,0.673,1.5,1.5V12c0,0.827-0.673,1.5-1.5,1.5H2.5c-0.827,0-1.5-0.673-1.5-1.5V4Z"
+                                    opacity=".15"></path>
+                                <path
+                                    d="M13.5,2.5H2.5c-0.828,0-1.5,0.672-1.5,1.5v0.5c0-0.828,0.672-1.5,1.5-1.5H13.5c0.828,0,1.5,0.672,1.5,1.5v-0.5c0-0.828-0.672-1.5-1.5-1.5Z"
+                                    fill="#fff" opacity=".2"></path>
+                            </svg>
+                            <span>Indonesia</span>
+                        </span>
+                    </div>
                     <div class="experience-header">
                         <span class="company-name">Bank Jakarta</span>
                         <img src="images/company/logo_bank_jakarta.svg" alt="eBWorx" class="company-icon">
@@ -350,6 +500,7 @@
         };
 
         let currentLang = 'EN';
+        let currentTheme = 'system';
 
         function updatePageLanguage(lang) {
             const t = translations[lang];
@@ -366,7 +517,7 @@
                 }
             });
 
-            document.querySelector('.lang-text').textContent = lang;
+            document.querySelectorAll('.lang-text').forEach(el => el.textContent = lang);
 
             document.querySelectorAll('.language-option').forEach(option => {
                 option.classList.remove('active');
@@ -380,17 +531,18 @@
             const body = document.body;
             const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
+            body.classList.remove('dark-mode');
+
             if (theme === 'dark') {
                 body.classList.add('dark-mode');
-            } else if (theme === 'light') {
-                body.classList.remove('dark-mode');
-            } else if (theme === 'system') {
-                body.classList.toggle('dark-mode', prefersDark);
+            } else if (theme === 'system' && prefersDark) {
+                body.classList.add('dark-mode');
             }
-            updateCarbonBadge(); // Tambahkan ini
+
+            currentTheme = theme;
+            updateCarbonBadge();
         }
 
-        // Tambahkan fungsi baru ini setelah applyTheme
         function updateCarbonBadge() {
             const body = document.body;
             const carbonBadge = document.getElementById("wcb");
@@ -405,125 +557,155 @@
         }
 
         function updateThemeUI(theme) {
-            const themeToggle = document.getElementById('theme-toggle');
-            const icon = themeToggle.querySelector('i:first-child');
-            const text = themeToggle.querySelector('span');
+            const sets = [
+                { toggle: 'theme-toggle', menu: 'theme-menu' },
+                { toggle: 'mobile-theme-toggle', menu: 'mobile-theme-menu' }
+            ];
 
-            document.querySelectorAll('.theme-option').forEach(option => {
-                option.classList.remove('active');
-                if (option.getAttribute('data-theme') === theme) {
-                    option.classList.add('active');
+            sets.forEach(({ toggle, menu }) => {
+                const themeToggle = document.getElementById(toggle);
+                const themeMenu = document.getElementById(menu);
+
+                if (themeToggle) {
+                    const icon = themeToggle.querySelector('i:first-child');
+                    const text = themeToggle.querySelector('span');
+
+                    if (theme === 'light') {
+                        icon.className = 'fas fa-sun';
+                        text.textContent = 'Light';
+                    } else if (theme === 'dark') {
+                        icon.className = 'fas fa-moon';
+                        text.textContent = 'Dark';
+                    } else {
+                        icon.className = 'fas fa-desktop';
+                        text.textContent = 'System';
+                    }
+                }
+
+                if (themeMenu) {
+                    themeMenu.querySelectorAll('.theme-option').forEach(option => {
+                        option.classList.remove('active');
+                        if (option.getAttribute('data-theme') === theme) {
+                            option.classList.add('active');
+                        }
+                    });
                 }
             });
+        }
 
-            if (theme === 'light') {
-                icon.className = 'fas fa-sun';
-                text.textContent = 'Light';
-            } else if (theme === 'dark') {
-                icon.className = 'fas fa-moon';
-                text.textContent = 'Dark';
-            } else {
-                icon.className = 'fas fa-desktop';
-                text.textContent = 'System';
-            }
+        function setupDropdown(toggleId, menuId) {
+            const toggle = document.getElementById(toggleId);
+            const menu = document.getElementById(menuId);
+            if (!toggle || !menu) return;
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.classList.toggle('active');
+
+                // Close other menus
+                document.querySelectorAll('.language-menu, .theme-menu').forEach(m => {
+                    if (m !== menu) m.classList.remove('active');
+                });
+            });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            const menuToggle = document.getElementById("menu-toggle");
-            const menuItems = document.getElementById("menu-items");
-            const languageToggle = document.getElementById('language-toggle');
-            const languageMenu = document.getElementById('language-menu');
-            const languageOptions = document.querySelectorAll('.language-option');
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeMenu = document.getElementById('theme-menu');
-            const themeOptions = document.querySelectorAll('.theme-option');
-
             // Initialize theme
             const storedTheme = localStorage.getItem('theme') || 'system';
             applyTheme(storedTheme);
             updateThemeUI(storedTheme);
 
-            // Theme dropdown toggle
-            themeToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                themeMenu.classList.toggle('active');
-                languageMenu.classList.remove('active');
-            });
+            // Initialize language
+            const storedLang = localStorage.getItem('language') || 'EN';
+            currentLang = storedLang;
+            updatePageLanguage(currentLang);
+
+            // Setup dropdowns (desktop and mobile)
+            setupDropdown('language-toggle', 'language-menu');
+            setupDropdown('theme-toggle', 'theme-menu');
+            setupDropdown('mobile-language-toggle', 'mobile-language-menu');
+            setupDropdown('mobile-theme-toggle', 'mobile-theme-menu');
 
             // Theme selection
-            themeOptions.forEach(option => {
+            document.querySelectorAll('.theme-option').forEach(option => {
                 option.addEventListener('click', () => {
                     const theme = option.getAttribute('data-theme');
                     localStorage.setItem('theme', theme);
                     applyTheme(theme);
                     updateThemeUI(theme);
-                    themeMenu.classList.remove('active');
+                    document.querySelectorAll('.theme-menu').forEach(m => m.classList.remove('active'));
                 });
             });
 
-            // Watch for system theme changes
-            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-                const storedTheme = localStorage.getItem('theme');
-                if (storedTheme === 'system') {
-                    applyTheme('system');
-                }
-            });
-
-            // Language functionality
-            const storedLang = localStorage.getItem('language') || 'EN';
-            currentLang = storedLang;
-            updatePageLanguage(currentLang);
-
-            languageToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                languageMenu.classList.toggle('active');
-                themeMenu.classList.remove('active');
-            });
-
-            languageOptions.forEach(option => {
+            // Language selection
+            document.querySelectorAll('.language-option').forEach(option => {
                 option.addEventListener('click', () => {
                     const lang = option.getAttribute('data-lang');
                     currentLang = lang;
                     localStorage.setItem('language', lang);
-                    languageMenu.classList.remove('active');
                     updatePageLanguage(currentLang);
+                    document.querySelectorAll('.language-menu').forEach(m => m.classList.remove('active'));
                 });
             });
 
-            // Mobile menu
-            menuToggle.addEventListener("click", () => {
-                menuItems.classList.toggle("active");
-                const icon = menuToggle.querySelector("i");
-                icon.className = menuItems.classList.contains("active")
-                    ? "fas fa-times"
-                    : "fas fa-bars";
-            });
+            // Mobile menu toggle
+            const menuToggle = document.getElementById("menu-toggle");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const menuItems = document.getElementById("menu-items");
 
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = item.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const isOpen = mobileMenu.style.display === 'block';
+                    mobileMenu.style.display = isOpen ? 'none' : 'block';
+                    const icon = menuToggle.querySelector("i");
+                    icon.className = isOpen ? "fas fa-bars" : "fas fa-times";
+                });
 
-                    if (targetSection) {
-                        targetSection.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+                // Close menu when clicking menu items
+                menuItems.querySelectorAll('.menu-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = item.getAttribute('href').substring(1);
+                        const targetSection = document.getElementById(targetId);
 
-                        menuItems.classList.remove("active");
+                        if (targetSection) {
+                            targetSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+
+                            mobileMenu.style.display = 'none';
+                            menuToggle.querySelector("i").className = "fas fa-bars";
+                        }
+                    });
+                });
+            }
+
+            // Close all dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                const isLanguageClick = e.target.closest('.language-dropdown');
+                const isThemeClick = e.target.closest('.theme-dropdown');
+                const isMobileMenuClick = e.target.closest('.mobile-menu') || e.target.closest('#menu-toggle');
+
+                if (!isLanguageClick) {
+                    document.querySelectorAll('.language-menu').forEach(m => m.classList.remove('active'));
+                }
+                if (!isThemeClick) {
+                    document.querySelectorAll('.theme-menu').forEach(m => m.classList.remove('active'));
+                }
+                if (!isMobileMenuClick && mobileMenu) {
+                    mobileMenu.style.display = 'none';
+                    if (menuToggle) {
                         menuToggle.querySelector("i").className = "fas fa-bars";
                     }
-                });
+                }
             });
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!languageMenu.contains(e.target) && !languageToggle.contains(e.target)) {
-                    languageMenu.classList.remove('active');
-                }
-                if (!themeMenu.contains(e.target) && !themeToggle.contains(e.target)) {
-                    themeMenu.classList.remove('active');
+            // Watch for system theme changes
+            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+                if (currentTheme === 'system') {
+                    applyTheme('system');
                 }
             });
         });
