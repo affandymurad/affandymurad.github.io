@@ -56,43 +56,44 @@
         </div>
     </header>
 
-    <!-- Mobile Controls (below header on mobile) -->
-    <div class="mobile-controls" id="mobile-controls">
-        <div class="language-dropdown">
-            <button class="language-toggle" id="mobile-language-toggle">
-                <span class="lang-text">EN</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="language-menu" id="mobile-language-menu">
-                <button class="language-option active" data-lang="EN">English</button>
-                <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
-            </div>
-        </div>
-        <div class="theme-dropdown">
-            <button class="theme-toggle" id="mobile-theme-toggle">
-                <i class="fas fa-desktop"></i>
-                <span>System</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="theme-menu" id="mobile-theme-menu">
-                <button class="theme-option active" data-theme="system">
-                    <i class="fas fa-desktop"></i>
-                    <span>System</span>
-                </button>
-                <button class="theme-option" data-theme="light">
-                    <i class="fas fa-sun"></i>
-                    <span>Light</span>
-                </button>
-                <button class="theme-option" data-theme="dark">
-                    <i class="fas fa-moon"></i>
-                    <span>Dark</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Mobile Menu -->
     <!-- Mobile Menu -->
     <nav class="mobile-menu" id="mobile-menu">
+        <!-- Language & Theme Controls di dalam menu -->
+        <div class="mobile-controls-inner" style="padding: 12px 24px; border-bottom: 1px solid #e5e7eb;">
+            <div class="language-dropdown">
+                <button class="language-toggle" id="mobile-language-toggle">
+                    <span class="lang-text">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-menu" id="mobile-language-menu">
+                    <button class="language-option active" data-lang="EN">English</button>
+                    <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
+                </div>
+            </div>
+            <div class="theme-dropdown">
+                <button class="theme-toggle" id="mobile-theme-toggle">
+                    <i class="fas fa-desktop"></i>
+                    <span>System</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="theme-menu" id="mobile-theme-menu">
+                    <button class="theme-option active" data-theme="system">
+                        <i class="fas fa-desktop"></i>
+                        <span>System</span>
+                    </button>
+                    <button class="theme-option" data-theme="light">
+                        <i class="fas fa-sun"></i>
+                        <span>Light</span>
+                    </button>
+                    <button class="theme-option" data-theme="dark">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="menu-items" id="menu-items">
             <a href="#contact" class="menu-item" data-key="contact">Contact</a>
             <a href="#experience" class="menu-item" data-key="experience">Experience</a>
@@ -101,7 +102,6 @@
             <a href="#portfolio" class="menu-item" data-key="portfolio">Portfolio</a>
         </div>
     </nav>
-
     <div class="container">
         <!-- Profile Section (replaces old header content) -->
         <section class="profile-section">
