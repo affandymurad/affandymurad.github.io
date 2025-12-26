@@ -307,15 +307,18 @@
             flex-wrap: wrap;
             gap: 8px;
             justify-content: center;
+            align-items: center;
         }
 
         .project-badge {
             background: #3366cc;
             color: white;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 20px;
-            font-size: 0.85em;
+            font-size: 0.9em;
             font-weight: 600;
+            white-space: nowrap;
+            line-height: 1.3;
         }
 
         .loading {
@@ -340,115 +343,44 @@
             border-color: #6b2c2c;
         }
 
-        /* ===== EXTRA COMPACT MOBILE MODE ===== */
-        @media (max-width: 768px) {
-            #preview {
-                width: 100%;
-                height: auto;
-            }
-
-            /* Grid item lebih rapat */
-            .grid-item {
-                padding: 14px;
-            }
-
-            /* ===== HERO BOX ===== */
-            .hero-box h2 {
-                font-size: 1.6em;
-                letter-spacing: 1px;
-                margin-bottom: 6px;
-            }
-
-            .hero-box .year {
-                font-size: 1.2em;
-            }
-
-            .hero-box .username {
-                font-size: 0.95em;
-                margin-top: 4px;
-            }
-
-            /* ===== STAT BOXES ===== */
-            .stat-value {
-                font-size: 1.4em;
-                line-height: 0.9;
-                margin-bottom: 3px;
-                word-break: break-word;
-            }
-
-            .stat-label {
-                font-size: 0.6em;
-                letter-spacing: 0.3px;
-                line-height: 1.1;
-            }
-
-            /* Spesifik agar tidak overflow */
-            #editsCount,
-            #articlesCount,
-            #bytesCount {
-                max-width: 100%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            /* ===== PROJECTS OVERLAY ===== */
-            .projects-overlay {
-                bottom: 64px;
-                /* naik agar tidak nabrak QR */
-                padding: 8px;
-                gap: 4px;
-            }
-
-            .project-badge {
-                font-size: 0.65em;
-                padding: 3px 8px;
-                border-radius: 12px;
-                line-height: 1.2;
-            }
-        }
-
-
         .qr-section {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 15px;
+            right: 15px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            padding: 8px 10px;
+            padding: 12px;
             text-align: center;
-            width: 96px;
+            width: 140px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .qr-section img {
-            width: 84px;
-            height: 84px;
+            width: 100px;
+            height: 100px;
             display: block;
-            margin: 0 auto 6px;
+            margin: 0 auto 8px;
+            border-radius: 4px;
         }
 
         .qr-label {
-            font-size: 0.65em;
+            font-size: 0.7em;
             font-weight: 600;
             color: #202122;
             line-height: 1.3;
             text-align: center;
-
-            /* WRAP SETTINGS */
             white-space: normal;
             word-break: break-word;
             overflow-wrap: anywhere;
-
-            max-width: 110px;
-            margin: 0 auto;
+            margin-bottom: 6px;
         }
 
         .qr-cc {
-            margin-top: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 4px;
-            font-size: 0.95em;
+            gap: 3px;
+            font-size: 1.1em;
             color: #202122;
         }
 
@@ -456,7 +388,8 @@
             color: inherit;
             text-decoration: none;
             display: flex;
-            gap: 6px;
+            gap: 3px;
+            align-items: center;
         }
 
         .qr-cc i {
@@ -485,6 +418,96 @@
 
         [data-theme="dark"] .back-button {
             background: var(--bg-secondary);
+        }
+
+        @media (max-width: 768px) {
+            #preview {
+                width: 100%;
+                height: auto;
+            }
+
+            .grid-item {
+                padding: 14px;
+            }
+
+            .hero-box h2 {
+                font-size: 1.6em;
+                letter-spacing: 1px;
+                margin-bottom: 6px;
+            }
+
+            .hero-box .year {
+                font-size: 1.2em;
+            }
+
+            .hero-box .username {
+                font-size: 0.95em;
+                margin-top: 4px;
+            }
+
+            .stat-value {
+                font-size: 1.4em;
+                line-height: 0.9;
+                margin-bottom: 3px;
+                word-break: break-word;
+            }
+
+            .stat-label {
+                font-size: 0.6em;
+                letter-spacing: 0.3px;
+                line-height: 1.1;
+            }
+
+            #editsCount,
+            #articlesCount,
+            #bytesCount {
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .qr-section {
+                top: 8px;
+                right: 8px;
+                width: 100px;
+                padding: 8px;
+            }
+
+            .qr-section img {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 4px;
+            }
+
+            .qr-label {
+                font-size: 0.55em;
+                margin-bottom: 4px;
+            }
+
+            .qr-cc {
+                font-size: 0.9em;
+                gap: 2px;
+            }
+
+            .projects-overlay {
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+                padding: 8px;
+                gap: 4px;
+            }
+
+            .project-badge {
+                font-size: 0.65em;
+                padding: 4px 8px;
+                border-radius: 12px;
+            }
+
+            .attribution {
+                font-size: 0.5em;
+                bottom: 3px;
+                right: 5px;
+            }
         }
     </style>
 </head>
@@ -563,9 +586,7 @@
                     <div class="grid-item image-box">
                         <div class="qr-section">
                             <img id="qrImage" />
-                            <div class="qr-label" id="qrLabel">
-                                <!-- Buat versimu di wikimedia.org -->
-                            </div>
+                            <div class="qr-label" id="qrLabel"></div>
                             <div class="qr-cc">
                                 <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank"
                                     rel="license noopener" aria-label="CC BY-SA 4.0 license">
@@ -613,8 +634,9 @@
                 yearLabel: "Tahun",
                 wikisLabel: "Domain Wiki (pisahkan dengan koma)",
                 generateBtn: "Generate Preview",
-                downloadBtn: "Download sebagai Gambar",
-                previewTitle: "A YEAR IN REVIEW",
+                downloadBtn: "Unduh sebagai Gambar",
+                downloadingBtn: "Mengunduh...",
+                previewTitle: "KILAS BALIK SETAHUN",
                 editsLabel: "Suntingan",
                 articlesLabel: "Artikel",
                 bytesLabel: "Byte",
@@ -635,6 +657,7 @@
                 wikisLabel: "Wiki Domains (comma-separated)",
                 generateBtn: "Generate Preview",
                 downloadBtn: "Download as Image",
+                downloadingBtn: "Downloading...",
                 previewTitle: "A YEAR IN REVIEW",
                 editsLabel: "Edits",
                 articlesLabel: "Articles",
@@ -648,15 +671,26 @@
             }
         };
 
+        const specialProjects = {
+            'commons.wikimedia.org': 'Commons',
+            'wikidata.org': 'Wikidata',
+            'www.wikidata.org': 'Wikidata',
+            'meta.wikimedia.org': 'Meta-Wiki',
+            'mediawiki.org': 'MediaWiki',
+            'www.mediawiki.org': 'MediaWiki',
+            'species.wikimedia.org': 'Wikispecies',
+            'wikifunctions.org': 'Wikifunctions',
+            'www.wikifunctions.org': 'Wikifunctions',
+            'incubator.wikimedia.org': 'Incubator',
+            'wikitech.wikimedia.org': 'Wikitech'
+        };
+
         let currentLang = 'id';
 
         function getBasePageUrl(url) {
             try {
                 const u = new URL(url);
-
-                // Ambil path tanpa nama file
                 const path = u.pathname.replace(/\/[^\/]*$/, '');
-
                 return `${u.origin}${path}`.replace(/\/$/, '');
             } catch {
                 return url;
@@ -720,7 +754,7 @@
         document.getElementById('langSelect').addEventListener('change', updateLanguage);
 
         applyTheme();
-        updateLanguage(); // ini otomatis akan manggil updateQrSection
+        updateLanguage();
 
         function formatNumber(num) {
             if (num >= 1000000) {
@@ -729,6 +763,37 @@
                 return (num / 1000).toFixed(1) + 'K';
             }
             return num.toString();
+        }
+
+        function getProjectName(domain) {
+            const cleanDomain = domain.toLowerCase().trim();
+
+            if (specialProjects[cleanDomain]) {
+                return specialProjects[cleanDomain];
+            }
+
+            const parts = cleanDomain.split('.');
+            const langCode = parts[0];
+
+            if (cleanDomain.includes('wikipedia')) {
+                return `Wikipedia (${langCode})`;
+            } else if (cleanDomain.includes('wiktionary')) {
+                return `Wiktionary (${langCode})`;
+            } else if (cleanDomain.includes('wikibooks')) {
+                return `Wikibooks (${langCode})`;
+            } else if (cleanDomain.includes('wikisource')) {
+                return `Wikisource (${langCode})`;
+            } else if (cleanDomain.includes('wikivoyage')) {
+                return `Wikivoyage (${langCode})`;
+            } else if (cleanDomain.includes('wikinews')) {
+                return `Wikinews (${langCode})`;
+            } else if (cleanDomain.includes('wikiquote')) {
+                return `Wikiquote (${langCode})`;
+            } else if (cleanDomain.includes('wikiversity')) {
+                return `Wikiversity (${langCode})`;
+            }
+
+            return domain;
         }
 
         async function generatePreview() {
@@ -806,18 +871,7 @@
                             totalPages += domainPages;
                             totalAdded += domainAdded;
 
-                            let projectName = domain;
-                            if (domain.includes('wikipedia')) projectName = 'Wikipedia (' + domain.split('.')[0] + ')';
-                            else if (domain.includes('commons')) projectName = 'Commons';
-                            else if (domain.includes('wikidata')) projectName = 'Wikidata';
-                            else if (domain.includes('wiktionary')) projectName = 'Wiktionary';
-                            else if (domain.includes('wikibooks')) projectName = 'Wikibooks';
-                            else if (domain.includes('wikisource')) projectName = 'Wikisource';
-                            else if (domain.includes('wikivoyage')) projectName = 'Wikivoyage';
-                            else if (domain.includes('wikinews')) projectName = 'Wikinews';
-                            else if (domain.includes('wikiquote')) projectName = 'Wikiquote';
-                            else if (domain.includes('wikiversity')) projectName = 'Wikiversity';
-
+                            const projectName = getProjectName(domain);
                             activeProjects.push(projectName);
                         }
 
@@ -898,28 +952,40 @@
 
         async function downloadImage() {
             const preview = document.getElementById('preview');
-
-            // Ambil ukuran aktual preview (penting untuk mobile)
             const rect = preview.getBoundingClientRect();
+            const downloadBtn = document.getElementById('downloadBtn');
+            const t = translations[currentLang];
 
-            const canvas = await html2canvas(preview, {
-                backgroundColor: '#ffffff',
-                scale: window.devicePixelRatio || 2,
-                width: Math.round(rect.width),
-                height: Math.round(rect.height),
-                useCORS: true,
-                allowTaint: true
-            });
+            // Disable button and show downloading status
+            downloadBtn.disabled = true;
+            const originalText = downloadBtn.textContent;
+            downloadBtn.textContent = t.downloadingBtn;
 
-            const link = document.createElement('a');
-            const username = document.getElementById('username').value || 'user';
-            const year = document.getElementById('year').value;
+            try {
+                const canvas = await html2canvas(preview, {
+                    backgroundColor: '#ffffff',
+                    scale: window.devicePixelRatio || 2,
+                    width: Math.round(rect.width),
+                    height: Math.round(rect.height),
+                    useCORS: true,
+                    allowTaint: true
+                });
 
-            link.download = `wiki-year-review-${username}-${year}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+                const link = document.createElement('a');
+                const username = document.getElementById('username').value || 'user';
+                const year = document.getElementById('year').value;
+
+                link.download = `wiki-year-review-${username}-${year}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (error) {
+                console.error('Error downloading image:', error);
+            } finally {
+                // Re-enable button and restore original text
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = originalText;
+            }
         }
-
     </script>
 </body>
 
