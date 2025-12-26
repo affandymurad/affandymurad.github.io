@@ -319,8 +319,8 @@
         }
 
         .card-content {
-            max-height: 1000px;
-            overflow: hidden;
+            max-height: none;
+            overflow: visible;
             transition: max-height 0.3s ease-out, opacity 0.3s;
             opacity: 1;
         }
@@ -653,6 +653,36 @@
     </div>
 
     <script>
+        async function fetchTrendingWithRetry(key, proj, maxRetry = 7) {
+            const today = new Date();
+
+            for (let i = 1; i <= maxRetry; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const da = String(d.getDate()).padStart(2, '0');
+
+                const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${y}/${m}/${da}`;
+
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) continue;
+
+                    const json = await res.json();
+                    const articles = json.items?.[0]?.articles;
+                    if (articles?.length) {
+                        return articles.slice(0, 30);
+                    }
+                } catch {
+                    // silent retry
+                }
+            }
+
+            return []; // gagal semua → skip trending
+        }
+
         const THRESHOLDS = { 1: 300, 7: 1000, 30: 3000, 90: 10000, 180: 20000, 365: 50000 };
 
         let currentSortColumn = -1;
@@ -784,7 +814,7 @@
         }
 
         const normalize = u => u.startsWith('http') ? u.replace(/\/$/, '') : 'https://' + u.replace(/\/$/, '');
-        const keyFrom = u => u.replace(/^https?:\/\//, '').replace('.org', '');
+        const keyFrom = u => u.replace(/^https?:\/\//, '');
         const fmt = d => new Date(d).toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
         function toggleCollapse(section) {
@@ -884,28 +914,27 @@
 
             // Trending Articles
             status.textContent = translations[currentLang].fetchingTrending;
+
             try {
-                const d = new Date(end);
-                d.setDate(d.getDate() - 1);
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, '0');
-                const da = String(d.getDate()).padStart(2, '0');
+                const list = await fetchTrendingWithRetry(key, proj);
 
-                const top = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${y}/${m}/${da}`;
-                const t = await (await fetch(top)).json();
-                const list = t.items?.[0]?.articles?.slice(0, 30) || [];
+                if (list.length) {
+                    const tbody = document
+                        .getElementById('trendingTable')
+                        .querySelector('tbody');
 
-                const tbody = document.getElementById('trendingTable').querySelector('tbody');
-                for (const a of list) {
-                    const link = `${proj}/wiki/${encodeURIComponent(a.article)}`;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><a href="${link}" target="_blank">${a.article.replace(/_/g, ' ')}</a></td>
-                        <td>${a.views.toLocaleString()}</td>
-                    `;
-                    tbody.appendChild(row);
+                    for (const a of list) {
+                        const link = `${proj}/wiki/${encodeURIComponent(a.article)}`;
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td><a href="${link}" target="_blank">${a.article.replace(/_/g, ' ')}</a></td>
+                <td>${a.views.toLocaleString()}</td>
+            `;
+                        tbody.appendChild(row);
+                    }
+
+                    document.getElementById('trendingCard').style.display = 'block';
                 }
-                document.getElementById('trendingCard').style.display = 'block';
             } catch {
                 error.textContent = translations[currentLang].errorTrending;
                 error.style.display = 'block';
