@@ -362,6 +362,55 @@
             .stat-label {
                 font-size: 0.9em;
             }
+
+            .qr-label {
+                display: none;
+            }
+
+            .projects-overlay {
+                transform: translateY(-20px);
+            }
+
+            /* Perkecil angka statistik */
+            .stat-value {
+                font-size: 2.1em;
+                /* dari 2.5em */
+                line-height: 1.05;
+                margin-bottom: 6px;
+            }
+
+            /* Perkecil label statistik */
+            .stat-label {
+                font-size: 0.75em;
+                letter-spacing: 0.5px;
+            }
+
+            /* Spesifik untuk articles & bytes agar pasti muat */
+            #articlesCount,
+            #bytesCount {
+                font-size: 1.9em;
+            }
+
+            /* Kurangi padding grid item */
+            .grid-item {
+                padding: 18px;
+            }
+
+            /* Projects overlay: naik sedikit + lebih rapat */
+            .projects-overlay {
+                bottom: 25px;
+                /* naik dari 20px */
+                padding: 10px;
+                gap: 6px;
+            }
+
+            /* Badge proyek lebih kecil */
+            .project-badge {
+                font-size: 0.7em;
+                padding: 4px 10px;
+                border-radius: 14px;
+                white-space: nowrap;
+            }
         }
 
         .qr-section {
@@ -373,7 +422,6 @@
             padding: 8px 10px;
             text-align: center;
             width: 130px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .qr-section img {
@@ -488,7 +536,8 @@
                 <div class="full-width">
                     <label for="wikis" id="wikisLabel">Domain Wiki (pisahkan dengan koma)</label>
                     <input type="text" id="wikis"
-                        placeholder="id.wikipedia.org, en.wikipedia.org, commons.wikimedia.org, www.wikidata.org">
+                        placeholder="id.wikipedia.org, en.wikipedia.org, commons.wikimedia.org, www.wikidata.org"
+                        autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" inputmode="url" />
                 </div>
             </div>
             <button onclick="generatePreview()" id="generateBtn">Generate Preview</button>
@@ -535,8 +584,8 @@
                             src="https://upload.wikimedia.org/wikipedia/commons/6/69/WP25_Languages.gif"
                             alt="WP25_Languages">
                         <div class="attribution" id="imageAttribution">
-                            <a href="https://commons.wikimedia.org/wiki/File:WP25_World.gif" target="_blank">WP25
-                                World.gif</a>
+                            <a href="https://commons.wikimedia.org/wiki/File:WP25_Languages.gif"
+                                target="_blank">File:WP25 Languages.gif</a>
                             | Foundation staff and contractors, <a href="https://creativecommons.org/licenses/by-sa/4.0"
                                 target="_blank">CC BY-SA 4.0</a>,
                             via Wikimedia Commons
@@ -824,7 +873,7 @@
 
                 imageAttribution.innerHTML = `
     <a href="https://commons.wikimedia.org/wiki/File:WP25_World.gif" target="_blank" rel="noopener">
-        WP25 World.gif
+        File:WP25 World.gif
     </a>
     | Wikimedia Foundation staff and contractors,
     <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">
@@ -854,11 +903,15 @@
 
         async function downloadImage() {
             const preview = document.getElementById('preview');
+
+            // Ambil ukuran aktual preview (penting untuk mobile)
+            const rect = preview.getBoundingClientRect();
+
             const canvas = await html2canvas(preview, {
                 backgroundColor: '#ffffff',
-                scale: 2,
-                width: 1080,
-                height: 1080,
+                scale: window.devicePixelRatio || 2,
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
                 useCORS: true,
                 allowTaint: true
             });
@@ -866,10 +919,12 @@
             const link = document.createElement('a');
             const username = document.getElementById('username').value || 'user';
             const year = document.getElementById('year').value;
+
             link.download = `wiki-year-review-${username}-${year}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
+
     </script>
 </body>
 
