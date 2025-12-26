@@ -352,48 +352,51 @@
             }
 
             .hero-box h2 {
-                font-size: 2em;
+                font-size: 1.6em;
+                letter-spacing: 1px;
+                margin-bottom: 6px;
+            }
+
+            .hero-box .year {
+                font-size: 1.2em;
+            }
+
+            .hero-box .username {
+                font-size: 0.95em;
+                margin-top: 4px;
             }
 
             .stat-value {
-                font-size: 2.5em;
+                font-size: 1.8em;
+                line-height: 1;
+                margin-bottom: 4px;
             }
 
             .stat-label {
-                font-size: 0.9em;
+                font-size: 0.7em;
+                letter-spacing: 0.4px;
             }
 
             .qr-label {
                 display: none;
             }
 
-            .projects-overlay {
-                transform: translateY(-20px);
-            }
-
-            /* Perkecil angka statistik */
-            .stat-value {
-                font-size: 2.1em;
-                /* dari 2.5em */
-                line-height: 1.05;
-                margin-bottom: 6px;
-            }
-
-            /* Perkecil label statistik */
-            .stat-label {
-                font-size: 0.75em;
-                letter-spacing: 0.5px;
-            }
-
-            /* Spesifik untuk articles & bytes agar pasti muat */
+            #editsCount,
             #articlesCount,
             #bytesCount {
-                font-size: 1.9em;
+                max-width: 100%;
+                white-space: nowrap;
+            }
+
+            .projects-overlay {
+                transform: translateY(-20px);
+                padding: 8px;
+                gap: 4px;
             }
 
             /* Kurangi padding grid item */
             .grid-item {
-                padding: 18px;
+                padding: 14px;
             }
 
             /* Projects overlay: naik sedikit + lebih rapat */
@@ -406,10 +409,10 @@
 
             /* Badge proyek lebih kecil */
             .project-badge {
-                font-size: 0.7em;
-                padding: 4px 10px;
-                border-radius: 14px;
-                white-space: nowrap;
+                font-size: 0.65em;
+                padding: 3px 8px;
+                border-radius: 12px;
+                line-height: 1.2;
             }
         }
 
