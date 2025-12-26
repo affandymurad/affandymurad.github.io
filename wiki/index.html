@@ -340,17 +340,15 @@
             border-color: #6b2c2c;
         }
 
+        /* ===== EXTRA COMPACT MOBILE MODE ===== */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
+
+            /* Grid item lebih rapat */
+            .grid-item {
+                padding: 14px;
             }
 
-            #preview {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 1;
-            }
-
+            /* ===== HERO BOX ===== */
             .hero-box h2 {
                 font-size: 1.6em;
                 letter-spacing: 1px;
@@ -366,48 +364,37 @@
                 margin-top: 4px;
             }
 
+            /* ===== STAT BOXES ===== */
             .stat-value {
-                font-size: 1.8em;
-                line-height: 1;
-                margin-bottom: 4px;
+                font-size: 1.4em;
+                line-height: 0.9;
+                margin-bottom: 3px;
+                word-break: break-word;
             }
 
             .stat-label {
-                font-size: 0.7em;
-                letter-spacing: 0.4px;
+                font-size: 0.6em;
+                letter-spacing: 0.3px;
+                line-height: 1.1;
             }
 
-            .qr-label {
-                display: none;
-            }
-
+            /* Spesifik agar tidak overflow */
             #editsCount,
             #articlesCount,
             #bytesCount {
                 max-width: 100%;
-                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
+            /* ===== PROJECTS OVERLAY ===== */
             .projects-overlay {
-                transform: translateY(-20px);
+                bottom: 64px;
+                /* naik agar tidak nabrak QR */
                 padding: 8px;
                 gap: 4px;
             }
 
-            /* Kurangi padding grid item */
-            .grid-item {
-                padding: 14px;
-            }
-
-            /* Projects overlay: naik sedikit + lebih rapat */
-            .projects-overlay {
-                bottom: 25px;
-                /* naik dari 20px */
-                padding: 10px;
-                gap: 6px;
-            }
-
-            /* Badge proyek lebih kecil */
             .project-badge {
                 font-size: 0.65em;
                 padding: 3px 8px;
@@ -415,6 +402,7 @@
                 line-height: 1.2;
             }
         }
+
 
         .qr-section {
             position: absolute;
