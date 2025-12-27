@@ -1156,6 +1156,19 @@
 
                 // STEP 4: Setup recorder
                 const stream = canvas.captureStream(FPS);
+
+                // Cek codec yang didukung (iOS sering hanya support VP8 atau H264)
+                let mimeType = 'video/webm;codecs=vp9';
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'video/webm;codecs=vp8';
+                    if (!MediaRecorder.isTypeSupported(mimeType)) {
+                        mimeType = 'video/webm';
+                        if (!MediaRecorder.isTypeSupported(mimeType)) {
+                            mimeType = 'video/mp4'; // Fallback untuk iOS
+                        }
+                    }
+                }
+
                 const recorder = new MediaRecorder(stream, {
                     mimeType: 'video/webm;codecs=vp9',
                     videoBitsPerSecond: 3_000_000
