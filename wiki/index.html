@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wiki Year in Review</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
@@ -287,12 +288,13 @@
 
         .attribution {
             position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 0.6em;
+            top: 5px;
+            left: 10px;
+            font-size: 0.3em;
             color: rgba(0, 0, 0, 0.5);
-            text-align: right;
-            line-height: 1.2;
+            text-align: left;
+            line-height: 1.5;
+            max-width: 44%;
         }
 
         .projects-overlay {
@@ -308,6 +310,7 @@
             gap: 8px;
             justify-content: center;
             align-items: center;
+            max-height: 200px;
         }
 
         .project-badge {
@@ -352,7 +355,6 @@
             padding: 12px;
             text-align: center;
             width: 140px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .qr-section img {
@@ -364,7 +366,7 @@
         }
 
         .qr-label {
-            font-size: 0.7em;
+            font-size: 0.5em;
             font-weight: 600;
             color: #202122;
             line-height: 1.3;
@@ -480,7 +482,7 @@
             }
 
             .qr-label {
-                font-size: 0.55em;
+                font-size: 0.4em;
                 margin-bottom: 4px;
             }
 
@@ -504,10 +506,29 @@
             }
 
             .attribution {
-                font-size: 0.5em;
+                font-size: 0.4em;
                 bottom: 3px;
                 right: 5px;
             }
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
         }
     </style>
 </head>
@@ -553,9 +574,9 @@
                 </div>
                 <div class="full-width">
                     <label for="wikis" id="wikisLabel">Domain Wiki (pisahkan dengan koma)</label>
-                    <input type="text" id="wikis"
+                    <textarea id="wikis" rows="3"
                         placeholder="id.wikipedia.org, en.wikipedia.org, commons.wikimedia.org, www.wikidata.org"
-                        autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" inputmode="url" />
+                        autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false"></textarea>
                 </div>
             </div>
             <button onclick="generatePreview()" id="generateBtn">Generate Preview</button>
@@ -618,15 +639,22 @@
             </div>
         </div>
 
-        <div style="text-align: center;">
+        <!-- Canvas untuk recording – harus ada di DOM -->
+        <canvas id="recordCanvas" style="display: none;"></canvas>
+
+        <div
+            style="text-align: center; margin: 30px 0; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
             <button onclick="downloadImage()" id="downloadBtn">Download sebagai Gambar</button>
+            <button onclick="downloadVideo()" id="downloadVideoBtn">
+                <i class="fa-solid fa-video"></i> Download sebagai Video
+            </button>
         </div>
     </div>
 
     <script>
         const translations = {
             id: {
-                mainTitle: "Wiki Year in Review",
+                mainTitle: "Kilas Balik Wiki Setahun",
                 subtitle: "Buat ringkasan kontribusi Wikimedia Anda",
                 themeLabel: "Tema:",
                 langLabel: "Bahasa:",
@@ -639,7 +667,7 @@
                 previewTitle: "KILAS BALIK SETAHUN",
                 editsLabel: "Suntingan",
                 articlesLabel: "Artikel",
-                bytesLabel: "Byte",
+                bytesLabel: "Bita",
                 loading: "Memuat data...",
                 errorUsername: "Silakan masukkan nama pengguna",
                 errorWikis: "Silakan masukkan setidaknya satu domain wiki",
@@ -796,6 +824,49 @@
             return domain;
         }
 
+        // Fungsi untuk menghitung badge yang muat
+        function calculateVisibleBadges(projects) {
+            const imageBox = document.querySelector('.image-box');
+            const qrSection = document.querySelector('.qr-section');
+
+            // Hitung tinggi yang tersedia (tinggi image-box - tinggi qr-section - margin)
+            const imageBoxHeight = imageBox.offsetHeight;
+            const qrHeight = qrSection.offsetHeight;
+            const availableHeight = imageBoxHeight - qrHeight - 24; // 60px untuk margin top dari QR
+
+            // Estimasi tinggi overlay (padding + gap)
+            const overlayPadding = 30; // 15px top + 15px bottom
+            const maxOverlayHeight = Math.min(availableHeight, 500); // Max 500px sesuai CSS
+
+            // Buat badge temporary untuk ukur ukuran
+            projectsOverlay.innerHTML = projects.map(p =>
+                `<div class="project-badge">${p}</div>`
+            ).join('');
+
+            const actualHeight = projectsOverlay.offsetHeight;
+
+            // Jika muat semua, return semua
+            if (actualHeight <= maxOverlayHeight) {
+                return projects.length;
+            }
+
+            // Jika tidak muat, hitung berapa yang bisa ditampilkan
+            let visibleCount = projects.length;
+            while (visibleCount > 1) {
+                visibleCount--;
+                const testProjects = projects.slice(0, visibleCount);
+                projectsOverlay.innerHTML = testProjects.map(p =>
+                    `<div class="project-badge">${p}</div>`
+                ).join('') + `<div class="project-badge">+${projects.length - visibleCount}</div>`;
+
+                if (projectsOverlay.offsetHeight <= maxOverlayHeight) {
+                    return visibleCount;
+                }
+            }
+
+            return 1;
+        }
+
         async function generatePreview() {
             const username = document.getElementById('username').value.trim();
             const year = document.getElementById('year').value;
@@ -937,10 +1008,20 @@
                 document.getElementById('articlesCount').textContent = formatNumber(totalPages);
                 document.getElementById('bytesCount').textContent = formatNumber(totalAdded);
 
-                const projectsOverlay = document.getElementById('projectsOverlay');
-                projectsOverlay.innerHTML = activeProjects.map(p =>
-                    `<div class="project-badge">${p}</div>`
-                ).join('');
+                const visibleCount = calculateVisibleBadges(activeProjects);
+
+                if (visibleCount >= activeProjects.length) {
+                    projectsOverlay.innerHTML = activeProjects.map(p =>
+                        `<div class="project-badge">${p}</div>`
+                    ).join('');
+                } else {
+                    const visibleProjects = activeProjects.slice(0, visibleCount);
+                    const remainingCount = activeProjects.length - visibleCount;
+
+                    projectsOverlay.innerHTML = visibleProjects.map(p =>
+                        `<div class="project-badge">${p}</div>`
+                    ).join('') + `<div class="project-badge">+${remainingCount}</div>`;
+                }
 
                 loadingMsg.style.display = 'none';
             } catch (error) {
@@ -984,6 +1065,158 @@
                 // Re-enable button and restore original text
                 downloadBtn.disabled = false;
                 downloadBtn.textContent = originalText;
+            }
+        }
+
+        async function downloadVideo() {
+            const preview = document.getElementById('preview');
+            const canvas = document.getElementById('recordCanvas');
+            const ctx = canvas.getContext('2d');
+            const btn = document.getElementById('downloadVideoBtn');
+
+            const FPS = 30;
+            const RECORD_DURATION = 8000;
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = currentLang === 'id' ? "Merekam..." : "Recording...";
+
+            try {
+                const rect = preview.getBoundingClientRect();
+                canvas.width = Math.round(rect.width);
+                canvas.height = Math.round(rect.height);
+
+                // Get image box info
+                const imageBox = document.querySelector('.image-box');
+                const imageBoxRect = imageBox.getBoundingClientRect();
+                const imageBoxOffsetX = Math.round(imageBoxRect.left - rect.left);
+                const imageBoxOffsetY = Math.round(imageBoxRect.top - rect.top);
+
+                // STEP 1: Capture base layout (everything except image-box content)
+                const baseClone = preview.cloneNode(true);
+                baseClone.style.position = 'fixed';
+                baseClone.style.left = '-100000px';
+                baseClone.style.width = `${rect.width}px`;
+                baseClone.style.height = `${rect.height}px`;
+                baseClone.style.background = '#ffffff';
+
+                const baseImageBox = baseClone.querySelector('.image-box');
+                baseImageBox.innerHTML = ''; // Clear image box content
+                baseImageBox.style.background = '#F5F5F5';
+
+                document.body.appendChild(baseClone);
+                await new Promise(r => requestAnimationFrame(r));
+
+                const baseCanvas = await html2canvas(baseClone, {
+                    scale: 1,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                document.body.removeChild(baseClone);
+
+                // STEP 2: Capture overlays (QR, attribution, projects)
+                const overlayClone = imageBox.cloneNode(true);
+                overlayClone.style.position = 'fixed';
+                overlayClone.style.left = '-100000px';
+                overlayClone.style.width = `${imageBoxRect.width}px`;
+                overlayClone.style.height = `${imageBoxRect.height}px`;
+                overlayClone.style.background = 'transparent';
+
+                const overlayGif = overlayClone.querySelector('#previewImage');
+                const gifSrc = overlayGif.src;
+                overlayGif.remove(); // Remove GIF from overlay
+
+                document.body.appendChild(overlayClone);
+                await new Promise(r => requestAnimationFrame(r));
+
+                const overlayCanvas = await html2canvas(overlayClone, {
+                    scale: 1,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false
+                });
+
+                document.body.removeChild(overlayClone);
+
+                // STEP 3: Load GIF
+                const gifRes = await fetch(gifSrc, { mode: 'cors' });
+                const gifBuf = new Uint8Array(await gifRes.arrayBuffer());
+                const gif = new GifReader(gifBuf);
+
+                // Create temporary canvas for GIF rendering
+                const gifCanvas = document.createElement('canvas');
+                gifCanvas.width = gif.width;
+                gifCanvas.height = gif.height;
+                const gifCtx = gifCanvas.getContext('2d');
+
+                let frameIndex = 0;
+                let timer;
+
+                // STEP 4: Setup recorder
+                const stream = canvas.captureStream(FPS);
+                const recorder = new MediaRecorder(stream, {
+                    mimeType: 'video/webm;codecs=vp9',
+                    videoBitsPerSecond: 3_000_000
+                });
+
+                const chunks = [];
+                recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+
+                recorder.onstop = () => {
+                    clearTimeout(timer);
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const a = document.createElement('a');
+                    const username = document.getElementById('username').value || 'user';
+                    const year = document.getElementById('year').value;
+                    a.download = `wiki-year-review-${username}-${year}.webm`;
+                    a.href = URL.createObjectURL(blob);
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                };
+
+                recorder.start();
+
+                // STEP 5: Render loop
+                function drawFrame() {
+                    // 1. Draw base (white background + all grids)
+                    ctx.drawImage(baseCanvas, 0, 0);
+
+                    // 2. Decode and draw GIF frame
+                    const pixels = new Uint8ClampedArray(gif.width * gif.height * 4);
+                    gif.decodeAndBlitFrameRGBA(frameIndex, pixels);
+                    const imgData = new ImageData(pixels, gif.width, gif.height);
+                    gifCtx.putImageData(imgData, 0, 0);
+
+                    // Scale and draw GIF to match image box size
+                    ctx.drawImage(
+                        gifCanvas,
+                        imageBoxOffsetX,
+                        imageBoxOffsetY,
+                        imageBoxRect.width,
+                        imageBoxRect.height
+                    );
+
+                    // 3. Draw overlays on top
+                    ctx.drawImage(overlayCanvas, imageBoxOffsetX, imageBoxOffsetY);
+
+                    // Next frame
+                    const delay = Math.max(gif.frameInfo(frameIndex).delay || 10, 10) * 10;
+                    frameIndex = (frameIndex + 1) % gif.numFrames();
+                    timer = setTimeout(drawFrame, delay);
+                }
+
+                drawFrame();
+                setTimeout(() => recorder.stop(), RECORD_DURATION);
+
+            } catch (err) {
+                console.error('Video creation error:', err);
+                alert(currentLang === 'id' ? "Gagal membuat video. Cek console untuk detail." : "Failed to create video. Check console for details.");
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         }
     </script>
