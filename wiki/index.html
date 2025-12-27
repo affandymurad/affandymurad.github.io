@@ -644,7 +644,10 @@
 
         <div
             style="text-align: center; margin: 30px 0; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <button onclick="downloadImage()" id="downloadBtn">Download sebagai Gambar</button>
+            <!-- Sudah ada di kode Anda, line 690 -->
+            <button onclick="downloadImage()" id="downloadBtn">
+                <i class="fa-solid fa-image"></i> Download sebagai Gambar
+            </button>
             <button onclick="downloadVideo()" id="downloadVideoBtn">
                 <i class="fa-solid fa-video"></i> Download sebagai Video
             </button>
@@ -663,7 +666,9 @@
                 wikisLabel: "Domain Wiki (pisahkan dengan koma)",
                 generateBtn: "Generate Preview",
                 downloadBtn: "Unduh sebagai Gambar",
+                downloadVideoBtn: "Unduh sebagai Video",
                 downloadingBtn: "Mengunduh...",
+                recordingBtn: "Merekam...",
                 previewTitle: "KILAS BALIK SETAHUN",
                 editsLabel: "Suntingan",
                 articlesLabel: "Artikel",
@@ -685,7 +690,9 @@
                 wikisLabel: "Wiki Domains (comma-separated)",
                 generateBtn: "Generate Preview",
                 downloadBtn: "Download as Image",
+                downloadVideoBtn: "Download as Video",
                 downloadingBtn: "Downloading...",
+                recordingBtn: "Recording...",
                 previewTitle: "A YEAR IN REVIEW",
                 editsLabel: "Edits",
                 articlesLabel: "Articles",
@@ -758,7 +765,10 @@
             document.getElementById('yearLabel').textContent = t.yearLabel;
             document.getElementById('wikisLabel').textContent = t.wikisLabel;
             document.getElementById('generateBtn').textContent = t.generateBtn;
-            document.getElementById('downloadBtn').textContent = t.downloadBtn;
+            document.getElementById('downloadBtn').innerHTML =
+                `<i class="fa-solid fa-image"></i> ${t.downloadBtn}`;
+            document.getElementById('downloadVideoBtn').innerHTML =
+                `<i class="fa-solid fa-video"></i> ${t.downloadVideoBtn}`;
             document.getElementById('previewTitle').textContent = t.previewTitle;
             document.getElementById('editsLabel').textContent = t.editsLabel;
             document.getElementById('articlesLabel').textContent = t.articlesLabel;
@@ -1073,13 +1083,24 @@
             const canvas = document.getElementById('recordCanvas');
             const ctx = canvas.getContext('2d');
             const btn = document.getElementById('downloadVideoBtn');
+            const t = translations[currentLang]; // TAMBAH INI DI AWAL
 
             const FPS = 30;
             const RECORD_DURATION = 8000;
 
             btn.disabled = true;
-            const originalText = btn.textContent;
-            btn.textContent = currentLang === 'id' ? "Merekam..." : "Recording...";
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-video"></i> ${t.recordingBtn}`;
+
+            // Cek apakah browser support MediaRecorder
+            if (typeof MediaRecorder === 'undefined') {
+                alert(currentLang === 'id'
+                    ? "Browser Anda tidak mendukung perekaman video. Silakan gunakan 'Download sebagai Gambar' atau buka di browser desktop."
+                    : "Your browser doesn't support video recording. Please use 'Download as Image' or open in desktop browser.");
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
+            }
 
             try {
                 const rect = preview.getBoundingClientRect();
@@ -1154,24 +1175,36 @@
                 let frameIndex = 0;
                 let timer;
 
-                // STEP 4: Setup recorder
+                // STEP 4: Setup recorder with codec detection
                 const stream = canvas.captureStream(FPS);
 
-                // Cek codec yang didukung (iOS sering hanya support VP8 atau H264)
-                let mimeType = 'video/webm;codecs=vp9';
-                if (!MediaRecorder.isTypeSupported(mimeType)) {
-                    mimeType = 'video/webm;codecs=vp8';
-                    if (!MediaRecorder.isTypeSupported(mimeType)) {
-                        mimeType = 'video/webm';
-                        if (!MediaRecorder.isTypeSupported(mimeType)) {
-                            mimeType = 'video/mp4'; // Fallback untuk iOS
-                        }
+                // Cek codec yang didukung
+                const codecs = [
+                    'video/webm;codecs=vp9',
+                    'video/webm;codecs=vp8',
+                    'video/webm;codecs=h264',
+                    'video/webm',
+                    'video/mp4;codecs=h264',
+                    'video/mp4'
+                ];
+
+                let mimeType = null;
+                for (const codec of codecs) {
+                    if (MediaRecorder.isTypeSupported(codec)) {
+                        mimeType = codec;
+                        break;
                     }
                 }
 
+                if (!mimeType) {
+                    throw new Error('No supported video format found. iOS/Safari has limited support for video recording.');
+                }
+
+                console.log('Using codec:', mimeType);
+
                 const recorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp9',
-                    videoBitsPerSecond: 3_000_000
+                    mimeType: mimeType,
+                    videoBitsPerSecond: 2_500_000
                 });
 
                 const chunks = [];
@@ -1188,7 +1221,7 @@
                     a.click();
                     URL.revokeObjectURL(a.href);
                     btn.disabled = false;
-                    btn.textContent = originalText;
+                    btn.innerHTML = originalText;
                 };
 
                 recorder.start();
@@ -1227,9 +1260,21 @@
 
             } catch (err) {
                 console.error('Video creation error:', err);
-                alert(currentLang === 'id' ? "Gagal membuat video. Cek console untuk detail." : "Failed to create video. Check console for details.");
+
+                let errorMsg;
+                if (err.message.includes('No supported video format')) {
+                    errorMsg = currentLang === 'id'
+                        ? "iOS/Safari tidak mendukung perekaman video dari canvas. Silakan gunakan 'Download sebagai Gambar' atau buka di Chrome/Firefox desktop untuk download video."
+                        : "iOS/Safari doesn't support video recording from canvas. Please use 'Download as Image' or open in Chrome/Firefox desktop to download video.";
+                } else {
+                    errorMsg = currentLang === 'id'
+                        ? `Gagal membuat video: ${err.message}. Coba gunakan 'Download sebagai Gambar' sebagai alternatif.`
+                        : `Failed to create video: ${err.message}. Try 'Download as Image' as alternative.`;
+                }
+
+                alert(errorMsg);
                 btn.disabled = false;
-                btn.textContent = originalText;
+                btn.innerHTML = originalText;
             }
         }
     </script>
