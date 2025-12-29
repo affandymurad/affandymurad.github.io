@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wikimedia Impact Analyzer</title>
     <style>
+        /* Global improvements */
+        html {
+            scroll-behavior: smooth;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -30,20 +35,20 @@
         }
 
         [data-theme="dark"] {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #242424;
-            --bg-tertiary: #2d2d2d;
-            --text-primary: #e9ecef;
-            --text-secondary: #adb5bd;
-            --border: #404040;
-            --accent: #4a9eff;
-            --accent-hover: #6ab0ff;
-            --success: #20c997;
-            --success-bg: #1a4d3a;
-            --warning: #ffc107;
+            --bg-primary: #171717;
+            --bg-secondary: #1f1f1f;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --border: #444;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --success: #34d399;
+            --success-bg: #14532d;
+            --warning: #fbbf24;
             --warning-bg: #4d3d00;
-            --danger: #f75d5d;
-            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --danger: #f87171;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         body {
@@ -52,6 +57,8 @@
             color: var(--text-primary);
             line-height: 1.6;
             transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            font-feature-settings: "liga" 1, "calt" 1;
         }
 
         .container {
@@ -152,6 +159,23 @@
         input[type="text"]:focus {
             outline: none;
             border-color: var(--accent);
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        input[type="radio"]+.duration-label {
+            transition: all 0.2s ease;
+        }
+
+        input[type="radio"]:focus-visible+.duration-label,
+        input[type="checkbox"]:focus-visible+span {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
         .duration-grid {
@@ -309,6 +333,23 @@
             opacity: 0.8;
         }
 
+        .card-header>div:last-child {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .card-header .icon-btn {
+            padding: 6px 10px;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .card-header .icon-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
         .collapse-icon {
             transition: transform 0.3s;
             font-size: 14px;
@@ -328,6 +369,7 @@
         .card-content.collapsed {
             max-height: 0;
             opacity: 0;
+            overflow: hidden;
         }
 
         .summary {
@@ -376,15 +418,12 @@
             border-bottom: 1px solid var(--border);
         }
 
-        td {
-            position: relative;
-        }
-
         th {
             background: var(--bg-secondary);
             font-weight: 600;
             position: sticky;
             top: 0;
+            z-index: 10;
             cursor: pointer;
             user-select: none;
         }
@@ -393,10 +432,11 @@
             background: var(--bg-tertiary);
         }
 
-        th .sort-icon {
+        th .sort-icon::after {
+            content: '▼';
             margin-left: 4px;
             font-size: 12px;
-            opacity: 0.5;
+            opacity: 0.3;
         }
 
         th.sort-asc .sort-icon::after {
@@ -410,17 +450,21 @@
         }
 
         tr:hover {
-            background: var(--bg-secondary);
-            position: relative;
-            z-index: 0;
+            background-color: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+            transition: background-color 0.15s ease;
         }
 
-        a {
+        td a {
             color: var(--accent);
             text-decoration: none;
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            padding: 4px 0;
+            cursor: pointer;
         }
 
-        a:hover {
+        td a:hover {
             text-decoration: underline;
         }
 
@@ -476,16 +520,10 @@
                 font-size: 20px;
             }
         }
-
-        td a {
-            position: relative;
-            z-index: 1;
-            display: inline-block;
-            padding: 4px 0;
-            /* Area klik lebih besar */
-            cursor: pointer;
-        }
     </style>
+    <!-- Tambahkan di akhir <head> atau sebelum </body> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
 </head>
 
 <body>
@@ -501,14 +539,14 @@
                         <span>←</span>
                         <span data-i18n="backHome">Kembali ke Affandy Murad</span>
                     </a>
-                    <button class="icon-btn" id="langBtn" onclick="toggleLanguage()">
+                    <button class="icon-btn" id="langBtn">
                         <span>🌐</span>
                         <span id="langText">EN</span>
                     </button>
-                    <button class="icon-btn" onclick="setTheme('light')">
+                    <button class="icon-btn" id="lightThemeBtn">
                         <span>☀️</span>
                     </button>
-                    <button class="icon-btn" onclick="setTheme('dark')">
+                    <button class="icon-btn" id="darkThemeBtn">
                         <span>🌙</span>
                     </button>
                 </div>
@@ -517,13 +555,13 @@
 
         <div class="form-section">
             <div class="form-group">
-                <label data-i18n="username">Username Wikimedia</label>
-                <input type="text" id="username" data-i18n-placeholder="examplePlaceholder"
-                    placeholder="Contoh: Example">
+                <label for="username" data-i18n="username">Username Wikimedia</label>
+                <input type="text" id="username" required autocomplete="username"
+                    data-i18n-placeholder="examplePlaceholder" placeholder="Contoh: Example">
             </div>
 
             <div class="form-group">
-                <label data-i18n="project">Wikimedia Project URL</label>
+                <label for="project" data-i18n="project">Wikimedia Project URL</label>
                 <input type="text" id="project" placeholder="id.wikipedia.org">
             </div>
 
@@ -575,6 +613,20 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label data-i18n="filterOptions">Filter Options</label>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+                        <input type="checkbox" id="includeMinor" checked>
+                        <span data-i18n="includeMinorEdits">Include minor edits (< 100 bytes)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+                        <input type="checkbox" id="mainNamespaceOnly">
+                        <span data-i18n="mainNamespaceOnly">Main namespace only (exclude talk, user pages, etc.)</span>
+                    </label>
+                </div>
+            </div>
+
             <div class="alert alert-warning">
                 <span>⚠️</span>
                 <span data-i18n="warning">Longer durations will take more time and API requests</span>
@@ -596,12 +648,13 @@
         </div>
 
         <div class="card" id="trendingCard" style="display:none">
-            <div class="card-header" onclick="toggleCollapse('trending')">
+            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('trending')"
+                aria-expanded="true" aria-controls="trendingContent">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span>🔥</span>
                     <span data-i18n="trending">Top 30 Trending Articles</span>
                 </div>
-                <span class="collapse-icon" id="trendingCollapseIcon">▼</span>
+                <span class="collapse-icon" id="trendingCollapseIcon" aria-hidden="true">▼</span>
             </div>
             <div class="card-content" id="trendingContent">
                 <div class="table-container">
@@ -619,12 +672,23 @@
         </div>
 
         <div class="card" id="resultCard" style="display:none">
-            <div class="card-header" onclick="toggleCollapse('result')">
+            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('result')" aria-expanded="true"
+                aria-controls="resultContent">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span>✏️</span>
                     <span data-i18n="contributions">Your Contributions</span>
                 </div>
-                <span class="collapse-icon" id="resultCollapseIcon">▼</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="icon-btn" onclick="event.stopPropagation(); exportPDF()">
+                        <span>📄</span>
+                        <span data-i18n="exportPDF">Ekspor PDF</span>
+                    </button>
+                    <button class="icon-btn" onclick="event.stopPropagation(); exportJSON()">
+                        <span>📄</span>
+                        <span data-i18n="exportJSON">Export JSON</span>
+                    </button>
+                    <span class="collapse-icon" id="resultCollapseIcon" aria-hidden="true">▼</span>
+                </div>
             </div>
 
             <div class="card-content" id="resultContent">
@@ -632,33 +696,8 @@
 
                 <div class="table-container">
                     <table id="resultTable">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable(0)" data-sort-type="text">
-                                    <span data-i18n="article">Article</span>
-                                    <span class="sort-icon"></span>
-                                </th>
-                                <th onclick="sortTable(1)" data-sort-type="number">
-                                    <span data-i18n="edits">Edits</span>
-                                    <span class="sort-icon"></span>
-                                </th>
-                                <th onclick="sortTable(2)" data-sort-type="number">
-                                    <span data-i18n="bytes">Bytes +</span>
-                                    <span class="sort-icon"></span>
-                                </th>
-                                <th onclick="sortTable(3)" data-sort-type="date">
-                                    <span data-i18n="lastEdited">Last Edited</span>
-                                    <span class="sort-icon"></span>
-                                </th>
-                                <th onclick="sortTable(4)" data-sort-type="number">
-                                    <span data-i18n="pageviews">Pageviews</span>
-                                    <span class="sort-icon"></span>
-                                </th>
-                                <th onclick="sortTable(5)" data-sort-type="text">
-                                    <span data-i18n="impact">Impact</span>
-                                    <span class="sort-icon"></span>
-                                </th>
-                            </tr>
+                        <thead id="resultTableHead">
+                            <!-- Header akan diupdate via JS -->
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -668,41 +707,17 @@
     </div>
 
     <script>
-        async function fetchTrendingWithRetry(key, proj, maxRetry = 7) {
-            const today = new Date();
-
-            for (let i = 1; i <= maxRetry; i++) {
-                const d = new Date(today);
-                d.setDate(d.getDate() - i);
-
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, '0');
-                const da = String(d.getDate()).padStart(2, '0');
-
-                const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${y}/${m}/${da}`;
-
-                try {
-                    const res = await fetch(url);
-                    if (!res.ok) continue;
-
-                    const json = await res.json();
-                    const articles = json.items?.[0]?.articles;
-                    if (articles?.length) {
-                        return articles.slice(0, 30);
-                    }
-                } catch {
-                    // silent retry
-                }
-            }
-
-            return []; // gagal semua → skip trending
-        }
-
         const THRESHOLDS = { 1: 300, 7: 1000, 30: 3000, 90: 10000, 180: 20000, 365: 50000 };
 
         let currentSortColumn = -1;
         let currentSortDirection = 'asc';
-        let tableData = [];
+        let currentLang = localStorage.getItem('language');
+
+        // Defensive language selection
+        if (!['id', 'en'].includes(currentLang)) {
+            currentLang = 'id'; // or 'en' — your preferred default
+            localStorage.setItem('language', currentLang);
+        }
 
         const translations = {
             id: {
@@ -718,6 +733,9 @@
                 day90: '3 Bulan',
                 day180: '6 Bulan',
                 day365: '1 Tahun',
+                filterOptions: 'Opsi Filter',
+                includeMinorEdits: 'Sertakan suntingan kecil (< 100 bytes)',
+                mainNamespaceOnly: 'Hanya namespace utama (tidak termasuk pembicaraan, halaman pengguna, dll.)',
                 warning: 'Durasi lebih lama membutuhkan waktu dan request API lebih banyak',
                 analyze: 'Analisis Dampak',
                 trending: '30 Artikel Trending Teratas',
@@ -727,12 +745,14 @@
                 bytes: 'Bytes +',
                 lastEdited: 'Terakhir Diedit',
                 pageviews: 'Pageviews',
+                fileUsage: 'Penggunaan File',
                 impact: 'Dampak',
                 significant: 'Signifikan',
                 low: 'Rendah',
                 loading: 'Memuat...',
                 fetchingTrending: 'Mengambil artikel trending...',
                 fetchingContribs: 'Mengambil kontribusi...',
+                fetchingFileUsage: 'Mengambil penggunaan file...',
                 analyzingArticles: 'Menganalisis artikel',
                 noContribs: 'Tidak ada kontribusi ditemukan',
                 errorFields: 'Username dan proyek wajib diisi',
@@ -740,7 +760,12 @@
                 totalEdits: 'Total Edit',
                 totalArticles: 'Total Artikel',
                 totalViews: 'Total Views',
-                threshold: 'Threshold signifikan'
+                threshold: 'Threshold signifikan',
+                exportPDF: 'Ekspor PDF',
+                exportJSON: 'Ekspor JSON',
+                noDataToExport: 'Tidak ada data untuk diekspor',
+                pages: 'halaman',
+                fileUsage: 'Penggunaan File'
             },
             en: {
                 title: 'Wikimedia Impact Analyzer',
@@ -755,6 +780,9 @@
                 day90: '3 Months',
                 day180: '6 Months',
                 day365: '1 Year',
+                filterOptions: 'Filter Options',
+                includeMinorEdits: 'Include minor edits (< 100 bytes)',
+                mainNamespaceOnly: 'Main namespace only (exclude talk, user pages, etc.)',
                 warning: 'Longer durations will take more time and API requests',
                 analyze: 'Analyze Impact',
                 trending: 'Top 30 Trending Articles',
@@ -764,12 +792,14 @@
                 bytes: 'Bytes +',
                 lastEdited: 'Last Edited',
                 pageviews: 'Pageviews',
+                fileUsage: 'File Usage',
                 impact: 'Impact',
                 significant: 'Significant',
                 low: 'Low',
                 loading: 'Loading...',
                 fetchingTrending: 'Fetching trending articles...',
                 fetchingContribs: 'Fetching contributions...',
+                fetchingFileUsage: 'Fetching file usage...',
                 analyzingArticles: 'Analyzing articles',
                 noContribs: 'No contributions found',
                 errorFields: 'Username and project are required',
@@ -777,12 +807,15 @@
                 totalEdits: 'Total Edits',
                 totalArticles: 'Total Articles',
                 totalViews: 'Total Views',
-                threshold: 'Significant threshold'
+                threshold: 'Significant threshold',
+                exportPDF: 'Export PDF',
+                exportJSON: 'Export JSON',
+                noDataToExport: 'No data to export',
+                pages: 'pages'
             }
         };
 
-        let currentLang = 'id';
-
+        // Theme functions
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'system';
             applyTheme(savedTheme);
@@ -802,25 +835,41 @@
             }
         }
 
+        // Language functions
+        // Also improve toggleLanguage function
         function toggleLanguage() {
             currentLang = currentLang === 'id' ? 'en' : 'id';
             localStorage.setItem('language', currentLang);
             updateLanguage();
+            // Optional: refresh dynamic content if necessary
+            // (especially useful if table is already shown)
+            if (document.getElementById('resultCard').style.display !== 'none') {
+                // You could re-render headers if needed
+                // updateTableHeaders(/* pass isCommons if you have it */);
+            }
         }
 
         function updateLanguage() {
+            // Update static elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
+                const translation = translations[currentLang]?.[key];
+
+                if (translation) {
+                    el.textContent = translation;
+                } else {
+                    console.warn(`Missing translation for key: ${key} in language: ${currentLang}`);
+                    // Optional: keep original text or show fallback
+                    // el.textContent = `[MISSING: ${key}]`;
                 }
             });
 
             // Update placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
-                if (translations[currentLang][key]) {
-                    el.placeholder = translations[currentLang][key];
+                const translation = translations[currentLang]?.[key];
+                if (translation) {
+                    el.placeholder = translation;
                 }
             });
 
@@ -828,29 +877,267 @@
             document.documentElement.lang = currentLang;
         }
 
+        // Utility functions
         const normalize = u => u.startsWith('http') ? u.replace(/\/$/, '') : 'https://' + u.replace(/\/$/, '');
         const keyFrom = u => u.replace(/^https?:\/\//, '');
         const fmt = d => new Date(d).toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-        function toggleCollapse(section) {
-            const content = document.getElementById(section + 'Content');
-            const icon = document.getElementById(section + 'CollapseIcon');
-
-            content.classList.toggle('collapsed');
-            icon.classList.toggle('collapsed');
+        // Commons functions
+        function isCommonsProject(projectUrl) {
+            return projectUrl.includes('commons.wikimedia.org');
         }
 
-        function sortTable(columnIndex) {
+        async function fetchFileUsage(filename, proj) {
+            try {
+                const url = `${proj}/w/api.php?origin=*&action=query&format=json&list=imageusage&iutitle=${encodeURIComponent(filename)}&iulimit=500`;
+                const res = await fetch(url);
+                const data = await res.json();
+                return data.query?.imageusage?.length || 0;
+            } catch {
+                return 0;
+            }
+        }
+
+        function isUpload(contrib) {
+            return contrib.newpage || (contrib.sizediff && contrib.sizediff > 1000);
+        }
+
+        function shouldIncludeContrib(contrib, filters, isCommons) {
+            if (isCommons) {
+                // Di Commons hampir semua kontribusi user berharga
+                // Kita terima semua kecuali yang jelas-jelas tidak relevan
+                const title = contrib.title;
+                const lower = title.toLowerCase();
+
+                // Lewati halaman pembicaraan, user page, dll
+                if (lower.startsWith('user:') ||
+                    lower.startsWith('user talk:') ||
+                    lower.startsWith('talk:') ||
+                    lower.startsWith('wikipedia:') ||  // jarang tapi kadang ada
+                    lower.startsWith('special:')) {
+                    return false;
+                }
+
+                // Terima semua yang masuk akal di Commons
+                return true;
+            }
+
+            // Kode untuk Wikipedia biasa tetap sama
+            if (!filters.includeMinor && (contrib.minor || (contrib.sizediff && Math.abs(contrib.sizediff) < 100))) {
+                return false;
+            }
+
+            if (filters.mainNamespaceOnly) {
+                if (contrib.title.includes(':')) {
+                    const ns = contrib.title.split(':')[0];
+                    if (!['File', 'Berkas', 'Category', 'Kategori'].includes(ns)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // Export functions
+        let exportData = {
+            username: '',
+            project: '',
+            period: { start: '', end: '', days: 0 },
+            summary: { totalEdits: 0, totalArticles: 0, totalViews: 0 },
+            articles: []
+        };
+
+        function exportPDF() {
+            if (!exportData.articles.length) {
+                alert(translations[currentLang].noDataToExport);
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape' }); // landscape agar tabel lebar muat lebih baik
+
+            // Judul dokumen
+            doc.setFontSize(16);
+            doc.text(`Wikimedia Impact Report - ${exportData.username}`, 14, 20);
+
+            doc.setFontSize(11);
+            doc.text(`Project: ${exportData.project}`, 14, 28);
+            doc.text(
+                `Period: ${exportData.period.start} to ${exportData.period.end} (${exportData.period.days} days)`,
+                14,
+                34
+            );
+
+            // Garis pemisah
+            doc.line(14, 38, 280, 38);
+
+            // Siapkan data untuk AutoTable
+            const isCommons = isCommonsProject(exportData.project);
+            const headers = isCommons
+                ? [
+                    [
+                        translations[currentLang].article,
+                        translations[currentLang].edits,
+                        translations[currentLang].bytes,
+                        translations[currentLang].lastEdited,
+                        translations[currentLang].pageviews,
+                        translations[currentLang].fileUsage,
+                        translations[currentLang].impact
+                    ]
+                ]
+                : [
+                    [
+                        translations[currentLang].article,
+                        translations[currentLang].edits,
+                        translations[currentLang].bytes,
+                        translations[currentLang].lastEdited,
+                        translations[currentLang].pageviews,
+                        translations[currentLang].impact
+                    ]
+                ];
+
+            const body = exportData.articles.map(article => [
+                article.title,
+                article.edits,
+                article.bytes,
+                article.lastEdited,
+                article.pageviews.toLocaleString(),
+                isCommons ? `${article.fileUsage} ${translations[currentLang].pages}` : '',
+                article.impact
+            ]);
+
+            // Generate tabel dengan AutoTable
+            doc.autoTable({
+                head: headers,
+                body: body,
+                startY: 45,
+                theme: 'grid',           // bisa 'striped', 'plain', 'grid'
+                styles: {
+                    fontSize: 9,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'left'
+                },
+                headStyles: {
+                    fillColor: [13, 110, 253], // warna accent kamu (#0d6efd)
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 240, 240]
+                },
+                columnStyles: {
+                    0: { cellWidth: 60 },   // Article - lebih lebar
+                    2: { halign: 'right' }, // Bytes
+                    4: { halign: 'right' }, // Pageviews
+                    5: { halign: 'right' }  // File Usage (jika Commons)
+                },
+                margin: { top: 45, left: 14, right: 14 }
+            });
+
+            // Tambahkan summary di bawah tabel
+            const finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFontSize(12);
+            doc.text(translations[currentLang].totalEdits + ': ' + exportData.summary.totalEdits.toLocaleString(), 14, finalY);
+            doc.text(translations[currentLang].totalArticles + ': ' + exportData.summary.totalArticles.toLocaleString(), 14, finalY + 8);
+            doc.text(translations[currentLang].totalViews + ': ' + exportData.summary.totalViews.toLocaleString(), 14, finalY + 16);
+
+            // Simpan file
+            const filename = `wikimedia-impact-${exportData.username}-${Date.now()}.pdf`;
+            doc.save(filename);
+        }
+
+        function exportJSON() {
+            if (!exportData.articles.length) {
+                alert(translations[currentLang].noDataToExport);
+                return;
+            }
+            const json = JSON.stringify(exportData, null, 2);
+            downloadFile(json, `wikimedia-impact-${exportData.username}-${Date.now()}.json`, 'application/json');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Table functions
+        function updateTableHeaders(isCommons) {
+            const t = translations[currentLang] || translations['en']; // fallback ke English jika lang hilang
+
+            const commonHeaders = `
+        <tr>
+            <th onclick="sortTable(0)" data-sort-type="text">
+                <span>${t.article}</span>
+                <span class="sort-icon"></span>
+            </th>
+            <th onclick="sortTable(1)" data-sort-type="number">
+                <span>${t.edits}</span>
+                <span class="sort-icon"></span>
+            </th>
+            <th onclick="sortTable(2)" data-sort-type="number">
+                <span>${t.bytes}</span>
+                <span class="sort-icon"></span>
+            </th>
+            <th onclick="sortTable(3)" data-sort-type="date">
+                <span>${t.lastEdited}</span>
+                <span class="sort-icon"></span>
+            </th>
+            <th onclick="sortTable(4)" data-sort-type="number">
+                <span>${t.pageviews}</span>
+                <span class="sort-icon"></span>
+            </th>
+    `;
+
+            const commonsExtra = isCommons ? `
+            <th onclick="sortTable(5)" data-sort-type="number">
+                <span>${t.fileUsage}</span>
+                <span class="sort-icon"></span>
+            </th>
+    ` : '';
+
+            const impactHeader = `
+            <th onclick="sortTable(${isCommons ? 6 : 5})" data-sort-type="text">
+                <span>${t.impact}</span>
+                <span class="sort-icon"></span>
+            </th>
+        </tr>
+    `;
+
+            document.getElementById('resultTableHead').innerHTML = commonHeaders + commonsExtra + impactHeader;
+        }
+        function toggleCollapse(section) {
+            const content = document.getElementById(`${section}Content`);
+            const icon = document.getElementById(`${section}CollapseIcon`);
+            const header = content.previousElementSibling;
+            const isCollapsed = content.classList.toggle('collapsed');
+            icon.classList.toggle('collapsed');
+            header.setAttribute('aria-expanded', !isCollapsed);
+        }
+
+        function debounce(fn, delay = 80) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn(...args), delay);
+            };
+        }
+
+        const sortTable = debounce(function (columnIndex) {
             const table = document.getElementById('resultTable');
             const tbody = table.querySelector('tbody');
             const headers = table.querySelectorAll('th');
 
-            // Remove sort classes from all headers
-            headers.forEach(h => {
-                h.classList.remove('sort-asc', 'sort-desc');
-            });
+            headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
 
-            // Toggle sort direction
             if (currentSortColumn === columnIndex) {
                 currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
             } else {
@@ -858,67 +1145,103 @@
                 currentSortColumn = columnIndex;
             }
 
-            // Add sort class to current header
-            headers[columnIndex].classList.add('sort-' + currentSortDirection);
+            headers[columnIndex].classList.add(`sort-${currentSortDirection}`);
 
-            // Get sort type
             const sortType = headers[columnIndex].getAttribute('data-sort-type');
-
-            // Sort the data
             const rows = Array.from(tbody.querySelectorAll('tr'));
+
             rows.sort((a, b) => {
                 let aVal = a.cells[columnIndex].textContent.trim();
                 let bVal = b.cells[columnIndex].textContent.trim();
 
                 if (sortType === 'number') {
-                    aVal = parseInt(aVal.replace(/,/g, '')) || 0;
-                    bVal = parseInt(bVal.replace(/,/g, '')) || 0;
+                    aVal = parseFloat(aVal.replace(/,/g, '')) || 0;
+                    bVal = parseFloat(bVal.replace(/,/g, '')) || 0;
                 } else if (sortType === 'date') {
-                    aVal = new Date(aVal).getTime();
-                    bVal = new Date(bVal).getTime();
+                    aVal = new Date(aVal).getTime() || 0;
+                    bVal = new Date(bVal).getTime() || 0;
                 }
 
-                if (currentSortDirection === 'asc') {
-                    return aVal > bVal ? 1 : -1;
-                } else {
-                    return aVal < bVal ? 1 : -1;
-                }
+                return currentSortDirection === 'asc' ? aVal - bVal : bVal - aVal;
             });
 
-            // Re-append sorted rows
             rows.forEach(row => tbody.appendChild(row));
+        }, 80);
+
+        async function fetchTrendingWithRetry(key, proj, maxRetry = 10) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = 0; i < maxRetry; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().slice(0, 10).replace(/-/g, '/');
+
+                try {
+                    const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${dateStr}`;
+                    const res = await fetch(url, { cache: 'no-cache' });
+                    if (!res.ok) continue;
+                    const json = await res.json();
+                    if (json.items?.[0]?.articles?.length) {
+                        return json.items[0].articles.slice(0, 30);
+                    }
+                } catch { }
+            }
+            return [];
+        }
+
+        function updateProgress(done, total) {
+            const progress = Math.round((done / total) * 100);
+            requestAnimationFrame(() => {
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                document.getElementById('progressText').textContent = `${translations[currentLang].analyzingArticles} ${done}/${total} (${progress}%)`;
+            });
+        }
+
+        function updateSummary(totalEdits, totalArticles, totalViews) {
+            document.getElementById('summary').innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-value">${totalEdits.toLocaleString()}</div>
+                    <div class="summary-label">${translations[currentLang].totalEdits}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">${totalArticles.toLocaleString()}</div>
+                    <div class="summary-label">${translations[currentLang].totalArticles}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">${totalViews.toLocaleString()}</div>
+                    <div class="summary-label">${translations[currentLang].totalViews}</div>
+                </div>
+            `;
         }
 
         async function run() {
-            const error = document.getElementById('error');
-            const status = document.getElementById('status');
+            const errorEl = document.getElementById('error');
+            const statusEl = document.getElementById('status');
             const analyzeBtn = document.getElementById('analyzeBtn');
+            const progressContainer = document.getElementById('progressContainer');
 
-            error.style.display = 'none';
-            error.textContent = '';
-            status.textContent = translations[currentLang].loading;
-
+            errorEl.style.display = 'none';
+            errorEl.textContent = '';
+            progressContainer.style.display = 'none';
             document.getElementById('trendingCard').style.display = 'none';
             document.getElementById('resultCard').style.display = 'none';
             document.getElementById('trendingTable').querySelector('tbody').innerHTML = '';
             document.getElementById('resultTable').querySelector('tbody').innerHTML = '';
             document.getElementById('summary').innerHTML = '';
-            document.getElementById('progressContainer').style.display = 'none';
-            document.getElementById('progressBar').style.width = '0%';
 
             const user = document.getElementById('username').value.trim();
             const projectInput = document.getElementById('project').value.trim();
 
             if (!user || !projectInput) {
-                error.textContent = translations[currentLang].errorFields;
-                error.style.display = 'block';
-                status.textContent = '';
+                errorEl.textContent = translations[currentLang].errorFields;
+                errorEl.style.display = 'block';
                 return;
             }
 
             analyzeBtn.disabled = true;
 
-            const days = +document.querySelector('input[name=duration]:checked').value;
+            const days = +document.querySelector('input[name="duration"]:checked').value;
             const threshold = THRESHOLDS[days];
             const proj = normalize(projectInput);
             const key = keyFrom(proj);
@@ -927,145 +1250,148 @@
             const start = new Date(end);
             start.setDate(end.getDate() - days);
 
-            // Trending Articles
-            status.textContent = translations[currentLang].fetchingTrending;
-
             try {
-                const list = await fetchTrendingWithRetry(key, proj);
-
-                if (list.length) {
-                    const tbody = document
-                        .getElementById('trendingTable')
-                        .querySelector('tbody');
-
-                    for (const a of list) {
+                // Fetch trending
+                const trendingList = await fetchTrendingWithRetry(key, proj);
+                if (trendingList.length) {
+                    const tbody = document.getElementById('trendingTable').querySelector('tbody');
+                    trendingList.forEach(a => {
                         const link = `${proj}/wiki/${encodeURIComponent(a.article)}`;
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                <td><a href="${link}" target="_blank">${a.article.replace(/_/g, ' ')}</a></td>
-                <td>${a.views.toLocaleString()}</td>
-            `;
-                        tbody.appendChild(row);
-                    }
-
+                        const row = `<tr><td><a href="${link}" target="_blank">${a.article.replace(/_/g, ' ')}</a></td><td>${a.views.toLocaleString()}</td></tr>`;
+                        tbody.insertAdjacentHTML('beforeend', row);
+                    });
                     document.getElementById('trendingCard').style.display = 'block';
+
+                    toggleCollapse('trending');
                 }
-            } catch {
-                error.textContent = translations[currentLang].errorTrending;
-                error.style.display = 'block';
-            }
 
-            // Contributions
-            status.textContent = translations[currentLang].fetchingContribs;
-            const uc = `${proj}/w/api.php?origin=*&action=query&format=json&formatversion=2&list=usercontribs&uclimit=500&ucprop=title|timestamp|sizediff|ids&ucuser=${encodeURIComponent(user)}&ucstart=${end.toISOString()}&ucend=${start.toISOString()}`;
-
-            try {
-                const data = await (await fetch(uc)).json();
-                const contribs = data.query?.usercontribs || [];
+                // Fetch contributions
+                const ucUrl = `${proj}/w/api.php?origin=*&action=query&format=json&formatversion=2&list=usercontribs&uclimit=500&ucprop=title|timestamp|sizediff|ids|flags&ucuser=${encodeURIComponent(user)}&ucstart=${end.toISOString()}&ucend=${start.toISOString()}`;
+                const ucRes = await fetch(ucUrl);
+                const ucData = await ucRes.json();
+                const contribs = ucData.query?.usercontribs || [];
 
                 if (!contribs.length) {
-                    status.textContent = translations[currentLang].noContribs;
-                    analyzeBtn.disabled = false;
+                    statusEl.textContent = translations[currentLang].noContribs;
                     return;
                 }
 
+                const filters = {
+                    includeMinor: document.getElementById('includeMinor').checked,
+                    mainNamespaceOnly: document.getElementById('mainNamespaceOnly').checked
+                };
+                const isCommons = isCommonsProject(proj);
                 const map = {};
-                for (const c of contribs) {
-                    if (!map[c.title]) map[c.title] = { edits: 0, bytes: 0, last: c.timestamp, revid: c.revid };
+
+                contribs.forEach(c => {
+                    if (!shouldIncludeContrib(c, filters, isCommons)) return;
+                    if (!map[c.title]) {
+                        map[c.title] = { edits: 0, bytes: 0, last: c.timestamp, revid: c.revid, fileUsage: 0 };
+                    }
                     map[c.title].edits++;
                     if (c.sizediff > 0) map[c.title].bytes += c.sizediff;
                     if (new Date(c.timestamp) > new Date(map[c.title].last)) {
                         map[c.title].last = c.timestamp;
                         map[c.title].revid = c.revid;
                     }
+                });
+
+                if (isCommons) {
+                    for (const title of Object.keys(map)) {
+                        map[title].fileUsage = await fetchFileUsage(title, proj);
+                    }
                 }
 
-                document.getElementById('progressContainer').style.display = 'block';
+                progressContainer.style.display = 'block';
                 const titles = Object.keys(map);
                 let done = 0;
                 let totalViews = 0;
 
+                exportData = {
+                    username: user,
+                    project: proj,
+                    period: { start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0], days },
+                    summary: { totalEdits: contribs.length, totalArticles: titles.length, totalViews: 0 },
+                    articles: titles.map(t => ({
+                        title: t,
+                        edits: map[t].edits,
+                        bytes: map[t].bytes,
+                        lastEdited: map[t].last,
+                        pageviews: 0,
+                        ...(isCommons ? { fileUsage: map[t].fileUsage } : {}),
+                        impact: ''
+                    }))
+                };
+
+                updateTableHeaders(isCommons);
                 const tbody = document.getElementById('resultTable').querySelector('tbody');
 
                 for (const t of titles) {
                     let views = 0;
                     try {
-                        const pv = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${key}/all-access/user/${encodeURIComponent(t)}/daily/${start.toISOString().slice(0, 10).replace(/-/g, '')}/${end.toISOString().slice(0, 10).replace(/-/g, '')}`;
-                        const r = await (await fetch(pv)).json();
-                        views = r.items?.reduce((s, i) => s + i.views, 0) || 0;
+                        const pvUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${key}/all-access/user/${encodeURIComponent(t)}/daily/${start.toISOString().slice(0, 10).replace(/-/g, '')}/${end.toISOString().slice(0, 10).replace(/-/g, '')}`;
+                        const pvRes = await fetch(pvUrl);
+                        const pvData = await pvRes.json();
+                        views = pvData.items?.reduce((sum, i) => sum + i.views, 0) || 0;
                     } catch { }
 
                     totalViews += views;
                     done++;
+                    updateProgress(done, titles.length);
 
-                    const progress = Math.round(done / titles.length * 100);
-                    document.getElementById('progressBar').style.width = progress + '%';
-                    document.getElementById('progressText').textContent = `${translations[currentLang].analyzingArticles} ${done}/${titles.length} (${progress}%)`;
-
-                    // Hide progress bar when complete
-                    if (progress === 100) {
-                        setTimeout(() => {
-                            document.getElementById('progressContainer').style.display = 'none';
-                        }, 500);
-                    }
-
-                    const impact = views >= threshold ?
-                        `<span class="badge badge-success">${translations[currentLang].significant}</span>` :
-                        `<span class="badge badge-warning">${translations[currentLang].low}</span>`;
+                    const impactText = views >= threshold ? translations[currentLang].significant : translations[currentLang].low;
+                    const impact = views >= threshold
+                        ? `<span class="badge badge-success">${impactText}</span>`
+                        : `<span class="badge badge-warning">${impactText}</span>`;
                     const diff = `${proj}/w/index.php?title=${encodeURIComponent(t)}&diff=prev&oldid=${map[t].revid}`;
 
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+                    const article = exportData.articles.find(a => a.title === t);
+                    if (article) {
+                        article.pageviews = views;
+                        article.impact = impactText;
+                    }
+
+                    let rowHtml = `<tr>
                         <td><a href="${proj}/wiki/${encodeURIComponent(t)}" target="_blank">${t}</a></td>
                         <td>${map[t].edits}</td>
                         <td>${map[t].bytes.toLocaleString()}</td>
                         <td><a href="${diff}" target="_blank">${fmt(map[t].last)}</a></td>
                         <td>${views.toLocaleString()}</td>
-                        <td>${impact}</td>
                     `;
-                    tbody.appendChild(row);
+                    rowHtml += isCommons ? `<td>${map[t].fileUsage} ${translations[currentLang].pages}</td>` : '';
+                    rowHtml += `<td>${impact}</td></tr>`;
+                    tbody.insertAdjacentHTML('beforeend', rowHtml);
                 }
 
-                document.getElementById('summary').innerHTML = `
-                    <div class="summary-item">
-                        <div class="summary-value">${contribs.length}</div>
-                        <div class="summary-label">${translations[currentLang].totalEdits}</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value">${titles.length}</div>
-                        <div class="summary-label">${translations[currentLang].totalArticles}</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value">${totalViews.toLocaleString()}</div>
-                        <div class="summary-label">${translations[currentLang].totalViews}</div>
-                    </div>
-                `;
-
+                exportData.summary.totalViews = totalViews;
+                updateSummary(contribs.length, titles.length, totalViews);
                 document.getElementById('resultCard').style.display = 'block';
-                status.textContent = '';
-            } catch (e) {
-                error.textContent = e.message;
-                error.style.display = 'block';
-            }
 
-            analyzeBtn.disabled = false;
+                if (titles.length === done) {
+                    setTimeout(() => progressContainer.style.display = 'none', 500);
+                }
+            } catch (err) {
+                console.error(err);
+                errorEl.textContent = err.message || 'Terjadi kesalahan saat memproses data';
+                errorEl.style.display = 'block';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
         }
 
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('language') || 'id';
-            currentLang = savedLang;
             updateLanguage();
             initTheme();
-        });
 
-        document.getElementById('analyzeBtn').addEventListener('click', run);
+            document.getElementById('analyzeBtn').addEventListener('click', run);
+            document.getElementById('langBtn').addEventListener('click', toggleLanguage);
+            document.getElementById('lightThemeBtn').addEventListener('click', () => setTheme('light'));
+            document.getElementById('darkThemeBtn').addEventListener('click', () => setTheme('dark'));
 
-        // System theme change listener
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            if (localStorage.getItem('theme') === 'system') {
-                applyTheme('system');
-            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (localStorage.getItem('theme') === 'system') applyTheme('system');
+            });
         });
     </script>
 </body>
