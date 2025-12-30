@@ -647,30 +647,6 @@
             <div class="progress-text" id="progressText">0%</div>
         </div>
 
-        <div class="card" id="trendingCard" style="display:none">
-            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('trending')"
-                aria-expanded="true" aria-controls="trendingContent">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span>🔥</span>
-                    <span data-i18n="trending">Top 30 Trending Articles</span>
-                </div>
-                <span class="collapse-icon" id="trendingCollapseIcon" aria-hidden="true">▼</span>
-            </div>
-            <div class="card-content" id="trendingContent">
-                <div class="table-container">
-                    <table id="trendingTable">
-                        <thead>
-                            <tr>
-                                <th data-i18n="article">Article</th>
-                                <th data-i18n="pageviews">Pageviews</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <div class="card" id="resultCard" style="display:none">
             <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('result')" aria-expanded="true"
                 aria-controls="resultContent">
@@ -698,6 +674,30 @@
                     <table id="resultTable">
                         <thead id="resultTableHead">
                             <!-- Header akan diupdate via JS -->
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="trendingCard" style="display:none">
+            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('trending')"
+                aria-expanded="true" aria-controls="trendingContent">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>🔥</span>
+                    <span data-i18n="trending">Top 30 Trending Articles</span>
+                </div>
+                <span class="collapse-icon" id="trendingCollapseIcon" aria-hidden="true">▼</span>
+            </div>
+            <div class="card-content" id="trendingContent">
+                <div class="table-container">
+                    <table id="trendingTable">
+                        <thead>
+                            <tr>
+                                <th data-i18n="article">Article</th>
+                                <th data-i18n="pageviews">Pageviews</th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -738,7 +738,7 @@
                 mainNamespaceOnly: 'Hanya namespace utama (tidak termasuk pembicaraan, halaman pengguna, dll.)',
                 warning: 'Durasi lebih lama membutuhkan waktu dan request API lebih banyak',
                 analyze: 'Analisis Dampak',
-                trending: '30 Artikel Trending Teratas',
+                trending: 'Semua Trending Teratas',
                 contributions: 'Kontribusi Anda',
                 article: 'Artikel',
                 edits: 'Edit',
@@ -784,7 +784,7 @@
                 mainNamespaceOnly: 'Main namespace only (exclude talk, user pages, etc.)',
                 warning: 'Longer durations will take more time and API requests',
                 analyze: 'Analyze Impact',
-                trending: 'Top 30 Trending Articles',
+                trending: 'All Trending Articles',
                 contributions: 'Your Contributions',
                 article: 'Article',
                 edits: 'Edits',
@@ -1196,7 +1196,8 @@
                     if (!res.ok) continue;
                     const json = await res.json();
                     if (json.items?.[0]?.articles?.length) {
-                        return json.items[0].articles.slice(0, 30);
+                        /*  return json.items[0].articles.slice(0, 30); */
+                        return json.items[0].articles;
                     }
                 } catch { }
             }
@@ -1275,7 +1276,7 @@
                         tbody.insertAdjacentHTML('beforeend', row);
                     });
                     document.getElementById('trendingCard').style.display = 'block';
-                    toggleCollapse('trending');
+                    toggleCollapse('trending'); // Langsung collapse saat muncul
                 }
 
                 // Fetch contributions
