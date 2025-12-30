@@ -314,14 +314,28 @@
         }
 
         .project-badge {
-            background: #3366cc;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            white-space: nowrap;
-            line-height: 1.3;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #eaecf0 !important;
+            color: #2d2d2d !important;
+            font-size: 13px;
+        }
+
+        .project-badge img {
+            width: 12px;
+            height: 12px;
+            object-fit: contain;
+            opacity: 0.9;
+        }
+
+        .project-icon {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+            flex-shrink: 0;
         }
 
         .loading {
@@ -803,6 +817,16 @@
             return num.toString();
         }
 
+        function getProjectFavicon(domain) {
+            let baseUrl = domain.trim();
+
+            if (!baseUrl.startsWith('http')) {
+                baseUrl = `https://${baseUrl}`;
+            }
+
+            return `${baseUrl}/favicon.ico`;
+        }
+
         function getProjectName(domain) {
             const cleanDomain = domain.toLowerCase().trim();
 
@@ -850,7 +874,11 @@
 
             // Buat badge temporary untuk ukur ukuran
             projectsOverlay.innerHTML = projects.map(p =>
-                `<div class="project-badge">${p}</div>`
+                `<div class="project-badge">
+        <img src="${getProjectFavicon(p.domain)}"
+             onerror="this.style.display='none'">
+        ${p.label}
+     </div>`
             ).join('');
 
             const actualHeight = projectsOverlay.offsetHeight;
@@ -865,9 +893,15 @@
             while (visibleCount > 1) {
                 visibleCount--;
                 const testProjects = projects.slice(0, visibleCount);
-                projectsOverlay.innerHTML = testProjects.map(p =>
-                    `<div class="project-badge">${p}</div>`
-                ).join('') + `<div class="project-badge">+${projects.length - visibleCount}</div>`;
+                projectsOverlay.innerHTML =
+                    testProjects.map(p =>
+                        `<div class="project-badge">
+            <img src="${getProjectFavicon(p.domain)}"
+                 onerror="this.style.display='none'">
+            ${p.label}
+         </div>`
+                    ).join('') +
+                    `<div class="project-badge">+${projects.length - visibleCount}</div>`;
 
                 if (projectsOverlay.offsetHeight <= maxOverlayHeight) {
                     return visibleCount;
@@ -953,7 +987,10 @@
                             totalAdded += domainAdded;
 
                             const projectName = getProjectName(domain);
-                            activeProjects.push(projectName);
+                            activeProjects.push({
+                                domain,
+                                label: getProjectName(domain)
+                            });
                         }
 
                         let ucContinue = data.continue?.uccontinue;
@@ -1022,8 +1059,11 @@
 
                 if (visibleCount >= activeProjects.length) {
                     projectsOverlay.innerHTML = activeProjects.map(p =>
-                        `<div class="project-badge">${p}</div>`
-                    ).join('');
+                        `<div class="project-badge">
+        <img src="${getProjectFavicon(p.domain)}"
+             onerror="this.style.display='none'">
+        ${p.label}
+     </div>`).join('');
                 } else {
                     const visibleProjects = activeProjects.slice(0, visibleCount);
                     const remainingCount = activeProjects.length - visibleCount;
