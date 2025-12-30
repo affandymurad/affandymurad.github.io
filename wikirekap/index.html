@@ -715,7 +715,7 @@
 
         // Defensive language selection
         if (!['id', 'en'].includes(currentLang)) {
-            currentLang = 'id'; // or 'en' — your preferred default
+            currentLang = 'id';
             localStorage.setItem('language', currentLang);
         }
 
@@ -764,8 +764,7 @@
                 exportPDF: 'Ekspor PDF',
                 exportJSON: 'Ekspor JSON',
                 noDataToExport: 'Tidak ada data untuk diekspor',
-                pages: 'halaman',
-                fileUsage: 'Penggunaan File'
+                pages: 'halaman'
             },
             en: {
                 title: 'Wikimedia Impact Analyzer',
@@ -815,15 +814,31 @@
             }
         };
 
-        // Theme functions
+        // Theme functions - Apply immediately before DOM loads
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            let themeToApply;
+
+            if (savedTheme === 'system') {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                themeToApply = isDark ? 'dark' : 'light';
+            } else {
+                themeToApply = savedTheme;
+            }
+
+            document.documentElement.setAttribute('data-theme', themeToApply);
+        })();
+
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'system';
             applyTheme(savedTheme);
+            updateThemeButtons(savedTheme);
         }
 
         function setTheme(theme) {
             localStorage.setItem('theme', theme);
             applyTheme(theme);
+            updateThemeButtons(theme);
         }
 
         function applyTheme(theme) {
@@ -835,22 +850,33 @@
             }
         }
 
+        function updateThemeButtons(theme) {
+            const lightBtn = document.getElementById('lightThemeBtn');
+            const darkBtn = document.getElementById('darkThemeBtn');
+
+            if (lightBtn && darkBtn) {
+                lightBtn.classList.remove('active');
+                darkBtn.classList.remove('active');
+
+                if (theme === 'light') {
+                    lightBtn.classList.add('active');
+                } else if (theme === 'dark') {
+                    darkBtn.classList.add('active');
+                }
+            }
+        }
+
         // Language functions
-        // Also improve toggleLanguage function
         function toggleLanguage() {
             currentLang = currentLang === 'id' ? 'en' : 'id';
             localStorage.setItem('language', currentLang);
             updateLanguage();
-            // Optional: refresh dynamic content if necessary
-            // (especially useful if table is already shown)
             if (document.getElementById('resultCard').style.display !== 'none') {
-                // You could re-render headers if needed
-                // updateTableHeaders(/* pass isCommons if you have it */);
+                // Re-render if needed
             }
         }
 
         function updateLanguage() {
-            // Update static elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 const translation = translations[currentLang]?.[key];
@@ -859,12 +885,9 @@
                     el.textContent = translation;
                 } else {
                     console.warn(`Missing translation for key: ${key} in language: ${currentLang}`);
-                    // Optional: keep original text or show fallback
-                    // el.textContent = `[MISSING: ${key}]`;
                 }
             });
 
-            // Update placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 const translation = translations[currentLang]?.[key];
@@ -904,25 +927,20 @@
 
         function shouldIncludeContrib(contrib, filters, isCommons) {
             if (isCommons) {
-                // Di Commons hampir semua kontribusi user berharga
-                // Kita terima semua kecuali yang jelas-jelas tidak relevan
                 const title = contrib.title;
                 const lower = title.toLowerCase();
 
-                // Lewati halaman pembicaraan, user page, dll
                 if (lower.startsWith('user:') ||
                     lower.startsWith('user talk:') ||
                     lower.startsWith('talk:') ||
-                    lower.startsWith('wikipedia:') ||  // jarang tapi kadang ada
+                    lower.startsWith('wikipedia:') ||
                     lower.startsWith('special:')) {
                     return false;
                 }
 
-                // Terima semua yang masuk akal di Commons
                 return true;
             }
 
-            // Kode untuk Wikipedia biasa tetap sama
             if (!filters.includeMinor && (contrib.minor || (contrib.sizediff && Math.abs(contrib.sizediff) < 100))) {
                 return false;
             }
@@ -955,9 +973,8 @@
             }
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape' }); // landscape agar tabel lebar muat lebih baik
+            const doc = new jsPDF({ orientation: 'landscape' });
 
-            // Judul dokumen
             doc.setFontSize(16);
             doc.text(`Wikimedia Impact Report - ${exportData.username}`, 14, 20);
 
@@ -969,10 +986,8 @@
                 34
             );
 
-            // Garis pemisah
             doc.line(14, 38, 280, 38);
 
-            // Siapkan data untuk AutoTable
             const isCommons = isCommonsProject(exportData.project);
             const headers = isCommons
                 ? [
@@ -1007,12 +1022,11 @@
                 article.impact
             ]);
 
-            // Generate tabel dengan AutoTable
             doc.autoTable({
                 head: headers,
                 body: body,
                 startY: 45,
-                theme: 'grid',           // bisa 'striped', 'plain', 'grid'
+                theme: 'grid',
                 styles: {
                     fontSize: 9,
                     cellPadding: 3,
@@ -1020,7 +1034,7 @@
                     halign: 'left'
                 },
                 headStyles: {
-                    fillColor: [13, 110, 253], // warna accent kamu (#0d6efd)
+                    fillColor: [13, 110, 253],
                     textColor: 255,
                     fontStyle: 'bold'
                 },
@@ -1028,22 +1042,20 @@
                     fillColor: [240, 240, 240]
                 },
                 columnStyles: {
-                    0: { cellWidth: 60 },   // Article - lebih lebar
-                    2: { halign: 'right' }, // Bytes
-                    4: { halign: 'right' }, // Pageviews
-                    5: { halign: 'right' }  // File Usage (jika Commons)
+                    0: { cellWidth: 60 },
+                    2: { halign: 'right' },
+                    4: { halign: 'right' },
+                    5: { halign: 'right' }
                 },
                 margin: { top: 45, left: 14, right: 14 }
             });
 
-            // Tambahkan summary di bawah tabel
             const finalY = doc.lastAutoTable.finalY + 15;
             doc.setFontSize(12);
             doc.text(translations[currentLang].totalEdits + ': ' + exportData.summary.totalEdits.toLocaleString(), 14, finalY);
             doc.text(translations[currentLang].totalArticles + ': ' + exportData.summary.totalArticles.toLocaleString(), 14, finalY + 8);
             doc.text(translations[currentLang].totalViews + ': ' + exportData.summary.totalViews.toLocaleString(), 14, finalY + 16);
 
-            // Simpan file
             const filename = `wikimedia-impact-${exportData.username}-${Date.now()}.pdf`;
             doc.save(filename);
         }
@@ -1071,7 +1083,7 @@
 
         // Table functions
         function updateTableHeaders(isCommons) {
-            const t = translations[currentLang] || translations['en']; // fallback ke English jika lang hilang
+            const t = translations[currentLang] || translations['en'];
 
             const commonHeaders = `
         <tr>
@@ -1114,6 +1126,7 @@
 
             document.getElementById('resultTableHead').innerHTML = commonHeaders + commonsExtra + impactHeader;
         }
+
         function toggleCollapse(section) {
             const content = document.getElementById(`${section}Content`);
             const icon = document.getElementById(`${section}CollapseIcon`);
@@ -1252,6 +1265,7 @@
 
             try {
                 // Fetch trending
+                statusEl.textContent = translations[currentLang].fetchingTrending;
                 const trendingList = await fetchTrendingWithRetry(key, proj);
                 if (trendingList.length) {
                     const tbody = document.getElementById('trendingTable').querySelector('tbody');
@@ -1261,11 +1275,11 @@
                         tbody.insertAdjacentHTML('beforeend', row);
                     });
                     document.getElementById('trendingCard').style.display = 'block';
-
                     toggleCollapse('trending');
                 }
 
                 // Fetch contributions
+                statusEl.textContent = translations[currentLang].fetchingContribs;
                 const ucUrl = `${proj}/w/api.php?origin=*&action=query&format=json&formatversion=2&list=usercontribs&uclimit=500&ucprop=title|timestamp|sizediff|ids|flags&ucuser=${encodeURIComponent(user)}&ucstart=${end.toISOString()}&ucend=${start.toISOString()}`;
                 const ucRes = await fetch(ucUrl);
                 const ucData = await ucRes.json();
@@ -1296,15 +1310,22 @@
                     }
                 });
 
+                const titles = Object.keys(map);
+
+                // TAMPILKAN PROGRESS BAR SEGERA
+                progressContainer.style.display = 'block';
+                statusEl.textContent = '';
+
+                // Proses File Usage untuk Commons DENGAN progress bar
                 if (isCommons) {
-                    for (const title of Object.keys(map)) {
+                    for (let i = 0; i < titles.length; i++) {
+                        const title = titles[i];
                         map[title].fileUsage = await fetchFileUsage(title, proj);
+                        updateProgress(i + 1, titles.length * 2);
                     }
                 }
 
-                progressContainer.style.display = 'block';
-                const titles = Object.keys(map);
-                let done = 0;
+                let done = isCommons ? titles.length : 0;
                 let totalViews = 0;
 
                 exportData = {
@@ -1326,6 +1347,7 @@
                 updateTableHeaders(isCommons);
                 const tbody = document.getElementById('resultTable').querySelector('tbody');
 
+                // Proses Pageviews
                 for (const t of titles) {
                     let views = 0;
                     try {
@@ -1337,7 +1359,8 @@
 
                     totalViews += views;
                     done++;
-                    updateProgress(done, titles.length);
+                    const totalSteps = isCommons ? titles.length * 2 : titles.length;
+                    updateProgress(done, totalSteps);
 
                     const impactText = views >= threshold ? translations[currentLang].significant : translations[currentLang].low;
                     const impact = views >= threshold
@@ -1367,7 +1390,7 @@
                 updateSummary(contribs.length, titles.length, totalViews);
                 document.getElementById('resultCard').style.display = 'block';
 
-                if (titles.length === done) {
+                if (titles.length === done || (isCommons && done === titles.length * 2)) {
                     setTimeout(() => progressContainer.style.display = 'none', 500);
                 }
             } catch (err) {
@@ -1376,13 +1399,14 @@
                 errorEl.style.display = 'block';
             } finally {
                 analyzeBtn.disabled = false;
+                statusEl.textContent = '';
             }
         }
 
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             updateLanguage();
-            initTheme();
+            initTheme(); // This will also update button states
 
             document.getElementById('analyzeBtn').addEventListener('click', run);
             document.getElementById('langBtn').addEventListener('click', toggleLanguage);
@@ -1390,10 +1414,14 @@
             document.getElementById('darkThemeBtn').addEventListener('click', () => setTheme('dark'));
 
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                if (localStorage.getItem('theme') === 'system') applyTheme('system');
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'system' || !savedTheme) {
+                    applyTheme('system');
+                }
             });
         });
     </script>
+
 </body>
 
 </html>
