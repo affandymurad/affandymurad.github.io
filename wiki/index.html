@@ -1315,8 +1315,13 @@
                     const remainingCount = activeProjects.length - visibleCount;
 
                     projectsOverlay.innerHTML = visibleProjects.map(p =>
-                        `<div class="project-badge">${p}</div>`
-                    ).join('') + `<div class="project-badge">+${remainingCount}</div>`;
+                        `<div class="project-badge">
+            <img src="${getProjectFavicon(p.domain)}"
+                 onerror="this.style.display='none'">
+            ${p.label}
+         </div>`
+                    ).join('') +
+                        `<div class="project-badge">+${remainingCount}</div>`;
                 }
 
                 loadingMsg.style.display = 'none';
