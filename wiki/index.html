@@ -782,7 +782,8 @@
                     <h3 id="modalTitle">Pilih bahasa</h3>
 
                     <div class="lang-input-group">
-                        <input type="text" id="langCodeInput" placeholder="contoh: id, en, fr" maxlength="3">
+                        <input type="text" id="langCodeInput" placeholder="contoh: id, en, fr, bew, map-bms"
+                            maxlength="7">
                         <!-- Tombol Tambah (opsional, bisa dihapus jika ingin auto-add only) -->
                         <button id="addLangBtn">Tambah</button>
                     </div>
@@ -897,12 +898,12 @@
                 backButton: "Kembali ke Affandy Murad",
                 // Modal bahasa
                 modalTitle: "Pilih bahasa",
-                langPlaceholder: "contoh: id, en, fr",
+                langPlaceholder: "contoh: id, en, fr, bew, map-bms",
                 addButton: "Tambah",
                 confirmButton: "Tambahkan ke daftar",
                 cancelButton: "Batal",
                 errorNoLanguage: "Minimal satu bahasa",
-                errorMaxChar: "Kode bahasa maksimal 3 huruf"
+                errorMaxChar: "Kode bahasa maksimal 7 huruf"
             },
             en: {
                 mainTitle: "Wiki Year in Review",
@@ -929,12 +930,12 @@
                 backButton: "Back to Affandy Murad",
                 // Modal bahasa
                 modalTitle: "Select language",
-                langPlaceholder: "example: en, id, fr",
+                langPlaceholder: "example: id, en, fr, bew, map-bms",
                 addButton: "Add",
                 confirmButton: "Add to list",
                 cancelButton: "Cancel",
                 errorNoLanguage: "At least one language required",
-                errorMaxChar: "Language code maximum 3 characters"
+                errorMaxChar: "Language code maximum 7 characters"
             }
         };
 
@@ -1630,8 +1631,8 @@
 
                     input.title =
                         currentLang === 'id'
-                            ? 'Maksimal 3 huruf (kode bahasa)'
-                            : `Maximum 3 letters (language code)`;
+                            ? 'Maksimal 7 huruf (kode bahasa)'
+                            : `Maximum 7 letters (language code)`;
                     const modal = document.getElementById('wikiLanguageModal');
                     const title = document.getElementById('modalTitle');
 
