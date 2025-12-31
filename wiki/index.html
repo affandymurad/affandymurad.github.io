@@ -290,7 +290,7 @@
             position: absolute;
             top: 5px;
             left: 10px;
-            font-size: 0.3em;
+            font-size: 0.8em;
             color: rgba(0, 0, 0, 0.5);
             text-align: left;
             line-height: 1.5;
@@ -380,7 +380,7 @@
         }
 
         .qr-label {
-            font-size: 0.5em;
+            font-size: 0.8em;
             font-weight: 600;
             color: #202122;
             line-height: 1.3;
@@ -514,7 +514,7 @@
             }
 
             .project-badge {
-                font-size: 0.65em;
+                font-size: 0.8em;
                 padding: 4px 8px;
                 border-radius: 12px;
             }
@@ -543,6 +543,96 @@
         textarea:focus {
             outline: none;
             border-color: var(--accent);
+        }
+
+        .wiki-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0 20px;
+            justify-content: center;
+        }
+
+        .wiki-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wiki-button:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+
+        .wiki-button img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+
+        .wiki-button .label {
+            position: absolute;
+            bottom: 4px;
+            font-size: 0.65em;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        /* Modal */
+        .wiki-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wiki-modal-content {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .wiki-modal-content h3 {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .lang-input-group {
+            display: flex;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .lang-input-group input {
+            flex: 1;
+        }
+
+        .wiki-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .wiki-button[data-needs-lang="true"] .label {
+            bottom: 2px;
+            font-size: 0.6em;
         }
     </style>
 </head>
@@ -591,6 +681,118 @@
                     <textarea id="wikis" rows="3"
                         placeholder="id.wikipedia.org, en.wikipedia.org, commons.wikimedia.org, www.wikidata.org"
                         autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false"></textarea>
+                </div>
+            </div>
+
+            <div class="wiki-buttons-container">
+                <!-- Proyek yang membutuhkan kode bahasa -->
+                <div class="wiki-button" data-project="wikipedia" data-needs-lang="true"
+                    data-domain-base="wikipedia.org" title="Wikipedia">
+                    <img class="favicon-placeholder" alt="Wikipedia">
+                    <span class="label">Wikipedia</span>
+                </div>
+
+                <div class="wiki-button" data-project="wiktionary" data-needs-lang="true"
+                    data-domain-base="wiktionary.org" title="Wiktionary">
+                    <img class="favicon-placeholder" alt="Wiktionary">
+                    <span class="label">Wiktionary</span>
+                </div>
+
+                <div class="wiki-button" data-project="wikibooks" data-needs-lang="true"
+                    data-domain-base="wikibooks.org" title="Wikibooks">
+                    <img class="favicon-placeholder" alt="Wikibooks">
+                    <span class="label">Wikibooks</span>
+                </div>
+
+                <div class="wiki-button" data-project="wikisource" data-needs-lang="true"
+                    data-domain-base="wikisource.org" title="Wikisource">
+                    <img class="favicon-placeholder" alt="Wikisource">
+                    <span class="label">Wikisource</span>
+                </div>
+
+                <div class="wiki-button" data-project="wikiquote" data-needs-lang="true"
+                    data-domain-base="wikiquote.org" title="Wikiquote">
+                    <img class="favicon-placeholder" alt="Wikiquote">
+                    <span class="label">Wikiquote</span>
+                </div>
+
+                <div class="wiki-button" data-project="wikinews" data-needs-lang="true" data-domain-base="wikinews.org"
+                    title="Wikinews">
+                    <img class="favicon-placeholder" alt="Wikinews">
+                    <span class="label">Wikinews</span>
+                </div>
+
+                <div class="wiki-button" data-project="wikiversity" data-needs-lang="true"
+                    data-domain-base="wikiversity.org" title="Wikiversity">
+                    <img class="favicon-placeholder" alt="Wikiversity">
+                    <span class="label">Wikiversity</span>
+                </div>
+
+                <div class="wiki-button" data-project="wikivoyage" data-needs-lang="true"
+                    data-domain-base="wikivoyage.org" title="Wikivoyage">
+                    <img class="favicon-placeholder" alt="Wikivoyage">
+                    <span class="label">Wikivoyage</span>
+                </div>
+
+                <!-- Proyek global (tanpa kode bahasa) -->
+                <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
+                    <img class="favicon-placeholder" alt="Wikispecies">
+                    <span class="label">Wikispecies</span>
+                </div>
+
+                <div class="wiki-button" data-domain="commons.wikimedia.org" title="Commons">
+                    <img class="favicon-placeholder" alt="Commons">
+                    <span class="label">Commons</span>
+                </div>
+
+                <div class="wiki-button" data-domain="www.wikidata.org" title="Wikidata">
+                    <img class="favicon-placeholder" alt="Wikidata">
+                    <span class="label">Wikidata</span>
+                </div>
+
+                <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+                    <img class="favicon-placeholder" alt="Wikifunctions">
+                    <span class="label">Wikifunctions</span>
+                </div>
+
+                <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+                    <img class="favicon-placeholder" alt="Incubator">
+                    <span class="label">Incubator</span>
+                </div>
+
+                <div class="wiki-button" data-domain="meta.wikimedia.org" title="Meta-Wiki">
+                    <img class="favicon-placeholder" alt="Meta">
+                    <span class="label">Meta</span>
+                </div>
+
+                <div class="wiki-button" data-domain="www.mediawiki.org" title="MediaWiki">
+                    <img class="favicon-placeholder" alt="MediaWiki">
+                    <span class="label">MediaWiki</span>
+                </div>
+
+                <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+                    <img class="favicon-placeholder" alt="Wikitech">
+                    <span class="label">Wikitech</span>
+                </div>
+            </div>
+
+            <!-- Modal bahasa -->
+            <div class="wiki-modal" id="wikiLanguageModal">
+                <div class="wiki-modal-content">
+                    <h3 id="modalTitle">Pilih bahasa</h3>
+
+                    <div class="lang-input-group">
+                        <input type="text" id="langCodeInput" placeholder="contoh: id, en, fr" maxlength="3">
+                        <!-- Tombol Tambah (opsional, bisa dihapus jika ingin auto-add only) -->
+                        <button id="addLangBtn">Tambah</button>
+                    </div>
+
+                    <div id="selectedLanguages" style="min-height: 40px; margin: 12px 0;"></div>
+
+                    <div class="wiki-modal-buttons">
+                        <button id="cancelModalBtn">Batal</button>
+                        <button id="confirmModalBtn">Tambahkan ke daftar</button>
+                    </div>
                 </div>
             </div>
             <button onclick="generatePreview()" id="generateBtn">Generate Preview</button>
@@ -692,7 +894,15 @@
                 errorWikis: "Silakan masukkan setidaknya satu domain wiki",
                 errorFetch: "Gagal mengambil data. Pastikan nama pengguna dan domain wiki benar.",
                 qrLabel: "Buat versimu di",
-                backButton: "Kembali ke Affandy Murad"
+                backButton: "Kembali ke Affandy Murad",
+                // Modal bahasa
+                modalTitle: "Pilih bahasa",
+                langPlaceholder: "contoh: id, en, fr",
+                addButton: "Tambah",
+                confirmButton: "Tambahkan ke daftar",
+                cancelButton: "Batal",
+                errorNoLanguage: "Minimal satu bahasa",
+                errorMaxChar: "Kode bahasa maksimal 3 huruf"
             },
             en: {
                 mainTitle: "Wiki Year in Review",
@@ -716,7 +926,15 @@
                 errorWikis: "Please enter at least one wiki domain",
                 errorFetch: "Failed to fetch data. Please check the username and wiki domains.",
                 qrLabel: "Create yours at",
-                backButton: "Back to Affandy Murad"
+                backButton: "Back to Affandy Murad",
+                // Modal bahasa
+                modalTitle: "Select language",
+                langPlaceholder: "example: en, id, fr",
+                addButton: "Add",
+                confirmButton: "Add to list",
+                cancelButton: "Cancel",
+                errorNoLanguage: "At least one language required",
+                errorMaxChar: "Language code maximum 3 characters"
             }
         };
 
@@ -790,7 +1008,15 @@
             document.getElementById('bytesLabel').textContent = t.bytesLabel;
             document.getElementById('backButton').textContent = `← ${t.backButton}`;
 
+            // Update modal bahasa
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+            document.getElementById('langCodeInput').placeholder = t.langPlaceholder;
+            document.getElementById('addLangBtn').textContent = t.addButton;
+            document.getElementById('confirmModalBtn').textContent = t.confirmButton;
+            document.getElementById('cancelModalBtn').textContent = t.cancelButton;
+
             updateQrSection(t);
+            loadWikiFavicons();
         }
 
         function applyTheme() {
@@ -941,12 +1167,30 @@
 
                 const wikiDomains = wikisInput.split(',').map(w => w.trim()).filter(w => w);
 
+                // Normalisasi dan deduplikasi domain
+                const normalizedDomains = new Map();
+                wikiDomains.forEach(domain => {
+                    let normalized = domain.toLowerCase().trim();
+                    // Hapus https:// atau http:// untuk perbandingan
+                    normalized = normalized.replace(/^https?:\/\//, '');
+                    // Hapus trailing slash
+                    normalized = normalized.replace(/\/$/, '');
+
+                    // Simpan domain original pertama yang ditemukan untuk setiap normalized domain
+                    if (!normalizedDomains.has(normalized)) {
+                        normalizedDomains.set(normalized, domain);
+                    }
+                });
+
                 let totalEdits = 0;
                 let totalPages = 0;
                 let totalAdded = 0;
                 const activeProjects = [];
 
-                for (const domain of wikiDomains) {
+                // Gunakan array yang sudah dideduplikasi
+                const uniqueWikiDomains = Array.from(normalizedDomains.values());
+
+                for (const domain of uniqueWikiDomains) {
                     try {
                         let baseUrl = domain;
                         if (!domain.startsWith('http')) {
@@ -1318,6 +1562,179 @@
                 btn.innerHTML = originalText;
             }
         }
+        // Variabel global untuk menyimpan pilihan saat ini
+        let currentProject = null;
+        let selectedLanguages = [];
+
+        // Tambahkan di bagian atas setelah deklarasi variabel
+        const confirmBtn = document.getElementById('confirmModalBtn');
+
+        // Fungsi untuk update status tombol Confirm
+        function updateConfirmButton() {
+            confirmBtn.disabled = selectedLanguages.length === 0;
+            confirmBtn.style.opacity = selectedLanguages.length === 0 ? '0.5' : '1';
+            confirmBtn.style.cursor = selectedLanguages.length === 0 ? 'not-allowed' : 'pointer';
+        }
+
+        // Fungsi untuk mengisi semua favicon secara dinamis
+        function loadWikiFavicons() {
+            document.querySelectorAll('.wiki-button').forEach(button => {
+                const img = button.querySelector('.favicon-placeholder');
+                if (!img) return;
+
+                let domainToUse;
+
+                // Kasus 1: Proyek dengan kode bahasa → pakai contoh 'en.'
+                if (button.dataset.domainBase) {
+                    domainToUse = `en.${button.dataset.domainBase}`;
+                }
+                // Kasus 2: Proyek global langsung pakai domain yang diberikan
+                else if (button.dataset.domain) {
+                    domainToUse = button.dataset.domain;
+                }
+
+                if (domainToUse) {
+                    const faviconUrl = getProjectFavicon(domainToUse);
+                    img.src = faviconUrl;
+
+                    // Fallback jika favicon gagal dimuat
+                    img.onerror = function () {
+                        this.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Wikipedia-logo-placeholder.png/64px-Wikipedia-logo-placeholder.png';
+                        this.onerror = null; // hindari loop error
+                    };
+                }
+            });
+        }
+
+        // Jalankan setelah halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadWikiFavicons);
+
+        // Handler semua tombol wiki sekaligus
+        document.querySelectorAll('.wiki-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const needsLang = btn.dataset.needsLang === 'true';
+                const directDomain = btn.dataset.domain;
+
+                // Kasus 1: Proyek tanpa bahasa → langsung tambah domain
+                if (directDomain) {
+                    addDomainToTextarea(directDomain);
+                    return;
+                }
+
+                // Kasus 2: Proyek yang butuh bahasa → buka modal
+                if (needsLang) {
+                    currentProject = btn.dataset.project;
+                    selectedLanguages = [];
+                    document.getElementById('selectedLanguages').innerHTML = '';
+                    const input = document.getElementById('langCodeInput');
+
+                    input.title =
+                        currentLang === 'id'
+                            ? 'Maksimal 3 huruf (kode bahasa)'
+                            : `Maximum 3 letters (language code)`;
+                    const modal = document.getElementById('wikiLanguageModal');
+                    const title = document.getElementById('modalTitle');
+
+                    title.textContent = currentLang === 'id'
+                        ? `Pilih bahasa untuk ${currentProject.charAt(0).toUpperCase() + currentProject.slice(1)}`
+                        : `Select language for ${currentProject.charAt(0).toUpperCase() + currentProject.slice(1)}`;
+
+                    updateConfirmButton();
+                    modal.style.display = 'flex';
+                    document.getElementById('langCodeInput').focus();
+                }
+            });
+        });
+
+        // Fungsi helper: tambah domain ke textarea (hindari duplikat)
+        function addDomainToTextarea(domain) {
+            const textarea = document.getElementById('wikis');
+            const cleaned = domain.trim().toLowerCase();
+            const existing = textarea.value
+                .split(',')
+                .map(d => d.trim().toLowerCase())
+                .filter(Boolean);
+
+            if (!existing.includes(cleaned)) {
+                if (textarea.value.trim()) {
+                    textarea.value += ', ';
+                }
+                textarea.value += domain;
+            }
+        }
+
+        // Tambah bahasa ke list sementara
+        document.getElementById('addLangBtn').addEventListener('click', addLanguageTag);
+        const langInput = document.getElementById('langCodeInput');
+
+        function addLanguageTag() {
+            const code = langInput.value.trim().toLowerCase();
+            if (!code || code.length > 3) return;
+
+            if (!selectedLanguages.includes(code)) {
+                selectedLanguages.push(code);
+
+                const tag = document.createElement('span');
+                tag.style.cssText = 'background:#e0e0ff; color:#333; padding:5px 11px; border-radius:16px; margin:0 6px 6px 0; display:inline-block; font-size:0.92em;';
+                tag.textContent = code + ' ';
+
+                const removeBtn = document.createElement('span');
+                removeBtn.textContent = '×';
+                removeBtn.style.cssText = 'cursor:pointer; margin-left:4px; font-weight:bold;';
+
+                // Event remove yang benar
+                removeBtn.onclick = function () {
+                    selectedLanguages = selectedLanguages.filter(l => l !== code);
+                    tag.remove();
+                    updateConfirmButton();          // ← ini yang hilang sebelumnya
+                };
+
+                tag.appendChild(removeBtn);
+                document.getElementById('selectedLanguages').appendChild(tag);
+
+                updateConfirmButton();              // update setelah tambah
+            }
+            langInput.value = '';
+        }
+
+        // Auto-add saat Enter
+        langInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addLanguageTag();
+            }
+        });
+
+        // Auto-add saat kehilangan fokus (opsional tapi user-friendly)
+        langInput.addEventListener('blur', addLanguageTag);
+
+        // Konfirmasi → tambah semua kombinasi bahasa ke textarea
+        document.getElementById('confirmModalBtn').addEventListener('click', () => {
+            if (selectedLanguages.length === 0) {
+                alert(currentLang === 'id' ? "Minimal satu bahasa" : "At least one language");
+                return;
+            }
+
+            const baseProject = `${currentProject}.org`;
+            selectedLanguages.forEach(lang => {
+                const domain = `${lang}.${baseProject}`;
+                addDomainToTextarea(domain);
+            });
+
+            document.getElementById('wikiLanguageModal').style.display = 'none';
+        });
+
+        // Batal
+        document.getElementById('cancelModalBtn').addEventListener('click', () => {
+            document.getElementById('wikiLanguageModal').style.display = 'none';
+        });
+
+        // Klik luar modal tutup
+        document.getElementById('wikiLanguageModal').addEventListener('click', e => {
+            if (e.target === document.getElementById('wikiLanguageModal')) {
+                document.getElementById('wikiLanguageModal').style.display = 'none';
+            }
+        });
     </script>
 </body>
 
