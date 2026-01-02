@@ -632,7 +632,139 @@
             border-radius: 10px;
             font-size: 11px;
         }
+
+        /* Wiki Buttons */
+        .wiki-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .wiki-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .wiki-button:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .wiki-button img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+
+        .wiki-button .label {
+            font-size: 0.65em;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Modal */
+        .wiki-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wiki-modal-content {
+            background: var(--bg-primary);
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .wiki-modal-content h3 {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .lang-input-group {
+            display: flex;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .lang-input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .wiki-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .wiki-modal-buttons button {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wiki-modal-buttons button:last-child {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .wiki-modal-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #selectedLanguages span {
+            display: inline-block;
+            background: #e0e0ff;
+            color: #333;
+            padding: 5px 11px;
+            border-radius: 16px;
+            margin: 0 6px 6px 0;
+            font-size: 0.92em;
+        }
+
+        [data-theme="dark"] #selectedLanguages span {
+            background: #2a2a4a;
+            color: #e0e0ff;
+        }
+
+        #selectedLanguages span span {
+            cursor: pointer;
+            margin-left: 4px;
+            font-weight: bold;
+            padding: 0;
+        }
     </style>
+
     <!-- Tambahkan di akhir <head> atau sebelum </body> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
@@ -674,7 +806,106 @@
 
             <div class="form-group">
                 <label for="project" data-i18n="project">Wikimedia Project URL</label>
-                <input type="text" id="project" placeholder="id.wikipedia.org">
+                <input type="text" id="project" data-i18n-placeholder="projectPlaceholder"
+                    placeholder="id.wikipedia.org (Click the wikimedia project below)" readonly
+                    style="cursor: pointer;">
+
+                <div class="wiki-buttons-container">
+                    <!-- Projects with language codes -->
+                    <div class="wiki-button" data-project="wikipedia" data-needs-lang="true"
+                        data-domain-base="wikipedia.org" title="Wikipedia">
+                        <img class="favicon-placeholder" alt="Wikipedia">
+                        <span class="label">Wikipedia</span>
+                    </div>
+                    <div class="wiki-button" data-project="wiktionary" data-needs-lang="true"
+                        data-domain-base="wiktionary.org" title="Wiktionary">
+                        <img class="favicon-placeholder" alt="Wiktionary">
+                        <span class="label">Wiktionary</span>
+                    </div>
+                    <div class="wiki-button" data-project="wikibooks" data-needs-lang="true"
+                        data-domain-base="wikibooks.org" title="Wikibooks">
+                        <img class="favicon-placeholder" alt="Wikibooks">
+                        <span class="label">Wikibooks</span>
+                    </div>
+                    <div class="wiki-button" data-project="wikisource" data-needs-lang="true"
+                        data-domain-base="wikisource.org" title="Wikisource">
+                        <img class="favicon-placeholder" alt="Wikisource">
+                        <span class="label">Wikisource</span>
+                    </div>
+                    <div class="wiki-button" data-project="wikiquote" data-needs-lang="true"
+                        data-domain-base="wikiquote.org" title="Wikiquote">
+                        <img class="favicon-placeholder" alt="Wikiquote">
+                        <span class="label">Wikiquote</span>
+                    </div>
+                    <div class="wiki-button" data-project="wikinews" data-needs-lang="true"
+                        data-domain-base="wikinews.org" title="Wikinews">
+                        <img class="favicon-placeholder" alt="Wikinews">
+                        <span class="label">Wikinews</span>
+                    </div>
+                    <div class="wiki-button" data-project="wikiversity" data-needs-lang="true"
+                        data-domain-base="wikiversity.org" title="Wikiversity">
+                        <img class="favicon-placeholder" alt="Wikiversity">
+                        <span class="label">Wikiversity</span>
+                    </div>
+                    <div class="wiki-button" data-project="wikivoyage" data-needs-lang="true"
+                        data-domain-base="wikivoyage.org" title="Wikivoyage">
+                        <img class="favicon-placeholder" alt="Wikivoyage">
+                        <span class="label">Wikivoyage</span>
+                    </div>
+
+                    <!-- Global projects -->
+                    <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
+                        <img class="favicon-placeholder" alt="Wikispecies">
+                        <span class="label">Wikispecies</span>
+                    </div>
+                    <div class="wiki-button" data-domain="commons.wikimedia.org" title="Commons">
+                        <img class="favicon-placeholder" alt="Commons">
+                        <span class="label">Commons</span>
+                    </div>
+                    <div class="wiki-button" data-domain="www.wikidata.org" title="Wikidata">
+                        <img class="favicon-placeholder" alt="Wikidata">
+                        <span class="label">Wikidata</span>
+                    </div>
+                    <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+                        <img class="favicon-placeholder" alt="Wikifunctions">
+                        <span class="label">Wikifunctions</span>
+                    </div>
+                    <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+                        <img class="favicon-placeholder" alt="Incubator">
+                        <span class="label">Incubator</span>
+                    </div>
+                    <div class="wiki-button" data-domain="meta.wikimedia.org" title="Meta-Wiki">
+                        <img class="favicon-placeholder" alt="Meta">
+                        <span class="label">Meta</span>
+                    </div>
+                    <div class="wiki-button" data-domain="www.mediawiki.org" title="MediaWiki">
+                        <img class="favicon-placeholder" alt="MediaWiki">
+                        <span class="label">MediaWiki</span>
+                    </div>
+                    <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+                        <img class="favicon-placeholder" alt="Wikitech">
+                        <span class="label">Wikitech</span>
+                    </div>
+                    <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
+                        <img class="favicon-placeholder" alt="Wikimania">
+                        <span class="label">Wikimania</span>
+                    </div>
+                </div>
+
+                <!-- Language Modal -->
+                <div class="wiki-modal" id="wikiLanguageModal">
+                    <div class="wiki-modal-content">
+                        <h3 id="modalTitle">Select language</h3>
+                        <div class="lang-input-group">
+                            <input type="text" id="langCodeInput" placeholder="e.g., id, en, fr" maxlength="7">
+                        </div>
+                        <div id="selectedLanguages" style="min-height: 40px; margin: 12px 0;"></div>
+                        <div class="wiki-modal-buttons">
+                            <button id="cancelModalBtn">Cancel</button>
+                            <button id="confirmModalBtn">Select</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -919,7 +1150,9 @@
                 activeWikis: 'Wiki Aktif',
                 showActiveOnly: 'Tampilkan hanya wiki aktif (edit > 0)',
                 generatedFrom: 'Dibuat dari',
-
+                modalTitle: 'Pilih bahasa',
+                projectPlaceholder: 'id.wikipedia.org (Klik proyek wikimedia di bawah)',
+                currentProject: 'Proyek Saat Ini'
             },
             en: {
                 title: 'Wikimedia Impact Analyzer',
@@ -981,7 +1214,10 @@
                 mergedWikis: 'Merged Wikis',
                 activeWikis: 'Active Wikis',
                 showActiveOnly: 'Show only active wikis (edits > 0)',
-                generatedFrom: 'Generated from'
+                generatedFrom: 'Generated from',
+                modalTitle: 'Select language',
+                projectPlaceholder: 'id.wikipedia.org (Click the wikimedia project below)',
+                currentProject: 'Current Project'
             }
         };
 
@@ -1153,7 +1389,8 @@
 
             let yPos = 20;
             const pageHeight = doc.internal.pageSize.height;
-            const marginBottom = 20;
+            const pageWidth = doc.internal.pageSize.width;
+            const marginBottom = 15; // Dikurangi dari 20
 
             // Header
             doc.setFontSize(18);
@@ -1164,6 +1401,8 @@
             doc.setFontSize(11);
             doc.setFont(undefined, 'normal');
             doc.text(`Username: ${exportData.username}`, 14, yPos);
+            yPos += 6;
+            doc.text(`Project: ${exportData.projectDisplayName || exportData.project}`, 14, yPos);
             yPos += 6;
 
             doc.setFontSize(9);
@@ -1216,74 +1455,87 @@
 
                 // Global lock status
                 if (ui.global && (ui.global.locked || ui.global.hidden)) {
-                    doc.setTextColor(255, 193, 7); // Warning color
+                    doc.setTextColor(255, 193, 7);
                     doc.text(`⚠ Global Status: ${ui.global.locked ? 'Locked' : ''} ${ui.global.hidden ? 'Hidden' : ''}`.trim(), 20, yPos);
                     doc.setTextColor(0);
                     yPos += 3;
                 }
-                yPos += 8;
+                yPos += 6; // Dikurangi dari 8
 
-                // Global Info
+                // Global Info - COMPACT VERSION
                 if (ui.global) {
                     doc.setFont(undefined, 'bold');
                     doc.text('Global Account:', 14, yPos);
                     doc.setFont(undefined, 'normal');
                     yPos += 5;
 
+                    // Compact: 2 columns
                     doc.text(`Total Global Edits: ${ui.global.totalEdits.toLocaleString()}`, 20, yPos);
+                    doc.text(`Home Wiki: ${ui.global.homeWiki || '—'}`, 140, yPos);
                     yPos += 5;
-                    doc.text(`Home Wiki: ${ui.global.homeWiki || '—'}`, 20, yPos);
-                    yPos += 5;
-                    doc.text(`Connected Wikis: ${ui.global.totalWikis} (${ui.global.activeWikis} active)`, 20, yPos);
-                    yPos += 7;
 
-                    // Merged Wikis sebagai clickable links (horizontal, dipisah koma)
+                    doc.text(`Connected Wikis: ${ui.global.totalWikis} (${ui.global.activeWikis} active)`, 20, yPos);
+                    yPos += 6; // Dikurangi dari 7
+
+                    // Active Wikis - COMPACT: max 3 lines
                     if (ui.global.mergedWikis && ui.global.mergedWikis.length > 0) {
                         doc.setFont(undefined, 'bold');
                         doc.text('Active Wikis:', 20, yPos);
                         doc.setFont(undefined, 'normal');
                         yPos += 5;
 
-                        // Filter hanya wiki aktif dan sort by edit count
                         const activeWikis = ui.global.mergedWikis
                             .filter(w => w.editCount > 0)
-                            .sort((a, b) => b.editCount - a.editCount);
+                            .sort((a, b) => b.editCount - a.editCount)
+                            .slice(0, 20); // Limit hanya 20 wiki terbesar
 
                         let xPos = 20;
-                        const maxWidth = 260; // Lebar maksimal sebelum pindah baris
-                        const lineHeight = 5;
+                        const maxWidth = pageWidth - 30; // Full width usage
+                        const lineHeight = 4.5; // Lebih compact
+                        let lineCount = 0;
+                        const maxLines = 3; // Maksimal 3 baris
 
                         activeWikis.forEach((wiki, index) => {
+                            if (lineCount >= maxLines) return; // Stop jika sudah 3 baris
+
                             const wikiText = `${wiki.wiki} (${wiki.editCount.toLocaleString()})`;
                             const separator = index < activeWikis.length - 1 ? ', ' : '';
                             const fullText = wikiText + separator;
-
                             const textWidth = doc.getTextWidth(fullText);
 
-                            // Cek apakah perlu pindah baris
                             if (xPos + textWidth > maxWidth) {
                                 yPos += lineHeight;
                                 xPos = 20;
+                                lineCount++;
+                                if (lineCount >= maxLines) return;
                             }
 
-                            // Tambahkan link clickable
-                            doc.setTextColor(13, 110, 253); // Warna biru
+                            doc.setTextColor(13, 110, 253);
                             doc.textWithLink(wikiText, xPos, yPos, {
                                 url: `${wiki.url}/wiki/User:${exportData.username}`
                             });
 
                             xPos += doc.getTextWidth(wikiText);
 
-                            // Tambahkan separator (tidak clickable)
-                            if (separator) {
-                                doc.setTextColor(0); // Warna hitam untuk separator
+                            if (separator && lineCount < maxLines) {
+                                doc.setTextColor(0);
                                 doc.text(separator, xPos, yPos);
                                 xPos += doc.getTextWidth(separator);
                             }
                         });
 
-                        yPos += 10;
-                        doc.setTextColor(0); // Reset warna ke hitam
+                        // Tampilkan "and X more..." jika ada lebih banyak wiki
+                        const remainingWikis = ui.global.activeWikis - Math.min(activeWikis.length, 20);
+                        if (remainingWikis > 0) {
+                            if (xPos + doc.getTextWidth(` and ${remainingWikis} more...`) > maxWidth) {
+                                yPos += lineHeight;
+                            }
+                            doc.setTextColor(100);
+                            doc.text(` and ${remainingWikis} more...`, xPos, yPos);
+                            doc.setTextColor(0);
+                        }
+
+                        yPos += 8; // Dikurangi dari 10
                     } else {
                         yPos += 5;
                     }
@@ -1291,7 +1543,7 @@
             }
 
             doc.setDrawColor(200);
-            doc.line(14, yPos, 280, yPos);
+            doc.line(14, yPos, pageWidth - 14, yPos);
             yPos += 8;
 
             // Contributions Table
@@ -1325,11 +1577,28 @@
                 ];
 
             const body = exportData.articles.map(article => {
+                // Format tanggal berdasarkan bahasa
+                let formattedDate = article.lastEdited;
+                try {
+                    const date = new Date(article.lastEdited);
+                    const locale = currentLang === 'id' ? 'id-ID' : 'en-US';
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    };
+                    formattedDate = date.toLocaleString(locale, options);
+                } catch (e) {
+                    // Keep original if parsing fails
+                }
+
                 const row = [
                     article.title,
                     article.edits,
                     article.bytes,
-                    article.lastEdited,
+                    formattedDate,
                     article.pageviews.toLocaleString(),
                 ];
 
@@ -1347,8 +1616,8 @@
                 startY: yPos,
                 theme: 'grid',
                 styles: {
-                    fontSize: 9,
-                    cellPadding: 3,
+                    fontSize: 8.5, // Sedikit lebih kecil dari 9
+                    cellPadding: 2.5, // Dikurangi dari 3
                     overflow: 'linebreak',
                     halign: 'left'
                 },
@@ -1366,9 +1635,28 @@
                     4: { halign: 'right' },
                     5: isCommons ? { halign: 'right' } : {}
                 },
-                margin: { top: yPos, left: 14, right: 14, bottom: marginBottom },
+                margin: { top: 20, left: 14, right: 14, bottom: marginBottom },
+                didDrawCell: function (data) {
+                    // Hanya untuk kolom Article (column 0) dan bukan header
+                    if (data.column.index === 0 && data.section === 'body') {
+                        const article = exportData.articles[data.row.index];
+                        if (article && article.url) {
+                            // Buat link clickable invisible di atas cell
+                            doc.link(
+                                data.cell.x,
+                                data.cell.y,
+                                data.cell.width,
+                                data.cell.height,
+                                { url: article.url }
+                            );
+                        }
+                    }
+                },
+                // PENTING: Rowbreak configuration
+                showHead: 'everyPage',
+                rowPageBreak: 'auto',
+                tableWidth: 'auto',
                 didDrawPage: function (data) {
-                    // Footer di setiap halaman
                     const pageCount = doc.internal.getNumberOfPages();
                     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
 
@@ -1376,18 +1664,20 @@
                     doc.setTextColor(150);
                     doc.text(
                         `Page ${currentPage} of ${pageCount}`,
-                        doc.internal.pageSize.width / 2,
-                        doc.internal.pageSize.height - 10,
+                        pageWidth / 2,
+                        pageHeight - 10,
                         { align: 'center' }
                     );
                 }
             });
 
-            // Summary di halaman terakhir
-            const finalY = doc.lastAutoTable.finalY + 10;
+            // Summary di halaman terakhir - COMPACT VERSION
+            const finalY = doc.lastAutoTable.finalY + 8; // Dikurangi dari 10
 
-            // Cek apakah summary muat di halaman ini
-            if (finalY + 30 > pageHeight - marginBottom) {
+            // Cek space tersisa di halaman
+            const spaceLeft = pageHeight - finalY - marginBottom;
+
+            if (spaceLeft < 30) { // Minimal 30 untuk summary
                 doc.addPage();
                 yPos = 20;
             } else {
@@ -1395,27 +1685,25 @@
             }
 
             doc.setDrawColor(200);
-            doc.line(14, yPos, 280, yPos);
-            yPos += 8;
+            doc.line(14, yPos, pageWidth - 14, yPos);
+            yPos += 6; // Dikurangi dari 8
 
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
             doc.setTextColor(0);
             doc.text('Summary', 14, yPos);
-            yPos += 8;
+            yPos += 6; // Dikurangi dari 8
 
-            doc.setFontSize(11);
+            // COMPACT: 1 line dengan separator
+            doc.setFontSize(10);
             doc.setFont(undefined, 'normal');
-            doc.text(translations[currentLang].totalEdits + ': ' + exportData.summary.totalEdits.toLocaleString(), 14, yPos);
-            yPos += 7;
-            doc.text(translations[currentLang].totalArticles + ': ' + exportData.summary.totalArticles.toLocaleString(), 14, yPos);
-            yPos += 7;
-            doc.text(translations[currentLang].totalViews + ': ' + exportData.summary.totalViews.toLocaleString(), 14, yPos);
+            const summaryText = `${translations[currentLang].totalEdits}: ${exportData.summary.totalEdits.toLocaleString()} | ${translations[currentLang].totalArticles}: ${exportData.summary.totalArticles.toLocaleString()} | ${translations[currentLang].totalViews}: ${exportData.summary.totalViews.toLocaleString()}`;
+            doc.text(summaryText, 14, yPos);
 
-            yPos += 10;
-            doc.setDrawColor(200);
-            doc.line(14, yPos, 280, yPos);
             yPos += 8;
+            doc.setDrawColor(200);
+            doc.line(14, yPos, pageWidth - 14, yPos);
+            yPos += 6;
 
             doc.setFontSize(9);
             doc.setTextColor(100);
@@ -1622,6 +1910,50 @@
             }
         }
 
+        function getWikiDisplayName(projectUrl) {
+            const url = projectUrl.toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+            // Special projects
+            const specialProjects = {
+                'commons.wikimedia.org': 'Wikimedia Commons',
+                'www.wikidata.org': 'Wikidata',
+                'wikidata.org': 'Wikidata',
+                'meta.wikimedia.org': 'Meta-Wiki',
+                'www.mediawiki.org': 'MediaWiki.org',
+                'mediawiki.org': 'MediaWiki.org',
+                'species.wikimedia.org': 'Wikispecies',
+                'www.wikifunctions.org': 'Wikifunctions',
+                'wikifunctions.org': 'Wikifunctions',
+                'incubator.wikimedia.org': 'Wikimedia Incubator',
+                'wikitech.wikimedia.org': 'Wikitech',
+                'wikimania.wikimedia.org': 'Wikimania'
+            };
+
+            if (specialProjects[url]) {
+                return specialProjects[url];
+            }
+
+            // Language-specific projects
+            const match = url.match(/^([a-z\-]+)\.(wikipedia|wiktionary|wikibooks|wikisource|wikiquote|wikinews|wikiversity|wikivoyage)\.org$/);
+            if (match) {
+                const [, lang, project] = match;
+                const projectNames = {
+                    'wikipedia': 'Wikipedia',
+                    'wiktionary': 'Wiktionary',
+                    'wikibooks': 'Wikibooks',
+                    'wikisource': 'Wikisource',
+                    'wikiquote': 'Wikiquote',
+                    'wikinews': 'Wikinews',
+                    'wikiversity': 'Wikiversity',
+                    'wikivoyage': 'Wikivoyage'
+                };
+                return `${projectNames[project]} (${lang.toUpperCase()})`;
+            }
+
+            // Fallback
+            return url;
+        }
+
         function renderUserInfo(data) {
             if (!data) return;
 
@@ -1641,7 +1973,15 @@
     </div>`;
             }
 
+            const wikiDisplayName = getWikiDisplayName(wiki);
+
             const localHtml = `
+    <div class="user-info-item" style="grid-column: 1 / -1;">
+        <div class="user-info-label">${t.currentProject}</div>
+        <div class="user-info-value" style="font-size: 18px; color: var(--accent);">
+            ${wikiDisplayName}
+        </div>
+    </div>
     <div class="user-info-item">
         <div class="user-info-label">${t.userId}</div>
         <div class="user-info-value">${userData.userid ?? '—'}</div>
@@ -1781,6 +2121,139 @@
             if (globalData && username) {
                 renderWikiChips(globalData, username);
             }
+        }
+
+        // Wiki buttons functionality
+        let currentProject = null;
+        let selectedLanguage = '';
+
+        function getProjectFavicon(domain) {
+            let baseUrl = domain.trim();
+            if (!baseUrl.startsWith('http')) {
+                baseUrl = `https://${baseUrl}`;
+            }
+            return `${baseUrl}/favicon.ico`;
+        }
+
+        function loadWikiFavicons() {
+            document.querySelectorAll('.wiki-button').forEach(button => {
+                const img = button.querySelector('.favicon-placeholder');
+                if (!img) return;
+
+                let domainToUse;
+                if (button.dataset.domainBase) {
+                    domainToUse = `en.${button.dataset.domainBase}`;
+                } else if (button.dataset.domain) {
+                    domainToUse = button.dataset.domain;
+                }
+
+                if (domainToUse) {
+                    const faviconUrl = getProjectFavicon(domainToUse);
+                    img.src = faviconUrl;
+                    img.onerror = function () {
+                        this.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Wikimedia-logo_black.svg/64px-Wikimedia-logo_black.svg.png';
+                        this.onerror = null;
+                    };
+                }
+            });
+        }
+
+        function updateProjectInput(domain) {
+            document.getElementById('project').value = domain;
+        }
+
+        // Handler untuk semua tombol wiki
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWikiFavicons();
+
+            document.querySelectorAll('.wiki-button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const needsLang = btn.dataset.needsLang === 'true';
+                    const directDomain = btn.dataset.domain;
+
+                    if (directDomain) {
+                        updateProjectInput(directDomain);
+                        return;
+                    }
+
+                    if (needsLang) {
+                        currentProject = btn.dataset.domainBase;
+                        selectedLanguage = '';
+                        document.getElementById('selectedLanguages').innerHTML = '';
+                        document.getElementById('langCodeInput').value = '';
+
+                        const modal = document.getElementById('wikiLanguageModal');
+                        const title = document.getElementById('modalTitle');
+
+                        title.textContent = currentLang === 'id'
+                            ? `Pilih bahasa untuk ${btn.dataset.project}`
+                            : `Select language for ${btn.dataset.project}`;
+
+                        modal.style.display = 'flex';
+                        document.getElementById('langCodeInput').focus();
+                    }
+                });
+            });
+
+            // Input language
+            const langInput = document.getElementById('langCodeInput');
+            const confirmBtn = document.getElementById('confirmModalBtn');
+
+            function updateConfirmButton() {
+                confirmBtn.disabled = !selectedLanguage;
+            }
+
+            langInput.addEventListener('input', (e) => {
+                const code = e.target.value.trim().toLowerCase();
+                if (code && code.length <= 7) {
+                    selectedLanguage = code;
+                    document.getElementById('selectedLanguages').innerHTML =
+                        `<span>${code} <span onclick="clearLanguage()">×</span></span>`;
+                } else {
+                    selectedLanguage = '';
+                    document.getElementById('selectedLanguages').innerHTML = '';
+                }
+                updateConfirmButton();
+            });
+
+            langInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && selectedLanguage) {
+                    e.preventDefault();
+                    confirmSelection();
+                }
+            });
+
+            // Confirm selection
+            confirmBtn.addEventListener('click', confirmSelection);
+
+            function confirmSelection() {
+                if (selectedLanguage && currentProject) {
+                    const domain = `${selectedLanguage}.${currentProject}`;
+                    updateProjectInput(domain);
+                    document.getElementById('wikiLanguageModal').style.display = 'none';
+                }
+            }
+
+            // Cancel
+            document.getElementById('cancelModalBtn').addEventListener('click', () => {
+                document.getElementById('wikiLanguageModal').style.display = 'none';
+            });
+
+            // Click outside to close
+            document.getElementById('wikiLanguageModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('wikiLanguageModal')) {
+                    document.getElementById('wikiLanguageModal').style.display = 'none';
+                }
+            });
+
+            updateConfirmButton();
+        });
+
+        function clearLanguage() {
+            selectedLanguage = '';
+            document.getElementById('selectedLanguages').innerHTML = '';
+            document.getElementById('langCodeInput').value = '';
+            document.getElementById('confirmModalBtn').disabled = true;
         }
 
         async function run() {
@@ -1958,6 +2431,7 @@
                 // UPDATE exportData yang sudah ada:
                 exportData.username = user;
                 exportData.project = proj;
+                exportData.projectDisplayName = getWikiDisplayName(proj);
                 exportData.pageUrl = getCurrentPageUrl();
                 exportData.period = {
                     start: start.toISOString().split('T')[0],
