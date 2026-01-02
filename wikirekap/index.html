@@ -520,6 +520,113 @@
                 font-size: 20px;
             }
         }
+
+        /* User Info Styles */
+        .user-info-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            display: none;
+        }
+
+        .user-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .user-info-item {
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .user-info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .user-info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .wiki-chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .wiki-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: all .15s ease;
+            white-space: nowrap;
+        }
+
+        .wiki-chip:hover {
+            transform: translateY(-1px);
+            filter: brightness(.95);
+        }
+
+        .wiki-chip.home {
+            box-shadow: 0 0 0 2px #ff9800;
+            font-weight: 600;
+        }
+
+        .wiki-chip img {
+            width: 14px;
+            height: 14px;
+        }
+
+        .wiki-wikipedia {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-color: #bbdefb;
+        }
+
+        .wiki-commons {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-color: #c8e6c9;
+        }
+
+        .wiki-wikidata {
+            background: #ede7f6;
+            color: #4527a0;
+            border-color: #d1c4e9;
+        }
+
+        .wiki-wikisource {
+            background: #fff8e1;
+            color: #e65100;
+            border-color: #ffecb3;
+        }
+
+        .wiki-other {
+            background: #eceff1;
+            color: #37474f;
+            border-color: #cfd8dc;
+        }
+
+        .badge-mini {
+            background: rgba(0, 0, 0, .15);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
     </style>
     <!-- Tambahkan di akhir <head> atau sebelum </body> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -647,6 +754,29 @@
             <div class="progress-text" id="progressText">0%</div>
         </div>
 
+        <div class="user-info-card" id="userInfoCard">
+            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('userInfo')"
+                aria-expanded="true" aria-controls="userInfoContent">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>👤</span>
+                    <span data-i18n="userInfo">User Information</span>
+                </div>
+                <span class="collapse-icon" id="userInfoCollapseIcon" aria-hidden="true">▼</span>
+            </div>
+
+            <div class="card-content" id="userInfoContent">
+                <h4 style="margin-bottom: 12px; font-size: 16px;">📍 <span data-i18n="localInfo">Local
+                        Information</span></h4>
+                <div class="user-info-grid" id="localInfo"></div>
+
+                <h4 style="margin: 20px 0 12px; font-size: 16px;">🌐 <span data-i18n="globalInfo">Global Account
+                        Status</span></h4>
+                <div class="user-info-grid" id="globalInfo"></div>
+
+                <div id="mergedWikis" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
         <div class="card" id="resultCard" style="display:none">
             <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('result')" aria-expanded="true"
                 aria-controls="resultContent">
@@ -764,7 +894,24 @@
                 exportPDF: 'Ekspor PDF',
                 exportJSON: 'Ekspor JSON',
                 noDataToExport: 'Tidak ada data untuk diekspor',
-                pages: 'halaman'
+                pages: 'halaman',
+                userInfo: 'Informasi Pengguna',
+                localInfo: 'Informasi Lokal',
+                globalInfo: 'Status Akun Global',
+                userId: 'ID Pengguna',
+                editCount: 'Jumlah Edit',
+                registration: 'Terdaftar',
+                groups: 'Grup',
+                blocked: 'Diblokir',
+                yes: 'Ya',
+                no: 'Tidak',
+                globalEditCount: 'Total Edit Global',
+                homeWiki: 'Wiki Utama',
+                mergedWikis: 'Wiki Terhubung',
+                activeWikis: 'Wiki Aktif',
+                showActiveOnly: 'Tampilkan hanya wiki aktif (edit > 0)',
+                generatedFrom: 'Dibuat dari',
+
             },
             en: {
                 title: 'Wikimedia Impact Analyzer',
@@ -810,7 +957,23 @@
                 exportPDF: 'Export PDF',
                 exportJSON: 'Export JSON',
                 noDataToExport: 'No data to export',
-                pages: 'pages'
+                pages: 'pages',
+                userInfo: 'User Information',
+                localInfo: 'Local Information',
+                globalInfo: 'Global Account Status',
+                userId: 'User ID',
+                editCount: 'Edit Count',
+                registration: 'Registration',
+                groups: 'Groups',
+                blocked: 'Blocked',
+                yes: 'Yes',
+                no: 'No',
+                globalEditCount: 'Global Edit Count',
+                homeWiki: 'Home Wiki',
+                mergedWikis: 'Merged Wikis',
+                activeWikis: 'Active Wikis',
+                showActiveOnly: 'Show only active wikis (edits > 0)',
+                generatedFrom: 'Generated from'
             }
         };
 
@@ -962,9 +1125,14 @@
             username: '',
             project: '',
             period: { start: '', end: '', days: 0 },
+            userInfo: null,
             summary: { totalEdits: 0, totalArticles: 0, totalViews: 0 },
             articles: []
         };
+
+        function getCurrentPageUrl() {
+            return window.location.href.split('?')[0].split('#')[0];
+        }
 
         function exportPDF() {
             if (!exportData.articles.length) {
@@ -975,18 +1143,140 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape' });
 
-            doc.setFontSize(16);
-            doc.text(`Wikimedia Impact Report - ${exportData.username}`, 14, 20);
+            let yPos = 20;
+            const pageHeight = doc.internal.pageSize.height;
+            const marginBottom = 20;
+
+            // Header
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Wikimedia Impact Report`, 14, yPos);
+            yPos += 8;
 
             doc.setFontSize(11);
-            doc.text(`Project: ${exportData.project}`, 14, 28);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Username: ${exportData.username}`, 14, yPos);
+            yPos += 6;
+
+            doc.setFontSize(9);
+            doc.setTextColor(100);
+            doc.text(`Generated from: ${exportData.pageUrl}`, 14, yPos);
+            yPos += 6;
+            doc.setFontSize(11);
+            doc.setTextColor(0);
+
             doc.text(
                 `Period: ${exportData.period.start} to ${exportData.period.end} (${exportData.period.days} days)`,
                 14,
-                34
+                yPos
             );
+            yPos += 8;
 
-            doc.line(14, 38, 280, 38);
+            // User Information Section
+            if (exportData.userInfo) {
+                const ui = exportData.userInfo;
+
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text('User Information', 14, yPos);
+                yPos += 7;
+
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+
+                // Local Info
+                doc.setFont(undefined, 'bold');
+                doc.text('Local Account:', 14, yPos);
+                doc.setFont(undefined, 'normal');
+                yPos += 5;
+
+                doc.text(`User ID: ${ui.local.userId ?? '—'}`, 20, yPos);
+                yPos += 5;
+                doc.text(`Edit Count: ${ui.local.editCount?.toLocaleString() ?? '—'}`, 20, yPos);
+                yPos += 5;
+                doc.text(`Registration: ${ui.local.registration ? new Date(ui.local.registration).toLocaleDateString() : '—'}`, 20, yPos);
+                yPos += 5;
+                doc.text(`Groups: ${ui.local.groups?.join(', ') || 'user'}`, 20, yPos);
+                yPos += 5;
+                doc.text(`Blocked: ${ui.local.blocked ? 'Yes' : 'No'}`, 20, yPos);
+                yPos += 8;
+
+                // Global Info
+                if (ui.global) {
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Global Account:', 14, yPos);
+                    doc.setFont(undefined, 'normal');
+                    yPos += 5;
+
+                    doc.text(`Total Global Edits: ${ui.global.totalEdits.toLocaleString()}`, 20, yPos);
+                    yPos += 5;
+                    doc.text(`Home Wiki: ${ui.global.homeWiki || '—'}`, 20, yPos);
+                    yPos += 5;
+                    doc.text(`Connected Wikis: ${ui.global.totalWikis} (${ui.global.activeWikis} active)`, 20, yPos);
+                    yPos += 7;
+
+                    // Merged Wikis sebagai clickable links (horizontal, dipisah koma)
+                    if (ui.global.mergedWikis && ui.global.mergedWikis.length > 0) {
+                        doc.setFont(undefined, 'bold');
+                        doc.text('Active Wikis:', 20, yPos);
+                        doc.setFont(undefined, 'normal');
+                        yPos += 5;
+
+                        // Filter hanya wiki aktif dan sort by edit count
+                        const activeWikis = ui.global.mergedWikis
+                            .filter(w => w.editCount > 0)
+                            .sort((a, b) => b.editCount - a.editCount);
+
+                        let xPos = 20;
+                        const maxWidth = 260; // Lebar maksimal sebelum pindah baris
+                        const lineHeight = 5;
+
+                        activeWikis.forEach((wiki, index) => {
+                            const wikiText = `${wiki.wiki} (${wiki.editCount.toLocaleString()})`;
+                            const separator = index < activeWikis.length - 1 ? ', ' : '';
+                            const fullText = wikiText + separator;
+
+                            const textWidth = doc.getTextWidth(fullText);
+
+                            // Cek apakah perlu pindah baris
+                            if (xPos + textWidth > maxWidth) {
+                                yPos += lineHeight;
+                                xPos = 20;
+                            }
+
+                            // Tambahkan link clickable
+                            doc.setTextColor(13, 110, 253); // Warna biru
+                            doc.textWithLink(wikiText, xPos, yPos, {
+                                url: `${wiki.url}/wiki/User:${exportData.username}`
+                            });
+
+                            xPos += doc.getTextWidth(wikiText);
+
+                            // Tambahkan separator (tidak clickable)
+                            if (separator) {
+                                doc.setTextColor(0); // Warna hitam untuk separator
+                                doc.text(separator, xPos, yPos);
+                                xPos += doc.getTextWidth(separator);
+                            }
+                        });
+
+                        yPos += 10;
+                        doc.setTextColor(0); // Reset warna ke hitam
+                    } else {
+                        yPos += 5;
+                    }
+                }
+            }
+
+            doc.setDrawColor(200);
+            doc.line(14, yPos, 280, yPos);
+            yPos += 8;
+
+            // Contributions Table
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Contributions Analysis', 14, yPos);
+            yPos += 7;
 
             const isCommons = isCommonsProject(exportData.project);
             const headers = isCommons
@@ -1012,20 +1302,27 @@
                     ]
                 ];
 
-            const body = exportData.articles.map(article => [
-                article.title,
-                article.edits,
-                article.bytes,
-                article.lastEdited,
-                article.pageviews.toLocaleString(),
-                isCommons ? `${article.fileUsage} ${translations[currentLang].pages}` : '',
-                article.impact
-            ]);
+            const body = exportData.articles.map(article => {
+                const row = [
+                    article.title,
+                    article.edits,
+                    article.bytes,
+                    article.lastEdited,
+                    article.pageviews.toLocaleString(),
+                ];
+
+                if (isCommons) {
+                    row.push(`${article.fileUsage} ${translations[currentLang].pages}`);
+                }
+
+                row.push(article.impact);
+                return row;
+            });
 
             doc.autoTable({
                 head: headers,
                 body: body,
-                startY: 45,
+                startY: yPos,
                 theme: 'grid',
                 styles: {
                     fontSize: 9,
@@ -1045,16 +1342,65 @@
                     0: { cellWidth: 60 },
                     2: { halign: 'right' },
                     4: { halign: 'right' },
-                    5: { halign: 'right' }
+                    5: isCommons ? { halign: 'right' } : {}
                 },
-                margin: { top: 45, left: 14, right: 14 }
+                margin: { top: yPos, left: 14, right: 14, bottom: marginBottom },
+                didDrawPage: function (data) {
+                    // Footer di setiap halaman
+                    const pageCount = doc.internal.getNumberOfPages();
+                    const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+
+                    doc.setFontSize(9);
+                    doc.setTextColor(150);
+                    doc.text(
+                        `Page ${currentPage} of ${pageCount}`,
+                        doc.internal.pageSize.width / 2,
+                        doc.internal.pageSize.height - 10,
+                        { align: 'center' }
+                    );
+                }
             });
 
-            const finalY = doc.lastAutoTable.finalY + 15;
-            doc.setFontSize(12);
-            doc.text(translations[currentLang].totalEdits + ': ' + exportData.summary.totalEdits.toLocaleString(), 14, finalY);
-            doc.text(translations[currentLang].totalArticles + ': ' + exportData.summary.totalArticles.toLocaleString(), 14, finalY + 8);
-            doc.text(translations[currentLang].totalViews + ': ' + exportData.summary.totalViews.toLocaleString(), 14, finalY + 16);
+            // Summary di halaman terakhir
+            const finalY = doc.lastAutoTable.finalY + 10;
+
+            // Cek apakah summary muat di halaman ini
+            if (finalY + 30 > pageHeight - marginBottom) {
+                doc.addPage();
+                yPos = 20;
+            } else {
+                yPos = finalY;
+            }
+
+            doc.setDrawColor(200);
+            doc.line(14, yPos, 280, yPos);
+            yPos += 8;
+
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(0);
+            doc.text('Summary', 14, yPos);
+            yPos += 8;
+
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text(translations[currentLang].totalEdits + ': ' + exportData.summary.totalEdits.toLocaleString(), 14, yPos);
+            yPos += 7;
+            doc.text(translations[currentLang].totalArticles + ': ' + exportData.summary.totalArticles.toLocaleString(), 14, yPos);
+            yPos += 7;
+            doc.text(translations[currentLang].totalViews + ': ' + exportData.summary.totalViews.toLocaleString(), 14, yPos);
+
+            yPos += 10;
+            doc.setDrawColor(200);
+            doc.line(14, yPos, 280, yPos);
+            yPos += 8;
+
+            doc.setFontSize(9);
+            doc.setTextColor(100);
+            doc.text('This report was generated from:', 14, yPos);
+            yPos += 5;
+            doc.setTextColor(13, 110, 253);
+            doc.textWithLink(exportData.pageUrl, 14, yPos, { url: exportData.pageUrl });
 
             const filename = `wikimedia-impact-${exportData.username}-${Date.now()}.pdf`;
             doc.save(filename);
@@ -1229,6 +1575,166 @@
             `;
         }
 
+        async function fetchUserInfo(user, proj) {
+            const wiki = proj.replace(/^https?:\/\//, '');
+
+            const localApi = `${proj}/w/api.php?action=query&list=users&ususers=${encodeURIComponent(user)}&usprop=editcount|registration|groups|blockinfo&format=json&origin=*`;
+            const globalApi = `${proj}/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged&format=json&origin=*`;
+
+            try {
+                const [localRes, globalRes] = await Promise.all([
+                    fetch(localApi),
+                    fetch(globalApi)
+                ]);
+
+                const localData = await localRes.json();
+                const globalData = await globalRes.json();
+
+                const userData = localData.query.users[0];
+                const globalInfo = globalData.query.globaluserinfo || null;
+
+                return { userData, globalInfo, wiki };
+            } catch (err) {
+                console.error('Error fetching user info:', err);
+                return null;
+            }
+        }
+
+        function renderUserInfo(data) {
+            if (!data) return;
+
+            const { userData, globalInfo, wiki } = data;
+            const t = translations[currentLang];
+
+            // Local Info
+            const localHtml = `
+        <div class="user-info-item">
+            <div class="user-info-label">${t.userId}</div>
+            <div class="user-info-value">${userData.userid ?? '—'}</div>
+        </div>
+        <div class="user-info-item">
+            <div class="user-info-label">${t.editCount}</div>
+            <div class="user-info-value">${Number.isFinite(userData.editcount) ? userData.editcount.toLocaleString() : '—'}</div>
+        </div>
+        <div class="user-info-item">
+            <div class="user-info-label">${t.registration}</div>
+            <div class="user-info-value">${userData.registration ? new Date(userData.registration).toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US') : '—'}</div>
+        </div>
+        <div class="user-info-item">
+            <div class="user-info-label">${t.groups}</div>
+            <div class="user-info-value">${userData.groups?.length ? userData.groups.join(', ') : 'user'}</div>
+        </div>
+        <div class="user-info-item">
+            <div class="user-info-label">${t.blocked}</div>
+            <div class="user-info-value">
+                <span class="badge ${userData.blockid ? 'badge-warning' : 'badge-success'}">
+                    ${userData.blockid ? t.yes : t.no}
+                </span>
+            </div>
+        </div>
+    `;
+
+            document.getElementById('localInfo').innerHTML = localHtml;
+
+            // Global Info
+            if (globalInfo) {
+                const totalEdits = globalInfo.merged?.reduce((sum, m) => sum + (m.editcount || 0), 0) || 0;
+                const activeWikis = globalInfo.merged?.filter(m => m.editcount > 0).length || 0;
+
+                const globalHtml = `
+            <div class="user-info-item">
+                <div class="user-info-label">${t.globalEditCount}</div>
+                <div class="user-info-value">${totalEdits.toLocaleString()}</div>
+            </div>
+            <div class="user-info-item">
+                <div class="user-info-label">${t.homeWiki}</div>
+                <div class="user-info-value">${globalInfo.home || '—'}</div>
+            </div>
+            <div class="user-info-item">
+                <div class="user-info-label">${t.mergedWikis}</div>
+                <div class="user-info-value">${globalInfo.merged?.length || 0}</div>
+            </div>
+            <div class="user-info-item">
+                <div class="user-info-label">${t.activeWikis}</div>
+                <div class="user-info-value">${activeWikis}</div>
+            </div>
+        `;
+
+                document.getElementById('globalInfo').innerHTML = globalHtml;
+
+                // Merged Wikis
+                if (globalInfo.merged?.length) {
+                    const mergedHtml = `
+                <h4 style="margin-bottom: 12px; font-size: 16px;">🔗 <span data-i18n="mergedWikis">${t.mergedWikis}</span></h4>
+                <div style="margin-bottom: 8px;">
+                    <label style="font-size: 13px; cursor: pointer;">
+                        <input type="checkbox" id="onlyActiveWikis" checked onchange="filterWikiChips()">
+                        <span data-i18n="showActiveOnly">${t.showActiveOnly}</span>
+                    </label>
+                </div>
+                <div class="wiki-chip-container" id="wikiChips"></div>
+            `;
+
+                    document.getElementById('mergedWikis').innerHTML = mergedHtml;
+                    renderWikiChips(globalInfo, userData.name);
+                }
+            }
+
+            document.getElementById('userInfoCard').style.display = 'block';
+        }
+
+        function renderWikiChips(globalInfo, username) {
+            const container = document.getElementById('wikiChips');
+            if (!container) return;
+
+            const onlyActive = document.getElementById('onlyActiveWikis')?.checked ?? true;
+
+            container.innerHTML = '';
+
+            globalInfo.merged
+                .filter(m => !onlyActive || (m.editcount ?? 0) > 0)
+                .sort((a, b) => (b.editcount ?? 0) - (a.editcount ?? 0))
+                .forEach(m => {
+                    const isHome = globalInfo.home === m.wiki;
+                    const wikiClass = getWikiClass(m.wiki);
+
+                    const chip = document.createElement('a');
+                    chip.className = `wiki-chip ${wikiClass} ${isHome ? 'home' : ''}`;
+                    chip.href = `${m.url}/wiki/User:${encodeURIComponent(username)}`;
+                    chip.target = '_blank';
+                    chip.title = m.groups?.length ? `Groups: ${m.groups.join(', ')}` : 'Standard user';
+
+                    chip.innerHTML = `
+                <img src="${m.url}/favicon.ico" alt="" 
+                     onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/8/8c/Wikimedia-logo_black.svg';">
+                <span>${m.wiki}</span>
+                ${isHome ? '<span class="badge-mini">HOME</span>' : ''}
+                <span>|</span>
+                <span>${m.editcount ?? 0} edit</span>
+                <span>|</span>
+                <span>${m.timestamp?.slice(0, 10) ?? '—'}</span>
+            `;
+
+                    container.appendChild(chip);
+                });
+        }
+
+        function getWikiClass(wiki) {
+            if (wiki.includes('wikipedia.org')) return 'wiki-wikipedia';
+            if (wiki.includes('commons.wikimedia.org')) return 'wiki-commons';
+            if (wiki.includes('wikidata.org')) return 'wiki-wikidata';
+            if (wiki.includes('wikisource.org')) return 'wiki-wikisource';
+            return 'wiki-other';
+        }
+
+        function filterWikiChips() {
+            const globalData = window.cachedGlobalInfo;
+            const username = window.cachedUsername;
+            if (globalData && username) {
+                renderWikiChips(globalData, username);
+            }
+        }
+
         async function run() {
             const errorEl = document.getElementById('error');
             const statusEl = document.getElementById('status');
@@ -1240,6 +1746,7 @@
             progressContainer.style.display = 'none';
             document.getElementById('trendingCard').style.display = 'none';
             document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('userInfoCard').style.display = 'none';
             document.getElementById('trendingTable').querySelector('tbody').innerHTML = '';
             document.getElementById('resultTable').querySelector('tbody').innerHTML = '';
             document.getElementById('summary').innerHTML = '';
@@ -1265,6 +1772,39 @@
             start.setDate(end.getDate() - days);
 
             try {
+                // TAMBAHKAN: Fetch user info PERTAMA
+                statusEl.textContent = 'Fetching user information...';
+                const userInfoData = await fetchUserInfo(user, proj);
+                if (userInfoData) {
+                    window.cachedGlobalInfo = userInfoData.globalInfo;
+                    window.cachedUsername = user;
+                    renderUserInfo(userInfoData);
+
+                    // TAMBAHKAN INI: Simpan user info untuk export
+                    exportData.userInfo = {
+                        local: {
+                            userId: userInfoData.userData.userid,
+                            editCount: userInfoData.userData.editcount,
+                            registration: userInfoData.userData.registration,
+                            groups: userInfoData.userData.groups,
+                            blocked: userInfoData.userData.blockid ? true : false
+                        },
+                        global: userInfoData.globalInfo ? {
+                            totalEdits: userInfoData.globalInfo.merged?.reduce((sum, m) => sum + (m.editcount || 0), 0) || 0,
+                            homeWiki: userInfoData.globalInfo.home,
+                            totalWikis: userInfoData.globalInfo.merged?.length || 0,
+                            activeWikis: userInfoData.globalInfo.merged?.filter(m => m.editcount > 0).length || 0,
+                            mergedWikis: userInfoData.globalInfo.merged?.map(m => ({
+                                wiki: m.wiki,
+                                url: m.url,
+                                editCount: m.editcount,
+                                timestamp: m.timestamp,
+                                groups: m.groups
+                            })) || []
+                        } : null
+                    };
+                }
+
                 // Fetch trending
                 statusEl.textContent = translations[currentLang].fetchingTrending;
                 const trendingList = await fetchTrendingWithRetry(key, proj);
@@ -1329,21 +1869,31 @@
                 let done = isCommons ? titles.length : 0;
                 let totalViews = 0;
 
-                exportData = {
-                    username: user,
-                    project: proj,
-                    period: { start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0], days },
-                    summary: { totalEdits: contribs.length, totalArticles: titles.length, totalViews: 0 },
-                    articles: titles.map(t => ({
-                        title: t,
-                        edits: map[t].edits,
-                        bytes: map[t].bytes,
-                        lastEdited: map[t].last,
-                        pageviews: 0,
-                        ...(isCommons ? { fileUsage: map[t].fileUsage } : {}),
-                        impact: ''
-                    }))
+
+                // UPDATE exportData yang sudah ada:
+                exportData.username = user;
+                exportData.project = proj;
+                exportData.pageUrl = getCurrentPageUrl();
+                exportData.period = {
+                    start: start.toISOString().split('T')[0],
+                    end: end.toISOString().split('T')[0],
+                    days
                 };
+                exportData.summary = {
+                    totalEdits: contribs.length,
+                    totalArticles: titles.length,
+                    totalViews: 0
+                };
+                exportData.articles = titles.map(t => ({
+                    title: t,
+                    url: `${proj}/wiki/${encodeURIComponent(t)}`,
+                    edits: map[t].edits,
+                    bytes: map[t].bytes,
+                    lastEdited: map[t].last,
+                    pageviews: 0,
+                    ...(isCommons ? { fileUsage: map[t].fileUsage } : {}),
+                    impact: ''
+                }));
 
                 updateTableHeaders(isCommons);
                 const tbody = document.getElementById('resultTable').querySelector('tbody');
@@ -1373,6 +1923,7 @@
                     if (article) {
                         article.pageviews = views;
                         article.impact = impactText;
+                        article.url = `${proj}/wiki/${encodeURIComponent(t)}`;
                     }
 
                     let rowHtml = `<tr>
