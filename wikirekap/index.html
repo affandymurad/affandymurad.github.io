@@ -122,6 +122,11 @@
             border-color: var(--accent);
         }
 
+        .icon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .form-section {
             background: var(--bg-primary);
             padding: 20px;
@@ -742,6 +747,17 @@
             <button class="btn-primary" id="analyzeBtn">
                 <span data-i18n="analyze">Analyze Impact</span>
             </button>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                <button class="icon-btn" id="exportPDFBtn" style="width: 100%; justify-content: center;" disabled>
+                    <span>📄</span>
+                    <span data-i18n="exportPDF">Ekspor PDF</span>
+                </button>
+                <button class="icon-btn" id="exportJSONBtn" style="width: 100%; justify-content: center;" disabled>
+                    <span>📄</span>
+                    <span data-i18n="exportJSON">Export JSON</span>
+                </button>
+            </div>
         </div>
 
         <div class="status" id="status"></div>
@@ -785,14 +801,6 @@
                     <span data-i18n="contributions">Your Contributions</span>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <button class="icon-btn" onclick="event.stopPropagation(); exportPDF()">
-                        <span>📄</span>
-                        <span data-i18n="exportPDF">Ekspor PDF</span>
-                    </button>
-                    <button class="icon-btn" onclick="event.stopPropagation(); exportJSON()">
-                        <span>📄</span>
-                        <span data-i18n="exportJSON">Export JSON</span>
-                    </button>
                     <span class="collapse-icon" id="resultCollapseIcon" aria-hidden="true">▼</span>
                 </div>
             </div>
@@ -1198,7 +1206,21 @@
                 yPos += 5;
                 doc.text(`Groups: ${ui.local.groups?.join(', ') || 'user'}`, 20, yPos);
                 yPos += 5;
-                doc.text(`Blocked: ${ui.local.blocked ? 'Yes' : 'No'}`, 20, yPos);
+                let blockText = ui.local.blocked ? 'Yes' : 'No';
+                if (ui.local.blocked && ui.local.blockExpiry) {
+                    const expiry = ui.local.blockExpiry === 'infinity' ? 'Permanent' : ui.local.blockExpiry;
+                    blockText += ` (Until: ${expiry})`;
+                }
+                doc.text(`Blocked: ${blockText}`, 20, yPos);
+                yPos += 5;
+
+                // Global lock status
+                if (ui.global && (ui.global.locked || ui.global.hidden)) {
+                    doc.setTextColor(255, 193, 7); // Warning color
+                    doc.text(`⚠ Global Status: ${ui.global.locked ? 'Locked' : ''} ${ui.global.hidden ? 'Hidden' : ''}`.trim(), 20, yPos);
+                    doc.setTextColor(0);
+                    yPos += 3;
+                }
                 yPos += 8;
 
                 // Global Info
@@ -1579,7 +1601,7 @@
             const wiki = proj.replace(/^https?:\/\//, '');
 
             const localApi = `${proj}/w/api.php?action=query&list=users&ususers=${encodeURIComponent(user)}&usprop=editcount|registration|groups|blockinfo&format=json&origin=*`;
-            const globalApi = `${proj}/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged&format=json&origin=*`;
+            const globalApi = `${proj}/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged|unattached&format=json&origin=*`;
 
             try {
                 const [localRes, globalRes] = await Promise.all([
@@ -1607,33 +1629,45 @@
             const t = translations[currentLang];
 
             // Local Info
-            const localHtml = `
-        <div class="user-info-item">
-            <div class="user-info-label">${t.userId}</div>
-            <div class="user-info-value">${userData.userid ?? '—'}</div>
-        </div>
-        <div class="user-info-item">
-            <div class="user-info-label">${t.editCount}</div>
-            <div class="user-info-value">${Number.isFinite(userData.editcount) ? userData.editcount.toLocaleString() : '—'}</div>
-        </div>
-        <div class="user-info-item">
-            <div class="user-info-label">${t.registration}</div>
-            <div class="user-info-value">${userData.registration ? new Date(userData.registration).toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US') : '—'}</div>
-        </div>
-        <div class="user-info-item">
-            <div class="user-info-label">${t.groups}</div>
-            <div class="user-info-value">${userData.groups?.length ? userData.groups.join(', ') : 'user'}</div>
-        </div>
-        <div class="user-info-item">
-            <div class="user-info-label">${t.blocked}</div>
-            <div class="user-info-value">
-                <span class="badge ${userData.blockid ? 'badge-warning' : 'badge-success'}">
-                    ${userData.blockid ? t.yes : t.no}
-                </span>
-            </div>
-        </div>
-    `;
+            // Local Info - dengan detail block
+            let blockInfo = '';
+            if (userData.blockid) {
+                const blockExpiry = userData.blockexpiry === 'infinity' ?
+                    (currentLang === 'id' ? 'Permanen' : 'Permanent') :
+                    userData.blockexpiry;
+                const blockReason = userData.blockreason ? `: ${userData.blockreason}` : '';
+                blockInfo = `<div style="font-size: 11px; margin-top: 4px; opacity: 0.8;">
+        ${currentLang === 'id' ? 'Hingga' : 'Until'}: ${blockExpiry}${blockReason}
+    </div>`;
+            }
 
+            const localHtml = `
+    <div class="user-info-item">
+        <div class="user-info-label">${t.userId}</div>
+        <div class="user-info-value">${userData.userid ?? '—'}</div>
+    </div>
+    <div class="user-info-item">
+        <div class="user-info-label">${t.editCount}</div>
+        <div class="user-info-value">${Number.isFinite(userData.editcount) ? userData.editcount.toLocaleString() : '—'}</div>
+    </div>
+    <div class="user-info-item">
+        <div class="user-info-label">${t.registration}</div>
+        <div class="user-info-value">${userData.registration ? new Date(userData.registration).toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US') : '—'}</div>
+    </div>
+    <div class="user-info-item">
+        <div class="user-info-label">${t.groups}</div>
+        <div class="user-info-value">${userData.groups?.length ? userData.groups.join(', ') : 'user'}</div>
+    </div>
+    <div class="user-info-item">
+        <div class="user-info-label">${t.blocked}</div>
+        <div class="user-info-value">
+            <span class="badge ${userData.blockid ? 'badge-warning' : 'badge-success'}">
+                ${userData.blockid ? t.yes : t.no}
+            </span>
+            ${blockInfo}
+        </div>
+    </div>
+`;
             document.getElementById('localInfo').innerHTML = localHtml;
 
             // Global Info
@@ -1661,6 +1695,20 @@
         `;
 
                 document.getElementById('globalInfo').innerHTML = globalHtml;
+
+                // TAMBAHKAN INI - Check global lock/block
+                if (globalInfo.locked || globalInfo.hidden) {
+                    const globalBlockHtml = `
+        <div class="user-info-item" style="grid-column: 1 / -1; background: var(--warning-bg); border: 1px solid var(--warning);">
+            <div class="user-info-label" style="color: var(--warning);">⚠️ ${currentLang === 'id' ? 'Status Global' : 'Global Status'}</div>
+            <div class="user-info-value">
+                ${globalInfo.locked ? `<span class="badge badge-warning">${currentLang === 'id' ? 'Terkunci Global' : 'Globally Locked'}</span> ` : ''}
+                ${globalInfo.hidden ? `<span class="badge badge-warning">${currentLang === 'id' ? 'Tersembunyi' : 'Hidden'}</span>` : ''}
+            </div>
+        </div>
+    `;
+                    document.getElementById('globalInfo').insertAdjacentHTML('beforeend', globalBlockHtml);
+                }
 
                 // Merged Wikis
                 if (globalInfo.merged?.length) {
@@ -1739,6 +1787,9 @@
             const errorEl = document.getElementById('error');
             const statusEl = document.getElementById('status');
             const analyzeBtn = document.getElementById('analyzeBtn');
+
+            const exportPDFBtn = document.getElementById('exportPDFBtn');
+            const exportJSONBtn = document.getElementById('exportJSONBtn');
             const progressContainer = document.getElementById('progressContainer');
 
             errorEl.style.display = 'none';
@@ -1751,6 +1802,26 @@
             document.getElementById('resultTable').querySelector('tbody').innerHTML = '';
             document.getElementById('summary').innerHTML = '';
 
+            // TAMBAHKAN INI - Clear data user info
+            document.getElementById('localInfo').innerHTML = '';
+            document.getElementById('globalInfo').innerHTML = '';
+            document.getElementById('mergedWikis').innerHTML = '';
+
+            // TAMBAHKAN INI - Reset cached data
+            window.cachedGlobalInfo = null;
+            window.cachedUsername = null;
+
+            // TAMBAHKAN INI - Reset exportData
+            exportData = {
+                username: '',
+                project: '',
+                pageUrl: '',
+                period: { start: '', end: '', days: 0 },
+                userInfo: null,
+                summary: { totalEdits: 0, totalArticles: 0, totalViews: 0 },
+                articles: []
+            };
+
             const user = document.getElementById('username').value.trim();
             const projectInput = document.getElementById('project').value.trim();
 
@@ -1761,6 +1832,10 @@
             }
 
             analyzeBtn.disabled = true;
+
+            // TAMBAHKAN:
+            exportPDFBtn.disabled = true;
+            exportJSONBtn.disabled = true;
 
             const days = +document.querySelector('input[name="duration"]:checked').value;
             const threshold = THRESHOLDS[days];
@@ -1787,13 +1862,17 @@
                             editCount: userInfoData.userData.editcount,
                             registration: userInfoData.userData.registration,
                             groups: userInfoData.userData.groups,
-                            blocked: userInfoData.userData.blockid ? true : false
+                            blocked: userInfoData.userData.blockid ? true : false,
+                            blockExpiry: userInfoData.userData.blockexpiry,
+                            blockReason: userInfoData.userData.blockreason
                         },
                         global: userInfoData.globalInfo ? {
                             totalEdits: userInfoData.globalInfo.merged?.reduce((sum, m) => sum + (m.editcount || 0), 0) || 0,
                             homeWiki: userInfoData.globalInfo.home,
                             totalWikis: userInfoData.globalInfo.merged?.length || 0,
                             activeWikis: userInfoData.globalInfo.merged?.filter(m => m.editcount > 0).length || 0,
+                            locked: userInfoData.globalInfo.locked || false,
+                            hidden: userInfoData.globalInfo.hidden || false,
                             mergedWikis: userInfoData.globalInfo.merged?.map(m => ({
                                 wiki: m.wiki,
                                 url: m.url,
@@ -1816,7 +1895,13 @@
                         tbody.insertAdjacentHTML('beforeend', row);
                     });
                     document.getElementById('trendingCard').style.display = 'block';
-                    toggleCollapse('trending'); // Langsung collapse saat muncul
+
+                    // Pastikan tetap collapsed
+                    if (!document.getElementById('trendingContent').classList.contains('collapsed')) {
+                        document.getElementById('trendingContent').classList.add('collapsed');
+                        document.getElementById('trendingCollapseIcon').classList.add('collapsed');
+                        document.querySelector('#trendingCard .card-header').setAttribute('aria-expanded', 'false');
+                    }
                 }
 
                 // Fetch contributions
@@ -1952,6 +2037,9 @@
             } finally {
                 analyzeBtn.disabled = false;
                 statusEl.textContent = '';
+                // TAMBAHKAN:
+                exportPDFBtn.disabled = false;
+                exportJSONBtn.disabled = false;
             }
         }
 
@@ -1961,6 +2049,10 @@
             initTheme(); // This will also update button states
 
             document.getElementById('analyzeBtn').addEventListener('click', run);
+
+            document.getElementById('exportPDFBtn').addEventListener('click', exportPDF);
+            document.getElementById('exportJSONBtn').addEventListener('click', exportJSON);
+
             document.getElementById('langBtn').addEventListener('click', toggleLanguage);
             document.getElementById('lightThemeBtn').addEventListener('click', () => setTheme('light'));
             document.getElementById('darkThemeBtn').addEventListener('click', () => setTheme('dark'));
