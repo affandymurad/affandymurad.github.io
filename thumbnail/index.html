@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -124,8 +125,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .results {
@@ -138,8 +144,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .result-item {
@@ -329,11 +342,12 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🌐 Social Media Info Extractor</h1>
         <p class="subtitle">Ekstrak informasi dari URL sosial media dan website</p>
-        
+
         <div class="examples">
             <h3>Platform yang Didukung:</h3>
             <ul>
@@ -348,7 +362,7 @@
 
         <div class="input-group">
             <input type="url" id="urlInput" placeholder="Paste URL di sini..." />
-            <button onclick="extractInfo()">Ekstrak</button>
+            <button id="extractBtn" onclick="extractInfo()">Ekstrak</button>
         </div>
 
         <div class="loading" id="loading">
@@ -361,7 +375,7 @@
 
         <div class="results" id="results">
             <div class="platform-badge" id="platformBadge"></div>
-            
+
             <div class="result-item">
                 <button class="copy-btn" onclick="copyText('siteName')">Salin</button>
                 <div class="result-label">Nama Website / Platform</div>
@@ -445,17 +459,18 @@
 
         async function extractInfo() {
             const urlInput = document.getElementById('urlInput');
+            const extractBtn = document.getElementById('extractBtn');
             let url = urlInput.value.trim();
-            
+
             const loading = document.getElementById('loading');
             const results = document.getElementById('results');
             const error = document.getElementById('error');
             const warning = document.getElementById('warning');
-            
+
             results.classList.remove('active');
             error.classList.remove('active');
             warning.classList.remove('active');
-            
+
             if (!url) {
                 showError('Silakan masukkan URL yang valid');
                 return;
@@ -472,13 +487,17 @@
             const platform = detectPlatform(url);
             document.getElementById('platformBadge').textContent = platform;
 
+            // Disable button dan input saat loading
+            extractBtn.disabled = true;
+            extractBtn.textContent = 'Mengekstrak...';
+            urlInput.disabled = true;
             loading.classList.add('active');
 
             try {
                 let html;
                 let fetchSuccess = false;
                 let fetchUrl = url;
-                
+
                 // Special URL conversion for better metadata
                 if (platform === 'X (Twitter)') {
                     fetchUrl = convertToFxTwitter(url);
@@ -495,7 +514,7 @@
                     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fetchUrl)}`,
                     `https://api.allorigins.win/get?url=${encodeURIComponent(fetchUrl)}`
                 ];
-                
+
                 // Threads: Tambahkan endpoint embed untuk metadata lebih lengkap
                 if (platform === 'Threads') {
                     // Threads embed endpoint sering punya metadata lebih baik
@@ -525,10 +544,10 @@
                             } else {
                                 html = await response.text();
                             }
-                            
+
                             // Validasi response lebih lengkap
-                            if (html && 
-                                !html.includes('JavaScript is not available') && 
+                            if (html &&
+                                !html.includes('JavaScript is not available') &&
                                 !html.includes('Access Denied') &&
                                 html.length > 500) {
                                 console.log('Success with proxy, HTML length:', html.length);
@@ -547,40 +566,40 @@
                 if (!fetchSuccess) {
                     throw new Error('Unable to fetch URL content');
                 }
-                
+
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                
-                const siteName = 
-                    doc.querySelector('meta[property="og:site_name"]')?.content || 
+
+                const siteName =
+                    doc.querySelector('meta[property="og:site_name"]')?.content ||
                     doc.querySelector('meta[name="application-name"]')?.content ||
                     doc.querySelector('meta[name="twitter:site"]')?.content?.replace('@', '') ||
                     platform ||
                     validUrl.hostname.replace('www.', '');
-                
-                const contentTitle = 
+
+                const contentTitle =
                     doc.querySelector('meta[property="og:title"]')?.content ||
                     doc.querySelector('meta[name="twitter:title"]')?.content ||
                     doc.querySelector('title')?.textContent?.replace(' / X', '').replace(' on X', '') ||
                     doc.querySelector('h1')?.textContent?.trim() ||
                     'Tidak ditemukan';
-                
-                const description = 
+
+                const description =
                     doc.querySelector('meta[property="og:description"]')?.content ||
                     doc.querySelector('meta[name="twitter:description"]')?.content ||
                     doc.querySelector('meta[name="description"]')?.content ||
                     doc.querySelector('p')?.textContent?.trim().substring(0, 300) ||
                     'Tidak ada deskripsi';
-                
-                const author = 
+
+                const author =
                     doc.querySelector('meta[name="author"]')?.content ||
                     doc.querySelector('meta[property="article:author"]')?.content ||
                     doc.querySelector('meta[name="twitter:creator"]')?.content?.replace('@', '') ||
                     doc.querySelector('[rel="author"]')?.textContent?.trim() ||
                     doc.querySelector('meta[property="twitter:creator"]')?.content?.replace('@', '') ||
                     'Tidak diketahui';
-                
-                let thumbnail = 
+
+                let thumbnail =
                     doc.querySelector('meta[property="og:image"]')?.content ||
                     doc.querySelector('meta[property="og:image:secure_url"]')?.content ||
                     doc.querySelector('meta[name="twitter:image"]')?.content ||
@@ -588,9 +607,9 @@
                     doc.querySelector('meta[property="twitter:image"]')?.content ||
                     doc.querySelector('link[rel="image_src"]')?.href ||
                     null;
-                
+
                 // Extract video URL
-                let videoUrl = 
+                let videoUrl =
                     doc.querySelector('meta[property="og:video"]')?.content ||
                     doc.querySelector('meta[property="og:video:url"]')?.content ||
                     doc.querySelector('meta[property="og:video:secure_url"]')?.content ||
@@ -599,7 +618,7 @@
                     doc.querySelector('video source')?.src ||
                     doc.querySelector('video')?.src ||
                     null;
-                
+
                 // KHUSUS THREADS: Fallback ke img tags jika meta tidak ada
                 if (!thumbnail && platform === 'Threads') {
                     // Cari gambar di dalam HTML dengan berbagai selector
@@ -611,11 +630,11 @@
                         'img[src*="scontent"]',       // CDN content
                         'img'                         // Fallback ke img pertama
                     ];
-                    
+
                     for (const selector of imgSelectors) {
                         const img = doc.querySelector(selector);
-                        if (img && img.src && 
-                            !img.src.includes('avatar') && 
+                        if (img && img.src &&
+                            !img.src.includes('avatar') &&
                             !img.src.includes('profile') &&
                             !img.src.includes('logo') &&
                             img.width > 200) {  // Filter gambar kecil
@@ -625,27 +644,27 @@
                         }
                     }
                 }
-                
+
                 if (thumbnail && !thumbnail.startsWith('http')) {
                     thumbnail = new URL(thumbnail, url).href;
                 }
-                
+
                 if (videoUrl && !videoUrl.startsWith('http')) {
                     videoUrl = new URL(videoUrl, url).href;
                 }
-                
+
                 console.log('Extracted video URL:', videoUrl);
-                
+
                 document.getElementById('siteName').textContent = siteName;
                 document.getElementById('contentTitle').textContent = contentTitle;
                 document.getElementById('description').textContent = description;
                 document.getElementById('author').textContent = author;
                 document.getElementById('originalUrl').textContent = url;
-                
+
                 const thumbnailSection = document.getElementById('thumbnailSection');
                 const thumbnailImg = document.getElementById('thumbnail');
                 const thumbnailUrlDiv = document.getElementById('thumbnailUrl');
-                
+
                 if (thumbnail) {
                     thumbnailImg.src = thumbnail;
                     thumbnailUrlDiv.textContent = thumbnail;
@@ -656,35 +675,45 @@
                 } else {
                     thumbnailSection.style.display = 'none';
                 }
-                
+
                 // Display video section if video URL exists
                 const videoSection = document.getElementById('videoSection');
                 const videoUrlDiv = document.getElementById('videoUrl');
-                
+
                 if (videoUrl) {
                     videoUrlDiv.textContent = videoUrl;
                     videoSection.style.display = 'block';
                 } else {
                     videoSection.style.display = 'none';
                 }
-                
-                document.getElementById('descSection').style.display = 
+
+                document.getElementById('descSection').style.display =
                     description === 'Tidak ada deskripsi' ? 'none' : 'block';
-                document.getElementById('authorSection').style.display = 
+                document.getElementById('authorSection').style.display =
                     author === 'Tidak diketahui' ? 'none' : 'block';
-                
+
                 loading.classList.remove('active');
                 results.classList.add('active');
+
+                // Re-enable button dan input
+                extractBtn.disabled = false;
+                extractBtn.textContent = 'Ekstrak';
+                urlInput.disabled = false;
 
                 if (contentTitle === 'Tidak ditemukan' || thumbnail === null) {
                     showWarning('Beberapa informasi mungkin tidak lengkap. Platform ini membatasi akses untuk scraping.');
                 }
-                
+
             } catch (err) {
                 loading.classList.remove('active');
-                
+
+                // Re-enable button dan input saat error
+                extractBtn.disabled = false;
+                extractBtn.textContent = 'Ekstrak';
+                urlInput.disabled = false;
+
                 let errorMsg = 'Gagal mengambil informasi dari URL. ';
-                
+
                 if (platform === 'X (Twitter)') {
                     errorMsg += 'X/Twitter memiliki proteksi yang kuat terhadap scraping. Coba dengan URL dari platform lain atau website publik.';
                 } else if (platform === 'Instagram' || platform === 'Facebook') {
@@ -692,7 +721,7 @@
                 } else {
                     errorMsg += 'Pastikan URL dapat diakses secara publik dan coba lagi.';
                 }
-                
+
                 showError(errorMsg);
                 console.error(err);
             }
@@ -713,14 +742,14 @@
         function copyText(elementId) {
             const element = document.getElementById(elementId);
             const text = element.textContent;
-            
+
             navigator.clipboard.writeText(text).then(() => {
                 // Find the button within the parent
                 const button = element.closest('.result-item').querySelector('.copy-btn');
                 const originalText = button.textContent;
                 button.textContent = '✓ Tersalin';
                 button.classList.add('copied');
-                
+
                 setTimeout(() => {
                     button.textContent = originalText;
                     button.classList.remove('copied');
@@ -734,12 +763,12 @@
         function copyThumbnailUrl() {
             const thumbnailUrl = document.getElementById('thumbnailUrl').textContent;
             const button = document.querySelector('#thumbnailSection .small-copy-btn');
-            
+
             navigator.clipboard.writeText(thumbnailUrl).then(() => {
                 const originalText = button.textContent;
                 button.textContent = '✓ Tersalin';
                 button.classList.add('copied');
-                
+
                 setTimeout(() => {
                     button.textContent = originalText;
                     button.classList.remove('copied');
@@ -753,12 +782,12 @@
         function copyVideoUrl() {
             const videoUrl = document.getElementById('videoUrl').textContent;
             const button = document.querySelector('#videoSection .small-copy-btn');
-            
+
             navigator.clipboard.writeText(videoUrl).then(() => {
                 const originalText = button.textContent;
                 button.textContent = '✓ Tersalin';
                 button.classList.add('copied');
-                
+
                 setTimeout(() => {
                     button.textContent = originalText;
                     button.classList.remove('copied');
@@ -778,16 +807,16 @@
             const thumbnailUrl = document.getElementById('thumbnailUrl').textContent;
             const button = event.target;
             const originalText = button.textContent;
-            
+
             try {
                 button.textContent = 'Downloading...';
                 button.disabled = true;
-                
+
                 // Fetch image via proxy to avoid CORS
                 const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(thumbnailUrl)}`;
                 const response = await fetch(proxyUrl);
                 const blob = await response.blob();
-                
+
                 // Create download link
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -797,7 +826,7 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
-                
+
                 button.textContent = '✓ Downloaded';
                 setTimeout(() => {
                     button.textContent = originalText;
@@ -811,17 +840,17 @@
             }
         }
 
-        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+        document.getElementById('urlInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 extractInfo();
             }
         });
 
         // Auto-extract dari query parameter saat page load
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
             const urlFromQuery = urlParams.get('url');
-            
+
             if (urlFromQuery) {
                 document.getElementById('urlInput').value = decodeURIComponent(urlFromQuery);
                 extractInfo();
@@ -829,4 +858,5 @@
         });
     </script>
 </body>
+
 </html>
