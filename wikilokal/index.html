@@ -388,6 +388,11 @@
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
+            /* Tambahan untuk iOS/Safari */
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .location-action-btn:hover:not(:disabled) {
@@ -1297,6 +1302,11 @@
             background: transparent;
             cursor: pointer;
             transition: all 0.2s ease;
+            /* Tambahan untuk iOS/Safari */
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .commons-icon-btn:hover {
@@ -1835,49 +1845,37 @@
                 // ===== Wikimedia Commons Button (Icon Only) =====
                 const commonsBtn = document.createElement('button');
                 commonsBtn.className = 'commons-icon-btn';
+                commonsBtn.type = 'button'; // Eksplisit set type
                 commonsBtn.title = details.wikidataId
                     ? `Open Wikimedia Commons category for ${article.title}`
                     : `Search "${article.title}" on Wikimedia Commons`;
-                commonsBtn.style.cssText = `
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 32px;
-                    height: 32px;
-                    padding: 0;
-                    border-radius: 6px;
-                    border: 2px solid var(--primary-color);
-                    background: transparent;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                `;
 
                 const commonsIcon = document.createElement('img');
                 commonsIcon.src = 'images/ic_commons.svg';
                 commonsIcon.alt = 'Commons';
-                commonsIcon.style.cssText = 'width: 18px; height: 18px;';
+                commonsIcon.style.cssText = 'width: 18px; height: 18px; pointer-events: none;'; // Tambah pointer-events
                 commonsIcon.onerror = function () {
-                    // Fallback ke emoji jika icon tidak ditemukan
                     this.style.display = 'none';
                     const emoji = document.createElement('span');
                     emoji.textContent = '📷';
                     emoji.style.fontSize = '16px';
+                    emoji.style.pointerEvents = 'none'; // Tambah ini
                     this.parentNode.appendChild(emoji);
                 };
 
                 commonsBtn.appendChild(commonsIcon);
 
-                // Hover effect
-                commonsBtn.onmouseover = () => {
+                // Gunakan addEventListener instead of onmouseover/onclick
+                commonsBtn.addEventListener('mouseenter', () => {
                     commonsBtn.style.background = 'var(--primary-color)';
                     commonsIcon.style.filter = 'brightness(0) invert(1)';
-                };
-                commonsBtn.onmouseout = () => {
+                });
+                commonsBtn.addEventListener('mouseleave', () => {
                     commonsBtn.style.background = 'transparent';
                     commonsIcon.style.filter = 'none';
-                };
+                });
 
-                commonsBtn.onclick = async (e) => {
+                commonsBtn.addEventListener('click', async (e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     if (details.wikidataId) {
@@ -1892,7 +1890,7 @@
                             '_blank'
                         );
                     }
-                };
+                });
 
                 badgesWrapper.appendChild(commonsBtn);
 
@@ -2164,8 +2162,10 @@
                     div.appendChild(wdBtn);
 
                     // ===== Wikivoyage Button =====
+                    // ===== Wikivoyage Button ===== (REPLACE)
                     const wvBtn = document.createElement('button');
                     wvBtn.className = 'location-action-btn';
+                    wvBtn.type = 'button'; // Eksplisit set type
                     wvBtn.title = part.wikidataId
                         ? `Open Wikivoyage page for ${part.name}`
                         : `Search "${part.name}" on Wikivoyage`;
@@ -2173,27 +2173,32 @@
                     const wvIcon = document.createElement('img');
                     wvIcon.src = 'images/ic_wikivoyage.svg';
                     wvIcon.alt = 'Wikivoyage';
-                    wvIcon.style.cssText = 'width: 1.1em; height: 1.1em;';
+                    wvIcon.style.cssText = 'width: 1.1em; height: 1.1em; pointer-events: none;'; // Tambah pointer-events
 
                     const wvLabel = document.createElement('span');
                     wvLabel.textContent = 'Wikivoyage';
+                    wvLabel.style.pointerEvents = 'none'; // Tambah ini
 
                     wvBtn.appendChild(wvIcon);
                     wvBtn.appendChild(wvLabel);
 
-                    wvBtn.onclick = async () => {
+                    // Gunakan addEventListener instead of onclick
+                    wvBtn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         if (part.wikidataId) {
                             const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
                             window.open(directLink || `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
                         } else {
                             window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
                         }
-                    };
+                    });
                     div.appendChild(wvBtn);
 
                     // ===== Wikimedia Commons Button =====
                     const commonsBtn = document.createElement('button');
                     commonsBtn.className = 'location-action-btn';
+                    commonsBtn.type = 'button'; // Eksplisit set type
                     commonsBtn.title = part.wikidataId
                         ? `Open Wikimedia Commons category for ${part.name}`
                         : `Search "${part.name}" on Wikimedia Commons`;
@@ -2201,15 +2206,19 @@
                     const commonsIcon = document.createElement('img');
                     commonsIcon.src = 'images/ic_commons.svg';
                     commonsIcon.alt = 'Wikimedia Commons';
-                    commonsIcon.style.cssText = 'width: 1.1em; height: 1.1em;';
+                    commonsIcon.style.cssText = 'width: 1.1em; height: 1.1em; pointer-events: none;';
 
                     const commonsLabel = document.createElement('span');
                     commonsLabel.textContent = 'Commons';
+                    commonsLabel.style.pointerEvents = 'none';
 
                     commonsBtn.appendChild(commonsIcon);
                     commonsBtn.appendChild(commonsLabel);
 
-                    commonsBtn.onclick = async () => {
+                    // Gunakan addEventListener
+                    commonsBtn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         if (part.wikidataId) {
                             const directLink = await fetchCommonsCategory(part.wikidataId);
                             window.open(
@@ -2222,7 +2231,7 @@
                                 '_blank'
                             );
                         }
-                    };
+                    });
                     div.appendChild(commonsBtn);
                 }
                 detailsContent.appendChild(div);
