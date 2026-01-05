@@ -504,13 +504,16 @@
 
         function updatePageLanguage(lang) {
             const t = translations[lang];
+            if (!t) return; // Validasi objek translations ada
 
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (t[key]) {
                     if (el.tagName === 'H2') {
                         const icon = el.querySelector('i');
-                        el.innerHTML = `<i class="${icon.className}"></i>${t[key]}`;
+                        if (icon) { // Validasi icon element ada
+                            el.innerHTML = `<i class="${icon.className}"></i>${t[key]}`;
+                        }
                     } else {
                         el.textContent = t[key];
                     }
