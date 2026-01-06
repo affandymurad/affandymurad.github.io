@@ -171,7 +171,6 @@
             background: var(--bg-card);
             border-radius: 12px;
             box-shadow: var(--shadow);
-            overflow: hidden;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
@@ -317,23 +316,38 @@
 
         .tooltip {
             position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
             background: #1a202c;
             color: white;
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 0.8em;
-            max-width: 200px;
+            max-width: 220px;
             text-align: center;
-            z-index: 1000;
+            z-index: 10000;
+            /* Ubah dari 1000 ke 10000 */
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.2s;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            /* Ubah dari 6px ke 8px */
             white-space: normal;
             line-height: 1.3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Tambahkan shadow */
+        }
+
+        /* Tambahkan arrow untuk tooltip */
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1a202c;
         }
 
         .day:hover .tooltip {

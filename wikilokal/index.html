@@ -41,6 +41,9 @@
             --bg-secondary: #2d3748;
         }
 
+        /* ===== FONT UPGRADE ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -48,7 +51,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
@@ -56,35 +59,46 @@
             margin: 0 auto;
             padding: 20px;
             transition: background-color 0.3s, color 0.3s;
+            letter-spacing: -0.011em;
         }
 
         h1 {
+            font-family: 'Inter', sans-serif;
             color: var(--primary-color);
             margin-bottom: 1.5rem;
-            font-weight: 600;
-            font-size: 1.8rem;
+            font-weight: 700;
+            font-size: 1.75rem;
             text-align: center;
             padding-bottom: 0.75rem;
             border-bottom: 2px solid var(--border-color);
+            letter-spacing: -0.025em;
         }
 
         h2 {
+            font-family: 'Inter', sans-serif;
             color: var(--primary-color);
             font-size: 1.4rem;
             margin-bottom: 1rem;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.025em;
         }
 
         #controls {
             background-color: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 1.25rem;
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
             margin-bottom: 1.5rem;
             display: grid;
             grid-template-columns: repeat(2, auto) 1fr auto;
             gap: 1rem;
             align-items: center;
+            border: 1px solid var(--border-color);
         }
 
         @media (max-width: 968px) {
@@ -193,16 +207,16 @@
 
         #theme-select,
         #language-select {
-            padding: 0.65rem 1rem;
+            padding: 0.75rem 1rem;
             padding-right: 2.5rem;
-            border-radius: var(--radius);
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.9375rem;
             background-color: var(--card-bg);
             color: var(--text-color);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
             appearance: none;
             -webkit-appearance: none;
@@ -226,7 +240,7 @@
         #theme-select:hover,
         #language-select:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         #theme-select:focus,
@@ -253,12 +267,12 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 12px;
             font-family: inherit;
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -886,11 +900,12 @@
             align-items: center;
             margin-bottom: 2rem;
             background-color: var(--card-bg);
-            padding: 1rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
             flex-wrap: wrap;
             gap: 1rem;
+            border: 1px solid var(--border-color);
         }
 
         .header-left {
@@ -904,14 +919,15 @@
         .wiki-logo {
             width: 64px;
             height: 64px;
-            background-color: #F8F7F3;
+            background: linear-gradient(135deg, #F8F7F3, #FFF);
             background-image: url('wikilokal.png');
             background-size: 80%;
             background-position: center;
             background-repeat: no-repeat;
-            border-radius: 50%;
+            border-radius: 12px;
             display: block;
             flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         .header-title {
@@ -925,7 +941,15 @@
             margin: 0;
             border: none;
             padding: 0;
-            font-size: 1.4rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header-title p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            line-height: 1.6;
         }
 
         .header-right {
@@ -940,10 +964,10 @@
             padding: 0.65rem 1rem;
             font-size: 0.9rem;
             white-space: nowrap;
-            border-radius: var(--radius);
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -1214,11 +1238,11 @@
         }
 
         .control-label {
-            font-size: 0.8rem;
-            font-weight: 400;
+            font-size: 0.8125rem;
+            font-weight: 600;
             color: var(--text-light);
-            text-transform: capitalize;
-            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .two-column-container {
@@ -1241,7 +1265,6 @@
             margin-bottom: 1rem;
             min-height: 2rem;
         }
-
 
         @media (max-width: 968px) {
             .two-column-container {
@@ -1279,10 +1302,9 @@
             }
         }
 
-        /* Dark mode: pastikan tetap terlihat jelas */
+
         [data-theme="dark"] .wikilokal-spinner {
             background-color: #f0f0f0;
-            /* putih keabuan agar kontras di mode gelap */
         }
 
         .commons-icon-btn {
@@ -1339,6 +1361,60 @@
                 padding: 0.6rem 0.85rem;
             }
         }
+
+        /* Perbaikan khusus untuk #controls */
+        #controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            /* sedikit lebih longgar */
+            align-content: start;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        /* Membuat tombol action lebih menonjol */
+        .action-group {
+            grid-column: 1 / -1;
+            /* memenuhi 2 kolom */
+            margin-top: 0.5rem;
+        }
+
+        .action-group button {
+            width: 100%;
+            justify-content: center;
+            font-size: 1.05rem;
+            padding: 0.85rem 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Status lebih compact & terlihat jelas */
+        .status-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            /* rata bawah agar sejajar dengan tombol */
+        }
+
+        @media (max-width: 968px) {
+            #controls {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .action-group {
+                grid-column: auto;
+                margin-top: 1rem;
+            }
+
+            .status-group {
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -1361,7 +1437,8 @@
                     <img src="images/ic_wiktionary.svg" alt="Wiktionary"
                         style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wiktionary,
                     <img src="images/ic_nominatim.svg" alt="Nominatim"
-                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Nominatim)
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Nominatim and
+                    OSM)
                     within a 3 km radius of your location.
                 </p>
             </div>
