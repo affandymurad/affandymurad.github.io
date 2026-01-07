@@ -511,7 +511,8 @@ header {
 }
 
 .portfolio-links a {
-    margin-right: 10px;
+    margin-right: 8px;
+    margin-bottom: 8px;
 }
 
 .portfolio-link {
