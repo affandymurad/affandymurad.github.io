@@ -407,7 +407,9 @@ header {
 
 /* ========== EXPERIENCE ========== */
 .country-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 4px 10px;
     background: #E8F1FF;
     color: #5B8FF9;
@@ -416,6 +418,12 @@ header {
     font-weight: 700;
     margin-bottom: 1rem;
     border: 1px solid #5B8FF9;
+}
+
+.country-badge img {
+    width: 20px;
+    height: 20px;
+    display: block;              /* menghilangkan space bawah gambar */
 }
 
 .country-badge__content {
@@ -509,12 +517,21 @@ header {
 .portfolio-link {
     background: var(--primary-blue);
     color: white !important;
+    display: inline-flex;        /* atau flex */
+    align-items: center;         /* pusat vertikal */
+    gap: 8px;                    /* jarak antara gambar dan teks */
     padding: 6px 12px;
     border-radius: 18px;
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
     transition: background 0.3s;
+}
+
+.portfolio-link img {
+    width: 20px;
+    height: 20px;
+    display: block;              /* menghilangkan space bawah gambar */
 }
 
 .portfolio-link:hover {
