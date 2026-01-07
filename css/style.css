@@ -12,15 +12,53 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.6;
+   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: #F4F7F9;
+    line-height: 1.65; 
+    letter-spacing: -0.01em;
     color: #1f2937;
     padding-top: var(--header-height);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Perbaiki spacing untuk berbagai elemen */
+p, .description, .duration, .subtitle {
+    line-height: 1.8;
+}
+
+h1, h2, h3, .company-name {
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+}
+
+.profile-section h1 {
+    line-height: 1.2;
+    letter-spacing: -0.04em; /* ini sudah ada, pertahankan */
+}
+
+/* Fix untuk text yang lebih kecil */
+.status-badge,
+.language-toggle,
+.theme-toggle,
+.menu-item,
+.contact-item a {
+    letter-spacing: -0.005em;
+}
+
+/* Fix untuk bold text */
+.company-name,
+.position,
+.section h2 {
+    letter-spacing: -0.015em;
+}
+
+/* Button dan link spacing */
+.social-link,
+.portfolio-link {
+    letter-spacing: 0;
 }
 
 .container {
@@ -689,3 +727,33 @@ body.dark-mode .skill-category h3 {
         align-items: flex-start;
     }
 }
+
+.experience-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.25rem 1.5rem 1rem;
+    background: linear-gradient(135deg, rgba(91, 143, 249, 0.05), rgba(91, 143, 249, 0.02));
+    border-bottom: 2px solid rgba(91, 143, 249, 0.1);
+}
+
+.experience-card .country-badge {
+    margin-bottom: 0;
+}
+
+.experience-card .company-logo {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.experience-card .company-icon {
+    width: 100%;
+    height: 100%;
+} 
