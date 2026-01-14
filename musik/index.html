@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seni Pertunjukan Indonesia per Pulau</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        select,
+        input {
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+            background: white;
+            min-width: 200px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        td {
+            padding: 15px;
+            color: #495057;
+        }
+
+        .no-cell {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .code-cell {
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-weight: 600;
+        }
+
+        .island-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .island-jawa {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .island-sumatera {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .island-kalimantan {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .island-sulawesi {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .island-bali {
+            background: #e7d4f5;
+            color: #5a1a7a;
+        }
+
+        .island-nusa {
+            background: #ffe8cc;
+            color: #cc5200;
+        }
+
+        .island-maluku {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .island-papua {
+            background: #d4d4d4;
+            color: #333;
+        }
+
+        .stats {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 Seni Pertunjukan Indonesia</h1>
+            <p class="subtitle">Warisan Budaya Tak Benda</p>
+        </header>
+
+        <div class="controls">
+            <div class="filter-group">
+                <label for="filterPulau">Filter Pulau:</label>
+                <select id="filterPulau">
+                    <option value="semua">Semua Pulau</option>
+                    <option value="Jawa">Jawa</option>
+                    <option value="Sumatera">Sumatera</option>
+                    <option value="Kalimantan">Kalimantan</option>
+                    <option value="Sulawesi">Sulawesi</option>
+                    <option value="Bali">Bali</option>
+                    <option value="Nusa Tenggara">Nusa Tenggara</option>
+                    <option value="Maluku">Maluku</option>
+                    <option value="Papua">Papua</option>
+                </select>
+
+                <label for="searchInput">Cari:</label>
+                <input type="text" id="searchInput" placeholder="Cari nama seni atau provinsi...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode</th>
+                        <th>Nama Seni Pertunjukan</th>
+                        <th>Provinsi</th>
+                        <th>Pulau</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <div id="noResults" class="no-results" style="display: none;">
+                Tidak ada data yang ditemukan
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalData">0</div>
+                <div class="stat-label">Total Data Ditampilkan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalPulau">0</div>
+                <div class="stat-label">Jumlah Pulau</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rawData = [
+            ["AA000583", "Beksan Floret", "Prov. D.I. Yogyakarta"],
+
+            ["AA000088", "Mendu", "Prov. Kepulauan Riau"],
+
+            ["AA001392", "Topeng Kaliwungu", "Prov. Jawa Timur"],
+
+            ["AA000029", "Senandung Jolo", "Prov. Jambi"],
+
+            ["AA000204", "Musik Kromong Mandiangin", "Prov. Jambi"],
+
+            ["AA000976", "Jaranan Margowati ", "Prov. Jawa Tengah"],
+
+            ["AA001836", "Lakso Habang", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000406", "Tari Silampari Kahyangan Tinggi", "Prov. Sumatera Selatan"],
+
+            ["AA001148", "Langen Toyo", "Prov. D.I. Yogyakarta"],
+
+            ["AA000158", "Tari Baksa Kambang", "Prov. Kalimantan Selatan"],
+
+            ["AA000239", "Tor-Tor", "Prov. Sumatera Utara"],
+
+            ["AA000584", "Bedhaya Tejanata Pakualaman", "Prov. D.I. Yogyakarta"],
+
+            ["AA000565", "Beksan Lawung Ageng Keraton Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA000532", "Kethek Ogleng Wonogiri", "Prov. Jawa Tengah"],
+
+            ["AA001614", "Rendai Kota Bengkulu", "Prov. Bengkulu"],
+
+            ["AA000100", "Tari Besayak", "Prov. Jambi"],
+
+            ["AA000586", "Beksan Guntur Segara", "Prov. D.I. Yogyakarta"],
+
+            ["AA000216", "Topeng Betawi dan Lenong ", "Prov. D.K.I. Jakarta"],
+
+            ["AA000287", "Tari Cokek", "Prov. Banten"],
+
+            ["AA000135", "Bedhaya Semang", "Prov. D.I. Yogyakarta"],
+
+            ["AA000624", "Jegog Jembrana", "Prov. Bali"],
+
+            ["AA001203", "Tidi lo Tihu’o", "Prov. Gorontalo"],
+
+            ["AA000870", "Burung Kwayang ", "Prov. Riau"],
+
+            ["AA000186", "Joget Dangkong", "Prov. Kepulauan Riau"],
+
+            ["AA001487", "Tari Muang Sangkal", "Prov. Jawa Timur"],
+
+            ["AA000166", "Passayang-Sayang", "Prov. Sulawesi Barat"],
+
+            ["AA000547", "Janger Banyuwangi", "Prov. Jawa Timur"],
+
+            ["AA000255", "Randai Kuantan", "Prov. Riau"],
+
+            ["AA000270", "Damarulan/Damarwulan Banjarmasin", "Prov. Kalimantan Selatan"],
+
+            ["AA001430", "Zapin Pecah Dua Belas", "Prov. Riau"],
+
+            ["AA001469", "Gubrak Lesung", "Prov. Jawa Tengah"],
+
+            ["AA001069", "Kelentangan, Kutai Barat", "Prov. Kalimantan Timur"],
+
+            ["AA000587", "Bedhaya Angron Sekar", "Prov. D.I. Yogyakarta"],
+
+            ["AA001491", "Wayang Wong Thengul", "Prov. D.I. Yogyakarta"],
+
+            ["AA000747", "Gambus Ogi", "Prov. Sulawesi Selatan"],
+
+            ["AA001517", "Tari Gandrung Sasak Dasan Teren", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000387", "Tari Anggut", "Prov. Jambi"],
+
+            ["AA000773", "Molapi Saronde", "Prov. Gorontalo"],
+
+            ["AA000370", "Tupai Jenjang", "Prov. Jambi"],
+
+            ["AA000960", "Topeng Banjet ", "Prov. Jawa Barat"],
+
+            ["AA000050", "Kuda Renggong", "Prov. Jawa Barat"],
+
+            ["AA001908", "Gajeumak Mentawai", "Prov. Sumatera Barat"],
+
+            ["AA000182", "Tide-Tide", "Prov. Maluku Utara"],
+
+            ["AA001132", "Tari Cepet Sukabumi", "Prov. Jawa Barat"],
+
+            ["AA001643", "Longser", "Prov. Jawa Barat"],
+
+            ["AA000089", "Pakaian Kulit Kayu", "Prov. Sulawesi Tengah"],
+
+            ["AA001635", "Goong Renteng", "Prov. Jawa Barat"],
+
+            ["AA000749", "Parade Pasukan A`jaga Tubarani", "Prov. Sulawesi Selatan"],
+
+            ["AA000262", "Jaipong", "Prov. Jawa Barat"],
+
+            ["AA000169", "Ganrang", "Prov. Sulawesi Selatan"],
+
+            ["AA001987", "Karungut", "Prov. Kalimantan Tengah"],
+
+            ["AA000574", "Lagen Mandra Wanara", "Prov. D.I. Yogyakarta"],
+
+            ["AA001112", "Wala", "Prov. Papua Barat"],
+
+            ["AA000007", "Huda-huda", "Prov. Sumatera Utara"],
+
+            ["AA001188", "Gambuh Bungkulan", "Prov. Bali"],
+
+            ["AA000514", "Reog Dongkol", "Prov. Jawa Barat"],
+
+            ["AA000290", "Tari Gambyong", "Prov. Jawa Tengah"],
+
+            ["AA000307", "Genderang Sisibah", "Prov. Sumatera Utara"],
+
+            ["AA000351", "Silek Tigo Bulan", "Prov. Riau"],
+
+            ["AA001104", "Pakacaping Tommuane", "Prov. Sulawesi Barat"],
+
+            ["AA000300", "Laweut", "Prov. Aceh"],
+
+            ["AA001957", "Tatapa", "Prov. Maluku Utara"],
+
+            ["AA001644", "Tari Topeng Cisalak", "Prov. Jawa Barat"],
+
+            ["AA001531", "Bagandut", "Prov. Kalimantan Selatan"],
+
+            ["AA000609", "Baris Upacara", "Prov. Bali"],
+
+            ["AA000890", "Cak Ingkling ", "Prov. Sumatera Selatan"],
+
+            ["AA001149", "Incling", "Prov. D.I. Yogyakarta"],
+
+            ["AA000539", "Sapi Sonok", "Prov. Jawa Timur"],
+
+            ["AA001383", "Musik Tong-Tong Kabupaten Sumenep", "Prov. Jawa Timur"],
+
+            ["AA000146", "Badui", "Prov. D.I. Yogyakarta"],
+
+            ["AA000579", "Wayang Beber Remeng Mangunjoyo", "Prov. D.I. Yogyakarta"],
+
+            ["AA000294", "Tari Rabbani Wahid", "Prov. Aceh"],
+
+            ["AA000461", "Sandiwara Bangsawan", "Prov. Kepulauan Riau"],
+
+            ["AA001313", "Tari Lading", "Prov. Sumatera Selatan"],
+
+            ["AA000365", "Tari Piring Tujuh", "Prov. Jambi"],
+
+            ["AA001708", "MaEkat", "Prov. Nusa Tenggara Timur"],
+
+            ["AA000326", "Batombe", "Prov. Sumatera Barat"],
+
+            ["AA000156", "Sinoman Hadrah", "Prov. Kalimantan Selatan"],
+
+            ["AA001853", "Nasi Liwet Sukoharjo", "Prov. Jawa Tengah"],
+
+            ["AA000682", "Kuriding/Guriding", "Prov. Kalimantan Selatan"],
+
+            ["AA000002", "Didong ", "Prov. Aceh"],
+
+            ["AA001724", "Pentengan Gambus Paser", "Prov. Kalimantan Timur"],
+
+            ["AA001513", "Gambuh Pedungan", "Prov. Bali"],
+
+            ["AA000048", "Blenggo", "Prov. D.K.I. Jakarta"],
+
+            ["AA000499", "Gembyung", "Prov. Jawa Barat"],
+
+            ["AA001539", "Kulipu", "Prov. Sulawesi Utara"],
+
+            ["AA000813", "Tari Lenso", "Prov. Maluku"],
+
+            ["AA000317", "Sinandong Asahan", "Prov. Sumatera Utara"],
+
+            ["AA001821", "Arsitektur Masjid Sultan Syarif Abdurrahman Pontianak", "Prov. Kalimantan Barat"],
+
+            ["AA000882", "Tari Ayam Biring ", "Prov. Jambi"],
+
+            ["AA000957", "Badawang ", "Prov. Jawa Barat"],
+
+            ["AA001632", "Tari Jayengrana Kasumedangan", "Prov. Jawa Barat"],
+
+            ["AA000040", "Ubrug", "Prov. Banten"],
+
+            ["AA000979", "Reog Bulkiyo", "Prov. Jawa Timur"],
+
+            ["AA001431", "Tari Inai Pinggan Dua Belas", "Prov. Riau"],
+
+            ["AA000589", "Kethek Ogleng Gunungkidul", "Prov. D.I. Yogyakarta"],
+
+            ["AA001936", "Uyah Kusamba", "Prov. Bali"],
+
+            ["AA001533", "Tari Topeng Kemindu", "Prov. Kalimantan Timur"],
+
+            ["AA000961", "Bajidoran ", "Prov. Jawa Barat"],
+
+            ["AA001555", "Tari Lala", "Prov. Maluku Utara"],
+
+            ["AA001481", "Tari Topeng Lengger", "Prov. Jawa Tengah"],
+
+            ["AA000550", "Reog Cemandi Sidoarjo", "Prov. Jawa Timur"],
+
+            ["AA001289", "Cingpoling", "Prov. Jawa Tengah"],
+
+            ["AA001689", "Srimpi Muncar", "Prov. D.I. Yogyakarta"],
+
+            ["AA000106", "Tari Topeng Cirebon", "Prov. Jawa Barat"],
+
+            ["AA000022", "Tembang Batanghari Sembilan", "Prov. Sumatera Selatan"],
+
+            ["AA000325", "Rabab", "Prov. Sumatera Barat"],
+
+            ["AA001055", "Tandak Sambas", "Prov. Kalimantan Barat"],
+
+            ["AA000292", "Grimpheng", "Prov. Aceh"],
+
+            ["AA000519", "Tarling", "Prov. Jawa Barat"],
+
+            ["AA000554", "Montro", "Prov. D.I. Yogyakarta"],
+
+            ["AA001272", "Ebeg Banyumas", "Prov. Jawa Tengah"],
+
+            ["AA000986", "Kethek Ogleng Pacitan", "Prov. Jawa Timur"],
+
+            ["AA001824", "Kain Tating", "Prov. Kalimantan Barat"],
+
+            ["AA001596", "Talempong Sikatuntuang", "Prov. Sumatera Barat"],
+
+            ["AA001752", "Suling Tambur", "Prov. Papua Barat"],
+
+            ["AA001490", "Reog Wayang", "Prov. D.I. Yogyakarta"],
+
+            ["AA000263", "Wayang Beber", "Prov. Jawa Timur"],
+
+            ["AA000716", "Kolintang", "Prov. Sulawesi Utara"],
+
+            ["AA000371", "Musik Kalinong", "Prov. Jambi"],
+
+            ["AA000840", "Yosim Pancar (Yospan)", "Prov. Papua"],
+
+            ["AA000437", "Tari Kiamat", "Prov. Lampung"],
+
+            ["AA001688", "Beksan Sekar Madura", "Prov. D.I. Yogyakarta"],
+
+            ["AA000634", "Gendang Beleq", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000358", "Silat Pangean", "Prov. Riau"],
+
+            ["AA000101", "Tari Toga", "Prov. Sumatera Barat"],
+
+            ["AA000884", "Nek Pung", "Prov. Jambi"],
+
+            ["AA000001", "Gamelan Jawa Gaya Surakarta dan Yogyakarta", "Prov. Jawa Tengah"],
+
+            ["AA000746", "Kajangki", "Prov. Sulawesi Selatan"],
+
+            ["AA001300", "Srimpi Ludiramadu", "Prov. Jawa Tengah"],
+
+            ["AA000478", "Topeng Blantek", "Prov. D.K.I. Jakarta"],
+
+            ["AA000447", "Campak Dalung", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000391", "Tauh Lempur", "Prov. Jambi"],
+
+            ["AA001057", "Tari Lesong Mualang", "Prov. Kalimantan Barat"],
+
+            ["AA000885", "Kelentangan Banyuasin ", "Prov. Sumatera Selatan"],
+
+            ["AA001229", "Tari Tigel", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000556", "Dadung Awuk", "Prov. D.I. Yogyakarta"],
+
+            ["AA000246", "Langga", "Prov. Gorontalo"],
+
+            ["AA000611", "Dramatari Gambuh", "Prov. Bali"],
+
+            ["AA001607", "Tari Olang-Olang", "Prov. Riau"],
+
+            ["AA000860", "Babiola", "Prov. Sumatera Barat"],
+
+            ["AA000376", "Musik Gambang Dano Lamo", "Prov. Jambi"],
+
+            ["AA000992", "Saronen", "Prov. Jawa Timur"],
+
+            ["AA000449", "Tari Gajah Menunggang", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA001731", "Rudot Kama", "Prov. Kalimantan Utara"],
+
+            ["AA001215", "Bansi", "Prov. Sumatera Barat"],
+
+            ["AA000625", "Terompong Beruk", "Prov. Bali"],
+
+            ["AA000871", "Tari Cegak", "Prov. Riau"],
+
+            ["AA001715", "Tarian Ka Jubata", "Prov. Kalimantan Barat"],
+
+            ["AA000484", "Keroncong Tugu", "Prov. D.K.I. Jakarta"],
+
+            ["AA000503", "Sisingaan", "Prov. Jawa Barat"],
+
+            ["AA000958", "Tari Randu Kentir ", "Prov. Jawa Barat"],
+
+            ["AA001200", "Tidi Lo Malu’o", "Prov. Gorontalo"],
+
+            ["AA001990", "Wayang", "Prov. Jawa Barat"],
+
+            ["AA000372", "Tari Kadam", "Prov. Jambi"],
+
+            ["AA000745", "Pajjaga Bone Balla", "Prov. Sulawesi Selatan"],
+
+            ["AA000173", "Jugit Demaring (Tari Klasik Kesultanan Bulungan)", "Prov. Kalimantan Utara"],
+
+            ["AA000458", "Hadrah Gendang Empat Belitong", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA001297", "Srimpi Mondrorini", "Prov. Jawa Tengah"],
+
+            ["AA000077", "Lulo", "Prov. Sulawesi Tenggara"],
+
+            ["AA001659", "Teater Rakyat Menoreh Cilacap", "Prov. Jawa Tengah"],
+
+            ["AA001212", "Gamad", "Prov. Sumatera Barat"],
+
+            ["AA001422", "Tari Balanse Madam", "Prov. Sumatera Barat"],
+
+            ["AA000998", "Dagelan Mataram", "Prov. D.I. Yogyakarta"],
+
+            ["AA001801", "Wajit Cililin", "Prov. Jawa Barat"],
+
+            ["AA000969", "Lengger Banyumas ", "Prov. Jawa Tengah"],
+
+            ["AA000432", "Tari Bedana Lampung", "Prov. Lampung"],
+
+            ["AA000261", "Turonggo Seto Boyolali", "Prov. Jawa Tengah"],
+
+            ["AA000476", "Rebana Biang", "Prov. D.K.I. Jakarta"],
+
+            ["AA000622", "Topeng Sidakarya", "Prov. Bali"],
+
+            ["AA001384", "Seni Sintong", "Prov. Jawa Timur"],
+
+            ["AA000129", "Tari Bines", "Prov. Aceh"],
+
+            ["AA001128", "Angklung Dogdog Lojor", "Prov. Jawa Barat"],
+
+            ["AA000733", "Pakkarena", "Prov. Sulawesi Selatan"],
+
+            ["AA001017", "Oglek", "Prov. D.I. Yogyakarta"],
+
+            ["AA000228", "Wayang Garing Serang", "Prov. Banten"],
+
+            ["AA000113", "Ronggeng Gunung", "Prov. Jawa Barat"],
+
+            ["AA001738", "Lumense", "Prov. Sulawesi Tenggara"],
+
+            ["AA001818", "Timbu Dompu", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000348", "Onduo Rokan", "Prov. Riau"],
+
+            ["AA001156", "Beksan Lawung Alit", "Prov. D.I. Yogyakarta"],
+
+            ["AA000697", "Ronggeng Passer", "Prov. Kalimantan Timur"],
+
+            ["AA001852", "Sarung Goyor Sukoharjo", "Prov. Jawa Tengah"],
+
+            ["AA000318", "Guro-Guro Aron", "Prov. Sumatera Utara"],
+
+            ["AA001914", "Pekhos Masin", "Prov. Lampung"],
+
+            ["AA001035", "Penting", "Prov. Bali"],
+
+            ["AA000330", "Tari Tanduak (Tari Tanduk)", "Prov. Sumatera Barat"],
+
+            ["AA001952", "Talai Padi Sua", "Prov. Maluku Utara"],
+
+            ["AA001585", "Sijobang Lima Puluh Kota", "Prov. Sumatera Barat"],
+
+            ["AA001707", "Cakatinding", "Prov. Nusa Tenggara Timur"],
+
+            ["AA001502", "Kethoprak Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001856", "Sate Blengong Brebes", "Prov. Jawa Tengah"],
+
+            ["AA000293", "Rapa`i Pase", "Prov. Aceh"],
+
+            ["AA000553", "Topeng Jatiduwur Jombang", "Prov. Jawa Timur"],
+
+            ["AA000230", "Likok Pulo", "Prov. Aceh"],
+
+            ["AA001170", "Radap Rahayu", "Prov. Kalimantan Selatan"],
+
+            ["AA000719", "Musik Bia", "Prov. Sulawesi Utara"],
+
+            ["AA001338", "Musik Bambu Tada", "Prov. Maluku Utara"],
+
+            ["AA000604", "Patingtung", "Prov. Banten"],
+
+            ["AA000798", "Ehe Lawn", "Prov. Maluku"],
+
+            ["AA000973", "Dolalak ", "Prov. Jawa Tengah"],
+
+            ["AA000099", "Jaran Kencak", "Prov. Jawa Timur"],
+
+            ["AA001039", "Janger Kedaton Sumerta dan Pegok Sesetan", "Prov. Bali"],
+
+            ["AA000629", "Tari Baris Cina Renon dan Sanur", "Prov. Bali"],
+
+            ["AA001216", "Gandang Tasa", "Prov. Sumatera Barat"],
+
+            ["AA001249", "Pakkecaping Bugis Sidrap", "Prov. Sulawesi Selatan"],
+
+            ["AA001858", "Arangan", "Prov. Kalimantan Selatan"],
+
+            ["AA000614", "Joged ", "Prov. Bali"],
+
+            ["AA001121", "Angklung Bungko", "Prov. Jawa Barat"],
+
+            ["AA001979", "Gadang Sarunai", "Prov. Sumatera Barat"],
+
+            ["AA001710", "Jepin Langkah Bujur Serong Pontianak", "Prov. Kalimantan Barat"],
+
+            ["AA000122", "Silat Cingkrik", "Prov. D.K.I. Jakarta"],
+
+            ["AA000771", "Lariangi", "Prov. Sulawesi Tenggara"],
+
+            ["AA000093", "Guel", "Prov. Aceh"],
+
+            ["AA000036", "Gamolan", "Prov. Lampung"],
+
+            ["AA000585", "Bedhaya Kuwung-Kuwung", "Prov. D.I. Yogyakarta"],
+
+            ["AA000477", "Samrah Betawi", "Prov. D.K.I. Jakarta"],
+
+            ["AA001690", "Beksan Panji Sekar", "Prov. D.I. Yogyakarta"],
+
+            ["AA000855", "Tortor Sombah", "Prov. Sumatera Utara"],
+
+            ["AA000060", "Dongkrek", "Prov. Jawa Timur"],
+
+            ["AA001532", "Datun Ngentau", "Prov. Kalimantan Timur"],
+
+            ["AA001637", "Surak Ibra", "Prov. Jawa Barat"],
+
+            ["AA001020", "Jabar Juwes", "Prov. D.I. Yogyakarta"],
+
+            ["AA000662", "Kledik", "Prov. Kalimantan Barat"],
+
+            ["AA000540", "Reog Ponorogo", "Prov. Jawa Timur"],
+
+            ["AA000880", "Dzikir Berdah Muaro Jambi ", "Prov. Jambi"],
+
+            ["AA000091", "Tari Legong Kraton", "Prov. Bali"],
+
+            ["AA001139", "Angklung Gubrag", "Prov. Jawa Barat"],
+
+            ["AA001273", "Jamjaneng", "Prov. Jawa Tengah"],
+
+            ["AA001339", "Betingkah Alu Selesung", "Prov. Kepulauan Riau"],
+
+            ["AA000335", "Zapin Meskom", "Prov. Riau"],
+
+            ["AA000344", "Joget Sonde", "Prov. Riau"],
+
+            ["AA001261", "Wayang Othok Obrol", "Prov. Jawa Tengah"],
+
+            ["AA001666", "Wayang Krucil Tuban", "Prov. Jawa Timur"],
+
+            ["AA000560", "Tari Angguk", "Prov. D.I. Yogyakarta"],
+
+            ["AA001599", "Dendang Bansi Solok", "Prov. Sumatera Barat"],
+
+            ["AA000388", "Rangguk Kumun", "Prov. Jambi"],
+
+            ["AA001413", "Rapa`i Bubee", "Prov. Aceh"],
+
+            ["AA000364", "Tari Gendong", "Prov. Riau"],
+
+            ["AA001897", "Anyaman Mansiang", "Prov. Sumatera Barat"],
+
+            ["AA000203", "Tari Kain Kromong", "Prov. Jambi"],
+
+            ["AA001820", "Sulam Kalengkang Pontianak", "Prov. Kalimantan Barat"],
+
+            ["AA000899", "Tari Ittar Muli", "Prov. Lampung"],
+
+            ["AA001202", "Dana – Dana", "Prov. Gorontalo"],
+
+            ["AA001346", "Gendang Berarak", "Prov. Kepulauan Riau"],
+
+            ["AA000693", "Hudoq", "Prov. Kalimantan Timur"],
+
+            ["AA001044", "Tari Sireh", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000337", "Debus Indragiri Hulu", "Prov. Riau"],
+
+            ["AA000334", "Zapin Api", "Prov. Riau"],
+
+            ["AA001899", "Sulaman Nareh", "Prov. Sumatera Barat"],
+
+            ["AA000530", "Gambang Semarang", "Prov. Jawa Tengah"],
+
+            ["AA000731", "Tari Salonreng", "Prov. Sulawesi Selatan"],
+
+            ["AA000909", "Tari Dibingi", "Prov. Lampung"],
+
+            ["AA000087", "Pawukon", "Prov. D.K.I. Jakarta"],
+
+            ["AA001292", "Bambangan Cakil Kota Surakarta", "Prov. Jawa Tengah"],
+
+            ["AA001250", "Oni-oni Kecapi/Simphoni Kecapi", "Prov. Sulawesi Selatan"],
+
+            ["AA000543", "Wayang Krucil Malangan", "Prov. Jawa Timur"],
+
+            ["AA000386", "Kompangan/ Hadrah", "Prov. Jambi"],
+
+            ["AA001787", "Abangan", "Prov. D.I. Yogyakarta"],
+
+            ["AA001254", "Tari Pajoge Makunrai Kabupaten Bone", "Prov. Sulawesi Selatan"],
+
+            ["AA001043", "Kayaq Sandongan", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000685", "Wayang Kulit Banjar", "Prov. Kalimantan Selatan"],
+
+            ["AA001100", "Tidi Lo o`ayabu", "Prov. Gorontalo"],
+
+            ["AA001123", "Bangkong Reang", "Prov. Jawa Barat"],
+
+            ["AA001786", "Jangan Lombok Ijo", "Prov. D.I. Yogyakarta"],
+
+            ["AA001798", "Sega Jamblang", "Prov. Jawa Barat"],
+
+            ["AA000136", "Beksan Bandabaya Pura Pakualaman", "Prov. D.I. Yogyakarta"],
+
+            ["AA001603", "Kompang Bengkalis", "Prov. Riau"],
+
+            ["AA000720", "Figura", "Prov. Sulawesi Utara"],
+
+            ["AA001109", "Bela Yai", "Prov. Maluku Utara"],
+
+            ["AA000617", "Tari Sanghyang", "Prov. Bali"],
+
+            ["AA000396", "Ngagoah Imo Pulau Tengah", "Prov. Jambi"],
+
+            ["AA001274", "Tari Cepetan Alas", "Prov. Jawa Tengah"],
+
+            ["AA000605", "Rudat Banten", "Prov. Banten"],
+
+            ["AA000316", "Tari Dulang", "Prov. Sumatera Utara"],
+
+            ["AA000552", "Wayang Thengul", "Prov. Jawa Timur"],
+
+            ["AA000853", "Sining", "Prov. Aceh"],
+
+            ["AA000413", "Tari Gandai", "Prov. Bengkulu"],
+
+            ["AA001640", "Cigawiran", "Prov. Jawa Barat"],
+
+            ["AA000807", "Maku-maku", "Prov. Maluku"],
+
+            ["AA000965", "Domyak ", "Prov. Jawa Barat"],
+
+            ["AA000004", "Tari Seudati", "Prov. Aceh"],
+
+            ["AA000699", "Lalatip", "Prov. Kalimantan Utara"],
+
+            ["AA000984", "Bantengan Jawa Timur", "Prov. Jawa Timur"],
+
+            ["AA001411", "Tari Dampeng", "Prov. Aceh"],
+
+            ["AA000084", "Poya", "Prov. Maluku"],
+
+            ["AA000010", "Serampang Duabelas", "Prov. Sumatera Utara"],
+
+            ["AA000405", "Tari Kebagh", "Prov. Sumatera Selatan"],
+
+            ["AA000675", "Silotong", "Prov. Kalimantan Barat"],
+
+            ["AA001923", "Tenun Cagcag Jembrana", "Prov. Bali"],
+
+            ["AA000570", "Langendriya Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA000134", "Angklung", "Prov. Jawa Barat"],
+
+            ["AA001733", "Tari Dangsia", "Prov. Sulawesi Utara"],
+
+            ["AA001178", "Genjek", "Prov. Bali"],
+
+            ["AA001544", "Sere Bissu", "Prov. Sulawesi Selatan"],
+
+            ["AA000520", "Uyeg", "Prov. Jawa Barat"],
+
+            ["AA000119", "Gandrung Banyuwangi", "Prov. Jawa Timur"],
+
+            ["AA000863", "Tari Benten", "Prov. Sumatera Barat"],
+
+            ["AA000059", "Jaran Bodhag", "Prov. Jawa Timur"],
+
+            ["AA000223", "Soya - Soya", "Prov. Maluku Utara"],
+
+            ["AA000021", "Tari Gending Sriwijaya", "Prov. Sumatera Selatan"],
+
+            ["AA001049", "Kebalai", "Prov. Nusa Tenggara Timur"],
+
+            ["AA001076", "Tari Perang Dayak Bahau Saq", "Prov. Kalimantan Timur"],
+
+            ["AA000684", "Tari Topeng Banjar", "Prov. Kalimantan Selatan"],
+
+            ["AA000274", "Gordang Sambilan", "Prov. Sumatera Utara"],
+
+            ["AA001122", "Gong Si Bolong", "Prov. Jawa Barat"],
+
+            ["AA001975", "Jatung Utang Kalimantan Timur", "Prov. Kalimantan Timur"],
+
+            ["AA000508", "Gaok", "Prov. Jawa Barat"],
+
+            ["AA001962", "Baku Ngelo", "Prov. Maluku Utara"],
+
+            ["AA000987", "Kiprah Glipang", "Prov. Jawa Timur"],
+
+            ["AA001288", "Santiswara Larasmadya", "Prov. Jawa Tengah"],
+
+            ["AA001447", "Barodat Lingga", "Prov. Kepulauan Riau"],
+
+            ["AA000564", "Beksan Golek Menak", "Prov. D.I. Yogyakarta"],
+
+            ["AA001480", "Bundengan", "Prov. Jawa Tengah"],
+
+            ["AA000163", "Saiyyang Pattu`du", "Prov. Sulawesi Barat"],
+
+            ["AA000568", "Jathilan Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001939", "Gaya Lukisan I Gusti Made Deblog", "Prov. Bali"],
+
+            ["AA001794", "Krupuk Mlarat", "Prov. Jawa Barat"],
+
+            ["AA001340", "Zapin Kote", "Prov. Kepulauan Riau"],
+
+            ["AA000559", "Panjidur Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001126", "Rengkong", "Prov. Jawa Barat"],
+
+            ["AA000185", "Dulmuluk", "Prov. Sumatera Selatan"],
+
+            ["AA000898", "Tari Selapanan", "Prov. Lampung"],
+
+            ["AA001934", "Kerajinan Genta", "Prov. Bali"],
+
+            ["AA001602", "Rarak", "Prov. Riau"],
+
+            ["AA000452", "Rudat Bangka Belitung", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000329", "Tari Piriang (Tari Piring)", "Prov. Sumatera Barat"],
+
+            ["AA001817", "Tembe Muna Paa", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000498", "Mamaos Cianjuran", "Prov. Jawa Barat"],
+
+            ["AA000848", "Karamo", "Prov. Papua"],
+
+            ["AA001466", "Tari Merak Sunda", "Prov. Jawa Barat"],
+
+            ["AA001028", "Gambuh Desa Adat Tumbakbayuh", "Prov. Bali"],
+
+            ["AA001390", "Rengganis Banyuwangi", "Prov. Jawa Timur"],
+
+            ["AA001327", "Ewa Wuna", "Prov. Sulawesi Tenggara"],
+
+            ["AA001111", "Laka Baka", "Prov. Maluku Utara"],
+
+            ["AA001071", "Sapeq, Kalimantan Timur", "Prov. Kalimantan Timur"],
+
+            ["AA001405", "Dhol", "Prov. Bengkulu"],
+
+            ["AA001641", "Kacapi Suling", "Prov. Jawa Barat"],
+
+            ["AA000283", "Wayang Gung", "Prov. Kalimantan Selatan"],
+
+            ["AA000505", "Angklung Buncis", "Prov. Jawa Barat"],
+
+            ["AA000265", "Calung Banyumas dan Jawa Barat", "Prov. Jawa Barat"],
+
+            ["AA000862", "Sikambang Manih", "Prov. Sumatera Barat"],
+
+            ["AA000995", "Jaran Kepang Jawa Timur", "Prov. Jawa Timur"],
+
+            ["AA001388", "Gembrung Madiun", "Prov. Jawa Timur"],
+
+            ["AA000018", "Indang Piaman", "Prov. Sumatera Barat"],
+
+            ["AA001086", "Torompio", "Prov. Sulawesi Tengah"],
+
+            ["AA000582", "Beksan Jebeng", "Prov. D.I. Yogyakarta"],
+
+            ["AA001581", "Faluaya", "Prov. Sumatera Utara"],
+
+            ["AA001896", "Randang Lokan Pesisir Selatan", "Prov. Sumatera Barat"],
+
+            ["AA001389", "Topeng Dhalang Kabupaten Sumenep", "Prov. Jawa Timur"],
+
+            ["AA000817", "Yangere/Tali Dua Halmahera Utara", "Prov. Maluku Utara"],
+
+            ["AA001068", "Genikng", "Prov. Kalimantan Timur"],
+
+            ["AA000271", "Ludruk", "Prov. Jawa Timur"],
+
+            ["AA000581", "Wayang Kancil Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA000024", "Guritan Besemah", "Prov. Sumatera Selatan"],
+
+            ["AA001739", "Tari Mondotambe", "Prov. Sulawesi Tenggara"],
+
+            ["AA000118", "Pencak Silat Bandrong", "Prov. Banten"],
+
+            ["AA000602", "Beksan Golek Pucung Kethoprak", "Prov. D.I. Yogyakarta"],
+
+            ["AA000527", "Tari Topeng Endel Tegal", "Prov. Jawa Tengah"],
+
+            ["AA001929", "Loloh Cemcem", "Prov. Bali"],
+
+            ["AA000177", "Khuntulan Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA000030", "Tari Kedidi", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA001365", "Boria", "Prov. Kepulauan Riau"],
+
+            ["AA000005", "Tari Rapa`i Geleng", "Prov. Aceh"],
+
+            ["AA000521", "Barongan Blora", "Prov. Jawa Tengah"],
+
+            ["AA000012", "Merdang-Merdem", "Prov. Sumatera Utara"],
+
+            ["AA000873", "Zapin Siak Sri Inderapura", "Prov. Riau"],
+
+            ["AA000460", "Sepen Buding", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000090", "Tari Cakalele", "Prov. Maluku"],
+
+            ["AA000487", "Uncul", "Prov. D.K.I. Jakarta"],
+
+            ["AA001634", "Degung", "Prov. Jawa Barat"],
+
+            ["AA001550", "Dendang Cobo Lala", "Prov. Maluku Utara"],
+
+            ["AA000483", "Gambang Rancag", "Prov. D.K.I. Jakarta"],
+
+            ["AA001053", "Ratip Saman Sambas", "Prov. Kalimantan Barat"],
+
+            ["AA000132", "Rampak Bedug Pandeglang", "Prov. Banten"],
+
+            ["AA001812", "Kembang Lamaran", "Prov. Jawa Timur"],
+
+            ["AA001307", "Golek Montro", "Prov. Jawa Tengah"],
+
+            ["AA001167", "Bedhaya Angron Akung", "Prov. D.I. Yogyakarta"],
+
+            ["AA000383", "Tari Elang", "Prov. Jambi"],
+
+            ["AA000646", "Tarian Pado`a", "Prov. Nusa Tenggara Timur"],
+
+            ["AA001872", "Gegedem", "Prov. Aceh"],
+
+            ["AA000482", "Topeng Jantuk", "Prov. D.K.I. Jakarta"],
+
+            ["AA001075", "Tari Gong", "Prov. Kalimantan Timur"],
+
+            ["AA001161", "Trengganon", "Prov. D.I. Yogyakarta"],
+
+            ["AA000017", "Ronggeng Pasaman", "Prov. Sumatera Barat"],
+
+            ["AA001140", "Karinding", "Prov. Jawa Barat"],
+
+            ["AA001933", "Tenun Rangrang Nusa Penida", "Prov. Bali"],
+
+            ["AA000338", "Calempong Oguong", "Prov. Riau"],
+
+            ["AA001214", "Talempong Pacik", "Prov. Sumatera Barat"],
+
+            ["AA000467", "Tari Inai", "Prov. Kepulauan Riau"],
+
+            ["AA000257", "Penca (Penca Silat Jawa Barat)", "Prov. Jawa Barat"],
+
+            ["AA000580", "Wayang Wong Gaya Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA000507", "Bebegig", "Prov. Jawa Barat"],
+
+            ["AA000772", "Tari Raigo", "Prov. Sulawesi Tengah"],
+
+            ["AA001947", "Sumpit Gamrange", "Prov. Maluku Utara"],
+
+            ["AA001686", "Antup", "Prov. D.I. Yogyakarta"],
+
+            ["AA001465", "Angklung Sered", "Prov. Jawa Barat"],
+
+            ["AA000635", "Wayang Kulit Sasak", "Prov. Nusa Tenggara Barat"],
+
+            ["AA000501", "Badeng", "Prov. Jawa Barat"],
+
+            ["AA000032", "Gendang Siantan", "Prov. Kepulauan Riau"],
+
+            ["AA001146", "Beksan Inum", "Prov. D.I. Yogyakarta"],
+
+            ["AA001218", "Saluang", "Prov. Sumatera Barat"],
+
+            ["AA001842", "Enting-Enting Gepuk Salatiga", "Prov. Jawa Tengah"],
+
+            ["AA001290", "Tari Soreng", "Prov. Jawa Tengah"],
+
+            ["AA000466", "Makyong", "Prov. Kepulauan Riau"],
+
+            ["AA000975", "Tari Prajuritan Kabupaten Semarang ", "Prov. Jawa Tengah"],
+
+            ["AA000588", "Beksan Bugis Gaya Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001704", "Berko", "Prov. Bali"],
+
+            ["AA001117", "Landok Sampot", "Prov. Aceh"],
+
+            ["AA001298", "Gambyong Pareanom", "Prov. Jawa Tengah"],
+
+            ["AA001601", "Sapin Bagan", "Prov. Riau"],
+
+            ["AA000161", "Dambus", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000275", "Krumpyung Kulon Progo", "Prov. D.I. Yogyakarta"],
+
+            ["AA001984", "Tabot (Bengkulu) dan Tabuik (Padang Pariaman)", "Prov. Bengkulu"],
+
+            ["AA001370", "Tari Otar-Otar", "Prov. Kalimantan Barat"],
+
+            ["AA000392", "Ntak Awo", "Prov. Jambi"],
+
+            ["AA000816", "Tari Legu Sahu", "Prov. Maluku Utara"],
+
+            ["AA000886", "Tari Sambut Muara Enim ", "Prov. Sumatera Selatan"],
+
+            ["AA000956", "Reak Dogdog ", "Prov. Jawa Barat"],
+
+            ["AA001919", "Petikan Gitar Leppung Pepadun", "Prov. Lampung"],
+
+            ["AA000593", "Peksi  Moi", "Prov. D.I. Yogyakarta"],
+
+            ["AA001179", "Barong Nong Nong Kling", "Prov. Bali"],
+
+            ["AA000590", "Gejog Lesung Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA000331", "Randai", "Prov. Sumatera Barat"],
+
+            ["AA001900", "Talempong Batuang", "Prov. Sumatera Barat"],
+
+            ["AA001687", "Bedhaya Sapta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001113", "Orok", "Prov. Papua Barat"],
+
+            ["AA001610", "Kelintang Perunggu Sabak", "Prov. Jambi"],
+
+            ["AA001647", "Wayang Wong Ngesti Pandowo", "Prov. Jawa Tengah"],
+
+            ["AA001834", "Laksa Tangerang", "Prov. Banten"],
+
+            ["AA000206", "ONDEL-ONDEL", "Prov. D.K.I. Jakarta"],
+
+            ["AA001194", "Ja’i", "Prov. Nusa Tenggara Timur"],
+
+            ["AA000621", "Rejang", "Prov. Bali"],
+
+            ["AA000608", "Barong Ket", "Prov. Bali"],
+
+            ["AA001570", "Dikee Pam Panga", "Prov. Aceh"],
+
+            ["AA000864", "Tari Kain", "Prov. Sumatera Barat"],
+
+            ["AA001615", "Tari Palito", "Prov. Bengkulu"],
+
+            ["AA001462", "Dulag", "Prov. Jawa Barat"],
+
+            ["AA000993", "Gemblak Tuban", "Prov. Jawa Timur"],
+
+            ["AA000272", "Sandhur Manduro", "Prov. Jawa Timur"],
+
+            ["AA000982", "Besutan Jombang", "Prov. Jawa Timur"],
+
+            ["AA001305", "Gambyong Retno Kusumo", "Prov. Jawa Tengah"],
+
+            ["AA001084", "Gunde", "Prov. Sulawesi Utara"],
+
+            ["AA001576", "Ambe-ambeken", "Prov. Aceh"],
+
+            ["AA000597", "Tayub Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001253", "Tari Pajjaga Andi Makkunrai ", "Prov. Sulawesi Selatan"],
+
+            ["AA001935", "Kerajinan Gamelan Klungkung", "Prov. Bali"],
+
+            ["AA000905", "Hadra Ugan", "Prov. Lampung"],
+
+            ["AA001527", "Jepin Langkah Penghibur Pengantin", "Prov. Kalimantan Barat"],
+
+            ["AA001279", "Krumpyung Desa Langgar", "Prov. Jawa Tengah"],
+
+            ["AA000599", "Beksan Etheng", "Prov. D.I. Yogyakarta"],
+
+            ["AA001604", "Gondang Borogong", "Prov. Riau"],
+
+            ["AA001232", "Keroncong Stambul Fadjar", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000738", "Pa`gellu", "Prov. Sulawesi Selatan"],
+
+            ["AA001949", "Ea Cala", "Prov. Maluku Utara"],
+
+            ["AA000038", "Sigeh Penguten", "Prov. Lampung"],
+
+            ["AA001386", "Jaranan Trill", "Prov. Jawa Timur"],
+
+            ["AA001280", "Wayang Topeng Kedung Panjang", "Prov. Jawa Tengah"],
+
+            ["AA000502", "Lais Garut", "Prov. Jawa Barat"],
+
+            ["AA001016", "Lengger Tapeng", "Prov. D.I. Yogyakarta"],
+
+            ["AA000306", "Tari Gubang", "Prov. Sumatera Utara"],
+
+            ["AA000400", "Tari Penguton", "Prov. Sumatera Selatan"],
+
+            ["AA000573", "Srimpi Rangga Janur", "Prov. D.I. Yogyakarta"],
+
+            ["AA001333", "Tari Balumpa", "Prov. Sulawesi Tenggara"],
+
+            ["AA001369", "Jappin Lambut", "Prov. Kalimantan Barat"],
+
+            ["AA001424", "Tari Poang", "Prov. Riau"],
+
+            ["AA001025", "Srimpi Teja", "Prov. D.I. Yogyakarta"],
+
+            ["AA001114", "Srar", "Prov. Papua Barat"],
+
+            ["AA001545", "Tari Riringgo (Moriringgo)", "Prov. Sulawesi Selatan"],
+
+            ["AA001709", "Jepin Tembung Pendek Pontianak", "Prov. Kalimantan Barat"],
+
+            ["AA000642", "Tarian Likurai", "Prov. Nusa Tenggara Timur"],
+
+            ["AA001294", "Gatotkaca Gandrung", "Prov. Jawa Tengah"],
+
+            ["AA000098", "Angklung Buhun", "Prov. Banten"],
+
+            ["AA000232", "Tari Baris Wayang Lumintang", "Prov. Bali"],
+
+            ["AA001633", "Ajeng Karawang", "Prov. Jawa Barat"],
+
+            ["AA001514", "Genggong Bali", "Prov. Bali"],
+
+            ["AA001898", "Opa Mentawai", "Prov. Sumatera Barat"],
+
+            ["AA000133", "Debus Banten ", "Prov. Banten"],
+
+            ["AA000561", "Wayang Topeng Pedalangan", "Prov. D.I. Yogyakarta"],
+
+            ["AA000347", "Koba", "Prov. Riau"],
+
+            ["AA001024", "Srimpi Renggawati", "Prov. D.I. Yogyakarta"],
+
+            ["AA001034", "Cakepung Budhakeling", "Prov. Bali"],
+
+            ["AA001173", "Kanjet Lasan", "Prov. Kalimantan Timur"],
+
+            ["AA000480", "Gambang Kromong", "Prov. D.K.I. Jakarta"],
+
+            ["AA000079", "Pepepepeka Ri Makka", "Prov. Sulawesi Selatan"],
+
+            ["AA000536", "Singo Ulung", "Prov. Jawa Timur"],
+
+            ["AA000342", "Sijobang “Buwong Gasiong”", "Prov. Riau"],
+
+            ["AA000395", "Tari Iyo-Iyo", "Prov. Jambi"],
+
+            ["AA000600", "Golek Lambangsari Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001501", "Srimpi Pandhelori", "Prov. D.I. Yogyakarta"],
+
+            ["AA000517", "Tari Kedempling", "Prov. Jawa Barat"],
+
+            ["AA000324", "Ulu Ambek", "Prov. Sumatera Barat"],
+
+            ["AA001072", "Suliikng Dewa", "Prov. Kalimantan Timur"],
+
+            ["AA000518", "Tari Umbul", "Prov. Jawa Barat"],
+
+            ["AA000343", "Silat Perisai", "Prov. Riau"],
+
+            ["AA000457", "Serimbang", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA000373", "Tari Pisang", "Prov. Jambi"],
+
+            ["AA000142", "Dansa Tali", "Prov. Maluku"],
+
+            ["AA001295", "Langendriyan", "Prov. Jawa Tengah"],
+
+            ["AA000115", "Sasandu (Sasando)", "Prov. Nusa Tenggara Timur"],
+
+            ["AA000453", "Sepen Penyok", "Prov. Kepulauan Bangka Belitung"],
+
+            ["AA001073", "Ganjur", "Prov. Kalimantan Timur"],
+
+            ["AA001301", "Srimpi Sangu Kabupaten Pati", "Prov. Jawa Tengah"],
+
+            ["AA001862", "Lobo", "Prov. Sulawesi Tengah"],
+
+            ["AA000972", "Sintren Kabupaten Pekalongan ", "Prov. Jawa Tengah"],
+
+            ["AA000666", "Tari Pinggan Sekadau", "Prov. Kalimantan Barat"],
+
+            ["AA000717", "Tari Maengket", "Prov. Sulawesi Utara"],
+
+            ["AA001553", "Tari Togal", "Prov. Maluku Utara"],
+
+            ["AA000225", "Leko", "Prov. Bali"],
+
+            ["AA000195", "Sintren", "Prov. Jawa Barat"],
+
+            ["AA000209", "TANJIDOR", "Prov. D.K.I. Jakarta"],
+
+            ["AA000493", "Wayang Kulit Betawi", "Prov. D.K.I. Jakarta"],
+
+            ["AA000959", "Belenderan ", "Prov. Jawa Barat"],
+
+            ["AA000427", "Tari Bedayou Tulang Bawang", "Prov. Lampung"],
+
+            ["AA000062", "Seni Pertunjukan Tektekan Bali", "Prov. Bali"],
+
+            ["AA001393", "Wayang Kulit Gagrak Malangan", "Prov. Jawa Timur"],
+
+            ["AA000174", "Jatung Utang", "Prov. Kalimantan Utara"],
+
+            ["AA000289", "Tari Kejai", "Prov. Bengkulu"],
+
+            ["AA001074", "Tari Dewa Memanah", "Prov. Kalimantan Timur"],
+
+            ["AA001558", "Tari Denge-Denge", "Prov. Maluku Utara"],
+
+            ["AA000033", "Gubang", "Prov. Kepulauan Riau"],
+
+            ["AA001636", "Tari Ketuk Tilu", "Prov. Jawa Barat"],
+
+            ["AA000686", "Kuda Gipang", "Prov. Kalimantan Selatan"],
+
+            ["AA000632", "Tari Taruna Jaya", "Prov. Bali"],
+
+            ["AA000506", "Badud", "Prov. Jawa Barat"],
+
+            ["AA001201", "Tidi Da’a", "Prov. Gorontalo"],
+
+            ["AA001578", "Sidalupa", "Prov. Aceh"],
+
+            ["AA001809", "Brem Madiun", "Prov. Jawa Timur"],
+
+            ["AA000542", "Kentrung", "Prov. Jawa Timur"],
+
+            ["AA000109", "Tari Saman", "Prov. Aceh"],
+
+            ["AA000472", "Silat Pengantin Kepulauan Riau", "Prov. Kepulauan Riau"],
+
+            ["AA001456", "Tari Merawai", "Prov. Kepulauan Riau"],
+
+            ["AA001685", "Wayang Topeng Duwet", "Prov. D.I. Yogyakarta"],
+
+            ["AA000715", "Masamper", "Prov. Sulawesi Utara"],
+
+            ["AA001135", "Jipeng", "Prov. Jawa Barat"],
+
+            ["AA000056", "Syi`ir Madura", "Prov. Jawa Timur"],
+
+            ["AA000490", "Zapin Betawi", "Prov. D.K.I. Jakarta"],
+
+            ["AA001394", "Tari Ngebeng", "Prov. Jambi"],
+
+            ["AA001391", "Ta’Butaan Jember", "Prov. Jawa Timur"],
+
+            ["AA000767", "Tari Linda", "Prov. Sulawesi Tenggara"],
+
+            ["AA001642", "Kiliningan", "Prov. Jawa Barat"],
+
+            ["AA000020", "Silek Minang", "Prov. Sumatera Barat"],
+
+            ["AA000368", "Krinok", "Prov. Jambi"],
+
+            ["AA001638", "Bedaya Rimbe", "Prov. Jawa Barat"],
+
+            ["AA000865", "Talempong Unggan", "Prov. Sumatera Barat"],
+
+            ["AA001542", "Tari Pamonte", "Prov. Sulawesi Tengah"],
+
+            ["AA000603", "Nini Thowong Yogyakarta", "Prov. D.I. Yogyakarta"],
+
+            ["AA001829", "Paluwala", "Prov. Gorontalo"],
+
+            ["AA000035", "Tari Melinting", "Prov. Lampung"],
+
+            ["AA001376", "Tari Pedang Mualang", "Prov. Kalimantan Barat"],
+
+            ["AA001967", "Tau Piarawi", "Prov. Papua Barat"],
+
+            ["AA000610", "Dramatari Wayang Wong", "Prov. Bali"]
+        ];
+
+        function getIsland(province) {
+            const prov = province.toLowerCase();
+            if (prov.includes('jawa') || prov.includes('jakarta') || prov.includes('banten') || prov.includes('yogyakarta')) return 'Jawa';
+            if (prov.includes('sumatera') || prov.includes('aceh') || prov.includes('riau') || prov.includes('jambi') || prov.includes('bengkulu') || prov.includes('lampung') || prov.includes('bangka')) return 'Sumatera';
+            if (prov.includes('kalimantan')) return 'Kalimantan';
+            if (prov.includes('sulawesi') || prov.includes('gorontalo')) return 'Sulawesi';
+            if (prov.includes('bali')) return 'Bali';
+            if (prov.includes('nusa tenggara')) return 'Nusa Tenggara';
+            if (prov.includes('maluku')) return 'Maluku';
+            if (prov.includes('papua')) return 'Papua';
+            return 'Lainnya';
+        }
+
+        function getIslandClass(island) {
+            const classMap = {
+                'Jawa': 'island-jawa',
+                'Sumatera': 'island-sumatera',
+                'Kalimantan': 'island-kalimantan',
+                'Sulawesi': 'island-sulawesi',
+                'Bali': 'island-bali',
+                'Nusa Tenggara': 'island-nusa',
+                'Maluku': 'island-maluku',
+                'Papua': 'island-papua'
+            };
+            return classMap[island] || 'island-jawa';
+        }
+
+        let allData = rawData.map((item, index) => ({
+            no: index + 1,
+            code: item[0],
+            name: item[1],
+            province: item[2],
+            island: getIsland(item[2])
+        }));
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+
+            if (data.length === 0) {
+                tbody.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td class="no-cell">${item.no}</td>
+                    <td class="code-cell">${item.code}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.province}</td>
+                    <td><span class="island-badge ${getIslandClass(item.island)}">${item.island}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats(data) {
+            document.getElementById('totalData').textContent = data.length;
+            const uniqueIslands = [...new Set(data.map(item => item.island))];
+            document.getElementById('totalPulau').textContent = uniqueIslands.length;
+        }
+
+        function filterData() {
+            const selectedIsland = document.getElementById('filterPulau').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = allData;
+
+            if (selectedIsland !== 'semua') {
+                filtered = filtered.filter(item => item.island === selectedIsland);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(item =>
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.province.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            renderTable(filtered);
+            updateStats(filtered);
+        }
+
+        document.getElementById('filterPulau').addEventListener('change', filterData);
+        document.getElementById('searchInput').addEventListener('input', filterData);
+
+        // Initial render
+        renderTable(allData);
+        updateStats(allData);
+    </script>
+</body>
+
+</html>
