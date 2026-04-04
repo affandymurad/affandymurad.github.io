@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paspor — Kurasi Digital</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.4/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.4/swiper-bundle.min.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8B0000;
+            --secondary: #CD5C5C;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+            --gold: #D4A017;
+            --gray: #5f6368;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            scroll-snap-type: y proximity;
+            background: var(--light);
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--dark);
+        }
+
+        section {
+            min-height: 100vh;
+            height: auto;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative;
+            padding: 5rem 5vw 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #home {
+            background: linear-gradient(135deg, var(--primary) 0%, #5c0000 100%);
+            color: white;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 5vw;
+        }
+
+        #home .content {
+            max-width: 1100px;
+            padding: 2rem;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3.5rem;
+            color: white;
+            opacity: 0.6;
+            pointer-events: none;
+            animation: gentle-bounce 3s infinite ease-in-out;
+        }
+
+        @keyframes gentle-bounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(14px);
+            }
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3.2rem, 7vw, 5.8rem);
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 6px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            border-radius: 5px;
+        }
+
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Semua wrapper media jadi lebih kecil & terpusat */
+        .media-wrapper {
+            max-width: 800px;
+            /* ← batasi lebar maksimal */
+            margin: 2rem auto;
+            /* lebih banyak jarak atas-bawah, tapi terpusat */
+            aspect-ratio: 16/9;
+            /* tetap pertahankan rasio */
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+            background: #111;
+        }
+
+        /* Khusus peta paspor dunia (yang aslinya lebar) */
+        #peringkat .media-wrapper {
+            max-width: 780px;
+            aspect-ratio: 16/9;
+            padding: 1rem;
+            background: #fff;
+        }
+
+        /* Gambar di dalam carousel & gambar tunggal jadi lebih compact */
+        .swiper-slide img,
+        .media-wrapper>img,
+        .media-wrapper>video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* ← ganti dari cover ke contain agar tidak terpotong */
+            background: #000;
+            /* background hitam jika ada ruang kosong */
+        }
+
+        /* Video & audio lebih kecil & terpusat */
+        #video .media-wrapper,
+        #audio audio {
+            max-width: 720px;
+            margin: 2.5rem auto;
+        }
+
+        /* Caption di carousel jadi lebih kecil & rapi */
+        .dynamic-caption {
+            padding: 1.4rem 1.2rem 1.1rem;
+        }
+
+        .dynamic-caption h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .dynamic-caption p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .dynamic-caption small {
+            font-size: 0.78rem;
+        }
+
+        /* Mobile — makin kecil lagi agar tidak memakan tempat */
+        @media (max-width: 768px) {
+            .media-wrapper {
+                max-width: 92vw;
+                margin: 1.8rem auto;
+            }
+
+            #peringkat .media-wrapper {
+                max-width: 88vw;
+            }
+
+            #video .media-wrapper,
+            #audio audio {
+                max-width: 90vw;
+            }
+
+            .dynamic-caption h4 {
+                font-size: 1.15rem;
+            }
+
+            .dynamic-caption p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .media-wrapper {
+                aspect-ratio: 4/3.2;
+                /* sedikit lebih tinggi agar konten tidak terlalu kecil */
+            }
+        }
+
+        .swiper-slide img,
+        .swiper-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dynamic-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92), transparent);
+            color: white;
+            padding: 2rem 1.6rem 1.4rem;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .swiper-slide-active .dynamic-caption {
+            transform: translateY(0);
+        }
+
+        .dynamic-caption h4 {
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dynamic-caption small {
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+
+        .caption-block {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .caption-block p,
+        .caption-block ul {
+            color: var(--gray);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 1.5rem auto;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            max-width: 900px;
+            margin: 2rem auto;
+            border-collapse: collapse;
+            font-size: 1.05rem;
+        }
+
+        th,
+        td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+        }
+
+        tr:hover {
+            background: rgba(139, 0, 0, 0.06);
+        }
+
+        /* Audio & Video special handling */
+        audio {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        /* Hanya section konten yang snap */
+        #content-sections section {
+            /* beri class khusus */
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            /* hanya konten utama */
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 6rem 5vw 4rem;
+            text-align: center;
+            scroll-snap-align: none !important;
+            scroll-snap-stop: normal !important;
+            min-height: auto;
+        }
+
+        .attribution-line {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+        }
+
+        .icon {
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--primary);
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            transition: opacity 0.9s ease;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(6rem, 18vw, 13rem);
+            color: white;
+            animation: pulse 2.8s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.85;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 5vw 3rem;
+            }
+
+            #home {
+                padding: 3rem 5vw;
+            }
+
+            .scroll-hint {
+                bottom: 2rem;
+                font-size: 2.8rem;
+            }
+
+            .media-wrapper {
+                aspect-ratio: 16/10;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: clamp(2.8rem, 9vw, 4.5rem);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-logo">Paspor</div>
+    </div>
+
+    <!-- Sections -->
+
+    <section id="home">
+        <div class="content">
+            <h1>Paspor</h1>
+            <p style="font-size: clamp(1.6rem, 5vw, 2.5rem); max-width: 900px; margin: 1.8rem auto 0; opacity: 0.94;">
+                Temukan kisah menarik di balik dokumen perjalanan paling penting di dunia
+            </p>
+        </div>
+        <div class="scroll-hint">↓</div>
+    </section>
+
+    <section id="intro">
+        <div class="content-wrapper">
+            <h2 class="section-title">Pengantar</h2>
+            <div class="caption-block">
+                <p>Paspor lebih dari sekadar dokumen perjalanan — ia adalah gerbang menuju penjelajahan global dan
+                    bagian menarik dari sejarah manusia. Dari <i>Safe Conduct</i> atau Jaminan Keamanan paling awal yang
+                    dikenal di Persia kuno hingga dokumen biometrik berteknologi tinggi saat ini, paspor telah
+                    berkembang seiring dengan peradaban manusia.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="sejarah">
+        <div class="content-wrapper">
+            <h2 class="section-title">Sejarah Paspor</h2>
+            <div class="media-wrapper">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg"
+                                alt="Papirus Arab">
+                            <div class="dynamic-caption">
+                                <h4>Papirus Arab</h4>
+                                <p>Papirus Arab dengan izin keluar, 24 Januari 722 M — Hermopolis Magna, Mesir</p>
+                                <small>CC BY-SA 4.0 • Osama Shukir Muhammed Amin FRCP(Glasg) • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/First_Japanese_passport_1866.jpg"
+                                alt="Paspor Jepang 1866">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Jepang pertama</h4>
+                                <p>Tahun 1866</p>
+                                <small>CC BY-SA 3.0 • World Imaging • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Italian_passport_1872.jpg"
+                                alt="Paspor Italia 1872">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Italia</h4>
+                                <p>Tahun 1872 untuk Giovanni Lepetich</p>
+                                <small>CC0 1.0 • Crash48 • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/QingPassport.jpg"
+                                alt="Paspor Qing 1898">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Tiongkok</h4>
+                                <p>Dinasti Qing, Tahun ke-24 Guangxu, 1898</p>
+                                <small>Public Domain • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Ottoman-russian-empire-passport.jpg"
+                                alt="Paspor Ottoman">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Ottoman (passavant)</h4>
+                                <p>Tahun 1900 untuk subjek Rusia</p>
+                                <small>CC BY-SA 3.0 • FurkanYalcin3 • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/WW2_Spanish_official_passport.jpg"
+                                alt="Paspor Spanyol PD II">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Spanyol era PD II</h4>
+                                <p>Akhir 1944 — digunakan hingga akhir perang</p>
+                                <small>Public Domain • Huddyhuddy • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+            <div class="caption-block">
+                <p>Sejarah paspor diperkirakan sudah ada sejak 450 SM (referensi dalam kitab suci Nehemia 2:7-9).
+                    Istilah "paspor" sendiri berasal dari "sea port" (pelabuhan laut). Di Eropa abad pertengahan,
+                    dokumen ini berisi daftar kota yang boleh dilewati.</p>
+                <p>Paspor adalah dokumen resmi yang menyatakan identitas dan kewarganegaraan untuk perjalanan
+                    internasional, memberikan akses ke bantuan konsuler dan perlindungan.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="peringkat">
+        <div class="content-wrapper">
+            <h2 class="section-title">Peringkat Kekuatan Paspor</h2>
+            <div class="media-wrapper" style="aspect-ratio: 16/9; background:#fff; padding:1.5rem;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/archive/2/23/20160306194155%21Passport_design_world_map.png"
+                    alt="Peta dunia desain paspor" style="object-fit: contain;">
+            </div>
+            <div class="caption-block">
+                <p>Peta dunia berdasarkan warna sampul paspor (CC BY-SA 4.0 • Twofortnights • Wikimedia Commons)</p>
+                <p>Menurut Henley Passport Index 2024, Indonesia naik dari peringkat 72 (2023) menjadi 65.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Peringkat</th>
+                            <th>Negara</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Singapura</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Italia, Jerman, Prancis, Jepang, Spanyol</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Austria, Finlandia, Irlandia, Luksemburg, Belanda, Korea Selatan, Swedia</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Belgia, Denmark, Selandia Baru, Norwegia, Swiss, Inggris Raya</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Australia, Ceko, Portugal</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Yunani, Polandia</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Kanada, Hungaria, Malta</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Amerika Serikat</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Estonia, Lituania, Uni Emirat Arab</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Islandia, Latvia, Slowakia, Slovenia</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>65</td>
+                            <td>Indonesia</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="jenis">
+        <div class="content-wrapper">
+            <h2 class="section-title">Jenis-jenis Paspor</h2>
+            <div class="media-wrapper">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Paspor.JPG"
+                                alt="Paspor Reguler">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Reguler</h4>
+                                <p>Paspor biasa untuk warga negara</p>
+                                <small>Public Domain • ZakiriFadhlan • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/United_States_emergency_passport.svg"
+                                alt="Paspor Darurat">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Darurat</h4>
+                                <p>Dikeluarkan untuk kebutuhan mendesak</p>
+                                <small>Public Domain • DeliciousBoson • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Indonesian_Diplomatic_Passport.png"
+                                alt="Paspor Diplomatik">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Diplomatik</h4>
+                                <p>Untuk diplomat dan pejabat negara</p>
+                                <small>Public Domain • Amadhannn • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Macau_Sar_Passport_Old_and_New_Style.jpg"
+                                alt="Paspor Regional">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Regional</h4>
+                                <p>Contoh: Hong Kong & Macau SAR</p>
+                                <small>Public Domain • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Indonesian_Hajj_Passport.png"
+                                alt="Paspor Haji">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Haji</h4>
+                                <p>Khusus jamaah haji & umrah Indonesia</p>
+                                <small>Public Domain • Amadhannn • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Ukrainian_refugee_travel_document.jpg"
+                                alt="Paspor Pengungsi">
+                            <div class="dynamic-caption">
+                                <h4>Paspor Pengungsi</h4>
+                                <p>Dokumen perjalanan Konvensi 1951</p>
+                                <small>Public Domain • Kabinet Menteri Ukraina • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Passaportoordinemalta.png"
+                                alt="Paspor Ordo Malta">
+                            <div class="dynamic-caption">
+                                <h4>Paspor entitas non-kedaulatan</h4>
+                                <p>Contoh: Ordo Militer Berdaulat Malta</p>
+                                <small>CC BY • Cav. Marco Lo Giudice • Wikimedia Commons</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+            <div class="caption-block">
+                <p>Paspor biasa adalah yang paling umum. Selain itu ada berbagai jenis khusus seperti darurat,
+                    diplomatik, haji, pengungsi, regional, hingga paspor yang diterbitkan oleh entitas tanpa wilayah
+                    kedaulatan.</p>
+                <p>Sejak 1998 banyak negara beralih ke <strong>e-paspor</strong> (paspor biometrik) berstandar ISO/IEC
+                    7810. Hingga Juli 2024, lebih dari 150 yurisdiksi telah menerbitkannya.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="visa">
+        <div class="content-wrapper">
+            <h2 class="section-title">Visa</h2>
+            <div class="media-wrapper">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/Stempel_Visa_di_Paspor_Indonesia.jpg"
+                    alt="Stempel Visa di Paspor Indonesia">
+            </div>
+            <div class="caption-block">
+                <p>Visa adalah izin masuk ke suatu negara, bisa berupa stiker, stempel, atau elektronik (e-visa). Ada
+                    dua jenis utama:</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li>• <strong>Visa on-arrival</strong> (diberikan saat tiba di negara tujuan)</li>
+                    <li>• <strong>Visa pre-arrival</strong> (diajukan sebelum berangkat melalui kedutaan/konsulat)</li>
+                </ul>
+                <p style="margin-top:1.5rem;">CC BY-SA 4.0 • Affandy Murad • Wikimedia Commons</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="video">
+        <div class="content-wrapper">
+            <h2 class="section-title">Philadelphia Passport Agency</h2>
+            <div class="media-wrapper">
+                <video controls style="width:100%; height:100%;">
+                    <source
+                        src="https://upload.wikimedia.org/wikipedia/commons/0/04/Walks_with_Tony-_Philadelphia_Passport_Agency.webm"
+                        type="video/webm">
+                    Browser Anda tidak mendukung tag video.
+                </video>
+            </div>
+            <div class="caption-block">
+                <p>Bergabunglah dengan Menteri Luar Negeri AS Antony Blinken dalam #WalksWithTony untuk melihat
+                    bagaimana Badan Paspor Philadelphia membantu warga AS bepergian dengan aman.</p>
+                <p>Public Domain • U.S. Department of State • Wikimedia Commons</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="audio">
+        <div class="content-wrapper">
+            <h2 class="section-title">Kabar Menarik</h2>
+            <div class="caption-block">
+                <p>Paspor mantan diplomat India dicabut</p>
+                <audio controls>
+                    <source
+                        src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Ex-Indian_diplomat%27s_passport_revoked.ogg"
+                        type="audio/ogg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+                <p>Kementerian Luar Negeri India mencabut paspor Tn. Harish Kumar Dogra beserta paspor istrinya dan
+                    pembantunya setelah pemecatan dari jabatan Komisaris Tinggi di Selandia Baru.</p>
+                <p>Public Domain • NorkNork • Wikimedia Commons • <a
+                        href="https://en.wikinews.org/wiki/Ex-Indian_diplomat%27s_passport_revoked" target="_blank"
+                        style="color:var(--primary);">Baca selengkapnya di WikiNews</a></p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <h2 class="section-title" style="color:white;">Paspor</h2>
+        <div class="attribution-line">
+            <span>Judul: Paspor</span>
+            <span style="opacity:0.7;">|</span>
+            <span>Pembuat: Affandy Murad</span>
+            <span style="opacity:0.7;">|</span>
+            <span>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Cc_by-sa_%281%29.svg" alt="CC BY-SA"
+                    class="icon">
+                CC BY-SA 4.0
+            </span>
+            <span style="opacity:0.7;">|</span>
+            <span>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Commons-logo.svg" alt="Wikimedia"
+                    class="icon">
+                Sumber utama: Wikimedia Commons
+            </span>
+        </div>
+        <p style="margin-top:2.5rem; font-size:1.2rem; opacity:0.9;">
+            Setiap paspor menyimpan cerita. Setiap cap adalah babak baru dalam perjalanan hidup.
+        </p>
+    </footer>
+
+    <script>
+        // Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1200);
+        });
+
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray("section").forEach(section => {
+            gsap.from(section.querySelectorAll("h2, .media-wrapper, .caption-block, p, table, audio, video"), {
+                y: 70,
+                opacity: 0,
+                duration: 1.1,
+                stagger: 0.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                    toggleActions: "play reverse play reverse"
+                }
+            });
+        });
+
+        // Swiper Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.swiper').forEach(el => {
+                new Swiper(el, {
+                    loop: true,
+                    speed: 800,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                        dynamicBullets: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

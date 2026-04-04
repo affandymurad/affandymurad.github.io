@@ -1710,7 +1710,7 @@
                     { name: country, type: 'country' }
                 ].filter(part => part.name);
 
-                function isAdministrative(desc) {
+                function isGeoDescription(desc) {
                     if (!desc) return false;
                     const d = desc.toLowerCase();
                     return (
@@ -1718,20 +1718,11 @@
                         d.includes("urban village") ||
                         d.includes("district") ||
                         d.includes("administrative") ||
-                        d.includes("kecamatan") ||
-                        d.includes("kelurahan") ||
                         d.includes("city") ||
-                        d.includes("kota") ||
                         d.includes("town") ||
                         d.includes("village") ||
-                        d.includes("desa") ||
                         d.includes("municipality") ||
-                        d.includes("settlement") ||
-                        d.includes("province") ||
-                        d.includes("provinsi") ||
-                        d.includes("region") ||
-                        d.includes("country") ||
-                        d.includes("nation")
+                        d.includes("settlement")
                     );
                 }
 
@@ -1739,52 +1730,117 @@
                     if (!entity?.description) return false;
                     const desc = entity.description.toLowerCase();
                     const typeKeywords = {
-                        suburb: ["subdistrict", "urban village", "district", "administrative", "kecamatan", "kelurahan"],
-                        town: ["town", "city", "kota", "settlement"],
-                        village: ["village", "urban village", "desa", "kelurahan"],
-                        city: ["city", "kota", "municipality"],
-                        state: ["state", "province", "region", "provinsi"],
-                        country: ["country", "nation", "sovereign state"]
+                        suburb: ["subdistrict", "urban village", "district"],
+                        town: ["town", "city", "settlement"],
+                        village: ["village", "urban village"],
+                        city: ["city", "municipality"],
+                        state: ["state", "province", "region"],
+                        country: ["country", "nation"]
                     };
                     return typeKeywords[type]?.some(k => desc.includes(k)) || false;
                 }
 
-                // Mengembalikan semua entitas Wikidata yang bersifat administratif (bisa lebih dari 1)
-                async function findAdministrativeWikidataMatches(name, type) {
+                async function findBestWikidataMatch(name, type, userLat = null, userLon = null) {
                     const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
                     const response = await fetch(url);
                     const data = await response.json();
-                    const results = data.search || [];
-                    if (!results.length) return [];
+                    let results = data.search || [];
+                    if (!results.length) return null;
 
-                    // Prioritas 1: cocok tipe + administratif
-                    const typeMatched = results.filter(r => matchEntityByType(r, type));
-                    if (typeMatched.length) return typeMatched;
+                    // For village type, fetch coordinates and sort by distance
+                    if (type === 'village' && userLat !== null && userLon !== null) {
+                        // Fetch coordinates for each result
+                        const resultsWithCoords = await Promise.all(
+                            results.map(async (item) => {
+                                try {
+                                    const coordUrl = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${item.id}&format=json&props=claims&origin=*`;
+                                    const coordResponse = await fetch(coordUrl);
+                                    const coordData = await coordResponse.json();
+                                    const entity = coordData.entities[item.id];
 
-                    // Prioritas 2: label exact + administratif
-                    const exactGeo = results.filter(r =>
+                                    // Get coordinate location (P625)
+                                    const coordClaim = entity?.claims?.P625;
+                                    if (coordClaim && coordClaim.length > 0) {
+                                        const coords = coordClaim[0].mainsnak.datavalue.value;
+                                        const lat = coords.latitude;
+                                        const lon = coords.longitude;
+
+                                        // Calculate distance from user location
+                                        const distance = calculateDistance(userLat, userLon, lat, lon);
+
+                                        return {
+                                            ...item,
+                                            lat,
+                                            lon,
+                                            distance: parseFloat(distance)
+                                        };
+                                    }
+
+                                    return {
+                                        ...item,
+                                        lat: null,
+                                        lon: null,
+                                        distance: Infinity // No coordinates = lowest priority
+                                    };
+                                } catch (error) {
+                                    console.error(`Error fetching coordinates for ${item.id}:`, error);
+                                    return {
+                                        ...item,
+                                        lat: null,
+                                        lon: null,
+                                        distance: Infinity
+                                    };
+                                }
+                            })
+                        );
+
+                        // Sort by distance (closest first)
+                        resultsWithCoords.sort((a, b) => a.distance - b.distance);
+
+                        // return resultsWithCoords[0] || null;
+                        return resultsWithCoords; // Return sorted array with distance info
+                    }
+
+                    // For other types, use original logic
+                    const typeMatched = results.find(r => matchEntityByType(r, type));
+                    if (typeMatched) return typeMatched;
+                    const exactGeo = results.find(r =>
                         r.label?.toLowerCase() === name.toLowerCase() &&
-                        isAdministrative(r.description)
+                        isGeoDescription(r.description)
                     );
-                    if (exactGeo.length) return exactGeo;
-
-                    // Prioritas 3: administratif saja (tanpa syarat label)
-                    const geoOnly = results.filter(r => isAdministrative(r.description));
-                    if (geoOnly.length) return geoOnly;
-
-                    // Tidak ada yang administratif — kembalikan kosong
-                    return [];
+                    if (exactGeo) return exactGeo;
+                    const geoEntity = results.find(r => isGeoDescription(r.description));
+                    if (geoEntity) return geoEntity;
+                    const exact = results.find(r => r.label?.toLowerCase() === name.toLowerCase());
+                    if (exact) return exact;
+                    const nonGeoBlacklist = ["month", "family name", "given name"];
+                    const safeFirst = results.find(r => !nonGeoBlacklist.includes((r.description || "").toLowerCase()));
+                    if (safeFirst) return safeFirst;
+                    return results[0];
                 }
 
                 const detailedParts = await Promise.all(
                     locationParts.map(async (part) => {
                         if (part.type === 'road' || part.type === 'postcode') {
-                            return { ...part, wikidataIds: [] };
+                            return { ...part, wikidataId: null, allWikidataMatches: null };
                         }
-                        const entities = await findAdministrativeWikidataMatches(part.name, part.type);
-                        return { ...part, wikidataIds: entities.map(e => e.id) };
+
+                        // Pass user coordinates to findBestWikidataMatch
+                        const entity = await findBestWikidataMatch(part.name, part.type, lat, lon);
+
+                        // For village, entity is an array sorted by distance
+                        if (part.type === 'village' && Array.isArray(entity)) {
+                            return {
+                                ...part,
+                                wikidataId: entity[0]?.id ?? null,
+                                allWikidataMatches: entity
+                            };
+                        }
+
+                        return { ...part, wikidataId: entity?.id ?? null, allWikidataMatches: null };
                     })
                 );
+
                 return detailedParts;
             } catch (error) {
                 console.error('Error retrieving location details:', error);
@@ -2218,100 +2274,106 @@
             coordsDisplay.textContent = `Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
             const detailsContent = document.getElementById('location-details-content');
             detailsContent.innerHTML = '';
-        
+
             for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
-        
                 const span = document.createElement('span');
                 const labels = {
-                    'road': 'Street', 'postcode': 'Postal Code',
-                    'neighbourhood': 'Neighbourhood', 'suburb': 'Subdistrict',
-                    'town': 'Town', 'village': 'Village',
-                    'city': 'City', 'state': 'State', 'country': 'Country'
+                    'road': 'Street',
+                    'postcode': 'Postal Code',
+                    'suburb': 'Subdistrict',
+                    'town': 'Town',
+                    'village': 'Village',
+                    'city': 'City',
+                    'state': 'State',
+                    'country': 'Country'
                 };
                 span.textContent = `${labels[part.type] || part.type}: ${part.name}`;
                 div.appendChild(span);
-        
+
                 if (part.type !== 'road' && part.type !== 'postcode') {
-        
-                    // ✅ FIX: Multiple Wikidata chips untuk SEMUA tipe (bukan hanya village)
-                    if (part.allWikidataMatches && part.allWikidataMatches.length > 0) {
+                    // ===== Special handling for village with multiple Wikidata matches =====
+                    if (part.type === 'village' && part.allWikidataMatches && part.allWikidataMatches.length > 0) {
+                        // Create container for all Wikidata matches
                         const allMatchesContainer = document.createElement('div');
-                        allMatchesContainer.style.cssText =
-                            'display:flex; flex-wrap:wrap; gap:0.5rem; width:100%; margin-top:0.5rem;';
-        
+                        allMatchesContainer.style.cssText = 'display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem;';
+
                         part.allWikidataMatches.forEach((match, index) => {
                             const wdBtn = document.createElement('button');
                             wdBtn.className = 'location-action-btn';
-        
-                            let titleText = `${match.label || 'No label'} — ${match.description || 'No description'}`;
-                            if (match.distance !== undefined && match.distance !== Infinity)
+
+                            // Build detailed title with distance info
+                            let titleText = `${match.label || 'No label'} - ${match.description || 'No description'}`;
+                            if (match.distance !== undefined && match.distance !== Infinity) {
                                 titleText += ` (${match.distance} km away)`;
+                            }
                             wdBtn.title = titleText;
-        
+
                             const wdIcon = document.createElement('img');
                             wdIcon.src = 'images/ic_wikidata.svg';
                             wdIcon.alt = 'Wikidata';
-                            wdIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+                            wdIcon.style.cssText = 'width: 1.1em; height: 1.1em;';
+
                             const wdLabel = document.createElement('span');
-                            wdLabel.style.cssText =
-                                'display:flex; flex-direction:column; align-items:flex-start; gap:0.15rem;';
-        
+                            wdLabel.style.cssText = 'display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem;';
+
+                            // Main ID
                             const idSpan = document.createElement('span');
                             idSpan.textContent = match.id;
                             idSpan.style.fontWeight = '600';
                             wdLabel.appendChild(idSpan);
-        
+
+                            // Description with distance
                             if (match.description || match.distance !== undefined) {
                                 const descSpan = document.createElement('small');
                                 let descText = match.description || 'No description';
-                                if (match.distance !== undefined && match.distance !== Infinity)
+                                if (match.distance !== undefined && match.distance !== Infinity) {
                                     descText += ` • ${match.distance} km`;
+                                }
                                 descSpan.textContent = descText;
-                                descSpan.style.cssText = 'font-size:0.7rem; opacity:0.8; line-height:1.2;';
+                                descSpan.style.cssText = 'font-size: 0.7rem; opacity: 0.8; line-height: 1.2;';
                                 wdLabel.appendChild(descSpan);
                             }
-        
+
                             wdBtn.appendChild(wdIcon);
                             wdBtn.appendChild(wdLabel);
+
                             wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${match.id}`);
-        
-                            // Highlight best match (index 0)
+
+                            // Highlight the closest match (index 0)
                             if (index === 0) {
                                 wdBtn.style.borderColor = 'var(--success-color)';
                                 wdBtn.style.borderWidth = '2px';
                                 wdBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
                             }
-        
+
                             allMatchesContainer.appendChild(wdBtn);
                         });
-        
+
                         div.appendChild(allMatchesContainer);
-        
+
                     } else {
-                        // Fallback: single Wikidata chip (jika allWikidataMatches tidak ada)
-                        const primaryId = part.wikidataIds?.[0] ?? null;
+                        // Standard single Wikidata button for other types
                         const wdBtn = document.createElement('button');
                         wdBtn.className = 'location-action-btn';
-                        wdBtn.title = primaryId
-                            ? `Open Wikidata entity ${primaryId}`
-                            : 'Wikidata (no administrative entity found)';
-        
+                        wdBtn.title = part.wikidataId
+                            ? `Open Wikidata entity ${part.wikidataId}`
+                            : 'Search on Wikidata (no ID known)';
+
                         const wdIcon = document.createElement('img');
                         wdIcon.src = 'images/ic_wikidata.svg';
                         wdIcon.alt = 'Wikidata';
-                        wdIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+                        wdIcon.style.cssText = 'width: 1.1em; height: 1.1em;';
+
                         const wdLabel = document.createElement('span');
-                        wdLabel.textContent = primaryId ? primaryId : 'Wikidata';
-        
+                        wdLabel.textContent = part.wikidataId ? part.wikidataId : 'Wikidata';
+
                         wdBtn.appendChild(wdIcon);
                         wdBtn.appendChild(wdLabel);
-        
-                        if (primaryId) {
-                            wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${primaryId}`);
+
+                        if (part.wikidataId) {
+                            wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${part.wikidataId}`);
                         } else {
                             wdBtn.disabled = true;
                             wdBtn.style.opacity = '0.5';
@@ -2319,74 +2381,73 @@
                         }
                         div.appendChild(wdBtn);
                     }
-        
+
                     // ===== Wikivoyage Button =====
                     const wvBtn = document.createElement('button');
                     wvBtn.className = 'location-action-btn';
-                    const primaryIdForWv = part.wikidataIds?.[0] ?? null;
-                    wvBtn.title = primaryIdForWv
+                    wvBtn.title = part.wikidataId
                         ? `Open Wikivoyage page for ${part.name}`
                         : `Search "${part.name}" on Wikivoyage`;
-        
+
                     const wvIcon = document.createElement('img');
                     wvIcon.src = 'images/ic_wikivoyage.svg';
                     wvIcon.alt = 'Wikivoyage';
-                    wvIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+                    wvIcon.style.cssText = 'width: 1.1em; height: 1.1em;';
+
                     const wvLabel = document.createElement('span');
                     wvLabel.textContent = 'Wikivoyage';
+
                     wvBtn.appendChild(wvIcon);
                     wvBtn.appendChild(wvLabel);
-        
+
                     wvBtn.onclick = async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
+
                         let targetUrl;
-                        if (primaryIdForWv) {
-                            const directLink = await fetchWikivoyageSitelink(primaryIdForWv, currentLang);
-                            targetUrl = directLink ||
-                                `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        if (part.wikidataId) {
+                            const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
+                            targetUrl = directLink || `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
                         } else {
                             targetUrl = `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
                         }
                         safeOpenLink(targetUrl);
                     };
                     div.appendChild(wvBtn);
-        
+
                     // ===== Wikimedia Commons Button =====
                     const commonsBtn = document.createElement('button');
                     commonsBtn.className = 'location-action-btn';
-                    const primaryIdForCommons = part.wikidataIds?.[0] ?? null;
-                    commonsBtn.title = primaryIdForCommons
+                    commonsBtn.title = part.wikidataId
                         ? `Open Wikimedia Commons category for ${part.name}`
                         : `Search "${part.name}" on Wikimedia Commons`;
-        
+
                     const commonsIcon = document.createElement('img');
                     commonsIcon.src = 'images/ic_commons.svg';
                     commonsIcon.alt = 'Wikimedia Commons';
-                    commonsIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+                    commonsIcon.style.cssText = 'width: 1.1em; height: 1.1em;';
+
                     const commonsLabel = document.createElement('span');
                     commonsLabel.textContent = 'Commons';
+
                     commonsBtn.appendChild(commonsIcon);
                     commonsBtn.appendChild(commonsLabel);
-        
+
                     commonsBtn.onclick = async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
+
                         let targetUrl;
-                        if (primaryIdForCommons) {
-                            const directLink = await fetchCommonsCategory(primaryIdForCommons);
-                            targetUrl = directLink ||
-                                `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        if (part.wikidataId) {
+                            const directLink = await fetchCommonsCategory(part.wikidataId);
+                            targetUrl = directLink || `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
                         } else {
                             targetUrl = `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
                         }
                         safeOpenLink(targetUrl);
-                    };
+                    }
                     div.appendChild(commonsBtn);
                 }
-        
                 detailsContent.appendChild(div);
             }
         }
