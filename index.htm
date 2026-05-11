@@ -501,6 +501,12 @@
                 }
             });
 
+            // Tambahkan ini:
+            const resumeLink = document.getElementById('resume-link');
+            if (resumeLink && t.resumeUrl) {
+                resumeLink.href = t.resumeUrl;
+            }
+
             document.querySelectorAll('.lang-text').forEach(el => el.textContent = lang);
 
             document.querySelectorAll('.language-option').forEach(option => {
