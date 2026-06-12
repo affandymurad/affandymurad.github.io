@@ -14,7 +14,7 @@
 body {
    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: #F4F7F9;
-    line-height: 1.65; 
+    line-height: 1.65;
     letter-spacing: -0.01em;
     color: #1f2937;
     padding-top: var(--header-height);
@@ -113,8 +113,8 @@ header {
 
 .language-toggle,
 .theme-toggle {
-    background: var(--primary-blue);
-    border: 1px solid var(--primary-blue);
+    background: #FFFFFF;
+    border: 1px solid rgba(31, 41, 55, 0.12);
     padding: 8px 14px;
     border-radius: 8px;
     font-weight: 600;
@@ -122,15 +122,17 @@ header {
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    color: #FFFFFF;
+    color: #1f2937;
     transition: all 0.2s;
     font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.08);
 }
 
 .language-toggle:hover,
 .theme-toggle:hover {
-    background: var(--primary-blue-hover);
-    border-color: var(--primary-blue-hover);
+    background: #1f2937;
+    border-color: #1f2937;
+    color: #FFFFFF;
 }
 
 .language-toggle .fa-chevron-down,
@@ -178,14 +180,14 @@ header {
 
 .language-option:hover,
 .theme-option:hover {
-    background: #F0F5FF;
-    color: var(--primary-blue);
+    background: #F3F4F6;
+    color: #1f2937;
 }
 
 .language-option.active,
 .theme-option.active {
-    color: var(--primary-blue);
-    background: #E8F1FF;
+    color: #FFFFFF;
+    background: #1f2937;
     font-weight: 600;
 }
 
@@ -345,8 +347,10 @@ header {
     gap: 8px;
     padding: 8px 16px;
     border-radius: 25px;
-    background: var(--primary-blue);
-    color: white !important;
+    background: #FFFFFF;
+    border: 1px solid rgba(31, 41, 55, 0.12);
+    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.08);
+    color: #1f2937 !important;
     font-weight: 600;
     font-size: 0.9rem;
     text-decoration: none;
@@ -354,7 +358,9 @@ header {
 }
 
 .social-link:hover {
-    background: var(--primary-blue-hover);
+    background: #1f2937;
+    color: #FFFFFF !important;
+    border-color: #1f2937;
     transform: scale(1.05);
 }
 
@@ -411,13 +417,14 @@ header {
     align-items: center;
     gap: 8px;
     padding: 4px 10px;
-    background: #E8F1FF;
-    color: #5B8FF9;
+    background: #FFFFFF;
+    color: #1f2937;
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    border: 1px solid #5B8FF9;
+    border: 1px solid rgba(31, 41, 55, 0.12);
+    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
 }
 
 .country-badge img {
@@ -516,8 +523,10 @@ header {
 }
 
 .portfolio-link {
-    background: var(--primary-blue);
-    color: white !important;
+    background: #FFFFFF;
+    border: 1px solid rgba(31, 41, 55, 0.12);
+    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.08);
+    color: #1f2937 !important;
     display: inline-flex;        /* atau flex */
     align-items: center;         /* pusat vertikal */
     gap: 8px;                    /* jarak antara gambar dan teks */
@@ -526,7 +535,7 @@ header {
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
-    transition: background 0.3s;
+    transition: all 0.3s;
 }
 
 .portfolio-link img {
@@ -536,7 +545,9 @@ header {
 }
 
 .portfolio-link:hover {
-    background: var(--primary-blue-hover);
+    background: #1f2937;
+    color: #FFFFFF !important;
+    border-color: #1f2937;
 }
 
 /* ========== CONTACT ========== */
@@ -633,14 +644,14 @@ body.dark-mode .theme-option {
 
 body.dark-mode .language-option:hover,
 body.dark-mode .theme-option:hover {
-    background: #1E3A5F;
-    color: var(--primary-blue);
+    background: #374151;
+    color: #f1f5f9;
 }
 
 body.dark-mode .language-option.active,
 body.dark-mode .theme-option.active {
-    background: #1E3A5F;
-    color: var(--primary-blue);
+    background: #f1f5f9;
+    color: #1f2937;
 }
 
 body.dark-mode .profile-section {
@@ -651,6 +662,26 @@ body.dark-mode .profile-section {
 
 body.dark-mode .section h2 {
     color: #f1f5f9;
+}
+
+body.dark-mode .language-toggle,
+body.dark-mode .theme-toggle,
+body.dark-mode .social-link,
+body.dark-mode .portfolio-link,
+body.dark-mode .country-badge {
+    background: #1f2937;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .language-toggle:hover,
+body.dark-mode .theme-toggle:hover,
+body.dark-mode .social-link:hover,
+body.dark-mode .portfolio-link:hover {
+    background: #f1f5f9;
+    border-color: #f1f5f9;
+    color: #1f2937 !important;
 }
 
 body.dark-mode .experience-card,
@@ -673,9 +704,9 @@ body.dark-mode .portfolio-item:hover {
 }
 
 body.dark-mode .country-badge {
-    background: #1E3A5F;
-    color: #5B8FF9;
-    border: 1px solid #5B8FF9;
+    background: #1f2937;
+    color: #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 body.dark-mode .subtitle,
@@ -774,4 +805,4 @@ body.dark-mode .skill-category h3 {
 .experience-card .company-icon {
     width: 100%;
     height: 100%;
-} 
+}
