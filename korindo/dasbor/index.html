@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dasbor Ekstensi Telepon Wisma Korindo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d3748;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 1.8em;
+      color: #1a202c;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .meta {
+      color: #718096;
+      font-size: 0.9em;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      color: #4a5568;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 16px;
+      color: #2d3748;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #6c757d;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5a6268;
+    }
+
+    .btn-danger {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c53030;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    /* --- Login --- */
+    #loginScreen {
+      max-width: 400px;
+      margin: 80px auto;
+    }
+
+    #loginError {
+      color: #e53e3e;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    /* --- Topbar --- */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* --- Search --- */
+    .search-box input {
+      margin-bottom: 0;
+    }
+
+    /* --- Dept list --- */
+    .dept-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .dept-header {
+      background: #6c757d;
+      color: white;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .dept-header-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .dept-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .people-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .people-table th,
+    .people-table td {
+      text-align: left;
+      padding: 10px 18px;
+      border-bottom: 1px solid #f7fafc;
+      font-size: 14px;
+    }
+
+    .people-table th {
+      background: #f7fafc;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #4a5568;
+    }
+
+    .people-table td.actions {
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .add-person-row {
+      padding: 12px 18px;
+      background: #fafbfc;
+    }
+
+    .inline-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .inline-form input {
+      margin-bottom: 0;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    /* --- Modal --- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 12px;
+      padding: 28px;
+      width: 90%;
+      max-width: 420px;
+    }
+
+    .modal-box h2 {
+      font-size: 1.2em;
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      color: #2d3748;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #718096;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Login Screen -->
+  <div id="loginScreen" class="card">
+    <h1>🔐 Login Dasbor</h1>
+    <p class="meta">Masuk untuk mengelola data ekstensi telepon.</p>
+    <div id="loginError">Username atau password salah.</div>
+    <form id="loginForm">
+      <label for="loginUser">Username</label>
+      <input type="text" id="loginUser" autocomplete="username" />
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" autocomplete="current-password" />
+      <button type="submit" class="btn-primary">Masuk</button>
+    </form>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboardScreen" class="container hidden">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1>📞 Dasbor Ekstensi Telepon</h1>
+          <p class="meta">Tambah, ubah, atau hapus departemen dan kontak ekstensi.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn-secondary" id="exportBtn">Ekspor Kode</button>
+          <button class="btn-secondary" id="resetBtn">Reset ke Default</button>
+          <button class="btn-secondary" id="logoutBtn">Keluar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="search-box">
+        <label for="searchInput">Cari Departemen / Nama / Ekstensi</label>
+        <input type="text" id="searchInput" placeholder="Cari..." />
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="topbar" style="margin-bottom:16px;">
+        <div class="dept-header-title" style="color:#1a202c;">Tambah Departemen Baru</div>
+      </div>
+      <form id="addDeptForm" class="inline-form">
+        <input type="text" id="newDeptName" placeholder="Nama departemen" required />
+        <input type="text" id="newDeptFloor" placeholder="Lantai (contoh: 12 atau -)" required />
+        <button type="submit" class="btn-primary">Tambah Departemen</button>
+      </form>
+    </div>
+
+    <div id="deptList"></div>
+    <div id="emptyState" class="card empty-state hidden">Tidak ada departemen yang cocok dengan pencarian.</div>
+  </div>
+
+  <!-- Edit Department Modal -->
+  <div class="modal-overlay" id="editDeptModal">
+    <div class="modal-box">
+      <h2>Ubah Departemen</h2>
+      <label for="editDeptName">Nama Departemen</label>
+      <input type="text" id="editDeptName" />
+      <label for="editDeptFloor">Lantai</label>
+      <input type="text" id="editDeptFloor" />
+      <div class="modal-actions">
+        <button class="btn-secondary" id="editDeptCancel">Batal</button>
+        <button class="btn-primary" id="editDeptSave">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Person Modal -->
+  <div class="modal-overlay" id="editPersonModal">
+    <div class="modal-box">
+      <h2>Ubah Kontak</h2>
+      <label for="editPersonName">Nama</label>
+      <input type="text" id="editPersonName" />
+      <label for="editPersonExt">Ekstensi</label>
+      <input type="text" id="editPersonExt" />
+      <div class="modal-actions">
+        <button class="btn-secondary" id="editPersonCancel">Batal</button>
+        <button class="btn-primary" id="editPersonSave">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div class="modal-overlay" id="exportModal">
+    <div class="modal-box" style="max-width:640px;">
+      <h2>Ekspor Kode rawData</h2>
+      <p class="meta">Salin kode di bawah ini dan tempelkan menggantikan variabel <code>rawData</code> pada
+        <code>../index.html</code>.</p>
+      <textarea id="exportTextarea" readonly></textarea>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="exportCopy">Salin ke Clipboard</button>
+        <button class="btn-primary" id="exportClose">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Dummy auth (client-side only, not real security) ---
+    const VALID_USER = 'admin';
+    const VALID_PASS = 'P@55w0rd';
+    const SESSION_KEY = 'korindo-dashboard-auth';
+    const STORAGE_KEY = 'korindo-phonebook-data';
+
+    const defaultData = = [
+      {
+        dept: "GENERAL TRADING (APP)",
+        floor: "3",
+        people: [
+          { name: "ANTON BUDIONO", ext: "361" },
+          { name: "ZAKIYA", ext: "992" },
+          { name: "BAYU / AZZA", ext: "" },
+          { name: "AGUNG / UUN / ZALFA", ext: "909" },
+          { name: "DIAH", ext: "461" }
+        ]
+      },
+      {
+        dept: "RUANG PERTEMUAN",
+        floor: "6",
+        people: [
+          { name: "AQILAH RADHWA", ext: "418" },
+        ]
+      },
+      {
+        dept: "LEGAL",
+        floor: "7",
+        people: [
+          { name: "JONATAN", ext: "227" },
+          { name: "MASRI", ext: "247" },
+          { name: "NITA", ext: "245" },
+          { name: "PANDU", ext: "248" },
+          { name: "RISTON", ext: "258" },
+          { name: "HAFIDZ", ext: "259" }
+        ]
+      },
+      {
+        dept: "PAPER",
+        floor: "8",
+        people: [
+          { name: "AMBAR", ext: "133" },
+          { name: "AJI", ext: "137" },
+          { name: "ETTA", ext: "962" },
+          { name: "DIANA / ARI", ext: "963" },
+          { name: "DELLA / NADHILAH", ext: "148" },
+          { name: "LEO", ext: "125" },
+          { name: "RYAN", ext: "147" },
+          { name: "SARI", ext: "138" },
+          { name: "TINI", ext: "139" },
+          { name: "FERRY", ext: "906" },
+          { name: "DADDY", ext: "958" },
+          { name: "TISSY", ext: "146" },
+          { name: "ACEP", ext: "135" },
+          { name: "IRWAN", ext: "136" },
+          { name: "TIM ADMIN SALES TISSUE", ext: "149" },
+          { name: "INTAN", ext: "145" },
+          { name: "SUGENG", ext: "144" },
+          { name: "KHAERRA", ext: "141" }
+        ]
+      },
+      {
+        dept: "LOGISTICS",
+        floor: "8",
+        people: [
+          { name: "HENNY/OKKY", ext: "270" },
+          { name: "NANANG/FADLY", ext: "275" },
+          { name: "HUSEIN", ext: "299" },
+          { name: "AHMAD", ext: "296" },
+          { name: "DENNY", ext: "264" },
+          { name: "HARRY / SALEH", ext: "287" },
+          { name: "NEVY / HAPPY", ext: "297" },
+          { name: "CHRISTINE / DIANA", ext: "265" },
+          { name: "TIARA", ext: "274" },
+          { name: "SILVA", ext: "298" },
+          { name: "HERI", ext: "273" },
+          { name: "FACHRI / ALIMIN", ext: "293" },
+          { name: "IDRIS / BAYU", ext: "275" },
+          { name: "INDIRA / ALIT", ext: "271" },
+          { name: "TAUFIK / IMAN", ext: "272" },
+          { name: "HENDRO / HALIMAH", ext: "289" },
+          { name: "OKTA", ext: "291" },
+          { name: "IKO", ext: "268" },
+          { name: "RUDI", ext: "277" },
+          { name: "RETNO / AGUS", ext: "269" },
+          { name: "AUFI", ext: "393" },
+          { name: "AYU", ext: "290" },
+          { name: "DANY / JHONA", ext: "284" },
+          { name: "DARA", ext: "420" },
+          { name: "PUTRI", ext: "419" },
+          { name: "NANDAR", ext: "282" }
+        ]
+      },
+      {
+        dept: "HEAVY INDUSTRY (KK)",
+        floor: "9",
+        people: [
+          { name: "RIDHA", ext: "925" },
+          { name: "AROON / IKHSAN / ZELMI", ext: "925" },
+          { name: "JOHAN / SUHENDRA / JOKO", ext: "926" },
+          { name: "SARAS / INDAH", ext: "926" },
+          { name: "ASTA / LIA / DITA", ext: "938" },
+          { name: "R. MEETING KK", ext: "957" },
+          { name: "KOSONG", ext: "935" }
+        ]
+      },
+      {
+        dept: "PROCUREMENT",
+        floor: "10",
+        people: [
+          { name: "AGUS / ANWAR", ext: "184" },
+          { name: "FEBY", ext: "172" },
+          { name: "RAHIMAH", ext: "179" },
+          { name: "IYE", ext: "169" },
+          { name: "CITRA", ext: "185" },
+          { name: "VITA", ext: "171" },
+          { name: "RIDHA", ext: "178" },
+          { name: "ANISA", ext: "191" },
+          { name: "ERIC", ext: "175" },
+          { name: "MAE", ext: "187" },
+          { name: "MADE", ext: "186" },
+          { name: "ENADARUS", ext: "176" },
+          { name: "ELA", ext: "177" },
+          { name: "YAMIN", ext: "192" },
+          { name: "RYAN", ext: "174" },
+          { name: "AGUNG", ext: "173" },
+          { name: "YOSHUA", ext: "182" },
+          { name: "IMAM", ext: "180" },
+          { name: "STIVE", ext: "183" },
+          { name: "TOMMY", ext: "170" },
+          { name: "YULI", ext: "167" },
+          { name: "NOVAN", ext: "190" },
+          { name: "KOSONG", ext: "166" },
+          { name: "NANA", ext: "188" },
+          { name: "GALIH", ext: "164" },
+          { name: "JUMIO", ext: "168" }
+        ]
+      },
+      {
+        dept: "GOVERMENT",
+        floor: "10",
+        people: [
+          { name: "ARI", ext: "223" },
+          { name: "REZA", ext: "224" }
+        ]
+      },
+      {
+        dept: "IMPORT",
+        floor: "10",
+        people: [
+          { name: "EHA / RAHMI", ext: "915" },
+          { name: "ANDHY", ext: "920" },
+          { name: "HADI / YANTO", ext: "923" },
+          { name: "ROSIANA", ext: "924" },
+          { name: "YOGA", ext: "918" },
+          { name: "IDHAM", ext: "916" },
+          { name: "KOSONG", ext: "922" },
+          { name: "DISCA / HENDRA", ext: "917" },
+          { name: "RUBY / ANITA / LIA", ext: "921" }
+        ]
+      },
+      {
+        dept: "STRATEGY & PLANNING",
+        floor: "11",
+        people: [
+          { name: "RERE", ext: "560" },
+          { name: "BONA / FELICIA", ext: "570" }
+        ]
+      },
+      {
+        dept: "FINANCE (KASIR)",
+        floor: "11",
+        people: [
+          { name: "FEBRY / NANA", ext: "509" },
+          { name: "DIANA / FEBBY", ext: "510" },
+          { name: "MAYA / IMELDA / NORA", ext: "511" },
+          { name: "CITRA / HENY / NOVIA", ext: "512" },
+          { name: "ANGGI", ext: "515" },
+          { name: "LEO / FAUZI", ext: "522" }
+        ]
+      },
+      {
+        dept: "FINANCE",
+        floor: "11",
+        people: [
+          { name: "OLIVIA", ext: "559" },
+          { name: "STEPHANIE", ext: "558" },
+          { name: "ANGEL", ext: "557" },
+          { name: "DORTA", ext: "586" },
+          { name: "MONIC", ext: "587" },
+          { name: "FELICIA", ext: "503" },
+          { name: "MERRY", ext: "552" },
+          { name: "MARLA", ext: "549" },
+          { name: "SHELA", ext: "524" },
+          { name: "NANDA", ext: "514" },
+          { name: "AUDINA", ext: "553" },
+          { name: "LUSIANA YESISCA", ext: "430" }
+        ]
+      },
+      {
+        dept: "ACCOUNTING",
+        floor: "11",
+        people: [
+          { name: "PUTRI GMM", ext: "545" },
+          { name: "JESSICA / PUTRI PAL", ext: "543" },
+          { name: "GRECYA / RETNO", ext: "546" },
+          { name: "IBNU / FACHTUR", ext: "542" },
+          { name: "GILBERT", ext: "544" },
+          { name: "DANIEL LEHMAN", ext: "547" },
+          { name: "DIANISA / RIZKY", ext: "590" },
+          { name: "VERA / SEPRILIA", ext: "517" },
+          { name: "ASIH", ext: "538" },
+          { name: "ELVIRA", ext: "589" },
+          { name: "CICILIA", ext: "550" },
+          { name: "INDRA / SISCA", ext: "533" },
+          { name: "NITIKAH AMBERUNI", ext: "432" },
+          { name: "YULLY", ext: "518" },
+          { name: "JEANE", ext: "536" },
+          { name: "VANNY / STEFFI", ext: "519" },
+          { name: "MIKA", ext: "585" },
+          { name: "RISYAH", ext: "588" },
+          { name: "NOVITA / NAIDA", ext: "525" },
+          { name: "AUDY / DITA", ext: "564" },
+          { name: "NICKY / NOVA", ext: "581" },
+          { name: "MADE ADI / AMOS", ext: "566" },
+          { name: "RANIE / THE SISKA", ext: "551" },
+          { name: "INTAN / NAYLA", ext: "532" },
+          { name: "ANISA / ERLIN", ext: "507" },
+          { name: "ADIT", ext: "513" },
+          { name: "SANTY / NATASYA", ext: "523" },
+          { name: "SHIANNE", ext: "521" },
+          { name: "R. MEETING BESAR", ext: "548" },
+          { name: "R. MEETING SEDANG", ext: "508" },
+          { name: "R. MEETING KECIL", ext: "556" },
+          { name: "SABRINA / TALINE", ext: "568" },
+          { name: "MBAK DIKA", ext: "541" }
+        ]
+      },
+      {
+        dept: "INTERNAL AUDIT",
+        floor: "12",
+        people: [
+          { name: "PAK ANGGI", ext: "257" },
+          { name: "NURKHOLIS", ext: "255" }
+        ]
+      },
+      {
+        dept: "YAYASAN",
+        floor: "12",
+        people: [
+          { name: "DEVI", ext: "119" }
+        ]
+      },
+      {
+        dept: "PUBLIC RELATION (EVENT)",
+        floor: "12",
+        people: [
+          { name: "WIWI / FIRMAN", ext: "996" },
+          { name: "EKA / ELFA", ext: "999" },
+          { name: "FAUZI / JEFRI", ext: "998" }
+        ]
+      },
+      {
+        dept: "PUBLIC RELATION",
+        floor: "12",
+        people: [
+          { name: "RIZA", ext: "947" },
+          { name: "ARIAN / FADEL", ext: "949" },
+          { name: "MAJID / HENDRI / RIZKY", ext: "946" },
+          { name: "R. EDITOR RR", ext: "946" },
+          { name: "VALERIE / ANDINI / REYNATA", ext: "948" },
+          { name: "RIKIN / IQBAL / DIDING / ARIEL", ext: "943" },
+        ]
+      },
+      {
+        dept: "KTH",
+        floor: "12",
+        people: [
+          { name: "RATNA", ext: "242" },
+          { name: "ILHAM", ext: "241" },
+          { name: "ANDES", ext: "239" },
+          { name: "AJI", ext: "234" }
+        ]
+      },
+      {
+        dept: "GA",
+        floor: "12",
+        people: [
+          { name: "DONI / BINA", ext: "209" },
+          { name: "DESI", ext: "210" },
+          { name: "ASTI", ext: "213" },
+          { name: "RIKA / BERLIN / FACHRI", ext: "250" },
+          { name: "DENI / NANDA", ext: "207" },
+          { name: "VICKY", ext: "252" },
+          { name: "REZA KHAIRUL", ext: "218" },
+          { name: "ROVIAH", ext: "208" },
+          { name: "RICHAS CARPOOL (CP4)", ext: "705" }
+        ]
+      },
+      {
+        dept: "HRD",
+        floor: "12",
+        people: [
+          { name: "ERDIAZ", ext: "254" },
+          { name: "AYU", ext: "212" },
+          { name: "ABDUL", ext: "231" },
+          { name: "AISYAH", ext: "215" },
+          { name: "BUDI", ext: "216" },
+          { name: "NALU", ext: "217" },
+          { name: "TIWI / RIFKY", ext: "251" },
+        ]
+      },
+      {
+        dept: "LIC",
+        floor: "12",
+        people: [
+          { name: "SETIYONO", ext: "205" },
+          { name: "VENNA / FAUZAN / SANIA / INE / SARI", ext: "211" },
+          { name: "AINA / RENDY / FAIRUZ / DILA / JIMMY", ext: "214" },
+          { name: "HERY / WARSO / RANDHI", ext: "240" },
+          { name: "NOVIADI", ext: "279" }
+        ]
+      },
+      {
+        dept: "KPS",
+        floor: "13",
+        people: [
+          { name: "HARYADI / ROBBY", ext: "940" },
+          { name: "RIA", ext: "937" },
+          { name: "ADE CRANE / JULIA PAMELA", ext: "927" },
+          { name: "ADJIE", ext: "928" },
+          { name: "ALISSA", ext: "320" }
+        ]
+      },
+      {
+        dept: "ESG",
+        floor: "13",
+        people: [
+          { name: "SEPTA", ext: "349" },
+          { name: "WAHYU", ext: "353" },
+          { name: "ADHITYA", ext: "347" },
+          { name: "MAY", ext: "352" },
+          { name: "FINI", ext: "498" },
+          { name: "FARHAN", ext: "325" },
+          { name: "KASYA", ext: "348" }
+        ]
+      },
+      {
+        dept: "PALM OIL",
+        floor: "13",
+        people: [
+          { name: "PAK LUWI", ext: "329" },
+          { name: "DANNU", ext: "337" },
+          { name: "RAMA", ext: "324" },
+          { name: "AJI", ext: "339" },
+          { name: "NISA", ext: "366" },
+          { name: "VINA", ext: "331" },
+          { name: "NAYA / ANDI", ext: "365" },
+          { name: "HERU", ext: "357" },
+          { name: "FIKRI", ext: "355" },
+          { name: "HANIF", ext: "351" },
+          { name: "IRVAN", ext: "322" },
+          { name: "IVAN", ext: "348" },
+          { name: "BAPAK SARAS", ext: "336" },
+          { name: "WAHYU AGUNG", ext: "321" },
+          { name: "CELYN", ext: "373" },
+          { name: "RANTI", ext: "372" },
+          { name: "STEPHANIE", ext: "369" }
+        ]
+      },
+      {
+        dept: "FOREST RESOURCES",
+        floor: "13",
+        people: [
+          { name: "SUHARIYONO", ext: "316" },
+          { name: "PATROL", ext: "389" },
+          { name: "ISOK WINARJANTO", ext: "333" },
+          { name: "MARGANA", ext: "341" },
+          { name: "MURTINI", ext: "342" },
+          { name: "DJOKO", ext: "306" },
+          { name: "LIM KIM YUN", ext: "308" },
+          { name: "MELINDA", ext: "312" },
+          { name: "MIRNA", ext: "315" },
+          { name: "MARIA", ext: "317" },
+          { name: "EMA / ALI", ext: "340" },
+          { name: "PUTRI", ext: "383" },
+          { name: "DIMA", ext: "319" }
+        ]
+      },
+      {
+        dept: "LT.14",
+        floor: "14",
+        people: [
+          { name: "UUT", ext: "109" },
+          { name: "NIA", ext: "110" }
+        ]
+      },
+      {
+        dept: "GENERAL TRADING (E-GY)",
+        floor: "15",
+        people: [
+          { name: "LILY", ext: "285" },
+          { name: "PAK KETUT", ext: "323" }
+        ]
+      },
+      {
+        dept: "GENERAL TRADING",
+        floor: "15",
+        people: [
+          { name: "KOSONG", ext: "314" },
+          { name: "RINI", ext: "318" },
+          { name: "LISA", ext: "913" },
+          { name: "DEVI", ext: "941" },
+          { name: "IMAS", ext: "910" },
+          { name: "RAYMOND", ext: "386" },
+          { name: "PAIMAN CHEN", ext: "986" },
+          { name: "NOVEL", ext: "954" },
+          { name: "ALDI", ext: "929" },
+          { name: "RUSMAN", ext: "965" },
+          { name: "HAFIFAH", ext: "952" },
+          { name: "SUCI", ext: "969" },
+          { name: "FIKA", ext: "286" },
+          { name: "TIKA", ext: "919" },
+          { name: "SANTI", ext: "991" },
+          { name: "IQBAL", ext: "151" },
+          { name: "RIDWAN", ext: "959" },
+          { name: "DESI", ext: "966" },
+          { name: "AFI", ext: "960" },
+          { name: "INDAH", ext: "961" },
+          { name: "DICKY", ext: "967" },
+          { name: "IWAN", ext: "964" },
+          { name: "HE", ext: "" },
+          { name: "NICO", ext: "945" },
+          { name: "VINA", ext: "379" },
+          { name: "HANSENG", ext: "396" },
+          { name: "RIANA", ext: "398" },
+          { name: "FIKRI", ext: "397" },
+          { name: "SYIFA BNS", ext: "378" },
+          { name: "AMALIA", ext: "364" },
+          { name: "WINDRA", ext: "" },
+          { name: "NOVIA", ext: "309" },
+          { name: "RISTI / NAOMI", ext: "310" },
+          { name: "PAUL", ext: "914" },
+          { name: "KEVIN", ext: "433" },
+          { name: "CATHERINE", ext: "434" },
+          { name: "RIZKY", ext: "936" },
+          { name: "KOSONG", ext: "995" }
+        ]
+      },
+      {
+        dept: "IT",
+        floor: "15",
+        people: [
+          { name: "HERYANTO", ext: "555" },
+          { name: "EKO CIPTA / ROHMAN", ext: "584" },
+          { name: "BAGJA", ext: "582" },
+          { name: "ADRIE / BUDI", ext: "531" },
+          { name: "EKO PRASTYO", ext: "582" },
+          { name: "BENNY", ext: "574" },
+          { name: "FAUZI / ORVILE", ext: "593" },
+          { name: "DEDDY", ext: "583" },
+          { name: "RIVAN", ext: "556" },
+          { name: "VITA / INTAN", ext: "576" },
+          { name: "KOSONG", ext: "577" },
+          { name: "PAULIN", ext: "556" },
+          { name: "BASKORO / FERI", ext: "565" },
+          { name: "HERRY", ext: "578" },
+          { name: "SAMSUL / PATRICIA", ext: "577" },
+          { name: "NURHADI", ext: "592" },
+          { name: "ADITYO", ext: "565" },
+          { name: "SANTI", ext: "535" },
+          { name: "YULLIANA / HANIF / JHON", ext: "573" },
+          { name: "WIWI / GANI", ext: "591" },
+          { name: "TOMMY (MINSAN)", ext: "528" },
+          { name: "HESTI", ext: "598" },
+          { name: "KENDY / HENGKY", ext: "595" },
+          { name: "YOSEFINA", ext: "527" },
+          { name: "INDRA", ext: "575" },
+          { name: "FREDDY", ext: "572" },
+          { name: "MAYANG / HERI", ext: "526" },
+          { name: "RAMA", ext: "" },
+          { name: "AFFANDY", ext: "530" },
+          { name: "JUANDITO / LIE REUBENSTO", ext: "596" }
+        ]
+      },
+      {
+        dept: "SECURITY",
+        floor: "12",
+        people: [
+          { name: "RANDOM", ext: "232" }
+        ]
+      },
+      {
+        dept: "DONGBANG",
+        floor: "10",
+        people: [
+          { name: "ADYTIA / MONIC", ext: "228" },
+          { name: "ALPIAN / NANI", ext: "226" },
+          { name: "ZULFAHMI / AKBAR", ext: "230" },
+          { name: "AMEL", ext: "229" },
+          { name: "YUDAN", ext: "225" },
+          { name: "YURI / TIARA", ext: "" }
+        ]
+      },
+      {
+        dept: "BAS",
+        floor: "1",
+        people: [
+          { name: "TEAM RUANG BAS", ext: "704" },
+          { name: "EKO", ext: "706" }
+        ]
+      },
+      {
+        dept: "CAR CALL",
+        floor: "1",
+        people: [
+          { name: "FITRI", ext: "155" }
+        ]
+      },
+      {
+        dept: "LOKASI",
+        floor: "-",
+        people: [
+          { name: "KPS", ext: "0254 600882" }
+        ]
+      },
+      {
+        dept: "FAX",
+        floor: "-",
+        people: [
+          { name: "ACCOUNTING", ext: "797-5989" },
+          { name: "FINANCE", ext: "797 6407" },
+          { name: "LT. 14 (PANTRY)", ext: "797 6406" }
+        ]
+      }
+    ]
+
+    // --- State ---
+    let data = [];
+
+    function loadData() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      data = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(defaultData));
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      renderDeptList();
+    }
+
+    // --- Auth ---
+    const loginScreen = document.getElementById('loginScreen');
+    const dashboardScreen = document.getElementById('dashboardScreen');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+
+    function isLoggedIn() {
+      return sessionStorage.getItem(SESSION_KEY) === 'true';
+    }
+
+    function showDashboard() {
+      loginScreen.classList.add('hidden');
+      dashboardScreen.classList.remove('hidden');
+      loadData();
+      renderDeptList();
+    }
+
+    function showLogin() {
+      dashboardScreen.classList.add('hidden');
+      loginScreen.classList.remove('hidden');
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      if (user === VALID_USER && pass === VALID_PASS) {
+        sessionStorage.setItem(SESSION_KEY, 'true');
+        loginError.style.display = 'none';
+        loginForm.reset();
+        showDashboard();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      showLogin();
+    });
+
+    if (isLoggedIn()) {
+      showDashboard();
+    }
+
+    // --- Rendering ---
+    const deptList = document.getElementById('deptList');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderDeptList() {
+      const term = searchInput.value.toLowerCase().trim();
+      deptList.innerHTML = '';
+      let anyVisible = false;
+
+      data.forEach((dept, deptIndex) => {
+        const matchesDept = dept.dept.toLowerCase().includes(term);
+        const filteredPeople = dept.people.filter(p =>
+          term === '' || matchesDept ||
+          p.name.toLowerCase().includes(term) ||
+          p.ext.toLowerCase().includes(term)
+        );
+
+        if (term !== '' && !matchesDept && filteredPeople.length === 0) return;
+        anyVisible = true;
+
+        const card = document.createElement('div');
+        card.className = 'dept-card';
+
+        const peopleToShow = term !== '' && !matchesDept ? filteredPeople : dept.people;
+
+        card.innerHTML = `
+          <div class="dept-header">
+            <div class="dept-header-title">${escapeHtml(dept.dept)} (Lt. ${escapeHtml(dept.floor)})</div>
+            <div class="dept-header-actions">
+              <button class="btn-secondary btn-sm" data-action="edit-dept" data-dept="${deptIndex}">Ubah</button>
+              <button class="btn-danger btn-sm" data-action="delete-dept" data-dept="${deptIndex}">Hapus</button>
+            </div>
+          </div>
+          <table class="people-table">
+            <thead>
+              <tr><th>Nama</th><th>Ekstensi</th><th></th></tr>
+            </thead>
+            <tbody>
+              ${peopleToShow.map(p => {
+          const personIndex = dept.people.indexOf(p);
+          return `
+                  <tr>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${escapeHtml(p.ext)}</td>
+                    <td class="actions">
+                      <button class="btn-secondary btn-sm" data-action="edit-person" data-dept="${deptIndex}" data-person="${personIndex}">Ubah</button>
+                      <button class="btn-danger btn-sm" data-action="delete-person" data-dept="${deptIndex}" data-person="${personIndex}">Hapus</button>
+                    </td>
+                  </tr>
+                `;
+        }).join('')}
+            </tbody>
+          </table>
+          <div class="add-person-row">
+            <form class="inline-form" data-action="add-person" data-dept="${deptIndex}">
+              <input type="text" placeholder="Nama" data-field="name" required />
+              <input type="text" placeholder="Ekstensi" data-field="ext" />
+              <button type="submit" class="btn-primary btn-sm">Tambah Kontak</button>
+            </form>
+          </div>
+        `;
+        deptList.appendChild(card);
+      });
+
+      emptyState.classList.toggle('hidden', anyVisible);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str ?? '';
+      return div.innerHTML;
+    }
+
+    searchInput.addEventListener('input', renderDeptList);
+
+    // --- Add department ---
+    document.getElementById('addDeptForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('newDeptName');
+      const floorInput = document.getElementById('newDeptFloor');
+      const name = nameInput.value.trim();
+      const floor = floorInput.value.trim();
+      if (!name || !floor) return;
+      data.push({ dept: name, floor: floor, people: [] });
+      nameInput.value = '';
+      floorInput.value = '';
+      saveData();
+    });
+
+    // --- Event delegation for dept list actions ---
+    deptList.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const deptIndex = parseInt(btn.dataset.dept, 10);
+
+      if (action === 'delete-dept') {
+        if (confirm(`Hapus departemen "${data[deptIndex].dept}" beserta semua kontaknya?`)) {
+          data.splice(deptIndex, 1);
+          saveData();
+        }
+      } else if (action === 'edit-dept') {
+        openEditDeptModal(deptIndex);
+      } else if (action === 'delete-person') {
+        const personIndex = parseInt(btn.dataset.person, 10);
+        const person = data[deptIndex].people[personIndex];
+        if (confirm(`Hapus kontak "${person.name}"?`)) {
+          data[deptIndex].people.splice(personIndex, 1);
+          saveData();
+        }
+      } else if (action === 'edit-person') {
+        const personIndex = parseInt(btn.dataset.person, 10);
+        openEditPersonModal(deptIndex, personIndex);
+      }
+    });
+
+    deptList.addEventListener('submit', (e) => {
+      const form = e.target.closest('form[data-action="add-person"]');
+      if (!form) return;
+      e.preventDefault();
+      const deptIndex = parseInt(form.dataset.dept, 10);
+      const name = form.querySelector('[data-field="name"]').value.trim();
+      const ext = form.querySelector('[data-field="ext"]').value.trim();
+      if (!name) return;
+      data[deptIndex].people.push({ name, ext });
+      saveData();
+    });
+
+    // --- Edit Department Modal ---
+    const editDeptModal = document.getElementById('editDeptModal');
+    let editingDeptIndex = null;
+
+    function openEditDeptModal(deptIndex) {
+      editingDeptIndex = deptIndex;
+      document.getElementById('editDeptName').value = data[deptIndex].dept;
+      document.getElementById('editDeptFloor').value = data[deptIndex].floor;
+      editDeptModal.classList.add('show');
+    }
+
+    document.getElementById('editDeptCancel').addEventListener('click', () => {
+      editDeptModal.classList.remove('show');
+    });
+
+    document.getElementById('editDeptSave').addEventListener('click', () => {
+      const name = document.getElementById('editDeptName').value.trim();
+      const floor = document.getElementById('editDeptFloor').value.trim();
+      if (!name || !floor || editingDeptIndex === null) return;
+      data[editingDeptIndex].dept = name;
+      data[editingDeptIndex].floor = floor;
+      editDeptModal.classList.remove('show');
+      saveData();
+    });
+
+    // --- Edit Person Modal ---
+    const editPersonModal = document.getElementById('editPersonModal');
+    let editingPersonRef = null;
+
+    function openEditPersonModal(deptIndex, personIndex) {
+      editingPersonRef = { deptIndex, personIndex };
+      const person = data[deptIndex].people[personIndex];
+      document.getElementById('editPersonName').value = person.name;
+      document.getElementById('editPersonExt').value = person.ext;
+      editPersonModal.classList.add('show');
+    }
+
+    document.getElementById('editPersonCancel').addEventListener('click', () => {
+      editPersonModal.classList.remove('show');
+    });
+
+    document.getElementById('editPersonSave').addEventListener('click', () => {
+      const name = document.getElementById('editPersonName').value.trim();
+      const ext = document.getElementById('editPersonExt').value.trim();
+      if (!name || !editingPersonRef) return;
+      const { deptIndex, personIndex } = editingPersonRef;
+      data[deptIndex].people[personIndex] = { name, ext };
+      editPersonModal.classList.remove('show');
+      saveData();
+    });
+
+    // --- Reset to default ---
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (confirm('Reset semua data ke data default? Perubahan yang belum diekspor akan hilang.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        loadData();
+        renderDeptList();
+      }
+    });
+
+    // --- Export ---
+    const exportModal = document.getElementById('exportModal');
+    const exportTextarea = document.getElementById('exportTextarea');
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const code = 'const rawData = ' + JSON.stringify(data, null, 2) + '\n';
+      exportTextarea.value = code;
+      exportModal.classList.add('show');
+    });
+
+    document.getElementById('exportClose').addEventListener('click', () => {
+      exportModal.classList.remove('show');
+    });
+
+    document.getElementById('exportCopy').addEventListener('click', () => {
+      exportTextarea.select();
+      navigator.clipboard.writeText(exportTextarea.value).then(() => {
+        alert('Kode berhasil disalin ke clipboard.');
+      }).catch(() => {
+        document.execCommand('copy');
+      });
+    });
+  </script>
+</body>
+
+</html>
