@@ -52,11 +52,6 @@
             color: var(--accent-color);
         }
 
-        /* Improve button contrast in dark mode */
-        [data-theme="dark"] .location-part button {
-            background-color: var(--bg-color);
-            border-color: var(--primary-color);
-        }
 
         /* Improve coordinates display in dark mode */
         [data-theme="dark"] .coordinates-display {
@@ -105,6 +100,48 @@
             padding: 20px;
         }
 
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .page-header h1 {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            flex: 1;
+            min-width: 0;
+        }
+
+        #wikilokal-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        #wikilokal-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+            }
+
+            .page-header h1 {
+                flex: none;
+            }
+        }
+
         h1 {
             color: var(--primary-color);
             margin-bottom: 1.5rem;
@@ -130,9 +167,70 @@
             box-shadow: var(--shadow);
             margin-bottom: 1.5rem;
             display: grid;
-            grid-template-columns: auto auto 1fr auto;
-            gap: 1rem;
-            align-items: end;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            align-content: start;
+        }
+
+        .two-column-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: start;
+        }
+
+        #control-section,
+        #location-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #control-section h2,
+        #location-section h2 {
+            margin-bottom: 1rem;
+            min-height: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .two-column-container {
+                grid-template-columns: 1fr;
+            }
+
+            #location-status {
+                min-height: auto;
+            }
+        }
+
+        .action-group {
+            margin-top: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .action-group button {
+            width: 100%;
+            justify-content: center;
+            font-size: 0.95rem;
+            padding: 0 1.5rem;
+            box-shadow: var(--shadow);
+            height: 44px;
+            box-sizing: border-box;
+        }
+
+        .status-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+
+        .status-group .permission-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            box-sizing: border-box;
         }
 
         /* Update styling select untuk lebih konsisten */
@@ -190,19 +288,6 @@
             color: var(--text-color);
         }
 
-        .location-part button {
-            padding: 0.4rem 0.85rem;
-            background-color: var(--card-bg);
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            font-size: 0.85rem;
-            min-width: fit-content;
-        }
-
-        .location-part button:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
 
         /* Perbaiki button styling untuk dark mode */
         button {
@@ -225,47 +310,28 @@
 
         @media (max-width: 968px) {
             #controls {
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
             }
 
-            #check-permission {
-                grid-column: 1 / -1;
+            .action-group {
+                grid-column: auto;
+                margin-top: 1rem;
             }
 
-            .permission-badge {
-                grid-column: 1 / -1;
+            .status-group {
+                margin-top: 0.5rem;
             }
         }
 
         @media (max-width: 768px) {
             #controls {
-                grid-template-columns: 1fr;
                 padding: 1rem;
                 gap: 0.85rem;
             }
 
-            #controls>div {
-                width: 100%;
-            }
-
             #controls label {
                 font-size: 0.9rem;
-            }
-
-            #language-select,
-            #check-permission,
-            .permission-badge {
-                width: 100%;
-                grid-column: 1;
-            }
-
-            #check-permission {
-                justify-content: center;
-            }
-
-            .permission-badge {
-                text-align: center;
             }
         }
 
@@ -321,16 +387,16 @@
         /* Hapus class .permitted, .denied, .pending yang lama */
         /* Tambahkan setelah #location-status */
         .coordinates-display {
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 600;
             color: var(--text-color);
             margin-bottom: 1rem;
             padding: 1rem;
             background-color: var(--bg-secondary);
             border-radius: var(--radius);
             border-left: 4px solid var(--primary-color);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.5px;
+            font-family: inherit;
+            letter-spacing: 0.2px;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -341,51 +407,51 @@
             font-size: 1.2rem;
         }
 
-        .location-header {
+        .address-row {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            user-select: none;
-            padding: 0.75rem;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
             border-radius: var(--radius);
-            transition: background-color 0.2s;
             background-color: var(--bg-secondary);
         }
 
-        .location-header:hover {
-            background-color: var(--border-color);
-        }
-
-        .location-header h3 {
-            font-size: 1rem;
-            font-weight: 600;
+        .address-label {
+            font-size: 0.9rem;
             color: var(--text-color);
-            margin: 0;
+            line-height: 1.5;
+            flex: 1;
+            min-width: 180px;
         }
 
-        .toggle-icon {
-            font-size: 1rem;
-            transition: transform 0.3s ease;
-            color: var(--text-light);
-            font-weight: bold;
+        .location-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-height: auto;
         }
 
-        .toggle-icon.collapsed {
-            transform: rotate(-90deg);
+        .location-action-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
-        .location-details {
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-
-        .location-details.hidden {
-            max-height: 0;
-            opacity: 0;
+        .location-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         #location-status {
@@ -582,59 +648,15 @@
             }
         }
 
-        /* Collapsible metadata section */
-        .metadata-toggle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
+        .photo-card {
             cursor: pointer;
-            user-select: none;
-            border-top: 1px solid var(--border-color);
-            margin-top: 0.75rem;
-            transition: background-color 0.2s;
         }
 
-        .metadata-toggle:hover {
-            background-color: var(--bg-secondary);
-            margin-left: -1.25rem;
-            margin-right: -1.25rem;
-            padding-left: 1.25rem;
-            padding-right: 1.25rem;
+        .photo-card:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
         }
 
-        .metadata-toggle-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .metadata-toggle-icon {
-            font-size: 0.8rem;
-            transition: transform 0.3s ease;
-            color: var(--text-light);
-        }
-
-        .metadata-toggle-icon.collapsed {
-            transform: rotate(-90deg);
-        }
-
-        .metadata-collapsible {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        .metadata-collapsible.expanded {
-            max-height: 500px;
-            opacity: 1;
-        }
-
-        /* Update .photo-metadata untuk collapsible */
         .photo-metadata {
             display: flex;
             flex-direction: column;
@@ -829,13 +851,40 @@
             animation: bounce 1s infinite;
         }
 
-        /* Tambahkan di bagian .loading */
-        #progress-text {
-            display: block;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
+        .progress-container {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-text {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 100px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-count {
             color: var(--text-light);
-            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         @keyframes bounce {
@@ -960,6 +1009,95 @@
             backdrop-filter: blur(2px);
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.25s ease;
+            color: var(--text-color);
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 15px;
@@ -1051,52 +1189,87 @@
 </head>
 
 <body>
-    <h1>Galeri WikiCommons Terdekat (radius 1km)</h1>
+    <div class="page-header">
+        <h1>Galeri WikiCommons Terdekat (radius 1km)</h1>
+        <button id="wikilokal-btn" onclick="window.location.href='../wikilokal'" title="Kunjungi Wikilokal">
+            📍 Wikilokal
+        </button>
+    </div>
 
-    <section id="control-section" aria-label="Pengaturan">
-        <h2>Pengaturan</h2>
-        <div id="controls">
-            <div class="control-group" style="max-width: 180px;">
-                <label for="theme-select">Tema</label>
-                <select id="theme-select">
-                    <option value="system">🖥️ System</option>
-                    <option value="light">☀️ Light</option>
-                    <option value="dark">🌙 Dark</option>
-                </select>
+    <div class="two-column-container">
+        <section id="control-section" aria-label="Pengaturan">
+            <h2>Pengaturan</h2>
+            <div id="controls">
+                <div class="control-group">
+                    <label for="theme-select">Tema</label>
+                    <select id="theme-select">
+                        <option value="system">🖥️ System</option>
+                        <option value="light">☀️ Light</option>
+                        <option value="dark">🌙 Dark</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="language-select">Bahasa Wikivoyage</label>
+                    <select id="language-select">
+                        <option value="id">Bahasa Indonesia (id)</option>
+                        <option value="en">Bahasa Inggris (en)</option>
+                        <option value="zh">Bahasa Mandarin (zh)</option>
+                        <option value="es">Bahasa Spanyol (es)</option>
+                        <option value="bew">Bahasa Betawi (bew)</option>
+                    </select>
+                </div>
+                <div class="control-group action-group">
+                    <label>Aksi</label>
+                    <button id="check-permission">Periksa Lokasi & Cari</button>
+                </div>
+                <div class="control-group status-group">
+                    <label>Status Izin</label>
+                    <span id="permission-status" class="permission-badge pending">Belum diperiksa</span>
+                </div>
             </div>
-            <div class="control-group" style="max-width: 280px;">
-                <label for="language-select">Bahasa Wikivoyage</label>
-                <select id="language-select">
-                    <option value="id">Bahasa Indonesia (id)</option>
-                    <option value="en">Bahasa Inggris (en)</option>
-                    <option value="zh">Bahasa Mandarin (zh)</option>
-                    <option value="es">Bahasa Spanyol (es)</option>
-                    <option value="bew">Bahasa Betawi (bew)</option>
-                </select>
-            </div>
-            <button id="check-permission">Periksa Lokasi & Cari</button>
-            <span id="permission-status" class="permission-badge pending">Belum diperiksa</span>
-        </div>
-    </section>
+        </section>
 
-    <!-- Ganti section #location-section -->
-    <section id="location-section" aria-label="Status Lokasi">
-        <h2>Status Lokasi</h2>
-        <div id="location-status">
-            <div class="coordinates-display"></div>
-            <div class="location-header" onclick="toggleLocationDetails()">
-                <h3>Detail Lokasi</h3>
-                <span class="toggle-icon collapsed">▶</span>
+        <section id="location-section" aria-label="Status Lokasi">
+            <h2>Status Lokasi</h2>
+            <div id="location-status">
+                <div class="coordinates-display"></div>
+                <div class="address-row" id="address-row" style="display:none;">
+                    <span class="address-label" id="address-label"></span>
+                    <button class="location-action-btn" id="open-location-modal-btn" title="Lihat detail lokasi lengkap">
+                        <span>📍</span>
+                        <span>Lihat Detail</span>
+                    </button>
+                </div>
+                <div id="location-retry-container"></div>
             </div>
-            <div class="location-details hidden" id="location-details-content"></div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <section id="results-section" aria-label="Hasil Pencarian">
         <h2>Hasil Pencarian <span id="results-count"
                 style="color: var(--text-light); font-size: 1rem; font-weight: 400;"></span></h2>
         <ul id="results"></ul>
     </section>
+
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📍 Detail Lokasi</h2>
+                <button class="modal-close" data-modal="location-modal">&times;</button>
+            </div>
+            <div id="location-modal-body"></div>
+        </div>
+    </div>
+
+    <div id="photo-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="photo-modal-title"></h2>
+                <button class="modal-close" data-modal="photo-modal">&times;</button>
+            </div>
+            <div id="photo-modal-body"></div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
@@ -1110,6 +1283,19 @@
         let currentPosition = null;
 
         const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
+
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+        // Fungsi helper untuk membuka link dengan aman di Safari
+        function safeOpenLink(url) {
+            if (isSafari) {
+                if (confirm(`Buka link ini?\n${url}`)) {
+                    window.location.href = url;
+                }
+            } else {
+                window.open(url, '_blank');
+            }
+        }
 
         // Theme Management
         const themeSelect = document.getElementById('theme-select');
@@ -1149,19 +1335,12 @@
         // Initialize theme on load
         initTheme();
 
-        // Tambahkan fungsi ini setelah deklarasi variable
-        function toggleLocationDetails() {
-            const detailsContent = document.getElementById('location-details-content');
-            const toggleIcon = document.querySelector('.toggle-icon');
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
 
-            detailsContent.classList.toggle('hidden');
-            toggleIcon.classList.toggle('collapsed');
-
-            if (detailsContent.classList.contains('hidden')) {
-                toggleIcon.textContent = '▶';
-            } else {
-                toggleIcon.textContent = '▼';
-            }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
         }
 
         async function checkLocationPermission() {
@@ -1213,18 +1392,108 @@
             }
         }
 
-        // Ganti fungsi getLocationDetails
-        // Ganti fungsi getLocationDetails dengan versi yang lebih robust
+        // Keyword administratif lokal: SUBURB & VILLAGE memakai set yang SAMA (gabungan),
+        // karena Nominatim/Wikidata tidak konsisten membedakan kecamatan/kelurahan/desa
+        // antara address.suburb dan address.village.
+        const ADMIN_LOCAL_KEYWORDS = [
+            "subdistrict", "urban village", "district", "administrative",
+            "kecamatan", "kelurahan", "village", "desa"
+        ];
+
+        function isAdministrative(desc) {
+            if (!desc) return false;
+            const d = desc.toLowerCase();
+            return (
+                ADMIN_LOCAL_KEYWORDS.some(k => d.includes(k)) ||
+                d.includes("city") ||
+                d.includes("kota") ||
+                d.includes("town") ||
+                d.includes("municipality") ||
+                d.includes("settlement") ||
+                d.includes("province") ||
+                d.includes("provinsi") ||
+                d.includes("region") ||
+                d.includes("country") ||
+                d.includes("nation")
+            );
+        }
+
+        function matchEntityByType(entity, type) {
+            if (!entity?.description) return false;
+            const desc = entity.description.toLowerCase();
+            const typeKeywords = {
+                suburb: ADMIN_LOCAL_KEYWORDS,
+                village: ADMIN_LOCAL_KEYWORDS,
+                town: ["town", "city", "kota", "settlement"],
+                city: ["city", "kota", "municipality"],
+                state: ["state", "province", "region", "provinsi"],
+                country: ["country", "nation", "sovereign state"]
+            };
+            return typeKeywords[type]?.some(k => desc.includes(k)) || false;
+        }
+
+        async function searchWikidataCandidates(name) {
+            const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.search || [];
+        }
+
+        // Filter & disambiguasi berbasis teks, prioritas berhenti di hasil pertama yang tidak kosong.
+        function filterCandidatesByText(results, type, name) {
+            const typeMatched = results.filter(r => matchEntityByType(r, type));
+            if (typeMatched.length) return typeMatched;
+
+            const exactGeo = results.filter(r =>
+                r.label?.toLowerCase() === name.toLowerCase() && isAdministrative(r.description)
+            );
+            if (exactGeo.length) return exactGeo;
+
+            const geoOnly = results.filter(r => isAdministrative(r.description));
+            if (geoOnly.length) return geoOnly;
+
+            return [];
+        }
+
+        async function fetchWikidataEntityCoords(qid) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${qid}&property=P625&format=json&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const value = data.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
+                return value ? { lat: value.latitude, lon: value.longitude } : null;
+            } catch (error) {
+                console.error('Error fetching Wikidata entity coordinates:', error);
+                return null;
+            }
+        }
+
+        // Disambiguasi koordinat kalau filter teks masih menyisakan >1 kandidat.
+        async function disambiguateCandidatesByCoordinate(candidates, lat, lon) {
+            if (candidates.length <= 1) return candidates;
+            const withDistance = await Promise.all(
+                candidates.map(async (c) => {
+                    const coords = await fetchWikidataEntityCoords(c.id);
+                    if (!coords) return { ...c, distance: Infinity };
+                    return { ...c, distance: parseFloat(calculateDistance(lat, lon, coords.lat, coords.lon)) };
+                })
+            );
+            const withValidCoords = withDistance.filter(c => c.distance !== Infinity);
+            if (!withValidCoords.length) return candidates;
+            withValidCoords.sort((a, b) => a.distance - b.distance);
+            return [withValidCoords[0]];
+        }
+
+        // Ganti fungsi getLocationDetails dengan versi yang lebih lengkap (selaras dengan WikiLokal)
         async function getLocationDetails(lat, lon) {
             try {
-                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=${currentLang}`;
 
-                // Fetch dengan timeout
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
 
                 const nominatimResponse = await fetch(nominatimUrl, {
-                    headers: { 'User-Agent': 'WikiCommonsNearby/1.0', 'Accept-Language': currentLang },
+                    headers: { 'User-Agent': 'WikiCommonsNearby/1.0' },
                     signal: controller.signal
                 });
 
@@ -1232,72 +1501,99 @@
 
                 const data = await nominatimResponse.json();
                 if (!data.address) {
-                    return [{ name: 'Lokasi tidak diketahui', type: 'unknown', wikidataId: null }];
+                    return { displayName: 'Lokasi tidak diketahui', parts: [] };
                 }
 
-                const { road, postcode, city, state, country, suburb } = data.address;
-                const locationParts = [
-                    { name: road || '', type: 'road' },
-                    { name: postcode || '', type: 'postcode' },
-                    { name: suburb || '', type: 'suburb' },
-                    { name: city || '', type: 'city' },
-                    { name: state || '', type: 'state' },
-                    { name: country || '', type: 'country' }
-                ].filter(part => part.name);
+                const displayName = data.display_name || 'Lokasi tidak diketahui';
+                const { road, postcode, suburb, town, village, city, municipality, state, province, country } = data.address;
+                const osmType = data.osm_type;
+                const osmId = data.osm_id;
 
-                // Fetch Wikidata dengan timeout dan parallel execution
-                const fetchWithTimeout = (url, timeout = 2000) => {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), timeout);
+                const locationParts = [];
+                if (road) locationParts.push({ name: road, type: 'road' });
+                if (postcode) locationParts.push({ name: postcode, type: 'postcode' });
+                if (suburb) locationParts.push({ name: suburb, type: 'suburb' });
+                if (town) locationParts.push({ name: town, type: 'town' });
+                if (village) locationParts.push({ name: village, type: 'village' });
+                // municipality hanya fallback CITY kalau suburb & town tidak ada
+                if (!suburb && !town && municipality) locationParts.push({ name: municipality, type: 'city' });
+                if (city) locationParts.push({ name: city, type: 'city' });
+                const stateOrProvince = state || province;
+                if (stateOrProvince) locationParts.push({ name: stateOrProvince, type: 'state' });
+                if (country) locationParts.push({ name: country, type: 'country' });
 
-                    return fetch(url, { signal: controller.signal })
-                        .then(response => {
-                            clearTimeout(timeoutId);
-                            return response;
-                        })
-                        .catch(error => {
-                            clearTimeout(timeoutId);
-                            throw error;
-                        });
-                };
+                // Nama-nama tetangga (city/town/village/state) dipakai untuk menyempitkan kandidat SUBURB.
+                const parentNamesAll = locationParts
+                    .filter(p => ['city', 'town', 'village', 'state'].includes(p.type))
+                    .map(p => p.name);
 
-                const detailedParts = await Promise.allSettled(
+                const detailedParts = await Promise.all(
                     locationParts.map(async (part) => {
-                        if (!part.name || part.type === 'road' || part.type === 'postcode') {
-                            return { name: part.name, type: part.type, wikidataId: null };
+                        if (part.type === 'road' || part.type === 'postcode') {
+                            return { ...part, wikidataIds: [], allWikidataMatches: [] };
                         }
 
                         try {
-                            const wikidataUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(part.name)}&format=json&language=${currentLang}&type=item&limit=1&origin=*`;
-                            const wikidataResponse = await fetchWithTimeout(wikidataUrl, 2000);
-                            const wikidataData = await wikidataResponse.json();
-                            const entity = wikidataData.search?.[0];
+                            const results = await searchWikidataCandidates(part.name);
+                            if (!results.length) return { ...part, wikidataIds: [], allWikidataMatches: [] };
+
+                            let candidates = filterCandidatesByText(results, part.type, part.name);
+                            if (!candidates.length) return { ...part, wikidataIds: [], allWikidataMatches: [] };
+
+                            if (part.type === 'suburb') {
+                                if (candidates.length > 1) {
+                                    const parentNames = parentNamesAll.filter(n => n !== part.name);
+                                    const narrowed = candidates.filter(c =>
+                                        parentNames.some(pn => c.description?.toLowerCase().includes(pn.toLowerCase()))
+                                    );
+                                    if (narrowed.length) candidates = narrowed;
+                                }
+                                if (candidates.length > 1) {
+                                    const exact = candidates.find(c => c.label?.toLowerCase() === part.name.toLowerCase());
+                                    candidates = [exact || candidates[0]];
+                                }
+                            } else if (candidates.length > 1) {
+                                candidates = await disambiguateCandidatesByCoordinate(candidates, lat, lon);
+                            }
+
                             return {
-                                name: part.name,
-                                type: part.type,
-                                wikidataId: entity?.id || null
+                                ...part,
+                                wikidataIds: candidates.map(c => c.id),
+                                allWikidataMatches: candidates.map(c => ({
+                                    id: c.id, label: c.label, description: c.description
+                                }))
                             };
                         } catch (error) {
                             console.warn(`Skipping Wikidata for ${part.name}:`, error.message);
-                            return { name: part.name, type: part.type, wikidataId: null };
+                            return { ...part, wikidataIds: [], allWikidataMatches: [] };
                         }
                     })
                 );
 
-                // Filter successful results
-                return detailedParts
-                    .filter(result => result.status === 'fulfilled')
-                    .map(result => result.value)
-                    .filter(part => part && part.name);
+                // Q untuk ROAD lewat OSM (osm_type/osm_id), bukan Wikidata search.
+                if (road && osmType && osmId) {
+                    try {
+                        const osmUrl = `https://api.openstreetmap.org/api/0.6/${osmType}/${osmId}.json`;
+                        const osmResponse = await fetch(osmUrl);
+                        const osmData = await osmResponse.json();
+                        const roadWikidata = osmData.elements?.[0]?.tags?.wikidata;
+                        if (roadWikidata) {
+                            const roadPart = detailedParts.find(p => p.type === 'road');
+                            if (roadPart) roadPart.wikidataIds = [roadWikidata];
+                        }
+                    } catch (error) {
+                        console.error('Error fetching OSM element for road wikidata:', error);
+                    }
+                }
 
+                return { displayName, parts: detailedParts };
             } catch (error) {
                 console.error('Error mengambil detail lokasi:', error);
                 // Return minimal location info instead of failing completely
-                return [{
-                    name: `Lokasi sekitar ${lat.toFixed(2)}, ${lon.toFixed(2)}`,
-                    type: 'approximate',
-                    wikidataId: null
-                }];
+                return {
+                    displayName: `Lokasi sekitar ${lat.toFixed(2)}, ${lon.toFixed(2)}`,
+                    parts: []
+                };
             }
         }
 
@@ -1437,7 +1733,7 @@
             }
         }
 
-        // Ganti fungsi displayPhotos dengan batch processing
+        // Ganti fungsi displayPhotos dengan batch processing + progress bar
         async function displayPhotos(photos) {
             resultsList.innerHTML = '';
             const resultsCount = document.getElementById('results-count');
@@ -1451,17 +1747,23 @@
             // Update counter
             resultsCount.textContent = `(${photos.length} foto)`;
 
-            // Show loading with progress
-            const loadingLi = document.createElement('li');
-            loadingLi.className = 'loading';
-            loadingLi.innerHTML = 'Memuat detail foto...<br><span id="progress-text">0 / ' + photos.length + '</span>';
-            resultsList.appendChild(loadingLi);
-
-            const progressText = document.getElementById('progress-text');
+            // Show loading with progress bar
+            resultsList.innerHTML = `
+            <li class="progress-container">
+                <div class="progress-text">Memuat detail foto...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-count" id="progress-count">0 / ${photos.length}</div>
+            </li>
+        `;
+            const progressFill = document.getElementById('progress-fill');
+            const progressCount = document.getElementById('progress-count');
 
             // Process in batches of 5 untuk menghindari overload
             const BATCH_SIZE = 5;
             let processedCount = 0;
+            const photoElements = [];
 
             for (let i = 0; i < photos.length; i += BATCH_SIZE) {
                 const batch = photos.slice(i, i + BATCH_SIZE);
@@ -1486,33 +1788,43 @@
 
                 const cards = await Promise.all(batchPromises);
 
-                // Remove loading on first batch
-                if (i === 0) {
-                    resultsList.removeChild(loadingLi);
-                }
-
-                // Add cards to DOM
                 cards.forEach(card => {
                     if (card) {
-                        resultsList.appendChild(card);
+                        photoElements.push(card);
                         processedCount++;
-                        if (progressText) {
-                            progressText.textContent = `${processedCount} / ${photos.length}`;
-                        }
                     }
                 });
+
+                if (progressFill && progressCount) {
+                    const progress = (Math.min(i + BATCH_SIZE, photos.length) / photos.length) * 100;
+                    progressFill.style.width = `${progress}%`;
+                    progressCount.textContent = `${processedCount} / ${photos.length}`;
+                }
 
                 // Small delay between batches to keep UI responsive
                 if (i + BATCH_SIZE < photos.length) {
                     await new Promise(resolve => setTimeout(resolve, 10));
                 }
             }
+
+            resultsList.innerHTML = '';
+            photoElements.forEach(el => resultsList.appendChild(el));
         }
 
         // Extract card creation ke fungsi terpisah untuk reusability
         function createPhotoCard(photo, details, distance) {
             const li = document.createElement('li');
             li.className = 'photo-card';
+            li.tabIndex = 0;
+            li.setAttribute('role', 'button');
+            li.setAttribute('aria-label', `Lihat detail untuk ${photo.title.replace('File:', '')}`);
+            li.onclick = () => openPhotoModal(photo, details, distance);
+            li.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openPhotoModal(photo, details, distance);
+                }
+            };
 
             // Image container dengan stats overlay
             const imgContainer = document.createElement('div');
@@ -1541,10 +1853,23 @@
             catBadge.title = 'Jumlah kategori';
             statsDiv.appendChild(catBadge);
 
-            // Distance badge di overlay (tambahkan setelah statsDiv)
+            // Distance badge di overlay (tambahkan setelah statsDiv) — klik untuk lihat rute
             const distanceDiv = document.createElement('div');
             distanceDiv.className = 'distance';
             distanceDiv.textContent = `${distance} km`;
+            distanceDiv.title = 'Show route';
+            distanceDiv.style.cursor = 'pointer';
+            distanceDiv.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showRoutePopup(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    photo.lat,
+                    photo.lon,
+                    photo.title.replace('File:', '')
+                );
+            };
             imgContainer.appendChild(distanceDiv);
 
             imgContainer.appendChild(statsDiv);
@@ -1562,86 +1887,10 @@
             link.href = `https://commons.wikimedia.org/wiki/${encodeURIComponent(photo.title)}`;
             link.textContent = photo.title.replace('File:', '').replace(/\.(jpg|jpeg|png|gif|svg)$/i, '');
             link.target = '_blank';
+            link.onclick = (e) => e.stopPropagation();
             titleDiv.appendChild(link);
             contentDiv.appendChild(titleDiv);
 
-            // Collapsible toggle button (langsung setelah title)
-            const metadataToggle = document.createElement('div');
-            metadataToggle.className = 'metadata-toggle';
-            metadataToggle.innerHTML = `
-    <div class="metadata-toggle-title">
-        <span>📊</span>
-        <span>Detail & Informasi</span>
-    </div>
-    <span class="metadata-toggle-icon collapsed">▶</span>
-`;
-
-            // Collapsible content wrapper
-            const metadataCollapsible = document.createElement('div');
-            metadataCollapsible.className = 'metadata-collapsible';
-
-            // Description (masuk ke dalam collapsible)
-            const desc = document.createElement('div');
-            desc.className = 'description';
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = details.description;
-            desc.textContent = tempDiv.textContent || tempDiv.innerText || 'Deskripsi tidak tersedia';
-            metadataCollapsible.appendChild(desc);
-
-            // Metadata section
-            const metadataDiv = document.createElement('div');
-            metadataDiv.className = 'photo-metadata';
-
-            // File usage
-            if (details.fileUsage.length > 0) {
-                const usageItem = document.createElement('div');
-                usageItem.className = 'metadata-item';
-                usageItem.innerHTML = '<span class="icon">🔄</span>';
-
-                const usageContent = document.createElement('div');
-                usageContent.className = 'metadata-content';
-
-                details.fileUsage.forEach(usage => {
-                    const usageLink = document.createElement('a');
-                    usageLink.className = 'metadata-link';
-                    usageLink.href = usage.url;
-                    usageLink.textContent = usage.title.length > 30 ? usage.title.substring(0, 30) + '...' : usage.title;
-                    usageLink.target = '_blank';
-                    usageLink.title = usage.title;
-                    usageContent.appendChild(usageLink);
-                });
-
-                usageItem.appendChild(usageContent);
-                metadataDiv.appendChild(usageItem);
-            }
-
-            // Categories
-            if (details.categories.length > 0) {
-                const catItem = document.createElement('div');
-                catItem.className = 'metadata-item';
-                catItem.innerHTML = '<span class="icon">🏷️</span>';
-
-                const catContent = document.createElement('div');
-                catContent.className = 'metadata-content';
-
-                details.categories.forEach(category => {
-                    const catLink = document.createElement('a');
-                    catLink.className = 'metadata-link';
-                    catLink.href = category.url;
-                    catLink.textContent = category.title.length > 25 ? category.title.substring(0, 25) + '...' : category.title;
-                    catLink.target = '_blank';
-                    catLink.title = category.title;
-                    catContent.appendChild(catLink);
-                });
-
-                catItem.appendChild(catContent);
-                metadataDiv.appendChild(catItem);
-            }
-
-            // Masukkan metadata ke dalam collapsible
-            metadataCollapsible.appendChild(metadataDiv);
-
-            // Author (masuk ke dalam collapsible)
             const authorDiv = document.createElement('div');
             authorDiv.className = 'author';
 
@@ -1666,7 +1915,138 @@
 
                 let authorUrl = details.authorUrl?.trim() || '';
 
-                // Jika tidak ada URL atau bukan URL lengkap, buat link ke User page
+                if (!authorUrl || !/^https?:\/\//i.test(authorUrl)) {
+                    const userName = (details.author || '').replace(/^user:/i, '').trim();
+                    authorUrl = `https://commons.wikimedia.org/wiki/User:${encodeURIComponent(userName)}`;
+                }
+
+                authorLink.href = authorUrl;
+                authorLink.textContent = details.author;
+                authorLink.target = '_blank';
+                authorLink.rel = 'noopener noreferrer';
+                authorLink.onclick = (e) => e.stopPropagation();
+
+                authorName.appendChild(authorLink);
+            } else {
+                authorName.textContent = details.author;
+            }
+
+            authorInfo.appendChild(authorName);
+            authorDiv.appendChild(authorInfo);
+            contentDiv.appendChild(authorDiv);
+
+            li.appendChild(contentDiv);
+
+            return li;
+        }
+
+        // Tampilkan detail informasi grid item (foto) melalui modal saat item diklik
+        function openPhotoModal(photo, details, distance) {
+            const title = document.getElementById('photo-modal-title');
+            title.textContent = photo.title.replace('File:', '').replace(/\.(jpg|jpeg|png|gif|svg)$/i, '');
+
+            const body = document.getElementById('photo-modal-body');
+            body.innerHTML = '';
+
+            const img = document.createElement('img');
+            img.src = details.imageUrl;
+            img.alt = photo.title.replace('File:', '');
+            img.style.cssText = 'width:100%; max-height:320px; object-fit:contain; border-radius:var(--radius); margin-bottom:1rem; background-color:var(--bg-secondary);';
+            img.onerror = () => img.src = placeholderImage;
+            body.appendChild(img);
+
+            const badgesRow = document.createElement('div');
+            badgesRow.style.cssText = 'display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;';
+            const distBadge = document.createElement('span');
+            distBadge.className = 'distance';
+            distBadge.style.position = 'static';
+            distBadge.textContent = `${distance} km`;
+            badgesRow.appendChild(distBadge);
+            body.appendChild(badgesRow);
+
+            const descEl = document.createElement('p');
+            descEl.style.cssText = 'margin-bottom:1rem; line-height:1.6;';
+            descEl.textContent = details.description ? (() => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = details.description;
+                return tempDiv.textContent || tempDiv.innerText || 'Deskripsi tidak tersedia';
+            })() : 'Deskripsi tidak tersedia';
+            body.appendChild(descEl);
+
+            const metadataDiv = document.createElement('div');
+            metadataDiv.className = 'photo-metadata';
+
+            if (details.fileUsage.length > 0) {
+                const usageItem = document.createElement('div');
+                usageItem.className = 'metadata-item';
+                usageItem.innerHTML = '<span class="icon">🔄</span>';
+
+                const usageContent = document.createElement('div');
+                usageContent.className = 'metadata-content';
+
+                details.fileUsage.forEach(usage => {
+                    const usageLink = document.createElement('a');
+                    usageLink.className = 'metadata-link';
+                    usageLink.href = usage.url;
+                    usageLink.textContent = usage.title.length > 30 ? usage.title.substring(0, 30) + '...' : usage.title;
+                    usageLink.target = '_blank';
+                    usageLink.title = usage.title;
+                    usageContent.appendChild(usageLink);
+                });
+
+                usageItem.appendChild(usageContent);
+                metadataDiv.appendChild(usageItem);
+            }
+
+            if (details.categories.length > 0) {
+                const catItem = document.createElement('div');
+                catItem.className = 'metadata-item';
+                catItem.innerHTML = '<span class="icon">🏷️</span>';
+
+                const catContent = document.createElement('div');
+                catContent.className = 'metadata-content';
+
+                details.categories.forEach(category => {
+                    const catLink = document.createElement('a');
+                    catLink.className = 'metadata-link';
+                    catLink.href = category.url;
+                    catLink.textContent = category.title.length > 25 ? category.title.substring(0, 25) + '...' : category.title;
+                    catLink.target = '_blank';
+                    catLink.title = category.title;
+                    catContent.appendChild(catLink);
+                });
+
+                catItem.appendChild(catContent);
+                metadataDiv.appendChild(catItem);
+            }
+
+            body.appendChild(metadataDiv);
+
+            const authorDiv = document.createElement('div');
+            authorDiv.className = 'author';
+            authorDiv.style.marginTop = '0.75rem';
+
+            const authorIcon = document.createElement('span');
+            authorIcon.className = 'author-icon';
+            authorIcon.textContent = '👤';
+            authorDiv.appendChild(authorIcon);
+
+            const authorInfo = document.createElement('div');
+            authorInfo.className = 'author-info';
+
+            const authorLabel = document.createElement('span');
+            authorLabel.className = 'author-label';
+            authorLabel.textContent = 'Pembuat:';
+            authorInfo.appendChild(authorLabel);
+
+            const authorName = document.createElement('span');
+            authorName.className = 'author-name';
+
+            if (details.authorUrl) {
+                const authorLink = document.createElement('a');
+
+                let authorUrl = details.authorUrl?.trim() || '';
+
                 if (!authorUrl || !/^https?:\/\//i.test(authorUrl)) {
                     const userName = (details.author || '').replace(/^user:/i, '').trim();
                     authorUrl = `https://commons.wikimedia.org/wiki/User:${encodeURIComponent(userName)}`;
@@ -1682,25 +2062,27 @@
                 authorName.textContent = details.author;
             }
 
-            // ... (kode author sebelumnya)
             authorInfo.appendChild(authorName);
             authorDiv.appendChild(authorInfo);
-            metadataCollapsible.appendChild(authorDiv);
+            body.appendChild(authorDiv);
 
-            // Actions (pindahkan ke dalam collapsible, setelah author)
             const actionsDiv = document.createElement('div');
             actionsDiv.className = 'card-actions';
+            actionsDiv.style.marginTop = '1rem';
 
             const routeBtn = document.createElement('button');
             routeBtn.className = 'route-btn';
             routeBtn.innerHTML = '🗺️ Rute';
-            routeBtn.onclick = () => showRoutePopup(
-                currentPosition.coords.latitude,
-                currentPosition.coords.longitude,
-                photo.lat,
-                photo.lon,
-                photo.title.replace('File:', '')
-            );
+            routeBtn.onclick = () => {
+                closeModal('photo-modal');
+                showRoutePopup(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    photo.lat,
+                    photo.lon,
+                    photo.title.replace('File:', '')
+                );
+            };
             actionsDiv.appendChild(routeBtn);
 
             const googleMapsBtn = document.createElement('button');
@@ -1712,22 +2094,9 @@
             );
             actionsDiv.appendChild(googleMapsBtn);
 
-            metadataCollapsible.appendChild(actionsDiv);
+            body.appendChild(actionsDiv);
 
-            // Toggle functionality
-            metadataToggle.onclick = () => {
-                const icon = metadataToggle.querySelector('.metadata-toggle-icon');
-                metadataCollapsible.classList.toggle('expanded');
-                icon.classList.toggle('collapsed');
-            };
-
-            // Tambahkan ke contentDiv
-            contentDiv.appendChild(metadataToggle);
-            contentDiv.appendChild(metadataCollapsible);
-
-            li.appendChild(contentDiv);
-
-            return li;
+            openModal('photo-modal');
         }
 
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
@@ -1815,56 +2184,145 @@
             }
         }
 
+        async function fetchCommonsCategory(qid) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=claims&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const entity = data.entities[qid];
+                const commonsClaim = entity?.claims?.P373;
+                if (commonsClaim && commonsClaim.length > 0) {
+                    const categoryName = commonsClaim[0].mainsnak.datavalue.value;
+                    return `https://commons.wikimedia.org/wiki/Category:${encodeURIComponent(categoryName)}`;
+                }
+                return null;
+            } catch (error) {
+                console.error(`Error fetching Commons category for ${qid}:`, error);
+                return null;
+            }
+        }
+
         // Ganti fungsi updateLocationDisplay
-        async function updateLocationDisplay(lat, lon, locationParts) {
+        async function updateLocationDisplay(lat, lon, locationData) {
+            const { displayName, parts: locationParts } = locationData;
             const coordsDisplay = document.querySelector('.coordinates-display');
             coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+            document.getElementById('location-retry-container').innerHTML = '';
 
-            const detailsContent = document.getElementById('location-details-content');
+            document.getElementById('address-label').textContent = displayName;
+            document.getElementById('address-row').style.display = 'flex';
+
+            const detailsContent = document.getElementById('location-modal-body');
             detailsContent.innerHTML = '';
 
             for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
+
                 const span = document.createElement('span');
                 const labels = {
-                    'road': 'Jalan',
-                    'postcode': 'Kode Pos',
-                    'suburb': 'Kelurahan',
-                    'city': 'Kota',
-                    'state': 'Provinsi',
-                    'country': 'Negara'
+                    'road': 'Jalan', 'postcode': 'Kode Pos',
+                    'suburb': 'Kecamatan/Kelurahan', 'town': 'Kota Kecil',
+                    'village': 'Desa', 'city': 'Kota',
+                    'state': 'Provinsi', 'country': 'Negara'
                 };
                 span.textContent = `${labels[part.type] || part.type}: ${part.name}`;
                 div.appendChild(span);
 
                 if (part.type !== 'road' && part.type !== 'postcode') {
-                    const wdBtn = document.createElement('button');
-                    wdBtn.textContent = part.wikidataId ? `Wikidata (${part.wikidataId})` : 'Wikidata (T/A)';
-                    wdBtn.onclick = () => {
-                        if (part.wikidataId) {
-                            window.open(`https://www.wikidata.org/wiki/${part.wikidataId}`, '_blank');
-                        } else {
-                            window.open(`https://www.wikidata.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
-                        }
-                    };
-                    div.appendChild(wdBtn);
 
-                    const wvBtn = document.createElement('button');
-                    wvBtn.textContent = 'Wikivoyage';
-                    wvBtn.onclick = async () => {
-                        if (part.wikidataId) {
-                            const directLink = await fetchWikivoyageSitelink(part.wikidataId, currentLang);
-                            if (directLink) {
-                                window.open(directLink, '_blank');
-                            } else {
-                                window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                    // Multiple Wikidata chips kalau ada beberapa kandidat yang tersisa setelah disambiguasi
+                    if (part.allWikidataMatches && part.allWikidataMatches.length > 0) {
+                        const allMatchesContainer = document.createElement('div');
+                        allMatchesContainer.style.cssText =
+                            'display:flex; flex-wrap:wrap; gap:0.5rem; width:100%; margin-top:0.5rem;';
+
+                        part.allWikidataMatches.forEach((match, index) => {
+                            const wdBtn = document.createElement('button');
+                            wdBtn.className = 'location-action-btn';
+                            wdBtn.title = `${match.label || 'Tanpa label'} — ${match.description || 'Tanpa deskripsi'}`;
+
+                            const wdLabel = document.createElement('span');
+                            wdLabel.style.cssText = 'display:flex; flex-direction:column; align-items:flex-start; gap:0.15rem;';
+
+                            const idSpan = document.createElement('span');
+                            idSpan.textContent = match.id;
+                            idSpan.style.fontWeight = '600';
+                            wdLabel.appendChild(idSpan);
+
+                            if (match.description) {
+                                const descSpan = document.createElement('small');
+                                descSpan.textContent = match.description;
+                                descSpan.style.cssText = 'font-size:0.7rem; opacity:0.8; line-height:1.2;';
+                                wdLabel.appendChild(descSpan);
                             }
+
+                            wdBtn.appendChild(wdLabel);
+                            wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${match.id}`);
+
+                            if (index === 0) {
+                                wdBtn.style.borderColor = 'var(--success-color)';
+                                wdBtn.style.borderWidth = '2px';
+                                wdBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+                            }
+
+                            allMatchesContainer.appendChild(wdBtn);
+                        });
+
+                        div.appendChild(allMatchesContainer);
+
+                    } else {
+                        const wdBtn = document.createElement('button');
+                        wdBtn.className = 'location-action-btn';
+                        wdBtn.textContent = 'Wikidata (T/A)';
+                        wdBtn.disabled = true;
+                        div.appendChild(wdBtn);
+                    }
+
+                    // ===== Tombol Wikivoyage =====
+                    const primaryId = part.wikidataIds?.[0] ?? null;
+                    const wvBtn = document.createElement('button');
+                    wvBtn.className = 'location-action-btn';
+                    wvBtn.textContent = 'Wikivoyage';
+                    wvBtn.title = primaryId
+                        ? `Buka halaman Wikivoyage untuk ${part.name}`
+                        : `Cari "${part.name}" di Wikivoyage`;
+                    wvBtn.onclick = async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let targetUrl;
+                        if (primaryId) {
+                            const directLink = await fetchWikivoyageSitelink(primaryId, currentLang);
+                            targetUrl = directLink ||
+                                `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
                         } else {
-                            window.open(`https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`, '_blank');
+                            targetUrl = `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
                         }
+                        safeOpenLink(targetUrl);
                     };
                     div.appendChild(wvBtn);
+
+                    // ===== Tombol Wikimedia Commons =====
+                    const commonsBtn = document.createElement('button');
+                    commonsBtn.className = 'location-action-btn';
+                    commonsBtn.textContent = 'Commons';
+                    commonsBtn.title = primaryId
+                        ? `Buka kategori Wikimedia Commons untuk ${part.name}`
+                        : `Cari "${part.name}" di Wikimedia Commons`;
+                    commonsBtn.onclick = async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let targetUrl;
+                        if (primaryId) {
+                            const directLink = await fetchCommonsCategory(primaryId);
+                            targetUrl = directLink ||
+                                `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        } else {
+                            targetUrl = `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        }
+                        safeOpenLink(targetUrl);
+                    };
+                    div.appendChild(commonsBtn);
                 }
 
                 detailsContent.appendChild(div);
@@ -1913,8 +2371,7 @@
                                 console.warn('Error getting location details:', error);
                                 // Continue even if location details fail
                                 coordsDisplay.textContent = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-                                const detailsContent = document.getElementById('location-details-content');
-                                detailsContent.innerHTML = '<p style="color: var(--warning-color); padding: 0.5rem;">Gagal memuat detail lokasi, melanjutkan pencarian foto...</p>';
+                                document.getElementById('address-row').style.display = 'none';
                             }
 
                             // Fetch photos
@@ -1952,6 +2409,15 @@
                         coordsDisplay.style.color = 'var(--danger-color)'; //disini
                         updatePermissionStatus('denied');
                         console.error('Geolocation error:', error);
+                        document.getElementById('address-row').style.display = 'none';
+                        const retryContainer = document.getElementById('location-retry-container');
+                        retryContainer.innerHTML = `
+                <div style="text-align: center; padding: 1rem;">
+                    <button onclick="getLocation()" style="background-color: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
+                        🔄 Coba Lagi
+                    </button>
+                </div>
+            `;
                         reject(error);
                     },
                     {
@@ -2054,6 +2520,23 @@
                 console.error('Error during initialization:', error);
             }
         };
+
+        document.getElementById('open-location-modal-btn').addEventListener('click', () => openModal('location-modal'));
+
+        // Tutup modal saat klik backdrop atau tombol close — berlaku untuk semua .modal di halaman.
+        document.querySelectorAll('.modal').forEach((modalEl) => {
+            modalEl.addEventListener('click', (e) => {
+                if (e.target === modalEl) closeModal(modalEl.id);
+            });
+        });
+        document.querySelectorAll('.modal-close').forEach((btn) => {
+            btn.addEventListener('click', () => closeModal(btn.dataset.modal));
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach((modalEl) => closeModal(modalEl.id));
+            }
+        });
 
     </script>
     <div class="scroll-to-top" id="scrollToTop" title="Kembali ke atas">
