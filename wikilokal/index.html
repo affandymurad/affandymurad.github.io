@@ -22,8 +22,12 @@
             --card-bg: #ffffff;
             --border-color: #e5e7eb;
             --bg-secondary: #f3f4f6;
-            --radius: 8px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --radius-lg: 22px;
+            --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
         }
 
         [data-theme="dark"] {
@@ -39,6 +43,9 @@
             --card-bg: #374151;
             --border-color: #4b5563;
             --bg-secondary: #2d3748;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
         }
 
         /* ===== FONT UPGRADE ===== */
@@ -50,37 +57,53 @@
             box-sizing: border-box;
         }
 
+        html {
+            background-color: var(--bg-color);
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
+            background: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.06), transparent 45%),
+                radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.06), transparent 45%);
+            background-attachment: fixed;
             color: var(--text-color);
             line-height: 1.6;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px;
             transition: background-color 0.3s, color 0.3s;
             letter-spacing: -0.011em;
         }
 
         h1 {
             font-family: 'Inter', sans-serif;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
+            color: var(--text-color);
             font-weight: 700;
             font-size: 1.75rem;
-            text-align: center;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--border-color);
             letter-spacing: -0.025em;
         }
 
         h2 {
             font-family: 'Inter', sans-serif;
-            color: var(--primary-color);
-            font-size: 1.4rem;
+            color: var(--text-color);
+            font-size: 1.15rem;
             margin-bottom: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2::before {
+            content: "";
+            width: 6px;
+            height: 1.1rem;
+            border-radius: 4px;
+            background: linear-gradient(180deg, var(--primary-color), var(--accent-color));
+            display: inline-block;
         }
 
         h3 {
@@ -90,15 +113,16 @@
 
         #controls {
             background-color: var(--card-bg);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: 1.5rem;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            box-shadow: var(--shadow-md);
             margin-bottom: 1.5rem;
             display: grid;
             grid-template-columns: repeat(2, auto) 1fr auto;
             gap: 1rem;
             align-items: center;
             border: 1px solid var(--border-color);
+            height: 100%;
         }
 
         @media (max-width: 968px) {
@@ -263,16 +287,16 @@
         }
 
         button {
-            padding: 0.65rem 1.25rem;
+            padding: 0.7rem 1.4rem;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius-sm);
             font-family: inherit;
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -282,8 +306,8 @@
 
         button:hover {
             background-color: var(--secondary-color);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+            transform: translateY(-2px);
         }
 
         button:active {
@@ -299,9 +323,11 @@
         #location-status {
             margin-bottom: 1.5rem;
             background-color: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 1rem;
-            box-shadow: var(--shadow);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            height: 100%;
         }
 
         .coordinates-display {
@@ -324,62 +350,42 @@
             font-size: 1.2rem;
         }
 
-        .location-header {
+        .address-row {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            user-select: none;
-            padding: 0.75rem;
-            border-radius: var(--radius);
-            transition: background-color 0.2s;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
             background-color: var(--bg-secondary);
+            animation: cardFadeInUp 0.3s ease both;
         }
 
-        .location-header:hover {
-            background-color: var(--border-color);
-        }
-
-        .location-header h3 {
-            font-size: 1rem;
-            font-weight: 600;
+        .address-label {
+            font-size: 0.9rem;
             color: var(--text-color);
-            margin: 0;
-        }
-
-        .toggle-icon {
-            font-size: 1rem;
-            transition: transform 0.3s ease;
-            color: var(--text-light);
-            font-weight: bold;
-        }
-
-        .toggle-icon.collapsed {
-            transform: rotate(-90deg);
-        }
-
-        .location-details {
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-
-        .location-details.hidden {
-            max-height: 0;
-            opacity: 0;
+            line-height: 1.5;
+            flex: 1;
+            min-width: 180px;
         }
 
         .location-part {
-            margin: 0.75rem 0;
+            margin: 0.6rem 0;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
             gap: 0.5rem;
-            padding: 0.5rem;
+            padding: 0.75rem;
             background-color: var(--bg-secondary);
-            border-radius: var(--radius);
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .location-part:hover {
+            border-color: var(--border-color);
+            transform: translateX(2px);
         }
 
         .location-part span {
@@ -422,9 +428,21 @@
         #results {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.25rem;
+            gap: 1.5rem;
             padding: 0;
             list-style: none;
+        }
+
+        @keyframes cardFadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (min-width: 769px) and (max-width: 1200px) {
@@ -447,44 +465,165 @@
 
         .article-card {
             background-color: var(--card-bg);
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border-color);
             max-width: 100%;
             margin: 0;
+            animation: cardFadeInUp 0.35s ease both;
+            cursor: pointer;
         }
 
         .article-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
             border-color: var(--primary-color);
         }
 
-        .article-card img {
+        .article-card:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        .article-img-wrap {
+            position: relative;
             width: 100%;
-            height: 150px;
+            height: 160px;
+            overflow: hidden;
+            background-color: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+
+        .article-img-wrap::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+            background-size: 200% 100%;
+            animation: imgShimmer 1.4s ease-in-out infinite;
+        }
+
+        .article-img-wrap.loaded::before {
+            display: none;
+        }
+
+        @keyframes imgShimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .article-img-wrap > img {
+            position: relative;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-right: 1px solid var(--border-color);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .article-img-wrap > img.loaded {
+            opacity: 1;
+        }
+
+        .article-img-wrap.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .article-img-wrap.placeholder > img {
+            width: 45%;
+            height: 45%;
+            object-fit: contain;
+            opacity: 0.45;
+        }
+
+        .article-img-wrap.placeholder > img.loaded {
+            opacity: 0.45;
+        }
+
+        .img-overlay-badges {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0.6rem 0.7rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+        }
+
+        .img-overlay-badges .distance,
+        .img-overlay-badges .language-badge {
+            background: rgba(17, 24, 39, 0.55);
+            border-color: rgba(255, 255, 255, 0.85);
+            color: #fff;
+            backdrop-filter: blur(2px);
+        }
+
+        .img-overlay-badges .distance {
+            cursor: pointer;
+        }
+
+        .img-overlay-badges .distance:hover,
+        .img-overlay-badges .language-badge:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .img-overlay-badges .overlay-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .img-overlay-badges .commons-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-color: rgba(255, 255, 255, 0.85);
+            background: rgba(17, 24, 39, 0.55);
+            backdrop-filter: blur(2px);
+        }
+
+        .img-overlay-badges .commons-icon-btn img {
+            width: 16px;
+            height: 16px;
+            filter: brightness(0) invert(1);
+        }
+
+        .img-overlay-badges .commons-icon-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
         .article-content {
-            padding: 1rem;
+            padding: 1.25rem;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.6rem;
         }
 
         .article-card a {
             text-decoration: none;
             color: var(--primary-color);
             font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.15rem;
+            line-height: 1.35;
+            margin-bottom: 0.25rem;
             display: block;
             transition: color 0.2s;
         }
@@ -514,63 +653,6 @@
             color: white;
         }
 
-        .description {
-            font-size: 0.9rem;
-            color: var(--text-color);
-            line-height: 1.5;
-            margin-bottom: 0.5rem;
-            overflow: visible;
-            text-overflow: clip;
-        }
-
-        .description.collapsed {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .description.expanded {
-            display: block;
-        }
-
-        .description-toggle {
-            display: inline-block;
-            margin-top: 0.5rem;
-            padding: 0.35rem 0.75rem;
-            background-color: var(--bg-secondary);
-            color: var(--primary-color);
-            border: 1px solid var(--border-color);
-            border-radius: 100px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-        }
-
-        .description-toggle:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .details-section.collapsed {
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-            margin: 0;
-        }
-
-        .details-section.expanded {
-            max-height: 2000px;
-            opacity: 1;
-            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-            margin-top: 0.5rem;
-        }
-
         .distance {
             display: inline-flex;
             align-items: center;
@@ -598,47 +680,17 @@
             font-size: 0.9rem;
         }
 
-        .title-badges-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
         .title-wrapper {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .badges-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-shrink: 0;
+            min-width: 0;
         }
 
         @media (max-width: 768px) {
-            .title-badges-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .badges-wrapper {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
             .article-card {
                 flex-direction: column;
             }
 
-            .article-card img {
-                width: 100%;
+            .article-img-wrap {
                 height: 180px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
             }
         }
 
@@ -721,6 +773,18 @@
         .google-maps-btn::before {
             content: "🌍";
             margin-right: 0.5rem;
+        }
+
+        .commons-btn {
+            background-color: #36c;
+            flex: 1;
+        }
+
+        .commons-btn img {
+            width: 1.1em;
+            height: 1.1em;
+            margin-right: 0.5rem;
+            filter: brightness(0) invert(1);
         }
 
         .loading,
@@ -830,11 +894,8 @@
                 flex-direction: column;
             }
 
-            .article-card img {
-                width: 100%;
+            .article-img-wrap {
                 height: 180px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
             }
 
             .article-content {
@@ -898,14 +959,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.75rem;
             background-color: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem 1.75rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
             flex-wrap: wrap;
             gap: 1rem;
             border: 1px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
         }
 
         .header-left {
@@ -924,10 +986,15 @@
             background-size: 80%;
             background-position: center;
             background-repeat: no-repeat;
-            border-radius: 12px;
+            border-radius: var(--radius-sm);
             display: block;
             flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .wiki-logo:hover {
+            transform: scale(1.05) rotate(-2deg);
         }
 
         .header-title {
@@ -1155,58 +1222,23 @@
             display: flex;
         }
 
-        .wiktionary-header {
+        .wiktionary-section-title {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             gap: 0.5rem;
-            cursor: pointer;
-            user-select: none;
-            padding: 0.5rem;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-            background-color: var(--bg-secondary);
-        }
-
-        .wiktionary-header:hover {
-            background-color: var(--border-color);
-        }
-
-        .wiktionary-header span {
-            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
             color: var(--text-color);
             font-weight: 600;
-        }
-
-        .wiktionary-toggle {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            transition: transform 0.3s ease;
-        }
-
-        .wiktionary-toggle.collapsed {
-            transform: rotate(-90deg);
         }
 
         .wiktionary-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-top: 0.5rem;
             padding: 0.5rem;
             background-color: var(--bg-secondary);
-            border-radius: 4px;
-            max-height: 500px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease, margin 0.3s ease;
-            opacity: 1;
-        }
-
-        .wiktionary-buttons.hidden {
-            max-height: 0;
-            opacity: 0;
-            margin-top: 0;
-            padding: 0;
+            border-radius: var(--radius-sm);
         }
 
         .empty-state {
@@ -1532,13 +1564,14 @@
             <h2>Location Status</h2>
             <div id="location-status">
                 <div class="coordinates-display"></div>
-                <div class="location-header" onclick="toggleLocationDetails()">
-                    <h3><img src="images/ic_nominatim.svg" alt="Nominatim"
-                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em; margin-bottom: 0.35em;">
-                        Location Details</h3>
-                    <span class="toggle-icon collapsed">▶</span>
+                <div class="address-row" id="address-row" style="display:none;">
+                    <span class="address-label" id="address-label"></span>
+                    <button class="location-action-btn" id="open-location-modal-btn" title="View full location details">
+                        <img src="images/ic_nominatim.svg" alt="Nominatim" style="width:1.1em; height:1.1em;">
+                        <span>View Details</span>
+                    </button>
                 </div>
-                <div class="location-details hidden" id="location-details-content"></div>
+                <div id="location-retry-container"></div>
             </div>
         </section>
     </div>
@@ -1546,11 +1579,31 @@
         <h2>Search Results<span id="article-count"></span></h2>
         <ul id="results"></ul>
     </section>
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><img src="images/ic_nominatim.svg" alt="Nominatim"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 0.4em;">Location
+                    Details</h2>
+                <button class="modal-close" data-modal="location-modal">&times;</button>
+            </div>
+            <div id="location-modal-body"></div>
+        </div>
+    </div>
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="article-modal-title"></h2>
+                <button class="modal-close" data-modal="article-modal">&times;</button>
+            </div>
+            <div id="article-modal-body"></div>
+        </div>
+    </div>
     <div id="guide-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="guide-title">📖 User Guide</h2>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close" data-modal="guide-modal">&times;</button>
             </div>
             <div class="guide-section" data-section="disclaimer">
                 <h3 id="guide-disclaimer-title">⚠️ Location Usage Disclaimer</h3>
@@ -1629,7 +1682,7 @@
         const resultsList = document.getElementById('results');
         let currentLang = 'id'; // Default to English
         let currentPosition = null;
-        const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
+        const placeholderImage = 'wikilokal.png';
 
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -1711,113 +1764,192 @@
             }
         }
 
-        function toggleLocationDetails() {
-            const detailsContent = document.getElementById('location-details-content');
-            const toggleIcon = document.querySelector('.toggle-icon');
-            detailsContent.classList.toggle('hidden');
-            toggleIcon.classList.toggle('collapsed');
-            toggleIcon.textContent = detailsContent.classList.contains('hidden') ? '▶' : '▼';
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // Keyword administratif lokal: SUBURB & VILLAGE memakai set yang SAMA (gabungan),
+        // karena Nominatim/Wikidata tidak konsisten membedakan kecamatan/kelurahan/desa
+        // antara address.suburb dan address.village.
+        const ADMIN_LOCAL_KEYWORDS = [
+            "subdistrict", "urban village", "district", "administrative",
+            "kecamatan", "kelurahan", "village", "desa"
+        ];
+
+        function isAdministrative(desc) {
+            if (!desc) return false;
+            const d = desc.toLowerCase();
+            return (
+                ADMIN_LOCAL_KEYWORDS.some(k => d.includes(k)) ||
+                d.includes("city") ||
+                d.includes("kota") ||
+                d.includes("town") ||
+                d.includes("municipality") ||
+                d.includes("settlement") ||
+                d.includes("province") ||
+                d.includes("provinsi") ||
+                d.includes("region") ||
+                d.includes("country") ||
+                d.includes("nation")
+            );
+        }
+
+        function matchEntityByType(entity, type) {
+            if (!entity?.description) return false;
+            const desc = entity.description.toLowerCase();
+            const typeKeywords = {
+                suburb: ADMIN_LOCAL_KEYWORDS,
+                village: ADMIN_LOCAL_KEYWORDS,
+                town: ["town", "city", "kota", "settlement"],
+                city: ["city", "kota", "municipality"],
+                state: ["state", "province", "region", "provinsi"],
+                country: ["country", "nation", "sovereign state"]
+            };
+            return typeKeywords[type]?.some(k => desc.includes(k)) || false;
+        }
+
+        async function searchWikidataCandidates(name) {
+            const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.search || [];
+        }
+
+        // Filter & disambiguasi berbasis teks (Tahap 4), prioritas berhenti di hasil pertama yang tidak kosong.
+        function filterCandidatesByText(results, type, name) {
+            const typeMatched = results.filter(r => matchEntityByType(r, type));
+            if (typeMatched.length) return typeMatched;
+
+            const exactGeo = results.filter(r =>
+                r.label?.toLowerCase() === name.toLowerCase() && isAdministrative(r.description)
+            );
+            if (exactGeo.length) return exactGeo;
+
+            const geoOnly = results.filter(r => isAdministrative(r.description));
+            if (geoOnly.length) return geoOnly;
+
+            return [];
+        }
+
+        async function fetchWikidataEntityCoords(qid) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${qid}&property=P625&format=json&origin=*`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const value = data.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
+                return value ? { lat: value.latitude, lon: value.longitude } : null;
+            } catch (error) {
+                console.error('Error fetching Wikidata entity coordinates:', error);
+                return null;
+            }
+        }
+
+        // Tahap 5: disambiguasi koordinat kalau Tahap 4 masih menyisakan >1 kandidat.
+        async function disambiguateCandidatesByCoordinate(candidates, lat, lon) {
+            if (candidates.length <= 1) return candidates;
+            const withDistance = await Promise.all(
+                candidates.map(async (c) => {
+                    const coords = await fetchWikidataEntityCoords(c.id);
+                    if (!coords) return { ...c, distance: Infinity };
+                    return { ...c, distance: parseFloat(calculateDistance(lat, lon, coords.lat, coords.lon)) };
+                })
+            );
+            const withValidCoords = withDistance.filter(c => c.distance !== Infinity);
+            if (!withValidCoords.length) return candidates;
+            withValidCoords.sort((a, b) => a.distance - b.distance);
+            return [withValidCoords[0]];
         }
 
         async function getLocationDetails(lat, lon) {
             try {
-                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=${currentLang}`;
                 const nominatimResponse = await fetch(nominatimUrl, {
-                    headers: { 'User-Agent': 'WikiLokal/1.0', 'Accept-Language': currentLang }
+                    headers: { 'User-Agent': 'WikiLokal/1.0' }
                 });
                 const data = await nominatimResponse.json();
-                if (!data.address) return [{ name: 'Location unknown', wikidataId: null }];
-                const { road, postcode, city, state, country, suburb, town, village } = data.address;
-                const locationParts = [
-                    { name: road, type: 'road' },
-                    { name: postcode, type: 'postcode' },
-                    { name: suburb, type: 'suburb' },
-                    { name: town, type: 'town' },
-                    { name: village, type: 'village' },
-                    { name: city, type: 'city' },
-                    { name: state, type: 'state' },
-                    { name: country, type: 'country' }
-                ].filter(part => part.name);
-
-                function isAdministrative(desc) {
-                    if (!desc) return false;
-                    const d = desc.toLowerCase();
-                    return (
-                        d.includes("subdistrict") ||
-                        d.includes("urban village") ||
-                        d.includes("district") ||
-                        d.includes("administrative") ||
-                        d.includes("kecamatan") ||
-                        d.includes("kelurahan") ||
-                        d.includes("city") ||
-                        d.includes("kota") ||
-                        d.includes("town") ||
-                        d.includes("village") ||
-                        d.includes("desa") ||
-                        d.includes("municipality") ||
-                        d.includes("settlement") ||
-                        d.includes("province") ||
-                        d.includes("provinsi") ||
-                        d.includes("region") ||
-                        d.includes("country") ||
-                        d.includes("nation")
-                    );
+                if (!data.address) {
+                    return { displayName: 'Location unknown', parts: [] };
                 }
 
-                function matchEntityByType(entity, type) {
-                    if (!entity?.description) return false;
-                    const desc = entity.description.toLowerCase();
-                    const typeKeywords = {
-                        suburb: ["subdistrict", "urban village", "district", "administrative", "kecamatan", "kelurahan"],
-                        town: ["town", "city", "kota", "settlement"],
-                        village: ["village", "urban village", "desa", "kelurahan"],
-                        city: ["city", "kota", "municipality"],
-                        state: ["state", "province", "region", "provinsi"],
-                        country: ["country", "nation", "sovereign state"]
-                    };
-                    return typeKeywords[type]?.some(k => desc.includes(k)) || false;
-                }
+                const displayName = data.display_name || 'Location unknown';
+                const { road, postcode, suburb, town, village, city, municipality, state, province, country } = data.address;
+                const osmType = data.osm_type;
+                const osmId = data.osm_id;
 
-                // Mengembalikan semua entitas Wikidata yang bersifat administratif (bisa lebih dari 1)
-                async function findAdministrativeWikidataMatches(name, type) {
-                    const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    const results = data.search || [];
-                    if (!results.length) return [];
+                const locationParts = [];
+                if (road) locationParts.push({ name: road, type: 'road' });
+                if (postcode) locationParts.push({ name: postcode, type: 'postcode' });
+                if (suburb) locationParts.push({ name: suburb, type: 'suburb' });
+                if (town) locationParts.push({ name: town, type: 'town' });
+                if (village) locationParts.push({ name: village, type: 'village' });
+                // municipality hanya fallback CITY kalau suburb & town tidak ada
+                if (!suburb && !town && municipality) locationParts.push({ name: municipality, type: 'city' });
+                if (city) locationParts.push({ name: city, type: 'city' });
+                const stateOrProvince = state || province;
+                if (stateOrProvince) locationParts.push({ name: stateOrProvince, type: 'state' });
+                if (country) locationParts.push({ name: country, type: 'country' });
 
-                    // Prioritas 1: cocok tipe + administratif
-                    const typeMatched = results.filter(r => matchEntityByType(r, type));
-                    if (typeMatched.length) return typeMatched;
-
-                    // Prioritas 2: label exact + administratif
-                    const exactGeo = results.filter(r =>
-                        r.label?.toLowerCase() === name.toLowerCase() &&
-                        isAdministrative(r.description)
-                    );
-                    if (exactGeo.length) return exactGeo;
-
-                    // Prioritas 3: administratif saja (tanpa syarat label)
-                    const geoOnly = results.filter(r => isAdministrative(r.description));
-                    if (geoOnly.length) return geoOnly;
-
-                    // Tidak ada yang administratif — kembalikan kosong
-                    return [];
-                }
+                // Nama-nama tetangga (city/town/village/state) dipakai untuk menyempitkan kandidat SUBURB.
+                const parentNamesAll = locationParts
+                    .filter(p => ['city', 'town', 'village', 'state'].includes(p.type))
+                    .map(p => p.name);
 
                 const detailedParts = await Promise.all(
                     locationParts.map(async (part) => {
                         if (part.type === 'road' || part.type === 'postcode') {
                             return { ...part, wikidataIds: [] };
                         }
-                        const entities = await findAdministrativeWikidataMatches(part.name, part.type);
-                        return { ...part, wikidataIds: entities.map(e => e.id) };
+
+                        const results = await searchWikidataCandidates(part.name);
+                        if (!results.length) return { ...part, wikidataIds: [] };
+
+                        let candidates = filterCandidatesByText(results, part.type, part.name);
+                        if (!candidates.length) return { ...part, wikidataIds: [] };
+
+                        if (part.type === 'suburb') {
+                            if (candidates.length > 1) {
+                                const parentNames = parentNamesAll.filter(n => n !== part.name);
+                                const narrowed = candidates.filter(c =>
+                                    parentNames.some(pn => c.description?.toLowerCase().includes(pn.toLowerCase()))
+                                );
+                                if (narrowed.length) candidates = narrowed;
+                            }
+                            if (candidates.length > 1) {
+                                const exact = candidates.find(c => c.label?.toLowerCase() === part.name.toLowerCase());
+                                candidates = [exact || candidates[0]];
+                            }
+                        } else if (candidates.length > 1) {
+                            candidates = await disambiguateCandidatesByCoordinate(candidates, lat, lon);
+                        }
+
+                        return { ...part, wikidataIds: candidates.map(c => c.id) };
                     })
                 );
-                return detailedParts;
+
+                // Tahap 6: Q untuk ROAD lewat OSM (osm_type/osm_id), bukan Wikidata search.
+                if (road && osmType && osmId) {
+                    try {
+                        const osmUrl = `https://api.openstreetmap.org/api/0.6/${osmType}/${osmId}.json`;
+                        const osmResponse = await fetch(osmUrl);
+                        const osmData = await osmResponse.json();
+                        const roadWikidata = osmData.elements?.[0]?.tags?.wikidata;
+                        if (roadWikidata) {
+                            const roadPart = detailedParts.find(p => p.type === 'road');
+                            if (roadPart) roadPart.wikidataIds = [roadWikidata];
+                        }
+                    } catch (error) {
+                        console.error('Error fetching OSM element for road wikidata:', error);
+                    }
+                }
+
+                return { displayName, parts: detailedParts };
             } catch (error) {
                 console.error('Error retrieving location details:', error);
-                return [{ name: 'Failed to retrieve location details', wikidataId: null }];
+                return { displayName: 'Failed to retrieve location details', parts: [] };
             }
         }
 
@@ -1927,88 +2059,84 @@
 
                 const li = document.createElement('li');
                 li.className = 'article-card';
+                li.tabIndex = 0;
+                li.setAttribute('role', 'button');
+                li.setAttribute('aria-label', `View details for ${article.title}`);
+                li.onclick = () => openArticleModal(article, details, distance);
+                li.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openArticleModal(article, details, distance);
+                    }
+                };
+
+                const imgWrap = document.createElement('div');
+                imgWrap.className = 'article-img-wrap';
+                if (!details.image || details.image === placeholderImage) {
+                    imgWrap.classList.add('placeholder');
+                }
                 const img = document.createElement('img');
-                img.src = details.image;
                 img.alt = article.title;
-                img.onerror = () => img.src = placeholderImage;
-                li.appendChild(img);
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.referrerPolicy = 'no-referrer';
+                img.onload = () => {
+                    img.classList.add('loaded');
+                    imgWrap.classList.add('loaded');
+                };
+                img.onerror = () => {
+                    if (img.dataset.fallbackApplied) {
+                        // Placeholder juga gagal dimuat — hentikan agar tidak retry tanpa henti.
+                        imgWrap.classList.add('loaded');
+                        return;
+                    }
+                    img.dataset.fallbackApplied = 'true';
+                    imgWrap.classList.add('placeholder');
+                    img.src = placeholderImage;
+                };
+                img.src = details.image || placeholderImage;
+                imgWrap.appendChild(img);
 
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'article-content';
-
-                const titleContainer = document.createElement('div');
-                titleContainer.className = 'title-badges-container';
-                const titleWrapper = document.createElement('div');
-                titleWrapper.className = 'title-wrapper';
-                const link = document.createElement('a');
-                link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
-                link.target = '_blank';
-                link.style.cssText = 'display:inline-flex; align-items:center; gap:0.4em; font-size:1.2rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
-                const iconImg = document.createElement('img');
-                iconImg.src = 'images/ic_wikipedia.svg';
-                iconImg.style.cssText = 'width:1.3em; height:1.3em;';
-                link.appendChild(iconImg);
-                link.appendChild(document.createTextNode(article.title));
-                link.onmouseover = () => link.style.color = 'var(--secondary-color)';
-                link.onmouseout = () => link.style.color = 'var(--primary-color)';
-                titleWrapper.appendChild(link);
-                titleContainer.appendChild(titleWrapper);
-
-                const badgesWrapper = document.createElement('div');
-                badgesWrapper.className = 'badges-wrapper';
+                const overlayBadges = document.createElement('div');
+                overlayBadges.className = 'img-overlay-badges';
                 const dist = document.createElement('div');
                 dist.className = 'distance';
                 dist.textContent = `${distance} km`;
-                badgesWrapper.appendChild(dist);
-                const langBadge = document.createElement('span');
-                langBadge.className = 'language-badge';
-                langBadge.textContent = currentLang.toUpperCase();
-                badgesWrapper.appendChild(langBadge);
+                dist.title = 'Show route';
+                dist.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showRoutePopup(
+                        currentPosition.coords.latitude,
+                        currentPosition.coords.longitude,
+                        article.lat,
+                        article.lon,
+                        article.title
+                    );
+                };
+                overlayBadges.appendChild(dist);
 
-                // ===== Wikimedia Commons Button (Icon Only) =====
+                const overlayRight = document.createElement('div');
+                overlayRight.className = 'overlay-right';
+
                 const commonsBtn = document.createElement('button');
                 commonsBtn.className = 'commons-icon-btn';
                 commonsBtn.title = details.wikidataId
                     ? `Open Wikimedia Commons category for ${article.title}`
                     : `Search "${article.title}" on Wikimedia Commons`;
-                commonsBtn.style.cssText = `
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 32px;
-                    height: 32px;
-                    padding: 0;
-                    border-radius: 6px;
-                    border: 2px solid var(--primary-color);
-                    background: transparent;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                `;
 
                 const commonsIcon = document.createElement('img');
                 commonsIcon.src = 'images/ic_commons.svg';
                 commonsIcon.alt = 'Commons';
-                commonsIcon.style.cssText = 'width: 18px; height: 18px;';
                 commonsIcon.onerror = function () {
                     // Fallback ke emoji jika icon tidak ditemukan
                     this.style.display = 'none';
                     const emoji = document.createElement('span');
                     emoji.textContent = '📷';
-                    emoji.style.fontSize = '16px';
+                    emoji.style.fontSize = '14px';
                     this.parentNode.appendChild(emoji);
                 };
-
                 commonsBtn.appendChild(commonsIcon);
-
-                // Hover effect
-                commonsBtn.onmouseover = () => {
-                    commonsBtn.style.background = 'var(--primary-color)';
-                    commonsIcon.style.filter = 'brightness(0) invert(1)';
-                };
-                commonsBtn.onmouseout = () => {
-                    commonsBtn.style.background = 'transparent';
-                    commonsIcon.style.filter = 'none';
-                };
 
                 commonsBtn.onclick = async (e) => {
                     e.preventDefault();
@@ -2023,132 +2151,38 @@
                     }
                     safeOpenLink(targetUrl);
                 };
+                overlayRight.appendChild(commonsBtn);
 
-                badgesWrapper.appendChild(commonsBtn);
+                const langBadge = document.createElement('span');
+                langBadge.className = 'language-badge';
+                langBadge.textContent = currentLang.toUpperCase();
+                overlayRight.appendChild(langBadge);
 
-                titleContainer.appendChild(badgesWrapper);
-                contentDiv.appendChild(titleContainer);
+                overlayBadges.appendChild(overlayRight);
+                imgWrap.appendChild(overlayBadges);
 
-                const desc = document.createElement('div');
-                desc.className = 'description collapsed';
-                desc.textContent = details.description;
-                const detailsSection = document.createElement('div');
-                detailsSection.className = 'details-section collapsed';
+                li.appendChild(imgWrap);
 
-                const descToggle = document.createElement('button');
-                descToggle.className = 'description-toggle';
-                descToggle.textContent = 'Read more ▼';
-                descToggle.onclick = (e) => {
-                    e.stopPropagation();
-                    desc.classList.toggle('collapsed');
-                    desc.classList.toggle('expanded');
-                    detailsSection.classList.toggle('collapsed');
-                    detailsSection.classList.toggle('expanded');
-                    descToggle.textContent = desc.classList.contains('collapsed') ? 'Read more ▼' : 'Hide ▲';
-                };
-                contentDiv.appendChild(desc);
-                contentDiv.appendChild(descToggle);
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'article-content';
 
-                const wd = document.createElement('div');
-                wd.className = 'wikidata';
-                const wdIcon = document.createElement('img');
-                wdIcon.src = 'images/ic_wikidata.svg';
-                wdIcon.style.cssText = 'width: 1.3em; height: 1.3em; flex-shrink: 0;';
-                const wdText = document.createElement('span');
-                if (details.wikidataId) {
-                    wdText.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
-                } else {
-                    wdText.textContent = 'Wikidata: Not available';
-                    wdText.style.color = '#888';
-                }
-                wd.appendChild(wdIcon);
-                wd.appendChild(wdText);
-                detailsSection.appendChild(wd);
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'title-wrapper';
+                const link = document.createElement('a');
+                link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
+                link.target = '_blank';
+                link.style.cssText = 'display:inline-flex; align-items:center; gap:0.4em; font-size:1.15rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
+                const iconImg = document.createElement('img');
+                iconImg.src = 'images/ic_wikipedia.svg';
+                iconImg.style.cssText = 'width:1.3em; height:1.3em; flex-shrink:0;';
+                link.appendChild(iconImg);
+                link.appendChild(document.createTextNode(article.title));
+                link.onmouseover = () => link.style.color = 'var(--secondary-color)';
+                link.onmouseout = () => link.style.color = 'var(--primary-color)';
+                link.onclick = (e) => e.stopPropagation();
+                titleWrapper.appendChild(link);
+                contentDiv.appendChild(titleWrapper);
 
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'card-actions';
-                const routeBtn = document.createElement('button');
-                routeBtn.className = 'route-btn';
-                routeBtn.textContent = 'Show Route';
-                routeBtn.onclick = () => showRoutePopup(
-                    currentPosition.coords.latitude,
-                    currentPosition.coords.longitude,
-                    article.lat,
-                    article.lon,
-                    article.title
-                );
-                actionsDiv.appendChild(routeBtn);
-                const googleMapsBtn = document.createElement('button');
-                googleMapsBtn.className = 'google-maps-btn';
-                googleMapsBtn.textContent = 'Open in Google Maps';
-                googleMapsBtn.onclick = () => window.open(`https://www.google.com/maps?q=${article.lat},${article.lon}`, '_blank');
-                actionsDiv.appendChild(googleMapsBtn);
-                detailsSection.appendChild(actionsDiv);
-
-                const wiktDiv = document.createElement('div');
-                wiktDiv.className = 'wiktionary';
-                const wiktHeader = document.createElement('div');
-                wiktHeader.className = 'wiktionary-header';
-                const wiktIcon = document.createElement('img');
-                wiktIcon.src = 'images/ic_wiktionary.svg';
-                wiktIcon.style.cssText = 'width: 1.35em; height: 1.35em; flex-shrink: 0;';
-                const wiktTitle = document.createElement('span');
-                wiktTitle.textContent = 'Wiktionary';
-                const toggleIcon = document.createElement('span');
-                toggleIcon.className = 'wiktionary-toggle collapsed';
-                toggleIcon.textContent = '▼';
-                toggleIcon.style.marginLeft = 'auto';
-                wiktHeader.appendChild(wiktIcon);
-                wiktHeader.appendChild(wiktTitle);
-                wiktHeader.appendChild(toggleIcon);
-                wiktDiv.appendChild(wiktHeader);
-
-                const wiktButtons = document.createElement('div');
-                wiktButtons.className = 'wiktionary-buttons hidden';
-                const textSource = `${article.title} ${details.description}`.toLowerCase();
-                const words = textSource
-                    .replace(/[^\p{L}\p{N}]+/gu, ' ')
-                    .split(/\s+/)
-                    .map(w => w.trim())
-                    .filter(w => w.length >= 3 && !/^\d+$/.test(w));
-
-                const seen = new Set();
-                const uniqueWords = [];
-                for (const word of words) {
-                    if (!seen.has(word)) {
-                        seen.add(word);
-                        uniqueWords.push(word);
-                    }
-                }
-
-                if (uniqueWords.length > 0) {
-                    uniqueWords.forEach(word => {
-                        const wiktBtn = document.createElement('button');
-                        wiktBtn.textContent = word;
-                        wiktBtn.title = `Search "${word}" on Wiktionary (${currentLang})`;
-                        wiktBtn.onclick = (e) => {
-                            e.stopPropagation();
-                            window.open(`https://${currentLang}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
-                        };
-                        wiktButtons.appendChild(wiktBtn);
-                    });
-                } else {
-                    const noDef = document.createElement('span');
-                    noDef.textContent = 'No words for Wiktionary';
-                    noDef.style.color = 'var(--text-light)';
-                    noDef.style.fontSize = '0.8rem';
-                    wiktButtons.appendChild(noDef);
-                }
-                wiktDiv.appendChild(wiktButtons);
-
-                wiktHeader.onclick = () => {
-                    wiktButtons.classList.toggle('hidden');
-                    toggleIcon.classList.toggle('collapsed');
-                    toggleIcon.textContent = wiktButtons.classList.contains('hidden') ? '▼' : '▲';
-                };
-
-                detailsSection.appendChild(wiktDiv);
-                contentDiv.appendChild(detailsSection);
                 li.appendChild(contentDiv);
                 articleElements.push(li);
 
@@ -2160,6 +2194,143 @@
             resultsList.innerHTML = '';
             articleElements.forEach(el => resultsList.appendChild(el));
             articleCount.textContent = `(${articles.length})`;
+        }
+
+        function openArticleModal(article, details, distance) {
+            const title = document.getElementById('article-modal-title');
+            title.innerHTML = `<img src="images/ic_wikipedia.svg" alt="Wikipedia" style="width:1.2em; height:1.2em; vertical-align:middle; margin-right:0.4em;">${article.title}`;
+
+            const body = document.getElementById('article-modal-body');
+            body.innerHTML = '';
+
+            const badgesRow = document.createElement('div');
+            badgesRow.style.cssText = 'display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;';
+            const dist = document.createElement('span');
+            dist.className = 'distance';
+            dist.textContent = `${distance} km`;
+            const langBadge = document.createElement('span');
+            langBadge.className = 'language-badge';
+            langBadge.textContent = currentLang.toUpperCase();
+            badgesRow.appendChild(dist);
+            badgesRow.appendChild(langBadge);
+            body.appendChild(badgesRow);
+
+            const descEl = document.createElement('p');
+            descEl.style.cssText = 'margin-bottom:1rem; line-height:1.6;';
+            descEl.textContent = details.description;
+            body.appendChild(descEl);
+
+            const wd = document.createElement('div');
+            wd.className = 'wikidata';
+            const wdIcon = document.createElement('img');
+            wdIcon.src = 'images/ic_wikidata.svg';
+            wdIcon.style.cssText = 'width: 1.3em; height: 1.3em; flex-shrink: 0;';
+            const wdText = document.createElement('span');
+            if (details.wikidataId) {
+                wdText.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
+            } else {
+                wdText.textContent = 'Wikidata: Not available';
+                wdText.style.color = '#888';
+            }
+            wd.appendChild(wdIcon);
+            wd.appendChild(wdText);
+            body.appendChild(wd);
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'card-actions';
+            const routeBtn = document.createElement('button');
+            routeBtn.className = 'route-btn';
+            routeBtn.textContent = 'Show Route';
+            routeBtn.onclick = () => {
+                closeModal('article-modal');
+                showRoutePopup(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    article.lat,
+                    article.lon,
+                    article.title
+                );
+            };
+            actionsDiv.appendChild(routeBtn);
+            const googleMapsBtn = document.createElement('button');
+            googleMapsBtn.className = 'google-maps-btn';
+            googleMapsBtn.textContent = 'Open in Google Maps';
+            googleMapsBtn.onclick = () => window.open(`https://www.google.com/maps?q=${article.lat},${article.lon}`, '_blank');
+            actionsDiv.appendChild(googleMapsBtn);
+
+            const commonsBtn = document.createElement('button');
+            commonsBtn.className = 'commons-btn';
+            const commonsBtnIcon = document.createElement('img');
+            commonsBtnIcon.src = 'images/ic_commons.svg';
+            commonsBtnIcon.alt = 'Commons';
+            commonsBtn.appendChild(commonsBtnIcon);
+            commonsBtn.appendChild(document.createTextNode('Wikimedia Commons'));
+            commonsBtn.onclick = async () => {
+                let targetUrl;
+                if (details.wikidataId) {
+                    const directLink = await fetchCommonsCategory(details.wikidataId);
+                    targetUrl = directLink || `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(article.title)}`;
+                } else {
+                    targetUrl = `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(article.title)}`;
+                }
+                safeOpenLink(targetUrl);
+            };
+            actionsDiv.appendChild(commonsBtn);
+
+            body.appendChild(actionsDiv);
+
+            const wiktDiv = document.createElement('div');
+            wiktDiv.className = 'wiktionary';
+            const wiktTitleRow = document.createElement('div');
+            wiktTitleRow.className = 'wiktionary-section-title';
+            const wiktIcon = document.createElement('img');
+            wiktIcon.src = 'images/ic_wiktionary.svg';
+            wiktIcon.style.cssText = 'width: 1.35em; height: 1.35em; flex-shrink: 0;';
+            const wiktTitle = document.createElement('span');
+            wiktTitle.textContent = 'Wiktionary';
+            wiktTitleRow.appendChild(wiktIcon);
+            wiktTitleRow.appendChild(wiktTitle);
+            wiktDiv.appendChild(wiktTitleRow);
+
+            const wiktButtons = document.createElement('div');
+            wiktButtons.className = 'wiktionary-buttons';
+            const textSource = `${article.title} ${details.description}`.toLowerCase();
+            const words = textSource
+                .replace(/[^\p{L}\p{N}]+/gu, ' ')
+                .split(/\s+/)
+                .map(w => w.trim())
+                .filter(w => w.length >= 3 && !/^\d+$/.test(w));
+
+            const seen = new Set();
+            const uniqueWords = [];
+            for (const word of words) {
+                if (!seen.has(word)) {
+                    seen.add(word);
+                    uniqueWords.push(word);
+                }
+            }
+
+            if (uniqueWords.length > 0) {
+                uniqueWords.forEach(word => {
+                    const wiktBtn = document.createElement('button');
+                    wiktBtn.textContent = word;
+                    wiktBtn.title = `Search "${word}" on Wiktionary (${currentLang})`;
+                    wiktBtn.onclick = () => {
+                        window.open(`https://${currentLang}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
+                    };
+                    wiktButtons.appendChild(wiktBtn);
+                });
+            } else {
+                const noDef = document.createElement('span');
+                noDef.textContent = 'No words for Wiktionary';
+                noDef.style.color = 'var(--text-light)';
+                noDef.style.fontSize = '0.8rem';
+                wiktButtons.appendChild(noDef);
+            }
+            wiktDiv.appendChild(wiktButtons);
+            body.appendChild(wiktDiv);
+
+            openModal('article-modal');
         }
 
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
@@ -2242,12 +2413,18 @@
             }
         }
 
-        async function updateLocationDisplay(lat, lon, locationParts) {
+        async function updateLocationDisplay(lat, lon, locationData) {
+            const { displayName, parts: locationParts } = locationData;
             const coordsDisplay = document.querySelector('.coordinates-display');
             coordsDisplay.textContent = `Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-            const detailsContent = document.getElementById('location-details-content');
+            document.getElementById('location-retry-container').innerHTML = '';
+
+            document.getElementById('address-label').textContent = displayName;
+            document.getElementById('address-row').style.display = 'flex';
+
+            const detailsContent = document.getElementById('location-modal-body');
             detailsContent.innerHTML = '';
-        
+
             for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
@@ -2481,8 +2658,9 @@
                     coordsDisplay.style.color = 'var(--danger-color)';
 
                     // Tampilkan tombol retry manual
-                    const detailsContent = document.getElementById('location-details-content');
-                    detailsContent.innerHTML = `
+                    document.getElementById('address-row').style.display = 'none';
+                    const retryContainer = document.getElementById('location-retry-container');
+                    retryContainer.innerHTML = `
                 <div style="text-align: center; padding: 1rem;">
                     <button onclick="getLocation(0)" style="background-color: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
                         🔄 Try Again
@@ -2556,17 +2734,23 @@
             }
         };
 
-        document.getElementById('guide-btn').addEventListener('click', () => {
-            document.getElementById('guide-modal').classList.add('show');
+        document.getElementById('guide-btn').addEventListener('click', () => openModal('guide-modal'));
+        document.getElementById('open-location-modal-btn').addEventListener('click', () => openModal('location-modal'));
+
+        // Tutup modal saat klik backdrop atau tombol close — berlaku untuk semua .modal di halaman.
+        document.querySelectorAll('.modal').forEach((modalEl) => {
+            modalEl.addEventListener('click', (e) => {
+                if (e.target === modalEl) closeModal(modalEl.id);
+            });
         });
-        function closeGuideModal() {
-            document.getElementById('guide-modal').classList.remove('show');
-        }
-        document.getElementById('guide-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'guide-modal') closeGuideModal();
+        document.querySelectorAll('.modal-close').forEach((btn) => {
+            btn.addEventListener('click', () => closeModal(btn.dataset.modal));
         });
-        document.querySelector('.modal-close').addEventListener('click', closeGuideModal);
-        window.closeGuideModal = closeGuideModal;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach((modalEl) => closeModal(modalEl.id));
+            }
+        });
     </script>
 </body>
 
