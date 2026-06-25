@@ -2233,43 +2233,15 @@
 
                     // Multiple Wikidata chips kalau ada beberapa kandidat yang tersisa setelah disambiguasi
                     if (part.allWikidataMatches && part.allWikidataMatches.length > 0) {
-                        const allMatchesContainer = document.createElement('div');
-                        allMatchesContainer.style.cssText =
-                            'display:flex; flex-wrap:wrap; gap:0.5rem; width:100%; margin-top:0.5rem;';
-
-                        part.allWikidataMatches.forEach((match, index) => {
+                        part.allWikidataMatches.forEach((match) => {
                             const wdBtn = document.createElement('button');
                             wdBtn.className = 'location-action-btn';
                             wdBtn.title = `${match.label || 'Tanpa label'} — ${match.description || 'Tanpa deskripsi'}`;
-
-                            const wdLabel = document.createElement('span');
-                            wdLabel.style.cssText = 'display:flex; flex-direction:column; align-items:flex-start; gap:0.15rem;';
-
-                            const idSpan = document.createElement('span');
-                            idSpan.textContent = match.id;
-                            idSpan.style.fontWeight = '600';
-                            wdLabel.appendChild(idSpan);
-
-                            if (match.description) {
-                                const descSpan = document.createElement('small');
-                                descSpan.textContent = match.description;
-                                descSpan.style.cssText = 'font-size:0.7rem; opacity:0.8; line-height:1.2;';
-                                wdLabel.appendChild(descSpan);
-                            }
-
-                            wdBtn.appendChild(wdLabel);
+                            wdBtn.textContent = match.id;
                             wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${match.id}`);
 
-                            if (index === 0) {
-                                wdBtn.style.borderColor = 'var(--success-color)';
-                                wdBtn.style.borderWidth = '2px';
-                                wdBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
-                            }
-
-                            allMatchesContainer.appendChild(wdBtn);
+                            div.appendChild(wdBtn);
                         });
-
-                        div.appendChild(allMatchesContainer);
 
                     } else {
                         const wdBtn = document.createElement('button');
