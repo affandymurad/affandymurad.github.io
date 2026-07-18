@@ -1394,6 +1394,96 @@
             }
         }
 
+        /* ===== Android app download banner (mobile Android only) ===== */
+        #android-app-banner {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #01875f, #01a86f);
+            color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 4px 12px rgba(1, 135, 95, 0.3);
+        }
+
+        #android-app-banner.show {
+            display: flex;
+        }
+
+        #android-app-banner .banner-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #fff;
+            background-image: url('wikilokal.png');
+            background-size: 75%;
+            background-position: center;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+
+        #android-app-banner .banner-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        #android-app-banner .banner-text strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        #android-app-banner .banner-text span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        #android-app-banner .banner-open-btn {
+            background: #fff;
+            color: #01875f;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: none;
+        }
+
+        #android-app-banner .banner-open-btn:hover {
+            background: #f0f0f0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #android-app-banner .banner-close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            line-height: 1;
+            padding: 0.25rem;
+            cursor: pointer;
+            opacity: 0.8;
+            box-shadow: none;
+        }
+
+        #android-app-banner .banner-close-btn:hover {
+            opacity: 1;
+            background: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 480px) {
+            #android-app-banner .banner-text span {
+                display: none;
+            }
+        }
+
         /* Perbaikan khusus untuk #controls */
         #controls {
             display: grid;
@@ -1451,6 +1541,15 @@
 </head>
 
 <body>
+    <div id="android-app-banner">
+        <div class="banner-icon"></div>
+        <div class="banner-text">
+            <strong>Buka di Aplikasi Wikilokal</strong>
+            <span>Sudah terpasang? Langsung buka. Belum? Unduh dari Play Store.</span>
+        </div>
+        <button class="banner-open-btn" id="android-banner-open-btn">Buka App</button>
+        <button class="banner-close-btn" id="android-banner-close-btn" aria-label="Tutup" title="Tutup">&times;</button>
+    </div>
     <div class="header-top">
         <div class="header-left">
             <div class="wiki-logo"></div>
@@ -1685,6 +1784,32 @@
         const placeholderImage = 'wikilokal.png';
 
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+        // ===== Android app download banner =====
+        (function initAndroidAppBanner() {
+            const ANDROID_PACKAGE = 'kmt.commuterline.am';
+            const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`;
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const banner = document.getElementById('android-app-banner');
+            const openBtn = document.getElementById('android-banner-open-btn');
+            const closeBtn = document.getElementById('android-banner-close-btn');
+
+            if (!isAndroid || !banner) return;
+            if (localStorage.getItem('androidAppBannerDismissed') === 'true') return;
+
+            banner.classList.add('show');
+
+            function openApp() {
+                const intentUrl = `intent://#Intent;package=${ANDROID_PACKAGE};scheme=https;S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
+                window.location.href = intentUrl;
+            }
+
+            openBtn.addEventListener('click', openApp);
+            closeBtn.addEventListener('click', () => {
+                banner.classList.remove('show');
+                localStorage.setItem('androidAppBannerDismissed', 'true');
+            });
+        })();
 
         // Fungsi helper untuk membuka link dengan aman di Safari
         function safeOpenLink(url) {
