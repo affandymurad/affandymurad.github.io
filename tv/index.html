@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TV Scale Comparator — Skala Nyata TV vs Tinggi Manusia</title>
+<title>TV Scale Comparator — Real-World Scale vs Human Height</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -310,15 +310,15 @@
 
   <header class="page-head">
     <div>
-      <p class="eyebrow">Skala 1&nbsp;:&nbsp;1 &middot; referensi tinggi manusia 169&nbsp;cm</p>
+      <p class="eyebrow">Scale 1&nbsp;:&nbsp;1 &middot; reference human height 169&nbsp;cm</p>
       <h1>TV Scale <span>Comparator</span></h1>
-      <p class="subtitle">TV 50" tetap terpasang sebagai pembanding. Pilih ukuran kedua untuk melihat selisihnya secara langsung, dihitung dari rasio layar 16:9.</p>
+      <p class="subtitle">A 50" TV stays fixed as the baseline. Pick a second size to see the difference at a glance, calculated from the 16:9 screen ratio.</p>
     </div>
 
     <div class="picker-block">
-      <div class="fixed-badge"><span class="dot"></span>TV 50" &middot; tetap</div>
+      <div class="fixed-badge"><span class="dot"></span>50" TV &middot; fixed</div>
       <fieldset class="size-picker" id="sizePicker">
-        <legend>Bandingkan dengan ukuran</legend>
+        <legend>Compare with size</legend>
         <label><input type="radio" name="tvsize" value="65"><span class="unit">65"</span></label>
         <label><input type="radio" name="tvsize" value="70"><span class="unit">70"</span></label>
         <label><input type="radio" name="tvsize" value="75" checked><span class="unit">75"</span></label>
@@ -332,18 +332,18 @@
       <svg id="scene" viewBox="-10 -18 500 235" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif"></svg>
     </div>
     <div class="diagram-caption">
-      <span>Manusia, mistar &amp; <b>TV 50"</b> tetap &middot; TV kanan berganti sesuai pilihan</span>
-      <span id="capRight"><b>75"</b> &middot; dipilih</span>
+      <span>Person, ruler &amp; <b>50" TV</b> stay fixed &middot; right-hand TV changes with your pick</span>
+      <span id="capRight"><b>75"</b> &middot; selected</span>
     </div>
   </div>
 
   <div class="stats-grid" id="statsGrid"></div>
 
   <footer class="notes">
-    <b>Dasar perhitungan.</b> Lebar &amp; tinggi layar dihitung dari diagonal (inci &times; 2.54&nbsp;cm) dengan rasio 16:9 melalui teorema Pythagoras. Kertas A4 = 21.0 &times; 29.7&nbsp;cm. Tinggi dudukan (stand) diasumsikan &asymp;9&nbsp;cm untuk semua ukuran &mdash; nilai aktual bervariasi per model/merek.
+    <b>How it's calculated.</b> Screen width &amp; height are derived from the diagonal (inches &times; 2.54&nbsp;cm) using a 16:9 ratio via the Pythagorean theorem. A4 paper = 21.0 &times; 29.7&nbsp;cm. Stand height is assumed to be &asymp;9&nbsp;cm for every size &mdash; the real figure varies by model and brand.
     <ul>
-      <li>Ubin kertas A4 di layar menunjukkan berapa lembar yang dibutuhkan untuk menutupi lebar (baris atas) dan tinggi (kolom kiri) layar; sisa yang tidak genap ditandai dengan ubin putus-putus.</li>
-      <li>Diagram digambar 1:1 secara proporsional dalam satuan sentimeter (bukan piksel), sehingga rasio antar elemen akurat.</li>
+      <li>The A4 paper tiles on the screen show how many sheets are needed to cover the width (top row) and height (left column) of the screen; any leftover fraction is marked with a dashed tile.</li>
+      <li>The diagram is drawn proportionally 1:1 in centimeters (not pixels), so the ratios between elements are accurate.</li>
     </ul>
   </footer>
 
@@ -486,7 +486,7 @@ function buildTvGroup(L, x0, opts){
 
   // TV name header (above width dimension)
   const nameLabel = el('text', {x:x0+L.w/2, y:L.screenTop-16.5, 'text-anchor':'middle', 'font-family':'Space Grotesk, sans-serif', 'font-size':5.2, 'font-weight':700, fill: isRef ? 'var(--ink)' : 'var(--blue)'});
-  nameLabel.textContent = `TV ${L.inch}"${isRef ? '  ·  tetap' : '  ·  dipilih'}`;
+  nameLabel.textContent = `TV ${L.inch}"${isRef ? '  ·  fixed' : '  ·  selected'}`;
   g.appendChild(nameLabel);
 
   // width dimension
@@ -550,8 +550,8 @@ function buildTvGroup(L, x0, opts){
 
 function fmtDelta(v, unit, decimals){
   const s = Math.abs(v).toFixed(decimals);
-  if(Math.abs(v) < Math.pow(10,-decimals)/2) return `sama dengan TV 50"`;
-  return `${v>0?'+':'&minus;'}${s} ${unit} dibanding TV 50"`;
+  if(Math.abs(v) < Math.pow(10,-decimals)/2) return `same as the 50" TV`;
+  return `${v>0?'+':'&minus;'}${s} ${unit} vs the 50" TV`;
 }
 
 function renderStats(L50, Lsel){
@@ -560,10 +560,10 @@ function renderStats(L50, Lsel){
   const pct = (Lsel.h / MAN_H * 100);
 
   const items = [
-    {label:'Lebar layar', v50:`${L50.w.toFixed(1)} cm`, vsel:`${Lsel.w.toFixed(1)} cm`, sub:fmtDelta(Lsel.w-L50.w, 'cm', 1)},
-    {label:'Tinggi layar', v50:`${L50.h.toFixed(1)} cm`, vsel:`${Lsel.h.toFixed(1)} cm`, sub:fmtDelta(Lsel.h-L50.h, 'cm', 1)},
+    {label:'Screen width', v50:`${L50.w.toFixed(1)} cm`, vsel:`${Lsel.w.toFixed(1)} cm`, sub:fmtDelta(Lsel.w-L50.w, 'cm', 1)},
+    {label:'Screen height', v50:`${L50.h.toFixed(1)} cm`, vsel:`${Lsel.h.toFixed(1)} cm`, sub:fmtDelta(Lsel.h-L50.h, 'cm', 1)},
     {label:'Diagonal', v50:`${L50.d.toFixed(1)} cm`, vsel:`${Lsel.d.toFixed(1)} cm`, sub:fmtDelta(Lsel.d-L50.d, 'cm', 1)},
-    {label:'Luas layar', v50:`${area50.toFixed(2)} m&sup2;`, vsel:`${areaSel.toFixed(2)} m&sup2;`, sub:fmtDelta(areaSel-area50, 'm&sup2;', 2)},
+    {label:'Screen area', v50:`${area50.toFixed(2)} m&sup2;`, vsel:`${areaSel.toFixed(2)} m&sup2;`, sub:fmtDelta(areaSel-area50, 'm&sup2;', 2)},
   ];
   const grid = document.getElementById('statsGrid');
   grid.innerHTML = '';
@@ -580,12 +580,12 @@ function renderStats(L50, Lsel){
   // extra info cards (single-value, about the selected TV / human reference)
   const extra1 = document.createElement('div');
   extra1.className='stat';
-  extra1.innerHTML = `<p class="label">Tinggi TV ${Lsel.inch}" vs manusia</p><p class="value">${pct.toFixed(0)}<span class="unit">%</span></p><p class="sub">dari tinggi orang 169&nbsp;cm</p>`;
+  extra1.innerHTML = `<p class="label">${Lsel.inch}" TV height vs person</p><p class="value">${pct.toFixed(0)}<span class="unit">%</span></p><p class="sub">of a 169&nbsp;cm-tall person</p>`;
   grid.appendChild(extra1);
 
   const extra2 = document.createElement('div');
   extra2.className='stat';
-  extra2.innerHTML = `<p class="label">Kertas A4 penuh</p><p class="value">${sheetsFull}<span class="unit">lembar</span></p><p class="sub">untuk menutup layar TV ${Lsel.inch}"</p>`;
+  extra2.innerHTML = `<p class="label">Full A4 sheets</p><p class="value">${sheetsFull}<span class="unit">sheets</span></p><p class="sub">to cover the ${Lsel.inch}" screen</p>`;
   grid.appendChild(extra2);
 }
 
@@ -613,7 +613,7 @@ function render(inch, animate){
   currentTvG = newTvG;
 
   renderStats(layout50, L);
-  document.getElementById('capRight').innerHTML = `<b>${inch}"</b> &middot; dipilih`;
+  document.getElementById('capRight').innerHTML = `<b>${inch}"</b> &middot; selected`;
 }
 
 buildStatic();
