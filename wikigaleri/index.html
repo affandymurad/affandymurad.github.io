@@ -467,58 +467,35 @@
             font-weight: 500;
         }
 
-        /* Update grid results untuk spacing yang lebih baik */
+        /* Grid galeri: full-bleed, 4 kolom, portrait — meniru grid ala Reels/TikTok */
         #results {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.75rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
             padding: 0;
             list-style: none;
         }
 
-        @media (max-width: 1400px) {
+        @media (max-width: 900px) {
             #results {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-                gap: 1.5rem;
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             #results {
-                grid-template-columns: 1fr;
-                gap: 1.25rem;
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        /* Ganti .photo-card dan turunannya */
+        /* Kartu foto: hanya gambar + badge jarak + badge author, sisanya dihapus */
         .photo-card {
-            background-color: var(--card-bg);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            border: 1px solid var(--border-color);
-            height: 100%;
-        }
-
-        .photo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary-color);
-        }
-
-        /* Container gambar dengan aspect ratio */
-        .photo-image-container {
-            position: relative;
-            width: 100%;
-            padding-top: 66.67%;
-            /* Aspect ratio 3:2 */
-            overflow: hidden;
             background-color: var(--border-color);
+            overflow: hidden;
+            list-style: none;
+            position: relative;
+            aspect-ratio: 3 / 4;
+            cursor: pointer;
         }
 
         .photo-card img {
@@ -536,83 +513,11 @@
             transform: scale(1.05);
         }
 
-        /* Stats overlay di pojok kanan atas */
-        .photo-stats {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-
-        .stat-badge {
-            background: rgba(99, 102, 241, 0.95);
-            backdrop-filter: blur(8px);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .stat-badge .icon {
-            font-size: 0.85rem;
-        }
-
-        /* Content area */
-        .photo-content {
-            padding: 1.25rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        /* Title dengan styling yang lebih prominent */
-        .photo-title {
-            margin: 0;
-            padding: 0;
-        }
-
-        .photo-card a.photo-link {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 700;
-            font-size: 1.1rem;
-            line-height: 1.4;
-            display: block;
-            transition: color 0.2s;
-            margin: 0;
-        }
-
-        .photo-card a.photo-link:hover {
-            color: var(--primary-color);
-        }
-
-        /* Description dengan line clamp */
-        .description {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex-grow: 1;
-        }
-
-        /* Hapus CSS .distance yang lama, ganti dengan: */
+        /* Badge jarak — pojok kiri atas */
         .distance {
             position: absolute;
-            top: 12px;
-            left: 12px;
+            top: 8px;
+            left: 8px;
             display: inline-flex;
             align-items: center;
             color: white;
@@ -632,31 +537,65 @@
             font-size: 0.85rem;
         }
 
-        @media (max-width: 768px) {
-            .distance {
-                top: 8px;
-                left: 8px;
-                padding: 4px 8px;
-                font-size: 0.7rem;
-            }
-
-            .metadata-toggle:hover {
-                margin-left: -1rem;
-                margin-right: -1rem;
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
+        /* Badge author — pojok kanan atas, klik langsung buka halaman pengguna Commons */
+        .author-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            background: rgba(31, 41, 55, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            z-index: 10;
+            max-width: 60%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .photo-card {
-            cursor: pointer;
+        .author-badge:hover {
+            background: rgba(17, 24, 39, 0.9);
+        }
+
+        .author-badge::before {
+            content: "👤";
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+
+            .distance,
+            .author-badge {
+                top: 6px;
+                padding: 4px 8px;
+                font-size: 0.65rem;
+            }
+
+            .distance {
+                left: 6px;
+            }
+
+            .author-badge {
+                right: 6px;
+            }
         }
 
         .photo-card:focus-visible {
             outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
+            outline-offset: -2px;
         }
 
+        /* ==== Konten modal detail foto (#photo-modal-body) ==== */
         .photo-metadata {
             display: flex;
             flex-direction: column;
@@ -676,12 +615,6 @@
             font-size: 1rem;
             flex-shrink: 0;
             margin-top: 2px;
-        }
-
-        .metadata-label {
-            font-weight: 600;
-            color: var(--text-color);
-            margin-right: 0.25rem;
         }
 
         .metadata-content {
@@ -714,7 +647,6 @@
             margin: 0;
         }
 
-        /* Versi simple - icon langsung di samping */
         .author {
             font-size: 0.85rem;
             color: var(--text-light);
@@ -755,7 +687,6 @@
             text-decoration: underline;
         }
 
-        /* Card actions dalam collapsible */
         .card-actions {
             display: flex;
             gap: 0.5rem;
@@ -790,45 +721,13 @@
             background-color: #28a745;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .photo-content {
-                padding: 1rem;
-            }
-
-            .photo-card a.photo-link {
-                font-size: 1rem;
-            }
-
-            .description {
-                font-size: 0.85rem;
-                -webkit-line-clamp: 2;
-            }
-
             .card-actions {
                 flex-direction: column;
             }
 
             .card-actions button {
                 width: 100%;
-            }
-
-            .photo-stats {
-                top: 8px;
-                right: 8px;
-                gap: 6px;
-            }
-
-            .stat-badge {
-                padding: 4px 8px;
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .description {
-                -webkit-line-clamp: 2;
-                line-clamp: 2;
             }
         }
 
@@ -1113,7 +1012,7 @@
             }
 
             #results {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -1190,7 +1089,7 @@
 
 <body>
     <div class="page-header">
-        <h1>Galeri WikiCommons Terdekat (radius 1km)</h1>
+        <h1>Galeri WikiCommons Terdekat (radius 3km)</h1>
         <button id="wikilokal-btn" onclick="window.location.href='../wikilokal'" title="Kunjungi Wikilokal">
             📍 Wikilokal
         </button>
@@ -1283,6 +1182,75 @@
         let currentPosition = null;
 
         const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1362px-Placeholder_view_vector.svg.png?20220519031949';
+
+        // ==== Rate limiter per-host: jeda minimal antar request ke host yang sama ====
+        // Penting karena batch paralel (semaphore) bisa menembak beberapa request
+        // sekaligus ke host yang sama (Nominatim/Wikidata/OSM/Commons).
+        class HostRateLimiter {
+            constructor(minIntervalMs = 350) {
+                this.minInterval = minIntervalMs;
+                this.queues = new Map(); // host -> Promise chain yang resolve dengan timestamp slot terakhir
+            }
+            _scheduleSlot(host) {
+                const prevChainEnd = this.queues.get(host) || Promise.resolve(0);
+                const chainEnd = prevChainEnd.then(async (lastTime) => {
+                    const now = Date.now();
+                    const wait = Math.max(0, lastTime + this.minInterval - now);
+                    if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
+                    return Date.now();
+                });
+                this.queues.set(host, chainEnd);
+                return chainEnd;
+            }
+            async throttledFetch(url, options) {
+                let host;
+                try {
+                    host = new URL(url).host;
+                } catch {
+                    host = 'default';
+                }
+                await this._scheduleSlot(host);
+                return fetch(url, options);
+            }
+        }
+        const hostRateLimiter = new HostRateLimiter(350);
+
+        // ==== Semaphore sederhana: batasi jumlah batch yang jalan bersamaan ====
+        class Semaphore {
+            constructor(maxConcurrent) {
+                this.max = maxConcurrent;
+                this.current = 0;
+                this.queue = [];
+            }
+            async acquire() {
+                if (this.current < this.max) {
+                    this.current++;
+                    return;
+                }
+                await new Promise(resolve => this.queue.push(resolve));
+                this.current++;
+            }
+            release() {
+                this.current--;
+                const next = this.queue.shift();
+                if (next) next();
+            }
+            async withPermit(fn) {
+                await this.acquire();
+                try {
+                    return await fn();
+                } finally {
+                    this.release();
+                }
+            }
+        }
+        const DETAIL_FETCH_CONCURRENCY = 4; // maks 4 batch jalan bersamaan
+        const detailFetchSemaphore = new Semaphore(DETAIL_FETCH_CONCURRENCY);
+
+        // Normalisasi judul untuk dedupe: lowercase, trim, underscore -> spasi.
+        function normalizeTitle(title) {
+            return (title || '').toLowerCase().trim().replace(/_/g, ' ');
+        }
 
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -1433,8 +1401,8 @@
         }
 
         async function searchWikidataCandidates(name) {
-            const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
-            const response = await fetch(url);
+            const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&limit=20&origin=*`;
+            const response = await hostRateLimiter.throttledFetch(url);
             const data = await response.json();
             return data.search || [];
         }
@@ -1458,7 +1426,7 @@
         async function fetchWikidataEntityCoords(qid) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${qid}&property=P625&format=json&origin=*`;
-                const response = await fetch(url);
+                const response = await hostRateLimiter.throttledFetch(url);
                 const data = await response.json();
                 const value = data.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
                 return value ? { lat: value.latitude, lon: value.longitude } : null;
@@ -1484,20 +1452,47 @@
             return [withValidCoords[0]];
         }
 
+        // Reverse geocode ke Nominatim dengan retry otomatis (maks 3x) kalau kena HTTP 429 atau error jaringan.
+        async function fetchNominatimWithRetry(url, maxRetries = 3) {
+            let lastError;
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                try {
+                    const response = await hostRateLimiter.throttledFetch(url, {
+                        headers: { 'User-Agent': 'WikiCommonsNearby/1.0' },
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (response.status === 429) {
+                        lastError = new Error('HTTP 429 dari Nominatim');
+                        if (attempt < maxRetries) {
+                            await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+                            continue;
+                        }
+                        throw lastError;
+                    }
+                    return response;
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    lastError = error;
+                    if (attempt < maxRetries) {
+                        await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+                        continue;
+                    }
+                    throw lastError;
+                }
+            }
+            throw lastError;
+        }
+
         // Ganti fungsi getLocationDetails dengan versi yang lebih lengkap (selaras dengan WikiLokal)
         async function getLocationDetails(lat, lon) {
             try {
                 const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=${currentLang}`;
 
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-                const nominatimResponse = await fetch(nominatimUrl, {
-                    headers: { 'User-Agent': 'WikiCommonsNearby/1.0' },
-                    signal: controller.signal
-                });
-
-                clearTimeout(timeoutId);
+                const nominatimResponse = await fetchNominatimWithRetry(nominatimUrl);
 
                 const data = await nominatimResponse.json();
                 if (!data.address) {
@@ -1541,6 +1536,7 @@
                             if (!candidates.length) return { ...part, wikidataIds: [], allWikidataMatches: [] };
 
                             if (part.type === 'suburb') {
+                                // Priority 1 (khusus SUBURB): sempitkan berdasarkan nama parent (kota/kabupaten) yang sama.
                                 if (candidates.length > 1) {
                                     const parentNames = parentNamesAll.filter(n => n !== part.name);
                                     const narrowed = candidates.filter(c =>
@@ -1548,9 +1544,20 @@
                                     );
                                     if (narrowed.length) candidates = narrowed;
                                 }
+                                // BUG SEBELUMNYA: kalau masih >1 kandidat, kode lama langsung mengambil
+                                // exact-label-match atau candidates[0] tanpa verifikasi jarak — ini bisa
+                                // memilih Q-id yang salah (mis. kecamatan senama di kota lain). Sekarang
+                                // fallback-nya disamakan dengan tipe lain: disambiguasi via koordinat P625
+                                // (Haversine) ke titik GPS user, baru pilih kandidat terdekat.
                                 if (candidates.length > 1) {
-                                    const exact = candidates.find(c => c.label?.toLowerCase() === part.name.toLowerCase());
-                                    candidates = [exact || candidates[0]];
+                                    const exactMatches = candidates.filter(c => c.label?.toLowerCase() === part.name.toLowerCase());
+                                    if (exactMatches.length === 1) {
+                                        candidates = exactMatches;
+                                    } else {
+                                        candidates = await disambiguateCandidatesByCoordinate(
+                                            exactMatches.length > 1 ? exactMatches : candidates, lat, lon
+                                        );
+                                    }
                                 }
                             } else if (candidates.length > 1) {
                                 candidates = await disambiguateCandidatesByCoordinate(candidates, lat, lon);
@@ -1574,7 +1581,7 @@
                 if (road && osmType && osmId) {
                     try {
                         const osmUrl = `https://api.openstreetmap.org/api/0.6/${osmType}/${osmId}.json`;
-                        const osmResponse = await fetch(osmUrl);
+                        const osmResponse = await hostRateLimiter.throttledFetch(osmUrl);
                         const osmData = await osmResponse.json();
                         const roadWikidata = osmData.elements?.[0]?.tags?.wikidata;
                         if (roadWikidata) {
@@ -1608,101 +1615,126 @@
             return (R * c).toFixed(1);
         }
 
-        // Tambahkan cache di level global
+        // Tambahkan cache di level global (key = judul yang sudah dinormalisasi)
         const photoDetailsCache = new Map();
 
-        async function fetchPhotoDetails(title) {
-            // Check cache first
-            if (photoDetailsCache.has(title)) {
-                return photoDetailsCache.get(title);
-            }
-
-            try {
-                const url = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&` +
-                    `prop=imageinfo|categories|globalusage&iiprop=url|extmetadata&iiurlwidth=250&gulimit=5&cllimit=5&format=json&origin=*`;
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-
-                const response = await fetch(url, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                const data = await response.json();
-                const pages = data.query.pages;
-                const page = Object.values(pages)[0];
-
-                if (!page || page.missing) {
-                    throw new Error('Page not found');
-                }
-
-                const imageInfo = page.imageinfo?.[0];
-                if (!imageInfo) {
-                    throw new Error('No image info');
-                }
-
-                const extMetadata = imageInfo.extmetadata || {};
-
-                let author = 'Pembuat tidak diketahui';
-                let authorUrl = null;
-                if (extMetadata.Artist) {
-                    const artistHtml = extMetadata.Artist.value;
-                    const linkMatch = artistHtml.match(/href="([^"]+)"/);
-                    author = artistHtml.replace(/<[^>]+>/g, '').trim() || 'Pembuat tidak diketahui';
-                    authorUrl = linkMatch ? linkMatch[1] : null;
-                }
-
-                const globalUsage = page.globalusage || [];
-                const fileUsage = globalUsage.slice(0, 3).map(usage => ({
-                    title: usage.title,
-                    url: `https://${usage.wiki}/wiki/${encodeURIComponent(usage.title)}`
-                }));
-
-                const categories = page.categories || [];
-                const categoryList = categories.slice(0, 3).map(cat => ({
-                    title: cat.title.replace('Category:', ''),
-                    url: `https://commons.wikimedia.org/wiki/${encodeURIComponent(cat.title)}`
-                }));
-
-                const result = {
-                    imageUrl: imageInfo.thumburl || placeholderImage,
-                    description: extMetadata.ImageDescription?.value || 'Deskripsi tidak tersedia',
-                    author: author,
-                    authorUrl: authorUrl,
-                    fileUsage: fileUsage,
-                    categories: categoryList
-                };
-
-                // Cache the result
-                photoDetailsCache.set(title, result);
-                return result;
-
-            } catch (error) {
-                console.error('Error mengambil detail foto:', error);
-                const fallback = {
-                    imageUrl: placeholderImage,
-                    description: 'Gagal memuat deskripsi',
-                    author: 'Pembuat tidak diketahui',
-                    authorUrl: null,
-                    fileUsage: [],
-                    categories: []
-                };
-                photoDetailsCache.set(title, fallback);
-                return fallback;
-            }
+        function fallbackPhotoDetails() {
+            return {
+                imageUrl: placeholderImage,
+                description: 'Gagal memuat deskripsi',
+                author: 'Pembuat tidak diketahui',
+                authorUrl: null,
+                fileUsage: [],
+                categories: []
+            };
         }
 
-        // Ganti fungsi fetchNearbyPhotos
+        function buildPhotoDetailFromPage(page) {
+            const imageInfo = page.imageinfo?.[0];
+            if (!imageInfo) return fallbackPhotoDetails();
+
+            const extMetadata = imageInfo.extmetadata || {};
+
+            let author = 'Pembuat tidak diketahui';
+            let authorUrl = null;
+            if (extMetadata.Artist) {
+                const artistHtml = extMetadata.Artist.value;
+                const linkMatch = artistHtml.match(/href="([^"]+)"/);
+                author = artistHtml.replace(/<[^>]+>/g, '').trim() || 'Pembuat tidak diketahui';
+                authorUrl = linkMatch ? linkMatch[1] : null;
+            }
+
+            const globalUsage = page.globalusage || [];
+            const fileUsage = globalUsage.slice(0, 3).map(usage => ({
+                title: usage.title,
+                url: `https://${usage.wiki}/wiki/${encodeURIComponent(usage.title)}`
+            }));
+
+            const categories = page.categories || [];
+            const categoryList = categories.slice(0, 3).map(cat => ({
+                title: cat.title.replace('Category:', ''),
+                url: `https://commons.wikimedia.org/wiki/${encodeURIComponent(cat.title)}`
+            }));
+
+            return {
+                imageUrl: imageInfo.thumburl || placeholderImage,
+                description: extMetadata.ImageDescription?.value || 'Deskripsi tidak tersedia',
+                author: author,
+                authorUrl: authorUrl,
+                fileUsage: fileUsage,
+                categories: categoryList
+            };
+        }
+
+        // Fetch detail SATU BATCH judul sekaligus (bukan satu request per foto).
+        // imageinfo dibatasi API ke maksimal 50 judul per request, jadi pemanggil
+        // WAJIB mengirim batch berukuran <= GALLERY_CHUNK_SIZE.
+        async function fetchPhotoDetailsBatch(titles) {
+            const uncachedTitles = titles.filter(t => !photoDetailsCache.has(normalizeTitle(t)));
+
+            if (uncachedTitles.length > 0) {
+                try {
+                    const url = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent(uncachedTitles.join('|'))}&` +
+                        `prop=imageinfo|categories|globalusage&iiprop=url|extmetadata&iiurlwidth=250&gulimit=5&cllimit=5&format=json&origin=*`;
+
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000); // batch lebih besar, timeout lebih longgar
+
+                    const response = await hostRateLimiter.throttledFetch(url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
+                    const data = await response.json();
+                    const pages = data.query?.pages || {};
+
+                    // MediaWiki bisa menormalisasi judul (mis. underscore -> spasi); petakan balik ke judul asli.
+                    const normalizedToOriginal = new Map();
+                    (data.query?.normalized || []).forEach(n => normalizedToOriginal.set(n.to, n.from));
+
+                    Object.values(pages).forEach(page => {
+                        const returnedTitle = page.title;
+                        const originalTitle = normalizedToOriginal.get(returnedTitle) || returnedTitle;
+                        const key = normalizeTitle(originalTitle);
+                        if (page.missing) {
+                            // Item tetap tampil dengan fallback, tidak pernah di-drop diam-diam.
+                            photoDetailsCache.set(key, fallbackPhotoDetails());
+                        } else {
+                            photoDetailsCache.set(key, buildPhotoDetailFromPage(page));
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error mengambil batch detail foto:', error);
+                    // Kalau satu batch gagal total, semua judul di batch itu tetap tampil (fallback),
+                    // bukan hilang dari daftar.
+                }
+            }
+
+            // Pastikan setiap judul yang diminta punya entri, walau batch gagal / page hilang.
+            titles.forEach(t => {
+                const key = normalizeTitle(t);
+                if (!photoDetailsCache.has(key)) {
+                    photoDetailsCache.set(key, fallbackPhotoDetails());
+                }
+            });
+
+            return titles.map(t => photoDetailsCache.get(normalizeTitle(t)));
+        }
+
+        // Geosearch SEKALI dengan limit 500 (bukan paginasi), lalu dedupe berdasarkan
+        // judul yang dinormalisasi (lowercase, trim, underscore -> spasi).
         async function fetchNearbyPhotos(lat, lon) {
             try {
                 resultsList.innerHTML = '<li class="loading">Memuat foto dari Wikimedia Commons...</li>';
-                const radius = 1000;
+                const radius = 3000;
+                const limit = 500;
+                // Sengaja pakai list=geosearch (bukan generator=geosearch/prop=coordinates),
+                // karena generator diam-diam membatasi hasil ke ~10 item berapa pun gslimit-nya.
                 const url = `https://commons.wikimedia.org/w/api.php?action=query&list=geosearch&gscoord=${lat}|${lon}&` +
-                    `gsradius=${radius}&gslimit=99&gsnamespace=6&format=json&origin=*`;
+                    `gsradius=${radius}&gslimit=${limit}&gsnamespace=6&format=json&origin=*`;
 
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-                const response = await fetch(url, { signal: controller.signal });
+                const response = await hostRateLimiter.throttledFetch(url, { signal: controller.signal });
                 clearTimeout(timeoutId);
 
                 if (!response.ok) {
@@ -1715,7 +1747,18 @@
                     throw new Error('Invalid response from Wikimedia Commons API');
                 }
 
-                return data.query.geosearch;
+                // Dedupe: judul yang sama (beda kapitalisasi/underscore) hanya dihitung sekali.
+                const seen = new Set();
+                const deduped = [];
+                for (const item of data.query.geosearch) {
+                    const key = normalizeTitle(item.title);
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        deduped.push(item);
+                    }
+                }
+
+                return deduped;
             } catch (error) {
                 console.error('Error fetching nearby photos:', error);
 
@@ -1734,12 +1777,23 @@
         }
 
         // Ganti fungsi displayPhotos dengan batch processing + progress bar
+        // imageinfo dibatasi API Commons ke maksimal 50 judul per request.
+        const GALLERY_CHUNK_SIZE = 50;
+
+        function chunkArray(arr, size) {
+            const chunks = [];
+            for (let i = 0; i < arr.length; i += size) {
+                chunks.push(arr.slice(i, i + size));
+            }
+            return chunks;
+        }
+
         async function displayPhotos(photos) {
             resultsList.innerHTML = '';
             const resultsCount = document.getElementById('results-count');
 
             if (photos.length === 0) {
-                resultsList.innerHTML = '<li class="empty-state"><p>Tidak ada foto ditemukan dalam radius 1km</p></li>';
+                resultsList.innerHTML = '<li class="empty-state"><p>Tidak ada foto ditemukan dalam radius 3km</p></li>';
                 resultsCount.textContent = '(0 foto)';
                 return;
             }
@@ -1748,70 +1802,90 @@
             resultsCount.textContent = `(${photos.length} foto)`;
 
             // Show loading with progress bar
+            const photoBatches = chunkArray(photos, GALLERY_CHUNK_SIZE);
+            const totalBatches = photoBatches.length;
+
             resultsList.innerHTML = `
             <li class="progress-container">
                 <div class="progress-text">Memuat detail foto...</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
                 </div>
-                <div class="progress-count" id="progress-count">0 / ${photos.length}</div>
+                <div class="progress-count" id="progress-count">Batch 0 / ${totalBatches} (0 / ${photos.length} foto)</div>
             </li>
         `;
             const progressFill = document.getElementById('progress-fill');
             const progressCount = document.getElementById('progress-count');
 
-            // Process in batches of 5 untuk menghindari overload
-            const BATCH_SIZE = 5;
+            // Dispatch batch (chunked 50 judul) secara paralel dengan concurrency terbatas
+            // (Semaphore 4 batch bersamaan), supaya 500 foto tidak jadi 500 request sekaligus.
+            const detailsByTitle = new Map();
+            let completedBatches = 0;
             let processedCount = 0;
-            const photoElements = [];
 
-            for (let i = 0; i < photos.length; i += BATCH_SIZE) {
-                const batch = photos.slice(i, i + BATCH_SIZE);
+            const updateProgress = () => {
+                if (progressFill && progressCount) {
+                    const progress = (completedBatches / totalBatches) * 100;
+                    progressFill.style.width = `${progress}%`;
+                    progressCount.textContent = `Batch ${completedBatches} / ${totalBatches} (${processedCount} / ${photos.length} foto)`;
+                }
+            };
 
-                // Process batch in parallel
-                const batchPromises = batch.map(async (photo) => {
+            await Promise.all(photoBatches.map(batch =>
+                detailFetchSemaphore.withPermit(async () => {
                     try {
-                        const details = await fetchPhotoDetails(photo.title);
-                        const distance = calculateDistance(
-                            currentPosition.coords.latitude,
-                            currentPosition.coords.longitude,
-                            photo.lat,
-                            photo.lon
-                        );
+                        const titles = batch.map(p => p.title);
+                        const detailsArr = await fetchPhotoDetailsBatch(titles);
+                        batch.forEach((photo, idx) => {
+                            detailsByTitle.set(normalizeTitle(photo.title), detailsArr[idx]);
+                        });
+                        processedCount += batch.length;
+                    } catch (error) {
+                        console.error('Error memproses batch foto:', error);
+                        // Batch gagal total tetap dapat fallback per judul, tidak di-drop diam-diam.
+                        batch.forEach(photo => {
+                            detailsByTitle.set(normalizeTitle(photo.title), fallbackPhotoDetails());
+                        });
+                        processedCount += batch.length;
+                    } finally {
+                        completedBatches++;
+                        updateProgress();
+                    }
+                })
+            ));
 
+            // Merge & sort: hasil geosearch tetap jadi sumber kebenaran (item mana yang ada +
+            // koordinat/jarak); urutkan akhir berdasarkan jarak (Haversine) ke posisi user.
+            const photoElements = photos
+                .map(photo => {
+                    const details = detailsByTitle.get(normalizeTitle(photo.title)) || fallbackPhotoDetails();
+                    const distance = calculateDistance(
+                        currentPosition.coords.latitude,
+                        currentPosition.coords.longitude,
+                        photo.lat,
+                        photo.lon
+                    );
+                    return { photo, details, distance: parseFloat(distance) };
+                })
+                .sort((a, b) => a.distance - b.distance)
+                .map(({ photo, details, distance }) => {
+                    try {
                         return createPhotoCard(photo, details, distance);
                     } catch (error) {
                         console.error('Error creating card:', error);
                         return null;
                     }
-                });
-
-                const cards = await Promise.all(batchPromises);
-
-                cards.forEach(card => {
-                    if (card) {
-                        photoElements.push(card);
-                        processedCount++;
-                    }
-                });
-
-                if (progressFill && progressCount) {
-                    const progress = (Math.min(i + BATCH_SIZE, photos.length) / photos.length) * 100;
-                    progressFill.style.width = `${progress}%`;
-                    progressCount.textContent = `${processedCount} / ${photos.length}`;
-                }
-
-                // Small delay between batches to keep UI responsive
-                if (i + BATCH_SIZE < photos.length) {
-                    await new Promise(resolve => setTimeout(resolve, 10));
-                }
-            }
+                })
+                .filter(Boolean);
 
             resultsList.innerHTML = '';
             photoElements.forEach(el => resultsList.appendChild(el));
         }
 
         // Extract card creation ke fungsi terpisah untuk reusability
+        // Kartu grid galeri: hanya gambar + badge jarak. Klik kartu -> alert detail.
+        // Kartu grid galeri: gambar + badge jarak (kiri) + badge author (kanan).
+        // Klik kartu -> modal detail. Klik badge jarak -> popup rute. Klik badge author -> halaman pengguna Commons.
         function createPhotoCard(photo, details, distance) {
             const li = document.createElement('li');
             li.className = 'photo-card';
@@ -1826,39 +1900,18 @@
                 }
             };
 
-            // Image container dengan stats overlay
-            const imgContainer = document.createElement('div');
-            imgContainer.className = 'photo-image-container';
-
             const img = document.createElement('img');
             img.src = details.imageUrl;
             img.alt = photo.title.replace('File:', '');
             img.loading = 'lazy';
             img.onerror = () => img.src = placeholderImage;
-            imgContainer.appendChild(img);
+            li.appendChild(img);
 
-            // Stats overlay
-            const statsDiv = document.createElement('div');
-            statsDiv.className = 'photo-stats';
-
-            const usageBadge = document.createElement('div');
-            usageBadge.className = 'stat-badge';
-            usageBadge.innerHTML = `<span class="icon">📄</span> ${details.fileUsage.length}`;
-            usageBadge.title = 'Digunakan di wiki lain';
-            statsDiv.appendChild(usageBadge);
-
-            const catBadge = document.createElement('div');
-            catBadge.className = 'stat-badge';
-            catBadge.innerHTML = `<span class="icon">🏷️</span> ${details.categories.length}`;
-            catBadge.title = 'Jumlah kategori';
-            statsDiv.appendChild(catBadge);
-
-            // Distance badge di overlay (tambahkan setelah statsDiv) — klik untuk lihat rute
+            // Badge jarak — pojok kiri atas; klik untuk lihat rute.
             const distanceDiv = document.createElement('div');
             distanceDiv.className = 'distance';
             distanceDiv.textContent = `${distance} km`;
-            distanceDiv.title = 'Show route';
-            distanceDiv.style.cursor = 'pointer';
+            distanceDiv.title = 'Lihat rute';
             distanceDiv.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1870,77 +1923,38 @@
                     photo.title.replace('File:', '')
                 );
             };
-            imgContainer.appendChild(distanceDiv);
+            li.appendChild(distanceDiv);
 
-            imgContainer.appendChild(statsDiv);
-            li.appendChild(imgContainer);
+            // Badge author — pojok kanan atas; klik langsung buka halaman pengguna Commons.
+            const authorBadge = document.createElement('a');
+            authorBadge.className = 'author-badge';
+            const authorName = details.author || 'Tidak diketahui';
+            authorBadge.textContent = authorName;
+            authorBadge.title = authorName;
 
-            // Content area
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'photo-content';
-
-            // Title
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'photo-title';
-            const link = document.createElement('a');
-            link.className = 'photo-link';
-            link.href = `https://commons.wikimedia.org/wiki/${encodeURIComponent(photo.title)}`;
-            link.textContent = photo.title.replace('File:', '').replace(/\.(jpg|jpeg|png|gif|svg)$/i, '');
-            link.target = '_blank';
-            link.onclick = (e) => e.stopPropagation();
-            titleDiv.appendChild(link);
-            contentDiv.appendChild(titleDiv);
-
-            const authorDiv = document.createElement('div');
-            authorDiv.className = 'author';
-
-            const authorIcon = document.createElement('span');
-            authorIcon.className = 'author-icon';
-            authorIcon.textContent = '👤';
-            authorDiv.appendChild(authorIcon);
-
-            const authorInfo = document.createElement('div');
-            authorInfo.className = 'author-info';
-
-            const authorLabel = document.createElement('span');
-            authorLabel.className = 'author-label';
-            authorLabel.textContent = 'Pembuat:';
-            authorInfo.appendChild(authorLabel);
-
-            const authorName = document.createElement('span');
-            authorName.className = 'author-name';
-
-            if (details.authorUrl) {
-                const authorLink = document.createElement('a');
-
-                let authorUrl = details.authorUrl?.trim() || '';
-
-                if (!authorUrl || !/^https?:\/\//i.test(authorUrl)) {
-                    const userName = (details.author || '').replace(/^user:/i, '').trim();
-                    authorUrl = `https://commons.wikimedia.org/wiki/User:${encodeURIComponent(userName)}`;
-                }
-
-                authorLink.href = authorUrl;
-                authorLink.textContent = details.author;
-                authorLink.target = '_blank';
-                authorLink.rel = 'noopener noreferrer';
-                authorLink.onclick = (e) => e.stopPropagation();
-
-                authorName.appendChild(authorLink);
-            } else {
-                authorName.textContent = details.author;
+            let authorUrl = details.authorUrl?.trim() || '';
+            if (!authorUrl || !/^https?:\/\//i.test(authorUrl)) {
+                const userName = authorName.replace(/^user:/i, '').trim();
+                authorUrl = `https://commons.wikimedia.org/wiki/User:${encodeURIComponent(userName)}`;
             }
-
-            authorInfo.appendChild(authorName);
-            authorDiv.appendChild(authorInfo);
-            contentDiv.appendChild(authorDiv);
-
-            li.appendChild(contentDiv);
+            authorBadge.href = authorUrl;
+            authorBadge.target = '_blank';
+            authorBadge.rel = 'noopener noreferrer';
+            authorBadge.onclick = (e) => e.stopPropagation();
+            li.appendChild(authorBadge);
 
             return li;
         }
 
-        // Tampilkan detail informasi grid item (foto) melalui modal saat item diklik
+        // Bersihkan tag HTML dari deskripsi Commons (extmetadata sering berisi markup).
+        function stripHtml(html) {
+            if (!html) return '';
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            return tempDiv.textContent || tempDiv.innerText || '';
+        }
+
+        // Modal detail foto (dipertahankan) — dibuka saat kartu grid diklik.
         function openPhotoModal(photo, details, distance) {
             const title = document.getElementById('photo-modal-title');
             title.textContent = photo.title.replace('File:', '').replace(/\.(jpg|jpeg|png|gif|svg)$/i, '');
@@ -1966,11 +1980,7 @@
 
             const descEl = document.createElement('p');
             descEl.style.cssText = 'margin-bottom:1rem; line-height:1.6;';
-            descEl.textContent = details.description ? (() => {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = details.description;
-                return tempDiv.textContent || tempDiv.innerText || 'Deskripsi tidak tersedia';
-            })() : 'Deskripsi tidak tersedia';
+            descEl.textContent = stripHtml(details.description) || 'Deskripsi tidak tersedia';
             body.appendChild(descEl);
 
             const metadataDiv = document.createElement('div');
@@ -2039,8 +2049,8 @@
             authorLabel.textContent = 'Pembuat:';
             authorInfo.appendChild(authorLabel);
 
-            const authorName = document.createElement('span');
-            authorName.className = 'author-name';
+            const authorNameEl = document.createElement('span');
+            authorNameEl.className = 'author-name';
 
             if (details.authorUrl) {
                 const authorLink = document.createElement('a');
@@ -2057,12 +2067,12 @@
                 authorLink.target = '_blank';
                 authorLink.rel = 'noopener noreferrer';
 
-                authorName.appendChild(authorLink);
+                authorNameEl.appendChild(authorLink);
             } else {
-                authorName.textContent = details.author;
+                authorNameEl.textContent = details.author;
             }
 
-            authorInfo.appendChild(authorName);
+            authorInfo.appendChild(authorNameEl);
             authorDiv.appendChild(authorInfo);
             body.appendChild(authorDiv);
 
@@ -2171,7 +2181,7 @@
         async function fetchWikivoyageSitelink(qid, lang) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=sitelinks&origin=*`;
-                const response = await fetch(url);
+                const response = await hostRateLimiter.throttledFetch(url);
                 const data = await response.json();
                 const entity = data.entities[qid];
                 const sitelinks = entity?.sitelinks || {};
@@ -2187,7 +2197,7 @@
         async function fetchCommonsCategory(qid) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=claims&origin=*`;
-                const response = await fetch(url);
+                const response = await hostRateLimiter.throttledFetch(url);
                 const data = await response.json();
                 const entity = data.entities[qid];
                 const commonsClaim = entity?.claims?.P373;

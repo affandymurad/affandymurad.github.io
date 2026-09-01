@@ -492,7 +492,8 @@
         .article-img-wrap {
             position: relative;
             width: 100%;
-            height: 160px;
+            aspect-ratio: 4 / 3;
+            height: auto;
             overflow: hidden;
             background-color: var(--bg-secondary);
             flex-shrink: 0;
@@ -541,8 +542,8 @@
         }
 
         .article-img-wrap.placeholder > img {
-            width: 45%;
-            height: 45%;
+            width: 38%;
+            height: 38%;
             object-fit: contain;
             opacity: 0.45;
         }
@@ -690,7 +691,7 @@
             }
 
             .article-img-wrap {
-                height: 180px;
+                aspect-ratio: 16 / 9;
             }
         }
 
@@ -881,6 +882,30 @@
             backdrop-filter: blur(2px);
         }
 
+        .wikt-lang-popup {
+            width: 480px;
+        }
+
+        .wikt-lang-popup-body {
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .wikt-lang-btn {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .wikt-lang-btn.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 15px;
@@ -895,7 +920,7 @@
             }
 
             .article-img-wrap {
-                height: 180px;
+                aspect-ratio: 16 / 9;
             }
 
             .article-content {
@@ -1782,9 +1807,63 @@
         const permissionStatus = document.getElementById('permission-status');
         const articleCount = document.getElementById('article-count');
         const resultsList = document.getElementById('results');
-        let currentLang = 'id'; // Default to English
+        // currentLang WAJIB disamakan dengan nilai select #language-select saat ini (bukan
+        // di-hardcode), supaya bahasa artikel yang diambil selalu konsisten dengan apa yang
+        // ditampilkan di section "Wikimedia Project Language" — termasuk saat select tidak
+        // punya atribut `selected` dan browser memilih opsi pertamanya sendiri.
+        let currentLang = languageSelect.value;
         let currentPosition = null;
         const placeholderImage = 'wikilokal.png';
+
+        // ===== HostRateLimiter =====
+        // Memaksa jeda minimal 350ms antar request ke host yang sama, supaya fetch paralel
+        // (Wikidata per-part, batch artikel, dsb) tidak membanjiri satu host sekaligus.
+        const HOST_RATE_LIMIT_MS = 350;
+        const hostLastRequestTime = new Map();
+        const hostGate = new Map();
+
+        function throttledFetch(url, options) {
+            const host = new URL(url, window.location.href).host;
+            const previousGate = hostGate.get(host) || Promise.resolve();
+            let releaseNext;
+            const myTurn = new Promise((resolve) => { releaseNext = resolve; });
+            const nextGate = previousGate.then(async () => {
+                const last = hostLastRequestTime.get(host) || 0;
+                const elapsed = Date.now() - last;
+                if (elapsed < HOST_RATE_LIMIT_MS) {
+                    await new Promise((r) => setTimeout(r, HOST_RATE_LIMIT_MS - elapsed));
+                }
+                hostLastRequestTime.set(host, Date.now());
+                releaseNext();
+            });
+            hostGate.set(host, nextGate);
+            // Hanya waktu MULAI request yang diserialisasi per host — response tetap ditunggu
+            // secara paralel, jadi throttling tidak menghilangkan manfaat concurrency batch.
+            return myTurn.then(() => fetch(url, options));
+        }
+
+        // ===== Semaphore sederhana untuk membatasi concurrency batch =====
+        function createSemaphore(maxConcurrent) {
+            let active = 0;
+            const queue = [];
+            const acquire = () => new Promise((resolve) => {
+                const tryAcquire = () => {
+                    if (active < maxConcurrent) {
+                        active++;
+                        resolve();
+                    } else {
+                        queue.push(tryAcquire);
+                    }
+                };
+                tryAcquire();
+            });
+            const release = () => {
+                active--;
+                const next = queue.shift();
+                if (next) next();
+            };
+            return { acquire, release };
+        }
 
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -1942,14 +2021,24 @@
 
         async function searchWikidataCandidates(name) {
             const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
-            const response = await fetch(url);
+            const response = await throttledFetch(url);
             const data = await response.json();
             return data.search || [];
         }
 
-        // Filter & disambiguasi berbasis teks (Tahap 4), prioritas berhenti di hasil pertama yang tidak kosong.
-        function filterCandidatesByText(results, type, name) {
-            const typeMatched = results.filter(r => matchEntityByType(r, type));
+        // Filter & disambiguasi berbasis teks, 3 prioritas — berhenti di prioritas pertama yang tidak kosong:
+        // 1) deskripsi entitas cocok dengan tipe lokasi (khusus SUBURB juga dicocokkan dengan nama parent
+        //    kota/kabupaten yang sama, kalau parent tersedia dan kandidatnya masih >1);
+        // 2) label sama persis dengan nama part + deskripsinya administratif;
+        // 3) fallback apapun yang deskripsinya administratif.
+        function filterCandidatesByText(results, type, name, parentNames = []) {
+            let typeMatched = results.filter(r => matchEntityByType(r, type));
+            if (type === 'suburb' && typeMatched.length > 1 && parentNames.length) {
+                const narrowedByParent = typeMatched.filter(r =>
+                    parentNames.some(pn => r.description?.toLowerCase().includes(pn.toLowerCase()))
+                );
+                if (narrowedByParent.length) typeMatched = narrowedByParent;
+            }
             if (typeMatched.length) return typeMatched;
 
             const exactGeo = results.filter(r =>
@@ -1966,7 +2055,7 @@
         async function fetchWikidataEntityCoords(qid) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${qid}&property=P625&format=json&origin=*`;
-                const response = await fetch(url);
+                const response = await throttledFetch(url);
                 const data = await response.json();
                 const value = data.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
                 return value ? { lat: value.latitude, lon: value.longitude } : null;
@@ -1976,9 +2065,14 @@
             }
         }
 
-        // Tahap 5: disambiguasi koordinat kalau Tahap 4 masih menyisakan >1 kandidat.
-        async function disambiguateCandidatesByCoordinate(candidates, lat, lon) {
-            if (candidates.length <= 1) return candidates;
+        // Disambiguasi koordinat: TIDAK membuang kandidat yang kalah — seluruh kandidat yang lolos
+        // filter teks tetap dikembalikan (dipakai buat render beberapa chip Wikidata sekaligus di UI),
+        // hanya diurutkan dari yang koordinatnya (P625, Haversine) paling dekat ke lokasi user.
+        // Kandidat tanpa klaim P625 diletakkan di akhir.
+        async function rankCandidatesByCoordinate(candidates, lat, lon) {
+            if (candidates.length <= 1) {
+                return candidates.map(c => ({ ...c, distance: undefined }));
+            }
             const withDistance = await Promise.all(
                 candidates.map(async (c) => {
                     const coords = await fetchWikidataEntityCoords(c.id);
@@ -1986,19 +2080,34 @@
                     return { ...c, distance: parseFloat(calculateDistance(lat, lon, coords.lat, coords.lon)) };
                 })
             );
-            const withValidCoords = withDistance.filter(c => c.distance !== Infinity);
-            if (!withValidCoords.length) return candidates;
-            withValidCoords.sort((a, b) => a.distance - b.distance);
-            return [withValidCoords[0]];
+            withDistance.sort((a, b) => a.distance - b.distance);
+            return withDistance;
+        }
+
+        // Reverse geocode ke Nominatim dengan retry otomatis (maks 3x) kalau kena HTTP 429
+        // atau error jaringan — sesuai ketentuan.
+        async function fetchNominatimReverse(lat, lon, lang, retryCount = 0, maxRetries = 3) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=${lang}`;
+            let response;
+            try {
+                response = await throttledFetch(url, { headers: { 'User-Agent': 'WikiLokal/1.0' } });
+            } catch (error) {
+                if (retryCount < maxRetries) {
+                    await new Promise((r) => setTimeout(r, 500 * (retryCount + 1)));
+                    return fetchNominatimReverse(lat, lon, lang, retryCount + 1, maxRetries);
+                }
+                throw error;
+            }
+            if (response.status === 429 && retryCount < maxRetries) {
+                await new Promise((r) => setTimeout(r, 500 * (retryCount + 1)));
+                return fetchNominatimReverse(lat, lon, lang, retryCount + 1, maxRetries);
+            }
+            return response.json();
         }
 
         async function getLocationDetails(lat, lon) {
             try {
-                const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=${currentLang}`;
-                const nominatimResponse = await fetch(nominatimUrl, {
-                    headers: { 'User-Agent': 'WikiLokal/1.0' }
-                });
-                const data = await nominatimResponse.json();
+                const data = await fetchNominatimReverse(lat, lon, currentLang);
                 if (!data.address) {
                     return { displayName: 'Location unknown', parts: [] };
                 }
@@ -2026,48 +2135,57 @@
                     .filter(p => ['city', 'town', 'village', 'state'].includes(p.type))
                     .map(p => p.name);
 
+                // Setiap part administratif diperkaya secara paralel (async) dengan Q-id Wikidata.
+                const emptyWikidata = { wikidataId: null, wikidataIds: [], allWikidataMatches: [] };
                 const detailedParts = await Promise.all(
                     locationParts.map(async (part) => {
                         if (part.type === 'road' || part.type === 'postcode') {
-                            return { ...part, wikidataIds: [] };
+                            return { ...part, ...emptyWikidata };
                         }
 
                         const results = await searchWikidataCandidates(part.name);
-                        if (!results.length) return { ...part, wikidataIds: [] };
+                        if (!results.length) return { ...part, ...emptyWikidata };
 
-                        let candidates = filterCandidatesByText(results, part.type, part.name);
-                        if (!candidates.length) return { ...part, wikidataIds: [] };
+                        const parentNames = part.type === 'suburb'
+                            ? parentNamesAll.filter(n => n !== part.name)
+                            : [];
+                        const filtered = filterCandidatesByText(results, part.type, part.name, parentNames);
+                        if (!filtered.length) return { ...part, ...emptyWikidata };
 
-                        if (part.type === 'suburb') {
-                            if (candidates.length > 1) {
-                                const parentNames = parentNamesAll.filter(n => n !== part.name);
-                                const narrowed = candidates.filter(c =>
-                                    parentNames.some(pn => c.description?.toLowerCase().includes(pn.toLowerCase()))
-                                );
-                                if (narrowed.length) candidates = narrowed;
-                            }
-                            if (candidates.length > 1) {
-                                const exact = candidates.find(c => c.label?.toLowerCase() === part.name.toLowerCase());
-                                candidates = [exact || candidates[0]];
-                            }
-                        } else if (candidates.length > 1) {
-                            candidates = await disambiguateCandidatesByCoordinate(candidates, lat, lon);
-                        }
+                        // Kandidat terbaik (index 0 setelah diurutkan jarak) jadi wikidataId utama,
+                        // sisanya tetap disimpan di wikidataIds/allWikidataMatches untuk chip UI.
+                        const ranked = await rankCandidatesByCoordinate(filtered, lat, lon);
 
-                        return { ...part, wikidataIds: candidates.map(c => c.id) };
+                        return {
+                            ...part,
+                            wikidataId: ranked[0].id,
+                            wikidataIds: ranked.map(c => c.id),
+                            allWikidataMatches: ranked.map(c => ({
+                                id: c.id,
+                                label: c.label,
+                                description: c.description,
+                                distance: c.distance
+                            }))
+                        };
                     })
                 );
 
-                // Tahap 6: Q untuk ROAD lewat OSM (osm_type/osm_id), bukan Wikidata search.
+                // Q untuk ROAD: BUKAN dari pencarian nama di Wikidata, melainkan dari tag `wikidata`
+                // mentah pada elemen OSM (via osm_type/osm_id hasil Nominatim). Tidak ada fallback
+                // kalau tag itu tidak ada — part tetap tampil tanpa Wikidata.
                 if (road && osmType && osmId) {
                     try {
                         const osmUrl = `https://api.openstreetmap.org/api/0.6/${osmType}/${osmId}.json`;
-                        const osmResponse = await fetch(osmUrl);
+                        const osmResponse = await throttledFetch(osmUrl);
                         const osmData = await osmResponse.json();
                         const roadWikidata = osmData.elements?.[0]?.tags?.wikidata;
                         if (roadWikidata) {
                             const roadPart = detailedParts.find(p => p.type === 'road');
-                            if (roadPart) roadPart.wikidataIds = [roadWikidata];
+                            if (roadPart) {
+                                roadPart.wikidataId = roadWikidata;
+                                roadPart.wikidataIds = [roadWikidata];
+                                roadPart.allWikidataMatches = [{ id: roadWikidata, label: null, description: null, distance: undefined }];
+                            }
                         }
                     } catch (error) {
                         console.error('Error fetching OSM element for road wikidata:', error);
@@ -2092,49 +2210,84 @@
             return (R * c).toFixed(1);
         }
 
-        async function fetchWiktionaryDefinition(title, lang) {
-            try {
-                const url = `https://${lang}.wiktionary.org/w/api.php?` +
-                    `action=query&titles=${encodeURIComponent(title)}&` +
-                    `prop=extracts&exintro&explaintext&exsentences=1&format=json&origin=*`;
-                const response = await fetch(url);
-                const data = await response.json();
-                const pages = data.query.pages;
-                const page = Object.values(pages)[0];
-                return page.extract ? page.extract.trim() : 'Definition not available';
-            } catch (error) {
-                console.error('Error fetching Wiktionary definition:', error);
-                return 'Failed to load definition';
-            }
+        // Catatan: definisi Wiktionary TIDAK lagi diambil di tahap ini. Tombol Wiktionary di modal
+        // artikel dibangun langsung dari kata-kata pada judul + deskripsi (lihat openArticleModal),
+        // jadi request per-artikel ke Wiktionary di sini tidak pernah dipakai — dihapus supaya tidak
+        // membebani pipeline batch artikel secara sia-sia.
+
+        function normalizeTitleKey(title) {
+            return (title || '').trim().toLowerCase().replace(/_/g, ' ');
         }
 
-        async function fetchArticleDetails(title, lang) {
+        function chunkArray(arr, size) {
+            const chunks = [];
+            for (let i = 0; i < arr.length; i += size) {
+                chunks.push(arr.slice(i, i + size));
+            }
+            return chunks;
+        }
+
+        const ARTICLE_BATCH_SIZE = 20; // TextExtracts hanya mengisi `extract` utk ~20 halaman/request anonim
+        const DETAIL_FETCH_CONCURRENCY = 4; // maks 4 batch jalan bersamaan
+
+        // Fetch detail sekaligus untuk satu batch judul (bukan satu request per artikel).
+        async function fetchArticleDetailsBatch(titles, lang) {
+            const detailsMap = new Map();
             try {
                 const wikiUrl = `https://${lang}.wikipedia.org/w/api.php?` +
-                    `action=query&titles=${encodeURIComponent(title)}&` +
-                    `prop=extracts|pageimages|pageprops&exintro&explaintext&exsentences=2&` +
-                    `pithumbsize=250&format=json&origin=*`;
-                const wikiResponse = await fetch(wikiUrl);
+                    `action=query&titles=${encodeURIComponent(titles.join('|'))}&` +
+                    `prop=extracts|pageimages|pageprops&exintro&explaintext&` +
+                    `exsentences=2&exlimit=20&pithumbsize=250&format=json&origin=*`;
+                const wikiResponse = await throttledFetch(wikiUrl);
                 const wikiData = await wikiResponse.json();
-                const pages = wikiData.query.pages;
-                const page = Object.values(pages)[0];
-                const wiktionaryDef = await fetchWiktionaryDefinition(title, lang);
-                const wikidataId = page.pageprops?.wikibase_item || null;
-                return {
-                    description: page.extract || 'Description not available',
-                    image: page.thumbnail?.source || placeholderImage,
-                    wikidataId: wikidataId,
-                    wiktionaryDef: wiktionaryDef
-                };
+                const pages = wikiData.query?.pages || {};
+                for (const page of Object.values(pages)) {
+                    if (!page?.title) continue;
+                    detailsMap.set(normalizeTitleKey(page.title), {
+                        description: page.extract || 'Description not available',
+                        image: page.thumbnail?.source || placeholderImage,
+                        wikidataId: page.pageprops?.wikibase_item || null
+                    });
+                }
             } catch (error) {
-                console.error('Error fetching article details:', error);
-                return {
-                    description: 'Failed to load description',
-                    image: placeholderImage,
-                    wikidataId: null,
-                    wiktionaryDef: 'Failed to load definition'
-                };
+                console.error('Error fetching article details batch:', error);
+                // Batch gagal total — judul di batch ini tetap ditampilkan lewat fallback
+                // di fetchAllArticleDetails, tidak pernah di-drop diam-diam.
             }
+            return detailsMap;
+        }
+
+        // Dispatch paralel dengan concurrency terbatas (semaphore), progress dilaporkan per batch
+        // selesai. Item yang gagal tetap tampil dengan fallback, bukan hilang dari daftar.
+        async function fetchAllArticleDetails(articles, lang, onProgress) {
+            const titleBatches = chunkArray(articles.map(a => a.title), ARTICLE_BATCH_SIZE);
+            const detailsByTitle = new Map();
+            let completed = 0;
+            const semaphore = createSemaphore(DETAIL_FETCH_CONCURRENCY);
+
+            await Promise.all(titleBatches.map(async (batch) => {
+                await semaphore.acquire();
+                try {
+                    const batchMap = await fetchArticleDetailsBatch(batch, lang);
+                    for (const [key, value] of batchMap) {
+                        detailsByTitle.set(key, value);
+                    }
+                } finally {
+                    semaphore.release();
+                    completed++;
+                    if (onProgress) onProgress(completed, titleBatches.length);
+                }
+            }));
+
+            // Merge & sort: hasil geosearch tetap jadi sumber kebenaran soal item mana yang ada.
+            return articles.map(article => ({
+                article,
+                details: detailsByTitle.get(normalizeTitleKey(article.title)) || {
+                    description: 'Description not available',
+                    image: placeholderImage,
+                    wikidataId: null
+                }
+            }));
         }
 
         async function fetchNearbyArticles(lat, lon, lang) {
@@ -2142,12 +2295,26 @@
                 resultsList.innerHTML = '<li class="loading">Loading articles...</li>';
                 articleCount.textContent = '';
                 const radius = 3000;
+                // Satu kali geosearch, BUKAN paginasi — langsung minta limit maksimal (500).
+                // Sengaja pakai list=geosearch (bukan generator=geosearch/prop=coordinates), karena
+                // generator diam-diam membatasi hasil ke ~10 item berapa pun gslimit-nya.
                 const url = `https://${lang}.wikipedia.org/w/api.php?` +
                     `action=query&list=geosearch&gscoord=${lat}|${lon}&` +
-                    `gsradius=${radius}&gslimit=50&format=json&origin=*`;
-                const response = await fetch(url);
+                    `gsradius=${radius}&gslimit=500&format=json&origin=*`;
+                const response = await throttledFetch(url);
                 const data = await response.json();
-                return data.query.geosearch;
+                const results = data.query?.geosearch || [];
+
+                // Dedupe berdasarkan judul yang dinormalisasi (lowercase, trim, _ → spasi).
+                const seen = new Set();
+                const deduped = [];
+                for (const item of results) {
+                    const key = normalizeTitleKey(item.title);
+                    if (seen.has(key)) continue;
+                    seen.add(key);
+                    deduped.push(item);
+                }
+                return deduped;
             } catch (error) {
                 resultsList.innerHTML = `<li class="error">Failed to load articles: ${error.message}</li>`;
                 articleCount.textContent = '';
@@ -2155,7 +2322,12 @@
             }
         }
 
-        async function displayArticles(articles) {
+        // `lang` diteruskan eksplisit (snapshot saat pemanggilan) — bukan dibaca ulang dari
+        // `currentLang` global — supaya kalau user mengganti pilihan di "Wikimedia Project
+        // Language" SAAT artikel masih sedang di-load, badge/link artikel yang sudah terlanjur
+        // diambil tetap menampilkan bahasa yang benar-benar dipakai untuk fetch, bukan bahasa
+        // baru yang belum tentu sesuai dengan data yang sedang dirender.
+        async function displayArticles(articles, lang = currentLang) {
             if (articles.length === 0) {
                 resultsList.innerHTML = '<li class="empty-state"><p>No articles found within a 3 km radius</p></li>';
                 articleCount.textContent = '(0)';
@@ -2173,28 +2345,39 @@
         `;
             const progressFill = document.getElementById('progress-fill');
             const progressCount = document.getElementById('progress-count');
-            const articleElements = [];
 
-            for (let i = 0; i < articles.length; i++) {
-                const article = articles[i];
-                const details = await fetchArticleDetails(article.title, currentLang);
-                const distance = calculateDistance(
+            // Ambil detail semua artikel lewat batch(20)/concurrency(4), progress per batch selesai.
+            const results = await fetchAllArticleDetails(articles, lang, (completedBatches, totalBatches) => {
+                const progress = (completedBatches / totalBatches) * 100;
+                progressFill.style.width = `${progress}%`;
+                const itemsDone = Math.min(completedBatches * ARTICLE_BATCH_SIZE, articles.length);
+                progressCount.textContent = `${itemsDone} / ${articles.length}`;
+            });
+
+            // Tahap akhir: urutkan berdasarkan jarak (Haversine) ke posisi user saat ini.
+            const withDistance = results.map(({ article, details }) => ({
+                article,
+                details,
+                distance: calculateDistance(
                     currentPosition.coords.latitude,
                     currentPosition.coords.longitude,
                     article.lat,
                     article.lon
-                );
+                )
+            }));
+            withDistance.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 
+            const articleElements = withDistance.map(({ article, details, distance }) => {
                 const li = document.createElement('li');
                 li.className = 'article-card';
                 li.tabIndex = 0;
                 li.setAttribute('role', 'button');
                 li.setAttribute('aria-label', `View details for ${article.title}`);
-                li.onclick = () => openArticleModal(article, details, distance);
+                li.onclick = () => openArticleModal(article, details, distance, lang);
                 li.onkeydown = (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        openArticleModal(article, details, distance);
+                        openArticleModal(article, details, distance, lang);
                     }
                 };
 
@@ -2283,7 +2466,7 @@
 
                 const langBadge = document.createElement('span');
                 langBadge.className = 'language-badge';
-                langBadge.textContent = currentLang.toUpperCase();
+                langBadge.textContent = lang.toUpperCase();
                 overlayRight.appendChild(langBadge);
 
                 overlayBadges.appendChild(overlayRight);
@@ -2297,7 +2480,7 @@
                 const titleWrapper = document.createElement('div');
                 titleWrapper.className = 'title-wrapper';
                 const link = document.createElement('a');
-                link.href = `https://${currentLang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
+                link.href = `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
                 link.target = '_blank';
                 link.style.cssText = 'display:inline-flex; align-items:center; gap:0.4em; font-size:1.15rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
                 const iconImg = document.createElement('img');
@@ -2312,19 +2495,15 @@
                 contentDiv.appendChild(titleWrapper);
 
                 li.appendChild(contentDiv);
-                articleElements.push(li);
-
-                const progress = ((i + 1) / articles.length) * 100;
-                progressFill.style.width = `${progress}%`;
-                progressCount.textContent = `${i + 1} / ${articles.length}`;
-            }
+                return li;
+            });
 
             resultsList.innerHTML = '';
             articleElements.forEach(el => resultsList.appendChild(el));
             articleCount.textContent = `(${articles.length})`;
         }
 
-        function openArticleModal(article, details, distance) {
+        function openArticleModal(article, details, distance, lang = currentLang) {
             const title = document.getElementById('article-modal-title');
             title.innerHTML = `<img src="images/ic_wikipedia.svg" alt="Wikipedia" style="width:1.2em; height:1.2em; vertical-align:middle; margin-right:0.4em;">${article.title}`;
 
@@ -2338,7 +2517,7 @@
             dist.textContent = `${distance} km`;
             const langBadge = document.createElement('span');
             langBadge.className = 'language-badge';
-            langBadge.textContent = currentLang.toUpperCase();
+            langBadge.textContent = lang.toUpperCase();
             badgesRow.appendChild(dist);
             badgesRow.appendChild(langBadge);
             body.appendChild(badgesRow);
@@ -2442,9 +2621,10 @@
                 uniqueWords.forEach(word => {
                     const wiktBtn = document.createElement('button');
                     wiktBtn.textContent = word;
-                    wiktBtn.title = `Search "${word}" on Wiktionary (${currentLang})`;
+                    wiktBtn.title = `Choose Wiktionary language to search "${word}"`;
                     wiktBtn.onclick = () => {
-                        window.open(`https://${currentLang}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
+                        closeModal('article-modal');
+                        openWiktionaryLanguagePicker(word, lang);
                     };
                     wiktButtons.appendChild(wiktBtn);
                 });
@@ -2459,6 +2639,58 @@
             body.appendChild(wiktDiv);
 
             openModal('article-modal');
+        }
+
+        // Popup pemilih bahasa Wiktionary — daftar bahasanya diambil langsung dari opsi yang sama
+        // dengan section "Wikimedia Project Language" (#language-select), supaya selalu konsisten
+        // dengan daftar bahasa yang sudah ada di aplikasi (tidak di-hardcode terpisah).
+        function openWiktionaryLanguagePicker(word, defaultLang) {
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+
+            const popup = document.createElement('div');
+            popup.className = 'map-popup wikt-lang-popup';
+
+            const closePopup = () => {
+                popup.remove();
+                overlay.remove();
+            };
+
+            const popupHeader = document.createElement('div');
+            popupHeader.className = 'popup-header';
+            const popupTitle = document.createElement('div');
+            popupTitle.className = 'popup-title';
+            popupTitle.textContent = `Wiktionary language for "${word}"`;
+            popupHeader.appendChild(popupTitle);
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '×';
+            closeBtn.className = 'close-btn';
+            closeBtn.onclick = closePopup;
+            popupHeader.appendChild(closeBtn);
+            popup.appendChild(popupHeader);
+
+            const body = document.createElement('div');
+            body.className = 'wikt-lang-popup-body';
+            Array.from(languageSelect.options).forEach((opt) => {
+                const langBtn = document.createElement('button');
+                langBtn.className = 'location-action-btn wikt-lang-btn';
+                langBtn.textContent = opt.text;
+                if (opt.value === defaultLang) {
+                    langBtn.classList.add('active');
+                    langBtn.title = 'Current article language';
+                }
+                langBtn.onclick = () => {
+                    window.open(`https://${opt.value}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
+                    closePopup();
+                    closeModal('article-modal');
+                };
+                body.appendChild(langBtn);
+            });
+            popup.appendChild(body);
+
+            document.body.appendChild(popup);
+            overlay.onclick = closePopup;
         }
 
         function showRoutePopup(startLat, startLon, endLat, endLon, title) {
@@ -2510,7 +2742,7 @@
         async function fetchWikivoyageSitelink(qid, lang) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=sitelinks&origin=*`;
-                const response = await fetch(url);
+                const response = await throttledFetch(url);
                 const data = await response.json();
                 const entity = data.entities[qid];
                 const sitelinks = entity?.sitelinks || {};
@@ -2526,7 +2758,7 @@
         async function fetchCommonsCategory(qid) {
             try {
                 const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=claims&origin=*`;
-                const response = await fetch(url);
+                const response = await throttledFetch(url);
                 const data = await response.json();
                 const entity = data.entities[qid];
                 const commonsClaim = entity?.claims?.P373;
@@ -2556,7 +2788,7 @@
             for (const part of locationParts) {
                 const div = document.createElement('div');
                 div.className = 'location-part';
-        
+
                 const span = document.createElement('span');
                 const labels = {
                     'road': 'Street', 'postcode': 'Postal Code',
@@ -2566,38 +2798,38 @@
                 };
                 span.textContent = `${labels[part.type] || part.type}: ${part.name}`;
                 div.appendChild(span);
-        
+
                 if (part.type !== 'road' && part.type !== 'postcode') {
-        
+
                     // ✅ FIX: Multiple Wikidata chips untuk SEMUA tipe (bukan hanya village)
                     if (part.allWikidataMatches && part.allWikidataMatches.length > 0) {
                         const allMatchesContainer = document.createElement('div');
                         allMatchesContainer.style.cssText =
                             'display:flex; flex-wrap:wrap; gap:0.5rem; width:100%; margin-top:0.5rem;';
-        
+
                         part.allWikidataMatches.forEach((match, index) => {
                             const wdBtn = document.createElement('button');
                             wdBtn.className = 'location-action-btn';
-        
+
                             let titleText = `${match.label || 'No label'} — ${match.description || 'No description'}`;
                             if (match.distance !== undefined && match.distance !== Infinity)
                                 titleText += ` (${match.distance} km away)`;
                             wdBtn.title = titleText;
-        
+
                             const wdIcon = document.createElement('img');
                             wdIcon.src = 'images/ic_wikidata.svg';
                             wdIcon.alt = 'Wikidata';
                             wdIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+
                             const wdLabel = document.createElement('span');
                             wdLabel.style.cssText =
                                 'display:flex; flex-direction:column; align-items:flex-start; gap:0.15rem;';
-        
+
                             const idSpan = document.createElement('span');
                             idSpan.textContent = match.id;
                             idSpan.style.fontWeight = '600';
                             wdLabel.appendChild(idSpan);
-        
+
                             if (match.description || match.distance !== undefined) {
                                 const descSpan = document.createElement('small');
                                 let descText = match.description || 'No description';
@@ -2607,23 +2839,23 @@
                                 descSpan.style.cssText = 'font-size:0.7rem; opacity:0.8; line-height:1.2;';
                                 wdLabel.appendChild(descSpan);
                             }
-        
+
                             wdBtn.appendChild(wdIcon);
                             wdBtn.appendChild(wdLabel);
                             wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${match.id}`);
-        
+
                             // Highlight best match (index 0)
                             if (index === 0) {
                                 wdBtn.style.borderColor = 'var(--success-color)';
                                 wdBtn.style.borderWidth = '2px';
                                 wdBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
                             }
-        
+
                             allMatchesContainer.appendChild(wdBtn);
                         });
-        
+
                         div.appendChild(allMatchesContainer);
-        
+
                     } else {
                         // Fallback: single Wikidata chip (jika allWikidataMatches tidak ada)
                         const primaryId = part.wikidataIds?.[0] ?? null;
@@ -2632,18 +2864,18 @@
                         wdBtn.title = primaryId
                             ? `Open Wikidata entity ${primaryId}`
                             : 'Wikidata (no administrative entity found)';
-        
+
                         const wdIcon = document.createElement('img');
                         wdIcon.src = 'images/ic_wikidata.svg';
                         wdIcon.alt = 'Wikidata';
                         wdIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+
                         const wdLabel = document.createElement('span');
                         wdLabel.textContent = primaryId ? primaryId : 'Wikidata';
-        
+
                         wdBtn.appendChild(wdIcon);
                         wdBtn.appendChild(wdLabel);
-        
+
                         if (primaryId) {
                             wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${primaryId}`);
                         } else {
@@ -2653,7 +2885,7 @@
                         }
                         div.appendChild(wdBtn);
                     }
-        
+
                     // ===== Wikivoyage Button =====
                     const wvBtn = document.createElement('button');
                     wvBtn.className = 'location-action-btn';
@@ -2661,17 +2893,17 @@
                     wvBtn.title = primaryIdForWv
                         ? `Open Wikivoyage page for ${part.name}`
                         : `Search "${part.name}" on Wikivoyage`;
-        
+
                     const wvIcon = document.createElement('img');
                     wvIcon.src = 'images/ic_wikivoyage.svg';
                     wvIcon.alt = 'Wikivoyage';
                     wvIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+
                     const wvLabel = document.createElement('span');
                     wvLabel.textContent = 'Wikivoyage';
                     wvBtn.appendChild(wvIcon);
                     wvBtn.appendChild(wvLabel);
-        
+
                     wvBtn.onclick = async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -2686,7 +2918,7 @@
                         safeOpenLink(targetUrl);
                     };
                     div.appendChild(wvBtn);
-        
+
                     // ===== Wikimedia Commons Button =====
                     const commonsBtn = document.createElement('button');
                     commonsBtn.className = 'location-action-btn';
@@ -2694,17 +2926,17 @@
                     commonsBtn.title = primaryIdForCommons
                         ? `Open Wikimedia Commons category for ${part.name}`
                         : `Search "${part.name}" on Wikimedia Commons`;
-        
+
                     const commonsIcon = document.createElement('img');
                     commonsIcon.src = 'images/ic_commons.svg';
                     commonsIcon.alt = 'Wikimedia Commons';
                     commonsIcon.style.cssText = 'width:1.1em; height:1.1em;';
-        
+
                     const commonsLabel = document.createElement('span');
                     commonsLabel.textContent = 'Commons';
                     commonsBtn.appendChild(commonsIcon);
                     commonsBtn.appendChild(commonsLabel);
-        
+
                     commonsBtn.onclick = async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -2720,7 +2952,7 @@
                     };
                     div.appendChild(commonsBtn);
                 }
-        
+
                 detailsContent.appendChild(div);
             }
         }
@@ -2749,8 +2981,9 @@
                     await checkLocationPermission();
                     const locationParts = await getLocationDetails(lat, lon);
                     await updateLocationDisplay(lat, lon, locationParts);
-                    const articles = await fetchNearbyArticles(lat, lon, currentLang);
-                    await displayArticles(articles);
+                    const fetchLang = currentLang; // snapshot — dipakai konsisten dari fetch sampai render
+                    const articles = await fetchNearbyArticles(lat, lon, fetchLang);
+                    await displayArticles(articles, fetchLang);
                 },
                 async (error) => {
                     console.error('Geolocation error:', error);
@@ -2815,8 +3048,9 @@
                 const lon = currentPosition.coords.longitude;
                 const locationParts = await getLocationDetails(lat, lon);
                 await updateLocationDisplay(lat, lon, locationParts);
-                const articles = await fetchNearbyArticles(lat, lon, currentLang);
-                await displayArticles(articles);
+                const fetchLang = currentLang; // snapshot — dipakai konsisten dari fetch sampai render
+                const articles = await fetchNearbyArticles(lat, lon, fetchLang);
+                await displayArticles(articles, fetchLang);
             } else {
                 await getLocation(0, 3); // Mulai dengan retry count 0, max 3 retries
             }
