@@ -169,6 +169,22 @@
     margin:0 0 6px;
   }
 
+  .limit-note{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+
+  .subcat-head{
+    margin-top:30px;
+    border-top:1px solid var(--rule);
+    padding-top:20px;
+  }
+  .subcat-list li a{
+    color:var(--maroon-deep);
+  }
+
   .results-head{
     display:flex;
     justify-content:space-between;
@@ -254,11 +270,19 @@
     </div>
 
     <p class="lang-label" id="langLabel"></p>
+    <p class="limit-note" id="limitNote" style="display:none;"></p>
+
     <div class="results-head">
       <h2 id="resultsTitle">Artikel</h2>
       <span class="count" id="resultsCount"></span>
     </div>
     <ol class="articles" id="articleList"></ol>
+
+    <div class="results-head subcat-head" id="subcatHead" style="display:none;">
+      <h2>Subkategori</h2>
+      <span class="count" id="subcatCount"></span>
+    </div>
+    <ol class="articles subcat-list" id="subcatList"></ol>
   </section>
 </div>
 
@@ -272,9 +296,13 @@
   const resultsEl = document.getElementById('results');
   const editionsEl = document.getElementById('editions');
   const langLabelEl = document.getElementById('langLabel');
+  const limitNoteEl = document.getElementById('limitNote');
   const resultsTitle = document.getElementById('resultsTitle');
   const resultsCount = document.getElementById('resultsCount');
   const articleList = document.getElementById('articleList');
+  const subcatHead = document.getElementById('subcatHead');
+  const subcatCount = document.getElementById('subcatCount');
+  const subcatList = document.getElementById('subcatList');
 
   const nsPrefixCache = {};      // lang -> "Kategori" / "Category" / ...
   let sitelinksCache = null;     // { sitecode: { site, title, url } }
@@ -454,18 +482,15 @@
       : lang;
   }
 
-  function renderArticles(lang, title, members){
-    renderLangLabel(lang);
-    resultsTitle.textContent = title.replace(/^[^:]+:/, prefix => prefix); // keep as-is
-    resultsCount.textContent = `${members.length} artikel${members.length === 500 ? ' (dibatasi 500 hasil pertama)' : ''}`;
-    articleList.innerHTML = '';
-    if(members.length === 0){
+  function buildList(container, items, lang){
+    container.innerHTML = '';
+    if(items.length === 0){
       const li = document.createElement('li');
-      li.textContent = 'Tidak ada artikel dalam kategori ini.';
-      articleList.appendChild(li);
+      li.textContent = 'Tidak ada.';
+      container.appendChild(li);
       return;
     }
-    members
+    items
       .slice()
       .sort((a, b) => safeCompare(a.title, b.title, lang))
       .forEach(m => {
@@ -476,14 +501,31 @@
         a.rel = 'noopener noreferrer';
         a.textContent = m.title;
         li.appendChild(a);
-        if(m.ns === 14){
-          const tag = document.createElement('span');
-          tag.className = 'ns-tag';
-          tag.textContent = 'subkategori';
-          li.appendChild(tag);
-        }
-        articleList.appendChild(li);
+        container.appendChild(li);
       });
+  }
+
+  function renderArticles(lang, title, members){
+    renderLangLabel(lang);
+    resultsTitle.textContent = title.replace(/^[^:]+:/, prefix => prefix); // keep as-is
+
+    limitNoteEl.style.display = members.length === 500 ? 'block' : 'none';
+    limitNoteEl.textContent = 'Hasil dibatasi 500 anggota kategori pertama (artikel + subkategori) dari API.';
+
+    const articles = members.filter(m => m.ns !== 14);
+    const subcats = members.filter(m => m.ns === 14);
+
+    resultsCount.textContent = `${articles.length} artikel`;
+    buildList(articleList, articles, lang);
+
+    if(subcats.length > 0){
+      subcatHead.style.display = 'flex';
+      subcatCount.textContent = `${subcats.length} subkategori`;
+      buildList(subcatList, subcats, lang);
+    } else {
+      subcatHead.style.display = 'none';
+      subcatList.innerHTML = '';
+    }
   }
 
   function renderEditions(sitelinks, activeLang){
