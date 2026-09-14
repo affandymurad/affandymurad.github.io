@@ -214,9 +214,10 @@
     color:var(--maroon-deep);
   }
 
-  .interwiki-list li{
+  ol.articles.interwiki-list li{
     display:flex;
     flex-direction:column;
+    align-items:flex-start;
     gap:2px;
   }
   .interwiki-title{
@@ -255,12 +256,35 @@
     padding:9px 0;
     border-bottom:1px solid var(--rule);
     font-size:0.98rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
   }
   ol.articles li a{
     color:var(--navy);
     text-decoration:none;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
   }
   ol.articles li a:hover{ text-decoration:underline; }
+  .lang-switch-btn{
+    flex:0 0 auto;
+    font-size:0.85rem;
+    line-height:1;
+    padding:4px 7px;
+    background:transparent;
+    border:1px solid var(--rule);
+    border-radius:4px;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .lang-switch-btn:hover{
+    border-color:var(--navy);
+    color:var(--navy);
+    background:var(--paper-raised);
+  }
   ol.articles li .ns-tag{
     display:inline-block;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -637,7 +661,7 @@
       : lang;
   }
 
-  function buildList(container, items, lang){
+  function buildList(container, items, lang, showSwitchBtn){
     container.innerHTML = '';
     if(items.length === 0){
       const li = document.createElement('li');
@@ -650,14 +674,33 @@
       .sort((a, b) => safeCompare(a.title, b.title, lang))
       .forEach(m => {
         const li = document.createElement('li');
+
         const a = document.createElement('a');
         a.href = `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(m.title.replace(/ /g, '_'))}`;
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
         a.textContent = m.title;
         li.appendChild(a);
+
+        if(showSwitchBtn){
+          const switchBtn = document.createElement('button');
+          switchBtn.type = 'button';
+          switchBtn.className = 'lang-switch-btn';
+          switchBtn.title = 'Cari ketersediaan bahasa lain untuk item ini';
+          switchBtn.textContent = '🌐';
+          switchBtn.addEventListener('click', () => switchToArticleSearch(lang, m.title));
+          li.appendChild(switchBtn);
+        }
+
         container.appendChild(li);
       });
+  }
+
+  function switchToArticleSearch(lang, title){
+    setMode('article');
+    langInput.value = lang;
+    catInput.value = title;
+    runArticleSearch(lang, title);
   }
 
   function renderArticles(lang, title, members){
@@ -671,12 +714,12 @@
     const subcats = members.filter(m => m.ns === 14);
 
     resultsCount.textContent = `${articles.length} artikel`;
-    buildList(articleList, articles, lang);
+    buildList(articleList, articles, lang, true);
 
     if(subcats.length > 0){
       subcatHead.style.display = 'flex';
       subcatCount.textContent = `${subcats.length} subkategori`;
-      buildList(subcatList, subcats, lang);
+      buildList(subcatList, subcats, lang, false);
     } else {
       subcatHead.style.display = 'none';
       subcatList.innerHTML = '';
