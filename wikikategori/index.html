@@ -184,6 +184,11 @@
     border-color:var(--navy);
     color:#fff;
   }
+  .chip:disabled{
+    opacity:0.38;
+    cursor:default;
+  }
+  .chip:disabled:hover{ border-color:var(--rule); }
 
   .lang-label{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -331,6 +336,7 @@
         <h2 id="articleResultsTitle">Artikel</h2>
         <span class="count" id="articleResultsCount"></span>
       </div>
+      <div class="editions" id="projectSwitch"></div>
       <ol class="articles interwiki-list" id="interwikiList"></ol>
     </div>
   </section>
@@ -351,6 +357,7 @@
   const articleResultsTitle = document.getElementById('articleResultsTitle');
   const articleResultsCount = document.getElementById('articleResultsCount');
   const interwikiList = document.getElementById('interwikiList');
+  const projectSwitchEl = document.getElementById('projectSwitch');
   const editionsEl = document.getElementById('editions');
   const langLabelEl = document.getElementById('langLabel');
   const limitNoteEl = document.getElementById('limitNote');
@@ -374,6 +381,41 @@
     'wikimaniawiki','sourceswiki','incubatorwiki','wikidatawiki',
     'testwiki','testwikidatawiki','wikifunctionswiki'
   ]);
+
+  // Sister-project switch used in article-search mode. Each site-code on
+  // Wikidata follows the pattern {langcode}{suffix} for language-specific
+  // projects (e.g. "enwiktionary", "frwikisource").
+  const PROJECTS = [
+    { key: 'wikipedia',   label: 'Wikipedia',   suffix: 'wiki',        domain: '.wikipedia.org' },
+    { key: 'wikibooks',   label: 'Wikibooks',   suffix: 'wikibooks',   domain: '.wikibooks.org' },
+    { key: 'wikinews',    label: 'Wikinews',    suffix: 'wikinews',    domain: '.wikinews.org' },
+    { key: 'wikiquote',   label: 'Wikiquote',   suffix: 'wikiquote',   domain: '.wikiquote.org' },
+    { key: 'wikisource',  label: 'Wikisource',  suffix: 'wikisource',  domain: '.wikisource.org' },
+    { key: 'wikiversity', label: 'Wikiversity', suffix: 'wikiversity', domain: '.wikiversity.org' },
+    { key: 'wikivoyage',  label: 'Wikivoyage',  suffix: 'wikivoyage',  domain: '.wikivoyage.org' },
+    { key: 'wiktionary',  label: 'Wiktionary',  suffix: 'wiktionary',  domain: '.wiktionary.org' },
+    { key: 'multilingual', label: 'Situs multibahasa', suffix: null, domain: null }
+  ];
+
+  // Sites that aren't split per language — shown under "Situs multibahasa".
+  const MULTILINGUAL_SITES = {
+    commonswiki:       { name: 'Wikimedia Commons',    base: 'https://commons.wikimedia.org/wiki/' },
+    wikidatawiki:      { name: 'Wikidata',              base: 'https://www.wikidata.org/wiki/' },
+    metawiki:          { name: 'Meta-Wiki',             base: 'https://meta.wikimedia.org/wiki/' },
+    specieswiki:       { name: 'Wikispecies',           base: 'https://species.wikimedia.org/wiki/' },
+    mediawikiwiki:     { name: 'MediaWiki.org',         base: 'https://www.mediawiki.org/wiki/' },
+    wikifunctionswiki: { name: 'Wikifunctions',         base: 'https://www.wikifunctions.org/wiki/' },
+    incubatorwiki:     { name: 'Wikimedia Incubator',   base: 'https://incubator.wikimedia.org/wiki/' },
+    sourceswiki:       { name: 'Wikisource (multibahasa)', base: 'https://wikisource.org/wiki/' },
+    wikimaniawiki:     { name: 'Wikimania',             base: 'https://wikimania.wikimedia.org/wiki/' },
+    betawikiversity:   { name: 'Beta Wikiversity',      base: 'https://beta.wikiversity.org/wiki/' },
+    outreachwiki:      { name: 'Outreach Wiki',         base: 'https://outreach.wikimedia.org/wiki/' },
+    votewiki:          { name: 'Vote Wiki',             base: 'https://vote.wikimedia.org/wiki/' },
+    testwiki:          { name: 'Test Wikipedia',        base: 'https://test.wikipedia.org/wiki/' }
+  };
+
+  let activeProject = 'wikipedia';
+  let currentProjectGroups = null;
 
   function setStatus(msg, isError){
     statusEl.style.display = msg ? 'block' : 'none';
@@ -445,7 +487,7 @@
     return null;
   }
 
-  async function fetchSitelinks(qid){
+  async function fetchRawSitelinks(qid){
     const usp = new URLSearchParams({
       action: 'wbgetentities',
       ids: qid,
@@ -454,16 +496,47 @@
       origin: '*'
     });
     const data = await fetchJson(`https://www.wikidata.org/w/api.php?${usp.toString()}`);
-    const entity = data?.entities?.[qid];
-    const sitelinks = entity?.sitelinks || {};
+    return data?.entities?.[qid]?.sitelinks || {};
+  }
+
+  // Wikipedia-only sitelinks, used by category mode's "editions" switcher.
+  async function fetchSitelinks(qid){
+    const raw = await fetchRawSitelinks(qid);
     const out = {};
-    for(const site in sitelinks){
+    for(const site in raw){
       if(NON_WIKIPEDIA_SITES.has(site)) continue;
       if(!site.endsWith('wiki')) continue;
       const langCode = site.slice(0, -4).replace(/_/g, '-');
-      out[langCode] = sitelinks[site].title;
+      out[langCode] = raw[site].title;
     }
     return out;
+  }
+
+  // Splits raw Wikidata sitelinks into one bucket per sister project, used
+  // by article-search mode's project switch.
+  function groupSitelinksByProject(raw){
+    const groups = {};
+    PROJECTS.forEach(p => { groups[p.key] = {}; });
+
+    for(const site in raw){
+      const title = raw[site].title;
+      let matched = false;
+      for(const p of PROJECTS){
+        if(!p.suffix) continue;
+        if(site.endsWith(p.suffix) && site.length > p.suffix.length){
+          const langCode = site.slice(0, -p.suffix.length).replace(/_/g, '-');
+          if(langCode){
+            groups[p.key][langCode] = title;
+            matched = true;
+            break;
+          }
+        }
+      }
+      if(!matched && MULTILINGUAL_SITES[site]){
+        groups.multilingual[site] = title;
+      }
+    }
+    return groups;
   }
 
   // Resolve a user-typed article title to its canonical title, following
@@ -637,16 +710,67 @@
     }
   }
 
-  async function renderInterwikiList(sitelinks){
+  function renderProjectSwitch(groups){
+    projectSwitchEl.innerHTML = '';
+    PROJECTS.forEach(p => {
+      const count = Object.keys(groups[p.key]).length;
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip' + (p.key === activeProject ? ' active' : '');
+      chip.textContent = `${p.label} (${count})`;
+      chip.dataset.project = p.key;
+      if(count === 0) chip.disabled = true;
+      chip.addEventListener('click', () => setActiveProject(p.key));
+      projectSwitchEl.appendChild(chip);
+    });
+  }
+
+  async function setActiveProject(key){
+    activeProject = key;
+    projectSwitchEl.querySelectorAll('.chip').forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.project === key);
+    });
+    await renderInterwikiList();
+  }
+
+  async function renderInterwikiList(){
     interwikiList.innerHTML = '';
-    const entries = Object.entries(sitelinks);
+    const projectDef = PROJECTS.find(p => p.key === activeProject);
+    const groupData = currentProjectGroups[activeProject];
+    const entries = Object.entries(groupData).sort((a, b) => a[0].localeCompare(b[0]));
+
+    articleResultsCount.textContent = activeProject === 'multilingual'
+      ? `tersedia di ${entries.length} situs`
+      : `tersedia di ${entries.length} bahasa`;
+
     if(entries.length === 0){
       const li = document.createElement('li');
-      li.textContent = 'Tidak ada versi bahasa lain yang tertaut di Wikidata.';
+      li.textContent = `Tidak ada versi di proyek ${projectDef.label} yang tertaut di Wikidata.`;
       interwikiList.appendChild(li);
       return;
     }
-    entries.sort((a, b) => a[0].localeCompare(b[0]));
+
+    if(activeProject === 'multilingual'){
+      entries.forEach(([site, title]) => {
+        const info = MULTILINGUAL_SITES[site] || { name: site, base: null };
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        if(info.base){
+          a.href = info.base + encodeURIComponent(title.replace(/ /g, '_'));
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+        }
+        a.textContent = info.name;
+        li.appendChild(a);
+        const sub = document.createElement('div');
+        sub.className = 'interwiki-title';
+        sub.textContent = title;
+        li.appendChild(sub);
+        interwikiList.appendChild(li);
+      });
+      return;
+    }
+
     for(const [code, title] of entries){
       const { name, autonym } = await getLanguageName(code);
       const parts = [];
@@ -656,7 +780,7 @@
 
       const li = document.createElement('li');
       const a = document.createElement('a');
-      a.href = `https://${code}.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`;
+      a.href = `https://${code}${projectDef.domain}/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`;
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       a.textContent = langLabel;
@@ -688,7 +812,9 @@
       }
 
       setStatus('Mengambil daftar bahasa yang tersedia …');
-      const sitelinks = await fetchSitelinks(qid);
+      const rawSitelinks = await fetchRawSitelinks(qid);
+      currentProjectGroups = groupSitelinksByProject(rawSitelinks);
+      activeProject = 'wikipedia';
 
       resultsEl.style.display = 'block';
       categoryResultsEl.style.display = 'none';
@@ -697,8 +823,8 @@
 
       renderLangLabel(lang);
       articleResultsTitle.textContent = resolvedTitle;
-      articleResultsCount.textContent = `tersedia di ${Object.keys(sitelinks).length} bahasa`;
-      await renderInterwikiList(sitelinks);
+      renderProjectSwitch(currentProjectGroups);
+      await renderInterwikiList();
       setStatus('');
     } catch(err){
       resultsEl.style.display = 'none';
