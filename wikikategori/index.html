@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penelusur Kategori Wikipedia</title>
+<style>
+  :root{
+    --paper:#f6f3ec;
+    --paper-raised:#fffdf8;
+    --ink:#231f1a;
+    --ink-soft:#5a5348;
+    --rule:#d8d0bf;
+    --maroon:#7a2e2e;
+    --maroon-deep:#5c2222;
+    --navy:#233a5e;
+    --ok:#3a6b4c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:48px 24px 80px;
+  }
+  header{
+    border-bottom:3px double var(--rule);
+    padding-bottom:20px;
+    margin-bottom:32px;
+  }
+  header .kicker{
+    font-family: Georgia, serif;
+    font-style:italic;
+    color:var(--maroon);
+    font-size:0.95rem;
+    margin:0 0 4px;
+  }
+  h1{
+    font-size:2.1rem;
+    margin:0 0 8px;
+    letter-spacing:0.2px;
+    font-weight:700;
+  }
+  header p.sub{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:1rem;
+    max-width:60ch;
+  }
+
+  form.query{
+    display:grid;
+    grid-template-columns: 110px 1fr auto;
+    gap:10px;
+    align-items:end;
+    margin-bottom:8px;
+  }
+  label{
+    display:block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.72rem;
+    text-transform:none;
+    letter-spacing:0.02em;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  input[type=text]{
+    width:100%;
+    font-family: Georgia, serif;
+    font-size:1rem;
+    padding:10px 12px;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    color:var(--ink);
+    border-radius:2px;
+  }
+  input[type=text]:focus, select:focus{
+    outline:none;
+    border-color:var(--maroon);
+    box-shadow:0 0 0 1px var(--maroon);
+  }
+  select{
+    width:100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.95rem;
+    padding:10px 8px;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    color:var(--ink);
+    border-radius:2px;
+  }
+  button{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.92rem;
+    font-weight:600;
+    padding:10px 20px;
+    background:var(--maroon);
+    color:#fff;
+    border:none;
+    border-radius:2px;
+    cursor:pointer;
+    transition: background 0.15s ease;
+  }
+  button:hover{ background:var(--maroon-deep); }
+  button:disabled{ background:#b8a99a; cursor:default; }
+
+  .hint{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+    margin:0 0 30px;
+  }
+
+  .status{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.9rem;
+    color:var(--ink-soft);
+    padding:14px 0;
+  }
+  .status.error{ color:var(--maroon); }
+
+  section.results{ margin-top:10px; }
+
+  .editions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:0 0 28px;
+    padding:18px 0;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+  }
+  .editions .editions-label{
+    width:100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.75rem;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .chip{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.82rem;
+    padding:6px 12px;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    border-radius:999px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .chip:hover{ border-color:var(--navy); }
+  .chip.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+
+  .lang-label{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-style: italic;
+    font-size:0.8rem;
+    color:var(--maroon);
+    margin:0 0 6px;
+  }
+
+  .results-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:12px;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .results-head h2{
+    font-size:1.15rem;
+    margin:0;
+  }
+  .results-head .count{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+  }
+
+  ol.articles{
+    list-style:none;
+    margin:0;
+    padding:0;
+    columns: 2;
+    column-gap: 32px;
+  }
+  ol.articles li{
+    break-inside: avoid;
+    padding:9px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:0.98rem;
+  }
+  ol.articles li a{
+    color:var(--navy);
+    text-decoration:none;
+  }
+  ol.articles li a:hover{ text-decoration:underline; }
+  ol.articles li .ns-tag{
+    display:inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.68rem;
+    color:var(--ink-soft);
+    border:1px solid var(--rule);
+    border-radius:3px;
+    padding:0 5px;
+    margin-left:6px;
+    vertical-align:middle;
+  }
+
+  @media (max-width:640px){
+    form.query{ grid-template-columns: 1fr; }
+    ol.articles{ columns:1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">Meja referensi</p>
+    <h1>Penelusur Kategori Wikipedia</h1>
+    <p class="sub">Masukkan nama kategori dari satu edisi Wikipedia. Alat ini mengambil daftar artikelnya lewat MediaWiki API, lalu memakai Wikidata untuk menemukan kategori setara di bahasa lain.</p>
+  </header>
+
+  <form class="query" id="queryForm">
+    <div>
+      <label for="langInput">Bahasa</label>
+      <input type="text" id="langInput" value="id" maxlength="12" autocomplete="off" placeholder="id">
+    </div>
+    <div>
+      <label for="catInput">Nama kategori</label>
+      <input type="text" id="catInput" autocomplete="off" placeholder="Misal: Ibu kota negara">
+    </div>
+    <div>
+      <button type="submit" id="searchBtn">Telusuri</button>
+    </div>
+  </form>
+  <p class="hint">Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.</p>
+
+  <div id="status" class="status" style="display:none;"></div>
+
+  <section class="results" id="results" style="display:none;">
+    <div class="editions" id="editions" style="display:none;">
+      <div class="editions-label">Kategori setara ditemukan di edisi lain (via Wikidata):</div>
+    </div>
+
+    <p class="lang-label" id="langLabel"></p>
+    <div class="results-head">
+      <h2 id="resultsTitle">Artikel</h2>
+      <span class="count" id="resultsCount"></span>
+    </div>
+    <ol class="articles" id="articleList"></ol>
+  </section>
+</div>
+
+<script>
+(function(){
+  const form = document.getElementById('queryForm');
+  const langInput = document.getElementById('langInput');
+  const catInput = document.getElementById('catInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const statusEl = document.getElementById('status');
+  const resultsEl = document.getElementById('results');
+  const editionsEl = document.getElementById('editions');
+  const langLabelEl = document.getElementById('langLabel');
+  const resultsTitle = document.getElementById('resultsTitle');
+  const resultsCount = document.getElementById('resultsCount');
+  const articleList = document.getElementById('articleList');
+
+  const nsPrefixCache = {};      // lang -> "Kategori" / "Category" / ...
+  let sitelinksCache = null;     // { sitecode: { site, title, url } }
+  let currentQid = null;
+
+  // Wikidata sitelink site-codes that are NOT language Wikipedia editions.
+  const NON_WIKIPEDIA_SITES = new Set([
+    'commonswiki','specieswiki','metawiki','mediawikiwiki',
+    'wikimaniawiki','sourceswiki','incubatorwiki','wikidatawiki',
+    'testwiki','testwikidatawiki','wikifunctionswiki'
+  ]);
+
+  function setStatus(msg, isError){
+    statusEl.style.display = msg ? 'block' : 'none';
+    statusEl.textContent = msg || '';
+    statusEl.className = 'status' + (isError ? ' error' : '');
+  }
+
+  function apiUrl(lang, params){
+    const base = `https://${lang}.wikipedia.org/w/api.php`;
+    const usp = new URLSearchParams(Object.assign({
+      format: 'json',
+      origin: '*'
+    }, params));
+    return `${base}?${usp.toString()}`;
+  }
+
+  async function fetchJson(url){
+    const res = await fetch(url);
+    if(!res.ok) throw new Error(`Permintaan gagal (${res.status})`);
+    return res.json();
+  }
+
+  // Find the localized "Category" namespace name for a given wiki, e.g. "Kategori" for id.
+  async function getCategoryPrefix(lang){
+    if(nsPrefixCache[lang]) return nsPrefixCache[lang];
+    const data = await fetchJson(apiUrl(lang, {
+      action: 'query',
+      meta: 'siteinfo',
+      siprop: 'namespaces'
+    }));
+    const ns = data?.query?.namespaces?.['14'];
+    const name = ns?.['*'] || 'Category';
+    nsPrefixCache[lang] = name;
+    return name;
+  }
+
+  function stripKnownPrefix(name){
+    const idx = name.indexOf(':');
+    if(idx > -1 && idx < 20){
+      return name.slice(idx + 1).trim();
+    }
+    return name.trim();
+  }
+
+  async function fetchCategoryMembers(lang, categoryTitle){
+    const data = await fetchJson(apiUrl(lang, {
+      action: 'query',
+      list: 'categorymembers',
+      cmtitle: categoryTitle,
+      cmlimit: '500',
+      cmprop: 'title|ns'
+    }));
+    if(data.error) throw new Error(data.error.info || 'Kategori tidak ditemukan');
+    return data?.query?.categorymembers || [];
+  }
+
+  async function fetchWikidataId(lang, categoryTitle){
+    const data = await fetchJson(apiUrl(lang, {
+      action: 'query',
+      titles: categoryTitle,
+      prop: 'pageprops',
+      ppprop: 'wikibase_item'
+    }));
+    const pages = data?.query?.pages || {};
+    for(const key in pages){
+      const props = pages[key]?.pageprops;
+      if(props && props.wikibase_item) return props.wikibase_item;
+    }
+    return null;
+  }
+
+  async function fetchSitelinks(qid){
+    const usp = new URLSearchParams({
+      action: 'wbgetentities',
+      ids: qid,
+      props: 'sitelinks',
+      format: 'json',
+      origin: '*'
+    });
+    const data = await fetchJson(`https://www.wikidata.org/w/api.php?${usp.toString()}`);
+    const entity = data?.entities?.[qid];
+    const sitelinks = entity?.sitelinks || {};
+    const out = {};
+    for(const site in sitelinks){
+      if(NON_WIKIPEDIA_SITES.has(site)) continue;
+      if(!site.endsWith('wiki')) continue;
+      const langCode = site.slice(0, -4).replace(/_/g, '-');
+      out[langCode] = sitelinks[site].title;
+    }
+    return out;
+  }
+
+  // Some Wikidata site-language codes (e.g. "zh-yue", "be-tarask") are not
+  // valid BCP-47 tags, which makes localeCompare throw a RangeError.
+  // Fall back to a plain comparison in that case.
+  function safeCompare(a, b, lang){
+    try{
+      return a.localeCompare(b, lang);
+    } catch(e){
+      return a.localeCompare(b);
+    }
+  }
+
+  // Language names, sourced primarily from MediaWiki's own languageinfo module
+  // (covers non-standard wiki codes like zh-yue, be-tarask, simple, etc. that
+  // Intl.DisplayNames may not recognise). Gives both the Indonesian-translated
+  // name ("name") and the language's own native name ("autonym"), with
+  // Intl.DisplayNames as a secondary fallback for whichever is missing.
+  let mwLangNamesPromise = null;
+  async function fetchMwLanguageNames(){
+    const map = {};
+    try{
+      let cont = {};
+      do{
+        const usp = new URLSearchParams(Object.assign({
+          action: 'query',
+          meta: 'languageinfo',
+          liprop: 'autonym|name',
+          uselang: 'id',
+          format: 'json',
+          origin: '*'
+        }, cont));
+        const data = await fetchJson(`https://www.wikidata.org/w/api.php?${usp.toString()}`);
+        const info = data?.query?.languageinfo || {};
+        Object.keys(info).forEach(code => {
+          map[code] = { name: info[code].name || null, autonym: info[code].autonym || null };
+        });
+        cont = data?.continue || null;
+      } while(cont);
+    } catch(e){ /* fall through to whatever was collected, or empty */ }
+    return map;
+  }
+  function getMwLanguageNames(){
+    if(!mwLangNamesPromise) mwLangNamesPromise = fetchMwLanguageNames();
+    return mwLangNamesPromise;
+  }
+
+  const langNameCache = {};
+  async function getLanguageName(code){
+    if(langNameCache[code]) return langNameCache[code];
+
+    const mwMap = await getMwLanguageNames();
+    let name = mwMap[code]?.name || null;
+    let autonym = mwMap[code]?.autonym || null;
+
+    if(!name){
+      try{ name = new Intl.DisplayNames(['id'], { type: 'language' }).of(code) || null; } catch(e){ /* ignore */ }
+    }
+    if(!autonym){
+      try{ autonym = new Intl.DisplayNames([code], { type: 'language' }).of(code) || null; } catch(e){ /* ignore */ }
+    }
+
+    const result = { name, autonym };
+    langNameCache[code] = result;
+    return result;
+  }
+
+  async function renderLangLabel(lang){
+    langLabelEl.textContent = lang; // placeholder while name resolves
+    const { name, autonym } = await getLanguageName(lang);
+    const parts = [];
+    if(name) parts.push(name);
+    if(autonym && autonym.toLowerCase() !== (name || '').toLowerCase()) parts.push(autonym);
+    langLabelEl.textContent = parts.length
+      ? `${parts.join(' · ')} (${lang})`
+      : lang;
+  }
+
+  function renderArticles(lang, title, members){
+    renderLangLabel(lang);
+    resultsTitle.textContent = title.replace(/^[^:]+:/, prefix => prefix); // keep as-is
+    resultsCount.textContent = `${members.length} artikel${members.length === 500 ? ' (dibatasi 500 hasil pertama)' : ''}`;
+    articleList.innerHTML = '';
+    if(members.length === 0){
+      const li = document.createElement('li');
+      li.textContent = 'Tidak ada artikel dalam kategori ini.';
+      articleList.appendChild(li);
+      return;
+    }
+    members
+      .slice()
+      .sort((a, b) => safeCompare(a.title, b.title, lang))
+      .forEach(m => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(m.title.replace(/ /g, '_'))}`;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = m.title;
+        li.appendChild(a);
+        if(m.ns === 14){
+          const tag = document.createElement('span');
+          tag.className = 'ns-tag';
+          tag.textContent = 'subkategori';
+          li.appendChild(tag);
+        }
+        articleList.appendChild(li);
+      });
+  }
+
+  function renderEditions(sitelinks, activeLang){
+    const entries = Object.entries(sitelinks);
+    if(entries.length <= 1){
+      editionsEl.style.display = 'none';
+      return;
+    }
+    editionsEl.style.display = 'flex';
+    editionsEl.innerHTML = '<div class="editions-label">Kategori setara ditemukan di edisi lain (via Wikidata):</div>';
+    entries
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .forEach(([lg, title]) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip' + (lg === activeLang ? ' active' : '');
+        chip.textContent = lg;
+        chip.title = title;
+        chip.addEventListener('click', () => loadEdition(lg, title, sitelinks));
+        editionsEl.appendChild(chip);
+      });
+  }
+
+  async function loadEdition(lang, title, sitelinks){
+    setStatus(`Memuat artikel dari ${lang}.wikipedia.org …`);
+    try{
+      const members = await fetchCategoryMembers(lang, title);
+      renderArticles(lang, title, members);
+      renderEditions(sitelinks, lang);
+      setStatus('');
+    } catch(err){
+      setStatus(`Gagal memuat edisi ${lang}: ${err.message}`, true);
+    }
+  }
+
+  async function runSearch(lang, rawCategory){
+    resultsEl.style.display = 'none';
+    editionsEl.style.display = 'none';
+    setStatus('Mencari namespace kategori …');
+    searchBtn.disabled = true;
+    try{
+      const prefix = await getCategoryPrefix(lang);
+      const cleanName = stripKnownPrefix(rawCategory);
+      const categoryTitle = `${prefix}:${cleanName}`;
+
+      setStatus(`Mengambil daftar artikel dari ${lang}.wikipedia.org …`);
+      const members = await fetchCategoryMembers(lang, categoryTitle);
+
+      resultsEl.style.display = 'block';
+      renderArticles(lang, categoryTitle, members);
+      setStatus('Mencari kategori setara di bahasa lain via Wikidata …');
+
+      let qid = null;
+      try{
+        qid = await fetchWikidataId(lang, categoryTitle);
+      } catch(e){ /* non-fatal */ }
+
+      if(qid){
+        currentQid = qid;
+        const sitelinks = await fetchSitelinks(qid);
+        sitelinksCache = sitelinks;
+        renderEditions(sitelinks, lang);
+      } else {
+        editionsEl.style.display = 'none';
+      }
+      setStatus('');
+    } catch(err){
+      resultsEl.style.display = 'none';
+      setStatus(`Terjadi kesalahan: ${err.message}. Periksa kode bahasa dan nama kategori.`, true);
+    } finally {
+      searchBtn.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const lang = langInput.value.trim().toLowerCase() || 'id';
+    const cat = catInput.value.trim();
+    if(!cat){
+      setStatus('Isi nama kategori terlebih dahulu.', true);
+      return;
+    }
+    runSearch(lang, cat);
+  });
+
+  // Small default to demonstrate on load focus.
+  catInput.focus();
+  getMwLanguageNames(); // warm the cache in the background
+})();
+</script>
+</body>
+</html>
