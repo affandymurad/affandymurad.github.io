@@ -226,6 +226,73 @@
     color:var(--ink-soft);
   }
 
+  .avail-check{
+    margin-bottom:18px;
+    padding:14px 16px;
+    background:var(--paper-raised);
+    border:1px solid var(--rule);
+    border-radius:3px;
+  }
+  .avail-controls{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:end;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .avail-checkboxes{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 16px;
+  }
+  .avail-checkbox{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.85rem;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .avail-checkbox input{ cursor:pointer; }
+  .avail-custom{
+    min-width:180px;
+  }
+  .avail-custom label{ margin-bottom:5px; }
+  .avail-custom input{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.85rem;
+    padding:7px 10px;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    border-radius:2px;
+    width:100%;
+  }
+
+  .lang-badges{
+    margin-left:8px;
+    display:inline-flex;
+    flex-wrap:wrap;
+    gap:4px;
+    vertical-align:middle;
+  }
+  .lang-badge{
+    display:inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.7rem;
+    font-weight:600;
+    padding:2px 7px;
+    border:1px solid var(--ok);
+    border-radius:3px;
+    color:var(--ok);
+    text-decoration:none;
+    background:var(--paper-raised);
+  }
+  .lang-badge:hover{
+    background:var(--ok);
+    color:#fff;
+  }
+
   .results-head{
     display:flex;
     justify-content:space-between;
@@ -256,35 +323,12 @@
     padding:9px 0;
     border-bottom:1px solid var(--rule);
     font-size:0.98rem;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
   }
   ol.articles li a{
     color:var(--navy);
     text-decoration:none;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
   }
   ol.articles li a:hover{ text-decoration:underline; }
-  .lang-switch-btn{
-    flex:0 0 auto;
-    font-size:0.85rem;
-    line-height:1;
-    padding:4px 7px;
-    background:transparent;
-    border:1px solid var(--rule);
-    border-radius:4px;
-    color:var(--ink-soft);
-    cursor:pointer;
-  }
-  .lang-switch-btn:hover{
-    border-color:var(--navy);
-    color:var(--navy);
-    background:var(--paper-raised);
-  }
   ol.articles li .ns-tag{
     display:inline-block;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -346,6 +390,20 @@
         <h2 id="resultsTitle">Artikel</h2>
         <span class="count" id="resultsCount"></span>
       </div>
+
+      <div class="avail-check" id="availCheck" style="display:none;">
+        <p class="hint" style="margin:0 0 10px;">Centang kode bahasa untuk menambahkan tautan langsung di tiap artikel (kalau tersedia). Hanya berlaku untuk artikel, bukan subkategori.</p>
+        <div class="avail-controls">
+          <div class="avail-checkboxes" id="availCheckboxes"></div>
+          <div class="avail-custom">
+            <label for="availCustomInput">Kode lain (pisahkan koma)</label>
+            <input type="text" id="availCustomInput" autocomplete="off" placeholder="mis. ko, nl, sv">
+          </div>
+          <button type="button" id="availCheckBtn">Cek ketersediaan</button>
+        </div>
+        <p class="status" id="availStatus" style="display:none;"></p>
+      </div>
+
       <ol class="articles" id="articleList"></ol>
 
       <div class="results-head subcat-head" id="subcatHead" style="display:none;">
@@ -391,6 +449,16 @@
   const subcatHead = document.getElementById('subcatHead');
   const subcatCount = document.getElementById('subcatCount');
   const subcatList = document.getElementById('subcatList');
+  const availCheckEl = document.getElementById('availCheck');
+  const availCheckboxesEl = document.getElementById('availCheckboxes');
+  const availCustomInput = document.getElementById('availCustomInput');
+  const availCheckBtn = document.getElementById('availCheckBtn');
+  const availStatusEl = document.getElementById('availStatus');
+
+  let currentCategoryLang = null;
+  let currentCategoryItems = []; // combined articles + subcats currently shown
+
+  const DEFAULT_AVAIL_LANGS = ['en','ja','zh','fr','de','es','ar','ru','pt'];
   const modeButtons = document.querySelectorAll('.mode-btn');
 
   let currentMode = 'category'; // 'category' | 'article'
@@ -661,7 +729,7 @@
       : lang;
   }
 
-  function buildList(container, items, lang, showSwitchBtn){
+  function buildList(container, items, lang, withBadges){
     container.innerHTML = '';
     if(items.length === 0){
       const li = document.createElement('li');
@@ -674,6 +742,7 @@
       .sort((a, b) => safeCompare(a.title, b.title, lang))
       .forEach(m => {
         const li = document.createElement('li');
+        li.dataset.title = m.title;
 
         const a = document.createElement('a');
         a.href = `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(m.title.replace(/ /g, '_'))}`;
@@ -682,26 +751,161 @@
         a.textContent = m.title;
         li.appendChild(a);
 
-        if(showSwitchBtn){
-          const switchBtn = document.createElement('button');
-          switchBtn.type = 'button';
-          switchBtn.className = 'lang-switch-btn';
-          switchBtn.title = 'Cari ketersediaan bahasa lain untuk item ini';
-          switchBtn.textContent = '🌐';
-          switchBtn.addEventListener('click', () => switchToArticleSearch(lang, m.title));
-          li.appendChild(switchBtn);
+        if(withBadges){
+          const badges = document.createElement('span');
+          badges.className = 'lang-badges';
+          li.appendChild(badges);
         }
 
         container.appendChild(li);
       });
   }
 
-  function switchToArticleSearch(lang, title){
-    setMode('article');
-    langInput.value = lang;
-    catInput.value = title;
-    runArticleSearch(lang, title);
+  function renderAvailCheckboxes(){
+    availCheckboxesEl.innerHTML = '';
+    DEFAULT_AVAIL_LANGS.forEach(code => {
+      const label = document.createElement('label');
+      label.className = 'avail-checkbox';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = code;
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(code));
+      availCheckboxesEl.appendChild(label);
+    });
   }
+
+  // Batch-fetch each title's Wikidata QID (up to 50 titles per API call).
+  async function fetchWikibaseItemsBatch(lang, titles){
+    const map = {};
+    for(let i = 0; i < titles.length; i += 50){
+      const chunk = titles.slice(i, i + 50);
+      const data = await fetchJson(apiUrl(lang, {
+        action: 'query',
+        titles: chunk.join('|'),
+        prop: 'pageprops',
+        ppprop: 'wikibase_item'
+      }));
+      const normalized = {};
+      (data?.query?.normalized || []).forEach(n => { normalized[n.to] = n.from; });
+      const pages = data?.query?.pages || {};
+      for(const key in pages){
+        const page = pages[key];
+        const qid = page?.pageprops?.wikibase_item || null;
+        const origTitle = normalized[page.title] || page.title;
+        map[origTitle] = qid;
+      }
+    }
+    return map;
+  }
+
+  // Batch-fetch sitelinks for a list of QIDs, filtered to only the requested
+  // language codes (sitefilter keeps each response small). Returns
+  // qid -> { code: titleInThatLanguage }.
+  async function fetchSitelinksBatch(qids, codes){
+    const map = {};
+    const uniqueQids = Array.from(new Set(qids.filter(Boolean)));
+    const siteFilter = codes.map(c => `${c}wiki`).join('|');
+    for(let i = 0; i < uniqueQids.length; i += 50){
+      const chunk = uniqueQids.slice(i, i + 50);
+      const usp = new URLSearchParams({
+        action: 'wbgetentities',
+        ids: chunk.join('|'),
+        props: 'sitelinks',
+        sitefilter: siteFilter,
+        format: 'json',
+        origin: '*'
+      });
+      const data = await fetchJson(`https://www.wikidata.org/w/api.php?${usp.toString()}`);
+      const entities = data?.entities || {};
+      for(const qid in entities){
+        const sitelinks = entities[qid]?.sitelinks || {};
+        const entry = {};
+        for(const site in sitelinks){
+          const code = codes.find(c => `${c}wiki` === site);
+          if(code) entry[code] = sitelinks[site].title;
+        }
+        map[qid] = entry;
+      }
+    }
+    return map;
+  }
+
+  function injectLangBadges(articlesOnly, qidMap, sitelinksMap, codes){
+    let matchCount = 0;
+    articlesOnly.forEach(item => {
+      const li = articleList.querySelector(`li[data-title="${CSS.escape(item.title)}"]`);
+      if(!li) return;
+      const badges = li.querySelector('.lang-badges');
+      if(!badges) return;
+      badges.innerHTML = '';
+
+      const qid = qidMap[item.title];
+      if(!qid || !sitelinksMap[qid]) return;
+
+      codes.forEach(code => {
+        const title = sitelinksMap[qid][code];
+        if(!title) return;
+        const a = document.createElement('a');
+        a.className = 'lang-badge';
+        a.href = `https://${code}.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = code;
+        a.title = title;
+        badges.appendChild(a);
+        matchCount++;
+      });
+    });
+    return matchCount;
+  }
+
+  async function runAvailabilityCheck(){
+    const checked = Array.from(availCheckboxesEl.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+    const custom = availCustomInput.value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    const codes = Array.from(new Set([...checked, ...custom]));
+
+    if(codes.length === 0){
+      availStatusEl.style.display = 'block';
+      availStatusEl.className = 'status error';
+      availStatusEl.textContent = 'Centang atau isi minimal satu kode bahasa.';
+      return;
+    }
+
+    const articlesOnly = currentCategoryItems.filter(i => i.ns !== 14);
+    if(articlesOnly.length === 0){
+      availStatusEl.style.display = 'block';
+      availStatusEl.className = 'status error';
+      availStatusEl.textContent = 'Tidak ada artikel untuk diperiksa (subkategori tidak ikut diperiksa).';
+      return;
+    }
+
+    availStatusEl.style.display = 'block';
+    availStatusEl.className = 'status';
+    availStatusEl.textContent = `Memeriksa ${articlesOnly.length} artikel …`;
+    availCheckBtn.disabled = true;
+
+    // Clear any badges from a previous run.
+    articleList.querySelectorAll('.lang-badges').forEach(el => { el.innerHTML = ''; });
+
+    try{
+      const qidMap = await fetchWikibaseItemsBatch(currentCategoryLang, articlesOnly.map(i => i.title));
+      const sitelinksMap = await fetchSitelinksBatch(Object.values(qidMap), codes);
+      const matchCount = injectLangBadges(articlesOnly, qidMap, sitelinksMap, codes);
+
+      availStatusEl.textContent = matchCount > 0
+        ? `Selesai — ${matchCount} tautan bahasa ditambahkan.`
+        : 'Selesai — tidak ada artikel yang punya versi di bahasa terpilih.';
+    } catch(err){
+      availStatusEl.className = 'status error';
+      availStatusEl.textContent = `Gagal memeriksa: ${err.message}`;
+    } finally {
+      availCheckBtn.disabled = false;
+    }
+  }
+
+  availCheckBtn.addEventListener('click', runAvailabilityCheck);
+  renderAvailCheckboxes();
 
   function renderArticles(lang, title, members){
     renderLangLabel(lang);
@@ -712,6 +916,13 @@
 
     const articles = members.filter(m => m.ns !== 14);
     const subcats = members.filter(m => m.ns === 14);
+
+    currentCategoryLang = lang;
+    currentCategoryItems = members;
+    availCheckEl.style.display = 'block';
+    availStatusEl.style.display = 'none';
+    availCustomInput.value = '';
+    availCheckboxesEl.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; });
 
     resultsCount.textContent = `${articles.length} artikel`;
     buildList(articleList, articles, lang, true);
