@@ -379,7 +379,8 @@
   const NON_WIKIPEDIA_SITES = new Set([
     'commonswiki','specieswiki','metawiki','mediawikiwiki',
     'wikimaniawiki','sourceswiki','incubatorwiki','wikidatawiki',
-    'testwiki','testwikidatawiki','wikifunctionswiki'
+    'testwiki','testwikidatawiki','wikifunctionswiki','abstractwiki',
+    'outreachwiki','votewiki'
   ]);
 
   // Sister-project switch used in article-search mode. Each site-code on
@@ -405,6 +406,7 @@
     specieswiki:       { name: 'Wikispecies',           base: 'https://species.wikimedia.org/wiki/' },
     mediawikiwiki:     { name: 'MediaWiki.org',         base: 'https://www.mediawiki.org/wiki/' },
     wikifunctionswiki: { name: 'Wikifunctions',         base: 'https://www.wikifunctions.org/wiki/' },
+    abstractwiki:      { name: 'Abstract Wikipedia',    base: 'https://abstract.wikipedia.org/wiki/' },
     incubatorwiki:     { name: 'Wikimedia Incubator',   base: 'https://incubator.wikimedia.org/wiki/' },
     sourceswiki:       { name: 'Wikisource (multibahasa)', base: 'https://wikisource.org/wiki/' },
     wikimaniawiki:     { name: 'Wikimania',             base: 'https://wikimania.wikimedia.org/wiki/' },
@@ -520,20 +522,24 @@
 
     for(const site in raw){
       const title = raw[site].title;
-      let matched = false;
+
+      // Check known non-language-specific sites FIRST: their db names also
+      // happen to end in "wiki" (e.g. "commonswiki", "wikidatawiki"), which
+      // would otherwise be misread as a fake Wikipedia language edition.
+      if(MULTILINGUAL_SITES[site]){
+        groups.multilingual[site] = title;
+        continue;
+      }
+
       for(const p of PROJECTS){
         if(!p.suffix) continue;
         if(site.endsWith(p.suffix) && site.length > p.suffix.length){
           const langCode = site.slice(0, -p.suffix.length).replace(/_/g, '-');
           if(langCode){
             groups[p.key][langCode] = title;
-            matched = true;
             break;
           }
         }
-      }
-      if(!matched && MULTILINGUAL_SITES[site]){
-        groups.multilingual[site] = title;
       }
     }
     return groups;
