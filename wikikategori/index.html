@@ -55,6 +55,30 @@
     max-width:60ch;
   }
 
+  .mode-switch{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+  }
+  .mode-btn{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.85rem;
+    font-weight:600;
+    padding:8px 16px;
+    background:transparent;
+    color:var(--ink-soft);
+    border:1px solid var(--rule);
+    border-radius:999px;
+    cursor:pointer;
+    transition: all 0.15s ease;
+  }
+  .mode-btn:hover{ border-color:var(--navy); color:var(--ink); }
+  .mode-btn.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:#fff;
+  }
+
   form.query{
     display:grid;
     grid-template-columns: 110px 1fr auto;
@@ -185,6 +209,17 @@
     color:var(--maroon-deep);
   }
 
+  .interwiki-list li{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .interwiki-title{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+
   .results-head{
     display:flex;
     justify-content:space-between;
@@ -244,8 +279,13 @@
   <header>
     <p class="kicker">Meja referensi</p>
     <h1>Penelusur Kategori Wikipedia</h1>
-    <p class="sub">Masukkan nama kategori dari satu edisi Wikipedia. Alat ini mengambil daftar artikelnya lewat MediaWiki API, lalu memakai Wikidata untuk menemukan kategori setara di bahasa lain.</p>
+    <p class="sub">Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.</p>
   </header>
+
+  <div class="mode-switch" id="modeSwitch">
+    <button type="button" class="mode-btn active" data-mode="category">Cari Kategori</button>
+    <button type="button" class="mode-btn" data-mode="article">Cari Artikel</button>
+  </div>
 
   <form class="query" id="queryForm">
     <div>
@@ -253,36 +293,46 @@
       <input type="text" id="langInput" value="id" maxlength="12" autocomplete="off" placeholder="id">
     </div>
     <div>
-      <label for="catInput">Nama kategori</label>
+      <label for="catInput" id="catLabel">Nama kategori</label>
       <input type="text" id="catInput" autocomplete="off" placeholder="Misal: Ibu kota negara">
     </div>
     <div>
       <button type="submit" id="searchBtn">Telusuri</button>
     </div>
   </form>
-  <p class="hint">Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.</p>
+  <p class="hint" id="hintText">Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.</p>
 
   <div id="status" class="status" style="display:none;"></div>
 
   <section class="results" id="results" style="display:none;">
-    <div class="editions" id="editions" style="display:none;">
-      <div class="editions-label">Kategori setara ditemukan di edisi lain (via Wikidata):</div>
-    </div>
-
     <p class="lang-label" id="langLabel"></p>
     <p class="limit-note" id="limitNote" style="display:none;"></p>
 
-    <div class="results-head">
-      <h2 id="resultsTitle">Artikel</h2>
-      <span class="count" id="resultsCount"></span>
-    </div>
-    <ol class="articles" id="articleList"></ol>
+    <div id="categoryResults">
+      <div class="editions" id="editions" style="display:none;">
+        <div class="editions-label">Kategori setara ditemukan di edisi lain (via Wikidata):</div>
+      </div>
 
-    <div class="results-head subcat-head" id="subcatHead" style="display:none;">
-      <h2>Subkategori</h2>
-      <span class="count" id="subcatCount"></span>
+      <div class="results-head">
+        <h2 id="resultsTitle">Artikel</h2>
+        <span class="count" id="resultsCount"></span>
+      </div>
+      <ol class="articles" id="articleList"></ol>
+
+      <div class="results-head subcat-head" id="subcatHead" style="display:none;">
+        <h2>Subkategori</h2>
+        <span class="count" id="subcatCount"></span>
+      </div>
+      <ol class="articles subcat-list" id="subcatList"></ol>
     </div>
-    <ol class="articles subcat-list" id="subcatList"></ol>
+
+    <div id="articleModeResults" style="display:none;">
+      <div class="results-head">
+        <h2 id="articleResultsTitle">Artikel</h2>
+        <span class="count" id="articleResultsCount"></span>
+      </div>
+      <ol class="articles interwiki-list" id="interwikiList"></ol>
+    </div>
   </section>
 </div>
 
@@ -291,9 +341,16 @@
   const form = document.getElementById('queryForm');
   const langInput = document.getElementById('langInput');
   const catInput = document.getElementById('catInput');
+  const catLabel = document.getElementById('catLabel');
+  const hintText = document.getElementById('hintText');
   const searchBtn = document.getElementById('searchBtn');
   const statusEl = document.getElementById('status');
   const resultsEl = document.getElementById('results');
+  const categoryResultsEl = document.getElementById('categoryResults');
+  const articleModeResultsEl = document.getElementById('articleModeResults');
+  const articleResultsTitle = document.getElementById('articleResultsTitle');
+  const articleResultsCount = document.getElementById('articleResultsCount');
+  const interwikiList = document.getElementById('interwikiList');
   const editionsEl = document.getElementById('editions');
   const langLabelEl = document.getElementById('langLabel');
   const limitNoteEl = document.getElementById('limitNote');
@@ -303,6 +360,9 @@
   const subcatHead = document.getElementById('subcatHead');
   const subcatCount = document.getElementById('subcatCount');
   const subcatList = document.getElementById('subcatList');
+  const modeButtons = document.querySelectorAll('.mode-btn');
+
+  let currentMode = 'category'; // 'category' | 'article'
 
   const nsPrefixCache = {};      // lang -> "Kategori" / "Category" / ...
   let sitelinksCache = null;     // { sitecode: { site, title, url } }
@@ -404,6 +464,22 @@
       out[langCode] = sitelinks[site].title;
     }
     return out;
+  }
+
+  // Resolve a user-typed article title to its canonical title, following
+  // redirects. Returns null if the page doesn't exist.
+  async function resolveArticleTitle(lang, rawTitle){
+    const data = await fetchJson(apiUrl(lang, {
+      action: 'query',
+      titles: rawTitle,
+      redirects: '1'
+    }));
+    const pages = data?.query?.pages || {};
+    const firstKey = Object.keys(pages)[0];
+    if(!firstKey) return null;
+    const page = pages[firstKey];
+    if(page.missing !== undefined) return null;
+    return page.title;
   }
 
   // Some Wikidata site-language codes (e.g. "zh-yue", "be-tarask") are not
@@ -561,6 +637,77 @@
     }
   }
 
+  async function renderInterwikiList(sitelinks){
+    interwikiList.innerHTML = '';
+    const entries = Object.entries(sitelinks);
+    if(entries.length === 0){
+      const li = document.createElement('li');
+      li.textContent = 'Tidak ada versi bahasa lain yang tertaut di Wikidata.';
+      interwikiList.appendChild(li);
+      return;
+    }
+    entries.sort((a, b) => a[0].localeCompare(b[0]));
+    for(const [code, title] of entries){
+      const { name, autonym } = await getLanguageName(code);
+      const parts = [];
+      if(name) parts.push(name);
+      if(autonym && autonym.toLowerCase() !== (name || '').toLowerCase()) parts.push(autonym);
+      const langLabel = parts.length ? `${parts.join(' · ')} (${code})` : code;
+
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `https://${code}.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = langLabel;
+      li.appendChild(a);
+
+      const sub = document.createElement('div');
+      sub.className = 'interwiki-title';
+      sub.textContent = title;
+      li.appendChild(sub);
+
+      interwikiList.appendChild(li);
+    }
+  }
+
+  async function runArticleSearch(lang, rawTitle){
+    resultsEl.style.display = 'none';
+    setStatus('Mencari artikel …');
+    searchBtn.disabled = true;
+    try{
+      const resolvedTitle = await resolveArticleTitle(lang, rawTitle);
+      if(!resolvedTitle){
+        throw new Error(`Artikel "${rawTitle}" tidak ditemukan di ${lang}.wikipedia.org`);
+      }
+
+      setStatus('Mencari padanan Wikidata …');
+      const qid = await fetchWikidataId(lang, resolvedTitle);
+      if(!qid){
+        throw new Error('Artikel ini tidak terhubung ke entri Wikidata, sehingga versi bahasa lain tidak dapat ditelusuri.');
+      }
+
+      setStatus('Mengambil daftar bahasa yang tersedia …');
+      const sitelinks = await fetchSitelinks(qid);
+
+      resultsEl.style.display = 'block';
+      categoryResultsEl.style.display = 'none';
+      articleModeResultsEl.style.display = 'block';
+      limitNoteEl.style.display = 'none';
+
+      renderLangLabel(lang);
+      articleResultsTitle.textContent = resolvedTitle;
+      articleResultsCount.textContent = `tersedia di ${Object.keys(sitelinks).length} bahasa`;
+      await renderInterwikiList(sitelinks);
+      setStatus('');
+    } catch(err){
+      resultsEl.style.display = 'none';
+      setStatus(`Terjadi kesalahan: ${err.message}`, true);
+    } finally {
+      searchBtn.disabled = false;
+    }
+  }
+
   async function runSearch(lang, rawCategory){
     resultsEl.style.display = 'none';
     editionsEl.style.display = 'none';
@@ -575,6 +722,8 @@
       const members = await fetchCategoryMembers(lang, categoryTitle);
 
       resultsEl.style.display = 'block';
+      categoryResultsEl.style.display = 'block';
+      articleModeResultsEl.style.display = 'none';
       renderArticles(lang, categoryTitle, members);
       setStatus('Mencari kategori setara di bahasa lain via Wikidata …');
 
@@ -600,15 +749,42 @@
     }
   }
 
+  function setMode(mode){
+    currentMode = mode;
+    modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+    resultsEl.style.display = 'none';
+    setStatus('');
+    if(mode === 'category'){
+      catLabel.textContent = 'Nama kategori';
+      catInput.placeholder = 'Misal: Ibu kota negara';
+      searchBtn.textContent = 'Telusuri';
+      hintText.textContent = 'Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.';
+    } else {
+      catLabel.textContent = 'Judul artikel';
+      catInput.placeholder = 'Misal: Jakarta';
+      searchBtn.textContent = 'Cari ketersediaan bahasa';
+      hintText.textContent = 'Masukkan judul artikel persis seperti di Wikipedia bahasa sumbernya. Alat ini mencari semua versi bahasa lain lewat tautan Wikidata artikel tersebut.';
+    }
+    catInput.focus();
+  }
+
+  modeButtons.forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const lang = langInput.value.trim().toLowerCase() || 'id';
-    const cat = catInput.value.trim();
-    if(!cat){
-      setStatus('Isi nama kategori terlebih dahulu.', true);
+    const query = catInput.value.trim();
+    if(!query){
+      setStatus(currentMode === 'category' ? 'Isi nama kategori terlebih dahulu.' : 'Isi judul artikel terlebih dahulu.', true);
       return;
     }
-    runSearch(lang, cat);
+    if(currentMode === 'category'){
+      runSearch(lang, query);
+    } else {
+      runArticleSearch(lang, query);
+    }
   });
 
   // Small default to demonstrate on load focus.
