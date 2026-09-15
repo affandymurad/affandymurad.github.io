@@ -269,6 +269,41 @@
     width:100%;
   }
 
+  .pagination{
+    margin-top:26px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    align-items:center;
+    justify-content:center;
+  }
+  .page-btn{
+    min-width:34px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.85rem;
+    font-weight:600;
+    padding:7px 10px;
+    background:var(--paper-raised);
+    color:var(--navy);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    cursor:pointer;
+  }
+  .page-btn:hover{ border-color:var(--navy); }
+  .page-btn.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+    cursor:default;
+  }
+  .page-btn.page-next{
+    color:var(--maroon);
+    border-color:var(--maroon);
+  }
+  .page-btn:disabled{
+    opacity:0.4;
+    cursor:default;
+  }
   .lang-badges{
     margin-left:8px;
     display:inline-flex;
@@ -411,6 +446,8 @@
         <span class="count" id="subcatCount"></span>
       </div>
       <ol class="articles subcat-list" id="subcatList"></ol>
+
+      <div class="pagination" id="paginationBar" style="display:none;"></div>
     </div>
 
     <div id="articleModeResults" style="display:none;">
@@ -449,6 +486,7 @@
   const subcatHead = document.getElementById('subcatHead');
   const subcatCount = document.getElementById('subcatCount');
   const subcatList = document.getElementById('subcatList');
+  const paginationBar = document.getElementById('paginationBar');
   const availCheckEl = document.getElementById('availCheck');
   const availCheckboxesEl = document.getElementById('availCheckboxes');
   const availCustomInput = document.getElementById('availCustomInput');
@@ -456,7 +494,10 @@
   const availStatusEl = document.getElementById('availStatus');
 
   let currentCategoryLang = null;
-  let currentCategoryItems = []; // combined articles + subcats currently shown
+  let currentCategoryTitle = null;
+  let categoryPages = []; // categoryPages[i] = { members, nextToken } for page i+1
+  let currentPageNum = 1;
+  let currentCategoryItems = []; // articles + subcats of the page currently shown
 
   const DEFAULT_AVAIL_LANGS = ['en','ja','zh','fr','de','es','ar','ru','pt'];
   const modeButtons = document.querySelectorAll('.mode-btn');
@@ -554,16 +595,32 @@
     return name.trim();
   }
 
-  async function fetchCategoryMembers(lang, categoryTitle){
-    const data = await fetchJson(apiUrl(lang, {
+  async function fetchCategoryMembers(lang, categoryTitle, cmcontinueToken){
+    const params = {
       action: 'query',
       list: 'categorymembers',
       cmtitle: categoryTitle,
       cmlimit: '500',
       cmprop: 'title|ns'
-    }));
+    };
+    if(cmcontinueToken) params.cmcontinue = cmcontinueToken;
+    const data = await fetchJson(apiUrl(lang, params));
     if(data.error) throw new Error(data.error.info || 'Kategori tidak ditemukan');
-    return data?.query?.categorymembers || [];
+    return {
+      members: data?.query?.categorymembers || [],
+      cmcontinue: data?.continue?.cmcontinue || null
+    };
+  }
+
+  // Fetches (and caches) page `index` (0-based) of the current category.
+  // Pages must be fetched in order since the API uses a continuation token,
+  // not an offset — jumping straight to an unvisited page isn't possible.
+  async function fetchCategoryPage(index){
+    if(categoryPages[index]) return categoryPages[index];
+    const prevToken = index === 0 ? undefined : categoryPages[index - 1]?.nextToken;
+    const result = await fetchCategoryMembers(currentCategoryLang, currentCategoryTitle, prevToken);
+    categoryPages[index] = { members: result.members, nextToken: result.cmcontinue };
+    return categoryPages[index];
   }
 
   async function fetchWikidataId(lang, categoryTitle){
@@ -754,6 +811,7 @@
         if(withBadges){
           const badges = document.createElement('span');
           badges.className = 'lang-badges';
+          badges.style.cssText = 'display:inline-flex;flex-wrap:wrap;gap:6px;margin-left:10px;vertical-align:middle;';
           li.appendChild(badges);
         }
 
@@ -853,6 +911,7 @@
         a.rel = 'noopener noreferrer';
         a.textContent = code;
         a.title = title;
+        a.style.cssText = 'display:inline-block;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:0.72rem;font-weight:700;line-height:1;padding:4px 9px;border:1px solid #3a6b4c;border-radius:999px;color:#3a6b4c;text-decoration:none;background:#fffdf8;white-space:nowrap;';
         badges.appendChild(a);
         matchCount++;
       });
@@ -904,25 +963,81 @@
     }
   }
 
+  function renderPaginationBar(){
+    const hasMultiplePages = categoryPages.length > 1 || !!categoryPages[categoryPages.length - 1]?.nextToken;
+    if(!hasMultiplePages){
+      paginationBar.style.display = 'none';
+      return;
+    }
+    paginationBar.style.display = 'flex';
+    paginationBar.innerHTML = '';
+
+    categoryPages.forEach((page, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'page-btn' + (i + 1 === currentPageNum ? ' active' : '');
+      btn.textContent = String(i + 1);
+      if(i + 1 !== currentPageNum){
+        btn.addEventListener('click', () => goToPage(i + 1));
+      }
+      paginationBar.appendChild(btn);
+    });
+
+    const lastPage = categoryPages[categoryPages.length - 1];
+    if(lastPage && lastPage.nextToken){
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'page-btn page-next';
+      nextBtn.textContent = '›';
+      nextBtn.title = 'Muat halaman berikutnya (500 item)';
+      nextBtn.addEventListener('click', () => goToPage(categoryPages.length + 1));
+      paginationBar.appendChild(nextBtn);
+    }
+  }
+
+  async function goToPage(pageNum){
+    const idx = pageNum - 1;
+    if(categoryPages[idx]){
+      renderArticles(currentCategoryLang, currentCategoryTitle, categoryPages[idx].members, pageNum);
+      return;
+    }
+    // Not cached yet — only reachable by loading the very next page in order.
+    if(idx !== categoryPages.length) return;
+
+    setStatus(`Memuat halaman ${pageNum} …`);
+    paginationBar.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    try{
+      const page = await fetchCategoryPage(idx);
+      renderArticles(currentCategoryLang, currentCategoryTitle, page.members, pageNum);
+      setStatus('');
+    } catch(err){
+      setStatus(`Gagal memuat halaman ${pageNum}: ${err.message}`, true);
+      renderPaginationBar();
+    }
+  }
+
   availCheckBtn.addEventListener('click', runAvailabilityCheck);
   renderAvailCheckboxes();
 
-  function renderArticles(lang, title, members){
+  function renderArticles(lang, title, members, pageNum){
     renderLangLabel(lang);
     resultsTitle.textContent = title.replace(/^[^:]+:/, prefix => prefix); // keep as-is
 
-    limitNoteEl.style.display = members.length === 500 ? 'block' : 'none';
-    limitNoteEl.textContent = 'Hasil dibatasi 500 anggota kategori pertama (artikel + subkategori) dari API.';
+    limitNoteEl.style.display = 'none';
+    currentPageNum = pageNum || 1;
 
     const articles = members.filter(m => m.ns !== 14);
     const subcats = members.filter(m => m.ns === 14);
 
-    currentCategoryLang = lang;
     currentCategoryItems = members;
     availCheckEl.style.display = 'block';
-    availStatusEl.style.display = 'none';
-    availCustomInput.value = '';
-    availCheckboxesEl.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; });
+    if(currentPageNum === 1){
+      availStatusEl.style.display = 'none';
+      availCustomInput.value = '';
+      availCheckboxesEl.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; });
+    }
+
+    renderPaginationBar();
 
     resultsCount.textContent = `${articles.length} artikel`;
     buildList(articleList, articles, lang, true);
@@ -961,8 +1076,11 @@
   async function loadEdition(lang, title, sitelinks){
     setStatus(`Memuat artikel dari ${lang}.wikipedia.org …`);
     try{
-      const members = await fetchCategoryMembers(lang, title);
-      renderArticles(lang, title, members);
+      currentCategoryLang = lang;
+      currentCategoryTitle = title;
+      categoryPages = [];
+      const page = await fetchCategoryPage(0);
+      renderArticles(lang, title, page.members, 1);
       renderEditions(sitelinks, lang);
       setStatus('');
     } catch(err){
@@ -1104,13 +1222,17 @@
       const cleanName = stripKnownPrefix(rawCategory);
       const categoryTitle = `${prefix}:${cleanName}`;
 
+      currentCategoryLang = lang;
+      currentCategoryTitle = categoryTitle;
+      categoryPages = [];
+
       setStatus(`Mengambil daftar artikel dari ${lang}.wikipedia.org …`);
-      const members = await fetchCategoryMembers(lang, categoryTitle);
+      const page = await fetchCategoryPage(0);
 
       resultsEl.style.display = 'block';
       categoryResultsEl.style.display = 'block';
       articleModeResultsEl.style.display = 'none';
-      renderArticles(lang, categoryTitle, members);
+      renderArticles(lang, categoryTitle, page.members, 1);
       setStatus('Mencari kategori setara di bahasa lain via Wikidata …');
 
       let qid = null;
