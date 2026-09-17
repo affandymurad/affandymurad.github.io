@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kesehatan Wiki Bahasa-bahasa Indonesia & Daerah</title>
+<title>Kesehatan Wiki Berbahasa Indonesia & Daerah</title>
 
 <!--
   CATATAN METODOLOGI UMUM:
@@ -12,11 +12,8 @@
      definisi standar Wikimedia), dan tanggal peluncuran diambil dari tabel resmi
      "List of Wikipedias" (en.wikipedia.org/wiki/List_of_Wikipedias, bersumber dari
      Special:Statistics tiap wiki), dibaca September 2026. Ini snapshot statis,
-     tertanam di objek WIKI_DATA pada <script> -- BUKAN hasil fetch saat halaman
-     dibuka. Halaman ini dipublikasikan sebagai artifact yang tidak boleh melakukan
-     network request ke domain eksternal, jadi live fetch tidak mungkin dilakukan
-     di sini (lihat percakapan sumber pembuatan halaman ini untuk versi LIVE yang
-     dijalankan lokal).
+     tertanam di objek WIKI_DATA pada <script> -- halaman ini tidak melakukan fetch
+     langsung ke domain eksternal saat dibuka, jadi angkanya tidak live/real-time.
 
   2. SUMBER PROGRAM ORGANISASI: informasi tentang program Wikimedia Indonesia (WMID)
      diambil dari id.wikimedia.org/wiki/Halaman_Utama, diakses September 2026. Halaman
@@ -133,10 +130,30 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+  /* Dot paling kiri/kanan: tooltip yang dipusatkan bisa nongol di luar area timeline
+     dan kepotong overflow-x:auto pada .timeline-scroll. Sejajarkan ke tepi dot, bukan
+     tengah, supaya seluruh isi tooltip tetap ada di dalam area yang bisa digeser. */
+  .tl-dot.tl-edge-start .tooltip{ left: 0; transform: translateY(4px); }
+  .tl-dot.tl-edge-start .tooltip::after{ left: 20px; transform: none; }
+  .tl-dot.tl-edge-start:hover .tooltip, .tl-dot.tl-edge-start:focus-within .tooltip{ transform: translateY(0); }
+  .tl-dot.tl-edge-end .tooltip{ left: auto; right: 0; transform: translateY(4px); }
+  .tl-dot.tl-edge-end .tooltip::after{ left: auto; right: 20px; transform: none; }
+  .tl-dot.tl-edge-end:hover .tooltip, .tl-dot.tl-edge-end:focus-within .tooltip{ transform: translateY(0); }
   .tl-dot .dot{ cursor: pointer; }
   .tl-dot .dot{ width:10px; height:10px; border-radius:50%; background: var(--accent); margin: 0 auto 4px; }
   .tl-dot .code{ font-size: 0.7rem; color: var(--ink-dim); font-family: var(--serif); font-style: italic; }
   .tl-labels{ position:absolute; left:0; right:0; top: 140px; display:flex; justify-content:space-between; font-size:0.72rem; color: var(--ink-faint); }
+
+  /* Versi vertikal timeline, dipakai di layar sempit (lihat media query di bawah) --
+     scatter-plot horizontal butuh lebar tetap dan scroll-x untuk terbaca, yang di
+     ponsel jadi terpotong & susah diketahui masih bisa digeser. Daftar vertikal
+     tidak butuh scroll horizontal sama sekali: mengalir mengikuti scroll halaman. */
+  .tl-vert{ display: none; list-style: none; margin: 22px 0 0; padding: 0; }
+  .tl-vert li{ position: relative; padding: 0 0 18px 24px; border-left: 2px solid var(--rule); }
+  .tl-vert li:last-child{ padding-bottom: 2px; border-left-color: transparent; }
+  .tl-vert li::before{ content:""; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .tl-vert .tv-name{ font-family: var(--serif); font-weight: 600; font-size: 0.95rem; }
+  .tl-vert .tv-date{ color: var(--ink-faint); font-size: 0.8rem; margin-top: 2px; }
 
   .bigstat{ background: var(--bg-panel); border: 1px solid var(--rule); border-top: 3px solid var(--accent); padding: 30px 32px; display: flex; flex-wrap: wrap; gap: 34px; align-items: baseline; margin-bottom: 22px; }
   .bigstat .stat{ font-family: var(--serif); font-size: 2.4rem; font-weight: 600; }
@@ -174,7 +191,7 @@
 
   .profile-controls{ margin-bottom: 24px; }
   .profile-controls label{ display:block; font-size: 0.8rem; color: var(--ink-faint); margin-bottom: 8px; }
-  select#wiki-select{ width: 100%; max-width: 420px; background: var(--bg-panel); color: var(--ink); border: 1px solid var(--rule); padding: 12px 14px; font-family: var(--sans); font-size: 0.95rem; border-radius: 2px; }
+  select#wiki-select, select#sister-select{ width: 100%; max-width: 420px; background: var(--bg-panel); color: var(--ink); border: 1px solid var(--rule); padding: 12px 14px; font-family: var(--sans); font-size: 0.95rem; border-radius: 2px; }
   .profile-card{ background: var(--bg-panel); border: 1px solid var(--rule); border-top: 3px solid var(--accent); padding: 30px 32px; }
   .profile-card .pname{ font-family: var(--serif); font-size: 1.7rem; font-weight: 600; }
   .profile-card .pnative{ color: var(--ink-faint); font-style: italic; font-family: var(--serif); margin-bottom: 20px; }
@@ -211,12 +228,19 @@
     .bigstat{ padding: 20px 18px; gap: 20px; }
     .bigstat .stat{ font-size: 1.9rem; }
     .profile-card{ padding: 20px 18px; }
-    .pg-numbers{ gap: 4px !important; }
-    .pg-num{ min-width: 30px; height: 30px; font-size: 0.72rem; }
-    .pg-arrow{ width: 32px; height: 32px; }
-    .pg-label{ font-size: 0.7rem; padding: 0 8px; }
+    /* Nav pagination sticky-bottom menutupi ekor konten tiap slide di layar sempit --
+       kontennya sering lebih pendek dari viewport, jadi nav yang "mengambang" di
+       bawah malah selalu menimpa baris terakhir teks. Lepas dari sticky di mobile
+       supaya nav mengalir normal setelah konten, dan sembunyikan grid nomor
+       (1-14, 2 baris) -- sisakan panah + label "Halaman X dari 14" saja.  */
+    .pg-wrap{ position: static; background: none; padding-top: 10px; }
+    #pg-numbers{ display: none !important; }
+    .pg-arrow{ width: 40px; height: 40px; }
+    .pg-label{ font-size: 0.72rem; padding: 0 8px; }
     .badgewrap{ gap: 6px; }
     .badge{ font-size: 0.72rem; padding: 4px 10px; }
+    .timeline-scroll{ display: none; }
+    .tl-vert{ display: block; }
   }
 
   @media (max-width: 420px){
@@ -233,26 +257,26 @@
   <section class="page is-active" data-page="1">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Pembuka</span><span class="page-pill">Ringkasan</span></div>
-      <div class="hero-title">Kesehatan Wiki Bahasa-bahasa Indonesia & Daerah</div>
-      <p class="updated-badge">Terakhir diperbarui: <b>16 September 2026</b></p>
-      <p style="font-family:var(--serif); font-style:italic; color:var(--ink-dim); font-size:1.05rem; margin:0 0 22px;">Bagaimana komunitas menulis, bagaimana orang membaca, dan di mana pengetahuan kita masih bolong.</p>
+      <div class="hero-title">Kesehatan Wiki Berbahasa Indonesia & Daerah</div>
+      <p class="updated-badge">Data per <b>16 September 2026</b></p>
+      <p style="font-family:var(--serif); font-style:italic; color:var(--ink-dim); font-size:1.05rem; margin:0 0 22px;">Siapa yang menulis, siapa yang membaca, dan bagian mana yang masih kosong.</p>
       <div class="slide-body">
         <p style="color:var(--ink-dim); max-width:62ch; font-size:0.98rem;">
           Data statistik di halaman ini diambil dari proyek-proyek Wikimedia (Wikipedia, Wikamus/Wiktionary,
-          Wikisource, Wikibuku) dan bersifat terbuka -- siapa pun bisa mereproduksinya dari sumber yang sama.
+          Wikisource, Wikibuku) dan bersifat terbuka, siapa pun bisa mereproduksinya dari sumber yang sama.
           Fokusnya 16 edisi Wikipedia berbahasa Indonesia & daerah yang sudah aktif, dari yang berumur lebih
           dari dua dekade sampai yang baru lahir tahun lalu.
         </p>
-        <button type="button" class="btn" onclick="goToPage(13)">Lihat wiki saya &darr;</button>
+        <button type="button" class="btn" onclick="goToPage(9)">Lihat wiki saya &darr;</button>
         <div class="infostrip">
           <div class="cell"><div class="num" id="stat-wikicount">--</div><div class="label">Wikipedia bahasa Indonesia & daerah dilacak</div></div>
           <div class="cell"><div class="num" id="stat-articles">--</div><div class="label">total artikel gabungan</div></div>
           <div class="cell"><div class="num" id="stat-editors">--</div><div class="label">penyunting aktif gabungan (30 hari)</div></div>
         </div>
         <div class="lensrow">
-          <div class="item"><b>Dibanding diri sendiri</b> -- kapan tiap wiki berada di titik teraktifnya, dan di mana posisinya sekarang.</div>
-          <div class="item"><b>Dibanding sesama daerah</b> -- wiki daerah dibandingkan wiki daerah lain, bukan dengan raksasa seperti idwiki.</div>
-          <div class="item"><b>Dua sisi sekaligus</b> -- angka yang patut dirayakan dan yang jadi tanda bahaya ditampilkan berdampingan.</div>
+          <div class="item"><b>Dibanding diri sendiri:</b> kapan tiap wiki berada di titik teraktifnya, dan di mana posisinya sekarang.</div>
+          <div class="item"><b>Dibanding sesama daerah:</b> wiki daerah dibandingkan wiki daerah lain, bukan dengan raksasa seperti idwiki.</div>
+          <div class="item"><b>Dua sisi sekaligus:</b> angka yang patut dirayakan dan yang jadi tanda bahaya ditampilkan berdampingan.</div>
         </div>
       </div>
     </div>
@@ -265,27 +289,27 @@
       <h2>Wiki tidak cuma berarti Wikipedia<span class="dim">, dan proyek saudara bahasa daerah lebih banyak dari dugaan kita.</span></h2>
       <div class="slide-body">
         <div class="notecard" style="margin-bottom:20px; border-left-color: var(--clay);">
-          <div class="mini-title" style="color:var(--clay);">Koreksi dari versi sebelumnya</div>
-          Draf dashboard ini sebelumnya menulis "belum ada satu pun wiki daerah yang punya proyek
-          saudara". Itu keliru. Berdasarkan daftar resmi di id.wikimedia.org, Wiktionary, Wikisource,
-          Wikiquote, Wikibooks, bahkan Wikispecies sudah punya banyak edisi bahasa daerah Indonesia.
+          <div class="mini-title" style="color:var(--clay);">Salah kaprah yang umum</div>
+          Banyak yang mengira wiki bahasa daerah cuma hadir dalam bentuk Wikipedia. Padahal
+          berdasarkan daftar resmi di id.wikimedia.org, Wiktionary, Wikisource, Wikiquote,
+          Wikibooks, bahkan Wikispecies sudah punya banyak edisi bahasa daerah Indonesia.
         </div>
 
         <div class="infostrip" style="margin-top:6px;">
-          <div class="cell"><div class="num">18</div><div class="label">edisi Wikipedia diakui WMID -- semuanya kini dilacak dengan data nyata di dashboard ini</div></div>
+          <div class="cell"><div class="num">18</div><div class="label">edisi Wikipedia diakui WMID, semuanya kini dilacak dengan data nyata di dashboard ini</div></div>
           <div class="cell"><div class="num">11</div><div class="label">edisi Wiktionary bahasa Indonesia & daerah</div></div>
           <div class="cell"><div class="num">7</div><div class="label">edisi Wikisource bahasa Indonesia & daerah</div></div>
         </div>
 
         <div class="sibgrid sibgrid-3" style="margin-top:16px;" id="cakupan-projects"></div>
 
-        <p style="color:var(--ink-dim); font-size:0.9rem; margin: 24px 0 10px;">Lima proyek berikut tidak dipecah per bahasa -- satu wiki tunggal yang melayani semua bahasa sekaligus (Wikispecies punya opsi bahasa antarmuka, tapi tetap satu situs, bukan subdomain terpisah seperti di atas):</p>
+        <p style="color:var(--ink-dim); font-size:0.9rem; margin: 24px 0 10px;">Lima proyek berikut tidak dipecah per bahasa: satu wiki tunggal yang melayani semua bahasa sekaligus (Wikispecies punya opsi bahasa antarmuka, tapi tetap satu situs, bukan subdomain terpisah seperti di atas):</p>
         <div class="sibgrid sibgrid-2" style="grid-template-columns: 1fr 1fr;" id="cakupan-multi-projects"></div>
 
         <div class="notecard" style="margin-top:22px;">
           <div class="mini-title">Siapa yang mengelola wiki-wiki ini?</div>
           Wikimedia Indonesia (WMID) berperan sebagai chapter <i>pendukung</i> komunitas sukarelawan
-          di Indonesia -- bukan pengelola teknis wiki-wikinya. Wiki-wiki dalam daftar ini dikelola
+          di Indonesia, bukan pengelola teknis wiki-wikinya. Wiki-wiki dalam daftar ini dikelola
           langsung oleh Wikimedia Foundation secara global; WMID menjalankan program pelatihan,
           kompetisi, dan kemitraan GLAM untuk mendukung komunitasnya, bukan menaungi wiki-wikinya
           secara struktural.
@@ -294,8 +318,8 @@
       <div class="page-foot">
         Daftar edisi proyek saudara diambil dari tabel resmi di
         <a href="https://id.wikimedia.org/wiki/Halaman_Utama" target="_blank" rel="noopener">id.wikimedia.org/wiki/Halaman_Utama</a>
-        (September 2026). Dua bahasa yang tadinya belum dilacak -- Bahasa Melayu (ms) dan Bahasa
-        Tetun (tet) -- kini sudah ditambahkan dengan data artikel/penyunting nyata dari
+        (September 2026). Dua bahasa yang tadinya belum dilacak, Bahasa Melayu (ms) dan Bahasa
+        Tetun (tet), kini sudah ditambahkan dengan data artikel/penyunting nyata dari
         <a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">List of Wikipedias</a>,
         sehingga seluruh 18 wiki dalam daftar resmi WMID kini punya data lengkap di dashboard ini.
       </div>
@@ -306,144 +330,116 @@
   <section class="page" data-page="3">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Masa Lalu</span><span class="page-pill">Gelombang peluncuran</span></div>
-      <h2>Dua gelombang, dua puluh tahun</h2>
-      <p class="kicker">Wiki tertua berumur 23 tahun; wiki termuda baru lahir 2 tahun lalu.</p>
+      <h2>Dua gelombang peluncuran, lebih dari dua puluh tahun</h2>
+      <p class="kicker">Wikipedia bahasa Indonesia lahir 2003; proyek saudaranya menyusul, dari hitungan bulan sampai puluhan tahun kemudian.</p>
       <div class="slide-body">
+        <h3 style="font-family:var(--serif); font-weight:600; font-size:1.15rem; margin:0 0 4px;">Wikipedia</h3>
+        <p style="color:var(--ink-dim); font-size:0.88rem; margin:0;">Wiki tertua berumur 23 tahun; wiki termuda baru lahir 2 tahun lalu.</p>
         <div class="timeline-scroll"><div class="timeline" id="timeline"></div></div>
+        <ol class="tl-vert" id="timeline-vert"></ol>
+
+        <div style="margin-top:30px; padding-top:22px; border-top:1px solid var(--rule);">
+          <h3 style="font-family:var(--serif); font-weight:600; font-size:1.15rem; margin:0 0 4px;">Proyek saudara berbahasa Indonesia</h3>
+          <p style="color:var(--ink-dim); font-size:0.88rem; margin:0;">Wikikamus (Wiktionary) edisi Indonesia menyusul cuma 9 bulan setelah Wikipedia; Wikiwisata (Wikivoyage) edisi Indonesia baru berdiri sendiri akhir 2024.</p>
+          <div class="timeline-scroll"><div class="timeline" id="sister-timeline"></div></div>
+          <ol class="tl-vert" id="sister-timeline-vert"></ol>
+        </div>
       </div>
-      <div class="page-foot">Titik ditempatkan pada tahun peluncuran resmi tiap wiki, berdasarkan tanggal di <a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">List of Wikipedias</a>. Posisi baris murni untuk keterbacaan label (lihat halaman "Sumber & verifikasi" untuk tautan cek langsung per wiki).</div>
+      <div class="page-foot">
+        Arahkan kursor (atau sentuh) tiap titik untuk tanggal pastinya; posisi baris murni untuk keterbacaan label, bukan bagian dari datanya. Titik pada timeline Wikipedia memakai tahun peluncuran resmi tiap wiki dari <a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">List of Wikipedias</a>. Untuk 5 proyek saudara per-bahasa, tanggalnya adalah peluncuran edisi bahasa Indonesia-nya secara spesifik, diambil dari revisi/log tercatat paling awal di tiap wiki lewat MediaWiki API (dicek September 2026), karena belum ada tabel resmi setara List of Wikipedias untuk proyek-proyek ini. Untuk 5 proyek multi-bahasa (Wikidata, Commons, Incubator, Wikispecies, Wikifunctions), tanggalnya tetap peluncuran resmi globalnya (lihat halaman "Cakupan").
+      </div>
     </div>
   </section>
 
-  <!-- ============ 4. GELOMBANG PELUNCURAN PROYEK SAUDARA ============ -->
+  <!-- ============ 4. SOROTAN ANGKA ============ -->
   <section class="page" data-page="4">
     <div class="wrap slide">
-      <div class="page-head"><span class="chapter-label">Masa Lalu</span><span class="page-pill">Proyek saudara</span></div>
-      <h2>Gelombang peluncuran proyek saudara</h2>
-      <p class="kicker">Wiktionary lahir cuma 1,5 tahun setelah Wikipedia; Wikifunctions baru lahir 2023 -- arahkan kursor ke titik untuk tanggal pastinya.</p>
+      <div class="page-head"><span class="chapter-label">Masa Lalu & Sekarang</span><span class="page-pill">Sorotan angka</span></div>
+      <h2>Dari yang termuda sampai rasio penyunting</h2>
+      <p class="kicker">Empat sudut pandang angka yang saling melengkapi: umur, ukuran, jumlah tangan yang merawat, dan rasio keduanya.</p>
       <div class="slide-body">
-        <div class="timeline-scroll"><div class="timeline" id="sister-timeline"></div></div>
-      </div>
-      <div class="page-foot">Sepuluh proyek Wikimedia selain Wikipedia (5 per-bahasa + 5 multi-bahasa), diverifikasi lewat halaman Wikipedia/Meta-Wiki masing-masing proyek (September 2026). Titik ditempatkan pada tanggal peluncuran resmi -- lihat catatan sumber lengkap di halaman "Sumber & verifikasi".</div>
-    </div>
-  </section>
 
-  <!-- ============ 5. PROYEK SAUDARA SELAIN WIKIPEDIA ============ -->
-  <section class="page" data-page="5">
-    <div class="wrap slide">
-      <div class="page-head"><span class="chapter-label">Cakupan</span><span class="page-pill">Selain Wikipedia</span></div>
-      <h2>Proyek saudara selain Wikipedia</h2>
-      <p class="kicker">Enam proyek per-bahasa dan lima proyek multi-bahasa -- semua bisa diklik langsung ke situsnya.</p>
-      <div class="slide-body">
-        <div class="sibgrid sibgrid-3" id="sister-overview-grid"></div>
-        <p style="color:var(--ink-dim); font-size:0.9rem; margin: 24px 0 10px;">Proyek berikut satu situs untuk semua bahasa sekaligus:</p>
-        <div class="sibgrid sibgrid-2" style="grid-template-columns: 1fr 1fr;" id="sister-overview-multi"></div>
-      </div>
-      <div class="page-foot">Data sama persis dengan yang dipakai di halaman "Cakupan" dan "Profil Wiki Saya" -- satu sumber data tunggal di kode, supaya selalu konsisten di seluruh dashboard.</div>
-    </div>
-  </section>
-
-  <!-- ============ 6. WIKI TERMUDA ============ -->
-  <section class="page" data-page="6">
-    <div class="wrap slide">
-      <div class="page-head"><span class="chapter-label">Masa Lalu</span><span class="page-pill">Yang paling baru</span></div>
-      <h2>Wiki termuda kita</h2>
-      <div class="slide-body">
+        <h3 style="font-family:var(--serif); font-weight:600; font-size:1.15rem; margin:0 0 10px;">Wiki termuda kita</h3>
         <div class="bigstat">
           <div><div class="stat" id="youngest-date">--</div><div class="desc" id="youngest-desc">--</div></div>
         </div>
         <p style="color:var(--ink-dim); font-size:0.92rem; max-width:60ch;">
-          Sejak itu, komunitas kecilnya sudah menulis ribuan artikel dari nol -- pengingat bahwa
-          angka artikel yang masih kecil hari ini bukan berarti wiki itu tidak aktif, sering kali
-          justru sebaliknya.
+          Sejak itu, komunitas kecilnya sudah menulis ribuan artikel dari nol. Angka artikel yang
+          masih kecil hari ini bukan berarti wiki itu tidak aktif, sering kali justru sebaliknya.
         </p>
-      </div>
-      <div class="page-foot">Wiki termuda ditentukan dari tanggal peluncuran resmi terbaru di antara 18 wiki yang dilacak (<a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">List of Wikipedias</a>, snapshot September 2026).</div>
-    </div>
-  </section>
-
-  <!-- ============ 5. UKURAN BUKAN KOMUNITAS ============ -->
-  <section class="page" data-page="7">
-    <div class="wrap slide">
-      <div class="page-head"><span class="chapter-label">Masa Lalu</span><span class="page-pill">Ukuran bukan komunitas</span></div>
-      <h2>Wiki terbesar bukan yang ditulis paling banyak orang</h2>
-      <div class="slide-body">
-        <div class="bigstat">
-          <div><div class="stat">229.951<span class="unit"> artikel</span></div><div class="desc">Wikipedia bahasa Minangkabau -- edisi wiki daerah terbesar kedua dari segi jumlah artikel</div></div>
-          <div><div class="stat">52<span class="unit"> orang</span></div><div class="desc">penyunting aktif yang merawatnya bulan ini <span class="est">rasio terendah di daftar kita</span></div></div>
+        <div class="notecard" style="margin-top:18px;">
+          <div class="mini-title">"Wiki termuda" itu ambigu, tergantung yang dimaksud</div>
+          Angka di atas adalah <b>edisi Wikipedia</b> termuda. Kalau yang dimaksud proyek saudara
+          (bukan Wikipedia), yang termuda dan sudah aktif berjalan adalah Wikikamus (Wiktionary)
+          bahasa Betawi (<code>bewwiktionary</code>), baru berdiri sendiri di luar Incubator
+          sekitar Agustus 2025. Dan kalau yang dimaksud proyek terbaru secara keseluruhan,
+          termasuk yang baru lulus dari Incubator, itu Wikikutip (Wikiquote) bahasa Minangkabau
+          (<code>minwikiquote</code>), per pengumuman
+          <a href="https://incubator.wikimedia.org/wiki/Incubator:News" target="_blank" rel="noopener">Incubator:News</a>.
         </div>
-        <p style="color:var(--ink-dim); font-size:0.92rem; max-width:64ch;">
-          Wikipedia bahasa Minangkabau adalah kasus terkenal di gerakan Wikimedia: sebagian besar
-          lonjakan artikelnya terjadi lewat penyuntingan bot bertahun lalu, bukan lewat penulisan
-          manual satu per satu. Rasio penyunting per artikelnya (lihat dua halaman berikutnya)
-          menunjukkan kenapa jumlah artikel saja bisa menyesatkan kalau dibaca sebagai ukuran
-          kesehatan komunitas.
-        </p>
+
+        <div style="margin-top:30px; padding-top:22px; border-top:1px solid var(--rule);">
+          <h3 style="font-family:var(--serif); font-weight:600; font-size:1.15rem; margin:0 0 10px;">Wiki terbesar bukan yang ditulis paling banyak orang</h3>
+          <div class="bigstat">
+            <div><div class="stat">229.951<span class="unit"> artikel</span></div><div class="desc">Wikipedia bahasa Minangkabau, edisi wiki daerah terbesar kedua dari segi jumlah artikel</div></div>
+            <div><div class="stat">52<span class="unit"> orang</span></div><div class="desc">penyunting aktif yang merawatnya bulan ini <span class="est">rasio terendah di daftar kita</span></div></div>
+          </div>
+          <p style="color:var(--ink-dim); font-size:0.92rem; max-width:64ch;">
+            Wikipedia bahasa Minangkabau adalah kasus terkenal di gerakan Wikimedia: sebagian besar
+            lonjakan artikelnya terjadi lewat penyuntingan bot bertahun lalu, bukan lewat penulisan
+            manual satu per satu. Rasio penyunting per artikelnya (lihat dua bagian di bawah)
+            menunjukkan kenapa jumlah artikel saja bisa menyesatkan kalau dibaca sebagai ukuran
+            kesehatan komunitas.
+          </p>
+        </div>
+
+        <div style="margin-top:30px; padding-top:22px; border-top:1px solid var(--rule);">
+          <h3 style="font-family:var(--serif); font-weight:600; font-size:1.15rem; margin:0 0 10px;">Berapa banyak tangan yang merawat 18 wiki ini?</h3>
+          <div class="bigstat">
+            <div><div class="stat" id="big-editors">--</div><div class="desc">total penyunting aktif (30 hari terakhir) di seluruh 18 wiki</div></div>
+            <div><div class="stat" id="big-articles">--<span class="unit"> artikel</span></div><div class="desc">total artikel gabungan yang mereka rawat</div></div>
+          </div>
+          <p style="color:var(--ink-dim); font-size:0.92rem;">
+            Wikipedia bahasa Indonesia sendiri menyumbang sebagian besar dari kedua angka ini,
+            tapi 15 wiki daerah lainnya, sekecil apa pun, sama-sama menopang total ini.
+          </p>
+        </div>
+
+        <div style="margin-top:30px; padding-top:22px; border-top:1px solid var(--rule);">
+          <h3 style="font-family:var(--serif); font-weight:600; font-size:1.15rem; margin:0 0 6px;">Yang patut dirayakan, dan tanda bahaya</h3>
+          <p class="hint" style="color:var(--ink-dim); font-size:0.86rem; margin:0 0 14px;">Diukur lewat penyunting aktif per 1.000 artikel, proksi beban rawat komunitas.</p>
+          <div class="twocol">
+            <div class="col good">
+              <h3>Yang patut dirayakan</h3>
+              <p class="hint">Komunitas kecil tapi padat, biasanya wiki yang baru lahir dan masih di fase perintisan aktif.</p>
+              <ul id="celebrate-list"></ul>
+            </div>
+            <div class="col bad">
+              <h3>Tanda bahaya</h3>
+              <p class="hint">Artikel menumpuk banyak, tapi penyunting per 1.000 artikel sangat tipis.</p>
+              <ul id="danger-list"></ul>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="page-foot">
-        Angka artikel & penyunting aktif nyata (<a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">List of Wikipedias</a>; verifikasi langsung di
-        <a href="https://min.wikipedia.org/wiki/Special:Statistics" target="_blank" rel="noopener">min.wikipedia.org/wiki/Special:Statistics</a>).
-        Persentase bot-edit historis yang presisi untuk wiki ini tidak berhasil diverifikasi lewat
-        pencarian pada sesi ini, sehingga sengaja tidak dicantumkan <span class="est">tidak tersedia</span>
-        -- kasusnya sendiri terdokumentasi luas di komunitas Wikimedia sejak edisi ini diluncurkan 2013.
+        Wiki termuda (edisi Wikipedia) dari tanggal peluncuran resmi terbaru di antara 18 wiki (<a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">List of Wikipedias</a>, snapshot September 2026); bewwiktionary & minwikiquote dicek langsung lewat MediaWiki API. Angka artikel & penyunting Minangkabau juga dari List of Wikipedias, verifikasi langsung di <a href="https://min.wikipedia.org/wiki/Special:Statistics" target="_blank" rel="noopener">min.wikipedia.org/wiki/Special:Statistics</a>; persentase bot-edit historisnya belum ada di sumber terbuka mana pun, jadi sengaja tidak dicantumkan sebagai angka <span class="est">tidak tersedia</span>. Riwayat penyunting aktif multi-tahun juga belum tersedia di sini karena perlu ditarik satu per satu dari stats.wikimedia.org/XTools <span class="est">tidak tersedia</span>. Rasio = penyunting aktif 30 hari / jumlah artikel x 1.000, dihitung langsung di browser dari angka penyunting & artikel di atas; ini snapshot kondisi terkini, bukan data historis puncak-tahun.
       </div>
     </div>
   </section>
 
-  <!-- ============ 6. KOMUNITAS PENYUNTING: HEADLINE ============ -->
-  <section class="page" data-page="8">
-    <div class="wrap slide">
-      <div class="page-head"><span class="chapter-label">Sekarang &middot; Penyunting</span><span class="page-pill">Angka utama</span></div>
-      <h2>Berapa banyak tangan yang merawat 18 wiki ini?</h2>
-      <div class="slide-body">
-        <div class="bigstat">
-          <div><div class="stat" id="big-editors">--</div><div class="desc">total penyunting aktif (30 hari terakhir) di seluruh 18 wiki</div></div>
-          <div><div class="stat" id="big-articles">--<span class="unit"> artikel</span></div><div class="desc">total artikel gabungan yang mereka rawat</div></div>
-        </div>
-        <p style="color:var(--ink-dim); font-size:0.92rem;">
-          Wikipedia bahasa Indonesia sendiri menyumbang sebagian besar dari kedua angka ini --
-          tapi 15 wiki daerah lainnya, sekecil apa pun, sama-sama menopang total ini.
-        </p>
-      </div>
-      <div class="page-foot">Riwayat penyunting aktif multi-tahun (grafik naik-turun per tahun) tidak berhasil diambil pada sesi ini karena butuh akses ke grafik riwayat stats.wikimedia.org/XTools per wiki <span class="est">tidak tersedia</span>. Halaman berikutnya memakai proksi yang bisa dihitung ulang dari angka di atas.</div>
-    </div>
-  </section>
-
-  <!-- ============ 7. RASIO PENYUNTING/ARTIKEL ============ -->
-  <section class="page" data-page="9">
-    <div class="wrap slide">
-      <div class="page-head"><span class="chapter-label">Sekarang &middot; Penyunting</span><span class="page-pill">Dua sisi</span></div>
-      <h2>Yang patut dirayakan, dan tanda bahaya</h2>
-      <p class="kicker">Diukur lewat penyunting aktif per 1.000 artikel -- proksi beban rawat komunitas.</p>
-      <div class="slide-body">
-        <div class="twocol">
-          <div class="col good">
-            <h3>Yang patut dirayakan</h3>
-            <p class="hint">Komunitas kecil tapi padat -- biasanya wiki yang baru lahir dan masih di fase perintisan aktif.</p>
-            <ul id="celebrate-list"></ul>
-          </div>
-          <div class="col bad">
-            <h3>Tanda bahaya</h3>
-            <p class="hint">Artikel menumpuk banyak, tapi penyunting per 1.000 artikel sangat tipis.</p>
-            <ul id="danger-list"></ul>
-          </div>
-        </div>
-      </div>
-      <div class="page-foot">Rasio = penyunting aktif 30 hari / jumlah artikel x 1.000, dihitung langsung di browser dari data pada halaman "Angka utama" -- snapshot kondisi terkini, bukan data historis puncak-tahun.</div>
-    </div>
-  </section>
-
-  <!-- ============ 8. PROGRAM WIKIMEDIA INDONESIA ============ -->
-  <section class="page" data-page="10">
+  <!-- ============ 5. PROGRAM WIKIMEDIA INDONESIA ============ -->
+  <section class="page" data-page="5">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Program</span><span class="page-pill">Sumber: wikimedia.or.id/program</span></div>
       <h2>Bagaimana Wikimedia Indonesia mendukung komunitas ini</h2>
-      <p class="kicker">Empat pilar program resmi WMID -- bukan statistik wiki, tapi konteks nyata tentang siapa yang bekerja di baliknya.</p>
+      <p class="kicker">Empat pilar program resmi WMID: bukan statistik wiki, tapi konteks nyata tentang siapa yang bekerja di baliknya.</p>
       <div class="slide-body">
         <div class="proggrid">
           <div class="progcard">
             <h4>Pendidikan</h4>
-            <p>Memfasilitasi penggunaan proyek Wikimedia untuk edukasi -- pelatihan penyuntingan, kemitraan sekolah & kampus, pengembangan modul belajar terbuka.</p>
+            <p>Memfasilitasi penggunaan proyek Wikimedia untuk edukasi: pelatihan penyuntingan, kemitraan sekolah & kampus, pengembangan modul belajar terbuka.</p>
             <div class="taglist"><span class="tag">WikiLatih</span><span class="tag">Kopdar</span><span class="tag">Penjangkauan</span><span class="tag">KlubWiki</span></div>
             <a href="https://pendidikan.wikimedia.or.id" target="_blank" rel="noopener" class="verify-link" style="margin-top:10px; font-size:0.78rem;">pendidikan.wikimedia.or.id &rarr;</a>
           </div>
@@ -471,15 +467,15 @@
         Sumber: <a href="https://wikimedia.or.id/program" target="_blank" rel="noopener">wikimedia.or.id/program</a>,
         <a href="https://pendidikan.wikimedia.or.id" target="_blank" rel="noopener">pendidikan.wikimedia.or.id</a>, dan
         <a href="https://komunitas.wikimedia.or.id" target="_blank" rel="noopener">komunitas.wikimedia.or.id</a> (September 2026).
-        Isi situs datatek.wikimedia.or.id dan kebudayaan.wikimedia.or.id dirender lewat JavaScript
-        sehingga tidak bisa diekstrak teksnya secara langsung pada sesi ini -- deskripsi keduanya di
-        atas memakai ringkasan resmi dari halaman program utama <span class="est">ringkasan</span>.
+        Deskripsi program Data, Sains dan Teknologi serta Kebudayaan di atas mengikuti ringkasan
+        resmi dari halaman program utama, karena kedua situs mikronya dirender penuh lewat
+        JavaScript dan tidak menyediakan versi teks statis untuk dikutip langsung <span class="est">ringkasan</span>.
       </div>
     </div>
   </section>
 
-  <!-- ============ 9. SOROTAN PROGRAM & KOMUNITAS ============ -->
-  <section class="page" data-page="11">
+  <!-- ============ 6. SOROTAN PROGRAM & KOMUNITAS ============ -->
+  <section class="page" data-page="6">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Program</span><span class="page-pill">Sorotan nyata</span></div>
       <h2>Di balik program, ada orang dan angka nyata</h2>
@@ -487,60 +483,120 @@
         <div class="bigstat">
           <div>
             <div class="stat">331.787<span class="unit"> suntingan</span></div>
-            <div class="desc">total suntingan Muhammad Rifqi Saifudin di seluruh proyek Wikimedia sepanjang 2025 -- sukarelawan teraktif WMID tahun itu, sekaligus penginisiasi WikiKlinik untuk kontributor baru</div>
+            <div class="desc">total suntingan Muhammad Rifqi Saifudin di seluruh proyek Wikimedia sepanjang 2025, sukarelawan teraktif WMID tahun itu sekaligus penginisiasi WikiKlinik untuk kontributor baru</div>
           </div>
         </div>
-        <div class="sibgrid sibgrid-2">
+        <div class="sibgrid sibgrid-3">
           <div class="sibcard">
             <h3>KlubWiki di kampus</h3>
-            <p>Wikimedia Indonesia mendukung pembentukan KlubWiki -- ruang bagi civitas academica untuk berkontribusi rutin ke proyek Wikimedia, salah satu contohnya di Universitas Brawijaya.</p>
+            <p>Wikimedia Indonesia mendukung pembentukan KlubWiki, ruang bagi civitas academica untuk berkontribusi rutin ke proyek Wikimedia. Salah satu contohnya berdiri di Universitas Brawijaya.</p>
           </div>
           <div class="sibcard">
             <h3>WikiNusantara 2026</h3>
             <p>Pertemuan komunitas Wikimedia se-Indonesia terbaru, mempertemukan sukarelawan dari berbagai daerah untuk berbagi pengalaman dan merancang kolaborasi lintas wiki.</p>
           </div>
+          <div class="sibcard">
+            <h3>WikiCendekia 2026</h3>
+            <p>Program pengembangan kapasitas khusus pengurus (admin) proyek Wikimedia. Sesi daring 15-30 Januari ditutup dengan pertemuan tatap muka di Surabaya, 6-8 Februari: 20 pengurus dari berbagai wiki bahasa Indonesia & daerah berkumpul untuk sesi filter penyalahgunaan, bot, dan keamanan digital.</p>
+          </div>
         </div>
         <p style="color:var(--ink-dim); font-size:0.9rem; margin-top:18px; max-width:64ch;">
           Program komunitas WMID juga mencakup hal-hal yang jarang masuk statistik: Dana Wiki
           (dukungan pendanaan kegiatan komunitas), Hibah Buku (dukungan referensi bagi sukarelawan),
-          dan kunjungan langsung Tim Komunitas ke daerah -- termasuk pernah mengunjungi komunitas
+          dan kunjungan langsung Tim Komunitas ke daerah, termasuk pernah mengunjungi komunitas
           Wikimedia Nias pada September 2024.
         </p>
       </div>
-      <div class="page-foot">Sumber: <a href="https://komunitas.wikimedia.or.id" target="_blank" rel="noopener">komunitas.wikimedia.or.id</a> dan <a href="https://pendidikan.wikimedia.or.id" target="_blank" rel="noopener">pendidikan.wikimedia.or.id</a>, diakses September 2026. Angka 331.787 suntingan adalah klaim resmi situs tersebut untuk periode 2025, bukan hasil verifikasi ulang lewat XTools pada sesi ini.</div>
+      <div class="page-foot">Sumber: <a href="https://komunitas.wikimedia.or.id" target="_blank" rel="noopener">komunitas.wikimedia.or.id</a>, <a href="https://pendidikan.wikimedia.or.id" target="_blank" rel="noopener">pendidikan.wikimedia.or.id</a>, dan tulisan <a href="https://diff.wikimedia.org/id/2026/03/03/ketika-para-pengurus-wikimedia-indonesia-akhirnya-bertemu-catatan-dari-wikicendekia-2026/" target="_blank" rel="noopener">"Ketika Para Pengurus Wikimedia Indonesia Akhirnya Bertemu" di Diff.Wikimedia.org</a> (Maret 2026). Angka 331.787 suntingan adalah klaim resmi dari situsnya untuk periode 2025: laporan yang dipublikasikan, bukan hasil audit ulang lewat XTools.</div>
     </div>
   </section>
 
-  <!-- ============ 10. PROYEK SAUDARA ============ -->
-  <section class="page" data-page="12">
+  <!-- ============ 7. KOMUNITAS ============ -->
+  <section class="page" data-page="7">
+    <div class="wrap slide">
+      <div class="page-head"><span class="chapter-label">Program</span><span class="page-pill">Bagaimana komunitas terbentuk</span></div>
+      <h2>Enam cara komunitas Wikimedia Indonesia terbentuk</h2>
+      <p class="kicker">Bukan satu organisasi besar, tapi jaringan komunitas kecil yang terbentuk lewat daerah, bahasa, proyek, tema, atau kampus.</p>
+      <div class="slide-body">
+        <div class="sibgrid sibgrid-3">
+          <div class="sibcard">
+            <h3>Berbasis daerah</h3>
+            <p class="purpose">Menghimpun sukarelawan dari daerah yang sama atau berdekatan, lintas bahasa dan proyek.</p>
+            <p>Medan, Jakarta, Surabaya, Palembang, Pontianak, Samarinda, Manokwari, Bandar Lampung</p>
+          </div>
+          <div class="sibcard">
+            <h3>Berbasis bahasa</h3>
+            <p class="purpose">Menghimpun sukarelawan yang memiliki kesamaan bahasa daerah, lintas kota asal.</p>
+            <p>Gorontalo, Banjar, Nias, Madura</p>
+          </div>
+          <div class="sibcard">
+            <h3>Berbasis daerah & bahasa khusus</h3>
+            <p class="purpose">Menggabungkan fokus wilayah dengan pengembangan bahasa daerah setempat.</p>
+            <p>Padang, Bandung, Yogyakarta, Denpasar, Mataram, Makassar, Jambi</p>
+          </div>
+          <div class="sibcard">
+            <h3>Berbasis proyek</h3>
+            <p class="purpose">Menghimpun sukarelawan dengan fokus pada satu proyek Wikimedia tertentu.</p>
+            <p>Wikisource Indonesia, Wikidata Indonesia, Wiktionary Indonesia, Wikivoyage Indonesia</p>
+          </div>
+          <div class="sibcard">
+            <h3>Berbasis tematik</h3>
+            <p class="purpose">Menghimpun sukarelawan dengan fokus pada tema atau isu tertentu, lintas daerah dan bahasa.</p>
+            <p>Wikimedia Perempuan</p>
+          </div>
+          <div class="sibcard">
+            <h3>KlubWiki</h3>
+            <p class="purpose">Ruang kontribusi rutin di lingkungan kampus, dijalankan bersama program Pendidikan WMID.</p>
+            <p>KlubWiki Universitas Brawijaya</p>
+          </div>
+        </div>
+        <p style="color:var(--ink-dim); font-size:0.9rem; margin-top:22px; max-width:66ch;">
+          Untuk mulai sebagai komunitas rintisan, syaratnya sesederhana <b>sedikitnya 3 orang anggota</b>.
+          Begitu berjalan, WMID menawarkan dukungan lewat rapat komunitas rutin, Dana Wiki (pendanaan
+          kegiatan), Hibah Buku (referensi bagi sukarelawan), malam keakraban, kunjungan langsung Tim
+          Komunitas, sampai perayaan ulang tahun proyek.
+        </p>
+      </div>
+      <div class="page-foot">
+        Enam kategori dan daftar contoh komunitas per September 2026 dari
+        <a href="https://id.wikimedia.org/wiki/Komunitas" target="_blank" rel="noopener">id.wikimedia.org/wiki/Komunitas</a>
+        (daftar komunitas yang didukung untuk periode GSF26, Juli-Desember 2026, bukan daftar lengkap
+        semua komunitas yang pernah terbentuk). Program dukungan dari
+        <a href="https://komunitas.wikimedia.or.id" target="_blank" rel="noopener">komunitas.wikimedia.or.id</a>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. PROYEK SAUDARA ============ -->
+  <section class="page" data-page="8">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Proyek Saudara</span><span class="page-pill">Fokus bahasa Indonesia</span></div>
       <h2>Kamus, perpustakaan, dan buku terbuka</h2>
-      <p class="kicker">Tiga contoh proyek saudara edisi bahasa Indonesia -- daftar lengkap edisi bahasa daerah ada di halaman "Cakupan".</p>
+      <p class="kicker">Tiga contoh proyek saudara edisi bahasa Indonesia. Daftar lengkap edisi bahasa daerah ada di halaman "Cakupan".</p>
       <div class="slide-body">
         <div class="sibgrid">
-          <div class="sibcard"><h3>Wikikamus bahasa Indonesia</h3><p>idwiktionary -- kamus daring kolaboratif: kata, etimologi, dan terjemahan antarbahasa.</p></div>
-          <div class="sibcard"><h3>Wikisource bahasa Indonesia</h3><p>idwikisource -- perpustakaan teks sumber domain-publik: naskah kuno, undang-undang, karya sastra lama.</p></div>
-          <div class="sibcard"><h3>Wikibuku bahasa Indonesia</h3><p>idwikibooks -- buku pelajaran dan panduan terbuka yang ditulis bersama-sama.</p></div>
+          <div class="sibcard"><h3>Wikikamus bahasa Indonesia</h3><p>idwiktionary, kamus daring kolaboratif: kata, etimologi, dan terjemahan antarbahasa.</p></div>
+          <div class="sibcard"><h3>Wikisource bahasa Indonesia</h3><p>idwikisource, perpustakaan teks sumber domain-publik: naskah kuno, undang-undang, karya sastra lama.</p></div>
+          <div class="sibcard"><h3>Wikibuku bahasa Indonesia</h3><p>idwikibooks, buku pelajaran dan panduan terbuka yang ditulis bersama-sama.</p></div>
         </div>
         <p style="color:var(--ink-dim); font-size:0.9rem; margin-top:20px; max-width:64ch;">
-          Ketiganya juga punya edisi bahasa daerah -- misalnya Wiktionary tersedia dalam 11 bahasa
+          Ketiganya juga punya edisi bahasa daerah. Wiktionary, misalnya, tersedia dalam 11 bahasa
           termasuk Jawa, Sunda, dan Minangkabau (lihat halaman "Cakupan" untuk daftar lengkapnya).
           Semuanya dikelola langsung oleh Wikimedia Foundation, dengan Wikimedia Indonesia berperan
-          mendukung komunitas penyuntingnya lewat program pelatihan dan kompetisi -- bukan sebagai
+          mendukung komunitas penyuntingnya lewat program pelatihan dan kompetisi, bukan sebagai
           pengelola teknis.
         </p>
       </div>
-      <div class="page-foot">Deskripsi tiga proyek di atas diverifikasi lewat subdomain resmi *.wiktionary.org/wikisource.org/wikibooks.org berkode "id". Jumlah entri & penyunting aktif pasti per proyek tidak diambil pada sesi ini <span class="est">tidak tersedia</span>, sehingga tidak dicantumkan sebagai angka.</div>
+      <div class="page-foot">Deskripsi tiga proyek di atas diverifikasi lewat subdomain resmi *.wiktionary.org/wikisource.org/wikibooks.org berkode "id". Jumlah entri & penyunting aktif pasti per proyek belum tersedia dari sumber terbuka yang bisa dikutip langsung <span class="est">tidak tersedia</span>, sehingga sengaja tidak dicantumkan sebagai angka.</div>
     </div>
   </section>
 
-  <!-- ============ 10. PROFIL WIKI SAYA ============ -->
-  <section class="page" data-page="13">
+  <!-- ============ 9. PROFIL WIKI SAYA ============ -->
+  <section class="page" data-page="9">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Profil</span><span class="page-pill">Interaktif</span></div>
       <h2>Profil wiki saya</h2>
-      <p class="kicker">Kartu ini dibangun sepenuhnya dari data yang sudah tertanam -- tetap berfungsi tanpa koneksi internet.</p>
+      <p class="kicker">Kartu ini dibangun sepenuhnya dari data yang sudah tertanam, tetap berfungsi tanpa koneksi internet.</p>
       <div class="slide-body">
         <div class="profile-controls">
           <label for="wiki-select">Wikipedia bahasa</label>
@@ -558,16 +614,16 @@
         <p style="color:var(--ink-dim); font-size:0.88rem; margin:26px 0 10px;">Lima proyek berikut berlaku sama untuk semua bahasa, termasuk yang dipilih di atas:</p>
         <div class="sibgrid sibgrid-3" style="gap:10px;" id="multi-project-grid"></div>
       </div>
-      <div class="page-foot">Dropdown ini mengubah seluruh isi kartu secara dinamis (lihat renderProfile() di kode sumber). Pengembangan lanjutan bisa menambah grafik riwayat bulanan, asalkan datanya ditarik lebih dulu -- bukan fetch langsung dari browser saat halaman dibuka, karena halaman ini dipublikasikan sebagai artifact yang membatasi network request eksternal.</div>
+      <div class="page-foot">Dropdown ini mengubah seluruh isi kartu langsung dari data yang sudah tertanam di halaman. Tidak ada pemanggilan server saat kamu memilih wiki atau proyek lain, jadi tetap responsif meski koneksi lambat.</div>
     </div>
   </section>
 
-  <!-- ============ 11. SUMBER & VERIFIKASI ============ -->
-  <section class="page" data-page="14">
+  <!-- ============ 10. SUMBER & VERIFIKASI ============ -->
+  <section class="page" data-page="10">
     <div class="wrap slide">
       <div class="page-head"><span class="chapter-label">Transparansi</span><span class="page-pill">Bisa diverifikasi langsung</span></div>
       <h2>Sumber & verifikasi</h2>
-      <p class="kicker">Setiap angka di dashboard ini bisa dicek ulang langsung ke sumber aslinya -- tidak perlu percaya begitu saja.</p>
+      <p class="kicker">Setiap angka di dashboard ini bisa dicek ulang langsung ke sumber aslinya, tidak perlu percaya begitu saja.</p>
       <div class="slide-body">
         <div class="sibgrid sibgrid-2">
           <div class="sibcard">
@@ -600,8 +656,8 @@
       </div>
       <div class="page-foot">
         Halaman Special:Statistics tiap wiki menunjukkan angka <i>saat ini</i> (real-time), yang
-        kemungkinan sudah lebih tinggi dari snapshot September 2026 yang dipakai di dashboard ini --
-        itu wajar, bukan berarti data dashboard salah, sekadar sudah tidak lagi terbaru.
+        kemungkinan sudah lebih tinggi dari snapshot September 2026 yang dipakai di dashboard ini.
+        Itu wajar, bukan berarti data dashboard salah, sekadar sudah tidak lagi terbaru.
       </div>
     </div>
   </section>
@@ -609,7 +665,7 @@
 </main>
 
 <div class="pg-wrap wrap">
-  <div class="pg-label" id="pg-label">Halaman 1 dari 14</div>
+  <div class="pg-label" id="pg-label">Halaman 1 dari 10</div>
   <nav class="pagination" aria-label="Navigasi halaman dashboard">
     <button type="button" class="pg-arrow" id="pg-prev" aria-label="Halaman sebelumnya">&larr;</button>
     <div id="pg-numbers" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;"></div>
@@ -621,13 +677,12 @@
   <b>Terakhir diperbarui: 16 September 2026.</b>
   Data artikel, penyunting aktif, dan tanggal peluncuran diambil dari
   <a href="https://en.wikipedia.org/wiki/List_of_Wikipedias" target="_blank" rel="noopener">daftar resmi Wikipedia (List of Wikipedias)</a>
-  pada tanggal tersebut, dan tidak diperbarui otomatis -- halaman ini statis, bukan live.
+  pada tanggal tersebut, dan tidak diperbarui otomatis. Halaman ini statis, bukan live.
   Informasi program organisasi diambil dari
   <a href="https://id.wikimedia.org/wiki/Halaman_Utama" target="_blank" rel="noopener">id.wikimedia.org</a>.
-  Angka bertanda <span class="est">perkiraan</span> bukan hasil pemanggilan API langsung -- lihat
-  catatan kaki tiap halaman untuk detail metodenya. Halaman-halaman yang sebelumnya menampilkan
-  perkiraan tanpa data pendukung nyata (kapasitas admin, pageviews per wiki, statistik terjemahan)
-  telah dihapus dari versi ini.
+  Angka bertanda <span class="est">perkiraan</span> bukan hasil pemanggilan API langsung. Lihat
+  catatan kaki tiap halaman untuk detail metodenya. Topik yang belum punya data pendukung nyata
+  (kapasitas admin, pageviews per wiki, statistik terjemahan) sengaja tidak ditampilkan di sini.
 </footer>
 
 <script>
@@ -667,23 +722,23 @@ function fmt(n){ return n.toLocaleString('id-ID'); }
   subdomain terpisah seperti proyek di atas).
 */
 const SISTER_PROJECTS = [
-  { label: "Wiktionary", domain: "wiktionary.org", purpose: "Kamus daring kolaboratif", codes: ["id","bjn","bew","gor","jv","mad","btm","ms","min","nia","su"], launch: 2002, launchLabel: "12 Des 2002" },
-  { label: "Wikisource", domain: "wikisource.org", purpose: "Perpustakaan teks sumber domain-publik", codes: ["id","ban","jv","mad","ms","min","su"], launch: 2003, launchLabel: "24 Nov 2003" },
-  { label: "Wikiquote", domain: "wikiquote.org", purpose: "Kumpulan kutipan terverifikasi", codes: ["id","bjn","gor","ms","min","su"], launch: 2003, launchLabel: "10 Jul 2003" },
-  { label: "Wikibooks", domain: "wikibooks.org", purpose: "Buku pelajaran & panduan terbuka", codes: ["id","ms","min","su"], launch: 2003, launchLabel: "10 Jul 2003" },
-  { label: "Wikivoyage", domain: "wikivoyage.org", purpose: "Panduan wisata kolaboratif", codes: ["id"], launch: 2013, launchLabel: "15 Jan 2013" },
+  { label: "Wiktionary", domain: "wiktionary.org", purpose: "Kamus daring kolaboratif", codes: ["id","bjn","bew","gor","jv","mad","btm","ms","min","nia","su"], launch: 2003, launchLabel: "24 Des 2003" },
+  { label: "Wikiquote", domain: "wikiquote.org", purpose: "Kumpulan kutipan terverifikasi", codes: ["id","bjn","gor","ms","min","su"], launch: 2004, launchLabel: "6 Jul 2004" },
+  { label: "Wikibooks", domain: "wikibooks.org", purpose: "Buku pelajaran & panduan terbuka", codes: ["id","ms","min","su"], launch: 2004, launchLabel: "31 Jul 2004" },
+  { label: "Wikisource", domain: "wikisource.org", purpose: "Perpustakaan teks sumber domain-publik", codes: ["id","ban","jv","mad","ms","min","su"], launch: 2005, launchLabel: "6 Nov 2005" },
+  { label: "Wikivoyage", domain: "wikivoyage.org", purpose: "Panduan wisata kolaboratif", codes: ["id"], launch: 2024, launchLabel: "2 Des 2024" },
 ];
 const MULTI_PROJECTS = [
   { label: "Wikidata", url: "https://www.wikidata.org/wiki/Special:Statistics", purpose: "Basis data terstruktur lintas semua bahasa", launch: 2012, launchLabel: "29 Okt 2012",
-    desc: "Basis data terstruktur bebas yang menyimpan fakta (populasi, tanggal lahir, koordinat, dsb.) dalam format yang bisa dibaca mesin -- menyuplai infobox Wikipedia di semua bahasa sekaligus, termasuk 18 wiki dalam daftar ini." },
+    desc: "Basis data terstruktur bebas yang menyimpan fakta (populasi, tanggal lahir, koordinat, dsb.) dalam format yang bisa dibaca mesin. Menyuplai infobox Wikipedia di semua bahasa sekaligus, termasuk 18 wiki dalam daftar ini." },
   { label: "Wikimedia Commons", url: "https://commons.wikimedia.org/wiki/Special:Statistics", purpose: "Gudang media bebas lintas semua proyek", launch: 2004, launchLabel: "7 Sep 2004",
-    desc: "Gudang media bebas hak cipta (foto, video, berkas suara) yang dipakai bersama oleh semua proyek Wikimedia di semua bahasa -- satu foto di Commons bisa muncul di idwiki, jvwiki, dan suwiki sekaligus." },
+    desc: "Gudang media bebas hak cipta (foto, video, berkas suara) yang dipakai bersama oleh semua proyek Wikimedia di semua bahasa. Satu foto di Commons bisa muncul di idwiki, jvwiki, dan suwiki sekaligus." },
   { label: "Wikimedia Incubator", url: "https://incubator.wikimedia.org/wiki/Incubator:Main_Page", purpose: "Ruang inkubasi bagi bahasa yang belum punya wiki resmi", launch: 2006, launchLabel: "2 Jun 2006",
-    desc: "\"Ruang inkubasi\" bagi bahasa yang belum punya wiki resmi -- tempat komunitas kecil menulis dan membuktikan keberlanjutan sebelum wikinya diluncurkan penuh. Sebagian besar dari 16 wiki daerah di dashboard ini pernah melalui tahap Incubator." },
+    desc: "\"Ruang inkubasi\" bagi bahasa yang belum punya wiki resmi, tempat komunitas kecil menulis dan membuktikan keberlanjutan sebelum wikinya diluncurkan penuh. Sebagian besar dari 16 wiki daerah di dashboard ini pernah melalui tahap Incubator." },
   { label: "Wikispecies", url: "https://species.wikimedia.org/wiki/Special:Statistics", purpose: "Direktori taksonomi makhluk hidup", launch: 2004, launchLabel: "14 Sep 2004",
-    desc: "Direktori taksonomi makhluk hidup lintas disiplin biologi -- satu situs global dengan opsi antarmuka Bahasa Indonesia, Aceh, Bali, Jawa, Melayu, Minangkabau, dan Sunda." },
+    desc: "Direktori taksonomi makhluk hidup lintas disiplin biologi. Satu situs global dengan opsi antarmuka Bahasa Indonesia, Aceh, Bali, Jawa, Melayu, Minangkabau, dan Sunda." },
   { label: "Wikifunctions", url: "https://www.wikifunctions.org/wiki/Special:Statistics", purpose: "Perpustakaan fungsi komputasi terbuka", launch: 2023, launchLabel: "26 Jul 2023",
-    desc: "Proyek Wikimedia terbaru: perpustakaan fungsi komputasi terbuka yang bisa dijalankan lintas bahasa pemrograman maupun bahasa manusia -- masih tahap awal dan belum banyak dipakai proyek berbahasa Indonesia." },
+    desc: "Proyek Wikimedia terbaru: perpustakaan fungsi komputasi terbuka yang bisa dijalankan lintas bahasa pemrograman maupun bahasa manusia. Masih tahap awal dan belum banyak dipakai proyek berbahasa Indonesia." },
 ];
 
 const totalArticles = WIKI_DATA.reduce((s,w)=>s+w.articles,0);
@@ -696,9 +751,20 @@ document.getElementById('big-editors').textContent    = fmt(totalEditors) + ' or
 document.getElementById('big-articles').innerHTML     = fmt(totalArticles) + '<span class="unit"> artikel</span>';
 
 // ---------- wiki termuda ----------
-const youngest = [...WIKI_DATA].sort((a,b)=>b.launch-a.launch)[0];
+// launchLabel bisa "DD Mon YYYY", "Mon YYYY", atau cuma "YYYY" -- urutkan pakai
+// tanggal asli, bukan cuma tahun (launch), supaya wiki yang lahir di tahun sama
+// tetap terurut benar (mis. Bahasa Komering Sep 2024 vs Bahasa Betawi Apr 2024).
+const ID_MONTHS = { jan:0, feb:1, mar:2, apr:3, mei:4, jun:5, jul:6, agu:7, agt:7, sep:8, okt:9, nov:10, des:11 };
+function parseLaunchDate(w){
+  const parts = w.launchLabel.toLowerCase().split(' ');
+  const year = w.launch;
+  if (parts.length === 3) return new Date(year, ID_MONTHS[parts[1]] ?? 0, parseInt(parts[0], 10));
+  if (parts.length === 2) return new Date(year, ID_MONTHS[parts[0]] ?? 0, 1);
+  return new Date(year, 0, 1);
+}
+const youngest = [...WIKI_DATA].sort((a,b)=>parseLaunchDate(b)-parseLaunchDate(a))[0];
 document.getElementById('youngest-date').textContent = youngest.launchLabel;
-document.getElementById('youngest-desc').textContent = `${youngest.native} (${youngest.code}) diluncurkan -- wiki ke-${WIKI_DATA.length} dalam daftar kita`;
+document.getElementById('youngest-desc').textContent = `${youngest.native} (${youngest.code}) diluncurkan, wiki ke-${WIKI_DATA.length} dalam daftar kita`;
 
 // ---------- fungsi generik timeline anti-tumpuk (dipakai untuk Wikipedia & proyek saudara) ----------
 function buildTimeline(containerId, items, labelKey, codeKey){
@@ -735,6 +801,8 @@ function buildTimeline(containerId, items, labelKey, codeKey){
   points.forEach(w => {
     const dot = document.createElement('div');
     dot.className = 'tl-dot';
+    if (w.leftPct <= 8) dot.classList.add('tl-edge-start');
+    else if (w.leftPct >= 92) dot.classList.add('tl-edge-end');
     dot.style.left = w.leftPct + '%';
     dot.style.top = (w.row * ROW_HEIGHT + 4) + 'px';
     dot.tabIndex = 0;
@@ -755,7 +823,17 @@ function buildTimeline(containerId, items, labelKey, codeKey){
   tlInner.appendChild(labels);
 }
 
+// Versi vertikal (layar sempit): daftar terurut kronologis, tanpa perlu scroll horizontal.
+function buildVerticalTimeline(containerId, items, labelKey){
+  const list = document.getElementById(containerId);
+  const sorted = [...items].sort((a, b) => a.launch - b.launch);
+  list.innerHTML = sorted.map(w => `
+    <li><div class="tv-name">${w[labelKey]}</div><div class="tv-date">${w.launchLabel}</div></li>
+  `).join('');
+}
+
 buildTimeline('timeline', WIKI_DATA, 'name', 'code');
+buildVerticalTimeline('timeline-vert', WIKI_DATA, 'name');
 
 // Timeline proyek saudara: gabungkan SISTER_PROJECTS + MULTI_PROJECTS, beri kode singkat untuk ditampilkan
 const SISTER_TIMELINE_ITEMS = [
@@ -763,6 +841,7 @@ const SISTER_TIMELINE_ITEMS = [
   ...MULTI_PROJECTS.map(p => ({ name: p.label, shortCode: p.label.replace('Wikimedia ', '').replace('Wiki', 'W'), launch: p.launch, launchLabel: p.launchLabel })),
 ];
 buildTimeline('sister-timeline', SISTER_TIMELINE_ITEMS, 'name', 'shortCode');
+buildVerticalTimeline('sister-timeline-vert', SISTER_TIMELINE_ITEMS, 'name');
 
 // ---------- slide Cakupan: kartu proyek clickable, Wikipedia di atas ----------
 const cakupanProjects = document.getElementById('cakupan-projects');
@@ -779,7 +858,7 @@ const wpCard = document.createElement('div');
 wpCard.className = 'sibcard';
 wpCard.innerHTML = `
   <h3>Wikipedia &middot; ${WIKI_DATA.length} edisi</h3>
-  <p class="purpose">Ensiklopedia bebas -- proyek Wikimedia paling besar dan paling dikenal, jadi fokus utama dashboard ini.</p>
+  <p class="purpose">Ensiklopedia bebas, proyek Wikimedia paling besar dan paling dikenal, jadi fokus utama dashboard ini.</p>
   <p>${langLinkList(WIKI_DATA.map(w => w.code), 'wikipedia.org')}</p>
 `;
 cakupanProjects.appendChild(wpCard);
@@ -787,7 +866,7 @@ cakupanProjects.appendChild(wpCard);
 SISTER_PROJECTS.forEach(p => {
   const card = document.createElement('div');
   card.className = 'sibcard';
-  let extra = p.codes.length === 1 ? ' -- satu-satunya proyek yang murni Indonesia tanpa edisi daerah.' : '';
+  let extra = p.codes.length === 1 ? ' Satu-satunya proyek yang murni Indonesia tanpa edisi daerah.' : '';
   card.innerHTML = `
     <h3>${p.label} &middot; ${p.codes.length} edisi</h3>
     <p class="purpose">${p.purpose}.</p>
@@ -808,33 +887,6 @@ MULTI_PROJECTS.forEach(p => {
   a.style.color = 'inherit';
   a.innerHTML = `<h3>${p.label}</h3><p>${p.desc}</p>`;
   cakupanMulti.appendChild(a);
-});
-
-// ---------- slide Proyek Saudara Selain Wikipedia (halaman 4) ----------
-const sisterOverviewGrid = document.getElementById('sister-overview-grid');
-SISTER_PROJECTS.forEach(p => {
-  const card = document.createElement('div');
-  card.className = 'sibcard';
-  let extra = p.codes.length === 1 ? ' -- satu-satunya proyek yang murni Indonesia tanpa edisi daerah.' : '';
-  card.innerHTML = `
-    <h3>${p.label} &middot; ${p.codes.length} edisi</h3>
-    <p class="purpose">${p.purpose}.</p>
-    <p>${langLinkList(p.codes, p.domain)}${extra}</p>
-  `;
-  sisterOverviewGrid.appendChild(card);
-});
-const sisterOverviewMulti = document.getElementById('sister-overview-multi');
-MULTI_PROJECTS.forEach(p => {
-  const a = document.createElement('a');
-  a.href = p.url;
-  a.target = '_blank';
-  a.rel = 'noopener';
-  a.className = 'sibcard';
-  a.style.display = 'block';
-  a.style.textDecoration = 'none';
-  a.style.color = 'inherit';
-  a.innerHTML = `<h3>${p.label}</h3><p>${p.desc}</p>`;
-  sisterOverviewMulti.appendChild(a);
 });
 
 // ---------- rasio penyunting aktif per 1.000 artikel ----------
@@ -921,7 +973,7 @@ function renderSisterProject(label){
   const otherCodes = p.codes.filter(c => c !== 'id');
   const otherLinksHtml = otherCodes.length > 0
     ? langLinkList(otherCodes, p.domain)
-    : '<span style="color:var(--ink-faint);">tidak ada -- ini satu-satunya edisi proyek ini.</span>';
+    : '<span style="color:var(--ink-faint);">tidak ada, ini satu-satunya edisi proyek ini.</span>';
   card.innerHTML = `
     <div class="pname">${p.label} bahasa Indonesia</div>
     <div class="pnative">id.${p.domain}</div>
@@ -997,10 +1049,9 @@ MULTI_PROJECTS.forEach(p => {
 
 // ---------- pagination berangka ----------
 const PAGE_TITLES = [
-  'Ringkasan', 'Cakupan proyek', 'Gelombang peluncuran', 'Gelombang peluncuran proyek saudara',
-  'Proyek saudara selain Wikipedia', 'Wiki termuda', 'Ukuran bukan komunitas',
-  'Komunitas penyunting', 'Dua sisi rasio', 'Program Wikimedia Indonesia',
-  'Sorotan program & komunitas', 'Proyek saudara', 'Profil wiki saya', 'Sumber & verifikasi'
+  'Ringkasan', 'Cakupan proyek', 'Gelombang peluncuran', 'Sorotan angka',
+  'Program Wikimedia Indonesia', 'Sorotan program & komunitas', 'Komunitas',
+  'Proyek saudara', 'Profil wiki saya', 'Sumber & verifikasi'
 ];
 const pages = Array.from(document.querySelectorAll('.page'));
 const TOTAL_PAGES = pages.length;
