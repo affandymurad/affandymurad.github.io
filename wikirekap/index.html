@@ -793,6 +793,10 @@
                     <button class="icon-btn" id="darkThemeBtn">
                         <span>🌙</span>
                     </button>
+                    <a href="../wikikategori/index.html" class="icon-btn" style="text-decoration: none;">
+                        <span>📂</span>
+                        <span data-i18n="wikiKategori">WikiKategori</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1001,29 +1005,6 @@
             <div class="progress-text" id="progressText">0%</div>
         </div>
 
-        <div class="user-info-card" id="userInfoCard">
-            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('userInfo')"
-                aria-expanded="true" aria-controls="userInfoContent">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span>👤</span>
-                    <span data-i18n="userInfo">User Information</span>
-                </div>
-                <span class="collapse-icon" id="userInfoCollapseIcon" aria-hidden="true">▼</span>
-            </div>
-
-            <div class="card-content" id="userInfoContent">
-                <h4 style="margin-bottom: 12px; font-size: 16px;">📍 <span data-i18n="localInfo">Local
-                        Information</span></h4>
-                <div class="user-info-grid" id="localInfo"></div>
-
-                <h4 style="margin: 20px 0 12px; font-size: 16px;">🌐 <span data-i18n="globalInfo">Global Account
-                        Status</span></h4>
-                <div class="user-info-grid" id="globalInfo"></div>
-
-                <div id="mergedWikis" style="margin-top: 20px;"></div>
-            </div>
-        </div>
-
         <div class="card" id="resultCard" style="display:none">
             <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('result')" aria-expanded="true"
                 aria-controls="resultContent">
@@ -1050,29 +1031,6 @@
             </div>
         </div>
 
-        <div class="card" id="trendingCard" style="display:none">
-            <div class="card-header" role="button" tabindex="0" onclick="toggleCollapse('trending')"
-                aria-expanded="true" aria-controls="trendingContent">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span>🔥</span>
-                    <span data-i18n="trending">Top 30 Trending Articles</span>
-                </div>
-                <span class="collapse-icon" id="trendingCollapseIcon" aria-hidden="true">▼</span>
-            </div>
-            <div class="card-content" id="trendingContent">
-                <div class="table-container">
-                    <table id="trendingTable">
-                        <thead>
-                            <tr>
-                                <th data-i18n="article">Article</th>
-                                <th data-i18n="pageviews">Pageviews</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -1152,7 +1110,8 @@
                 generatedFrom: 'Dibuat dari',
                 modalTitle: 'Pilih bahasa',
                 projectPlaceholder: 'id.wikipedia.org (Klik proyek wikimedia di bawah)',
-                currentProject: 'Proyek Saat Ini'
+                currentProject: 'Proyek Saat Ini',
+                wikiKategori: 'WikiKategori'
             },
             en: {
                 title: 'Wikimedia Impact Analyzer',
@@ -1217,7 +1176,8 @@
                 generatedFrom: 'Generated from',
                 modalTitle: 'Select language',
                 projectPlaceholder: 'id.wikipedia.org (Click the wikimedia project below)',
-                currentProject: 'Current Project'
+                currentProject: 'Current Project',
+                wikiKategori: 'WikiKategori'
             }
         };
 
@@ -1837,29 +1797,6 @@
             rows.forEach(row => tbody.appendChild(row));
         }, 80);
 
-        async function fetchTrendingWithRetry(key, proj, maxRetry = 10) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            for (let i = 0; i < maxRetry; i++) {
-                const d = new Date(today);
-                d.setDate(d.getDate() - i);
-                const dateStr = d.toISOString().slice(0, 10).replace(/-/g, '/');
-
-                try {
-                    const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${dateStr}`;
-                    const res = await fetch(url, { cache: 'no-cache' });
-                    if (!res.ok) continue;
-                    const json = await res.json();
-                    if (json.items?.[0]?.articles?.length) {
-                        /*  return json.items[0].articles.slice(0, 30); */
-                        return json.items[0].articles;
-                    }
-                } catch { }
-            }
-            return [];
-        }
-
         function updateProgress(done, total) {
             const progress = Math.round((done / total) * 100);
             requestAnimationFrame(() => {
@@ -1883,31 +1820,6 @@
                     <div class="summary-label">${translations[currentLang].totalViews}</div>
                 </div>
             `;
-        }
-
-        async function fetchUserInfo(user, proj) {
-            const wiki = proj.replace(/^https?:\/\//, '');
-
-            const localApi = `${proj}/w/api.php?action=query&list=users&ususers=${encodeURIComponent(user)}&usprop=editcount|registration|groups|blockinfo&format=json&origin=*`;
-            const globalApi = `${proj}/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged|unattached&format=json&origin=*`;
-
-            try {
-                const [localRes, globalRes] = await Promise.all([
-                    fetch(localApi),
-                    fetch(globalApi)
-                ]);
-
-                const localData = await localRes.json();
-                const globalData = await globalRes.json();
-
-                const userData = localData.query.users[0];
-                const globalInfo = globalData.query.globaluserinfo || null;
-
-                return { userData, globalInfo, wiki };
-            } catch (err) {
-                console.error('Error fetching user info:', err);
-                return null;
-            }
         }
 
         function getWikiDisplayName(projectUrl) {
@@ -1952,179 +1864,6 @@
 
             // Fallback
             return url;
-        }
-
-        function renderUserInfo(data) {
-            if (!data) return;
-
-            const { userData, globalInfo, wiki } = data;
-            const t = translations[currentLang];
-
-            // Local Info
-            // Local Info - dengan detail block
-            let blockInfo = '';
-            if (userData.blockid) {
-                const blockExpiry = userData.blockexpiry === 'infinity' ?
-                    (currentLang === 'id' ? 'Permanen' : 'Permanent') :
-                    userData.blockexpiry;
-                const blockReason = userData.blockreason ? `: ${userData.blockreason}` : '';
-                blockInfo = `<div style="font-size: 11px; margin-top: 4px; opacity: 0.8;">
-        ${currentLang === 'id' ? 'Hingga' : 'Until'}: ${blockExpiry}${blockReason}
-    </div>`;
-            }
-
-            const wikiDisplayName = getWikiDisplayName(wiki);
-
-            const localHtml = `
-    <div class="user-info-item" style="grid-column: 1 / -1;">
-        <div class="user-info-label">${t.currentProject}</div>
-        <div class="user-info-value" style="font-size: 18px; color: var(--accent);">
-            ${wikiDisplayName}
-        </div>
-    </div>
-    <div class="user-info-item">
-        <div class="user-info-label">${t.username}</div>
-        <div class="user-info-value">${userData.name || '—'}</div>
-    </div>
-    <div class="user-info-item">
-        <div class="user-info-label">${t.userId}</div>
-        <div class="user-info-value">${userData.userid ?? '—'}</div>
-    </div>
-    <div class="user-info-item">
-        <div class="user-info-label">${t.editCount}</div>
-        <div class="user-info-value">${Number.isFinite(userData.editcount) ? userData.editcount.toLocaleString() : '—'}</div>
-    </div>
-    <div class="user-info-item">
-        <div class="user-info-label">${t.registration}</div>
-        <div class="user-info-value">${userData.registration ? new Date(userData.registration).toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US') : '—'}</div>
-    </div>
-    <div class="user-info-item">
-        <div class="user-info-label">${t.groups}</div>
-        <div class="user-info-value">${userData.groups?.length ? userData.groups.join(', ') : 'user'}</div>
-    </div>
-    <div class="user-info-item">
-        <div class="user-info-label">${t.blocked}</div>
-        <div class="user-info-value">
-            <span class="badge ${userData.blockid ? 'badge-warning' : 'badge-success'}">
-                ${userData.blockid ? t.yes : t.no}
-            </span>
-            ${blockInfo}
-        </div>
-    </div>
-`;
-            document.getElementById('localInfo').innerHTML = localHtml;
-
-            // Global Info
-            if (globalInfo) {
-                const totalEdits = globalInfo.merged?.reduce((sum, m) => sum + (m.editcount || 0), 0) || 0;
-                const activeWikis = globalInfo.merged?.filter(m => m.editcount > 0).length || 0;
-
-                const globalHtml = `
-            <div class="user-info-item">
-                <div class="user-info-label">${t.globalEditCount}</div>
-                <div class="user-info-value">${totalEdits.toLocaleString()}</div>
-            </div>
-            <div class="user-info-item">
-                <div class="user-info-label">${t.homeWiki}</div>
-                <div class="user-info-value">${globalInfo.home || '—'}</div>
-            </div>
-            <div class="user-info-item">
-                <div class="user-info-label">${t.mergedWikis}</div>
-                <div class="user-info-value">${globalInfo.merged?.length || 0}</div>
-            </div>
-            <div class="user-info-item">
-                <div class="user-info-label">${t.activeWikis}</div>
-                <div class="user-info-value">${activeWikis}</div>
-            </div>
-        `;
-
-                document.getElementById('globalInfo').innerHTML = globalHtml;
-
-                // TAMBAHKAN INI - Check global lock/block
-                if (globalInfo.locked || globalInfo.hidden) {
-                    const globalBlockHtml = `
-        <div class="user-info-item" style="grid-column: 1 / -1; background: var(--warning-bg); border: 1px solid var(--warning);">
-            <div class="user-info-label" style="color: var(--warning);">⚠️ ${currentLang === 'id' ? 'Status Global' : 'Global Status'}</div>
-            <div class="user-info-value">
-                ${globalInfo.locked ? `<span class="badge badge-warning">${currentLang === 'id' ? 'Terkunci Global' : 'Globally Locked'}</span> ` : ''}
-                ${globalInfo.hidden ? `<span class="badge badge-warning">${currentLang === 'id' ? 'Tersembunyi' : 'Hidden'}</span>` : ''}
-            </div>
-        </div>
-    `;
-                    document.getElementById('globalInfo').insertAdjacentHTML('beforeend', globalBlockHtml);
-                }
-
-                // Merged Wikis
-                if (globalInfo.merged?.length) {
-                    const mergedHtml = `
-                <h4 style="margin-bottom: 12px; font-size: 16px;">🔗 <span data-i18n="mergedWikis">${t.mergedWikis}</span></h4>
-                <div style="margin-bottom: 8px;">
-                    <label style="font-size: 13px; cursor: pointer;">
-                        <input type="checkbox" id="onlyActiveWikis" checked onchange="filterWikiChips()">
-                        <span data-i18n="showActiveOnly">${t.showActiveOnly}</span>
-                    </label>
-                </div>
-                <div class="wiki-chip-container" id="wikiChips"></div>
-            `;
-
-                    document.getElementById('mergedWikis').innerHTML = mergedHtml;
-                    renderWikiChips(globalInfo, userData.name);
-                }
-            }
-
-            document.getElementById('userInfoCard').style.display = 'block';
-        }
-
-        function renderWikiChips(globalInfo, username) {
-            const container = document.getElementById('wikiChips');
-            if (!container) return;
-
-            const onlyActive = document.getElementById('onlyActiveWikis')?.checked ?? true;
-
-            container.innerHTML = '';
-
-            globalInfo.merged
-                .filter(m => !onlyActive || (m.editcount ?? 0) > 0)
-                .sort((a, b) => (b.editcount ?? 0) - (a.editcount ?? 0))
-                .forEach(m => {
-                    const isHome = globalInfo.home === m.wiki;
-                    const wikiClass = getWikiClass(m.wiki);
-
-                    const chip = document.createElement('a');
-                    chip.className = `wiki-chip ${wikiClass} ${isHome ? 'home' : ''}`;
-                    chip.href = `${m.url}/wiki/User:${encodeURIComponent(username)}`;
-                    chip.target = '_blank';
-                    chip.title = m.groups?.length ? `Groups: ${m.groups.join(', ')}` : 'Standard user';
-
-                    chip.innerHTML = `
-                <img src="${m.url}/favicon.ico" alt="" 
-                     onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/8/8c/Wikimedia-logo_black.svg';">
-                <span>${m.wiki}</span>
-                ${isHome ? '<span class="badge-mini">HOME</span>' : ''}
-                <span>|</span>
-                <span>${m.editcount ?? 0} edit</span>
-                <span>|</span>
-                <span>${m.timestamp?.slice(0, 10) ?? '—'}</span>
-            `;
-
-                    container.appendChild(chip);
-                });
-        }
-
-        function getWikiClass(wiki) {
-            if (wiki.includes('wikipedia.org')) return 'wiki-wikipedia';
-            if (wiki.includes('commons.wikimedia.org')) return 'wiki-commons';
-            if (wiki.includes('wikidata.org')) return 'wiki-wikidata';
-            if (wiki.includes('wikisource.org')) return 'wiki-wikisource';
-            return 'wiki-other';
-        }
-
-        function filterWikiChips() {
-            const globalData = window.cachedGlobalInfo;
-            const username = window.cachedUsername;
-            if (globalData && username) {
-                renderWikiChips(globalData, username);
-            }
         }
 
         // Wiki buttons functionality
@@ -2272,23 +2011,11 @@
             errorEl.style.display = 'none';
             errorEl.textContent = '';
             progressContainer.style.display = 'none';
-            document.getElementById('trendingCard').style.display = 'none';
             document.getElementById('resultCard').style.display = 'none';
-            document.getElementById('userInfoCard').style.display = 'none';
-            document.getElementById('trendingTable').querySelector('tbody').innerHTML = '';
             document.getElementById('resultTable').querySelector('tbody').innerHTML = '';
             document.getElementById('summary').innerHTML = '';
 
-            // TAMBAHKAN INI - Clear data user info
-            document.getElementById('localInfo').innerHTML = '';
-            document.getElementById('globalInfo').innerHTML = '';
-            document.getElementById('mergedWikis').innerHTML = '';
-
-            // TAMBAHKAN INI - Reset cached data
-            window.cachedGlobalInfo = null;
-            window.cachedUsername = null;
-
-            // TAMBAHKAN INI - Reset exportData
+            // Reset exportData
             exportData = {
                 username: '',
                 project: '',
@@ -2324,63 +2051,6 @@
             start.setDate(end.getDate() - days);
 
             try {
-                // TAMBAHKAN: Fetch user info PERTAMA
-                statusEl.textContent = 'Fetching user information...';
-                const userInfoData = await fetchUserInfo(user, proj);
-                if (userInfoData) {
-                    window.cachedGlobalInfo = userInfoData.globalInfo;
-                    window.cachedUsername = user;
-                    renderUserInfo(userInfoData);
-
-                    // TAMBAHKAN INI: Simpan user info untuk export
-                    exportData.userInfo = {
-                        local: {
-                            userId: userInfoData.userData.userid,
-                            editCount: userInfoData.userData.editcount,
-                            registration: userInfoData.userData.registration,
-                            groups: userInfoData.userData.groups,
-                            blocked: userInfoData.userData.blockid ? true : false,
-                            blockExpiry: userInfoData.userData.blockexpiry,
-                            blockReason: userInfoData.userData.blockreason
-                        },
-                        global: userInfoData.globalInfo ? {
-                            totalEdits: userInfoData.globalInfo.merged?.reduce((sum, m) => sum + (m.editcount || 0), 0) || 0,
-                            homeWiki: userInfoData.globalInfo.home,
-                            totalWikis: userInfoData.globalInfo.merged?.length || 0,
-                            activeWikis: userInfoData.globalInfo.merged?.filter(m => m.editcount > 0).length || 0,
-                            locked: userInfoData.globalInfo.locked || false,
-                            hidden: userInfoData.globalInfo.hidden || false,
-                            mergedWikis: userInfoData.globalInfo.merged?.map(m => ({
-                                wiki: m.wiki,
-                                url: m.url,
-                                editCount: m.editcount,
-                                timestamp: m.timestamp,
-                                groups: m.groups
-                            })) || []
-                        } : null
-                    };
-                }
-
-                // Fetch trending
-                statusEl.textContent = translations[currentLang].fetchingTrending;
-                const trendingList = await fetchTrendingWithRetry(key, proj);
-                if (trendingList.length) {
-                    const tbody = document.getElementById('trendingTable').querySelector('tbody');
-                    trendingList.forEach(a => {
-                        const link = `${proj}/wiki/${encodeURIComponent(a.article)}`;
-                        const row = `<tr><td><a href="${link}" target="_blank">${a.article.replace(/_/g, ' ')}</a></td><td>${a.views.toLocaleString()}</td></tr>`;
-                        tbody.insertAdjacentHTML('beforeend', row);
-                    });
-                    document.getElementById('trendingCard').style.display = 'block';
-
-                    // Pastikan tetap collapsed
-                    if (!document.getElementById('trendingContent').classList.contains('collapsed')) {
-                        document.getElementById('trendingContent').classList.add('collapsed');
-                        document.getElementById('trendingCollapseIcon').classList.add('collapsed');
-                        document.querySelector('#trendingCard .card-header').setAttribute('aria-expanded', 'false');
-                    }
-                }
-
                 // Fetch contributions
                 statusEl.textContent = translations[currentLang].fetchingContribs;
                 const ucUrl = `${proj}/w/api.php?origin=*&action=query&format=json&formatversion=2&list=usercontribs&uclimit=500&ucprop=title|timestamp|sizediff|ids|flags&ucuser=${encodeURIComponent(user)}&ucstart=${end.toISOString()}&ucend=${start.toISOString()}`;
