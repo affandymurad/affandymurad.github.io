@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Penelusur Kategori Wikipedia</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('wikikategoriTheme') || 'system';
+    var apply = saved === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : saved;
+    document.documentElement.setAttribute('data-theme', apply);
+  } catch(e){ /* localStorage unavailable */ }
+})();
+</script>
 <style>
   :root{
     --paper:#f6f3ec;
@@ -16,6 +27,17 @@
     --navy:#233a5e;
     --ok:#3a6b4c;
   }
+  [data-theme="dark"]{
+    --paper:#1c1a16;
+    --paper-raised:#26221c;
+    --ink:#ece7dc;
+    --ink-soft:#b3ac9c;
+    --rule:#443f34;
+    --maroon:#c1685f;
+    --maroon-deep:#a34f47;
+    --navy:#7fa0d6;
+    --ok:#6fbd8d;
+  }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -24,6 +46,7 @@
     font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
     line-height:1.5;
     min-height:100vh;
+    transition: background 0.2s ease, color 0.2s ease;
   }
   .wrap{
     max-width:920px;
@@ -34,6 +57,42 @@
     border-bottom:3px double var(--rule);
     padding-bottom:20px;
     margin-bottom:32px;
+  }
+  .header-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .title-block{ min-width:0; }
+  .controls{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .icon-btn{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.82rem;
+    font-weight:600;
+    padding:8px 14px;
+    background:var(--paper-raised);
+    color:var(--ink);
+    border:1px solid var(--rule);
+    border-radius:8px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    transition: all 0.15s ease;
+  }
+  .icon-btn:hover{ border-color:var(--navy); }
+  .icon-btn.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--paper);
   }
   header .kicker{
     font-family: Georgia, serif;
@@ -380,24 +439,265 @@
     form.query{ grid-template-columns: 1fr; }
     ol.articles{ columns:1; }
   }
+
+  .user-info-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap:12px;
+  }
+  .user-info-item{
+    padding:12px 14px;
+    background:var(--paper-raised);
+    border:1px solid var(--rule);
+    border-radius:4px;
+  }
+  .user-info-label{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .user-info-value{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.98rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .user-subhead{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.82rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    margin:26px 0 10px;
+  }
+  .user-subhead:first-child{ margin-top:0; }
+  .wiki-chip-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .wiki-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 12px;
+    border-radius:999px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.78rem;
+    text-decoration:none;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    color:var(--ink);
+    white-space:nowrap;
+    transition: all 0.15s ease;
+  }
+  .wiki-chip:hover{ transform: translateY(-1px); border-color:var(--navy); }
+  .wiki-chip.home{ box-shadow: 0 0 0 2px #d98a2b; font-weight:600; }
+  .wiki-wikipedia{ background:#e3f2fd; color:#0d47a1; border-color:#bbdefb; }
+  .wiki-commons{ background:#e8f5e9; color:#1b5e20; border-color:#c8e6c9; }
+  .wiki-wikidata{ background:#ede7f6; color:#4527a0; border-color:#d1c4e9; }
+  .wiki-wikisource{ background:#fff8e1; color:#e65100; border-color:#ffecb3; }
+  .wiki-other{ background:#eceff1; color:#37474f; border-color:#cfd8dc; }
+  .user-badge{
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:6px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.72rem;
+    font-weight:600;
+  }
+  .user-badge-success{ background:#d1e7dd; color:var(--ok); }
+  .user-badge-warning{ background:#fff3cd; color:#8a6d1a; }
+  .user-badge-mini{
+    background: rgba(0,0,0,0.12);
+    padding:1px 6px;
+    border-radius:10px;
+    font-size:0.68rem;
+  }
+
+  form.user-query-form{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-bottom:8px;
+  }
+  .wiki-buttons-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:14px;
+  }
+  .wiki-button{
+    width:70px;
+    height:70px;
+    border-radius:8px;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    cursor:pointer;
+    transition:all 0.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+  }
+  .wiki-button:hover{
+    border-color:var(--navy);
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+  }
+  .wiki-button img{
+    width:36px;
+    height:36px;
+    object-fit:contain;
+    margin-bottom:4px;
+  }
+  .wiki-button .label{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.62rem;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+  .wiki-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+  }
+  .wiki-modal-content{
+    background:var(--paper-raised);
+    padding:24px;
+    border-radius:8px;
+    max-width:400px;
+    width:90%;
+    box-shadow:0 10px 40px rgba(0,0,0,0.35);
+  }
+  .wiki-modal-content h3{
+    margin:0 0 16px;
+    font-family: Georgia, serif;
+    color:var(--ink);
+  }
+  .lang-input-group{
+    display:flex;
+    gap:10px;
+    margin:16px 0;
+  }
+  .lang-input-group input{
+    flex:1;
+  }
+  .wiki-modal-buttons{
+    display:flex;
+    gap:12px;
+    justify-content:flex-end;
+    margin-top:20px;
+  }
+  .wiki-modal-buttons button{
+    padding:9px 16px;
+    border-radius:4px;
+    border:1px solid var(--rule);
+    background:var(--paper-raised);
+    color:var(--ink);
+    cursor:pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.85rem;
+    font-weight:600;
+  }
+  .wiki-modal-buttons button:hover{ border-color:var(--navy); }
+  .wiki-modal-buttons button:last-child{
+    background:var(--maroon);
+    color:#fff;
+    border-color:var(--maroon);
+  }
+  .wiki-modal-buttons button:last-child:hover{ background:var(--maroon-deep); }
+  .wiki-modal-buttons button:disabled{
+    opacity:0.5;
+    cursor:default;
+  }
+  #selectedLanguages span{
+    display:inline-block;
+    background:#e0e0ff;
+    color:#333;
+    padding:5px 11px;
+    border-radius:16px;
+    margin:0 6px 6px 0;
+    font-size:0.85rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  #selectedLanguages span span{
+    cursor:pointer;
+    margin-left:4px;
+    font-weight:bold;
+  }
+  [data-theme="dark"] #selectedLanguages span{
+    background:#2a2a4a;
+    color:#e0e0ff;
+  }
+
+  .trending-table{
+    width:100%;
+    border-collapse:collapse;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:0.92rem;
+  }
+  .trending-table th, .trending-table td{
+    padding:10px 12px;
+    text-align:left;
+    border-bottom:1px solid var(--rule);
+  }
+  .trending-table th{
+    background:var(--paper-raised);
+    font-weight:600;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+  .trending-table td a{ color:var(--navy); text-decoration:none; }
+  .trending-table td a:hover{ text-decoration:underline; }
+  .trending-table th:last-child, .trending-table td:last-child{ text-align:right; }
+  .table-container{ overflow-x:auto; margin-top:16px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <p class="kicker">Meja referensi</p>
-    <h1>Penelusur Kategori Wikipedia</h1>
-    <p class="sub">Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.</p>
+    <div class="header-top">
+      <div class="title-block">
+        <p class="kicker" data-i18n="kicker">Meja referensi</p>
+        <h1 data-i18n="title">Penelusur Kategori Wikipedia</h1>
+      </div>
+      <div class="controls">
+        <a href="/" class="icon-btn">
+          <span>←</span>
+          <span data-i18n="backHome">Kembali ke Affandy Murad</span>
+        </a>
+        <button type="button" class="icon-btn" id="langBtn">
+          <span>🌐</span>
+          <span id="langText">EN</span>
+        </button>
+        <button type="button" class="icon-btn" id="lightThemeBtn" title="Light">
+          <span>☀️</span>
+        </button>
+        <button type="button" class="icon-btn" id="darkThemeBtn" title="Dark">
+          <span>🌙</span>
+        </button>
+      </div>
+    </div>
+    <p class="sub" data-i18n="subtitle">Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.</p>
   </header>
 
   <div class="mode-switch" id="modeSwitch">
-    <button type="button" class="mode-btn active" data-mode="category">Cari Kategori</button>
-    <button type="button" class="mode-btn" data-mode="article">Cari Artikel</button>
+    <button type="button" class="mode-btn active" data-mode="category" data-i18n="modeCategory">Cari Kategori</button>
+    <button type="button" class="mode-btn" data-mode="article" data-i18n="modeArticle">Cari Artikel</button>
+    <button type="button" class="mode-btn" data-mode="user" data-i18n="modeUser">Cari Pengguna</button>
+    <button type="button" class="mode-btn" data-mode="trending" data-i18n="modeTrending">Pageview</button>
   </div>
 
   <form class="query" id="queryForm">
     <div>
-      <label for="langInput">Bahasa</label>
+      <label for="langInput" data-i18n="langFieldLabel">Bahasa</label>
       <input type="text" id="langInput" value="id" maxlength="12" autocomplete="off" placeholder="id">
     </div>
     <div>
@@ -409,6 +709,190 @@
     </div>
   </form>
   <p class="hint" id="hintText">Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.</p>
+
+  <form class="user-query-form" id="userQueryForm" style="display:none;">
+    <div>
+      <label for="userUsernameInput" data-i18n="userUsernameLabel">Nama pengguna</label>
+      <input type="text" id="userUsernameInput" autocomplete="off" data-i18n-placeholder="userUsernamePlaceholder" placeholder="Misal: Example">
+    </div>
+    <div>
+      <label for="userProjectInput" data-i18n="projectLabel">URL Proyek Wikimedia</label>
+      <input type="text" id="userProjectInput" readonly autocomplete="off" data-i18n-placeholder="projectPlaceholder"
+        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)" style="cursor:pointer;">
+
+      <div class="wiki-buttons-container" id="userWikiButtons" data-target="userProjectInput">
+        <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
+          <img class="favicon-placeholder" alt="Wikipedia">
+          <span class="label">Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-project="wiktionary" data-needs-lang="true" data-domain-base="wiktionary.org" title="Wiktionary">
+          <img class="favicon-placeholder" alt="Wiktionary">
+          <span class="label">Wiktionary</span>
+        </div>
+        <div class="wiki-button" data-project="wikibooks" data-needs-lang="true" data-domain-base="wikibooks.org" title="Wikibooks">
+          <img class="favicon-placeholder" alt="Wikibooks">
+          <span class="label">Wikibooks</span>
+        </div>
+        <div class="wiki-button" data-project="wikisource" data-needs-lang="true" data-domain-base="wikisource.org" title="Wikisource">
+          <img class="favicon-placeholder" alt="Wikisource">
+          <span class="label">Wikisource</span>
+        </div>
+        <div class="wiki-button" data-project="wikiquote" data-needs-lang="true" data-domain-base="wikiquote.org" title="Wikiquote">
+          <img class="favicon-placeholder" alt="Wikiquote">
+          <span class="label">Wikiquote</span>
+        </div>
+        <div class="wiki-button" data-project="wikinews" data-needs-lang="true" data-domain-base="wikinews.org" title="Wikinews">
+          <img class="favicon-placeholder" alt="Wikinews">
+          <span class="label">Wikinews</span>
+        </div>
+        <div class="wiki-button" data-project="wikiversity" data-needs-lang="true" data-domain-base="wikiversity.org" title="Wikiversity">
+          <img class="favicon-placeholder" alt="Wikiversity">
+          <span class="label">Wikiversity</span>
+        </div>
+        <div class="wiki-button" data-project="wikivoyage" data-needs-lang="true" data-domain-base="wikivoyage.org" title="Wikivoyage">
+          <img class="favicon-placeholder" alt="Wikivoyage">
+          <span class="label">Wikivoyage</span>
+        </div>
+
+        <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
+          <img class="favicon-placeholder" alt="Wikispecies">
+          <span class="label">Wikispecies</span>
+        </div>
+        <div class="wiki-button" data-domain="commons.wikimedia.org" title="Commons">
+          <img class="favicon-placeholder" alt="Commons">
+          <span class="label">Commons</span>
+        </div>
+        <div class="wiki-button" data-domain="www.wikidata.org" title="Wikidata">
+          <img class="favicon-placeholder" alt="Wikidata">
+          <span class="label">Wikidata</span>
+        </div>
+        <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+          <img class="favicon-placeholder" alt="Wikifunctions">
+          <span class="label">Wikifunctions</span>
+        </div>
+        <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+          <img class="favicon-placeholder" alt="Incubator">
+          <span class="label">Incubator</span>
+        </div>
+        <div class="wiki-button" data-domain="meta.wikimedia.org" title="Meta-Wiki">
+          <img class="favicon-placeholder" alt="Meta">
+          <span class="label">Meta</span>
+        </div>
+        <div class="wiki-button" data-domain="www.mediawiki.org" title="MediaWiki">
+          <img class="favicon-placeholder" alt="MediaWiki">
+          <span class="label">MediaWiki</span>
+        </div>
+        <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+          <img class="favicon-placeholder" alt="Wikitech">
+          <span class="label">Wikitech</span>
+        </div>
+        <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
+          <img class="favicon-placeholder" alt="Wikimania">
+          <span class="label">Wikimania</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button type="submit" id="userSearchBtn" data-i18n="userSearchBtn">Cari Pengguna</button>
+    </div>
+  </form>
+
+  <form class="user-query-form" id="trendingQueryForm" style="display:none;">
+    <div>
+      <label for="trendingProjectInput" data-i18n="projectLabel">URL Proyek Wikimedia</label>
+      <input type="text" id="trendingProjectInput" readonly autocomplete="off" data-i18n-placeholder="projectPlaceholder"
+        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)" style="cursor:pointer;">
+
+      <div class="wiki-buttons-container" id="trendingWikiButtons" data-target="trendingProjectInput">
+        <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
+          <img class="favicon-placeholder" alt="Wikipedia">
+          <span class="label">Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-project="wiktionary" data-needs-lang="true" data-domain-base="wiktionary.org" title="Wiktionary">
+          <img class="favicon-placeholder" alt="Wiktionary">
+          <span class="label">Wiktionary</span>
+        </div>
+        <div class="wiki-button" data-project="wikibooks" data-needs-lang="true" data-domain-base="wikibooks.org" title="Wikibooks">
+          <img class="favicon-placeholder" alt="Wikibooks">
+          <span class="label">Wikibooks</span>
+        </div>
+        <div class="wiki-button" data-project="wikisource" data-needs-lang="true" data-domain-base="wikisource.org" title="Wikisource">
+          <img class="favicon-placeholder" alt="Wikisource">
+          <span class="label">Wikisource</span>
+        </div>
+        <div class="wiki-button" data-project="wikiquote" data-needs-lang="true" data-domain-base="wikiquote.org" title="Wikiquote">
+          <img class="favicon-placeholder" alt="Wikiquote">
+          <span class="label">Wikiquote</span>
+        </div>
+        <div class="wiki-button" data-project="wikinews" data-needs-lang="true" data-domain-base="wikinews.org" title="Wikinews">
+          <img class="favicon-placeholder" alt="Wikinews">
+          <span class="label">Wikinews</span>
+        </div>
+        <div class="wiki-button" data-project="wikiversity" data-needs-lang="true" data-domain-base="wikiversity.org" title="Wikiversity">
+          <img class="favicon-placeholder" alt="Wikiversity">
+          <span class="label">Wikiversity</span>
+        </div>
+        <div class="wiki-button" data-project="wikivoyage" data-needs-lang="true" data-domain-base="wikivoyage.org" title="Wikivoyage">
+          <img class="favicon-placeholder" alt="Wikivoyage">
+          <span class="label">Wikivoyage</span>
+        </div>
+
+        <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
+          <img class="favicon-placeholder" alt="Wikispecies">
+          <span class="label">Wikispecies</span>
+        </div>
+        <div class="wiki-button" data-domain="commons.wikimedia.org" title="Commons">
+          <img class="favicon-placeholder" alt="Commons">
+          <span class="label">Commons</span>
+        </div>
+        <div class="wiki-button" data-domain="www.wikidata.org" title="Wikidata">
+          <img class="favicon-placeholder" alt="Wikidata">
+          <span class="label">Wikidata</span>
+        </div>
+        <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+          <img class="favicon-placeholder" alt="Wikifunctions">
+          <span class="label">Wikifunctions</span>
+        </div>
+        <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+          <img class="favicon-placeholder" alt="Incubator">
+          <span class="label">Incubator</span>
+        </div>
+        <div class="wiki-button" data-domain="meta.wikimedia.org" title="Meta-Wiki">
+          <img class="favicon-placeholder" alt="Meta">
+          <span class="label">Meta</span>
+        </div>
+        <div class="wiki-button" data-domain="www.mediawiki.org" title="MediaWiki">
+          <img class="favicon-placeholder" alt="MediaWiki">
+          <span class="label">MediaWiki</span>
+        </div>
+        <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+          <img class="favicon-placeholder" alt="Wikitech">
+          <span class="label">Wikitech</span>
+        </div>
+        <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
+          <img class="favicon-placeholder" alt="Wikimania">
+          <span class="label">Wikimania</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button type="submit" id="trendingSearchBtn" data-i18n="trendingSearchBtn">Cari Pageview</button>
+    </div>
+  </form>
+
+  <div class="wiki-modal" id="wikiLanguageModal">
+    <div class="wiki-modal-content">
+      <h3 id="modalTitle" data-i18n="modalTitleDefault">Pilih bahasa</h3>
+      <div class="lang-input-group">
+        <input type="text" id="langCodeInput" data-i18n-placeholder="langCodePlaceholder" placeholder="mis. id, en, fr" maxlength="7">
+      </div>
+      <div id="selectedLanguages" style="min-height:40px;margin:12px 0;"></div>
+      <div class="wiki-modal-buttons">
+        <button type="button" id="cancelModalBtn" data-i18n="cancelBtn">Batal</button>
+        <button type="button" id="confirmModalBtn" data-i18n="confirmBtn" disabled>Pilih</button>
+      </div>
+    </div>
+  </div>
 
   <div id="status" class="status" style="display:none;"></div>
 
@@ -427,14 +911,14 @@
       </div>
 
       <div class="avail-check" id="availCheck" style="display:none;">
-        <p class="hint" style="margin:0 0 10px;">Centang kode bahasa untuk menambahkan tautan langsung di tiap artikel (kalau tersedia). Hanya berlaku untuk artikel, bukan subkategori.</p>
+        <p class="hint" id="availHintText" data-i18n="availHint" style="margin:0 0 10px;">Centang kode bahasa untuk menambahkan tautan langsung di tiap artikel (kalau tersedia). Hanya berlaku untuk artikel, bukan subkategori. Pilihan ini otomatis diterapkan lagi saat pindah halaman.</p>
         <div class="avail-controls">
           <div class="avail-checkboxes" id="availCheckboxes"></div>
           <div class="avail-custom">
-            <label for="availCustomInput">Kode lain (pisahkan koma)</label>
-            <input type="text" id="availCustomInput" autocomplete="off" placeholder="mis. ko, nl, sv">
+            <label for="availCustomInput" data-i18n="availCustomLabel">Kode lain (pisahkan koma)</label>
+            <input type="text" id="availCustomInput" autocomplete="off" data-i18n-placeholder="availCustomPlaceholder" placeholder="mis. ko, nl, sv">
           </div>
-          <button type="button" id="availCheckBtn">Cek ketersediaan</button>
+          <button type="button" id="availCheckBtn" data-i18n="availCheckBtn">Cek ketersediaan</button>
         </div>
         <p class="status" id="availStatus" style="display:none;"></p>
       </div>
@@ -442,7 +926,7 @@
       <ol class="articles" id="articleList"></ol>
 
       <div class="results-head subcat-head" id="subcatHead" style="display:none;">
-        <h2>Subkategori</h2>
+        <h2 data-i18n="subcatHeading">Subkategori</h2>
         <span class="count" id="subcatCount"></span>
       </div>
       <ol class="articles subcat-list" id="subcatList"></ol>
@@ -457,6 +941,30 @@
       </div>
       <div class="editions" id="projectSwitch"></div>
       <ol class="articles interwiki-list" id="interwikiList"></ol>
+    </div>
+
+    <div id="userModeResults" style="display:none;">
+      <p class="user-subhead" data-i18n="userLocalHeading">Informasi Lokal</p>
+      <div class="user-info-grid" id="userLocalInfo"></div>
+
+      <p class="user-subhead" data-i18n="userGlobalHeading">Status Akun Global</p>
+      <div class="user-info-grid" id="userGlobalInfo"></div>
+
+      <div id="userMergedWikis"></div>
+    </div>
+
+    <div id="trendingModeResults" style="display:none;">
+      <div class="results-head">
+        <span class="count" id="trendingCount"></span>
+      </div>
+      <div class="table-container">
+        <table class="trending-table" id="trendingTable">
+          <thead>
+            <tr><th data-i18n="tableArticle">Artikel</th><th data-i18n="tablePageview">Pageview</th></tr>
+          </thead>
+          <tbody id="trendingTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 </div>
@@ -477,6 +985,26 @@
   const articleResultsCount = document.getElementById('articleResultsCount');
   const interwikiList = document.getElementById('interwikiList');
   const projectSwitchEl = document.getElementById('projectSwitch');
+  const userModeResultsEl = document.getElementById('userModeResults');
+  const userLocalInfoEl = document.getElementById('userLocalInfo');
+  const userGlobalInfoEl = document.getElementById('userGlobalInfo');
+  const userMergedWikisEl = document.getElementById('userMergedWikis');
+  const userQueryForm = document.getElementById('userQueryForm');
+  const userUsernameInput = document.getElementById('userUsernameInput');
+  const userProjectInput = document.getElementById('userProjectInput');
+  const userSearchBtn = document.getElementById('userSearchBtn');
+  const wikiLanguageModal = document.getElementById('wikiLanguageModal');
+  const modalTitleEl = document.getElementById('modalTitle');
+  const langCodeInput = document.getElementById('langCodeInput');
+  const selectedLanguagesEl = document.getElementById('selectedLanguages');
+  const confirmModalBtn = document.getElementById('confirmModalBtn');
+  const cancelModalBtn = document.getElementById('cancelModalBtn');
+  const trendingQueryForm = document.getElementById('trendingQueryForm');
+  const trendingProjectInput = document.getElementById('trendingProjectInput');
+  const trendingSearchBtn = document.getElementById('trendingSearchBtn');
+  const trendingModeResultsEl = document.getElementById('trendingModeResults');
+  const trendingCountEl = document.getElementById('trendingCount');
+  const trendingTableBodyEl = document.getElementById('trendingTableBody');
   const editionsEl = document.getElementById('editions');
   const langLabelEl = document.getElementById('langLabel');
   const limitNoteEl = document.getElementById('limitNote');
@@ -492,6 +1020,279 @@
   const availCustomInput = document.getElementById('availCustomInput');
   const availCheckBtn = document.getElementById('availCheckBtn');
   const availStatusEl = document.getElementById('availStatus');
+  const langBtn = document.getElementById('langBtn');
+  const langTextEl = document.getElementById('langText');
+  const lightThemeBtn = document.getElementById('lightThemeBtn');
+  const darkThemeBtn = document.getElementById('darkThemeBtn');
+
+  // ---- Theme (light/dark) ----
+  function applyTheme(theme){
+    const resolved = theme === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme;
+    document.documentElement.setAttribute('data-theme', resolved);
+  }
+  function updateThemeButtons(theme){
+    lightThemeBtn.classList.toggle('active', theme === 'light');
+    darkThemeBtn.classList.toggle('active', theme === 'dark');
+  }
+  function setTheme(theme){
+    localStorage.setItem('wikikategoriTheme', theme);
+    applyTheme(theme);
+    updateThemeButtons(theme);
+  }
+  lightThemeBtn.addEventListener('click', () => setTheme('light'));
+  darkThemeBtn.addEventListener('click', () => setTheme('dark'));
+  updateThemeButtons(localStorage.getItem('wikikategoriTheme') || 'system');
+
+  // ---- UI language (ID default, EN toggle) ----
+  const T = {
+    id: {
+      kicker: 'Meja referensi',
+      title: 'Penelusur Kategori Wikipedia',
+      subtitle: 'Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.',
+      backHome: 'Kembali ke Affandy Murad',
+      modeCategory: 'Cari Kategori',
+      modeArticle: 'Cari Artikel',
+      modeUser: 'Cari Pengguna',
+      modeTrending: 'Pageview',
+      langFieldLabel: 'Bahasa',
+      catLabelCategory: 'Nama kategori',
+      catPlaceholderCategory: 'Misal: Ibu kota negara',
+      catLabelArticle: 'Judul artikel',
+      catPlaceholderArticle: 'Misal: Jakarta',
+      searchBtnCategory: 'Telusuri',
+      searchBtnArticle: 'Cari ketersediaan bahasa',
+      hintCategory: 'Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.',
+      hintArticle: 'Masukkan judul artikel persis seperti di Wikipedia bahasa sumbernya. Alat ini mencari semua versi bahasa lain lewat tautan Wikidata artikel tersebut.',
+      userUsernameLabel: 'Nama pengguna',
+      userUsernamePlaceholder: 'Misal: Example',
+      projectLabel: 'URL Proyek Wikimedia',
+      projectPlaceholder: 'id.wikipedia.org (Klik proyek wikimedia di bawah)',
+      userSearchBtn: 'Cari Pengguna',
+      trendingSearchBtn: 'Cari Pageview',
+      modalTitleDefault: 'Pilih bahasa',
+      modalTitleFor: (project) => `Pilih bahasa untuk ${project}`,
+      langCodePlaceholder: 'mis. id, en, fr',
+      cancelBtn: 'Batal',
+      confirmBtn: 'Pilih',
+      editionsLabel: 'Kategori setara ditemukan di edisi lain (via Wikidata):',
+      availHint: 'Centang kode bahasa untuk menambahkan tautan langsung di tiap artikel (kalau tersedia). Hanya berlaku untuk artikel, bukan subkategori. Pilihan ini otomatis diterapkan lagi saat pindah halaman.',
+      availCustomLabel: 'Kode lain (pisahkan koma)',
+      availCustomPlaceholder: 'mis. ko, nl, sv',
+      availCheckBtn: 'Cek ketersediaan',
+      subcatHeading: 'Subkategori',
+      noneText: 'Tidak ada.',
+      articlesCount: (n) => `${n} artikel`,
+      subcatCount: (n) => `${n} subkategori`,
+      availableAtSites: (n) => `tersedia di ${n} situs`,
+      availableAtLangs: (n) => `tersedia di ${n} bahasa`,
+      noProjectVersion: (label) => `Tidak ada versi di proyek ${label} yang tertaut di Wikidata.`,
+      nextPageTitle: 'Muat halaman berikutnya (500 item)',
+      userLocalHeading: 'Informasi Lokal',
+      userGlobalHeading: 'Status Akun Global',
+      userConnectedHeading: 'Wiki Terhubung',
+      userFieldName: 'Nama pengguna',
+      userFieldId: 'ID Pengguna',
+      userFieldEdits: 'Jumlah Edit',
+      userFieldRegistered: 'Terdaftar',
+      userFieldGroups: 'Grup',
+      userFieldBlocked: 'Diblokir',
+      yes: 'Ya',
+      no: 'Tidak',
+      userFieldGlobalEdits: 'Total Edit Global',
+      userFieldHomeWiki: 'Wiki Utama',
+      userFieldConnectedWikis: 'Wiki Terhubung',
+      userFieldActiveWikis: 'Wiki Aktif',
+      globalStatus: 'Status Global',
+      globallyLocked: 'Terkunci Global',
+      hidden: 'Tersembunyi',
+      onlyActiveWikis: 'Tampilkan hanya wiki aktif (edit > 0)',
+      permanent: 'Permanen',
+      until: 'Hingga',
+      standardUser: 'Pengguna standar',
+      groupsPrefix: 'Grup',
+      home: 'UTAMA',
+      tableArticle: 'Artikel',
+      tablePageview: 'Pageview',
+      statusSearchingNamespace: 'Mencari namespace kategori …',
+      statusFetchingArticles: (lang) => `Mengambil daftar artikel dari ${lang}.wikipedia.org …`,
+      statusSearchingEquivalent: 'Mencari kategori setara di bahasa lain via Wikidata …',
+      statusLoadingEdition: (lang) => `Memuat artikel dari ${lang}.wikipedia.org …`,
+      statusLoadingPage: (n) => `Memuat halaman ${n} …`,
+      errorLoadPage: (n, msg) => `Gagal memuat halaman ${n}: ${msg}`,
+      errorLoadEdition: (lang, msg) => `Gagal memuat edisi ${lang}: ${msg}`,
+      errorGeneric: (msg) => `Terjadi kesalahan: ${msg}`,
+      errorGenericCategory: (msg) => `Terjadi kesalahan: ${msg}. Periksa kode bahasa dan nama kategori.`,
+      statusSearchingArticle: 'Mencari artikel …',
+      errorArticleNotFound: (title, lang) => `Artikel "${title}" tidak ditemukan di ${lang}.wikipedia.org`,
+      statusSearchingWikidata: 'Mencari padanan Wikidata …',
+      errorNoWikidata: 'Artikel ini tidak terhubung ke entri Wikidata, sehingga versi bahasa lain tidak dapat ditelusuri.',
+      statusFetchingLangs: 'Mengambil daftar bahasa yang tersedia …',
+      errorEmptyCategory: 'Isi nama kategori terlebih dahulu.',
+      errorEmptyArticle: 'Isi judul artikel terlebih dahulu.',
+      errorEmptyUsername: 'Isi nama pengguna terlebih dahulu.',
+      errorEmptyProject: 'Pilih proyek Wikimedia terlebih dahulu.',
+      statusFetchingUser: 'Mengambil informasi pengguna …',
+      errorUserNotFound: (username, wiki) => `Pengguna "${username}" tidak ditemukan di ${wiki}`,
+      statusFetchingTrending: 'Mengambil artikel trending …',
+      errorTrending: 'Gagal memuat artikel trending untuk proyek ini.',
+      availEmptyCodesError: 'Centang atau isi minimal satu kode bahasa.',
+      availNoArticlesError: 'Tidak ada artikel untuk diperiksa (subkategori tidak ikut diperiksa).',
+      availChecking: (n) => `Memeriksa ${n} artikel …`,
+      availDoneSuccess: (n) => `Selesai — ${n} tautan bahasa ditambahkan.`,
+      availDoneNone: 'Selesai — tidak ada artikel yang punya versi di bahasa terpilih.',
+      availFailed: (msg) => `Gagal memeriksa: ${msg}`,
+      errorRequestFailed: (status) => `Permintaan gagal (${status})`,
+      errorCategoryNotFound: 'Kategori tidak ditemukan'
+    },
+    en: {
+      kicker: 'Reference desk',
+      title: 'Wikipedia Category Explorer',
+      subtitle: 'Browse articles within a single Wikipedia category, or find which languages an article is available in. Both use the MediaWiki API and Wikidata to link equivalent versions across languages.',
+      backHome: 'Back to Affandy Murad',
+      modeCategory: 'Search Category',
+      modeArticle: 'Search Article',
+      modeUser: 'Search User',
+      modeTrending: 'Pageview',
+      langFieldLabel: 'Language',
+      catLabelCategory: 'Category name',
+      catPlaceholderCategory: 'e.g.: Capital cities',
+      catLabelArticle: 'Article title',
+      catPlaceholderArticle: 'e.g.: Jakarta',
+      searchBtnCategory: 'Search',
+      searchBtnArticle: 'Find language availability',
+      hintCategory: 'The language code follows the Wikipedia subdomain (id, en, ja, fr, de, etc). No need to type the category namespace prefix (e.g. "Category:", "Kategori:").',
+      hintArticle: 'Enter the article title exactly as it appears on the source-language Wikipedia. This tool finds every other language version via that article\'s Wikidata links.',
+      userUsernameLabel: 'Username',
+      userUsernamePlaceholder: 'e.g.: Example',
+      projectLabel: 'Wikimedia Project URL',
+      projectPlaceholder: 'id.wikipedia.org (Click a Wikimedia project below)',
+      userSearchBtn: 'Search User',
+      trendingSearchBtn: 'Search Pageview',
+      modalTitleDefault: 'Select language',
+      modalTitleFor: (project) => `Select language for ${project}`,
+      langCodePlaceholder: 'e.g. id, en, fr',
+      cancelBtn: 'Cancel',
+      confirmBtn: 'Select',
+      editionsLabel: 'Equivalent categories found in other editions (via Wikidata):',
+      availHint: 'Check language codes to add direct links on each article (if available). Applies to articles only, not subcategories. This selection is automatically re-applied when you change pages.',
+      availCustomLabel: 'Other codes (comma-separated)',
+      availCustomPlaceholder: 'e.g. ko, nl, sv',
+      availCheckBtn: 'Check availability',
+      subcatHeading: 'Subcategories',
+      noneText: 'None.',
+      articlesCount: (n) => `${n} articles`,
+      subcatCount: (n) => `${n} subcategories`,
+      availableAtSites: (n) => `available on ${n} sites`,
+      availableAtLangs: (n) => `available in ${n} languages`,
+      noProjectVersion: (label) => `No version linked on Wikidata for the ${label} project.`,
+      nextPageTitle: 'Load next page (500 items)',
+      userLocalHeading: 'Local Information',
+      userGlobalHeading: 'Global Account Status',
+      userConnectedHeading: 'Connected Wikis',
+      userFieldName: 'Username',
+      userFieldId: 'User ID',
+      userFieldEdits: 'Edit Count',
+      userFieldRegistered: 'Registered',
+      userFieldGroups: 'Groups',
+      userFieldBlocked: 'Blocked',
+      yes: 'Yes',
+      no: 'No',
+      userFieldGlobalEdits: 'Total Global Edits',
+      userFieldHomeWiki: 'Home Wiki',
+      userFieldConnectedWikis: 'Connected Wikis',
+      userFieldActiveWikis: 'Active Wikis',
+      globalStatus: 'Global Status',
+      globallyLocked: 'Globally Locked',
+      hidden: 'Hidden',
+      onlyActiveWikis: 'Show only active wikis (edits > 0)',
+      permanent: 'Permanent',
+      until: 'Until',
+      standardUser: 'Standard user',
+      groupsPrefix: 'Groups',
+      home: 'HOME',
+      tableArticle: 'Article',
+      tablePageview: 'Pageview',
+      statusSearchingNamespace: 'Searching category namespace …',
+      statusFetchingArticles: (lang) => `Fetching article list from ${lang}.wikipedia.org …`,
+      statusSearchingEquivalent: 'Searching for equivalent categories in other languages via Wikidata …',
+      statusLoadingEdition: (lang) => `Loading articles from ${lang}.wikipedia.org …`,
+      statusLoadingPage: (n) => `Loading page ${n} …`,
+      errorLoadPage: (n, msg) => `Failed to load page ${n}: ${msg}`,
+      errorLoadEdition: (lang, msg) => `Failed to load ${lang} edition: ${msg}`,
+      errorGeneric: (msg) => `An error occurred: ${msg}`,
+      errorGenericCategory: (msg) => `An error occurred: ${msg}. Check the language code and category name.`,
+      statusSearchingArticle: 'Searching for article …',
+      errorArticleNotFound: (title, lang) => `Article "${title}" not found on ${lang}.wikipedia.org`,
+      statusSearchingWikidata: 'Searching for a Wikidata match …',
+      errorNoWikidata: 'This article is not linked to a Wikidata entry, so other language versions cannot be found.',
+      statusFetchingLangs: 'Fetching list of available languages …',
+      errorEmptyCategory: 'Please fill in the category name first.',
+      errorEmptyArticle: 'Please fill in the article title first.',
+      errorEmptyUsername: 'Please fill in the username first.',
+      errorEmptyProject: 'Please select a Wikimedia project first.',
+      statusFetchingUser: 'Fetching user information …',
+      errorUserNotFound: (username, wiki) => `User "${username}" not found on ${wiki}`,
+      statusFetchingTrending: 'Fetching trending articles …',
+      errorTrending: 'Failed to load trending articles for this project.',
+      availEmptyCodesError: 'Check or enter at least one language code.',
+      availNoArticlesError: 'No articles to check (subcategories are not checked).',
+      availChecking: (n) => `Checking ${n} articles …`,
+      availDoneSuccess: (n) => `Done — ${n} language links added.`,
+      availDoneNone: 'Done — no articles have a version in the selected languages.',
+      availFailed: (msg) => `Failed to check: ${msg}`,
+      errorRequestFailed: (status) => `Request failed (${status})`,
+      errorCategoryNotFound: 'Category not found'
+    }
+  };
+
+  let uiLang = localStorage.getItem('uiLanguage') === 'en' ? 'en' : 'id';
+
+  function t(key, ...args){
+    const entry = (T[uiLang] && T[uiLang][key] !== undefined) ? T[uiLang][key] : T.id[key];
+    return typeof entry === 'function' ? entry(...args) : entry;
+  }
+
+  function applyModeText(){
+    if(currentMode === 'category'){
+      catLabel.textContent = t('catLabelCategory');
+      catInput.placeholder = t('catPlaceholderCategory');
+      searchBtn.textContent = t('searchBtnCategory');
+      hintText.textContent = t('hintCategory');
+    } else if(currentMode === 'article'){
+      catLabel.textContent = t('catLabelArticle');
+      catInput.placeholder = t('catPlaceholderArticle');
+      searchBtn.textContent = t('searchBtnArticle');
+      hintText.textContent = t('hintArticle');
+    }
+  }
+
+  function applyUILanguage(){
+    document.documentElement.lang = uiLang;
+    document.title = t('title');
+    langTextEl.textContent = uiLang === 'id' ? 'EN' : 'ID';
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const val = t(key);
+      if(typeof val === 'string') el.textContent = val;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      const val = t(key);
+      if(typeof val === 'string') el.placeholder = val;
+    });
+
+    applyModeText();
+    modalTitleEl.textContent = t('modalTitleDefault');
+  }
+
+  langBtn.addEventListener('click', () => {
+    uiLang = uiLang === 'id' ? 'en' : 'id';
+    localStorage.setItem('uiLanguage', uiLang);
+    applyUILanguage();
+  });
 
   let currentCategoryLang = null;
   let currentCategoryTitle = null;
@@ -499,7 +1300,8 @@
   let currentPageNum = 1;
   let currentCategoryItems = []; // articles + subcats of the page currently shown
 
-  const DEFAULT_AVAIL_LANGS = ['en','ja','zh','fr','de','es','ar','ru','pt'];
+  const DEFAULT_AVAIL_LANGS = ['en','ms','bew','tet','jv','su','min','ban','bug'];
+  let lastAvailCodes = [];
   const modeButtons = document.querySelectorAll('.mode-btn');
 
   let currentMode = 'category'; // 'category' | 'article'
@@ -569,7 +1371,7 @@
 
   async function fetchJson(url){
     const res = await fetch(url);
-    if(!res.ok) throw new Error(`Permintaan gagal (${res.status})`);
+    if(!res.ok) throw new Error(t('errorRequestFailed', res.status));
     return res.json();
   }
 
@@ -605,7 +1407,7 @@
     };
     if(cmcontinueToken) params.cmcontinue = cmcontinueToken;
     const data = await fetchJson(apiUrl(lang, params));
-    if(data.error) throw new Error(data.error.info || 'Kategori tidak ditemukan');
+    if(data.error) throw new Error(data.error.info || t('errorCategoryNotFound'));
     return {
       members: data?.query?.categorymembers || [],
       cmcontinue: data?.continue?.cmcontinue || null
@@ -790,7 +1592,7 @@
     container.innerHTML = '';
     if(items.length === 0){
       const li = document.createElement('li');
-      li.textContent = 'Tidak ada.';
+      li.textContent = t('noneText');
       container.appendChild(li);
       return;
     }
@@ -827,10 +1629,39 @@
       const cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.value = code;
+      const textSpan = document.createElement('span');
+      textSpan.textContent = code;
       label.appendChild(cb);
-      label.appendChild(document.createTextNode(code));
+      label.appendChild(textSpan);
       availCheckboxesEl.appendChild(label);
+
+      getLanguageName(code).then(({ name, autonym }) => {
+        const display = name || autonym;
+        textSpan.textContent = display ? `${display} (${code})` : code;
+      }).catch(() => {});
     });
+  }
+
+  function syncAvailCheckboxesUI(codes){
+    const codeSet = new Set(codes);
+    availCheckboxesEl.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.checked = codeSet.has(cb.value);
+    });
+    const customCodes = codes.filter(c => !DEFAULT_AVAIL_LANGS.includes(c));
+    availCustomInput.value = customCodes.join(', ');
+  }
+
+  function resetAvailState(){
+    lastAvailCodes = [];
+    availStatusEl.style.display = 'none';
+    availCustomInput.value = '';
+    availCheckboxesEl.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; });
+  }
+
+  function getSelectedAvailCodes(){
+    const checked = Array.from(availCheckboxesEl.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+    const custom = availCustomInput.value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    return Array.from(new Set([...checked, ...custom]));
   }
 
   // Batch-fetch each title's Wikidata QID (up to 50 titles per API call).
@@ -919,29 +1750,36 @@
     return matchCount;
   }
 
-  async function runAvailabilityCheck(){
-    const checked = Array.from(availCheckboxesEl.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
-    const custom = availCustomInput.value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    const codes = Array.from(new Set([...checked, ...custom]));
+  async function checkAvailability(codes, opts){
+    const silent = !!(opts && opts.silent);
+    lastAvailCodes = codes;
 
     if(codes.length === 0){
-      availStatusEl.style.display = 'block';
-      availStatusEl.className = 'status error';
-      availStatusEl.textContent = 'Centang atau isi minimal satu kode bahasa.';
+      if(!silent){
+        availStatusEl.style.display = 'block';
+        availStatusEl.className = 'status error';
+        availStatusEl.textContent = t('availEmptyCodesError');
+      } else {
+        availStatusEl.style.display = 'none';
+      }
       return;
     }
 
     const articlesOnly = currentCategoryItems.filter(i => i.ns !== 14);
     if(articlesOnly.length === 0){
-      availStatusEl.style.display = 'block';
-      availStatusEl.className = 'status error';
-      availStatusEl.textContent = 'Tidak ada artikel untuk diperiksa (subkategori tidak ikut diperiksa).';
+      if(!silent){
+        availStatusEl.style.display = 'block';
+        availStatusEl.className = 'status error';
+        availStatusEl.textContent = t('availNoArticlesError');
+      } else {
+        availStatusEl.style.display = 'none';
+      }
       return;
     }
 
     availStatusEl.style.display = 'block';
     availStatusEl.className = 'status';
-    availStatusEl.textContent = `Memeriksa ${articlesOnly.length} artikel …`;
+    availStatusEl.textContent = t('availChecking', articlesOnly.length);
     availCheckBtn.disabled = true;
 
     // Clear any badges from a previous run.
@@ -953,14 +1791,18 @@
       const matchCount = injectLangBadges(articlesOnly, qidMap, sitelinksMap, codes);
 
       availStatusEl.textContent = matchCount > 0
-        ? `Selesai — ${matchCount} tautan bahasa ditambahkan.`
-        : 'Selesai — tidak ada artikel yang punya versi di bahasa terpilih.';
+        ? t('availDoneSuccess', matchCount)
+        : t('availDoneNone');
     } catch(err){
       availStatusEl.className = 'status error';
-      availStatusEl.textContent = `Gagal memeriksa: ${err.message}`;
+      availStatusEl.textContent = t('availFailed', err.message);
     } finally {
       availCheckBtn.disabled = false;
     }
+  }
+
+  function runAvailabilityCheck(){
+    checkAvailability(getSelectedAvailCodes());
   }
 
   function renderPaginationBar(){
@@ -989,7 +1831,7 @@
       nextBtn.type = 'button';
       nextBtn.className = 'page-btn page-next';
       nextBtn.textContent = '›';
-      nextBtn.title = 'Muat halaman berikutnya (500 item)';
+      nextBtn.title = t('nextPageTitle');
       nextBtn.addEventListener('click', () => goToPage(categoryPages.length + 1));
       paginationBar.appendChild(nextBtn);
     }
@@ -1004,14 +1846,14 @@
     // Not cached yet — only reachable by loading the very next page in order.
     if(idx !== categoryPages.length) return;
 
-    setStatus(`Memuat halaman ${pageNum} …`);
+    setStatus(t('statusLoadingPage', pageNum));
     paginationBar.querySelectorAll('button').forEach(b => { b.disabled = true; });
     try{
       const page = await fetchCategoryPage(idx);
       renderArticles(currentCategoryLang, currentCategoryTitle, page.members, pageNum);
       setStatus('');
     } catch(err){
-      setStatus(`Gagal memuat halaman ${pageNum}: ${err.message}`, true);
+      setStatus(t('errorLoadPage', pageNum, err.message), true);
       renderPaginationBar();
     }
   }
@@ -1031,24 +1873,26 @@
 
     currentCategoryItems = members;
     availCheckEl.style.display = 'block';
-    if(currentPageNum === 1){
-      availStatusEl.style.display = 'none';
-      availCustomInput.value = '';
-      availCheckboxesEl.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; });
-    }
 
     renderPaginationBar();
 
-    resultsCount.textContent = `${articles.length} artikel`;
+    resultsCount.textContent = t('articlesCount', articles.length);
     buildList(articleList, articles, lang, true);
 
     if(subcats.length > 0){
       subcatHead.style.display = 'flex';
-      subcatCount.textContent = `${subcats.length} subkategori`;
+      subcatCount.textContent = t('subcatCount', subcats.length);
       buildList(subcatList, subcats, lang, false);
     } else {
       subcatHead.style.display = 'none';
       subcatList.innerHTML = '';
+    }
+
+    // Auto-reapply the language codes last checked, so the selection carries
+    // over across pagination without needing to click "Cek ketersediaan" again.
+    if(lastAvailCodes.length > 0){
+      syncAvailCheckboxesUI(lastAvailCodes);
+      checkAvailability(lastAvailCodes, { silent: true });
     }
   }
 
@@ -1059,7 +1903,7 @@
       return;
     }
     editionsEl.style.display = 'flex';
-    editionsEl.innerHTML = '<div class="editions-label">Kategori setara ditemukan di edisi lain (via Wikidata):</div>';
+    editionsEl.innerHTML = `<div class="editions-label">${t('editionsLabel')}</div>`;
     entries
       .sort((a, b) => a[0].localeCompare(b[0]))
       .forEach(([lg, title]) => {
@@ -1074,17 +1918,18 @@
   }
 
   async function loadEdition(lang, title, sitelinks){
-    setStatus(`Memuat artikel dari ${lang}.wikipedia.org …`);
+    setStatus(t('statusLoadingEdition', lang));
     try{
       currentCategoryLang = lang;
       currentCategoryTitle = title;
       categoryPages = [];
+      resetAvailState();
       const page = await fetchCategoryPage(0);
       renderArticles(lang, title, page.members, 1);
       renderEditions(sitelinks, lang);
       setStatus('');
     } catch(err){
-      setStatus(`Gagal memuat edisi ${lang}: ${err.message}`, true);
+      setStatus(t('errorLoadEdition', lang, err.message), true);
     }
   }
 
@@ -1118,12 +1963,12 @@
     const entries = Object.entries(groupData).sort((a, b) => a[0].localeCompare(b[0]));
 
     articleResultsCount.textContent = activeProject === 'multilingual'
-      ? `tersedia di ${entries.length} situs`
-      : `tersedia di ${entries.length} bahasa`;
+      ? t('availableAtSites', entries.length)
+      : t('availableAtLangs', entries.length);
 
     if(entries.length === 0){
       const li = document.createElement('li');
-      li.textContent = `Tidak ada versi di proyek ${projectDef.label} yang tertaut di Wikidata.`;
+      li.textContent = t('noProjectVersion', projectDef.label);
       interwikiList.appendChild(li);
       return;
     }
@@ -1175,21 +2020,21 @@
 
   async function runArticleSearch(lang, rawTitle){
     resultsEl.style.display = 'none';
-    setStatus('Mencari artikel …');
+    setStatus(t('statusSearchingArticle'));
     searchBtn.disabled = true;
     try{
       const resolvedTitle = await resolveArticleTitle(lang, rawTitle);
       if(!resolvedTitle){
-        throw new Error(`Artikel "${rawTitle}" tidak ditemukan di ${lang}.wikipedia.org`);
+        throw new Error(t('errorArticleNotFound', rawTitle, lang));
       }
 
-      setStatus('Mencari padanan Wikidata …');
+      setStatus(t('statusSearchingWikidata'));
       const qid = await fetchWikidataId(lang, resolvedTitle);
       if(!qid){
-        throw new Error('Artikel ini tidak terhubung ke entri Wikidata, sehingga versi bahasa lain tidak dapat ditelusuri.');
+        throw new Error(t('errorNoWikidata'));
       }
 
-      setStatus('Mengambil daftar bahasa yang tersedia …');
+      setStatus(t('statusFetchingLangs'));
       const rawSitelinks = await fetchRawSitelinks(qid);
       currentProjectGroups = groupSitelinksByProject(rawSitelinks);
       activeProject = 'wikipedia';
@@ -1197,6 +2042,8 @@
       resultsEl.style.display = 'block';
       categoryResultsEl.style.display = 'none';
       articleModeResultsEl.style.display = 'block';
+      userModeResultsEl.style.display = 'none';
+      trendingModeResultsEl.style.display = 'none';
       limitNoteEl.style.display = 'none';
 
       renderLangLabel(lang);
@@ -1206,7 +2053,7 @@
       setStatus('');
     } catch(err){
       resultsEl.style.display = 'none';
-      setStatus(`Terjadi kesalahan: ${err.message}`, true);
+      setStatus(t('errorGeneric', err.message), true);
     } finally {
       searchBtn.disabled = false;
     }
@@ -1215,7 +2062,7 @@
   async function runSearch(lang, rawCategory){
     resultsEl.style.display = 'none';
     editionsEl.style.display = 'none';
-    setStatus('Mencari namespace kategori …');
+    setStatus(t('statusSearchingNamespace'));
     searchBtn.disabled = true;
     try{
       const prefix = await getCategoryPrefix(lang);
@@ -1225,15 +2072,18 @@
       currentCategoryLang = lang;
       currentCategoryTitle = categoryTitle;
       categoryPages = [];
+      resetAvailState();
 
-      setStatus(`Mengambil daftar artikel dari ${lang}.wikipedia.org …`);
+      setStatus(t('statusFetchingArticles', lang));
       const page = await fetchCategoryPage(0);
 
       resultsEl.style.display = 'block';
       categoryResultsEl.style.display = 'block';
       articleModeResultsEl.style.display = 'none';
+      userModeResultsEl.style.display = 'none';
+      trendingModeResultsEl.style.display = 'none';
       renderArticles(lang, categoryTitle, page.members, 1);
-      setStatus('Mencari kategori setara di bahasa lain via Wikidata …');
+      setStatus(t('statusSearchingEquivalent'));
 
       let qid = null;
       try{
@@ -1251,9 +2101,386 @@
       setStatus('');
     } catch(err){
       resultsEl.style.display = 'none';
-      setStatus(`Terjadi kesalahan: ${err.message}. Periksa kode bahasa dan nama kategori.`, true);
+      setStatus(t('errorGenericCategory', err.message), true);
     } finally {
       searchBtn.disabled = false;
+    }
+  }
+
+  // ---- User-info tab (ported from wikirekap, trimmed to user info + connected wikis only) ----
+
+  async function fetchWikiUserInfo(user, proj){
+    const localUrl = `${proj}/w/api.php?action=query&list=users&ususers=${encodeURIComponent(user)}&usprop=editcount|registration|groups|blockinfo&format=json&origin=*`;
+    const globalUrl = `${proj}/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged|unattached&format=json&origin=*`;
+    const [localData, globalData] = await Promise.all([fetchJson(localUrl), fetchJson(globalUrl)]);
+    const userData = localData?.query?.users?.[0];
+    const globalInfo = globalData?.query?.globaluserinfo || null;
+    return { userData, globalInfo, wiki: proj.replace(/^https?:\/\//, '') };
+  }
+
+  function getWikiClass(wiki){
+    if(wiki.includes('wikipedia.org')) return 'wiki-wikipedia';
+    if(wiki.includes('commons.wikimedia.org')) return 'wiki-commons';
+    if(wiki.includes('wikidata.org')) return 'wiki-wikidata';
+    if(wiki.includes('wikisource.org')) return 'wiki-wikisource';
+    return 'wiki-other';
+  }
+
+  function getWikiDisplayName(projectUrl){
+    const url = projectUrl.toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+    const specialProjects = {
+      'commons.wikimedia.org': 'Wikimedia Commons',
+      'www.wikidata.org': 'Wikidata',
+      'wikidata.org': 'Wikidata',
+      'meta.wikimedia.org': 'Meta-Wiki',
+      'www.mediawiki.org': 'MediaWiki.org',
+      'mediawiki.org': 'MediaWiki.org',
+      'species.wikimedia.org': 'Wikispecies',
+      'www.wikifunctions.org': 'Wikifunctions',
+      'wikifunctions.org': 'Wikifunctions',
+      'incubator.wikimedia.org': 'Wikimedia Incubator',
+      'wikitech.wikimedia.org': 'Wikitech',
+      'wikimania.wikimedia.org': 'Wikimania'
+    };
+    if(specialProjects[url]) return specialProjects[url];
+    const match = url.match(/^([a-z\-]+)\.(wikipedia|wiktionary|wikibooks|wikisource|wikiquote|wikinews|wikiversity|wikivoyage)\.org$/);
+    if(match){
+      const [, lang, project] = match;
+      const projectNames = {
+        wikipedia: 'Wikipedia', wiktionary: 'Wiktionary', wikibooks: 'Wikibooks',
+        wikisource: 'Wikisource', wikiquote: 'Wikiquote', wikinews: 'Wikinews',
+        wikiversity: 'Wikiversity', wikivoyage: 'Wikivoyage'
+      };
+      return `${projectNames[project]} (${lang.toUpperCase()})`;
+    }
+    return url;
+  }
+
+  // ---- Wiki-project picker for the user-search form (ported from wikirekap) ----
+
+  let pickerProjectBase = null;
+  let pickerLang = '';
+  let pickerTargetInput = null;
+
+  function getProjectFavicon(domain){
+    let baseUrl = domain.trim();
+    if(!baseUrl.startsWith('http')) baseUrl = `https://${baseUrl}`;
+    return `${baseUrl}/favicon.ico`;
+  }
+
+  function loadWikiButtonFavicons(){
+    document.querySelectorAll('.wiki-buttons-container .wiki-button').forEach(button => {
+      const img = button.querySelector('.favicon-placeholder');
+      if(!img) return;
+      let domainToUse;
+      if(button.dataset.domainBase){
+        domainToUse = `en.${button.dataset.domainBase}`;
+      } else if(button.dataset.domain){
+        domainToUse = button.dataset.domain;
+      }
+      if(domainToUse){
+        img.src = getProjectFavicon(domainToUse);
+        img.onerror = function(){
+          this.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Wikimedia-logo_black.svg/64px-Wikimedia-logo_black.svg.png';
+          this.onerror = null;
+        };
+      }
+    });
+  }
+  loadWikiButtonFavicons();
+
+  function clearPickerLanguage(){
+    pickerLang = '';
+    selectedLanguagesEl.innerHTML = '';
+    langCodeInput.value = '';
+    confirmModalBtn.disabled = true;
+  }
+  window.clearPickerLanguage = clearPickerLanguage;
+
+  document.querySelectorAll('.wiki-buttons-container').forEach(container => {
+    const targetInput = document.getElementById(container.dataset.target);
+    if(!targetInput) return;
+    container.querySelectorAll('.wiki-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const needsLang = btn.dataset.needsLang === 'true';
+        const directDomain = btn.dataset.domain;
+
+        if(directDomain){
+          targetInput.value = directDomain;
+          return;
+        }
+
+        if(needsLang){
+          pickerProjectBase = btn.dataset.domainBase;
+          pickerTargetInput = targetInput;
+          clearPickerLanguage();
+          modalTitleEl.textContent = t('modalTitleFor', btn.dataset.project);
+          wikiLanguageModal.style.display = 'flex';
+          langCodeInput.focus();
+        }
+      });
+    });
+  });
+
+  langCodeInput.addEventListener('input', (e) => {
+    const code = e.target.value.trim().toLowerCase();
+    if(code && code.length <= 7){
+      pickerLang = code;
+      selectedLanguagesEl.innerHTML = `<span>${code} <span onclick="clearPickerLanguage()">×</span></span>`;
+    } else {
+      pickerLang = '';
+      selectedLanguagesEl.innerHTML = '';
+    }
+    confirmModalBtn.disabled = !pickerLang;
+  });
+
+  function confirmPickerSelection(){
+    if(pickerLang && pickerProjectBase && pickerTargetInput){
+      pickerTargetInput.value = `${pickerLang}.${pickerProjectBase}`;
+      wikiLanguageModal.style.display = 'none';
+    }
+  }
+
+  langCodeInput.addEventListener('keypress', (e) => {
+    if(e.key === 'Enter' && pickerLang){
+      e.preventDefault();
+      confirmPickerSelection();
+    }
+  });
+
+  confirmModalBtn.addEventListener('click', confirmPickerSelection);
+  cancelModalBtn.addEventListener('click', () => { wikiLanguageModal.style.display = 'none'; });
+  wikiLanguageModal.addEventListener('click', (e) => {
+    if(e.target === wikiLanguageModal) wikiLanguageModal.style.display = 'none';
+  });
+
+  function renderUserWikiChips(globalInfo, username){
+    const container = document.getElementById('userWikiChips');
+    if(!container) return;
+    const onlyActive = document.getElementById('userOnlyActiveWikis')?.checked ?? true;
+    container.innerHTML = '';
+    globalInfo.merged
+      .filter(m => !onlyActive || (m.editcount ?? 0) > 0)
+      .sort((a, b) => (b.editcount ?? 0) - (a.editcount ?? 0))
+      .forEach(m => {
+        const isHome = globalInfo.home === m.wiki;
+        const wikiClass = getWikiClass(m.wiki);
+        const chip = document.createElement('a');
+        chip.className = `wiki-chip ${wikiClass}${isHome ? ' home' : ''}`;
+        chip.href = `${m.url}/wiki/User:${encodeURIComponent(username)}`;
+        chip.target = '_blank';
+        chip.rel = 'noopener noreferrer';
+        chip.title = m.groups?.length ? `${t('groupsPrefix')}: ${m.groups.join(', ')}` : t('standardUser');
+        chip.innerHTML = `
+          <span>${m.wiki}</span>
+          ${isHome ? `<span class="user-badge-mini">${t('home')}</span>` : ''}
+          <span>|</span>
+          <span>${m.editcount ?? 0} edit</span>
+          <span>|</span>
+          <span>${m.timestamp?.slice(0, 10) ?? '—'}</span>
+        `;
+        container.appendChild(chip);
+      });
+  }
+
+  function renderUserInfoPanel(data){
+    const { userData, globalInfo } = data;
+
+    let blockInfo = '';
+    if(userData.blockid){
+      const blockExpiry = userData.blockexpiry === 'infinity' ? t('permanent') : userData.blockexpiry;
+      const blockReason = userData.blockreason ? `: ${userData.blockreason}` : '';
+      blockInfo = `<div style="font-size:11px;margin-top:4px;opacity:0.75;">${t('until')}: ${blockExpiry}${blockReason}</div>`;
+    }
+    const localeCode = uiLang === 'id' ? 'id-ID' : 'en-US';
+
+    userLocalInfoEl.innerHTML = `
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldName')}</div>
+        <div class="user-info-value">${userData.name || '—'}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldId')}</div>
+        <div class="user-info-value">${userData.userid ?? '—'}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldEdits')}</div>
+        <div class="user-info-value">${Number.isFinite(userData.editcount) ? userData.editcount.toLocaleString(localeCode) : '—'}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldRegistered')}</div>
+        <div class="user-info-value">${userData.registration ? new Date(userData.registration).toLocaleDateString(localeCode) : '—'}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldGroups')}</div>
+        <div class="user-info-value">${userData.groups?.length ? userData.groups.join(', ') : 'user'}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldBlocked')}</div>
+        <div class="user-info-value">
+          <span class="user-badge ${userData.blockid ? 'user-badge-warning' : 'user-badge-success'}">${userData.blockid ? t('yes') : t('no')}</span>
+          ${blockInfo}
+        </div>
+      </div>
+    `;
+
+    userGlobalInfoEl.innerHTML = '';
+    userMergedWikisEl.innerHTML = '';
+
+    if(!globalInfo) return;
+
+    const totalEdits = globalInfo.merged?.reduce((sum, m) => sum + (m.editcount || 0), 0) || 0;
+    const activeWikis = globalInfo.merged?.filter(m => m.editcount > 0).length || 0;
+
+    let globalHtml = `
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldGlobalEdits')}</div>
+        <div class="user-info-value">${totalEdits.toLocaleString(localeCode)}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldHomeWiki')}</div>
+        <div class="user-info-value">${globalInfo.home || '—'}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldConnectedWikis')}</div>
+        <div class="user-info-value">${globalInfo.merged?.length || 0}</div>
+      </div>
+      <div class="user-info-item">
+        <div class="user-info-label">${t('userFieldActiveWikis')}</div>
+        <div class="user-info-value">${activeWikis}</div>
+      </div>
+    `;
+
+    if(globalInfo.locked || globalInfo.hidden){
+      globalHtml += `
+        <div class="user-info-item" style="grid-column:1 / -1;background:#fff3cd;border:1px solid var(--maroon);">
+          <div class="user-info-label" style="color:var(--maroon);">⚠️ ${t('globalStatus')}</div>
+          <div class="user-info-value">
+            ${globalInfo.locked ? `<span class="user-badge user-badge-warning">${t('globallyLocked')}</span> ` : ''}
+            ${globalInfo.hidden ? `<span class="user-badge user-badge-warning">${t('hidden')}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    userGlobalInfoEl.innerHTML = globalHtml;
+
+    if(globalInfo.merged?.length){
+      userMergedWikisEl.innerHTML = `
+        <p class="user-subhead">${t('userConnectedHeading')}</p>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="userOnlyActiveWikis" checked>
+            <span>${t('onlyActiveWikis')}</span>
+          </label>
+        </div>
+        <div class="wiki-chip-container" id="userWikiChips"></div>
+      `;
+      document.getElementById('userOnlyActiveWikis').addEventListener('change', () => renderUserWikiChips(globalInfo, userData.name));
+      renderUserWikiChips(globalInfo, userData.name);
+    }
+  }
+
+  async function runUserSearch(rawUsername, rawProject){
+    resultsEl.style.display = 'none';
+    editionsEl.style.display = 'none';
+    setStatus(t('statusFetchingUser'));
+    userSearchBtn.disabled = true;
+    try{
+      const proj = rawProject.startsWith('http') ? rawProject.replace(/\/$/, '') : 'https://' + rawProject.replace(/\/$/, '');
+      const data = await fetchWikiUserInfo(rawUsername, proj);
+      if(!data.userData || 'missing' in data.userData){
+        throw new Error(t('errorUserNotFound', rawUsername, data.wiki));
+      }
+
+      resultsEl.style.display = 'block';
+      categoryResultsEl.style.display = 'none';
+      articleModeResultsEl.style.display = 'none';
+      userModeResultsEl.style.display = 'block';
+      trendingModeResultsEl.style.display = 'none';
+      limitNoteEl.style.display = 'none';
+
+      langLabelEl.textContent = getWikiDisplayName(data.wiki);
+      renderUserInfoPanel(data);
+      setStatus('');
+    } catch(err){
+      resultsEl.style.display = 'none';
+      setStatus(t('errorGeneric', err.message), true);
+    } finally {
+      userSearchBtn.disabled = false;
+    }
+  }
+
+  // Tries progressively earlier dates until the pageviews API returns data
+  // (today's top list isn't published yet until some point in the day).
+  async function fetchTrendingWithRetry(key, maxRetry = 10){
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for(let i = 0; i < maxRetry; i++){
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10).replace(/-/g, '/');
+
+      try{
+        const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${dateStr}`;
+        const res = await fetch(url, { cache: 'no-cache' });
+        if(!res.ok) continue;
+        const json = await res.json();
+        if(json.items?.[0]?.articles?.length){
+          return json.items[0].articles;
+        }
+      } catch(e){ /* try an earlier date */ }
+    }
+    return [];
+  }
+
+  async function runTrendingSearch(rawProject){
+    resultsEl.style.display = 'none';
+    editionsEl.style.display = 'none';
+    setStatus(t('statusFetchingTrending'));
+    trendingSearchBtn.disabled = true;
+    try{
+      const proj = rawProject.startsWith('http') ? rawProject.replace(/\/$/, '') : 'https://' + rawProject.replace(/\/$/, '');
+      const key = proj.replace(/^https?:\/\//, '');
+      const articles = await fetchTrendingWithRetry(key);
+      if(!articles.length){
+        throw new Error(t('errorTrending'));
+      }
+
+      resultsEl.style.display = 'block';
+      categoryResultsEl.style.display = 'none';
+      articleModeResultsEl.style.display = 'none';
+      userModeResultsEl.style.display = 'none';
+      trendingModeResultsEl.style.display = 'block';
+      limitNoteEl.style.display = 'none';
+
+      langLabelEl.textContent = getWikiDisplayName(key);
+
+      trendingTableBodyEl.innerHTML = '';
+      articles.forEach(a => {
+        const link = `${proj}/wiki/${encodeURIComponent(a.article)}`;
+        const tr = document.createElement('tr');
+        const tdArticle = document.createElement('td');
+        const a2 = document.createElement('a');
+        a2.href = link;
+        a2.target = '_blank';
+        a2.rel = 'noopener noreferrer';
+        a2.textContent = a.article.replace(/_/g, ' ');
+        tdArticle.appendChild(a2);
+        const tdViews = document.createElement('td');
+        tdViews.textContent = a.views.toLocaleString(uiLang === 'id' ? 'id-ID' : 'en-US');
+        tr.appendChild(tdArticle);
+        tr.appendChild(tdViews);
+        trendingTableBodyEl.appendChild(tr);
+      });
+      trendingCountEl.textContent = t('articlesCount', articles.length);
+      setStatus('');
+    } catch(err){
+      resultsEl.style.display = 'none';
+      setStatus(t('errorGeneric', err.message), true);
+    } finally {
+      trendingSearchBtn.disabled = false;
     }
   }
 
@@ -1262,17 +2489,30 @@
     modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
     resultsEl.style.display = 'none';
     setStatus('');
-    if(mode === 'category'){
-      catLabel.textContent = 'Nama kategori';
-      catInput.placeholder = 'Misal: Ibu kota negara';
-      searchBtn.textContent = 'Telusuri';
-      hintText.textContent = 'Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.';
-    } else {
-      catLabel.textContent = 'Judul artikel';
-      catInput.placeholder = 'Misal: Jakarta';
-      searchBtn.textContent = 'Cari ketersediaan bahasa';
-      hintText.textContent = 'Masukkan judul artikel persis seperti di Wikipedia bahasa sumbernya. Alat ini mencari semua versi bahasa lain lewat tautan Wikidata artikel tersebut.';
+
+    if(mode === 'user'){
+      form.style.display = 'none';
+      hintText.style.display = 'none';
+      userQueryForm.style.display = 'flex';
+      trendingQueryForm.style.display = 'none';
+      userUsernameInput.focus();
+      return;
     }
+
+    if(mode === 'trending'){
+      form.style.display = 'none';
+      hintText.style.display = 'none';
+      userQueryForm.style.display = 'none';
+      trendingQueryForm.style.display = 'flex';
+      return;
+    }
+
+    form.style.display = '';
+    hintText.style.display = '';
+    userQueryForm.style.display = 'none';
+    trendingQueryForm.style.display = 'none';
+
+    applyModeText();
     catInput.focus();
   }
 
@@ -1285,7 +2525,7 @@
     const lang = langInput.value.trim().toLowerCase() || 'id';
     const query = catInput.value.trim();
     if(!query){
-      setStatus(currentMode === 'category' ? 'Isi nama kategori terlebih dahulu.' : 'Isi judul artikel terlebih dahulu.', true);
+      setStatus(currentMode === 'category' ? t('errorEmptyCategory') : t('errorEmptyArticle'), true);
       return;
     }
     if(currentMode === 'category'){
@@ -1295,7 +2535,33 @@
     }
   });
 
+  userQueryForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = userUsernameInput.value.trim();
+    const project = userProjectInput.value.trim();
+    if(!username){
+      setStatus(t('errorEmptyUsername'), true);
+      return;
+    }
+    if(!project){
+      setStatus(t('errorEmptyProject'), true);
+      return;
+    }
+    runUserSearch(username, project);
+  });
+
+  trendingQueryForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const project = trendingProjectInput.value.trim();
+    if(!project){
+      setStatus(t('errorEmptyProject'), true);
+      return;
+    }
+    runTrendingSearch(project);
+  });
+
   // Small default to demonstrate on load focus.
+  applyUILanguage();
   catInput.focus();
   getMwLanguageNames(); // warm the cache in the background
 })();
