@@ -150,7 +150,8 @@
             font-size: 14px;
         }
 
-        input[type="text"] {
+        input[type="text"],
+        input[type="date"] {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
@@ -159,9 +160,11 @@
             background: var(--bg-secondary);
             color: var(--text-primary);
             transition: border 0.2s;
+            color-scheme: light dark;
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus,
+        input[type="date"]:focus {
             outline: none;
             border-color: var(--accent);
         }
@@ -975,6 +978,23 @@
             </div>
 
             <div class="form-group">
+                <label data-i18n="dateRange">Rentang Tanggal</label>
+                <div class="field-info" data-i18n="dateRangeInfo" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                    Semakin besar rentang tanggalnya, semakin lama proses analisisnya.
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                    <div>
+                        <label for="dateFrom" style="font-weight: normal; font-size: 12px; color: var(--text-secondary);" data-i18n="dateFrom">Dari</label>
+                        <input type="date" id="dateFrom">
+                    </div>
+                    <div>
+                        <label for="dateTo" style="font-weight: normal; font-size: 12px; color: var(--text-secondary);" data-i18n="dateTo">Sampai</label>
+                        <input type="date" id="dateTo">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label data-i18n="filterOptions">Filter Options</label>
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
                     <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
@@ -1066,6 +1086,11 @@
                 usernameInfo: 'Anda dapat memasukkan lebih dari satu username, pisahkan dengan koma (,) atau baris baru (Enter).',
                 examplePlaceholder: 'Contoh: Example1, Example2',
                 project: 'URL Proyek Wikimedia',
+                dateRange: 'Rentang Tanggal',
+                dateRangeInfo: 'Semakin besar rentang tanggalnya, semakin lama proses analisisnya.',
+                dateFrom: 'Dari',
+                dateTo: 'Sampai',
+                errorDateRange: 'Rentang tanggal tidak valid',
                 filterOptions: 'Opsi Filter',
                 mainNamespaceOnly: 'Hanya namespace utama (tidak termasuk pembicaraan, halaman pengguna, dll.)',
                 newPagesOnly: 'Hanya entri baru (artikel yang baru dibuat)',
@@ -1124,6 +1149,11 @@
                 usernameInfo: 'You can enter more than one username, separated by commas (,) or new lines (Enter).',
                 examplePlaceholder: 'Example: Example1, Example2',
                 project: 'Wikimedia Project URL',
+                dateRange: 'Date Range',
+                dateRangeInfo: 'The wider the date range, the longer the analysis will take.',
+                dateFrom: 'From',
+                dateTo: 'To',
+                errorDateRange: 'Invalid date range',
                 filterOptions: 'Filter Options',
                 mainNamespaceOnly: 'Main namespace only (exclude talk, user pages, etc.)',
                 newPagesOnly: 'New pages only (article creations)',
@@ -2207,6 +2237,45 @@
             });
         }
 
+        // Date range input (Dari/Sampai)
+        function toDateInputValue(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function initDateRangeInputs() {
+            const dateFrom = document.getElementById('dateFrom');
+            const dateTo = document.getElementById('dateTo');
+            const today = toDateInputValue(new Date());
+
+            // Default: keduanya hari ini
+            dateFrom.value = today;
+            dateTo.value = today;
+
+            // "Sampai" tidak boleh melebihi hari ini
+            dateTo.max = today;
+            // "Dari" tidak boleh melebihi "Sampai" (yang juga tidak boleh melebihi hari ini)
+            dateFrom.max = dateTo.value;
+            // "Sampai" tidak boleh kurang dari "Dari"
+            dateTo.min = dateFrom.value;
+
+            dateFrom.addEventListener('change', () => {
+                if (!dateFrom.value) return;
+                if (dateFrom.value > today) dateFrom.value = today;
+                if (dateFrom.value > dateTo.value) dateTo.value = dateFrom.value;
+                dateTo.min = dateFrom.value;
+            });
+
+            dateTo.addEventListener('change', () => {
+                if (!dateTo.value) return;
+                if (dateTo.value > today) dateTo.value = today;
+                if (dateTo.value < dateFrom.value) dateFrom.value = dateTo.value;
+                dateFrom.max = dateTo.value;
+            });
+        }
+
         async function run() {
             const errorEl = document.getElementById('error');
             const statusEl = document.getElementById('status');
@@ -2238,9 +2307,18 @@
             commitPendingUsernameInput();
             const users = [...usernameChips];
             const projectInput = document.getElementById('project').value.trim();
+            const dateFromVal = document.getElementById('dateFrom').value;
+            const dateToVal = document.getElementById('dateTo').value;
 
-            if (!users.length || !projectInput) {
+            if (!users.length || !projectInput || !dateFromVal || !dateToVal) {
                 errorEl.textContent = translations[currentLang].errorFields;
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const todayVal = toDateInputValue(new Date());
+            if (dateFromVal > dateToVal || dateToVal > todayVal) {
+                errorEl.textContent = translations[currentLang].errorDateRange;
                 errorEl.style.display = 'block';
                 return;
             }
@@ -2251,13 +2329,12 @@
             exportPDFBtn.disabled = true;
             exportJSONBtn.disabled = true;
 
-            const days = 7;
             const proj = normalize(projectInput);
             const key = keyFrom(proj);
 
-            const end = new Date();
-            const start = new Date(end);
-            start.setDate(end.getDate() - days);
+            const start = new Date(`${dateFromVal}T00:00:00`);
+            const end = new Date(`${dateToVal}T23:59:59.999`);
+            const days = Math.max(1, Math.round((end - start) / 86400000));
 
             try {
                 // Fetch SELURUH kontribusi untuk semua username sekaligus (dengan continuation
@@ -2323,8 +2400,8 @@
                 exportData.projectDisplayName = getWikiDisplayName(proj);
                 exportData.pageUrl = getCurrentPageUrl();
                 exportData.period = {
-                    start: start.toISOString().split('T')[0],
-                    end: end.toISOString().split('T')[0],
+                    start: dateFromVal,
+                    end: dateToVal,
                     days
                 };
                 exportData.summary = {
@@ -2352,7 +2429,7 @@
                 for (const t of titles) {
                     let views = 0;
                     try {
-                        const pvUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${key}/all-access/user/${encodeURIComponent(t)}/daily/${start.toISOString().slice(0, 10).replace(/-/g, '')}/${end.toISOString().slice(0, 10).replace(/-/g, '')}`;
+                        const pvUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${key}/all-access/user/${encodeURIComponent(t)}/daily/${dateFromVal.replace(/-/g, '')}/${dateToVal.replace(/-/g, '')}`;
                         const pvRes = await fetch(pvUrl);
                         const pvData = await pvRes.json();
                         views = pvData.items?.reduce((sum, i) => sum + i.views, 0) || 0;
@@ -2441,6 +2518,7 @@
             updateLanguage();
             initTheme(); // This will also update button states
             initUsernameChipInput();
+            initDateRangeInputs();
 
             document.getElementById('analyzeBtn').addEventListener('click', run);
 
