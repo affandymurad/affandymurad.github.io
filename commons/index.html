@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commons Gallery — Jelajahi Wikimedia Commons</title>
+<meta name="description" content="Commons Gallery: aplikasi Android untuk menjelajahi jutaan foto, video, dan audio bebas dari Wikimedia Commons. Tanpa login, dua bahasa, peta sekitar.">
+<style>
+:root{
+  --bg:#f6f9fc; --surface:#ffffff; --ink:#0f1b2d; --muted:#51607a; --line:#dbe4ee;
+  --brand:#0077b6; --brand-2:#00b4d8; --brand-ink:#ffffff; --accent:#e65100; --ok:#2e7d32;
+  --soft:#e8f3fa; --shadow:0 10px 30px rgba(15,27,45,.08);
+}
+:root{color-scheme:light}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){color-scheme:dark;--bg:#0b1220;--surface:#121b2e;--ink:#eaf1fb;--muted:#9fb0c9;--line:#243049;--soft:#14263d;--shadow:0 10px 30px rgba(0,0,0,.4)}
+}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0b1220;--surface:#121b2e;--ink:#eaf1fb;--muted:#9fb0c9;--line:#243049;--soft:#14263d;--shadow:0 10px 30px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--brand)}
+img,svg{max-width:100%}
+.wrap{width:min(1120px,100% - 32px);margin-inline:auto}
+html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{display:none!important}
+
+/* nav */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:20px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:-.01em}
+.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center}
+.logo i svg{width:18px;height:18px}
+nav.links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.links a{padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14.5px;white-space:nowrap}
+nav.links a:hover{background:var(--soft);color:var(--ink)}
+.lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;cursor:pointer}
+.tools{display:flex;gap:8px;align-items:center}
+.theme{display:grid;place-items:center;width:34px;height:34px;padding:0}
+.theme svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.theme .sun{display:none}
+:root[data-eff="dark"] .theme .sun{display:block}
+:root[data-eff="dark"] .theme .moon{display:none}
+@media (max-width:720px){nav.links{display:none}.nav{justify-content:space-between}}
+
+/* hero */
+.hero{padding:64px 0 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-top:40px}}
+.badge{display:inline-flex;gap:8px;align-items:center;background:var(--soft);color:var(--brand);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+h1{font-size:clamp(34px,5.4vw,56px);line-height:1.08;margin:16px 0 14px;letter-spacing:-.025em}
+h1 em{font-style:normal;background:linear-gradient(120deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:19px;color:var(--muted);max-width:34em}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 12px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:14px;font-weight:700;text-decoration:none;border:1px solid transparent}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 8px 20px rgba(0,119,182,.3)}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn small{display:block;font-weight:500;opacity:.85;font-size:11.5px;line-height:1.1}
+.fine{color:var(--muted);font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chips span{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--muted)}
+
+/* phone mock */
+.phones{position:relative;overflow:hidden;height:520px;display:flex;justify-content:center;align-items:center}
+.phone{position:absolute;width:210px;aspect-ratio:1080/2460;border-radius:32px;background:#0b1220;padding:9px;box-shadow:var(--shadow),0 0 0 1px rgba(255,255,255,.06) inset}
+.phone .scr{width:100%;height:100%;border-radius:24px;overflow:hidden;background:var(--surface)}
+.phone .scr img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.phone.a{transform:translateX(-96px) rotate(-6deg);z-index:1}
+.phone.b{transform:translateX(96px) rotate(5deg) translateY(18px);z-index:2}
+@media (max-width:480px){.phone{width:170px}.phone.a{transform:translateX(-62px) rotate(-6deg)}.phone.b{transform:translateX(62px) rotate(5deg) translateY(18px)}.phones{height:440px}}
+
+/* sections */
+section{padding:72px 0}
+.eyebrow{color:var(--brand);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+h2{font-size:clamp(26px,3.6vw,38px);line-height:1.15;margin:8px 0 12px;letter-spacing:-.02em}
+.sec-lead{color:var(--muted);max-width:40em;font-size:17.5px;margin:0 0 34px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.card .ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--soft);margin-bottom:14px}
+.card .ic svg{width:24px;height:24px;stroke:var(--brand);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:15.5px}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0 0;color:var(--muted);font-size:14.5px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:7px;vertical-align:-1px;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.legend .g::before{background:#2e7d32}.legend .o::before{background:#e65100}.legend .b::before{background:#1565c0}.legend .p::before{background:#6a1b9a}
+.checks{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
+.checks li{display:flex;gap:10px}
+.checks li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--brand);display:grid;place-items:center;font-size:13px;font-weight:800;margin-top:2px}
+.stage{background:var(--soft);border-radius:28px;padding:30px;display:flex;justify-content:center;min-height:430px;align-items:center}
+.stage{gap:16px}
+.stage .phone{position:relative;transform:none;width:min(200px,44%)}
+.stage .phone+.phone{margin-top:36px}
+
+/* steps */
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px 22px}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;font-weight:800;margin-bottom:12px}
+.step h3{margin:0 0 4px;font-size:17px}.step p{margin:0;color:var(--muted);font-size:15.5px}
+
+/* gallery placeholders */
+.shots{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 18px;margin:0 -2px;scrollbar-width:thin}
+.shots figure{flex:none;width:min(230px,62vw);margin:0;scroll-snap-align:start}
+.shots img{display:block;width:100%;height:auto;aspect-ratio:640/1458;object-fit:cover;border-radius:22px;border:1px solid var(--line);box-shadow:var(--shadow);background:var(--soft)}
+.shots figcaption{margin-top:10px;font-size:14px;color:var(--muted);text-align:center}
+.shots figcaption b{display:block;color:var(--ink);font-size:15px}
+
+/* roadmap / faq */
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.road div{background:var(--surface);border:1px dashed var(--line);border-radius:16px;padding:16px 18px}
+.road b{display:block;margin-bottom:2px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;background:#fff3e0;color:#b45309;border-radius:999px;padding:2px 9px;margin-bottom:6px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tag{background:#3a2a10;color:#ffc27a}}
+:root[data-theme="dark"] .tag{background:#3a2a10;color:#ffc27a}
+details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:4px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:700;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--brand);font-size:22px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:0 0 16px;color:var(--muted)}
+
+/* cta + footer */
+.final{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-radius:30px;padding:48px 28px;text-align:center}
+.final h2{margin-top:0}.final p{opacity:.92;max-width:34em;margin:0 auto 22px}
+.final .btn{background:#fff;color:#075985}
+footer{padding:36px 0 56px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .row{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+footer a{color:var(--muted)}
+</style>
+<script>
+try{var t=localStorage.getItem('cg-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Commons Gallery">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/></svg></i>
+      Commons Gallery
+    </a>
+    <nav class="links" aria-label="Menu">
+      <a href="#fitur"><span lang="id">Fitur</span><span lang="en">Features</span></a>
+      <a href="#nearby"><span lang="id">Sekitar</span><span lang="en">Nearby</span></a>
+      <a href="#cara"><span lang="id">Cara pakai</span><span lang="en">How it works</span></a>
+      <a href="#galeri"><span lang="id">Galeri</span><span lang="en">Gallery</span></a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="tools">
+      <button class="lang theme" id="themeBtn" type="button" aria-label="Ganti tema / Toggle theme" title="Tema / Theme">
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="lang" id="langBtn" type="button" aria-label="Ganti bahasa / Switch language">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<div class="wrap hero">
+  <div>
+    <span class="badge">● <span lang="id">Gratis · tanpa login · Android</span><span lang="en">Free · no login · Android</span></span>
+    <h1><span lang="id">Jelajahi jutaan media <em>bebas</em> dari Wikimedia Commons.</span><span lang="en">Explore millions of <em>free</em> media from Wikimedia Commons.</span></h1>
+    <p class="lead"><span lang="id">Foto, video, dan audio dari seluruh dunia dalam satu aplikasi yang cepat dan nyaman. Telusuri umpan terbaru, tonton video gaya Reels, temukan yang ada di sekitarmu, dan simpan favoritmu.</span><span lang="en">Photos, video and audio from around the world in one fast, comfortable app. Browse the latest feed, watch Reels-style video, find what is around you, and save your favorites.</span></p>
+    <div class="cta">
+      <a class="btn primary" href="#unduh" aria-disabled="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M4 3.5v17a1 1 0 0 0 1.5.9l15-8.5a1 1 0 0 0 0-1.8l-15-8.5A1 1 0 0 0 4 3.5z"/></svg><span><small><span lang="id">Segera hadir di</span><span lang="en">Coming soon to</span></small>Google Play</span></a>
+      <a class="btn ghost" href="#fitur"><span lang="id">Lihat fitur</span><span lang="en">See features</span></a>
+    </div>
+    <p class="fine"><span lang="id">Konten bersumber dari Wikimedia Commons dan berlisensi bebas. Selalu ada atribusi kreator dan lisensi.</span><span lang="en">Content comes from Wikimedia Commons under free licenses. Creator and license credit always shown.</span></p>
+    <div class="chips"><span>Jetpack Compose</span><span>Bahasa Indonesia · English</span><span>OpenStreetMap</span><span>Wikidata</span></div>
+  </div>
+
+  <div class="phones">
+    <div class="phone a"><div class="scr"><img src="images/webp/feeds.webp" width="640" height="1458" fetchpriority="high" alt="Beranda Commons Gallery: grid upload terbaru"></div></div>
+    <div class="phone b"><div class="scr"><img src="images/webp/sekitar_commons.webp" width="640" height="1458" fetchpriority="high" alt="Peta Sekitar dengan foto Commons dan klaster"></div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="fitur"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Fitur</span><span lang="en">Features</span></div>
+  <h2><span lang="id">Semua yang kamu butuhkan untuk menjelajah Commons</span><span lang="en">Everything you need to explore Commons</span></h2>
+  <p class="sec-lead"><span lang="id">Dirancang untuk dijelajahi dengan satu jempol: enam tab di bawah, tanpa menu bersarang.</span><span lang="en">Built for one-thumb browsing: six tabs at the bottom, no nested menus.</span></p>
+  <div class="cards">
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></div>
+      <h3><span lang="id">Beranda</span><span lang="en">Home feed</span></h3>
+      <p><span lang="id">Unggahan terbaru dengan tampilan grid atau kartu. Tarik untuk menyegarkan, gulir tanpa henti.</span><span lang="en">Latest uploads in grid or card view. Pull to refresh, scroll endlessly.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg></div>
+      <h3><span lang="id">Video gaya Reels</span><span lang="en">Reels-style video</span></h3>
+      <p><span lang="id">Geser vertikal untuk media acak: video, audio, dan gambar layar penuh.</span><span lang="en">Swipe vertically through random media: video, audio and full-screen images.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v10H3z"/></svg></div>
+      <h3><span lang="id">Penjelajah Kategori</span><span lang="en">Category Explorer</span></h3>
+      <p><span lang="id">Masuk ke pohon kategori Commons: media, subkategori, dan kategori induk dalam satu layar.</span><span lang="en">Walk the Commons category tree: media, subcategories and parent categories in one screen.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+      <h3><span lang="id">Pencarian cerdas</span><span lang="en">Smart search</span></h3>
+      <p><span lang="id">Cari berdasarkan jenis media, kategori, atau nama pengguna dengan satu kolom.</span><span lang="en">Search by media type, category, or username from a single field.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+      <h3><span lang="id">Peta sekitar</span><span lang="en">Nearby map</span></h3>
+      <p><span lang="id">Lihat foto Commons yang bergeotag di sekitarmu, dan tempat Wikidata yang masih butuh foto.</span><span lang="en">See geotagged Commons photos around you, plus Wikidata places that still need a photo.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg></div>
+      <h3><span lang="id">Koleksi pribadi</span><span lang="en">Your library</span></h3>
+      <p><span lang="id">Simpan media, kreator, dan kategori di tiga daftar terpisah. Tersimpan di perangkat, tanpa akun.</span><span lang="en">Save media, creators and categories in three separate lists. Stored on-device, no account.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></div>
+      <h3><span lang="id">Profil kreator</span><span lang="en">Creator profiles</span></h3>
+      <p><span lang="id">Lihat semua unggahan seorang kontributor dan ikuti karyanya.</span><span lang="en">Browse every upload from a contributor and follow their work.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+      <h3><span lang="id">Detail yang lengkap</span><span lang="en">Rich detail view</span></h3>
+      <p><span lang="id">Lisensi, kreator, riwayat revisi, diskusi halaman, dan di mana file dipakai di Wikipedia.</span><span lang="en">License, creator, revision history, talk page, and where the file is used on Wikipedia.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div>
+      <h3><span lang="id">Dua bahasa</span><span lang="en">Two languages</span></h3>
+      <p><span lang="id">Antarmuka Bahasa Indonesia dan English, bisa diganti kapan saja.</span><span lang="en">Indonesian and English interface, switchable any time.</span></p></article>
+  </div>
+</div></section>
+
+<!-- NEARBY -->
+<section id="nearby" style="background:var(--surface);border-block:1px solid var(--line)"><div class="wrap split">
+  <div>
+    <div class="eyebrow"><span lang="id">Sekitar</span><span lang="en">Nearby</span></div>
+    <h2><span lang="id">Peta yang menjawab: “apa yang ada di dekat sini?”</span><span lang="en">A map that answers: “what is around here?”</span></h2>
+    <p class="sec-lead" style="margin-bottom:10px"><span lang="id">Dua mode dalam satu peta. Ganti dengan satu ketukan chip.</span><span lang="en">Two modes on one map. Switch with a single chip tap.</span></p>
+    <ul class="checks">
+      <li><span lang="id"><b>Commons:</b> foto bergeotag di area peta, dengan klaster yang bisa dibuka menjadi kipas agar tiap foto tetap bisa diketuk.</span><span lang="en"><b>Commons:</b> geotagged photos in the map area, with clusters that fan open so every photo stays tappable.</span></li>
+      <li><span lang="id"><b>Wikidata · butuh foto (P18):</b> tempat berkoordinat yang belum punya gambar, ajakan untuk memotretnya.</span><span lang="en"><b>Wikidata · need photos (P18):</b> places with coordinates but no image yet — an invitation to photograph them.</span></li>
+      <li><span lang="id">Koordinat tengah peta tampil di atas dan bisa disalin dengan satu ketukan.</span><span lang="en">The map-center coordinates sit on top and copy with one tap.</span></li>
+    </ul>
+    <div class="legend">
+      <span class="g"><span lang="id">Foto Commons</span><span lang="en">Commons photo</span></span>
+      <span class="o"><span lang="id">Butuh foto</span><span lang="en">Needs photo</span></span>
+      <span class="b"><span lang="id">Klaster</span><span lang="en">Cluster</span></span>
+      <span class="p"><span lang="id">Dipilih</span><span lang="en">Selected</span></span>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="phone"><div class="scr"><img src="images/webp/sekitar_commons.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Mode Commons: foto bergeotag dan klaster"></div></div>
+    <div class="phone"><div class="scr"><img src="images/webp/sekitar_wikidata.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Mode Wikidata: tempat yang butuh foto (P18)"></div></div>
+  </div>
+</div></section>
+
+<!-- HOW -->
+<section id="cara"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Cara pakai</span><span lang="en">How it works</span></div>
+  <h2><span lang="id">Mulai dalam hitungan detik</span><span lang="en">Up and running in seconds</span></h2>
+  <p class="sec-lead"><span lang="id">Tidak ada pendaftaran, tidak ada kata sandi.</span><span lang="en">No sign-up, no password.</span></p>
+  <div class="steps">
+    <div class="step"><h3><span lang="id">Pasang aplikasi</span><span lang="en">Install the app</span></h3><p><span lang="id">Unduh Commons Gallery dan buka. Langsung tampil umpan terbaru.</span><span lang="en">Download Commons Gallery and open it. The latest feed appears right away.</span></p></div>
+    <div class="step"><h3><span lang="id">Jelajahi</span><span lang="en">Explore</span></h3><p><span lang="id">Telusuri umpan, video, kategori, atau cari apa pun lewat tab di bawah.</span><span lang="en">Browse the feed, video, categories, or search anything from the tabs below.</span></p></div>
+    <div class="step"><h3><span lang="id">Temukan di sekitarmu</span><span lang="en">Find what is nearby</span></h3><p><span lang="id">Izinkan lokasi presisi untuk melihat media dan tempat di sekitar posisimu.</span><span lang="en">Allow precise location to see media and places around you.</span></p></div>
+    <div class="step"><h3><span lang="id">Simpan</span><span lang="en">Save</span></h3><p><span lang="id">Ketuk penanda untuk menyimpan media, kreator, atau kategori ke Koleksi.</span><span lang="en">Tap the bookmark to save media, creators or categories to your Library.</span></p></div>
+  </div>
+</div></section>
+
+<!-- GALLERY -->
+<section id="galeri" style="background:var(--surface);border-block:1px solid var(--line)"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Galeri</span><span lang="en">Gallery</span></div>
+  <h2><span lang="id">Lihat langsung</span><span lang="en">See it in action</span></h2>
+  <p class="sec-lead"><span lang="id">Geser untuk melihat tampilan aplikasi.</span><span lang="en">Swipe to see the app.</span></p>
+  <div class="shots" tabindex="0" aria-label="Screenshot aplikasi / App screenshots">
+    <figure><img src="images/webp/feeds.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Beranda"><figcaption><b><span lang="id">Beranda</span><span lang="en">Home</span></b><span lang="id">Upload terbaru dalam grid</span><span lang="en">Latest uploads in a grid</span></figcaption></figure>
+    <figure><img src="images/webp/random.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Random"><figcaption><b><span lang="id">Random</span><span lang="en">Random</span></b><span lang="id">Video dan media acak layar penuh</span><span lang="en">Full-screen random video and media</span></figcaption></figure>
+    <figure><img src="images/webp/kategori.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Penjelajah kategori"><figcaption><b><span lang="id">Penjelajah kategori</span><span lang="en">Category explorer</span></b><span lang="id">Media, subkategori, kategori induk</span><span lang="en">Media, subcategories, parent categories</span></figcaption></figure>
+    <figure><img src="images/webp/topik.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Topik"><figcaption><b><span lang="id">Topik</span><span lang="en">Topics</span></b><span lang="id">Topik pilihan Commons</span><span lang="en">Curated Commons topics</span></figcaption></figure>
+    <figure><img src="images/webp/sekitar_commons.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Sekitar · Commons"><figcaption><b><span lang="id">Sekitar · Commons</span><span lang="en">Nearby · Commons</span></b><span lang="id">Foto bergeotag dengan klaster</span><span lang="en">Geotagged photos with clusters</span></figcaption></figure>
+    <figure><img src="images/webp/sekitar_wikidata.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Sekitar · Wikidata"><figcaption><b><span lang="id">Sekitar · Wikidata</span><span lang="en">Nearby · Wikidata</span></b><span lang="id">Tempat yang butuh foto (P18)</span><span lang="en">Places that need a photo (P18)</span></figcaption></figure>
+    <figure><img src="images/webp/cari.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Cari"><figcaption><b><span lang="id">Cari</span><span lang="en">Search</span></b><span lang="id">Cari media, kategori, pengguna</span><span lang="en">Search media, categories, users</span></figcaption></figure>
+    <figure><img src="images/webp/simpan.webp" width="640" height="1458" loading="lazy" decoding="async" alt="Screenshot Simpan"><figcaption><b><span lang="id">Simpan</span><span lang="en">Saved</span></b><span lang="id">Media, kreator, kategori tersimpan</span><span lang="en">Saved media, creators, categories</span></figcaption></figure>
+  </div>
+</div></section>
+
+<!-- ROADMAP -->
+<section id="rencana"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Rencana</span><span lang="en">Roadmap</span></div>
+  <h2><span lang="id">Yang sedang disiapkan</span><span lang="en">What is being prepared</span></h2>
+  <p class="sec-lead"><span lang="id">Rencana, belum dijanjikan. Urutan dan waktu bisa berubah.</span><span lang="en">Plans, not promises. Order and timing may change.</span></p>
+  <div class="road">
+    <div><span class="tag"><span lang="id">Rencana</span><span lang="en">Planned</span></span><b><span lang="id">Login Wikimedia</span><span lang="en">Wikimedia login</span></b><span class="fine"><span lang="id">Opsional; aplikasi tetap bisa dipakai tanpa akun.</span><span lang="en">Optional; the app stays usable without an account.</span></span></div>
+    <div><span class="tag"><span lang="id">Rencana</span><span lang="en">Planned</span></span><b><span lang="id">Unggah foto</span><span lang="en">Photo upload</span></b><span class="fine"><span lang="id">Dengan saran kategori dan metadata.</span><span lang="en">With category suggestions and metadata.</span></span></div>
+    <div><span class="tag"><span lang="id">Rencana</span><span lang="en">Planned</span></span><b><span lang="id">Lengkapi gambar Wikidata</span><span lang="en">Fill Wikidata images</span></b><span class="fine"><span lang="id">Hubungkan foto baru ke tempat yang butuh foto.</span><span lang="en">Link new photos to places that need one.</span></span></div>
+    <div><span class="tag"><span lang="id">Rencana</span><span lang="en">Planned</span></span><b>iOS &amp; Desktop</b><span class="fine"><span lang="id">Lewat Kotlin Multiplatform.</span><span lang="en">Through Kotlin Multiplatform.</span></span></div>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section id="faq" style="padding-top:0"><div class="wrap" style="max-width:820px">
+  <div class="eyebrow"><span lang="id">Tanya jawab</span><span lang="en">FAQ</span></div>
+  <h2 style="margin-bottom:22px"><span lang="id">Pertanyaan yang sering muncul</span><span lang="en">Frequently asked questions</span></h2>
+  <details><summary><span lang="id">Apakah ini aplikasi resmi Wikimedia?</span><span lang="en">Is this an official Wikimedia app?</span></summary><p><span lang="id">Bukan. Commons Gallery adalah aplikasi independen yang memakai API publik Wikimedia Commons. Wikimedia dan Commons adalah merek Wikimedia Foundation.</span><span lang="en">No. Commons Gallery is an independent app using the public Wikimedia Commons APIs. Wikimedia and Commons are trademarks of the Wikimedia Foundation.</span></p></details>
+  <details><summary><span lang="id">Perlu akun atau login?</span><span lang="en">Do I need an account?</span></summary><p><span lang="id">Tidak. Menjelajah, mencari, dan menyimpan koleksi bekerja tanpa akun. Koleksi tersimpan di perangkatmu.</span><span lang="en">No. Browsing, searching and saving work without an account. Your library is stored on your device.</span></p></details>
+  <details><summary><span lang="id">Mengapa meminta izin lokasi?</span><span lang="en">Why does it ask for location?</span></summary><p><span lang="id">Hanya untuk tab Sekitar, agar peta berpusat di posisimu. Pilih “Tepat/Precise” supaya akurat. Lokasi tidak dikirim ke server kami.</span><span lang="en">Only for the Nearby tab, to center the map on you. Choose “Precise” for accuracy. Your location is not sent to any server of ours.</span></p></details>
+  <details><summary><span lang="id">Bolehkah memakai ulang foto yang saya temukan?</span><span lang="en">Can I reuse the photos I find?</span></summary><p><span lang="id">Setiap file punya lisensinya sendiri (misalnya CC BY-SA). Halaman detail menampilkan lisensi dan kreator, yang perlu kamu cantumkan saat memakai ulang.</span><span lang="en">Each file has its own license (for example CC BY-SA). The detail page shows the license and creator you need to credit when reusing.</span></p></details>
+  <details><summary><span lang="id">Bagaimana cara menambah foto ke Commons?</span><span lang="en">How do I add photos to Commons?</span></summary><p><span lang="id">Fitur unggah belum ada di aplikasi ini. Untuk saat ini kamu bisa memakai aplikasi Commons resmi atau situs commons.wikimedia.org.</span><span lang="en">Upload is not in this app yet. For now, use the official Commons app or commons.wikimedia.org.</span></p></details>
+</div></section>
+
+<!-- FINAL CTA -->
+<section id="unduh" style="padding-top:0"><div class="wrap">
+  <div class="final">
+    <h2><span lang="id">Siap menjelajah?</span><span lang="en">Ready to explore?</span></h2>
+    <p><span lang="id">Commons Gallery segera hadir. Pantau halaman ini untuk tautan unduhan.</span><span lang="en">Commons Gallery is coming soon. Watch this page for the download link.</span></p>
+    <a class="btn" href="#top"><span lang="id">Kembali ke atas</span><span lang="en">Back to top</span></a>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap row">
+  <div>© <span id="yr">2026</span> Commons Gallery · <span lang="id">Aplikasi independen, bukan produk resmi Wikimedia Foundation.</span><span lang="en">Independent app, not an official Wikimedia Foundation product.</span></div>
+  <div>
+    <a href="https://commons.wikimedia.org" rel="noopener">Wikimedia Commons</a> ·
+    <a href="https://www.openstreetmap.org/copyright" rel="noopener">© OpenStreetMap</a> ·
+    <a href="https://www.wikidata.org" rel="noopener">Wikidata</a>
+  </div>
+</div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('langBtn');
+  function set(l){root.lang=l;btn.textContent=l==='id'?'EN':'ID';try{localStorage.setItem('cg-lang',l)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('cg-lang')}catch(e){}
+  set(saved||((navigator.language||'id').toLowerCase().indexOf('id')===0?'id':'en'));
+  btn.addEventListener('click',function(){set(root.lang==='id'?'en':'id')});
+  // Theme: follows the system until the user picks one; the choice is then remembered.
+  var mq=window.matchMedia('(prefers-color-scheme: dark)'),tb=document.getElementById('themeBtn');
+  function effective(){var t=root.getAttribute('data-theme');return t||(mq.matches?'dark':'light')}
+  function paint(){root.setAttribute('data-eff',effective());tb.setAttribute('aria-pressed',effective()==='dark')}
+  tb.addEventListener('click',function(){
+    var next=effective()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);try{localStorage.setItem('cg-theme',next)}catch(e){}
+    paint();
+  });
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(paint);
+  paint();
+  document.getElementById('yr').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
