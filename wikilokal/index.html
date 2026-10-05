@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wikilokal 2.0 — Kotlin Multiplatform</title>
-<meta name="description" content="Wikilokal 2.0.0 kini Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, dan segera iOS. Jelajahi Wikipedia, Commons, Wikidata, dan OpenStreetMap di sekitarmu.">
+<meta name="description" content="Wikilokal 2.0.0 kini Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, web, dan segera iOS. Jelajahi Wikipedia, Commons, Wikidata, dan OpenStreetMap di sekitarmu.">
 <link rel="icon" href="wikilokal.ico" type="image/x-icon">
 <style>
 :root{
@@ -125,7 +125,7 @@ h2{font-size:clamp(26px,3.6vw,38px);line-height:1.15;margin:8px 0 12px;letter-sp
 .arch .row{display:grid;gap:12px}
 .arch .shared{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-radius:18px;padding:18px;text-align:center;font-weight:800}
 .arch .shared small{display:block;font-weight:500;opacity:.9;margin-top:2px}
-.arch .targets{grid-template-columns:repeat(4,1fr)}
+.arch .targets{grid-template-columns:repeat(5,1fr)}
 .arch .t{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;font-size:13.5px;font-weight:700}
 .arch .t span{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
 .arch .t.soon{border-style:dashed;color:var(--muted)}
@@ -216,7 +216,7 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
   <div>
     <span class="badge">● <span lang="id">Versi 2.0.0 · Kotlin Multiplatform</span><span lang="en">Version 2.0.0 · Kotlin Multiplatform</span></span>
     <h1><span lang="id">Jelajahi Wikimedia <em>di sekitarmu</em>, di semua perangkat.</span><span lang="en">Explore Wikimedia <em>around you</em>, on every device.</span></h1>
-    <p class="lead"><span lang="id">Wikilokal menghubungkan Wikipedia, Wikimedia Commons, Wikidata, dan OpenStreetMap berdasarkan lokasi. Kini ditulis ulang dengan Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, dan segera iOS.</span><span lang="en">Wikilokal links Wikipedia, Wikimedia Commons, Wikidata and OpenStreetMap by location. Now rebuilt on Kotlin Multiplatform: one codebase for Android, Windows, macOS and, soon, iOS.</span></p>
+    <p class="lead"><span lang="id">Wikilokal menghubungkan Wikipedia, Wikimedia Commons, Wikidata, dan OpenStreetMap berdasarkan lokasi. Kini ditulis ulang dengan Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, web, dan segera iOS.</span><span lang="en">Wikilokal links Wikipedia, Wikimedia Commons, Wikidata and OpenStreetMap by location. Now rebuilt on Kotlin Multiplatform: one codebase for Android, Windows, macOS, web and, soon, iOS.</span></p>
     <div class="cta">
       <a class="btn primary" href="https://play.google.com/store/apps/details?id=kmt.commuterline.am" rel="noopener" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><use href="#i-play"/></svg><span><small><span lang="id">Dapatkan di</span><span lang="en">Get it on</span></small>Google Play</span></a>
       <a class="btn ghost" href="#platform"><span lang="id">Semua platform</span><span lang="en">All platforms</span></a>
@@ -235,7 +235,7 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
 <section id="platform" class="alt"><div class="wrap">
   <div class="eyebrow"><span lang="id">Platform</span><span lang="en">Platforms</span></div>
   <h2><span lang="id">Unduh untuk perangkatmu</span><span lang="en">Download for your device</span></h2>
-  <p class="sec-lead"><span lang="id">Satu aplikasi, empat target. Pilih yang kamu pakai sehari-hari.</span><span lang="en">One app, four targets. Pick what you use every day.</span></p>
+  <p class="sec-lead"><span lang="id">Satu aplikasi, lima target. Pilih yang kamu pakai sehari-hari.</span><span lang="en">One app, five targets. Pick what you use every day.</span></p>
   <div class="plats">
     <div class="plat">
       <div class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></div>
@@ -254,6 +254,12 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
       <h3>macOS</h3>
       <p><span lang="id">Citra disk .dmg. Buka lalu seret ke Applications.</span><span lang="en">A .dmg disk image. Open it and drag to Applications.</span></p>
       <a class="btn primary" href="https://drive.google.com/file/d/1KuRDtCKNSU2K-emflnhAIhBw1oOAMDlw/view?usp=sharing" rel="noopener" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dl"/></svg>Unduh .dmg</a>
+    </div>
+    <div class="plat">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div>
+      <h3>Web</h3>
+      <p><span lang="id">Langsung dari browser, tanpa pemasangan.</span><span lang="en">Straight from your browser, no install needed.</span></p>
+      <a class="btn primary" href="http://wikilokal.netlify.app/" rel="noopener" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg><span lang="id">Buka web</span><span lang="en">Open web app</span></a>
     </div>
     <div class="plat soon">
       <div class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><circle cx="12" cy="18.5" r=".6"/></svg></div>
@@ -307,7 +313,7 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
     <h2><span lang="id">Dari satu aplikasi menjadi satu basis kode</span><span lang="en">From one app to one codebase</span></h2>
     <p class="sec-lead" style="margin-bottom:10px"><span lang="id">Versi 2.0.0 adalah transformasi besar: logika dan antarmuka dipakai bersama, sementara tiap platform tetap terasa asli.</span><span lang="en">Version 2.0.0 is a major transformation: logic and UI are shared, while each platform still feels native.</span></p>
     <ul class="checks">
-      <li><span lang="id"><b>Satu logika, empat target:</b> fitur baru cukup ditulis sekali, lalu hadir di Android, Windows, macOS, dan iOS.</span><span lang="en"><b>One logic, four targets:</b> write a feature once and it lands on Android, Windows, macOS and iOS.</span></li>
+      <li><span lang="id"><b>Satu logika, lima target:</b> fitur baru cukup ditulis sekali, lalu hadir di Android, Windows, macOS, web, dan iOS.</span><span lang="en"><b>One logic, five targets:</b> write a feature once and it lands on Android, Windows, macOS, web and iOS.</span></li>
       <li><span lang="id"><b>Pengalaman konsisten:</b> pengguna desktop dan seluler mendapat fitur yang sama pada waktu yang sama.</span><span lang="en"><b>Consistent experience:</b> desktop and mobile users get the same features at the same time.</span></li>
       <li><span lang="id"><b>Pemeliharaan lebih ringan:</b> satu perbaikan bug berlaku untuk semua platform.</span><span lang="en"><b>Easier upkeep:</b> one bug fix applies to every platform.</span></li>
     </ul>
@@ -318,6 +324,7 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
       <div class="t">Android<span>APK / AAB</span></div>
       <div class="t">Windows<span>.exe</span></div>
       <div class="t">macOS<span>.dmg</span></div>
+      <div class="t">Web<span>Wasm</span></div>
       <div class="t soon">iOS<span><span lang="id">segera</span><span lang="en">soon</span></span></div>
     </div>
   </div>
@@ -379,7 +386,7 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
   <div class="eyebrow"><span lang="id">Tanya jawab</span><span lang="en">FAQ</span></div>
   <h2 style="margin-bottom:22px"><span lang="id">Pertanyaan yang sering muncul</span><span lang="en">Frequently asked questions</span></h2>
   <details><summary><span lang="id">Apakah ini aplikasi resmi Wikimedia?</span><span lang="en">Is this an official Wikimedia app?</span></summary><p><span lang="id">Bukan. Wikilokal adalah proyek independen yang memakai API publik proyek Wikimedia dan OpenStreetMap. Wikimedia adalah merek Wikimedia Foundation. Dikembangkan dan dikelola oleh <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>.</span><span lang="en">No. Wikilokal is an independent project using public APIs of Wikimedia projects and OpenStreetMap. Wikimedia is a trademark of the Wikimedia Foundation. Developed and maintained by <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>.</span></p></details>
-  <details><summary><span lang="id">Apa yang berubah di versi 2.0.0?</span><span lang="en">What changed in 2.0.0?</span></summary><p><span lang="id">Aplikasi dibangun ulang dengan Kotlin Multiplatform sehingga satu basis kode melayani Android, Windows, macOS, dan nantinya iOS.</span><span lang="en">The app was rebuilt with Kotlin Multiplatform so one codebase serves Android, Windows, macOS and, later, iOS.</span></p></details>
+  <details><summary><span lang="id">Apa yang berubah di versi 2.0.0?</span><span lang="en">What changed in 2.0.0?</span></summary><p><span lang="id">Aplikasi dibangun ulang dengan Kotlin Multiplatform sehingga satu basis kode melayani Android, Windows, macOS, web, dan nantinya iOS.</span><span lang="en">The app was rebuilt with Kotlin Multiplatform so one codebase serves Android, Windows, macOS, web and, later, iOS.</span></p></details>
   <details><summary><span lang="id">Kapan iOS tersedia?</span><span lang="en">When will iOS be available?</span></summary><p><span lang="id">Belum ada tanggal pasti. Pantau halaman ini dan situs utama untuk kabar terbaru.</span><span lang="en">There is no firm date yet. Watch this page and the main website for updates.</span></p></details>
   <details><summary><span lang="id">Windows/macOS menampilkan peringatan keamanan. Aman?</span><span lang="en">Windows/macOS shows a security warning. Is it safe?</span></summary><p><span lang="id">Berkas desktop belum ditandatangani sertifikat pengembang berbayar, jadi sistem operasi bisa memperingatkan. Unduh hanya dari tautan di halaman ini. Di macOS, klik kanan lalu pilih Open; di Windows, pilih “More info” lalu “Run anyway”.</span><span lang="en">The desktop files are not yet signed with a paid developer certificate, so the OS may warn you. Download only from links on this page. On macOS, right-click and choose Open; on Windows, choose “More info” then “Run anyway”.</span></p></details>
   <details><summary><span lang="id">Bagaimana cara melihat versi web?</span><span lang="en">Is there a web version?</span></summary><p><span lang="id">Ya, buka <a href="http://wikilokal.netlify.app/" rel="noopener" target="_blank">wikilokal.netlify.app</a>.</span><span lang="en">Yes, open <a href="http://wikilokal.netlify.app/" rel="noopener" target="_blank">wikilokal.netlify.app</a>.</span></p></details>
@@ -389,10 +396,11 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
 <section style="padding-top:0"><div class="wrap">
   <div class="final">
     <h2><span lang="id">Siap menjelajah sekitarmu?</span><span lang="en">Ready to explore around you?</span></h2>
-    <p><span lang="id">Pasang Wikilokal 2.0 di Android, Windows, atau macOS. iOS segera menyusul.</span><span lang="en">Get Wikilokal 2.0 on Android, Windows or macOS. iOS is coming soon.</span></p>
+    <p><span lang="id">Pasang Wikilokal 2.0 di Android, Windows, atau macOS, atau buka langsung di web. iOS segera menyusul.</span><span lang="en">Get Wikilokal 2.0 on Android, Windows or macOS, or open it on the web. iOS is coming soon.</span></p>
     <a class="btn" href="https://play.google.com/store/apps/details?id=kmt.commuterline.am" rel="noopener" target="_blank">Google Play</a>
     <a class="btn" href="https://drive.google.com/file/d/1nmcE1e1xg5wl7CxgMrD-AWdx6_8glEnb/view?usp=sharing" rel="noopener" target="_blank">Windows</a>
     <a class="btn" href="https://drive.google.com/file/d/1KuRDtCKNSU2K-emflnhAIhBw1oOAMDlw/view?usp=sharing" rel="noopener" target="_blank">macOS</a>
+    <a class="btn" href="http://wikilokal.netlify.app/" rel="noopener" target="_blank">Web</a>
   </div>
 </div></section>
 </main>
