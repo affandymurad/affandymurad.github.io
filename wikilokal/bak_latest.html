@@ -1,0 +1,3119 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikilokal</title>
+    <link rel="icon" href="wikilokal.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #38bdf8;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --bg-secondary: #f3f4f6;
+            --radius: 14px;
+            --radius-sm: 10px;
+            --radius-lg: 22px;
+            --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #3b82f6;
+            --secondary-color: #2563eb;
+            --accent-color: #60a5fa;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --danger-color: #f87171;
+            --text-color: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-color: #1f2937;
+            --card-bg: #374151;
+            --border-color: #4b5563;
+            --bg-secondary: #2d3748;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ===== FONT UPGRADE ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: var(--bg-color);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.06), transparent 45%),
+                radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.06), transparent 45%);
+            background-attachment: fixed;
+            color: var(--text-color);
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            transition: background-color 0.3s, color 0.3s;
+            letter-spacing: -0.011em;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 1.75rem;
+            letter-spacing: -0.025em;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2::before {
+            content: "";
+            width: 6px;
+            height: 1.1rem;
+            border-radius: 4px;
+            background: linear-gradient(180deg, var(--primary-color), var(--accent-color));
+            display: inline-block;
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.025em;
+        }
+
+        #controls {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(2, auto) 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+
+        @media (max-width: 968px) {
+            #controls {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            #check-permission {
+                grid-column: 1 / -1;
+            }
+
+            .permission-badge {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #controls {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 0.85rem;
+            }
+
+            #theme-select,
+            #language-select,
+            #check-permission,
+            .permission-badge {
+                width: 100%;
+                grid-column: 1;
+            }
+
+            #check-permission {
+                justify-content: center;
+            }
+
+            .permission-badge {
+                text-align: center;
+            }
+        }
+
+        .permission-badge {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .permission-badge.granted {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+        }
+
+        .permission-badge.denied {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
+
+        .permission-badge.pending {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning-color);
+        }
+
+        #article-count {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .progress-container {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-text {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 100px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-count {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        #theme-select,
+        #language-select {
+            padding: 0.75rem 1rem;
+            padding-right: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        #theme-select {
+            min-width: 140px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M2 4l4 4 4-4z'/%3E%3C/svg%3E");
+        }
+
+        #language-select {
+            min-width: 210px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M2 4l4 4 4-4z'/%3E%3C/svg%3E");
+        }
+
+        #theme-select:hover,
+        #language-select:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        #theme-select:focus,
+        #language-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        [data-theme="dark"] #theme-select,
+        [data-theme="dark"] #language-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23d1d5db' d='M2 4l4 4 4-4z'/%3E%3C/svg%3E");
+        }
+
+        #theme-select option,
+        #language-select option {
+            padding: 0.5rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            padding: 0.7rem 1.4rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        #check-permission::before {
+            content: "📍";
+            font-size: 1rem;
+        }
+
+        #location-status {
+            margin-bottom: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+
+        .coordinates-display {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary-color);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .coordinates-display::before {
+            content: "📍";
+            font-size: 1.2rem;
+        }
+
+        .address-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
+            background-color: var(--bg-secondary);
+            animation: cardFadeInUp 0.3s ease both;
+        }
+
+        .address-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            line-height: 1.5;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .location-part {
+            margin: 0.6rem 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .location-part:hover {
+            border-color: var(--border-color);
+            transform: translateX(2px);
+        }
+
+        .location-part span {
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        /* === REVAMPED ACTION BUTTONS === */
+        .location-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .location-action-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .location-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        [data-theme="dark"] .location-action-btn {
+            background-color: var(--card-bg);
+        }
+
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 0;
+            list-style: none;
+        }
+
+        @keyframes cardFadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1200px) {
+            #results {
+                grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            }
+        }
+
+        @media (min-width: 1201px) {
+            #results {
+                grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            #results {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .article-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            max-width: 100%;
+            margin: 0;
+            animation: cardFadeInUp 0.35s ease both;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .article-card:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        .article-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            height: auto;
+            overflow: hidden;
+            background-color: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+
+        .article-img-wrap::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+            background-size: 200% 100%;
+            animation: imgShimmer 1.4s ease-in-out infinite;
+        }
+
+        .article-img-wrap.loaded::before {
+            display: none;
+        }
+
+        @keyframes imgShimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .article-img-wrap > img {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .article-img-wrap > img.loaded {
+            opacity: 1;
+        }
+
+        .article-img-wrap.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .article-img-wrap.placeholder > img {
+            width: 38%;
+            height: 38%;
+            object-fit: contain;
+            opacity: 0.45;
+        }
+
+        .article-img-wrap.placeholder > img.loaded {
+            opacity: 0.45;
+        }
+
+        .img-overlay-badges {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0.6rem 0.7rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+        }
+
+        .img-overlay-badges .distance,
+        .img-overlay-badges .language-badge {
+            background: rgba(17, 24, 39, 0.55);
+            border-color: rgba(255, 255, 255, 0.85);
+            color: #fff;
+            backdrop-filter: blur(2px);
+        }
+
+        .img-overlay-badges .distance {
+            cursor: pointer;
+        }
+
+        .img-overlay-badges .distance:hover,
+        .img-overlay-badges .language-badge:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .img-overlay-badges .overlay-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .img-overlay-badges .commons-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-color: rgba(255, 255, 255, 0.85);
+            background: rgba(17, 24, 39, 0.55);
+            backdrop-filter: blur(2px);
+        }
+
+        .img-overlay-badges .commons-icon-btn img {
+            width: 16px;
+            height: 16px;
+            filter: brightness(0) invert(1);
+        }
+
+        .img-overlay-badges .commons-icon-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .article-content {
+            padding: 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .article-card a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.15rem;
+            line-height: 1.35;
+            margin-bottom: 0.25rem;
+            display: block;
+            transition: color 0.2s;
+        }
+
+        .article-card a:hover {
+            color: var(--secondary-color);
+        }
+
+        .language-badge {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            width: fit-content;
+            margin: 0;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .language-badge:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .distance {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            width: fit-content;
+            margin: 0;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .distance:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .distance::before {
+            content: "📍";
+            margin-right: 0.35rem;
+            font-size: 0.9rem;
+        }
+
+        .title-wrapper {
+            min-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            .article-card {
+                flex-direction: column;
+            }
+
+            .article-img-wrap {
+                aspect-ratio: 16 / 9;
+            }
+        }
+
+        .wikidata {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            flex-wrap: wrap;
+            margin-bottom: 0.25rem;
+        }
+
+        .wikidata a {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .wikidata a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .wiktionary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .wiktionary span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .wiktionary button {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 0.35rem 0.85rem;
+            font-size: 0.85rem;
+            border-radius: 100px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .wiktionary button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .card-actions {
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .route-btn {
+            background-color: var(--accent-color);
+            flex: 1;
+        }
+
+        .route-btn::before {
+            content: "🗺️";
+            margin-right: 0.5rem;
+        }
+
+        .google-maps-btn {
+            background-color: #34c759;
+            flex: 1;
+        }
+
+        .google-maps-btn::before {
+            content: "🌍";
+            margin-right: 0.5rem;
+        }
+
+        .commons-btn {
+            background-color: #36c;
+            flex: 1;
+        }
+
+        .commons-btn img {
+            width: 1.1em;
+            height: 1.1em;
+            margin-right: 0.5rem;
+            filter: brightness(0) invert(1);
+        }
+
+        .loading,
+        .error {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .loading {
+            color: var(--text-light);
+            animation: pulse 1.5s infinite;
+        }
+
+        .error {
+            color: var(--danger-color);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .map-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .popup-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .close-btn {
+            background: none;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            margin: 0;
+        }
+
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+
+        .map-container {
+            width: 80vw;
+            max-width: 800px;
+            height: 60vh;
+            max-height: 600px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        .wikt-lang-popup {
+            width: 480px;
+        }
+
+        .wikt-lang-popup-body {
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .wikt-lang-btn {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .wikt-lang-btn.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .article-card {
+                flex-direction: column;
+            }
+
+            .article-img-wrap {
+                aspect-ratio: 16 / 9;
+            }
+
+            .article-content {
+                padding: 1.5rem;
+            }
+
+            .map-container {
+                width: 90vw;
+                height: 50vh;
+            }
+        }
+
+        .map-popup .leaflet-popup-content-wrapper,
+        .map-popup .leaflet-popup-tip,
+        .map-popup .leaflet-routing-container,
+        .map-popup .leaflet-control {
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .map-popup .leaflet-popup-content {
+            color: var(--text-color) !important;
+        }
+
+        .map-popup .leaflet-popup-close-button {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .map-popup .leaflet-popup-close-button:hover {
+            color: #ff5f5f !important;
+        }
+
+        .map-popup .leaflet-routing-icon {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .map-popup .leaflet-routing-icon {
+                filter: invert(0);
+            }
+        }
+
+        .map-popup .leaflet-popup-content-wrapper a,
+        .map-popup .leaflet-popup-content a {
+            color: var(--primary-color) !important;
+        }
+
+        .map-popup .leaflet-popup-content-wrapper a:hover,
+        .map-popup .leaflet-popup-content a:hover {
+            color: var(--accent-color) !important;
+        }
+
+        .map-popup .leaflet-routing-alt {
+            background: var(--bg-secondary) !important;
+            color: var(--text-color) !important;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+            background-color: var(--card-bg);
+            padding: 1.5rem 1.75rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .wiki-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #F8F7F3, #FFF);
+            background-image: url('wikilokal.png');
+            background-size: 80%;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: var(--radius-sm);
+            display: block;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .wiki-logo:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            align-items: flex-start;
+        }
+
+        .header-title h1 {
+            margin: 0;
+            border: none;
+            padding: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header-title p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .header-right button {
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #guide-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #guide-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        #wikigaleri-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #wikigaleri-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        #creator-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #creator-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.25s ease;
+            color: var(--text-color);
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            opacity: 0.7;
+        }
+
+        .guide-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-section h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        .guide-section p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .guide-section ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .guide-section li {
+            margin: 0.25rem 0;
+            font-size: 0.95rem;
+        }
+
+        #scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 100;
+            padding: 0;
+        }
+
+        #scroll-to-top:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        #scroll-to-top.show {
+            display: flex;
+        }
+
+        .wiktionary-section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .wiktionary-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state::before {
+            content: "📍";
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .two-column-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: start;
+        }
+
+        #control-section,
+        #location-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #control-section h2,
+        #location-section h2 {
+            margin-bottom: 1rem;
+            min-height: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .two-column-container {
+                grid-template-columns: 1fr;
+            }
+
+            #location-status {
+                min-height: auto;
+            }
+        }
+
+        .wikilokal-spinner {
+            display: inline-block;
+            width: 3.5em;
+            height: 3.5em;
+            background-color: white;
+            border-radius: 50%;
+            background-image: url('wikilokal.png');
+            background-size: 70%;
+            background-position: center;
+            background-repeat: no-repeat;
+            animation: spin 1.5s linear infinite;
+            vertical-align: middle;
+            margin-right: 0.35em;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        [data-theme="dark"] .wikilokal-spinner {
+            background-color: #f0f0f0;
+        }
+
+        .commons-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 6px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .commons-icon-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .commons-icon-btn img {
+            width: 18px;
+            height: 18px;
+            transition: filter 0.2s ease;
+        }
+
+        .commons-icon-btn:hover img {
+            filter: brightness(0) invert(1);
+        }
+
+        #playstore-btn {
+            background-color: #01875f;
+            color: white;
+            border: 1px solid #01875f;
+        }
+
+        #playstore-btn:hover {
+            background-color: #006b4a;
+            border-color: #00593d;
+            transform: translateY(-1px);
+        }
+
+        #playstore-btn i {
+            font-size: 1.1em;
+            margin-right: 0.35em;
+        }
+
+        /* Responsive: pastikan icon tetap terlihat di mobile */
+        @media (max-width: 768px) {
+            #playstore-btn {
+                font-size: 0.85rem;
+                padding: 0.6rem 0.85rem;
+            }
+        }
+
+        /* ===== Android app download banner (mobile Android only) ===== */
+        #android-app-banner {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 1500;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #01875f, #01a86f);
+            color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 4px 12px rgba(1, 135, 95, 0.3);
+        }
+
+        #android-app-banner.show {
+            display: flex;
+        }
+
+        #android-app-banner .banner-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #fff;
+            background-image: url('wikilokal.png');
+            background-size: 75%;
+            background-position: center;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+
+        #android-app-banner .banner-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        #android-app-banner .banner-text strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        #android-app-banner .banner-text span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        #android-app-banner .banner-open-btn {
+            background: #fff;
+            color: #01875f;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: none;
+        }
+
+        #android-app-banner .banner-open-btn:hover {
+            background: #f0f0f0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #android-app-banner .banner-close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            line-height: 1;
+            padding: 0.25rem;
+            cursor: pointer;
+            opacity: 0.8;
+            box-shadow: none;
+        }
+
+        #android-app-banner .banner-close-btn:hover {
+            opacity: 1;
+            background: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 480px) {
+            #android-app-banner .banner-text span {
+                display: none;
+            }
+        }
+
+        /* Perbaikan khusus untuk #controls */
+        #controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            /* sedikit lebih longgar */
+            align-content: start;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        /* Membuat tombol action lebih menonjol */
+        .action-group {
+            grid-column: 1 / -1;
+            /* memenuhi 2 kolom */
+            margin-top: 0.5rem;
+        }
+
+        .action-group button {
+            width: 100%;
+            justify-content: center;
+            font-size: 1.05rem;
+            padding: 0.85rem 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Status lebih compact & terlihat jelas */
+        .status-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            /* rata bawah agar sejajar dengan tombol */
+        }
+
+        @media (max-width: 968px) {
+            #controls {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .action-group {
+                grid-column: auto;
+                margin-top: 1rem;
+            }
+
+            .status-group {
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="android-app-banner">
+        <div class="banner-icon"></div>
+        <div class="banner-text">
+            <strong>Buka di Aplikasi Wikilokal</strong>
+            <span>Sudah terpasang? Langsung buka. Belum? Unduh dari Play Store.</span>
+        </div>
+        <button class="banner-open-btn" id="android-banner-open-btn">Buka App</button>
+        <button class="banner-close-btn" id="android-banner-close-btn" aria-label="Tutup" title="Tutup">&times;</button>
+    </div>
+    <div class="header-top">
+        <div class="header-left">
+            <div class="wiki-logo"></div>
+            <div class="header-title">
+                <h1>Wikilokal</h1>
+                <p id="main-subtitle">Explore<img src="images/ic_wikimedia.svg" alt="Wikimedia"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikimedia
+                    projects
+                    <br />
+                    (<img src="images/ic_wikipedia.svg" alt="Wikipedia"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikipedia,
+                    <img src="images/ic_wikidata.svg" alt="Wikidata"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikidata,
+                    <img src="images/ic_wikivoyage.svg" alt="Wikivoyage"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikivoyage,
+                    <img src="images/ic_wiktionary.svg" alt="Wiktionary"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wiktionary,
+                    <img src="images/ic_nominatim.svg" alt="Nominatim"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Nominatim and
+                    OSM)
+                    within a 3 km radius of your location.
+                </p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="guide-btn" title="Lihat panduan">📖 Guide</button>
+            <button id="wikigaleri-btn" onclick="window.location.href='../wikigaleri'" title="Kunjungi Affandy Murad">
+                <img src="images/ic_commons.svg" alt="Wikigaleri"
+                    style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-left: 0.35em;"> Wikigaleri
+            </button>
+            <!-- ===== NEW: Google Play Store Button (Without Font Awesome) ===== -->
+            <button id="playstore-btn"
+                onclick="window.open('https://play.google.com/store/apps/details?id=kmt.commuterline.am', '_blank')"
+                title="Download Wikilokal for Android">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"
+                    fill="currentColor" style="vertical-align: middle; margin-right: 0.35em;">
+                    <path
+                        d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
+                </svg>
+                Wikilokal for Android
+            </button>
+            <button id="creator-btn" onclick="window.location.href='../'" title="Kembali ke Affandy Murad">
+                🏠 Back to Affandy Murad
+            </button>
+        </div>
+    </div>
+    <div class="two-column-container">
+        <section id="control-section" aria-label="Pengaturan">
+            <h2>Settings</h2>
+            <div id="controls">
+                <div class="control-group">
+                    <label class="control-label">Theme</label>
+                    <select id="theme-select">
+                        <option value="light">☀️ Light</option>
+                        <option value="dark">🌙 Dark</option>
+                        <option value="system">🖥️ System</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Wikimedia Project Language</label>
+                    <select id="language-select">
+                        <option value="en">English (EN)</option>
+                        <option value="id">Indonesian (ID)</option>
+                        <option value="bew">Betawi (BEW)</option>
+                        <option value="min">Minangkabau (MIN)</option>
+                        <option value="jv">Javanese (JV)</option>
+                        <option value="su">Sundanese (SU)</option>
+                        <option value="mad">Madurese (MAD)</option>
+                        <option value="ms">Malay (MS)</option>
+                        <option value="de">German (DE)</option>
+                        <option value="fr">French (FR)</option>
+                        <option value="es">Spanish (ES)</option>
+                        <option value="pt">Portuguese (PT)</option>
+                        <option value="it">Italian (IT)</option>
+                        <option value="nl">Dutch (NL)</option>
+                        <option value="sv">Swedish (SV)</option>
+                        <option value="fi">Finnish (FI)</option>
+                        <option value="pl">Polish (PL)</option>
+                        <option value="cs">Czech (CS)</option>
+                        <option value="ro">Romanian (RO)</option>
+                        <option value="tr">Turkish (TR)</option>
+                        <option value="ru">Russian (RU)</option>
+                        <option value="uk">Ukrainian (UK)</option>
+                        <option value="el">Greek (EL)</option>
+                        <option value="fa">Persian (FA)</option>
+                        <option value="ar">Arabic (AR)</option>
+                        <option value="hi">Hindi (HI)</option>
+                        <option value="bn">Bengali (BN)</option>
+                        <option value="vi">Vietnamese (VI)</option>
+                        <option value="ja">Japanese (JA)</option>
+                        <option value="zh">Chinese (ZH)</option>
+                        <option value="eo">Esperanto (EO)</option>
+                        <option value="ps">Pashto (PS)</option>
+                        <option value="shn">Shan (SHN)</option>
+                        <option value="ko">Korean (KO)</option>
+                        <option value="th">Thai (TH)</option>
+                        <option value="he">Hebrew (HE)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Action</label>
+                    <button id="check-permission">Check Location & Search</button>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Permission Status</label>
+                    <span id="permission-status" class="permission-badge">Not checked yet</span>
+                </div>
+            </div>
+        </section>
+        <section id="location-section" aria-label="Status Lokasi">
+            <h2>Location Status</h2>
+            <div id="location-status">
+                <div class="coordinates-display"></div>
+                <div class="address-row" id="address-row" style="display:none;">
+                    <span class="address-label" id="address-label"></span>
+                    <button class="location-action-btn" id="open-location-modal-btn" title="View full location details">
+                        <img src="images/ic_nominatim.svg" alt="Nominatim" style="width:1.1em; height:1.1em;">
+                        <span>View Details</span>
+                    </button>
+                </div>
+                <div id="location-retry-container"></div>
+            </div>
+        </section>
+    </div>
+    <section id="results-section" aria-label="Hasil Pencarian">
+        <h2>Search Results<span id="article-count"></span></h2>
+        <ul id="results"></ul>
+    </section>
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><img src="images/ic_nominatim.svg" alt="Nominatim"
+                        style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 0.4em;">Location
+                    Details</h2>
+                <button class="modal-close" data-modal="location-modal">&times;</button>
+            </div>
+            <div id="location-modal-body"></div>
+        </div>
+    </div>
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="article-modal-title"></h2>
+                <button class="modal-close" data-modal="article-modal">&times;</button>
+            </div>
+            <div id="article-modal-body"></div>
+        </div>
+    </div>
+    <div id="guide-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="guide-title">📖 User Guide</h2>
+                <button class="modal-close" data-modal="guide-modal">&times;</button>
+            </div>
+            <div class="guide-section" data-section="disclaimer">
+                <h3 id="guide-disclaimer-title">⚠️ Location Usage Disclaimer</h3>
+                <p id="guide-disclaimer-how"><strong id="guide-disclaimer-how-title">How Wikilokal Uses Your
+                        Location:</strong></p>
+                <p id="guide-disclaimer-how-desc">
+                    Wikilokal only <strong>temporarily</strong> uses your location coordinates to find geotagged
+                    Wikipedia, Wikivoyage,
+                    and Wiktionary articles near you. Your location data is <strong>not stored</strong> or
+                    <strong>shared</strong> with
+                    any third party.
+                </p>
+                <br />
+                <p id="guide-disclaimer-warning-title"><strong>⚠️ Important Warning:</strong></p>
+                <p id="guide-disclaimer-warning-desc">Be cautious when taking screenshots or photos of your screen. Your
+                    full address may be visible and could reveal your current location.</p>
+                <p id="guide-disclaimer-use-title"><strong id="guide-disclaimer-use-strong">Only use this feature
+                        when:</strong></p>
+                <ul>
+                    <li id="guide-disclaimer-use-safe">You are in a safe location</li>
+                    <li id="guide-disclaimer-use-conducive">Conditions allow you to share your location</li>
+                </ul>
+                <br />
+                <p id="guide-disclaimer-privacy-title"><strong>🔒 Your Privacy:</strong></p>
+                <ul>
+                    <li id="guide-disclaimer-privacy-law">Complies with applicable privacy laws and regulations</li>
+                    <li id="guide-disclaimer-privacy-temp">Uses location data only for article search purposes</li>
+                    <li id="guide-disclaimer-privacy-no-save">Does not store your location history</li>
+                </ul>
+            </div>
+            <br />
+            <div class="guide-section" data-section="features">
+                <h3 id="guide-features-title">🎯 Key Features</h3>
+                <ul>
+                    <li>
+                        <strong id="guide-search-title">Search Articles:</strong>
+                        <span id="guide-search-desc">Click the button to find Wikipedia articles near your location (3
+                            km radius)</span>
+                    </li>
+                    <li>
+                        <strong id="guide-route-title">Route:</strong>
+                        <span id="guide-route-desc">View directions to article locations using Leaflet Routing</span>
+                    </li>
+                    <li>
+                        <strong id="guide-wikt-title">Wiktionary:</strong>
+                        <span id="guide-wikt-desc">Click words in the description to look up definitions</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="guide-section" data-section="settings">
+                <h3 id="guide-settings-title">🌍 Settings</h3>
+                <ul>
+                    <li>
+                        <strong id="guide-theme-title">Theme:</strong>
+                        <span id="guide-theme-desc">Choose Light, Dark, or follow system preference</span>
+                    </li>
+                    <li>
+                        <strong id="guide-lang-title">Language:</strong>
+                        <span id="guide-lang-desc">Change language to display content in your preferred language on
+                            Wikimedia projects</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <button id="scroll-to-top" title="Kembali ke atas" aria-label="Scroll to top">↑</button>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script>
+        const themeSelect = document.getElementById('theme-select');
+        const languageSelect = document.getElementById('language-select');
+        const checkPermissionBtn = document.getElementById('check-permission');
+        const permissionStatus = document.getElementById('permission-status');
+        const articleCount = document.getElementById('article-count');
+        const resultsList = document.getElementById('results');
+        // currentLang WAJIB disamakan dengan nilai select #language-select saat ini (bukan
+        // di-hardcode), supaya bahasa artikel yang diambil selalu konsisten dengan apa yang
+        // ditampilkan di section "Wikimedia Project Language" — termasuk saat select tidak
+        // punya atribut `selected` dan browser memilih opsi pertamanya sendiri.
+        let currentLang = languageSelect.value;
+        let currentPosition = null;
+        const placeholderImage = 'wikilokal.png';
+
+        // ===== HostRateLimiter =====
+        // Memaksa jeda minimal 350ms antar request ke host yang sama, supaya fetch paralel
+        // (Wikidata per-part, batch artikel, dsb) tidak membanjiri satu host sekaligus.
+        const HOST_RATE_LIMIT_MS = 350;
+        const hostLastRequestTime = new Map();
+        const hostGate = new Map();
+
+        function throttledFetch(url, options) {
+            const host = new URL(url, window.location.href).host;
+            const previousGate = hostGate.get(host) || Promise.resolve();
+            let releaseNext;
+            const myTurn = new Promise((resolve) => { releaseNext = resolve; });
+            const nextGate = previousGate.then(async () => {
+                const last = hostLastRequestTime.get(host) || 0;
+                const elapsed = Date.now() - last;
+                if (elapsed < HOST_RATE_LIMIT_MS) {
+                    await new Promise((r) => setTimeout(r, HOST_RATE_LIMIT_MS - elapsed));
+                }
+                hostLastRequestTime.set(host, Date.now());
+                releaseNext();
+            });
+            hostGate.set(host, nextGate);
+            // Hanya waktu MULAI request yang diserialisasi per host — response tetap ditunggu
+            // secara paralel, jadi throttling tidak menghilangkan manfaat concurrency batch.
+            return myTurn.then(() => fetch(url, options));
+        }
+
+        // ===== Semaphore sederhana untuk membatasi concurrency batch =====
+        function createSemaphore(maxConcurrent) {
+            let active = 0;
+            const queue = [];
+            const acquire = () => new Promise((resolve) => {
+                const tryAcquire = () => {
+                    if (active < maxConcurrent) {
+                        active++;
+                        resolve();
+                    } else {
+                        queue.push(tryAcquire);
+                    }
+                };
+                tryAcquire();
+            });
+            const release = () => {
+                active--;
+                const next = queue.shift();
+                if (next) next();
+            };
+            return { acquire, release };
+        }
+
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+        // ===== Android app download banner =====
+        (function initAndroidAppBanner() {
+            const ANDROID_PACKAGE = 'kmt.commuterline.am';
+            const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`;
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const banner = document.getElementById('android-app-banner');
+            const openBtn = document.getElementById('android-banner-open-btn');
+            const closeBtn = document.getElementById('android-banner-close-btn');
+
+            if (!isAndroid || !banner) return;
+            if (localStorage.getItem('androidAppBannerDismissed') === 'true') return;
+
+            banner.classList.add('show');
+
+            function openApp() {
+                const intentUrl = `intent://#Intent;package=${ANDROID_PACKAGE};scheme=https;S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
+                window.location.href = intentUrl;
+            }
+
+            openBtn.addEventListener('click', openApp);
+            closeBtn.addEventListener('click', () => {
+                banner.classList.remove('show');
+                localStorage.setItem('androidAppBannerDismissed', 'true');
+            });
+        })();
+
+        // Fungsi helper untuk membuka link dengan aman di Safari
+        function safeOpenLink(url) {
+            if (isSafari) {
+                // Untuk Safari, buka di tab yang sama dengan konfirmasi
+                if (confirm(`Open this link?\n${url}`)) {
+                    window.location.href = url;
+                }
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        function setTheme(theme) {
+            if (theme === 'system') {
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', systemTheme);
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'system';
+        themeSelect.value = savedTheme;
+        setTheme(savedTheme);
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (themeSelect.value === 'system') {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            }
+        });
+
+        themeSelect.addEventListener('change', () => setTheme(themeSelect.value));
+
+        function updatePermissionStatus(state) {
+            permissionStatus.className = 'permission-badge';
+            if (currentPosition) {
+                permissionStatus.textContent = '✓ Granted';
+                permissionStatus.classList.add('granted');
+                return;
+            }
+            if (state === 'granted') {
+                permissionStatus.textContent = '✓ Granted';
+                permissionStatus.classList.add('granted');
+            } else if (state === 'denied') {
+                permissionStatus.textContent = '✗ Denied';
+                permissionStatus.classList.add('denied');
+            } else if (state === 'prompt') {
+                permissionStatus.textContent = '? Pending';
+                permissionStatus.classList.add('pending');
+            } else {
+                permissionStatus.textContent = 'Not checked yet';
+                permissionStatus.classList.add('pending');
+            }
+        }
+
+        async function checkLocationPermission() {
+            if (!navigator.permissions || !navigator.geolocation) {
+                updatePermissionStatus('denied');
+                return 'denied';
+            }
+            try {
+                const result = await navigator.permissions.query({ name: 'geolocation' });
+                updatePermissionStatus(result.state);
+                result.onchange = () => {
+                    updatePermissionStatus(result.state);
+                    if (result.state !== 'granted') {
+                        currentPosition = null;
+                    }
+                };
+                return result.state;
+            } catch (error) {
+                console.error('Error checking permission:', error);
+                updatePermissionStatus('denied');
+                return 'denied';
+            }
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // Keyword administratif lokal: SUBURB & VILLAGE memakai set yang SAMA (gabungan),
+        // karena Nominatim/Wikidata tidak konsisten membedakan kecamatan/kelurahan/desa
+        // antara address.suburb dan address.village.
+        const ADMIN_LOCAL_KEYWORDS = [
+            "subdistrict", "urban village", "district", "administrative",
+            "kecamatan", "kelurahan", "village", "desa"
+        ];
+
+        function isAdministrative(desc) {
+            if (!desc) return false;
+            const d = desc.toLowerCase();
+            return (
+                ADMIN_LOCAL_KEYWORDS.some(k => d.includes(k)) ||
+                d.includes("city") ||
+                d.includes("kota") ||
+                d.includes("town") ||
+                d.includes("municipality") ||
+                d.includes("settlement") ||
+                d.includes("province") ||
+                d.includes("provinsi") ||
+                d.includes("region") ||
+                d.includes("country") ||
+                d.includes("nation")
+            );
+        }
+
+        function matchEntityByType(entity, type) {
+            if (!entity?.description) return false;
+            const desc = entity.description.toLowerCase();
+            const typeKeywords = {
+                suburb: ADMIN_LOCAL_KEYWORDS,
+                village: ADMIN_LOCAL_KEYWORDS,
+                town: ["town", "city", "kota", "settlement"],
+                city: ["city", "kota", "municipality"],
+                state: ["state", "province", "region", "provinsi"],
+                country: ["country", "nation", "sovereign state"]
+            };
+            return typeKeywords[type]?.some(k => desc.includes(k)) || false;
+        }
+
+        async function searchWikidataCandidates(name) {
+            const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&format=json&language=${currentLang}&type=item&origin=*`;
+            const response = await throttledFetch(url);
+            const data = await response.json();
+            return data.search || [];
+        }
+
+        // Filter & disambiguasi berbasis teks, 3 prioritas — berhenti di prioritas pertama yang tidak kosong:
+        // 1) deskripsi entitas cocok dengan tipe lokasi (khusus SUBURB juga dicocokkan dengan nama parent
+        //    kota/kabupaten yang sama, kalau parent tersedia dan kandidatnya masih >1);
+        // 2) label sama persis dengan nama part + deskripsinya administratif;
+        // 3) fallback apapun yang deskripsinya administratif.
+        function filterCandidatesByText(results, type, name, parentNames = []) {
+            let typeMatched = results.filter(r => matchEntityByType(r, type));
+            if (type === 'suburb' && typeMatched.length > 1 && parentNames.length) {
+                const narrowedByParent = typeMatched.filter(r =>
+                    parentNames.some(pn => r.description?.toLowerCase().includes(pn.toLowerCase()))
+                );
+                if (narrowedByParent.length) typeMatched = narrowedByParent;
+            }
+            if (typeMatched.length) return typeMatched;
+
+            const exactGeo = results.filter(r =>
+                r.label?.toLowerCase() === name.toLowerCase() && isAdministrative(r.description)
+            );
+            if (exactGeo.length) return exactGeo;
+
+            const geoOnly = results.filter(r => isAdministrative(r.description));
+            if (geoOnly.length) return geoOnly;
+
+            return [];
+        }
+
+        async function fetchWikidataEntityCoords(qid) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${qid}&property=P625&format=json&origin=*`;
+                const response = await throttledFetch(url);
+                const data = await response.json();
+                const value = data.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
+                return value ? { lat: value.latitude, lon: value.longitude } : null;
+            } catch (error) {
+                console.error('Error fetching Wikidata entity coordinates:', error);
+                return null;
+            }
+        }
+
+        // Disambiguasi koordinat: TIDAK membuang kandidat yang kalah — seluruh kandidat yang lolos
+        // filter teks tetap dikembalikan (dipakai buat render beberapa chip Wikidata sekaligus di UI),
+        // hanya diurutkan dari yang koordinatnya (P625, Haversine) paling dekat ke lokasi user.
+        // Kandidat tanpa klaim P625 diletakkan di akhir.
+        async function rankCandidatesByCoordinate(candidates, lat, lon) {
+            if (candidates.length <= 1) {
+                return candidates.map(c => ({ ...c, distance: undefined }));
+            }
+            const withDistance = await Promise.all(
+                candidates.map(async (c) => {
+                    const coords = await fetchWikidataEntityCoords(c.id);
+                    if (!coords) return { ...c, distance: Infinity };
+                    return { ...c, distance: parseFloat(calculateDistance(lat, lon, coords.lat, coords.lon)) };
+                })
+            );
+            withDistance.sort((a, b) => a.distance - b.distance);
+            return withDistance;
+        }
+
+        // Reverse geocode ke Nominatim dengan retry otomatis (maks 3x) kalau kena HTTP 429
+        // atau error jaringan — sesuai ketentuan.
+        async function fetchNominatimReverse(lat, lon, lang, retryCount = 0, maxRetries = 3) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=${lang}`;
+            let response;
+            try {
+                response = await throttledFetch(url, { headers: { 'User-Agent': 'WikiLokal/1.0' } });
+            } catch (error) {
+                if (retryCount < maxRetries) {
+                    await new Promise((r) => setTimeout(r, 500 * (retryCount + 1)));
+                    return fetchNominatimReverse(lat, lon, lang, retryCount + 1, maxRetries);
+                }
+                throw error;
+            }
+            if (response.status === 429 && retryCount < maxRetries) {
+                await new Promise((r) => setTimeout(r, 500 * (retryCount + 1)));
+                return fetchNominatimReverse(lat, lon, lang, retryCount + 1, maxRetries);
+            }
+            return response.json();
+        }
+
+        async function getLocationDetails(lat, lon) {
+            try {
+                const data = await fetchNominatimReverse(lat, lon, currentLang);
+                if (!data.address) {
+                    return { displayName: 'Location unknown', parts: [] };
+                }
+
+                const displayName = data.display_name || 'Location unknown';
+                const { road, postcode, suburb, town, village, city, municipality, state, province, country } = data.address;
+                const osmType = data.osm_type;
+                const osmId = data.osm_id;
+
+                const locationParts = [];
+                if (road) locationParts.push({ name: road, type: 'road' });
+                if (postcode) locationParts.push({ name: postcode, type: 'postcode' });
+                if (suburb) locationParts.push({ name: suburb, type: 'suburb' });
+                if (town) locationParts.push({ name: town, type: 'town' });
+                if (village) locationParts.push({ name: village, type: 'village' });
+                // municipality hanya fallback CITY kalau suburb & town tidak ada
+                if (!suburb && !town && municipality) locationParts.push({ name: municipality, type: 'city' });
+                if (city) locationParts.push({ name: city, type: 'city' });
+                const stateOrProvince = state || province;
+                if (stateOrProvince) locationParts.push({ name: stateOrProvince, type: 'state' });
+                if (country) locationParts.push({ name: country, type: 'country' });
+
+                // Nama-nama tetangga (city/town/village/state) dipakai untuk menyempitkan kandidat SUBURB.
+                const parentNamesAll = locationParts
+                    .filter(p => ['city', 'town', 'village', 'state'].includes(p.type))
+                    .map(p => p.name);
+
+                // Setiap part administratif diperkaya secara paralel (async) dengan Q-id Wikidata.
+                const emptyWikidata = { wikidataId: null, wikidataIds: [], allWikidataMatches: [] };
+                const detailedParts = await Promise.all(
+                    locationParts.map(async (part) => {
+                        if (part.type === 'road' || part.type === 'postcode') {
+                            return { ...part, ...emptyWikidata };
+                        }
+
+                        const results = await searchWikidataCandidates(part.name);
+                        if (!results.length) return { ...part, ...emptyWikidata };
+
+                        const parentNames = part.type === 'suburb'
+                            ? parentNamesAll.filter(n => n !== part.name)
+                            : [];
+                        const filtered = filterCandidatesByText(results, part.type, part.name, parentNames);
+                        if (!filtered.length) return { ...part, ...emptyWikidata };
+
+                        // Kandidat terbaik (index 0 setelah diurutkan jarak) jadi wikidataId utama,
+                        // sisanya tetap disimpan di wikidataIds/allWikidataMatches untuk chip UI.
+                        const ranked = await rankCandidatesByCoordinate(filtered, lat, lon);
+
+                        return {
+                            ...part,
+                            wikidataId: ranked[0].id,
+                            wikidataIds: ranked.map(c => c.id),
+                            allWikidataMatches: ranked.map(c => ({
+                                id: c.id,
+                                label: c.label,
+                                description: c.description,
+                                distance: c.distance
+                            }))
+                        };
+                    })
+                );
+
+                // Q untuk ROAD: BUKAN dari pencarian nama di Wikidata, melainkan dari tag `wikidata`
+                // mentah pada elemen OSM (via osm_type/osm_id hasil Nominatim). Tidak ada fallback
+                // kalau tag itu tidak ada — part tetap tampil tanpa Wikidata.
+                if (road && osmType && osmId) {
+                    try {
+                        const osmUrl = `https://api.openstreetmap.org/api/0.6/${osmType}/${osmId}.json`;
+                        const osmResponse = await throttledFetch(osmUrl);
+                        const osmData = await osmResponse.json();
+                        const roadWikidata = osmData.elements?.[0]?.tags?.wikidata;
+                        if (roadWikidata) {
+                            const roadPart = detailedParts.find(p => p.type === 'road');
+                            if (roadPart) {
+                                roadPart.wikidataId = roadWikidata;
+                                roadPart.wikidataIds = [roadWikidata];
+                                roadPart.allWikidataMatches = [{ id: roadWikidata, label: null, description: null, distance: undefined }];
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error fetching OSM element for road wikidata:', error);
+                    }
+                }
+
+                return { displayName, parts: detailedParts };
+            } catch (error) {
+                console.error('Error retrieving location details:', error);
+                return { displayName: 'Failed to retrieve location details', parts: [] };
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return (R * c).toFixed(1);
+        }
+
+        // Catatan: definisi Wiktionary TIDAK lagi diambil di tahap ini. Tombol Wiktionary di modal
+        // artikel dibangun langsung dari kata-kata pada judul + deskripsi (lihat openArticleModal),
+        // jadi request per-artikel ke Wiktionary di sini tidak pernah dipakai — dihapus supaya tidak
+        // membebani pipeline batch artikel secara sia-sia.
+
+        function normalizeTitleKey(title) {
+            return (title || '').trim().toLowerCase().replace(/_/g, ' ');
+        }
+
+        function chunkArray(arr, size) {
+            const chunks = [];
+            for (let i = 0; i < arr.length; i += size) {
+                chunks.push(arr.slice(i, i + size));
+            }
+            return chunks;
+        }
+
+        const ARTICLE_BATCH_SIZE = 20; // TextExtracts hanya mengisi `extract` utk ~20 halaman/request anonim
+        const DETAIL_FETCH_CONCURRENCY = 4; // maks 4 batch jalan bersamaan
+
+        // Fetch detail sekaligus untuk satu batch judul (bukan satu request per artikel).
+        async function fetchArticleDetailsBatch(titles, lang) {
+            const detailsMap = new Map();
+            try {
+                const wikiUrl = `https://${lang}.wikipedia.org/w/api.php?` +
+                    `action=query&titles=${encodeURIComponent(titles.join('|'))}&` +
+                    `prop=extracts|pageimages|pageprops&exintro&explaintext&` +
+                    `exsentences=2&exlimit=20&pithumbsize=250&format=json&origin=*`;
+                const wikiResponse = await throttledFetch(wikiUrl);
+                const wikiData = await wikiResponse.json();
+                const pages = wikiData.query?.pages || {};
+                for (const page of Object.values(pages)) {
+                    if (!page?.title) continue;
+                    detailsMap.set(normalizeTitleKey(page.title), {
+                        description: page.extract || 'Description not available',
+                        image: page.thumbnail?.source || placeholderImage,
+                        wikidataId: page.pageprops?.wikibase_item || null
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching article details batch:', error);
+                // Batch gagal total — judul di batch ini tetap ditampilkan lewat fallback
+                // di fetchAllArticleDetails, tidak pernah di-drop diam-diam.
+            }
+            return detailsMap;
+        }
+
+        // Dispatch paralel dengan concurrency terbatas (semaphore), progress dilaporkan per batch
+        // selesai. Item yang gagal tetap tampil dengan fallback, bukan hilang dari daftar.
+        async function fetchAllArticleDetails(articles, lang, onProgress) {
+            const titleBatches = chunkArray(articles.map(a => a.title), ARTICLE_BATCH_SIZE);
+            const detailsByTitle = new Map();
+            let completed = 0;
+            const semaphore = createSemaphore(DETAIL_FETCH_CONCURRENCY);
+
+            await Promise.all(titleBatches.map(async (batch) => {
+                await semaphore.acquire();
+                try {
+                    const batchMap = await fetchArticleDetailsBatch(batch, lang);
+                    for (const [key, value] of batchMap) {
+                        detailsByTitle.set(key, value);
+                    }
+                } finally {
+                    semaphore.release();
+                    completed++;
+                    if (onProgress) onProgress(completed, titleBatches.length);
+                }
+            }));
+
+            // Merge & sort: hasil geosearch tetap jadi sumber kebenaran soal item mana yang ada.
+            return articles.map(article => ({
+                article,
+                details: detailsByTitle.get(normalizeTitleKey(article.title)) || {
+                    description: 'Description not available',
+                    image: placeholderImage,
+                    wikidataId: null
+                }
+            }));
+        }
+
+        async function fetchNearbyArticles(lat, lon, lang) {
+            try {
+                resultsList.innerHTML = '<li class="loading">Loading articles...</li>';
+                articleCount.textContent = '';
+                const radius = 3000;
+                // Satu kali geosearch, BUKAN paginasi — langsung minta limit maksimal (500).
+                // Sengaja pakai list=geosearch (bukan generator=geosearch/prop=coordinates), karena
+                // generator diam-diam membatasi hasil ke ~10 item berapa pun gslimit-nya.
+                const url = `https://${lang}.wikipedia.org/w/api.php?` +
+                    `action=query&list=geosearch&gscoord=${lat}|${lon}&` +
+                    `gsradius=${radius}&gslimit=500&format=json&origin=*`;
+                const response = await throttledFetch(url);
+                const data = await response.json();
+                const results = data.query?.geosearch || [];
+
+                // Dedupe berdasarkan judul yang dinormalisasi (lowercase, trim, _ → spasi).
+                const seen = new Set();
+                const deduped = [];
+                for (const item of results) {
+                    const key = normalizeTitleKey(item.title);
+                    if (seen.has(key)) continue;
+                    seen.add(key);
+                    deduped.push(item);
+                }
+                return deduped;
+            } catch (error) {
+                resultsList.innerHTML = `<li class="error">Failed to load articles: ${error.message}</li>`;
+                articleCount.textContent = '';
+                return [];
+            }
+        }
+
+        // `lang` diteruskan eksplisit (snapshot saat pemanggilan) — bukan dibaca ulang dari
+        // `currentLang` global — supaya kalau user mengganti pilihan di "Wikimedia Project
+        // Language" SAAT artikel masih sedang di-load, badge/link artikel yang sudah terlanjur
+        // diambil tetap menampilkan bahasa yang benar-benar dipakai untuk fetch, bukan bahasa
+        // baru yang belum tentu sesuai dengan data yang sedang dirender.
+        async function displayArticles(articles, lang = currentLang) {
+            if (articles.length === 0) {
+                resultsList.innerHTML = '<li class="empty-state"><p>No articles found within a 3 km radius</p></li>';
+                articleCount.textContent = '(0)';
+                return;
+            }
+            resultsList.innerHTML = `
+            <li class="progress-container">
+                <div class="wikilokal-spinner"></div>
+                <div class="progress-text">Loading article details...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-count" id="progress-count">0 / ${articles.length}</div>
+            </li>
+        `;
+            const progressFill = document.getElementById('progress-fill');
+            const progressCount = document.getElementById('progress-count');
+
+            // Ambil detail semua artikel lewat batch(20)/concurrency(4), progress per batch selesai.
+            const results = await fetchAllArticleDetails(articles, lang, (completedBatches, totalBatches) => {
+                const progress = (completedBatches / totalBatches) * 100;
+                progressFill.style.width = `${progress}%`;
+                const itemsDone = Math.min(completedBatches * ARTICLE_BATCH_SIZE, articles.length);
+                progressCount.textContent = `${itemsDone} / ${articles.length}`;
+            });
+
+            // Tahap akhir: urutkan berdasarkan jarak (Haversine) ke posisi user saat ini.
+            const withDistance = results.map(({ article, details }) => ({
+                article,
+                details,
+                distance: calculateDistance(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    article.lat,
+                    article.lon
+                )
+            }));
+            withDistance.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+
+            const articleElements = withDistance.map(({ article, details, distance }) => {
+                const li = document.createElement('li');
+                li.className = 'article-card';
+                li.tabIndex = 0;
+                li.setAttribute('role', 'button');
+                li.setAttribute('aria-label', `View details for ${article.title}`);
+                li.onclick = () => openArticleModal(article, details, distance, lang);
+                li.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openArticleModal(article, details, distance, lang);
+                    }
+                };
+
+                const imgWrap = document.createElement('div');
+                imgWrap.className = 'article-img-wrap';
+                if (!details.image || details.image === placeholderImage) {
+                    imgWrap.classList.add('placeholder');
+                }
+                const img = document.createElement('img');
+                img.alt = article.title;
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.referrerPolicy = 'no-referrer';
+                img.onload = () => {
+                    img.classList.add('loaded');
+                    imgWrap.classList.add('loaded');
+                };
+                img.onerror = () => {
+                    if (img.dataset.fallbackApplied) {
+                        // Placeholder juga gagal dimuat — hentikan agar tidak retry tanpa henti.
+                        imgWrap.classList.add('loaded');
+                        return;
+                    }
+                    img.dataset.fallbackApplied = 'true';
+                    imgWrap.classList.add('placeholder');
+                    img.src = placeholderImage;
+                };
+                img.src = details.image || placeholderImage;
+                imgWrap.appendChild(img);
+
+                const overlayBadges = document.createElement('div');
+                overlayBadges.className = 'img-overlay-badges';
+                const dist = document.createElement('div');
+                dist.className = 'distance';
+                dist.textContent = `${distance} km`;
+                dist.title = 'Show route';
+                dist.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showRoutePopup(
+                        currentPosition.coords.latitude,
+                        currentPosition.coords.longitude,
+                        article.lat,
+                        article.lon,
+                        article.title
+                    );
+                };
+                overlayBadges.appendChild(dist);
+
+                const overlayRight = document.createElement('div');
+                overlayRight.className = 'overlay-right';
+
+                const commonsBtn = document.createElement('button');
+                commonsBtn.className = 'commons-icon-btn';
+                commonsBtn.title = details.wikidataId
+                    ? `Open Wikimedia Commons category for ${article.title}`
+                    : `Search "${article.title}" on Wikimedia Commons`;
+
+                const commonsIcon = document.createElement('img');
+                commonsIcon.src = 'images/ic_commons.svg';
+                commonsIcon.alt = 'Commons';
+                commonsIcon.onerror = function () {
+                    // Fallback ke emoji jika icon tidak ditemukan
+                    this.style.display = 'none';
+                    const emoji = document.createElement('span');
+                    emoji.textContent = '📷';
+                    emoji.style.fontSize = '14px';
+                    this.parentNode.appendChild(emoji);
+                };
+                commonsBtn.appendChild(commonsIcon);
+
+                commonsBtn.onclick = async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    let targetUrl;
+                    if (details.wikidataId) {
+                        const directLink = await fetchCommonsCategory(details.wikidataId);
+                        targetUrl = directLink || `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(article.title)}`;
+                    } else {
+                        targetUrl = `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(article.title)}`;
+                    }
+                    safeOpenLink(targetUrl);
+                };
+                overlayRight.appendChild(commonsBtn);
+
+                const langBadge = document.createElement('span');
+                langBadge.className = 'language-badge';
+                langBadge.textContent = lang.toUpperCase();
+                overlayRight.appendChild(langBadge);
+
+                overlayBadges.appendChild(overlayRight);
+                imgWrap.appendChild(overlayBadges);
+
+                li.appendChild(imgWrap);
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'article-content';
+
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'title-wrapper';
+                const link = document.createElement('a');
+                link.href = `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(article.title)}`;
+                link.target = '_blank';
+                link.style.cssText = 'display:inline-flex; align-items:center; gap:0.4em; font-size:1.15rem; font-weight:700; color:var(--primary-color); text-decoration:none;';
+                const iconImg = document.createElement('img');
+                iconImg.src = 'images/ic_wikipedia.svg';
+                iconImg.style.cssText = 'width:1.3em; height:1.3em; flex-shrink:0;';
+                link.appendChild(iconImg);
+                link.appendChild(document.createTextNode(article.title));
+                link.onmouseover = () => link.style.color = 'var(--secondary-color)';
+                link.onmouseout = () => link.style.color = 'var(--primary-color)';
+                link.onclick = (e) => e.stopPropagation();
+                titleWrapper.appendChild(link);
+                contentDiv.appendChild(titleWrapper);
+
+                li.appendChild(contentDiv);
+                return li;
+            });
+
+            resultsList.innerHTML = '';
+            articleElements.forEach(el => resultsList.appendChild(el));
+            articleCount.textContent = `(${articles.length})`;
+        }
+
+        function openArticleModal(article, details, distance, lang = currentLang) {
+            const title = document.getElementById('article-modal-title');
+            title.innerHTML = `<img src="images/ic_wikipedia.svg" alt="Wikipedia" style="width:1.2em; height:1.2em; vertical-align:middle; margin-right:0.4em;">${article.title}`;
+
+            const body = document.getElementById('article-modal-body');
+            body.innerHTML = '';
+
+            const badgesRow = document.createElement('div');
+            badgesRow.style.cssText = 'display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;';
+            const dist = document.createElement('span');
+            dist.className = 'distance';
+            dist.textContent = `${distance} km`;
+            const langBadge = document.createElement('span');
+            langBadge.className = 'language-badge';
+            langBadge.textContent = lang.toUpperCase();
+            badgesRow.appendChild(dist);
+            badgesRow.appendChild(langBadge);
+            body.appendChild(badgesRow);
+
+            const descEl = document.createElement('p');
+            descEl.style.cssText = 'margin-bottom:1rem; line-height:1.6;';
+            descEl.textContent = details.description;
+            body.appendChild(descEl);
+
+            const wd = document.createElement('div');
+            wd.className = 'wikidata';
+            const wdIcon = document.createElement('img');
+            wdIcon.src = 'images/ic_wikidata.svg';
+            wdIcon.style.cssText = 'width: 1.3em; height: 1.3em; flex-shrink: 0;';
+            const wdText = document.createElement('span');
+            if (details.wikidataId) {
+                wdText.innerHTML = `Wikidata: <a href="https://www.wikidata.org/wiki/${details.wikidataId}" target="_blank">${details.wikidataId}</a>`;
+            } else {
+                wdText.textContent = 'Wikidata: Not available';
+                wdText.style.color = '#888';
+            }
+            wd.appendChild(wdIcon);
+            wd.appendChild(wdText);
+            body.appendChild(wd);
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'card-actions';
+            const routeBtn = document.createElement('button');
+            routeBtn.className = 'route-btn';
+            routeBtn.textContent = 'Show Route';
+            routeBtn.onclick = () => {
+                closeModal('article-modal');
+                showRoutePopup(
+                    currentPosition.coords.latitude,
+                    currentPosition.coords.longitude,
+                    article.lat,
+                    article.lon,
+                    article.title
+                );
+            };
+            actionsDiv.appendChild(routeBtn);
+            const googleMapsBtn = document.createElement('button');
+            googleMapsBtn.className = 'google-maps-btn';
+            googleMapsBtn.textContent = 'Open in Google Maps';
+            googleMapsBtn.onclick = () => window.open(`https://www.google.com/maps?q=${article.lat},${article.lon}`, '_blank');
+            actionsDiv.appendChild(googleMapsBtn);
+
+            const commonsBtn = document.createElement('button');
+            commonsBtn.className = 'commons-btn';
+            const commonsBtnIcon = document.createElement('img');
+            commonsBtnIcon.src = 'images/ic_commons.svg';
+            commonsBtnIcon.alt = 'Commons';
+            commonsBtn.appendChild(commonsBtnIcon);
+            commonsBtn.appendChild(document.createTextNode('Wikimedia Commons'));
+            commonsBtn.onclick = async () => {
+                let targetUrl;
+                if (details.wikidataId) {
+                    const directLink = await fetchCommonsCategory(details.wikidataId);
+                    targetUrl = directLink || `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(article.title)}`;
+                } else {
+                    targetUrl = `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(article.title)}`;
+                }
+                safeOpenLink(targetUrl);
+            };
+            actionsDiv.appendChild(commonsBtn);
+
+            body.appendChild(actionsDiv);
+
+            const wiktDiv = document.createElement('div');
+            wiktDiv.className = 'wiktionary';
+            const wiktTitleRow = document.createElement('div');
+            wiktTitleRow.className = 'wiktionary-section-title';
+            const wiktIcon = document.createElement('img');
+            wiktIcon.src = 'images/ic_wiktionary.svg';
+            wiktIcon.style.cssText = 'width: 1.35em; height: 1.35em; flex-shrink: 0;';
+            const wiktTitle = document.createElement('span');
+            wiktTitle.textContent = 'Wiktionary';
+            wiktTitleRow.appendChild(wiktIcon);
+            wiktTitleRow.appendChild(wiktTitle);
+            wiktDiv.appendChild(wiktTitleRow);
+
+            const wiktButtons = document.createElement('div');
+            wiktButtons.className = 'wiktionary-buttons';
+            const textSource = `${article.title} ${details.description}`.toLowerCase();
+            const words = textSource
+                .replace(/[^\p{L}\p{N}]+/gu, ' ')
+                .split(/\s+/)
+                .map(w => w.trim())
+                .filter(w => w.length >= 3 && !/^\d+$/.test(w));
+
+            const seen = new Set();
+            const uniqueWords = [];
+            for (const word of words) {
+                if (!seen.has(word)) {
+                    seen.add(word);
+                    uniqueWords.push(word);
+                }
+            }
+
+            if (uniqueWords.length > 0) {
+                uniqueWords.forEach(word => {
+                    const wiktBtn = document.createElement('button');
+                    wiktBtn.textContent = word;
+                    wiktBtn.title = `Choose Wiktionary language to search "${word}"`;
+                    wiktBtn.onclick = () => {
+                        closeModal('article-modal');
+                        openWiktionaryLanguagePicker(word, lang);
+                    };
+                    wiktButtons.appendChild(wiktBtn);
+                });
+            } else {
+                const noDef = document.createElement('span');
+                noDef.textContent = 'No words for Wiktionary';
+                noDef.style.color = 'var(--text-light)';
+                noDef.style.fontSize = '0.8rem';
+                wiktButtons.appendChild(noDef);
+            }
+            wiktDiv.appendChild(wiktButtons);
+            body.appendChild(wiktDiv);
+
+            openModal('article-modal');
+        }
+
+        // Popup pemilih bahasa Wiktionary — daftar bahasanya diambil langsung dari opsi yang sama
+        // dengan section "Wikimedia Project Language" (#language-select), supaya selalu konsisten
+        // dengan daftar bahasa yang sudah ada di aplikasi (tidak di-hardcode terpisah).
+        function openWiktionaryLanguagePicker(word, defaultLang) {
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+
+            const popup = document.createElement('div');
+            popup.className = 'map-popup wikt-lang-popup';
+
+            const closePopup = () => {
+                popup.remove();
+                overlay.remove();
+            };
+
+            const popupHeader = document.createElement('div');
+            popupHeader.className = 'popup-header';
+            const popupTitle = document.createElement('div');
+            popupTitle.className = 'popup-title';
+            popupTitle.textContent = `Wiktionary language for "${word}"`;
+            popupHeader.appendChild(popupTitle);
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '×';
+            closeBtn.className = 'close-btn';
+            closeBtn.onclick = closePopup;
+            popupHeader.appendChild(closeBtn);
+            popup.appendChild(popupHeader);
+
+            const body = document.createElement('div');
+            body.className = 'wikt-lang-popup-body';
+            Array.from(languageSelect.options).forEach((opt) => {
+                const langBtn = document.createElement('button');
+                langBtn.className = 'location-action-btn wikt-lang-btn';
+                langBtn.textContent = opt.text;
+                if (opt.value === defaultLang) {
+                    langBtn.classList.add('active');
+                    langBtn.title = 'Current article language';
+                }
+                langBtn.onclick = () => {
+                    window.open(`https://${opt.value}.wiktionary.org/wiki/${encodeURIComponent(word)}`, '_blank');
+                    closePopup();
+                    closeModal('article-modal');
+                };
+                body.appendChild(langBtn);
+            });
+            popup.appendChild(body);
+
+            document.body.appendChild(popup);
+            overlay.onclick = closePopup;
+        }
+
+        function showRoutePopup(startLat, startLon, endLat, endLon, title) {
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+            const popup = document.createElement('div');
+            popup.className = 'map-popup';
+            const popupHeader = document.createElement('div');
+            popupHeader.className = 'popup-header';
+            const popupTitle = document.createElement('div');
+            popupTitle.className = 'popup-title';
+            popupTitle.textContent = `Route to ${title}`;
+            popupHeader.appendChild(popupTitle);
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '×';
+            closeBtn.className = 'close-btn';
+            closeBtn.onclick = () => {
+                document.body.removeChild(popup);
+                document.body.removeChild(overlay);
+            };
+            popupHeader.appendChild(closeBtn);
+            popup.appendChild(popupHeader);
+            const mapContainer = document.createElement('div');
+            mapContainer.className = 'map-container';
+            popup.appendChild(mapContainer);
+            document.body.appendChild(popup);
+            const map = L.map(mapContainer).setView([startLat, startLon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(map);
+            setTimeout(() => map.invalidateSize(), 100);
+            L.marker([startLat, startLon]).addTo(map).bindPopup('Your location');
+            L.marker([endLat, endLon]).addTo(map).bindPopup(title);
+            L.Routing.control({
+                waypoints: [L.latLng(startLat, startLon), L.latLng(endLat, endLon)],
+                routeWhileDragging: false,
+                show: true,
+                lineOptions: { styles: [{ color: 'blue', weight: 4 }] },
+                router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }),
+                fitSelectedRoutes: true,
+                showAlternatives: false
+            }).addTo(map);
+        }
+
+        async function fetchWikivoyageSitelink(qid, lang) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=sitelinks&origin=*`;
+                const response = await throttledFetch(url);
+                const data = await response.json();
+                const entity = data.entities[qid];
+                const sitelinks = entity?.sitelinks || {};
+                const wikivoyageKey = `${lang}wikivoyage`;
+                const sitelink = sitelinks[wikivoyageKey]?.title || null;
+                return sitelink ? `https://${lang}.wikivoyage.org/wiki/${encodeURIComponent(sitelink)}` : null;
+            } catch (error) {
+                console.error(`Error fetching Wikivoyage sitelink for ${qid}:`, error);
+                return null;
+            }
+        }
+
+        async function fetchCommonsCategory(qid) {
+            try {
+                const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&format=json&props=claims&origin=*`;
+                const response = await throttledFetch(url);
+                const data = await response.json();
+                const entity = data.entities[qid];
+                const commonsClaim = entity?.claims?.P373;
+                if (commonsClaim && commonsClaim.length > 0) {
+                    const categoryName = commonsClaim[0].mainsnak.datavalue.value;
+                    return `https://commons.wikimedia.org/wiki/Category:${encodeURIComponent(categoryName)}`;
+                }
+                return null;
+            } catch (error) {
+                console.error(`Error fetching Commons category for ${qid}:`, error);
+                return null;
+            }
+        }
+
+        async function updateLocationDisplay(lat, lon, locationData) {
+            const { displayName, parts: locationParts } = locationData;
+            const coordsDisplay = document.querySelector('.coordinates-display');
+            coordsDisplay.textContent = `Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+            document.getElementById('location-retry-container').innerHTML = '';
+
+            document.getElementById('address-label').textContent = displayName;
+            document.getElementById('address-row').style.display = 'flex';
+
+            const detailsContent = document.getElementById('location-modal-body');
+            detailsContent.innerHTML = '';
+
+            for (const part of locationParts) {
+                const div = document.createElement('div');
+                div.className = 'location-part';
+
+                const span = document.createElement('span');
+                const labels = {
+                    'road': 'Street', 'postcode': 'Postal Code',
+                    'neighbourhood': 'Neighbourhood', 'suburb': 'Subdistrict',
+                    'town': 'Town', 'village': 'Village',
+                    'city': 'City', 'state': 'State', 'country': 'Country'
+                };
+                span.textContent = `${labels[part.type] || part.type}: ${part.name}`;
+                div.appendChild(span);
+
+                if (part.type !== 'road' && part.type !== 'postcode') {
+
+                    // ✅ FIX: Multiple Wikidata chips untuk SEMUA tipe (bukan hanya village)
+                    if (part.allWikidataMatches && part.allWikidataMatches.length > 0) {
+                        const allMatchesContainer = document.createElement('div');
+                        allMatchesContainer.style.cssText =
+                            'display:flex; flex-wrap:wrap; gap:0.5rem; width:100%; margin-top:0.5rem;';
+
+                        part.allWikidataMatches.forEach((match, index) => {
+                            const wdBtn = document.createElement('button');
+                            wdBtn.className = 'location-action-btn';
+
+                            let titleText = `${match.label || 'No label'} — ${match.description || 'No description'}`;
+                            if (match.distance !== undefined && match.distance !== Infinity)
+                                titleText += ` (${match.distance} km away)`;
+                            wdBtn.title = titleText;
+
+                            const wdIcon = document.createElement('img');
+                            wdIcon.src = 'images/ic_wikidata.svg';
+                            wdIcon.alt = 'Wikidata';
+                            wdIcon.style.cssText = 'width:1.1em; height:1.1em;';
+
+                            const wdLabel = document.createElement('span');
+                            wdLabel.style.cssText =
+                                'display:flex; flex-direction:column; align-items:flex-start; gap:0.15rem;';
+
+                            const idSpan = document.createElement('span');
+                            idSpan.textContent = match.id;
+                            idSpan.style.fontWeight = '600';
+                            wdLabel.appendChild(idSpan);
+
+                            if (match.description || match.distance !== undefined) {
+                                const descSpan = document.createElement('small');
+                                let descText = match.description || 'No description';
+                                if (match.distance !== undefined && match.distance !== Infinity)
+                                    descText += ` • ${match.distance} km`;
+                                descSpan.textContent = descText;
+                                descSpan.style.cssText = 'font-size:0.7rem; opacity:0.8; line-height:1.2;';
+                                wdLabel.appendChild(descSpan);
+                            }
+
+                            wdBtn.appendChild(wdIcon);
+                            wdBtn.appendChild(wdLabel);
+                            wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${match.id}`);
+
+                            // Highlight best match (index 0)
+                            if (index === 0) {
+                                wdBtn.style.borderColor = 'var(--success-color)';
+                                wdBtn.style.borderWidth = '2px';
+                                wdBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+                            }
+
+                            allMatchesContainer.appendChild(wdBtn);
+                        });
+
+                        div.appendChild(allMatchesContainer);
+
+                    } else {
+                        // Fallback: single Wikidata chip (jika allWikidataMatches tidak ada)
+                        const primaryId = part.wikidataIds?.[0] ?? null;
+                        const wdBtn = document.createElement('button');
+                        wdBtn.className = 'location-action-btn';
+                        wdBtn.title = primaryId
+                            ? `Open Wikidata entity ${primaryId}`
+                            : 'Wikidata (no administrative entity found)';
+
+                        const wdIcon = document.createElement('img');
+                        wdIcon.src = 'images/ic_wikidata.svg';
+                        wdIcon.alt = 'Wikidata';
+                        wdIcon.style.cssText = 'width:1.1em; height:1.1em;';
+
+                        const wdLabel = document.createElement('span');
+                        wdLabel.textContent = primaryId ? primaryId : 'Wikidata';
+
+                        wdBtn.appendChild(wdIcon);
+                        wdBtn.appendChild(wdLabel);
+
+                        if (primaryId) {
+                            wdBtn.onclick = () => safeOpenLink(`https://www.wikidata.org/wiki/${primaryId}`);
+                        } else {
+                            wdBtn.disabled = true;
+                            wdBtn.style.opacity = '0.5';
+                            wdBtn.style.cursor = 'not-allowed';
+                        }
+                        div.appendChild(wdBtn);
+                    }
+
+                    // ===== Wikivoyage Button =====
+                    const wvBtn = document.createElement('button');
+                    wvBtn.className = 'location-action-btn';
+                    const primaryIdForWv = part.wikidataIds?.[0] ?? null;
+                    wvBtn.title = primaryIdForWv
+                        ? `Open Wikivoyage page for ${part.name}`
+                        : `Search "${part.name}" on Wikivoyage`;
+
+                    const wvIcon = document.createElement('img');
+                    wvIcon.src = 'images/ic_wikivoyage.svg';
+                    wvIcon.alt = 'Wikivoyage';
+                    wvIcon.style.cssText = 'width:1.1em; height:1.1em;';
+
+                    const wvLabel = document.createElement('span');
+                    wvLabel.textContent = 'Wikivoyage';
+                    wvBtn.appendChild(wvIcon);
+                    wvBtn.appendChild(wvLabel);
+
+                    wvBtn.onclick = async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let targetUrl;
+                        if (primaryIdForWv) {
+                            const directLink = await fetchWikivoyageSitelink(primaryIdForWv, currentLang);
+                            targetUrl = directLink ||
+                                `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        } else {
+                            targetUrl = `https://${currentLang}.wikivoyage.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        }
+                        safeOpenLink(targetUrl);
+                    };
+                    div.appendChild(wvBtn);
+
+                    // ===== Wikimedia Commons Button =====
+                    const commonsBtn = document.createElement('button');
+                    commonsBtn.className = 'location-action-btn';
+                    const primaryIdForCommons = part.wikidataIds?.[0] ?? null;
+                    commonsBtn.title = primaryIdForCommons
+                        ? `Open Wikimedia Commons category for ${part.name}`
+                        : `Search "${part.name}" on Wikimedia Commons`;
+
+                    const commonsIcon = document.createElement('img');
+                    commonsIcon.src = 'images/ic_commons.svg';
+                    commonsIcon.alt = 'Wikimedia Commons';
+                    commonsIcon.style.cssText = 'width:1.1em; height:1.1em;';
+
+                    const commonsLabel = document.createElement('span');
+                    commonsLabel.textContent = 'Commons';
+                    commonsBtn.appendChild(commonsIcon);
+                    commonsBtn.appendChild(commonsLabel);
+
+                    commonsBtn.onclick = async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let targetUrl;
+                        if (primaryIdForCommons) {
+                            const directLink = await fetchCommonsCategory(primaryIdForCommons);
+                            targetUrl = directLink ||
+                                `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        } else {
+                            targetUrl = `https://commons.wikimedia.org/w/index.php?search=${encodeURIComponent(part.name)}`;
+                        }
+                        safeOpenLink(targetUrl);
+                    };
+                    div.appendChild(commonsBtn);
+                }
+
+                detailsContent.appendChild(div);
+            }
+        }
+
+        async function getLocation(retryCount = 0, maxRetries = 3) {
+            if (!navigator.geolocation) {
+                document.querySelector('.coordinates-display').textContent = 'Geolocation not supported';
+                document.querySelector('.coordinates-display').style.color = 'var(--danger-color)';
+                updatePermissionStatus('denied');
+                return;
+            }
+
+            const coordsDisplay = document.querySelector('.coordinates-display');
+            coordsDisplay.textContent = retryCount === 0
+                ? 'Fetching your location...'
+                : `Fetching your location... (Attempt ${retryCount + 1}/${maxRetries + 1})`;
+
+            // Timeout yang lebih panjang: 15 detik untuk attempt pertama, 20 detik untuk retry
+            const timeout = retryCount === 0 ? 15000 : 20000;
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    currentPosition = position;
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    await checkLocationPermission();
+                    const locationParts = await getLocationDetails(lat, lon);
+                    await updateLocationDisplay(lat, lon, locationParts);
+                    const fetchLang = currentLang; // snapshot — dipakai konsisten dari fetch sampai render
+                    const articles = await fetchNearbyArticles(lat, lon, fetchLang);
+                    await displayArticles(articles, fetchLang);
+                },
+                async (error) => {
+                    console.error('Geolocation error:', error);
+
+                    // Retry logic untuk TIMEOUT error
+                    if (error.code === error.TIMEOUT && retryCount < maxRetries) {
+                        coordsDisplay.textContent = `Location timeout, retrying... (${retryCount + 1}/${maxRetries})`;
+                        coordsDisplay.style.color = 'var(--warning-color)';
+
+                        // Wait 1 second before retry
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        return getLocation(retryCount + 1, maxRetries);
+                    }
+
+                    // Error handling untuk berbagai jenis error
+                    let errorMessage = 'Failed to get location: ';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Permission denied. Please allow location access.';
+                            updatePermissionStatus('denied');
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Location unavailable. Please check your GPS/network.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Request timed out. Please try again or check your connection.';
+                            break;
+                        default:
+                            errorMessage += error.message;
+                    }
+
+                    coordsDisplay.textContent = errorMessage;
+                    coordsDisplay.style.color = 'var(--danger-color)';
+
+                    // Tampilkan tombol retry manual
+                    document.getElementById('address-row').style.display = 'none';
+                    const retryContainer = document.getElementById('location-retry-container');
+                    retryContainer.innerHTML = `
+                <div style="text-align: center; padding: 1rem;">
+                    <button onclick="getLocation(0)" style="background-color: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
+                        🔄 Try Again
+                    </button>
+                </div>
+            `;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: timeout,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        async function searchArticles() {
+            const permissionState = await checkLocationPermission();
+            if (permissionState === 'denied') {
+                alert('Location permission denied. Please allow location access to use this feature.');
+                return;
+            }
+            if (currentPosition) {
+                const lat = currentPosition.coords.latitude;
+                const lon = currentPosition.coords.longitude;
+                const locationParts = await getLocationDetails(lat, lon);
+                await updateLocationDisplay(lat, lon, locationParts);
+                const fetchLang = currentLang; // snapshot — dipakai konsisten dari fetch sampai render
+                const articles = await fetchNearbyArticles(lat, lon, fetchLang);
+                await displayArticles(articles, fetchLang);
+            } else {
+                await getLocation(0, 3); // Mulai dengan retry count 0, max 3 retries
+            }
+        }
+
+        languageSelect.addEventListener('change', () => {
+            currentLang = languageSelect.value;
+            resultsList.innerHTML = '';
+            articleCount.textContent = '';
+            if (currentPosition) {
+                resultsList.innerHTML = `
+                <li style="text-align:center; padding:2rem; background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); color:var(--text-light);">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">Language</div>
+                    <strong>Language changed to:</strong><br>
+                    <strong style="color:var(--primary-color); font-size:1.1rem;">
+                        ${languageSelect.options[languageSelect.selectedIndex].text}
+                    </strong><br><br>
+                    Click the <strong style="color:var(--accent-color);">"Check Location & Search"</strong> button<br>
+                    to display articles in the new language
+                </li>
+            `;
+                permissionStatus.textContent = 'Granted — Click to re-search';
+                permissionStatus.className = 'permission-badge granted';
+            }
+        });
+
+        checkPermissionBtn.addEventListener('click', async () => await searchArticles());
+
+        const scrollToTopBtn = document.getElementById('scroll-to-top');
+        const locationSection = document.getElementById('location-section');
+        window.addEventListener('scroll', () => {
+            if (!locationSection) return;
+            const locationSectionTop = locationSection.getBoundingClientRect().top;
+            scrollToTopBtn.classList.toggle('show', locationSectionTop < 0);
+        });
+        scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        window.onload = async () => {
+            console.log('WikiLokal ready');
+            const permissionState = await checkLocationPermission();
+            if (permissionState === 'granted' || currentPosition) {
+                updatePermissionStatus('granted');
+            }
+        };
+
+        document.getElementById('guide-btn').addEventListener('click', () => openModal('guide-modal'));
+        document.getElementById('open-location-modal-btn').addEventListener('click', () => openModal('location-modal'));
+
+        // Tutup modal saat klik backdrop atau tombol close — berlaku untuk semua .modal di halaman.
+        document.querySelectorAll('.modal').forEach((modalEl) => {
+            modalEl.addEventListener('click', (e) => {
+                if (e.target === modalEl) closeModal(modalEl.id);
+            });
+        });
+        document.querySelectorAll('.modal-close').forEach((btn) => {
+            btn.addEventListener('click', () => closeModal(btn.dataset.modal));
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach((modalEl) => closeModal(modalEl.id));
+            }
+        });
+    </script>
+</body>
+
+</html>
