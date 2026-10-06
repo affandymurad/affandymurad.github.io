@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wikilokal 2.0 — Kotlin Multiplatform</title>
-<meta name="description" content="Wikilokal 2.0.0 kini Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, web, dan segera iOS. Jelajahi Wikipedia, Commons, Wikidata, dan OpenStreetMap di sekitarmu.">
+<meta name="description" content="Wikilokal 2.0.3 kini Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, web, dan segera iOS. Jelajahi Wikipedia, Commons, Wikidata, dan OpenStreetMap di sekitarmu.">
 <link rel="icon" href="wikilokal.ico" type="image/x-icon">
 <style>
 :root{
@@ -214,7 +214,7 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
 <!-- HERO -->
 <div class="wrap hero">
   <div>
-    <span class="badge">● <span lang="id">Versi 2.0.0 · Kotlin Multiplatform</span><span lang="en">Version 2.0.0 · Kotlin Multiplatform</span></span>
+    <span class="badge">● <span lang="id">Versi 2.0.3 · Kotlin Multiplatform</span><span lang="en">Version 2.0.3 · Kotlin Multiplatform</span></span>
     <h1><span lang="id">Jelajahi Wikimedia <em>di sekitarmu</em>, di semua perangkat.</span><span lang="en">Explore Wikimedia <em>around you</em>, on every device.</span></h1>
     <p class="lead"><span lang="id">Wikilokal menghubungkan Wikipedia, Wikimedia Commons, Wikidata, dan OpenStreetMap berdasarkan lokasi. Kini ditulis ulang dengan Kotlin Multiplatform: satu basis kode untuk Android, Windows, macOS, web, dan segera iOS.</span><span lang="en">Wikilokal links Wikipedia, Wikimedia Commons, Wikidata and OpenStreetMap by location. Now rebuilt on Kotlin Multiplatform: one codebase for Android, Windows, macOS, web and, soon, iOS.</span></p>
     <div class="cta">
@@ -247,13 +247,13 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
       <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5.5l7.5-1v7H3zM12 4.3L21 3v8.5h-9zM3 12.5h7.5v7L3 18.5zM12 12.5h9V21l-9-1.3z"/></svg></div>
       <h3>Windows</h3>
       <p><span lang="id">Berkas .exe dalam arsip ZIP. Ekstrak lalu jalankan.</span><span lang="en">An .exe inside a ZIP archive. Extract, then run.</span></p>
-      <a class="btn primary" href="https://drive.google.com/file/d/1tgmpHIQu-VQvxvPAkwEgXdoQGazOUjRK/view?usp=sharing" rel="noopener" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dl"/></svg>Unduh .zip</a>
+      <a class="btn primary" href="https://drive.google.com/file/d/1EOfAE73RFJkOC_C2kE4TDwgMXT8St_vI/view?usp=sharing" rel="noopener" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dl"/></svg>Unduh .zip</a>
     </div>
     <div class="plat">
       <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
       <h3>macOS</h3>
       <p><span lang="id">Citra disk .dmg. Buka lalu seret ke Applications.</span><span lang="en">A .dmg disk image. Open it and drag to Applications.</span></p>
-      <a class="btn primary" href="https://drive.google.com/file/d/1n418tFpcN6dP8MI-_YnCpn9N4w4qW4c7/view?usp=sharing" rel="noopener" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dl"/></svg>Unduh .dmg</a>
+      <a class="btn primary" href="https://drive.google.com/file/d/1nD8x7HKfHSGZ3_dAW2cWYiJzMx32VQuv/view?usp=sharing" rel="noopener" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dl"/></svg>Unduh .dmg</a>
     </div>
     <div class="plat">
       <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div>
@@ -281,8 +281,14 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
       <h3><span lang="id">Berbasis lokasi</span><span lang="en">Location-first</span></h3>
       <p><span lang="id">Temukan artikel, foto, dan data yang terkait dengan posisimu atau tempat mana pun di peta.</span><span lang="en">Find articles, photos and data tied to your position or any place on the map.</span></p></article>
     <article class="card"><div class="ic"><img src="images/ic_wikipedia.svg" alt=""></div>
-      <h3>Wikipedia &amp; Wikivoyage</h3>
-      <p><span lang="id">Baca artikel dan panduan wisata tentang tempat di sekitarmu.</span><span lang="en">Read articles and travel guides about places near you.</span></p></article>
+      <h3>Wikipedia</h3>
+      <p><span lang="id">Baca artikel Wikipedia tentang tempat-tempat di sekitarmu, lengkap dengan jarak dari posisimu.</span><span lang="en">Read Wikipedia articles about the places around you, with the distance from your position.</span></p></article>
+    <article class="card"><div class="ic"><img src="images/ic_wikivoyage.svg" alt=""></div>
+      <h3>Wikivoyage</h3>
+      <p><span lang="id">Buka panduan wisata lokal: tempat menarik dan tips menjelajahi daerah tempatmu berada.</span><span lang="en">Open the local travel guide: points of interest and tips for exploring the area you are in.</span></p></article>
+    <article class="card"><div class="ic"><img src="images/ic_wiktionary.svg" alt=""></div>
+      <h3>Wiktionary</h3>
+      <p><span lang="id">Deskripsi tiap artikel dipecah menjadi kata-kata (tokenisasi). Ketuk satu kata untuk melihat arti dan asal-usulnya di Wiktionary.</span><span lang="en">Each article's description is split into words (tokenised). Tap a word to look up its meaning and origin on Wiktionary.</span></p></article>
     <article class="card"><div class="ic"><img src="images/ic_commons.svg" alt=""></div>
       <h3>Wikimedia Commons</h3>
       <p><span lang="id">Lihat foto dan media bebas yang bergeotag di sekitarmu.</span><span lang="en">See freely licensed, geotagged photos and media nearby.</span></p></article>
@@ -398,8 +404,8 @@ try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.d
     <h2><span lang="id">Siap menjelajah sekitarmu?</span><span lang="en">Ready to explore around you?</span></h2>
     <p><span lang="id">Pasang Wikilokal 2.0 di Android, Windows, atau macOS, atau buka langsung di web. iOS segera menyusul.</span><span lang="en">Get Wikilokal 2.0 on Android, Windows or macOS, or open it on the web. iOS is coming soon.</span></p>
     <a class="btn" href="https://play.google.com/store/apps/details?id=kmt.commuterline.am" rel="noopener" target="_blank">Google Play</a>
-    <a class="btn" href="https://drive.google.com/file/d/1tgmpHIQu-VQvxvPAkwEgXdoQGazOUjRK/view?usp=sharing" rel="noopener" target="_blank">Windows</a>
-    <a class="btn" href="https://drive.google.com/file/d/1n418tFpcN6dP8MI-_YnCpn9N4w4qW4c7/view?usp=sharing" rel="noopener" target="_blank">macOS</a>
+    <a class="btn" href="https://drive.google.com/file/d/1EOfAE73RFJkOC_C2kE4TDwgMXT8St_vI/view?usp=sharing" rel="noopener" target="_blank">Windows</a>
+    <a class="btn" href="https://drive.google.com/file/d/1nD8x7HKfHSGZ3_dAW2cWYiJzMx32VQuv/view?usp=sharing" rel="noopener" target="_blank">macOS</a>
     <a class="btn" href="http://wikilokal.netlify.app/" rel="noopener" target="_blank">Web</a>
   </div>
 </div></section>
