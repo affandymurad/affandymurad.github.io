@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikilokal — Kebijakan Data Pengguna</title>
+<meta name="description" content="Kebijakan data pengguna Wikilokal: data apa yang dipakai aplikasi, ke mana data dikirim, dan apa yang tersimpan di perangkatmu.">
+<link rel="icon" href="wikilokal.ico" type="image/x-icon">
+<style>
+:root{
+  --bg:#f6f9fc; --surface:#ffffff; --ink:#0f1b2d; --muted:#51607a; --line:#dbe4ee;
+  --brand:#2563eb; --brand-2:#38bdf8; --soft:#e8effc; --shadow:0 10px 30px rgba(15,27,45,.08);
+}
+:root{color-scheme:light}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){color-scheme:dark;--bg:#0b1220;--surface:#121b2e;--ink:#eaf1fb;--muted:#9fb0c9;--line:#243049;--soft:#15233f;--brand:#5b8def;--shadow:0 10px 30px rgba(0,0,0,.4)}
+}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0b1220;--surface:#121b2e;--ink:#eaf1fb;--muted:#9fb0c9;--line:#243049;--soft:#15233f;--brand:#5b8def;--shadow:0 10px 30px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--brand)}
+.wrap{width:min(860px,100% - 32px);margin-inline:auto}
+html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{display:none!important}
+
+/* nav */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:12px;height:60px}
+.back{display:inline-flex;align-items:center;gap:6px;padding:7px 14px 7px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{border-color:var(--brand)}
+.back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:-.01em;white-space:nowrap}
+.logo img{width:30px;height:30px;border-radius:9px}
+.logo small{font-weight:700;color:var(--brand);background:var(--soft);border-radius:999px;padding:1px 8px;font-size:12px}
+nav.links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.links a{padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14.5px;white-space:nowrap}
+nav.links a:hover{background:var(--soft);color:var(--ink)}
+@media (max-width:980px){nav.links{display:none}.logo{margin-right:auto}}
+@media (max-width:520px){.back .t{display:none}.back{padding:7px 9px}.nav{gap:8px}}
+.lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;cursor:pointer}
+.switch{position:relative;display:grid;grid-template-columns:1fr 1fr;width:76px;height:34px;padding:0;border-radius:999px;overflow:hidden}
+.switch span{position:relative;z-index:1;display:grid;place-items:center;font-size:12.5px;transition:color .2s}
+.switch i{position:absolute;z-index:0;top:3px;left:3px;width:calc(50% - 3px);height:26px;border-radius:999px;background:var(--brand);transition:transform .22s}
+.switch[aria-checked="false"] span:first-of-type,.switch[aria-checked="true"] span:last-of-type{color:#fff}
+.switch[aria-checked="true"] i{transform:translateX(100%)}
+.tools{display:flex;gap:8px;align-items:center}
+.theme{display:grid;place-items:center;width:34px;height:34px;padding:0}
+.theme svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.theme .sun{display:none}
+:root[data-eff="dark"] .theme .sun{display:block}
+:root[data-eff="dark"] .theme .moon{display:none}
+
+/* content */
+.head{padding:48px 0 8px}
+.eyebrow{color:var(--brand);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.12;margin:8px 0 10px;letter-spacing:-.02em}
+.meta{color:var(--muted);font-size:14px;margin:0}
+.summary{background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:18px 22px;margin:26px 0 8px}
+.summary b{display:block;margin-bottom:6px}
+.summary ul{margin:0;padding-left:20px}
+.summary li{margin:3px 0}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 4px}
+.toc a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted);text-decoration:none}
+.toc a:hover{color:var(--ink);border-color:var(--brand)}
+section{padding:26px 0 0}
+h2{font-size:22px;line-height:1.25;margin:0 0 8px;letter-spacing:-.01em;scroll-margin-top:76px}
+p{margin:0 0 12px}
+section ul{margin:0 0 12px;padding-left:22px}
+section li{margin:5px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 20px;margin:0 0 12px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 4px;font-size:16px}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);font-size:14.5px;margin:0 0 12px}
+.table th,.table td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+.table tr:last-child td{border-bottom:0}
+.table th{background:var(--soft);font-size:13px;color:var(--muted)}
+.scroll{overflow-x:auto}
+.scroll .table{min-width:560px}
+footer{margin-top:44px;padding:30px 0 56px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .row{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+footer a{color:var(--muted)}
+</style>
+<script>
+try{var t=localStorage.getItem('wl-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="back" href="index.html" id="backBtn" aria-label="Kembali / Back">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      <span class="t"><span lang="id">Kembali</span><span lang="en">Back</span></span>
+    </a>
+    <a class="logo" href="index.html" aria-label="Wikilokal 2.0">
+      <img src="wikilokal.png" alt="" width="30" height="30">
+      Wikilokal <small>2.0</small>
+    </a>
+    <nav class="links" aria-label="Menu">
+      <a href="index.html#platform"><span lang="id">Platform</span><span lang="en">Platforms</span></a>
+      <a href="index.html#fitur"><span lang="id">Fitur</span><span lang="en">Features</span></a>
+      <a href="index.html#kmp">KMP</a>
+      <a href="index.html#galeri"><span lang="id">Galeri</span><span lang="en">Gallery</span></a>
+      <a href="index.html#media"><span lang="id">Presentasi</span><span lang="en">Talks</span></a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <div class="tools">
+      <button class="lang theme" id="themeBtn" type="button" aria-label="Ganti tema / Toggle theme" title="Tema / Theme">
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="lang switch" id="langBtn" type="button" role="switch" aria-checked="false" aria-label="Bahasa / Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="eyebrow"><span lang="id">Kebijakan</span><span lang="en">Policy</span></div>
+    <h1><span lang="id">Kebijakan Data Pengguna</span><span lang="en">User Data Policy</span></h1>
+    <p class="meta"><span lang="id">Berlaku untuk aplikasi Wikilokal 2.0 (Android, Windows, macOS, dan web). Terakhir diperbarui: 6 Oktober 2026.</span><span lang="en">Applies to the Wikilokal 2.0 app (Android, Windows, macOS and web). Last updated: 6 October 2026.</span></p>
+
+    <div class="summary">
+      <b><span lang="id">Ringkasnya</span><span lang="en">In short</span></b>
+      <ul>
+        <li><span lang="id">Wikilokal tidak memakai akun, login, atau server milik kami. Kami tidak mengumpulkan datamu di server kami.</span><span lang="en">Wikilokal has no accounts, no sign-in and no server of our own. We do not collect your data on our servers.</span></li>
+        <li><span lang="id">Lokasimu dipakai hanya untuk mencari artikel, foto, dan tempat di sekitarmu. Koordinatnya dikirim ke layanan Wikimedia dan OpenStreetMap agar hasilnya bisa ditampilkan.</span><span lang="en">Your location is used only to find articles, photos and places around you. The coordinates are sent to Wikimedia and OpenStreetMap services so the results can be shown.</span></li>
+        <li><span lang="id">Item yang kamu simpan dan pengaturanmu tersimpan di perangkatmu sendiri.</span><span lang="en">Items you save and your settings stay on your own device.</span></li>
+        <li><span lang="id">Versi Android menampilkan iklan dari Google AdMob.</span><span lang="en">The Android version shows ads from Google AdMob.</span></li>
+      </ul>
+    </div>
+
+    <nav class="toc" aria-label="Isi / Contents">
+      <a href="#data"><span lang="id">Data yang dipakai</span><span lang="en">Data we use</span></a>
+      <a href="#lokasi"><span lang="id">Lokasi</span><span lang="en">Location</span></a>
+      <a href="#pihak"><span lang="id">Layanan pihak ketiga</span><span lang="en">Third-party services</span></a>
+      <a href="#iklan"><span lang="id">Iklan</span><span lang="en">Ads</span></a>
+      <a href="#simpan"><span lang="id">Penyimpanan</span><span lang="en">Storage</span></a>
+      <a href="#pilihan"><span lang="id">Pilihanmu</span><span lang="en">Your choices</span></a>
+      <a href="#kontak"><span lang="id">Kontak</span><span lang="en">Contact</span></a>
+    </nav>
+  </div>
+
+  <section id="data">
+    <h2><span lang="id">1. Data yang dipakai aplikasi</span><span lang="en">1. Data the app uses</span></h2>
+    <div class="scroll">
+    <table class="table">
+      <tr><th><span lang="id">Data</span><span lang="en">Data</span></th><th><span lang="id">Untuk apa</span><span lang="en">What for</span></th><th><span lang="id">Di mana</span><span lang="en">Where</span></th></tr>
+      <tr><td><span lang="id">Lokasi perangkat (koordinat)</span><span lang="en">Device location (coordinates)</span></td><td><span lang="id">Mencari artikel, foto Commons, dan tempat Wikidata di sekitarmu; menampilkan alamat dan peta.</span><span lang="en">Finding articles, Commons photos and Wikidata places around you; showing the address and map.</span></td><td><span lang="id">Dikirim sebagai permintaan ke layanan pihak ketiga (bagian 3). Tidak disimpan oleh kami.</span><span lang="en">Sent as requests to third-party services (section 3). Not stored by us.</span></td></tr>
+      <tr><td><span lang="id">Item tersimpan (artikel dan foto)</span><span lang="en">Saved items (articles and photos)</span></td><td><span lang="id">Daftar di tab Simpan.</span><span lang="en">The list in the Saved tab.</span></td><td><span lang="id">Hanya di perangkatmu.</span><span lang="en">On your device only.</span></td></tr>
+      <tr><td><span lang="id">Pengaturan (tema, bahasa, pilihan lain)</span><span lang="en">Settings (theme, language, other choices)</span></td><td><span lang="id">Mengingat preferensimu.</span><span lang="en">Remembering your preferences.</span></td><td><span lang="id">Hanya di perangkatmu.</span><span lang="en">On your device only.</span></td></tr>
+      <tr><td><span lang="id">Kata yang kamu ketuk di deskripsi artikel</span><span lang="en">Words you tap in an article description</span></td><td><span lang="id">Membuka arti kata di Wiktionary.</span><span lang="en">Opening the word's entry on Wiktionary.</span></td><td><span lang="id">Dikirim ke Wiktionary saat kamu membukanya.</span><span lang="en">Sent to Wiktionary when you open it.</span></td></tr>
+    </table>
+    </div>
+    <p><span lang="id">Wikilokal tidak meminta nama, email, nomor telepon, atau data identitas lain, dan tidak menyediakan pendaftaran akun.</span><span lang="en">Wikilokal does not ask for your name, email, phone number or any other identity data, and has no account sign-up.</span></p>
+  </section>
+
+  <section id="lokasi">
+    <h2><span lang="id">2. Lokasi</span><span lang="en">2. Location</span></h2>
+    <p><span lang="id">Wikilokal hanya memakai lokasimu saat kamu menjalankan pencarian atau membuka tab yang membutuhkannya. Di Android aplikasi meminta izin lokasi presisi atau perkiraan; di web, browser yang meminta izin (hanya berfungsi lewat HTTPS atau localhost).</span><span lang="en">Wikilokal uses your location only when you run a search or open a tab that needs it. On Android the app asks for precise or approximate location permission; on the web, your browser asks for permission (it only works over HTTPS or localhost).</span></p>
+    <p><span lang="id">Kami tidak menyimpan riwayat lokasimu dan tidak mengirimkannya ke server milik kami. Namun, koordinat itu menjadi bagian dari permintaan ke layanan pihak ketiga yang tercantum di bagian 3, yang menerimanya bersama alamat IP-mu.</span><span lang="en">We do not keep a history of your location and do not send it to any server of ours. The coordinates are, however, part of the requests to the third-party services listed in section 3, which receive them together with your IP address.</span></p>
+    <div class="card">
+      <h3><span lang="id">Hati-hati saat berbagi tangkapan layar</span><span lang="en">Be careful when sharing screenshots</span></h3>
+      <p><span lang="id">Layar Lokasi menampilkan alamat lengkap dan koordinatmu. Tangkapan layar atau foto layar bisa mengungkap tempatmu berada.</span><span lang="en">The Location screen shows your full address and coordinates. Screenshots or photos of the screen can reveal where you are.</span></p>
+    </div>
+  </section>
+
+  <section id="pihak">
+    <h2><span lang="id">3. Layanan pihak ketiga yang menerima permintaan</span><span lang="en">3. Third-party services that receive requests</span></h2>
+    <p><span lang="id">Aplikasi berkomunikasi langsung dengan layanan publik berikut. Tiap layanan memiliki kebijakan privasinya sendiri, dan kami tidak mengendalikannya.</span><span lang="en">The app talks directly to the public services below. Each has its own privacy policy, which we do not control.</span></p>
+    <div class="scroll">
+    <table class="table">
+      <tr><th><span lang="id">Layanan</span><span lang="en">Service</span></th><th><span lang="id">Yang dikirim</span><span lang="en">What is sent</span></th></tr>
+      <tr><td>Wikipedia, Wikivoyage, Wiktionary</td><td><span lang="id">Koordinat untuk mencari artikel terdekat; judul artikel dan kata yang kamu buka.</span><span lang="en">Coordinates to find nearby articles; titles and words you open.</span></td></tr>
+      <tr><td>Wikimedia Commons</td><td><span lang="id">Koordinat untuk mencari foto bergeotag; permintaan gambar dan kategori.</span><span lang="en">Coordinates to find geotagged photos; image and category requests.</span></td></tr>
+      <tr><td>Wikidata (termasuk Query Service)</td><td><span lang="id">Koordinat untuk mencari tempat yang belum punya foto (P18); permintaan data item.</span><span lang="en">Coordinates to find places that still lack a photo (P18); item data requests.</span></td></tr>
+      <tr><td>OpenStreetMap Nominatim</td><td><span lang="id">Koordinat untuk mengubahnya menjadi alamat.</span><span lang="en">Coordinates to turn them into an address.</span></td></tr>
+      <tr><td><span lang="id">Server peta OpenStreetMap</span><span lang="en">OpenStreetMap map tile servers</span></td><td><span lang="id">Permintaan potongan peta (tile) untuk area yang kamu lihat.</span><span lang="en">Requests for map tiles of the area you are viewing.</span></td></tr>
+    </table>
+    </div>
+    <p><span lang="id">Saat kamu membuka tautan keluar (misalnya halaman Wikipedia, Wikidata, atau Commons di browser), situs tujuan berlaku dengan kebijakannya sendiri.</span><span lang="en">When you open an outside link (for example a Wikipedia, Wikidata or Commons page in your browser), the destination site applies its own policy.</span></p>
+    <p><a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" rel="noopener" target="_blank">Wikimedia Privacy Policy</a> · <a href="https://osmfoundation.org/wiki/Privacy_Policy" rel="noopener" target="_blank">OpenStreetMap Foundation Privacy Policy</a></p>
+  </section>
+
+  <section id="iklan">
+    <h2><span lang="id">4. Iklan dan layanan Google (Android)</span><span lang="en">4. Ads and Google services (Android)</span></h2>
+    <p><span lang="id">Versi Android menampilkan iklan banner lewat Google AdMob. AdMob dapat memakai ID iklan perangkat (aplikasi mendeklarasikan izin AD_ID) dan data perangkat lain sesuai kebijakan Google untuk menayangkan dan mengukur iklan.</span><span lang="en">The Android version shows banner ads through Google AdMob. AdMob may use the device advertising ID (the app declares the AD_ID permission) and other device data, under Google's policies, to serve and measure ads.</span></p>
+    <p><span lang="id">Kamu bisa mengatur atau mereset ID iklan dan memilih iklan yang kurang dipersonalisasi di pengaturan Android (Google &gt; Iklan). Aplikasi juga memakai layanan Google Play untuk permintaan ulasan dan pembaruan aplikasi.</span><span lang="en">You can reset the advertising ID or opt out of ad personalisation in Android settings (Google &gt; Ads). The app also uses Google Play services for review prompts and app updates.</span></p>
+    <p><a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Google Privacy Policy</a></p>
+  </section>
+
+  <section id="simpan">
+    <h2><span lang="id">5. Penyimpanan di perangkat</span><span lang="en">5. Storage on your device</span></h2>
+    <ul>
+      <li><span lang="id">Android dan desktop: item tersimpan ada di basis data lokal aplikasi.</span><span lang="en">Android and desktop: saved items live in the app's local database.</span></li>
+      <li><span lang="id">Web: item tersimpan dan pengaturan ada di penyimpanan browser (situs ini juga mengingat pilihan tema dan bahasamu di perangkatmu).</span><span lang="en">Web: saved items and settings are kept in browser storage (this site also remembers your theme and language choice on your device).</span></li>
+      <li><span lang="id">Data ini tidak disinkronkan ke mana pun dan hilang bila kamu menghapus data aplikasi atau browser.</span><span lang="en">This data is not synced anywhere and is gone if you clear the app or browser data.</span></li>
+    </ul>
+  </section>
+
+  <section id="pilihan">
+    <h2><span lang="id">6. Pilihanmu</span><span lang="en">6. Your choices</span></h2>
+    <ul>
+      <li><span lang="id">Tolak atau cabut izin lokasi kapan saja lewat pengaturan perangkat atau browser. Fitur yang butuh lokasi tidak akan berfungsi tanpanya.</span><span lang="en">Deny or revoke location permission at any time in your device or browser settings. Features that need location will not work without it.</span></li>
+      <li><span lang="id">Hapus item tersimpan dari tab Simpan (satu per satu atau semuanya).</span><span lang="en">Delete saved items from the Saved tab (one by one or all of them).</span></li>
+      <li><span lang="id">Hapus semua data lokal dengan membersihkan data aplikasi atau browser, atau dengan mencopot pemasangan aplikasi.</span><span lang="en">Remove all local data by clearing app or browser data, or by uninstalling the app.</span></li>
+      <li><span lang="id">Karena kami tidak menyimpan datamu di server, tidak ada data pribadi di pihak kami yang bisa diminta atau dihapus. Untuk data di layanan pihak ketiga, hubungi layanan terkait.</span><span lang="en">Since we hold no data about you on a server, there is no personal data on our side to request or delete. For data held by third-party services, contact those services.</span></li>
+    </ul>
+  </section>
+
+  <section id="status">
+    <h2><span lang="id">7. Status proyek dan perubahan</span><span lang="en">7. Project status and changes</span></h2>
+    <p><span lang="id">Wikilokal adalah proyek independen dan bukan produk resmi Wikimedia Foundation. Kebijakan ini dapat diperbarui seiring perkembangan aplikasi; tanggal pembaruan terakhir tercantum di bagian atas halaman.</span><span lang="en">Wikilokal is an independent project and not an official product of the Wikimedia Foundation. This policy may be updated as the app evolves; the date of the last update is at the top of this page.</span></p>
+  </section>
+
+  <section id="kontak">
+    <h2><span lang="id">8. Kontak</span><span lang="en">8. Contact</span></h2>
+    <p><span lang="id">Pertanyaan tentang kebijakan ini: </span><span lang="en">Questions about this policy: </span><a href="mailto:affandymurad@gmail.com">affandymurad@gmail.com</a> · <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a></p>
+  </section>
+</main>
+
+<footer><div class="wrap row">
+  <div>@ <span id="yr">2026</span> <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a> · Wikilokal</div>
+  <div><a href="index.html"><span lang="id">Kembali ke halaman Wikilokal</span><span lang="en">Back to the Wikilokal page</span></a></div>
+</div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('langBtn');
+  function set(l){root.lang=l;btn.setAttribute('aria-checked',l==='en');try{localStorage.setItem('wl-lang',l)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('wl-lang')}catch(e){}
+  set(saved||((navigator.language||'id').toLowerCase().indexOf('id')===0?'id':'en'));
+  btn.addEventListener('click',function(){set(root.lang==='id'?'en':'id')});
+
+  var mq=window.matchMedia('(prefers-color-scheme: dark)'),tb=document.getElementById('themeBtn');
+  function effective(){var t=root.getAttribute('data-theme');return t||(mq.matches?'dark':'light')}
+  function paint(){root.setAttribute('data-eff',effective());tb.setAttribute('aria-pressed',effective()==='dark')}
+  tb.addEventListener('click',function(){
+    var next=effective()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);try{localStorage.setItem('wl-theme',next)}catch(e){}
+    paint();
+  });
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(paint);
+  paint();
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // Back: return to where the visitor came from when it was the Wikilokal page; otherwise go to the landing page.
+  document.getElementById('backBtn').addEventListener('click',function(e){
+    try{
+      if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){e.preventDefault();history.back()}
+    }catch(err){}
+  });
+})();
+</script>
+</body>
+</html>
