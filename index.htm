@@ -27,6 +27,14 @@
     <!-- Fixed Header -->
     <header>
         <div class="header-content">
+            <a href="#" class="brand">Affandy Murad</a>
+            <nav class="desktop-nav" aria-label="Sections">
+                <a href="#portfolio" data-key="portfolio">Portfolio</a>
+                <a href="#experience" data-key="experience">Experience</a>
+                <a href="#education" data-key="education">Education</a>
+                <a href="#skills" data-key="skills">Skills</a>
+                <a href="#contact" data-key="contact">Contact</a>
+            </nav>
             <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
@@ -70,7 +78,7 @@
     <!-- Mobile Menu -->
     <nav class="mobile-menu" id="mobile-menu">
         <!-- Language & Theme Controls di dalam menu -->
-        <div class="mobile-controls-inner" style="padding: 12px 24px; border-bottom: 1px solid #e5e7eb;">
+        <div class="mobile-controls-inner">
             <div class="language-dropdown">
                 <button class="language-toggle" id="mobile-language-toggle">
                     <span class="lang-text">EN</span>
@@ -105,11 +113,11 @@
         </div>
 
         <div class="menu-items" id="menu-items">
-            <a href="#contact" class="menu-item" data-key="contact">Contact</a>
+            <a href="#portfolio" class="menu-item" data-key="portfolio">Portfolio</a>
             <a href="#experience" class="menu-item" data-key="experience">Experience</a>
             <a href="#education" class="menu-item" data-key="education">Education</a>
             <a href="#skills" class="menu-item" data-key="skills">Skills</a>
-            <a href="#portfolio" class="menu-item" data-key="portfolio">Portfolio</a>
+            <a href="#contact" class="menu-item" data-key="contact">Contact</a>
         </div>
     </nav>
     <main class="container">
@@ -139,12 +147,27 @@
                         <a href="https://github.com/affandymurad" class="social-link" target="_blank">
                             <i class="fab fa-github"></i> GitHub
                         </a>
-                            <a href="https://drive.google.com/file/d/your-file-id-en/view" id="resume-link" class="social-link" target="_blank">
+                            <a href="https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing" id="resume-link" class="social-link" target="_blank">
                                 <i class="fas fa-file-pdf"></i> Resume
                             </a>
                     </div>
                 </div>
             </div>
+
+            <dl class="profile-facts">
+                <div>
+                    <dt data-key="factNow">Now</dt>
+                    <dd>IT Supervisor, Korindo Group</dd>
+                </div>
+                <div>
+                    <dt data-key="factFocus">Focus</dt>
+                    <dd data-key="factFocusVal">Mobile apps, cloud &amp; AI</dd>
+                </div>
+                <div>
+                    <dt data-key="education">Education</dt>
+                    <dd>Universitas Gunadarma, S.Kom (Cum Laude)</dd>
+                </div>
+            </dl>
         </section>
 
         <!-- Portfolio Section -->
@@ -267,13 +290,13 @@
                             </span>
                         </div>
                         <div class="company-logo">
-                            <img src="images/company/logo_dti.svg" alt="HCS" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
+                            <img src="images/company/logo_otten.svg" alt="Otten" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
                         </div>
                     </div>
-                    <span class="company-name">PT Docotel Teknologi</span>
-                    <div class="position">Mobile Developer</div>
-                    <div class="duration">December 2017 – November 2020</div>
-                    <div class="description" data-key="docotel">Developed iOS & Android apps for strategic government clients: Ministry of Law & Human Rights (DJKI & BPHN), Brimob Polri (SIAB app), and Ministry of Environment & Forestry (Gakkum app).</div>
+                    <span class="company-name">PT Otten Coffee Indonesia</span>
+                    <div class="position">Mobile Developer – iOS</div>
+                    <div class="duration">November 2020 – September 2022</div>
+                    <div class="description" data-key="otten">Developed and maintained the native iOS app for one of Indonesia's largest coffee marketplaces using Swift and VIPER architecture; managed App Store releases and performance optimization.</div>
                 </div>
 
                 <div class="experience-card">
@@ -285,13 +308,13 @@
                             </span>
                         </div>
                         <div class="company-logo">
-                            <img src="images/company/logo_otten.svg" alt="Otten" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
+                            <img src="images/company/logo_dti.svg" alt="HCS" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
                         </div>
                     </div>
-                    <span class="company-name">PT Otten Coffee Indonesia</span>
-                    <div class="position">Mobile Developer – iOS</div>
-                    <div class="duration">November 2020 – September 2022</div>
-                    <div class="description" data-key="otten">Developed and maintained the native iOS app for one of Indonesia's largest coffee marketplaces using Swift and VIPER architecture; managed App Store releases and performance optimization.</div>
+                    <span class="company-name">PT Docotel Teknologi</span>
+                    <div class="position">Mobile Developer</div>
+                    <div class="duration">December 2017 – November 2020</div>
+                    <div class="description" data-key="docotel">Developed iOS & Android apps for strategic government clients: Ministry of Law & Human Rights (DJKI & BPHN), Brimob Polri (SIAB app), and Ministry of Environment & Forestry (Gakkum app).</div>
                 </div>
 
                 <div class="experience-card">
@@ -360,19 +383,19 @@
             <div class="skills-grid">
                 <div class="skill-category">
                     <h3 data-key="skillCat1">Mobile Development</h3>
-                    <p>Swift (iOS), Kotlin (Android), VIPER Architecture, App Store & Google Play deployment</p>
+                    <ul class="chips"><li>Swift (iOS)</li><li>Kotlin (Android)</li><li>VIPER Architecture</li><li>App Store & Google Play deployment</li></ul>
                 </div>
                 <div class="skill-category">
                     <h3 data-key="skillCat2">Programming & Web</h3>
-                    <p>Python, JavaScript, SQL, HTML/CSS, REST API integration</p>
+                    <ul class="chips"><li>Python</li><li>JavaScript</li><li>SQL</li><li>HTML/CSS</li><li>REST API integration</li></ul>
                 </div>
                 <div class="skill-category">
                     <h3 data-key="skillCat3">Cloud & AI</h3>
-                    <p>Microsoft Azure AI Engineer Associate, Azure OpenAI, Cybersecurity, Business Intelligence</p>
+                    <ul class="chips"><li>Microsoft Azure AI Engineer Associate</li><li>Azure OpenAI</li><li>Cybersecurity</li><li>Business Intelligence</li></ul>
                 </div>
                 <div class="skill-category">
                     <h3 data-key="skillCat4">Management & Design</h3>
-                    <p>Project Management (Agile/Waterfall), SDLC, UX Design (Figma), Technical Documentation</p>
+                    <ul class="chips"><li>Project Management (Agile/Waterfall)</li><li>SDLC</li><li>UX Design (Figma)</li><li>Technical Documentation</li></ul>
                 </div>
             </div>
         </section>
@@ -381,13 +404,13 @@
         <section class="section">
             <h2 data-key="achievements"><i class="fas fa-trophy"></i>Achievements</h2>
             <div class="simple-list">
-                <div class="simple-item" data-key="achieve1">🏆 1st Place – Digital Curation Challenge 2026 (Nusantara Music) – Wikimedia Indonesia & Creative Commons Indonesia</div>
-                <div class="simple-item" data-key="achieve2">🥉 3rd Place – Wikidata Data Presentation Competition 2024 – Wikimedia Indonesia</div>
-                <div class="simple-item" data-key="achieve3">🥈 2nd Place – Capture The Flag (CTF) Docotel Group 2018 – Score 460/560</div>
-                <div class="simple-item" data-key="achieve4">🎓 Full Scholarship – Wikimania 2025 – Wikimedia Foundation (Nairobi, Kenya)</div>
-                <div class="simple-item" data-key="achieve5">📱 Sole iOS Developer – eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi</div>
-                <div class="simple-item" data-key="achieve6">🌐 Google Student Ambassador 2013–2014 – representing Gunadarma University (1 of 136 GSAs across Southeast Asia)</div>
-                <div class="simple-item" data-key="achieve7">✅ Microsoft Certified: Azure AI Engineer Associate (Jul 2025)</div>
+                <div class="simple-item" data-key="achieve1">1st Place – Digital Curation Challenge 2026 (Nusantara Music) – Wikimedia Indonesia & Creative Commons Indonesia</div>
+                <div class="simple-item" data-key="achieve2">3rd Place – Wikidata Data Presentation Competition 2024 – Wikimedia Indonesia</div>
+                <div class="simple-item" data-key="achieve3">2nd Place – Capture The Flag (CTF) Docotel Group 2018 – Score 460/560</div>
+                <div class="simple-item" data-key="achieve4">Full Scholarship – Wikimania 2025 – Wikimedia Foundation (Nairobi, Kenya)</div>
+                <div class="simple-item" data-key="achieve5">Sole iOS Developer – eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi</div>
+                <div class="simple-item" data-key="achieve6">Google Student Ambassador 2013–2014 – representing Gunadarma University (1 of 136 GSAs across Southeast Asia)</div>
+                <div class="simple-item" data-key="achieve7">Microsoft Certified: Azure AI Engineer Associate (Jul 2025)</div>
             </div>
         </section>
 
@@ -420,6 +443,9 @@
         const translations = {
             EN: {
                 statusBadge: "Available for opportunities",
+                factNow: "Now",
+                factFocus: "Focus",
+                factFocusVal: "Mobile apps, cloud & AI",
                 experience: "Experience",
                 education: "Education",
                 skills: "Skills",
@@ -454,17 +480,20 @@
                 skillCat2: "Programming & Web",
                 skillCat3: "Cloud & AI",
                 skillCat4: "Management & Design",
-                achieve1: "🏆 1st Place – Digital Curation Challenge 2026 (Nusantara Music) – Wikimedia Indonesia & Creative Commons Indonesia",
-                achieve2: "🥉 3rd Place – Wikidata Data Presentation Competition 2024 – Wikimedia Indonesia",
-                achieve3: "🥈 2nd Place – Capture The Flag (CTF) Docotel Group 2018 – Score 460/560",
-                achieve4: "🎓 Full Scholarship – Wikimania 2025 – Wikimedia Foundation (Nairobi, Kenya)",
-                achieve5: "📱 Sole iOS Developer – eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi",
-                achieve6: "🌐 Google Student Ambassador 2013–2014 – representing Gunadarma University (1 of 136 GSAs across Southeast Asia)",
-                achieve7: "✅ Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
+                achieve1: "1st Place – Digital Curation Challenge 2026 (Nusantara Music) – Wikimedia Indonesia & Creative Commons Indonesia",
+                achieve2: "3rd Place – Wikidata Data Presentation Competition 2024 – Wikimedia Indonesia",
+                achieve3: "2nd Place – Capture The Flag (CTF) Docotel Group 2018 – Score 460/560",
+                achieve4: "Full Scholarship – Wikimania 2025 – Wikimedia Foundation (Nairobi, Kenya)",
+                achieve5: "Sole iOS Developer – eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi",
+                achieve6: "Google Student Ambassador 2013–2014 – representing Gunadarma University (1 of 136 GSAs across Southeast Asia)",
+                achieve7: "Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
                 resumeUrl: "https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing",
             },
             ID: {
                 statusBadge: "Tersedia untuk peluang kerja",
+                factNow: "Saat ini",
+                factFocus: "Fokus",
+                factFocusVal: "Aplikasi mobile, cloud & AI",
                 experience: "Pengalaman",
                 education: "Pendidikan",
                 skills: "Keahlian",
@@ -499,13 +528,13 @@
                 skillCat2: "Pemrograman & Web",
                 skillCat3: "Cloud & AI",
                 skillCat4: "Manajemen & Desain",
-                achieve1: "🏆 Juara I – Tantangan Kurasi Digital 2026 (Musik Nusantara) – Wikimedia Indonesia & Creative Commons Indonesia",
-                achieve2: "🥉 Juara III – Kompetisi Penyajian Data Wikidata 2024 – Wikimedia Indonesia",
-                achieve3: "🥈 Juara II – Capture The Flag (CTF) Docotel Group 2018 – Skor 460/560",
-                achieve4: "🎓 Beasiswa Penuh – Wikimania 2025 – Wikimedia Foundation (Nairobi, Kenya)",
-                achieve5: "📱 Satu-satunya Programmer iOS – Aplikasi eHAC Indonesia (Kemenkes RI), cikal bakal PeduliLindungi",
-                achieve6: "🌐 Google Student Ambassador 2013–2014 – mewakili Universitas Gunadarma (1 dari 136 GSA se-Asia Tenggara)",
-                achieve7: "✅ Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
+                achieve1: "Juara I – Tantangan Kurasi Digital 2026 (Musik Nusantara) – Wikimedia Indonesia & Creative Commons Indonesia",
+                achieve2: "Juara III – Kompetisi Penyajian Data Wikidata 2024 – Wikimedia Indonesia",
+                achieve3: "Juara II – Capture The Flag (CTF) Docotel Group 2018 – Skor 460/560",
+                achieve4: "Beasiswa Penuh – Wikimania 2025 – Wikimedia Foundation (Nairobi, Kenya)",
+                achieve5: "Satu-satunya Programmer iOS – Aplikasi eHAC Indonesia (Kemenkes RI), cikal bakal PeduliLindungi",
+                achieve6: "Google Student Ambassador 2013–2014 – mewakili Universitas Gunadarma (1 dari 136 GSA se-Asia Tenggara)",
+                achieve7: "Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
                 resumeUrl: "https://drive.google.com/file/d/14ON9yg4b2eQgFL3NP8GB1b1e9resbDUi/view?usp=sharing",
             }
         };
