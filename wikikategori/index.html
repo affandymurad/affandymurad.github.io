@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Penelusur Kategori Wikipedia</title>
+<title>Wikikategori — Penelusur Kategori Wikipedia</title>
 <script>
 (function(){
   try{
@@ -15,684 +15,356 @@
   } catch(e){ /* localStorage unavailable */ }
 })();
 </script>
+<link rel="stylesheet" href="../css/fonts.css">
 <style>
+  /* Gaya mengikuti Commons Gallery / Wikilokal / Wikirekap: token warna, header sticky, kartu 20px, chip, eyebrow */
   :root{
-    --paper:#f6f3ec;
-    --paper-raised:#fffdf8;
-    --ink:#231f1a;
-    --ink-soft:#5a5348;
-    --rule:#d8d0bf;
-    --maroon:#7a2e2e;
-    --maroon-deep:#5c2222;
-    --navy:#233a5e;
-    --ok:#3a6b4c;
+    --bg:#f6f9fc; --surface:#ffffff; --ink:#0f1b2d; --muted:#51607a; --line:#dbe4ee;
+    --brand:#0077b6; --brand-2:#00b4d8; --brand-text:#0077b6; --soft:#e8f3fa;
+    --ok:#198754; --ok-bg:#d1e7dd; --warn:#b45309; --warn-bg:#fff3e0; --warn-line:#f1c27d; --danger:#c62828;
+    --shadow:0 10px 30px rgba(15,27,45,.08);
+    color-scheme:light;
+
+    /* nama lama yang masih dipakai di JS */
+    --maroon:var(--warn); --ink-soft:var(--muted); --paper-raised:var(--surface); --rule:var(--line); --navy:var(--brand-text);
   }
   [data-theme="dark"]{
-    --paper:#1c1a16;
-    --paper-raised:#26221c;
-    --ink:#ece7dc;
-    --ink-soft:#b3ac9c;
-    --rule:#443f34;
-    --maroon:#c1685f;
-    --maroon-deep:#a34f47;
-    --navy:#7fa0d6;
-    --ok:#6fbd8d;
+    --bg:#0b1220; --surface:#121b2e; --ink:#eaf1fb; --muted:#9fb0c9; --line:#243049; --soft:#14263d;
+    --brand-text:#5cc8ee;
+    --ok:#4ade80; --ok-bg:#12291d; --warn:#ffc27a; --warn-bg:#3a2a10; --warn-line:#6b4a1a; --danger:#f87171;
+    --shadow:0 10px 30px rgba(0,0,0,.4);
+    color-scheme:dark;
   }
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--paper);
+    overflow-x:hidden;
+    background:var(--bg);
     color:var(--ink);
-    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
-    line-height:1.5;
+    font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     min-height:100vh;
-    transition: background 0.2s ease, color 0.2s ease;
   }
-  .wrap{
-    max-width:920px;
-    margin:0 auto;
-    padding:48px 24px 80px;
-  }
-  header{
-    border-bottom:3px double var(--rule);
-    padding-bottom:20px;
-    margin-bottom:32px;
-  }
-  .header-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:16px;
-    flex-wrap:wrap;
-    margin-bottom:12px;
-  }
-  .title-block{ min-width:0; }
-  .controls{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-  }
-  .icon-btn{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.82rem;
-    font-weight:600;
-    padding:8px 14px;
-    background:var(--paper-raised);
-    color:var(--ink);
-    border:1px solid var(--rule);
-    border-radius:8px;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    text-decoration:none;
-    transition: all 0.15s ease;
-  }
-  .icon-btn:hover{ border-color:var(--navy); }
-  .icon-btn.active{
-    background:var(--ink);
-    border-color:var(--ink);
-    color:var(--paper);
-  }
-  header .kicker{
-    font-family: Georgia, serif;
-    font-style:italic;
-    color:var(--maroon);
-    font-size:0.95rem;
-    margin:0 0 4px;
-  }
-  h1{
-    font-size:2.1rem;
-    margin:0 0 8px;
-    letter-spacing:0.2px;
-    font-weight:700;
-  }
-  header p.sub{
-    margin:0;
-    color:var(--ink-soft);
-    font-size:1rem;
-    max-width:60ch;
-  }
+  a{color:var(--brand-text);}
+  img,svg{max-width:100%;}
+  .wrap{width:min(1120px,100% - 32px);margin-inline:auto;}
+  button{font:inherit;cursor:pointer;}
 
-  .mode-switch{
-    display:flex;
-    gap:8px;
-    margin-bottom:20px;
+  /* ===== header ===== */
+  header.site{
+    position:sticky;top:0;z-index:20;
+    background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
   }
-  .mode-btn{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.85rem;
-    font-weight:600;
-    padding:8px 16px;
-    background:transparent;
-    color:var(--ink-soft);
-    border:1px solid var(--rule);
-    border-radius:999px;
-    cursor:pointer;
-    transition: all 0.15s ease;
-  }
-  .mode-btn:hover{ border-color:var(--navy); color:var(--ink); }
-  .mode-btn.active{
-    background:var(--ink);
-    border-color:var(--ink);
-    color:#fff;
-  }
+  .nav{display:flex;align-items:center;gap:20px;height:60px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:-.01em;}
+  .logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;}
+  .logo i svg{width:18px;height:18px;}
+  nav.links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+  nav.links a{padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14.5px;white-space:nowrap;}
+  nav.links a:hover{background:var(--soft);color:var(--ink);}
+  .lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;cursor:pointer;}
+  .lang:hover{border-color:var(--brand);}
+  .tools{display:flex;gap:8px;align-items:center;}
+  .theme{display:grid;place-items:center;width:34px;height:34px;padding:0;}
+  .theme svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .theme .sun{display:none;}
+  [data-theme="dark"] .theme .sun{display:block;}
+  [data-theme="dark"] .theme .moon{display:none;}
+  .crumb{display:none;color:var(--muted);text-decoration:none;font-size:14px;margin-bottom:14px;}
+  @media (max-width:720px){nav.links{display:none}.nav{justify-content:space-between}.crumb{display:inline-flex}}
 
-  form.query{
-    display:grid;
-    grid-template-columns: 110px 1fr auto;
-    gap:10px;
-    align-items:end;
-    margin-bottom:8px;
-  }
-  label{
-    display:block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.72rem;
-    text-transform:none;
-    letter-spacing:0.02em;
-    color:var(--ink-soft);
-    margin-bottom:5px;
-  }
-  input[type=text]{
-    width:100%;
-    font-family: Georgia, serif;
-    font-size:1rem;
-    padding:10px 12px;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    color:var(--ink);
-    border-radius:2px;
-  }
-  input[type=text]:focus, select:focus{
-    outline:none;
-    border-color:var(--maroon);
-    box-shadow:0 0 0 1px var(--maroon);
-  }
-  select{
-    width:100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.95rem;
-    padding:10px 8px;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    color:var(--ink);
-    border-radius:2px;
-  }
-  button{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.92rem;
-    font-weight:600;
-    padding:10px 20px;
-    background:var(--maroon);
-    color:#fff;
-    border:none;
-    border-radius:2px;
-    cursor:pointer;
-    transition: background 0.15s ease;
-  }
-  button:hover{ background:var(--maroon-deep); }
-  button:disabled{ background:#b8a99a; cursor:default; }
+  /* ===== hero ===== */
+  .hero{padding:48px 0 28px;}
+  .badge{display:inline-flex;gap:8px;align-items:center;background:var(--soft);color:var(--brand-text);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;}
+  h1{font-size:clamp(30px,4.6vw,48px);line-height:1.1;margin:16px 0 14px;letter-spacing:-.025em;max-width:18em;}
+  h1{display:flex;flex-wrap:wrap;gap:0 .28em;}
+  html[lang="en"] h1 em{order:-1;}
+  h1 em{font-style:normal;background:linear-gradient(120deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lead{font-size:18px;color:var(--muted);max-width:42em;margin:0;}
 
-  .hint{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.8rem;
-    color:var(--ink-soft);
-    margin:0 0 30px;
+  /* ===== kartu pencarian ===== */
+  .card,section.results{
+    background:var(--surface);border:1px solid var(--line);border-radius:20px;
+    padding:24px;margin-bottom:20px;box-shadow:var(--shadow);
   }
+  .mode-switch{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .mode-btn{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:7px 16px;font:600 14px inherit;cursor:pointer;}
+  .mode-btn:hover{border-color:var(--brand);color:var(--ink);}
+  .mode-btn.active{background:var(--brand);border-color:var(--brand);color:#fff;}
 
-  .status{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.9rem;
-    color:var(--ink-soft);
-    padding:14px 0;
+  label{display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  input[type=text],input[type=number]{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:15px;
+    background:var(--bg);color:var(--ink);transition:border-color .2s,box-shadow .2s;
   }
-  .status.error{ color:var(--maroon); }
+  input[type=text]:focus,input[type=number]:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent);}
+  input[readonly]{background:var(--soft);font-weight:600;cursor:default;}
+  input[type=checkbox]{width:17px;height:17px;accent-color:var(--brand);cursor:pointer;flex:none;}
 
-  section.results{ margin-top:10px; }
+  form.query{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:end;margin-bottom:8px;}
+  form.user-query-form{display:flex;flex-direction:column;gap:18px;margin-bottom:8px;}
+  form button[type=submit]{
+    padding:12px 22px;border:none;border-radius:12px;font-weight:700;font-size:15px;color:#fff;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 8px 20px rgba(0,119,182,.28);transition:filter .2s;
+  }
+  form button[type=submit]:hover{filter:brightness(1.06);}
+  form button[type=submit]:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;}
+  .hint{font-size:13.5px;color:var(--muted);margin:10px 0 0;}
 
-  .editions{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin:0 0 28px;
-    padding:18px 0;
-    border-top:1px solid var(--rule);
-    border-bottom:1px solid var(--rule);
-  }
-  .editions .editions-label{
-    width:100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.75rem;
-    color:var(--ink-soft);
-    margin-bottom:6px;
-  }
-  .chip{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.82rem;
-    padding:6px 12px;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    border-radius:999px;
-    cursor:pointer;
-    color:var(--ink);
-  }
-  .chip:hover{ border-color:var(--navy); }
-  .chip.active{
-    background:var(--navy);
-    border-color:var(--navy);
-    color:#fff;
-  }
-  .chip:disabled{
-    opacity:0.38;
-    cursor:default;
-  }
-  .chip:disabled:hover{ border-color:var(--rule); }
-
-  .lang-label{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-style: italic;
-    font-size:0.8rem;
-    color:var(--maroon);
-    margin:0 0 6px;
-  }
-
-  .limit-note{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.78rem;
-    color:var(--ink-soft);
-    margin:0 0 14px;
-  }
-
-  .subcat-head{
-    margin-top:30px;
-    border-top:1px solid var(--rule);
-    padding-top:20px;
-  }
-  .subcat-list li a{
-    color:var(--maroon-deep);
-  }
-
-  ol.articles.interwiki-list li{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:2px;
-  }
-  .interwiki-title{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.78rem;
-    color:var(--ink-soft);
-  }
-
-  .avail-check{
-    margin-bottom:18px;
-    padding:14px 16px;
-    background:var(--paper-raised);
-    border:1px solid var(--rule);
-    border-radius:3px;
-  }
-  .avail-controls{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:end;
-    gap:16px;
-    margin-bottom:16px;
-  }
-  .avail-checkboxes{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px 16px;
-  }
-  .avail-checkbox{
-    display:flex;
-    align-items:center;
-    gap:5px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.85rem;
-    color:var(--ink);
-    cursor:pointer;
-  }
-  .avail-checkbox input{ cursor:pointer; }
-  .avail-custom{
-    min-width:180px;
-  }
-  .avail-custom label{ margin-bottom:5px; }
-  .avail-custom input{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.85rem;
-    padding:7px 10px;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    border-radius:2px;
-    width:100%;
-  }
-
-  .pagination{
-    margin-top:26px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    align-items:center;
-    justify-content:center;
-  }
-  .page-btn{
-    min-width:34px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.85rem;
-    font-weight:600;
-    padding:7px 10px;
-    background:var(--paper-raised);
-    color:var(--navy);
-    border:1px solid var(--rule);
-    border-radius:4px;
-    cursor:pointer;
-  }
-  .page-btn:hover{ border-color:var(--navy); }
-  .page-btn.active{
-    background:var(--navy);
-    border-color:var(--navy);
-    color:#fff;
-    cursor:default;
-  }
-  .page-btn.page-next{
-    color:var(--maroon);
-    border-color:var(--maroon);
-  }
-  .page-btn:disabled{
-    opacity:0.4;
-    cursor:default;
-  }
-  .lang-badges{
-    margin-left:8px;
-    display:inline-flex;
-    flex-wrap:wrap;
-    gap:4px;
-    vertical-align:middle;
-  }
-  .lang-badge{
-    display:inline-block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.7rem;
-    font-weight:600;
-    padding:2px 7px;
-    border:1px solid var(--ok);
-    border-radius:3px;
-    color:var(--ok);
-    text-decoration:none;
-    background:var(--paper-raised);
-  }
-  .lang-badge:hover{
-    background:var(--ok);
-    color:#fff;
-  }
-
-  .results-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    margin-bottom:12px;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .results-head h2{
-    font-size:1.15rem;
-    margin:0;
-  }
-  .results-head .count{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.8rem;
-    color:var(--ink-soft);
-  }
-
-  ol.articles{
-    list-style:none;
-    margin:0;
-    padding:0;
-    columns: 2;
-    column-gap: 32px;
-  }
-  ol.articles li{
-    break-inside: avoid;
-    padding:9px 0;
-    border-bottom:1px solid var(--rule);
-    font-size:0.98rem;
-  }
-  ol.articles li a{
-    color:var(--navy);
-    text-decoration:none;
-  }
-  ol.articles li a:hover{ text-decoration:underline; }
-  ol.articles li .ns-tag{
-    display:inline-block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.68rem;
-    color:var(--ink-soft);
-    border:1px solid var(--rule);
-    border-radius:3px;
-    padding:0 5px;
-    margin-left:6px;
-    vertical-align:middle;
-  }
-
-  @media (max-width:640px){
-    form.query{ grid-template-columns: 1fr; }
-    ol.articles{ columns:1; }
-  }
-
-  .user-info-grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap:12px;
-  }
-  .user-info-item{
-    padding:12px 14px;
-    background:var(--paper-raised);
-    border:1px solid var(--rule);
-    border-radius:4px;
-  }
-  .user-info-label{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.72rem;
-    color:var(--ink-soft);
-    margin-bottom:4px;
-  }
-  .user-info-value{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.98rem;
-    font-weight:600;
-    color:var(--ink);
-  }
-  .user-subhead{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.82rem;
-    font-weight:600;
-    color:var(--ink-soft);
-    text-transform:uppercase;
-    letter-spacing:0.03em;
-    margin:26px 0 10px;
-  }
-  .user-subhead:first-child{ margin-top:0; }
-  .wiki-chip-container{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  .wiki-chip{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:6px 12px;
-    border-radius:999px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.78rem;
-    text-decoration:none;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    color:var(--ink);
-    white-space:nowrap;
-    transition: all 0.15s ease;
-  }
-  .wiki-chip:hover{ transform: translateY(-1px); border-color:var(--navy); }
-  .wiki-chip.home{ box-shadow: 0 0 0 2px #d98a2b; font-weight:600; }
-  .wiki-wikipedia{ background:#e3f2fd; color:#0d47a1; border-color:#bbdefb; }
-  .wiki-commons{ background:#e8f5e9; color:#1b5e20; border-color:#c8e6c9; }
-  .wiki-wikidata{ background:#ede7f6; color:#4527a0; border-color:#d1c4e9; }
-  .wiki-wikisource{ background:#fff8e1; color:#e65100; border-color:#ffecb3; }
-  .wiki-other{ background:#eceff1; color:#37474f; border-color:#cfd8dc; }
-  .user-badge{
-    display:inline-block;
-    padding:3px 10px;
-    border-radius:6px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.72rem;
-    font-weight:600;
-  }
-  .user-badge-success{ background:#d1e7dd; color:var(--ok); }
-  .user-badge-warning{ background:#fff3cd; color:#8a6d1a; }
-  .user-badge-mini{
-    background: rgba(0,0,0,0.12);
-    padding:1px 6px;
-    border-radius:10px;
-    font-size:0.68rem;
-  }
-
-  form.user-query-form{
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    margin-bottom:8px;
-  }
-  .wiki-buttons-container{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:14px;
-  }
+  /* pilih proyek */
+  .wiki-buttons-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin:12px 0 0;}
   .wiki-button{
-    width:70px;
-    height:70px;
-    border-radius:8px;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    cursor:pointer;
-    transition:all 0.2s;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px 6px;
+    border:1px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s;
   }
-  .wiki-button:hover{
-    border-color:var(--navy);
-    transform:translateY(-2px);
-    box-shadow:0 4px 12px rgba(0,0,0,0.12);
-  }
-  .wiki-button img{
-    width:36px;
-    height:36px;
-    object-fit:contain;
-    margin-bottom:4px;
-  }
-  .wiki-button .label{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.62rem;
-    color:var(--ink-soft);
-    text-align:center;
-  }
-  .wiki-modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.55);
-    z-index:1000;
-    align-items:center;
-    justify-content:center;
-  }
-  .wiki-modal-content{
-    background:var(--paper-raised);
-    padding:24px;
-    border-radius:8px;
-    max-width:400px;
-    width:90%;
-    box-shadow:0 10px 40px rgba(0,0,0,0.35);
-  }
-  .wiki-modal-content h3{
-    margin:0 0 16px;
-    font-family: Georgia, serif;
-    color:var(--ink);
-  }
-  .lang-input-group{
-    display:flex;
-    gap:10px;
-    margin:16px 0;
-  }
-  .lang-input-group input{
-    flex:1;
-  }
-  .wiki-modal-buttons{
-    display:flex;
-    gap:12px;
-    justify-content:flex-end;
-    margin-top:20px;
-  }
-  .wiki-modal-buttons button{
-    padding:9px 16px;
-    border-radius:4px;
-    border:1px solid var(--rule);
-    background:var(--paper-raised);
-    color:var(--ink);
-    cursor:pointer;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.85rem;
-    font-weight:600;
-  }
-  .wiki-modal-buttons button:hover{ border-color:var(--navy); }
-  .wiki-modal-buttons button:last-child{
-    background:var(--maroon);
-    color:#fff;
-    border-color:var(--maroon);
-  }
-  .wiki-modal-buttons button:last-child:hover{ background:var(--maroon-deep); }
-  .wiki-modal-buttons button:disabled{
-    opacity:0.5;
-    cursor:default;
-  }
-  #selectedLanguages span{
-    display:inline-block;
-    background:#e0e0ff;
-    color:#333;
-    padding:5px 11px;
-    border-radius:16px;
-    margin:0 6px 6px 0;
-    font-size:0.85rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-  #selectedLanguages span span{
-    cursor:pointer;
-    margin-left:4px;
-    font-weight:bold;
-  }
-  [data-theme="dark"] #selectedLanguages span{
-    background:#2a2a4a;
-    color:#e0e0ff;
-  }
+  .wiki-button:hover{border-color:var(--brand);background:var(--soft);}
+  .wiki-button.selected{border-color:var(--brand);background:var(--soft);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 35%,transparent);}
+  .wiki-button img{width:34px;height:34px;object-fit:contain;}
+  .wiki-button .label{font-size:12px;color:var(--muted);text-align:center;line-height:1.2;}
+  .wiki-button.selected .label{color:var(--ink);font-weight:700;}
 
-  .trending-table{
-    width:100%;
-    border-collapse:collapse;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size:0.92rem;
+  /* ===== status ===== */
+  .status{font-size:14.5px;color:var(--muted);background:var(--soft);border-radius:14px;padding:12px 14px;margin:0 0 20px;}
+  .status.error{background:var(--warn-bg);color:var(--ink);border:1px solid var(--warn-line);}
+
+  /* ===== hasil ===== */
+  section.results{margin-top:0;}
+  .lang-label{font-size:13.5px;font-weight:700;color:var(--brand-text);margin:0 0 6px;}
+  .limit-note{font-size:13px;color:var(--muted);margin:0 0 14px;}
+  .editions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;padding:14px 16px;background:var(--soft);border-radius:14px;}
+  .editions .editions-label{width:100%;font-size:13px;color:var(--muted);margin-bottom:4px;}
+  .chip{font-size:13.5px;font-weight:600;padding:5px 13px;border:1px solid var(--line);background:var(--surface);border-radius:999px;color:var(--ink);}
+  .chip:hover{border-color:var(--brand);}
+  .chip.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .chip:disabled{opacity:.4;cursor:not-allowed;}
+
+  .results-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;gap:12px;flex-wrap:wrap;}
+  .results-head h2{font-size:clamp(20px,2.6vw,26px);margin:0;letter-spacing:-.02em;}
+  .results-head .count{font-size:13.5px;color:var(--muted);}
+  .subcat-head{margin-top:30px;border-top:1px solid var(--line);padding-top:22px;}
+  .subcat-list li a{font-weight:600;}
+
+  ol.articles{list-style:none;margin:0;padding:0;columns:2;column-gap:32px;}
+  ol.articles li{break-inside:avoid;padding:9px 6px;border-bottom:1px solid var(--line);font-size:15.5px;border-radius:8px;}
+  ol.articles li:hover{background:color-mix(in srgb,var(--soft) 60%,transparent);}
+  ol.articles li a{color:var(--brand-text);text-decoration:none;}
+  ol.articles li a:hover{text-decoration:underline;}
+  ol.articles li .ns-tag{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:middle;}
+  ol.articles.interwiki-list li{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+  .interwiki-title{font-size:13px;color:var(--muted);}
+
+  .avail-check{margin-bottom:18px;padding:16px 18px;background:var(--soft);border-radius:14px;}
+  .avail-check .hint{margin:0 0 12px;}
+  .avail-controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;margin-bottom:12px;}
+  .avail-checkboxes{display:flex;flex-wrap:wrap;gap:8px;}
+  .avail-checkbox{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;margin:0;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);}
+  .avail-checkbox:hover{border-color:var(--brand);}
+  .avail-custom{min-width:190px;}
+  .avail-custom input{padding:8px 11px;font-size:14px;}
+  #availCheckBtn{padding:9px 16px;border:1px solid var(--brand);border-radius:12px;background:var(--surface);color:var(--brand-text);font-weight:700;font-size:14px;}
+  #availCheckBtn:hover{background:var(--brand);color:#fff;}
+  #availCheckBtn:disabled{opacity:.5;cursor:not-allowed;}
+  .avail-check .status{margin:10px 0 0;background:var(--surface);}
+
+  .pagination{margin-top:26px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;}
+  .page-btn{min-width:36px;font-size:14px;font-weight:600;padding:7px 11px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;}
+  .page-btn:hover{border-color:var(--brand);}
+  .page-btn.active{background:var(--brand);border-color:var(--brand);color:#fff;cursor:default;}
+  .page-btn.page-next{color:var(--brand-text);border-color:var(--brand);}
+  .page-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  .lang-badges{margin-left:10px;display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle;}
+  .lang-badge{display:inline-block;font-size:11.5px;font-weight:700;line-height:1;padding:4px 9px;border:1px solid var(--ok);border-radius:999px;color:var(--ok);text-decoration:none;background:var(--surface);white-space:nowrap;}
+  .lang-badge:hover{background:var(--ok);color:var(--surface);}
+
+  /* info pengguna */
+  .user-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .user-info-item{padding:14px 16px;background:var(--soft);border-radius:14px;}
+  .user-info-label{font-size:12.5px;color:var(--muted);margin-bottom:4px;}
+  .user-info-value{font-size:16px;font-weight:700;color:var(--ink);}
+  .user-info-warn{grid-column:1 / -1;background:var(--warn-bg);border:1px solid var(--warn-line);}
+  .user-info-warn .user-info-label{color:var(--warn);font-weight:700;}
+  .user-subhead{font-size:13px;font-weight:700;color:var(--brand-text);text-transform:uppercase;letter-spacing:.08em;margin:26px 0 10px;}
+  .user-subhead:first-child{margin-top:0;}
+  .check-inline{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;cursor:pointer;margin:0 0 10px;}
+  .wiki-chip-container{display:flex;flex-wrap:wrap;gap:8px;}
+  .wiki-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:13px;text-decoration:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap;transition:border-color .15s;}
+  .wiki-chip:hover{border-color:var(--brand);}
+  .wiki-chip.home{box-shadow:0 0 0 2px var(--warn-line);font-weight:700;}
+  .wiki-wikipedia{background:#e3f2fd;color:#0d47a1;border-color:#bbdefb;}
+  .wiki-commons{background:#e8f5e9;color:#1b5e20;border-color:#c8e6c9;}
+  .wiki-wikidata{background:#ede7f6;color:#4527a0;border-color:#d1c4e9;}
+  .wiki-wikisource{background:#fff8e1;color:#e65100;border-color:#ffecb3;}
+  .wiki-other{background:#eceff1;color:#37474f;border-color:#cfd8dc;}
+  [data-theme="dark"] .wiki-wikipedia{background:#12263f;color:#8ec5ff;border-color:#1f3d63;}
+  [data-theme="dark"] .wiki-commons{background:#112a1b;color:#7fdc9d;border-color:#1d4a30;}
+  [data-theme="dark"] .wiki-wikidata{background:#241b3d;color:#c2adf5;border-color:#3b2d63;}
+  [data-theme="dark"] .wiki-wikisource{background:#33260d;color:#ffc27a;border-color:#5a4116;}
+  [data-theme="dark"] .wiki-other{background:#1d2631;color:#b6c3d1;border-color:#2e3a49;}
+  .user-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+  .user-badge-success{background:var(--ok-bg);color:var(--ok);}
+  .user-badge-warning{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line);}
+  .user-badge-mini{background:color-mix(in srgb,currentColor 14%,transparent);padding:1px 7px;border-radius:999px;font-size:11px;}
+
+  /* tabel pageview */
+  .table-container{overflow-x:auto;margin-top:16px;border:1px solid var(--line);border-radius:14px;}
+  .trending-table{width:100%;border-collapse:collapse;font-size:14.5px;}
+  .trending-table th,.trending-table td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);}
+  .trending-table tbody tr:last-child td{border-bottom:none;}
+  .trending-table th{background:var(--soft);color:var(--muted);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+  .trending-table tbody tr:hover{background:color-mix(in srgb,var(--soft) 55%,transparent);}
+  .trending-table td a{color:var(--brand-text);text-decoration:none;}
+  .trending-table td a:hover{text-decoration:underline;}
+  .trending-table th:last-child,.trending-table td:last-child{text-align:right;}
+
+  /* ===== modal bahasa ===== */
+  .wiki-modal{display:none;position:fixed;inset:0;background:rgba(8,14,26,.6);z-index:1000;align-items:center;justify-content:center;}
+  .wiki-modal-content{background:var(--surface);border:1px solid var(--line);padding:24px;border-radius:20px;max-width:420px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .wiki-modal-content h3{margin:0 0 14px;}
+  .lang-input-group{display:flex;gap:10px;margin:12px 0;}
+  .lang-input-group input{flex:1;}
+  .wiki-modal-buttons{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+  .wiki-modal-buttons button{padding:10px 18px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px inherit;}
+  .wiki-modal-buttons button:hover{border-color:var(--brand);}
+  .wiki-modal-buttons button:last-child{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .wiki-modal-buttons button:disabled{opacity:.5;cursor:not-allowed;}
+  #selectedLanguages span{display:inline-block;background:var(--soft);color:var(--ink);padding:5px 12px;border-radius:999px;margin:0 6px 6px 0;font-size:.92em;font-weight:600;}
+  #selectedLanguages span span{cursor:pointer;margin-left:4px;padding:0;background:none;}
+
+  /* ===== Kontribusi Wikimedia (kilas balik setahun) ===== */
+  textarea{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:15px;
+    background:var(--bg);color:var(--ink);resize:vertical;min-height:96px;transition:border-color .2s,box-shadow .2s;
   }
-  .trending-table th, .trending-table td{
-    padding:10px 12px;
-    text-align:left;
-    border-bottom:1px solid var(--rule);
+  textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent);}
+  .contrib-grid{display:grid;grid-template-columns:1fr 160px;gap:12px;margin-bottom:18px;}
+  .contrib-field{margin-bottom:18px;}
+  .field-hint{font-size:13px;color:var(--muted);margin:0 0 8px;}
+  .btn-primary{
+    display:block;width:100%;padding:12px 22px;border:none;border-radius:12px;font-weight:700;font-size:15px;color:#fff;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 8px 20px rgba(0,119,182,.28);transition:filter .2s;
   }
-  .trending-table th{
-    background:var(--paper-raised);
-    font-weight:600;
-    font-size:0.78rem;
-    color:var(--ink-soft);
+  .btn-primary:hover{filter:brightness(1.06);}
+  .btn-primary:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;}
+  .btn-outline{
+    display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--brand);border-radius:12px;
+    background:var(--surface);color:var(--brand-text);font-weight:700;font-size:14.5px;
   }
-  .trending-table td a{ color:var(--navy); text-decoration:none; }
-  .trending-table td a:hover{ text-decoration:underline; }
-  .trending-table th:last-child, .trending-table td:last-child{ text-align:right; }
-  .table-container{ overflow-x:auto; margin-top:16px; }
+  .btn-outline:hover{background:var(--brand);color:#fff;}
+  .btn-outline:disabled{opacity:.5;cursor:not-allowed;}
+  .contrib-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px;}
+  .yr-msg{margin:16px 0 0;}
+  .yr-stage{display:flex;justify-content:flex-start;overflow-x:auto;padding-bottom:6px;}
+  .lang-tags span{display:inline-block;background:var(--soft);color:var(--ink);padding:5px 12px;border-radius:999px;margin:0 6px 6px 0;font-size:.92em;font-weight:600;}
+  .lang-tags span span{cursor:pointer;margin-left:4px;padding:0;background:none;}
+  .wiki-button.selected .label{color:var(--ink);font-weight:700;}
+
+  /* Poster (diunduh sebagai gambar/video): desainnya tetap, hanya dibatasi ke #yrPreview */
+  /* .yr-scope dipasang di poster DAN di pembungkus layer video, supaya salinan yang dipotret html2canvas tetap berstyle */
+  .yr-scope{
+    color:#202122;line-height:1.6;
+    font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  #yrPreview{
+    background:#fff;width:1080px;height:1080px;position:relative;overflow:hidden;flex:none;margin:0 auto;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+  }
+  .yr-scope .grid-container{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:100%;height:100%;gap:0;}
+  .yr-scope .grid-item{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;}
+  .yr-scope .hero-box{grid-column:1 / 3;grid-row:1 / 2;background:linear-gradient(135deg,#FFE066,#FFC940);}
+  .yr-scope .hero-box h2{font-size:3em;color:#1a1a1a;margin:0 0 10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;line-height:1.6;}
+  .yr-scope .hero-box .year{font-size:2em;color:#1a1a1a;font-weight:600;}
+  .yr-scope .hero-box .username{font-size:1.5em;color:#1a1a1a;margin-top:10px;font-weight:500;}
+  .yr-scope .stat-box-1{grid-column:3 / 4;grid-row:1 / 2;background:#4ECDC4;}
+  .yr-scope .stat-box-2{grid-column:1 / 2;grid-row:2 / 3;background:#95E1D3;}
+  .yr-scope .image-box{grid-column:2 / 4;grid-row:2 / 4;background:#F5F5F5;padding:0;}
+  .yr-scope .image-box img.poster-img{width:100%;height:100%;object-fit:cover;}
+  .yr-scope .stat-box-3{grid-column:1 / 2;grid-row:3 / 4;background:#FFE5E5;}
+  .yr-scope .stat-value{font-size:4em;font-weight:900;margin-bottom:10px;color:#1a1a1a;line-height:1;}
+  .yr-scope .stat-label{font-size:1.2em;color:#1a1a1a;font-weight:600;text-transform:uppercase;letter-spacing:1px;}
+  .yr-scope .attribution{position:absolute;top:5px;left:10px;font-size:.8em;color:rgba(0,0,0,.5);text-align:left;line-height:1.5;max-width:44%;}
+  .yr-scope .attribution a{color:inherit;}
+  .yr-scope .projects-overlay{position:absolute;bottom:20px;left:20px;right:20px;background:rgba(255,255,255,.95);padding:15px;border-radius:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;max-height:200px;}
+  .yr-scope .project-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eaecf0;color:#2d2d2d;font-size:13px;}
+  .yr-scope .project-badge img{width:12px;height:12px;object-fit:contain;opacity:.9;}
+  .yr-scope .qr-section{position:absolute;top:15px;right:15px;background:rgba(255,255,255,.95);border-radius:12px;padding:12px;text-align:center;width:140px;}
+  .yr-scope .qr-section img{width:100px;height:100px;display:block;margin:0 auto 8px;border-radius:4px;}
+  .yr-scope .qr-label{font-size:.8em;font-weight:600;color:#202122;line-height:1.3;text-align:center;white-space:normal;word-break:break-word;overflow-wrap:anywhere;margin-bottom:6px;}
+  .yr-scope .qr-cc{display:flex;justify-content:center;align-items:center;gap:3px;font-size:1.1em;color:#202122;}
+  .yr-scope .qr-cc a{color:inherit;text-decoration:none;display:flex;gap:3px;align-items:center;}
+  .yr-scope .qr-cc i{line-height:1;}
+
+  .lang-input-group button{padding:10px 16px;border:1px solid var(--brand);border-radius:12px;background:var(--surface);color:var(--brand-text);font-weight:700;font-size:14px;}
+  .lang-input-group button:hover{background:var(--brand);color:#fff;}
+
+  /* ===== footer ===== */
+  footer.site{padding:32px 0 48px;margin-top:12px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);}
+  footer.site .row{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;}
+  footer.site a{color:var(--muted);}
+
+  @media (max-width:768px){
+    .card,section.results{padding:18px;}
+    form.query{grid-template-columns:1fr;}
+    ol.articles{columns:1;}
+    .hero{padding-top:32px;}
+    .contrib-grid{grid-template-columns:1fr;}
+    #yrPreview{width:100%;height:auto;}
+    .yr-scope .grid-item{padding:14px;}
+    .yr-scope .hero-box h2{font-size:1.6em;letter-spacing:1px;margin-bottom:6px;}
+    .yr-scope .hero-box .year{font-size:1.2em;}
+    .yr-scope .hero-box .username{font-size:.95em;margin-top:4px;}
+    .yr-scope .stat-value{font-size:1.4em;line-height:.9;margin-bottom:3px;word-break:break-word;}
+    .yr-scope .stat-label{font-size:.6em;letter-spacing:.3px;line-height:1.1;}
+    .yr-scope .qr-section{top:8px;right:8px;width:100px;padding:8px;}
+    .yr-scope .qr-section img{width:70px;height:70px;margin-bottom:4px;}
+    .yr-scope .qr-label{font-size:.4em;margin-bottom:4px;}
+    .yr-scope .qr-cc{font-size:.9em;gap:2px;}
+    .yr-scope .projects-overlay{bottom:8px;left:8px;right:8px;padding:8px;gap:4px;}
+    .yr-scope .project-badge{font-size:.8em;padding:4px 8px;border-radius:12px;}
+    .yr-scope .attribution{font-size:.4em;}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="header-top">
-      <div class="title-block">
-        <p class="kicker" data-i18n="kicker">Meja referensi</p>
-        <h1 data-i18n="title">Penelusur Kategori Wikipedia</h1>
-      </div>
-      <div class="controls">
-        <a href="/" class="icon-btn">
-          <span>←</span>
-          <span data-i18n="backHome">Kembali ke Affandy Murad</span>
-        </a>
-        <button type="button" class="icon-btn" id="langBtn">
-          <span>🌐</span>
-          <span id="langText">EN</span>
-        </button>
-        <button type="button" class="icon-btn" id="lightThemeBtn" title="Light">
-          <span>☀️</span>
-        </button>
-        <button type="button" class="icon-btn" id="darkThemeBtn" title="Dark">
-          <span>🌙</span>
-        </button>
-      </div>
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Wikikategori">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h7l2 2h9v10H3z"/></svg></i>
+      Wikikategori
+    </a>
+    <nav class="links" aria-label="Menu">
+      <a href="/"><span aria-hidden="true">←</span> <span data-i18n="backHome">Kembali ke Affandy Murad</span></a>
+      <a href="../wikirekap/">Wikirekap</a>
+      <a href="../wikilokal/">Wikilokal</a>
+    </nav>
+    <div class="tools">
+      <button class="lang theme" id="themeBtn" type="button" aria-label="Ganti tema / Toggle theme" title="Tema / Theme">
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="lang" id="langBtn" type="button" aria-label="Ganti bahasa / Switch language"><span id="langText">EN</span></button>
     </div>
-    <p class="sub" data-i18n="subtitle">Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.</p>
-  </header>
+  </div>
+</header>
 
+<main id="top" class="wrap">
+  <section class="hero">
+    <a class="crumb" href="/"><span aria-hidden="true">←</span>&nbsp;<span data-i18n="backHome">Kembali ke Affandy Murad</span></a>
+    <div><span class="badge">● <span data-i18n="kicker">Meja referensi</span></span></div>
+    <h1><span id="titleA" data-i18n="titleA">Penelusur Kategori</span> <em id="titleEm" data-i18n="titleB">Wikipedia</em></h1>
+    <p class="lead" id="leadText" data-i18n="subtitle">Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia.</p>
+  </section>
+
+  <section class="card search-card">
   <div class="mode-switch" id="modeSwitch">
     <button type="button" class="mode-btn active" data-mode="category" data-i18n="modeCategory">Cari Kategori</button>
     <button type="button" class="mode-btn" data-mode="article" data-i18n="modeArticle">Cari Artikel</button>
     <button type="button" class="mode-btn" data-mode="user" data-i18n="modeUser">Cari Pengguna</button>
     <button type="button" class="mode-btn" data-mode="trending" data-i18n="modeTrending">Pageview</button>
+    <button type="button" class="mode-btn" data-mode="contrib" data-i18n="modeContrib">Kontribusi Wikimedia</button>
   </div>
 
   <form class="query" id="queryForm">
@@ -718,7 +390,7 @@
     <div>
       <label for="userProjectInput" data-i18n="projectLabel">URL Proyek Wikimedia</label>
       <input type="text" id="userProjectInput" readonly autocomplete="off" data-i18n-placeholder="projectPlaceholder"
-        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)" style="cursor:pointer;">
+        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)">
 
       <div class="wiki-buttons-container" id="userWikiButtons" data-target="userProjectInput">
         <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
@@ -801,7 +473,7 @@
     <div>
       <label for="trendingProjectInput" data-i18n="projectLabel">URL Proyek Wikimedia</label>
       <input type="text" id="trendingProjectInput" readonly autocomplete="off" data-i18n-placeholder="projectPlaceholder"
-        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)" style="cursor:pointer;">
+        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)">
 
       <div class="wiki-buttons-container" id="trendingWikiButtons" data-target="trendingProjectInput">
         <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
@@ -880,6 +552,165 @@
     </div>
   </form>
 
+  <div id="contribForm" style="display:none;">
+    <div class="contrib-grid">
+      <div>
+        <label for="yrUsername" data-i18n="contribUsername">Nama pengguna</label>
+        <input type="text" id="yrUsername" autocomplete="off" data-i18n-placeholder="userUsernamePlaceholder" placeholder="Misal: Example">
+      </div>
+      <div>
+        <label for="yrYear" data-i18n="contribYear">Tahun</label>
+        <input type="number" id="yrYear" min="2001" max="2100">
+      </div>
+    </div>
+
+    <div class="contrib-field">
+      <label for="yrWikis" data-i18n="contribWikis">Domain wiki</label>
+      <p class="field-hint" data-i18n="contribWikisHint">Pisahkan dengan koma atau Enter. Domain yang sama hanya dihitung sekali.</p>
+      <textarea id="yrWikis" rows="3" data-i18n-placeholder="contribWikisPlaceholder"
+        placeholder="id.wikipedia.org&#10;en.wikipedia.org&#10;commons.wikimedia.org&#10;www.wikidata.org"
+        autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false"></textarea>
+      <p class="field-hint" style="margin-top:12px;" data-i18n="contribPickHint">Atau klik sebuah proyek di bawah untuk menambahkannya ke daftar.</p>
+      <div class="wiki-buttons-container" id="yrWikiButtons">
+        <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
+          <img class="favicon-placeholder" alt="Wikipedia">
+          <span class="label">Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-project="wiktionary" data-needs-lang="true" data-domain-base="wiktionary.org" title="Wiktionary">
+          <img class="favicon-placeholder" alt="Wiktionary">
+          <span class="label">Wiktionary</span>
+        </div>
+        <div class="wiki-button" data-project="wikibooks" data-needs-lang="true" data-domain-base="wikibooks.org" title="Wikibooks">
+          <img class="favicon-placeholder" alt="Wikibooks">
+          <span class="label">Wikibooks</span>
+        </div>
+        <div class="wiki-button" data-project="wikisource" data-needs-lang="true" data-domain-base="wikisource.org" title="Wikisource">
+          <img class="favicon-placeholder" alt="Wikisource">
+          <span class="label">Wikisource</span>
+        </div>
+        <div class="wiki-button" data-project="wikiquote" data-needs-lang="true" data-domain-base="wikiquote.org" title="Wikiquote">
+          <img class="favicon-placeholder" alt="Wikiquote">
+          <span class="label">Wikiquote</span>
+        </div>
+        <div class="wiki-button" data-project="wikinews" data-needs-lang="true" data-domain-base="wikinews.org" title="Wikinews">
+          <img class="favicon-placeholder" alt="Wikinews">
+          <span class="label">Wikinews</span>
+        </div>
+        <div class="wiki-button" data-project="wikiversity" data-needs-lang="true" data-domain-base="wikiversity.org" title="Wikiversity">
+          <img class="favicon-placeholder" alt="Wikiversity">
+          <span class="label">Wikiversity</span>
+        </div>
+        <div class="wiki-button" data-project="wikivoyage" data-needs-lang="true" data-domain-base="wikivoyage.org" title="Wikivoyage">
+          <img class="favicon-placeholder" alt="Wikivoyage">
+          <span class="label">Wikivoyage</span>
+        </div>
+
+        <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
+          <img class="favicon-placeholder" alt="Wikispecies">
+          <span class="label">Wikispecies</span>
+        </div>
+        <div class="wiki-button" data-domain="commons.wikimedia.org" title="Commons">
+          <img class="favicon-placeholder" alt="Commons">
+          <span class="label">Commons</span>
+        </div>
+        <div class="wiki-button" data-domain="www.wikidata.org" title="Wikidata">
+          <img class="favicon-placeholder" alt="Wikidata">
+          <span class="label">Wikidata</span>
+        </div>
+        <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+          <img class="favicon-placeholder" alt="Wikifunctions">
+          <span class="label">Wikifunctions</span>
+        </div>
+        <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+          <img class="favicon-placeholder" alt="Incubator">
+          <span class="label">Incubator</span>
+        </div>
+        <div class="wiki-button" data-domain="meta.wikimedia.org" title="Meta-Wiki">
+          <img class="favicon-placeholder" alt="Meta">
+          <span class="label">Meta</span>
+        </div>
+        <div class="wiki-button" data-domain="www.mediawiki.org" title="MediaWiki">
+          <img class="favicon-placeholder" alt="MediaWiki">
+          <span class="label">MediaWiki</span>
+        </div>
+        <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+          <img class="favicon-placeholder" alt="Wikitech">
+          <span class="label">Wikitech</span>
+        </div>
+        <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
+          <img class="favicon-placeholder" alt="Wikimania">
+          <span class="label">Wikimania</span>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-primary" id="yrGenerateBtn" data-i18n="contribGenerate">Buat pratinjau</button>
+    <div class="status error yr-msg" id="yrError" style="display:none;"></div>
+    <div class="status yr-msg" id="yrLoading" style="display:none;"></div>
+  </div>
+  </section>
+
+  <section class="card" id="contribResult" style="display:none;">
+    <div class="yr-stage">
+      <div id="yrPreview" class="yr-scope">
+        <div class="grid-container">
+          <div class="grid-item hero-box">
+            <h2 id="yrPreviewTitle" data-i18n="contribPreviewTitle">KILAS BALIK SETAHUN</h2>
+            <div class="year" id="yrPreviewYear">2025</div>
+            <div class="username" id="yrPreviewUsername">@Username</div>
+          </div>
+
+          <div class="grid-item stat-box-1">
+            <div class="stat-value" id="yrEditsCount">0</div>
+            <div class="stat-label" id="yrEditsLabel" data-i18n="contribEdits">Suntingan</div>
+          </div>
+
+          <div class="grid-item stat-box-2">
+            <div class="stat-value" id="yrArticlesCount">0</div>
+            <div class="stat-label" id="yrArticlesLabel" data-i18n="contribArticles">Artikel</div>
+          </div>
+
+          <div class="grid-item image-box">
+            <div class="qr-section">
+              <img id="yrQrImage" alt="QR">
+              <div class="qr-label" id="yrQrLabel"></div>
+              <div class="qr-cc">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="license noopener" aria-label="CC BY-SA 4.0 license">
+                  <i class="fa-brands fa-creative-commons"></i>
+                  <i class="fa-brands fa-creative-commons-by"></i>
+                  <i class="fa-brands fa-creative-commons-sa"></i>
+                </a>
+              </div>
+            </div>
+            <img class="poster-img" id="yrPreviewImage" src="https://upload.wikimedia.org/wikipedia/commons/6/69/WP25_Languages.gif" alt="WP25_Languages">
+            <div class="attribution" id="yrImageAttribution">
+              <a href="https://commons.wikimedia.org/wiki/File:WP25_Languages.gif" target="_blank">File:WP25 Languages.gif</a>
+              | Foundation staff and contractors, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>,
+              via Wikimedia Commons
+            </div>
+            <div class="projects-overlay" id="yrProjectsOverlay"></div>
+          </div>
+
+          <div class="grid-item stat-box-3">
+            <div class="stat-value" id="yrBytesCount">0</div>
+            <div class="stat-label" id="yrBytesLabel" data-i18n="contribBytes">Bita</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="yrRecordCanvas" style="display:none;"></canvas>
+
+    <div class="contrib-actions">
+      <button type="button" class="btn-outline" id="yrDownloadImgBtn">
+        <i class="fa-solid fa-image"></i> <span data-i18n="contribDownloadImage">Unduh sebagai gambar</span>
+      </button>
+      <button type="button" class="btn-outline" id="yrDownloadVideoBtn">
+        <i class="fa-solid fa-video"></i> <span data-i18n="contribDownloadVideo">Unduh sebagai video</span>
+      </button>
+    </div>
+  </section>
+
   <div class="wiki-modal" id="wikiLanguageModal">
     <div class="wiki-modal-content">
       <h3 id="modalTitle" data-i18n="modalTitleDefault">Pilih bahasa</h3>
@@ -890,6 +721,22 @@
       <div class="wiki-modal-buttons">
         <button type="button" id="cancelModalBtn" data-i18n="cancelBtn">Batal</button>
         <button type="button" id="confirmModalBtn" data-i18n="confirmBtn" disabled>Pilih</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="wiki-modal" id="yrModal">
+    <div class="wiki-modal-content">
+      <h3 id="yrModalTitle">Pilih bahasa</h3>
+      <div class="lang-input-group">
+        <input type="text" id="yrLangInput" data-i18n-placeholder="contribLangPlaceholder" placeholder="contoh: id, en, fr, bew, map-bms" maxlength="12" autocomplete="off">
+        <button type="button" id="yrAddLangBtn" data-i18n="contribAdd">Tambah</button>
+      </div>
+      <div class="lang-tags" id="yrSelectedLangs" style="min-height:40px;margin:12px 0;"></div>
+      <div class="wiki-modal-buttons">
+        <button type="button" id="yrCancelBtn" data-i18n="cancelBtn">Batal</button>
+        <button type="button" id="yrConfirmBtn" data-i18n="contribConfirm" disabled>Tambahkan ke daftar</button>
       </div>
     </div>
   </div>
@@ -967,7 +814,19 @@
       </div>
     </div>
   </section>
-</div>
+</main>
+
+<footer class="site">
+  <div class="wrap row">
+    <div>© <span id="yr">2026</span> Wikikategori · <span data-i18n="footerNote">Alat independen, bukan produk resmi Wikimedia Foundation.</span></div>
+    <div>
+      <a href="../wikirekap/">Wikirekap</a> ·
+      <a href="../wikilokal/">Wikilokal</a> ·
+      <a href="https://www.mediawiki.org/wiki/API:Main_page" rel="noopener">MediaWiki API</a> ·
+      <a href="https://www.wikidata.org" rel="noopener">Wikidata</a>
+    </div>
+  </div>
+</footer>
 
 <script>
 (function(){
@@ -1022,8 +881,7 @@
   const availStatusEl = document.getElementById('availStatus');
   const langBtn = document.getElementById('langBtn');
   const langTextEl = document.getElementById('langText');
-  const lightThemeBtn = document.getElementById('lightThemeBtn');
-  const darkThemeBtn = document.getElementById('darkThemeBtn');
+  const themeBtn = document.getElementById('themeBtn');
 
   // ---- Theme (light/dark) ----
   function applyTheme(theme){
@@ -1032,24 +890,66 @@
       : theme;
     document.documentElement.setAttribute('data-theme', resolved);
   }
-  function updateThemeButtons(theme){
-    lightThemeBtn.classList.toggle('active', theme === 'light');
-    darkThemeBtn.classList.toggle('active', theme === 'dark');
+  function updateThemeButtons(){
+    themeBtn.setAttribute('aria-pressed', document.documentElement.getAttribute('data-theme') === 'dark');
   }
   function setTheme(theme){
     localStorage.setItem('wikikategoriTheme', theme);
     applyTheme(theme);
     updateThemeButtons(theme);
   }
-  lightThemeBtn.addEventListener('click', () => setTheme('light'));
-  darkThemeBtn.addEventListener('click', () => setTheme('dark'));
-  updateThemeButtons(localStorage.getItem('wikikategoriTheme') || 'system');
+  themeBtn.addEventListener('click', () =>
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+  updateThemeButtons();
 
   // ---- UI language (ID default, EN toggle) ----
   const T = {
     id: {
       kicker: 'Meja referensi',
       title: 'Penelusur Kategori Wikipedia',
+      titleA: 'Penelusur Kategori',
+      titleB: 'Wikipedia',
+      titleBWide: 'Wikimedia',
+      titleArticle: 'Penelusur Artikel',
+      titleUser: 'Penelusur Pengguna',
+      titleTrending: 'Penelusur Pageview',
+      titleContrib: 'Kilas Balik Kontribusi',
+      subtitleContrib: 'Buat ringkasan kontribusi Wikimedia Anda dalam setahun, lalu unduh sebagai gambar atau video untuk dibagikan.',
+      modeContrib: 'Kontribusi Wikimedia',
+      contribUsername: 'Nama pengguna',
+      contribYear: 'Tahun',
+      contribWikis: 'Domain wiki',
+      contribWikisHint: 'Pisahkan dengan koma atau Enter. Domain yang sama hanya dihitung sekali.',
+      contribWikisPlaceholder: 'id.wikipedia.org\nen.wikipedia.org\ncommons.wikimedia.org\nwww.wikidata.org',
+      contribPickHint: 'Atau klik sebuah proyek di bawah untuk menambahkannya ke daftar.',
+      contribGenerate: 'Buat pratinjau',
+      contribDownloadImage: 'Unduh sebagai gambar',
+      contribDownloadVideo: 'Unduh sebagai video',
+      contribDownloading: 'Mengunduh...',
+      contribRecording: 'Merekam...',
+      contribPreviewTitle: 'KILAS BALIK SETAHUN',
+      contribEdits: 'Suntingan',
+      contribArticles: 'Artikel',
+      contribBytes: 'Bita',
+      contribLoading: 'Memuat data...',
+      contribErrorUsername: 'Silakan masukkan nama pengguna.',
+      contribErrorWikis: 'Silakan masukkan setidaknya satu domain wiki.',
+      contribErrorFetch: 'Gagal mengambil data, atau tidak ada kontribusi pada tahun itu. Periksa nama pengguna, tahun, dan domain wiki.',
+      contribCapped: (n) => `Sebagian wiki memiliki lebih banyak suntingan daripada yang bisa dimuat (batas ${n.toLocaleString('id-ID')} per wiki), jadi angka ditandai "+" sebagai batas bawah.`,
+      contribQrLabel: 'Buat versimu di',
+      contribModalTitle: (project) => `Pilih bahasa untuk ${project}`,
+      contribLangPlaceholder: 'contoh: id, en, fr, bew, map-bms',
+      contribAdd: 'Tambah',
+      contribConfirm: 'Tambahkan ke daftar',
+      contribNoLanguage: 'Minimal satu bahasa.',
+      contribDownloadFail: (msg) => `Gagal mengunduh gambar: ${msg}`,
+      contribVideoUnsupported: "Browser Anda tidak mendukung perekaman video. Silakan gunakan 'Unduh sebagai gambar' atau buka di browser desktop.",
+      contribVideoNoCodec: "iOS/Safari tidak mendukung perekaman video dari canvas. Silakan gunakan 'Unduh sebagai gambar' atau buka di Chrome/Firefox desktop.",
+      contribVideoFail: (msg) => `Gagal membuat video: ${msg}. Coba gunakan 'Unduh sebagai gambar' sebagai alternatif.`,
+      subtitleArticle: 'Cari sebuah artikel Wikipedia dan lihat di bahasa mana saja artikel itu tersedia, lengkap dengan tautan langsung ke tiap edisi. Padanan antarbahasa diambil dari Wikidata.',
+      subtitleUser: 'Lihat informasi akun seorang pengguna di proyek Wikimedia mana pun: jumlah edit, grup, status blokir, dan di wiki mana saja akun itu aktif.',
+      subtitleTrending: 'Lihat artikel yang paling banyak dibaca di sebuah proyek Wikimedia, berdasarkan pageview pada hari terakhir yang datanya tersedia.',
+      footerNote: 'Alat independen, bukan produk resmi Wikimedia Foundation.',
       subtitle: 'Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.',
       backHome: 'Kembali ke Affandy Murad',
       modeCategory: 'Cari Kategori',
@@ -1149,6 +1049,49 @@
     en: {
       kicker: 'Reference desk',
       title: 'Wikipedia Category Explorer',
+      titleA: 'Category Explorer',
+      titleB: 'Wikipedia',
+      titleBWide: 'Wikimedia',
+      titleArticle: 'Article Explorer',
+      titleUser: 'User Explorer',
+      titleTrending: 'Pageview Explorer',
+      titleContrib: 'Contribution Year in Review',
+      subtitleContrib: 'Create your Wikimedia contribution summary for a whole year, then download it as an image or video to share.',
+      modeContrib: 'Wikimedia Contributions',
+      contribUsername: 'Username',
+      contribYear: 'Year',
+      contribWikis: 'Wiki domains',
+      contribWikisHint: 'Separate with commas or Enter. A domain listed twice is counted once.',
+      contribWikisPlaceholder: 'id.wikipedia.org\nen.wikipedia.org\ncommons.wikimedia.org\nwww.wikidata.org',
+      contribPickHint: 'Or click a project below to add it to the list.',
+      contribGenerate: 'Generate preview',
+      contribDownloadImage: 'Download as image',
+      contribDownloadVideo: 'Download as video',
+      contribDownloading: 'Downloading...',
+      contribRecording: 'Recording...',
+      contribPreviewTitle: 'A YEAR IN REVIEW',
+      contribEdits: 'Edits',
+      contribArticles: 'Articles',
+      contribBytes: 'Bytes',
+      contribLoading: 'Loading data...',
+      contribErrorUsername: 'Please enter a username.',
+      contribErrorWikis: 'Please enter at least one wiki domain.',
+      contribErrorFetch: 'Failed to fetch data, or there are no contributions that year. Check the username, year and wiki domains.',
+      contribCapped: (n) => `Some wikis have more edits than can be loaded (limit ${n.toLocaleString('en-US')} per wiki), so the figures are marked "+" as a lower bound.`,
+      contribQrLabel: 'Create yours at',
+      contribModalTitle: (project) => `Select language for ${project}`,
+      contribLangPlaceholder: 'example: id, en, fr, bew, map-bms',
+      contribAdd: 'Add',
+      contribConfirm: 'Add to list',
+      contribNoLanguage: 'At least one language is required.',
+      contribDownloadFail: (msg) => `Failed to download the image: ${msg}`,
+      contribVideoUnsupported: "Your browser doesn't support video recording. Please use 'Download as image' or open this page in a desktop browser.",
+      contribVideoNoCodec: "iOS/Safari doesn't support video recording from canvas. Please use 'Download as image' or open this page in desktop Chrome/Firefox.",
+      contribVideoFail: (msg) => `Failed to create the video: ${msg}. Try 'Download as image' as an alternative.`,
+      subtitleArticle: 'Look up a Wikipedia article and see every language it is available in, with a direct link to each edition. Interlanguage matches come from Wikidata.',
+      subtitleUser: 'See a user\'s account details on any Wikimedia project: edit count, groups, block status, and every wiki where the account is active.',
+      subtitleTrending: 'See the most-read articles on a Wikimedia project, ranked by pageviews on the latest day with available data.',
+      footerNote: 'Independent tool, not an official Wikimedia Foundation product.',
       subtitle: 'Browse articles within a single Wikipedia category, or find which languages an article is available in. Both use the MediaWiki API and Wikidata to link equivalent versions across languages.',
       backHome: 'Back to Affandy Murad',
       modeCategory: 'Search Category',
@@ -1268,9 +1211,28 @@
     }
   }
 
+  // Judul, kata berwarna, dan paragraf pengantar mengikuti mode yang aktif.
+  // Pengguna & Pageview berlaku untuk semua proyek Wikimedia, jadi kata berwarnanya "Wikimedia".
+  function syncHeroTitle(mode){
+    const wide = mode === 'user' || mode === 'trending' || mode === 'contrib';
+    const titleKeys = { category: 'titleA', article: 'titleArticle', user: 'titleUser', trending: 'titleTrending', contrib: 'titleContrib' };
+    const leadKeys = { category: 'subtitle', article: 'subtitleArticle', user: 'subtitleUser', trending: 'subtitleTrending', contrib: 'subtitleContrib' };
+    const set = (id, key) => {
+      const el = document.getElementById(id);
+      el.setAttribute('data-i18n', key);
+      el.textContent = t(key);
+    };
+    set('titleA', titleKeys[mode] || titleKeys.category);
+    set('titleEm', wide ? 'titleBWide' : 'titleB');
+    set('leadText', leadKeys[mode] || leadKeys.category);
+    // Bahasa Inggris menampilkan kata berwarna di depan ("Wikipedia Category Explorer"); judul tab mengikuti urutan itu
+    const partA = document.getElementById('titleA').textContent;
+    const partEm = document.getElementById('titleEm').textContent;
+    document.title = 'Wikikategori — ' + (uiLang === 'en' ? partEm + ' ' + partA : partA + ' ' + partEm);
+  }
+
   function applyUILanguage(){
     document.documentElement.lang = uiLang;
-    document.title = t('title');
     langTextEl.textContent = uiLang === 'id' ? 'EN' : 'ID';
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1286,6 +1248,8 @@
 
     applyModeText();
     modalTitleEl.textContent = t('modalTitleDefault');
+    syncHeroTitle(currentMode);
+    refreshContribDynamic();
   }
 
   langBtn.addEventListener('click', () => {
@@ -1613,7 +1577,6 @@
         if(withBadges){
           const badges = document.createElement('span');
           badges.className = 'lang-badges';
-          badges.style.cssText = 'display:inline-flex;flex-wrap:wrap;gap:6px;margin-left:10px;vertical-align:middle;';
           li.appendChild(badges);
         }
 
@@ -1742,7 +1705,6 @@
         a.rel = 'noopener noreferrer';
         a.textContent = code;
         a.title = title;
-        a.style.cssText = 'display:inline-block;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:0.72rem;font-weight:700;line-height:1;padding:4px 9px;border:1px solid #3a6b4c;border-radius:999px;color:#3a6b4c;text-decoration:none;background:#fffdf8;white-space:nowrap;';
         badges.appendChild(a);
         matchCount++;
       });
@@ -2197,6 +2159,17 @@
   }
   window.clearPickerLanguage = clearPickerLanguage;
 
+  // Sorot proyek yang sedang terpilih pada kelompok tombol milik input tersebut
+  function markSelectedProject(input){
+    const container = document.querySelector('.wiki-buttons-container[data-target="' + input.id + '"]');
+    if(!container) return;
+    container.querySelectorAll('.wiki-button').forEach(btn => {
+      const exact = btn.dataset.domain && btn.dataset.domain === input.value;
+      const byBase = btn.dataset.domainBase && input.value.endsWith('.' + btn.dataset.domainBase);
+      btn.classList.toggle('selected', !!(exact || byBase));
+    });
+  }
+
   document.querySelectorAll('.wiki-buttons-container').forEach(container => {
     const targetInput = document.getElementById(container.dataset.target);
     if(!targetInput) return;
@@ -2207,6 +2180,7 @@
 
         if(directDomain){
           targetInput.value = directDomain;
+          markSelectedProject(targetInput);
           return;
         }
 
@@ -2237,6 +2211,7 @@
   function confirmPickerSelection(){
     if(pickerLang && pickerProjectBase && pickerTargetInput){
       pickerTargetInput.value = `${pickerLang}.${pickerProjectBase}`;
+      markSelectedProject(pickerTargetInput);
       wikiLanguageModal.style.display = 'none';
     }
   }
@@ -2353,8 +2328,8 @@
 
     if(globalInfo.locked || globalInfo.hidden){
       globalHtml += `
-        <div class="user-info-item" style="grid-column:1 / -1;background:#fff3cd;border:1px solid var(--maroon);">
-          <div class="user-info-label" style="color:var(--maroon);">⚠️ ${t('globalStatus')}</div>
+        <div class="user-info-item user-info-warn">
+          <div class="user-info-label">⚠️ ${t('globalStatus')}</div>
           <div class="user-info-value">
             ${globalInfo.locked ? `<span class="user-badge user-badge-warning">${t('globallyLocked')}</span> ` : ''}
             ${globalInfo.hidden ? `<span class="user-badge user-badge-warning">${t('hidden')}</span>` : ''}
@@ -2368,8 +2343,8 @@
     if(globalInfo.merged?.length){
       userMergedWikisEl.innerHTML = `
         <p class="user-subhead">${t('userConnectedHeading')}</p>
-        <div style="margin-bottom:8px;">
-          <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        <div>
+          <label class="check-inline">
             <input type="checkbox" id="userOnlyActiveWikis" checked>
             <span>${t('onlyActiveWikis')}</span>
           </label>
@@ -2486,9 +2461,23 @@
 
   function setMode(mode){
     currentMode = mode;
+    syncHeroTitle(mode);
     modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
     resultsEl.style.display = 'none';
     setStatus('');
+
+    // Panel dan poster "Kontribusi Wikimedia" hanya tampil pada mode-nya
+    document.getElementById('contribForm').style.display = mode === 'contrib' ? 'block' : 'none';
+    document.getElementById('contribResult').style.display = mode === 'contrib' ? 'block' : 'none';
+    if(mode === 'contrib'){
+      form.style.display = 'none';
+      hintText.style.display = 'none';
+      userQueryForm.style.display = 'none';
+      trendingQueryForm.style.display = 'none';
+      ensureYrLibs().catch(() => {}); // siapkan pustaka unduhan di latar belakang
+      document.getElementById('yrUsername').focus();
+      return;
+    }
 
     if(mode === 'user'){
       form.style.display = 'none';
@@ -2560,8 +2549,481 @@
     runTrendingSearch(project);
   });
 
+  // ===================================================================
+  // Kontribusi Wikimedia: ringkasan setahun (gambar/video untuk dibagikan)
+  // ===================================================================
+  const $yr = id => document.getElementById(id);
+  const YR_MAX_PAGES = 60; // 60 x 500 = 30.000 suntingan per wiki; lebih dari itu ditandai "+" (batas bawah)
+
+  const yrSpecialProjects = {
+    'commons.wikimedia.org': 'Commons',
+    'wikidata.org': 'Wikidata',
+    'www.wikidata.org': 'Wikidata',
+    'meta.wikimedia.org': 'Meta-Wiki',
+    'mediawiki.org': 'MediaWiki',
+    'www.mediawiki.org': 'MediaWiki',
+    'species.wikimedia.org': 'Wikispecies',
+    'wikifunctions.org': 'Wikifunctions',
+    'www.wikifunctions.org': 'Wikifunctions',
+    'incubator.wikimedia.org': 'Incubator',
+    'wikitech.wikimedia.org': 'Wikitech',
+    'wikimania.wikimedia.org': 'Wikimania'
+  };
+  const YR_SISTER = ['wikipedia', 'wiktionary', 'wikibooks', 'wikisource', 'wikivoyage', 'wikinews', 'wikiquote', 'wikiversity'];
+
+  function yrProjectName(domain){
+    const clean = domain.toLowerCase().trim();
+    if(yrSpecialProjects[clean]) return yrSpecialProjects[clean];
+    const code = clean.split('.')[0];
+    const sister = YR_SISTER.find(p => clean.includes(p));
+    return sister ? `${sister.charAt(0).toUpperCase() + sister.slice(1)} (${code})` : domain;
+  }
+
+  function yrFavicon(domain){
+    const base = domain.trim().startsWith('http') ? domain.trim() : `https://${domain.trim()}`;
+    return `${base}/favicon.ico`;
+  }
+
+  function yrFormatNumber(n){
+    if(n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if(n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return String(n);
+  }
+
+  // Domain dipisahkan koma, titik koma, spasi, atau baris baru (Enter)
+  function yrParseDomains(raw){
+    return raw.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
+  }
+  const yrNormalize = d => d.toLowerCase().trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+
+  function yrUniqueDomains(raw){
+    const seen = new Map();
+    yrParseDomains(raw).forEach(d => {
+      const n = yrNormalize(d);
+      if(n && !seen.has(n)) seen.set(n, d);
+    });
+    return [...seen.values()];
+  }
+
+  // Sorot tombol proyek yang domainnya sudah ada di daftar
+  function yrMarkSelected(){
+    const list = yrParseDomains($yr('yrWikis').value).map(yrNormalize);
+    document.querySelectorAll('#yrWikiButtons .wiki-button').forEach(btn => {
+      const exact = btn.dataset.domain && list.includes(btn.dataset.domain);
+      const byBase = btn.dataset.domainBase && list.some(d => d.endsWith('.' + btn.dataset.domainBase));
+      btn.classList.toggle('selected', !!(exact || byBase));
+    });
+  }
+
+  function yrAddDomain(domain){
+    const area = $yr('yrWikis');
+    const existing = yrParseDomains(area.value).map(yrNormalize);
+    if(!existing.includes(yrNormalize(domain))){
+      area.value = area.value.trim() ? `${area.value.trim()}\n${domain}` : domain;
+    }
+    yrMarkSelected();
+  }
+
+  // ---- pustaka untuk unduhan (dimuat saat dibutuhkan agar mode lain tetap ringan) ----
+  let yrLibsPromise = null;
+  function yrLoadScript(src){
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = resolve; s.onerror = () => reject(new Error('Gagal memuat ' + src));
+      document.head.appendChild(s);
+    });
+  }
+  function yrLoadCss(href){
+    return new Promise((resolve) => {
+      const l = document.createElement('link');
+      l.rel = 'stylesheet'; l.href = href; l.onload = resolve; l.onerror = resolve; // ikon opsional
+      document.head.appendChild(l);
+    });
+  }
+  function ensureYrLibs(){
+    if(!yrLibsPromise){
+      yrLibsPromise = Promise.all([
+        window.html2canvas ? null : yrLoadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+        window.GifReader ? null : yrLoadScript('https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.min.js'),
+        yrLoadCss('../css/all.min.css')
+      ]).catch(err => { yrLibsPromise = null; throw err; });
+    }
+    return yrLibsPromise;
+  }
+
+  // ---- QR di poster: mengarah ke halaman ini ----
+  function yrBasePageUrl(){
+    try{
+      const u = new URL(window.location.href);
+      return `${u.origin}${u.pathname.replace(/\/[^\/]*$/, '')}`.replace(/\/$/, '');
+    } catch(e){ return window.location.href; }
+  }
+  function yrUpdateQr(){
+    const base = yrBasePageUrl();
+    $yr('yrQrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(base)}&format=png&color=000000&bgcolor=transparent`;
+    $yr('yrQrLabel').textContent = `${t('contribQrLabel')} ${base.replace(/^https?:\/\//, '')}`;
+  }
+  // Teks dinamis yang tidak dicakup atribut data-i18n
+  function refreshContribDynamic(){
+    yrUpdateQr();
+  }
+
+  // ---- ambil statistik satu wiki (mengikuti continuation sampai YR_MAX_PAGES) ----
+  async function yrFetchWikiStats(domain, username, startDate, endDate){
+    const baseUrl = domain.startsWith('http') ? domain.replace(/\/+$/, '') : `https://${domain}`;
+    const titlesNew = new Set();
+    let edits = 0, added = 0, cont = null, pages = 0;
+
+    do{
+      const url = `${baseUrl}/w/api.php?action=query&format=json&formatversion=2&origin=*&list=usercontribs` +
+        `&ucuser=${encodeURIComponent(username)}&ucstart=${endDate}&ucend=${startDate}&uclimit=500` +
+        `&ucprop=ids|title|timestamp|sizediff|flags` +
+        (cont ? `&uccontinue=${encodeURIComponent(cont)}` : '');
+      const res = await fetch(url);
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if(data.error) throw new Error(data.error.info || data.error.code);
+
+      const contribs = data.query?.usercontribs || [];
+      edits += contribs.length;
+      contribs.forEach(c => {
+        if(c.new) titlesNew.add(c.title);
+        if(c.sizediff > 0) added += c.sizediff;
+      });
+      cont = data.continue?.uccontinue || null;
+      pages++;
+    } while(cont && pages < YR_MAX_PAGES);
+
+    return { edits, articles: titlesNew.size, added, capped: !!cont };
+  }
+
+  // ---- menghitung berapa badge proyek yang muat di poster ----
+  function yrBadgeHtml(p){
+    return `<div class="project-badge"><img src="${yrFavicon(p.domain)}" onerror="this.style.display='none'">${p.label}</div>`;
+  }
+  function yrRenderBadges(projects){
+    const overlay = $yr('yrProjectsOverlay');
+    const box = overlay.closest('.image-box');
+    const qr = box.querySelector('.qr-section');
+    const maxHeight = Math.min(box.offsetHeight - qr.offsetHeight - 24, 500);
+
+    overlay.innerHTML = projects.map(yrBadgeHtml).join('');
+    if(overlay.offsetHeight <= maxHeight) return;
+
+    for(let visible = projects.length - 1; visible >= 1; visible--){
+      overlay.innerHTML = projects.slice(0, visible).map(yrBadgeHtml).join('') +
+        `<div class="project-badge">+${projects.length - visible}</div>`;
+      if(overlay.offsetHeight <= maxHeight) return;
+    }
+  }
+
+  // ---- buat pratinjau ----
+  async function yrGeneratePreview(){
+    const username = $yr('yrUsername').value.trim();
+    const year = $yr('yrYear').value;
+    const domains = yrUniqueDomains($yr('yrWikis').value);
+    const errorEl = $yr('yrError');
+    const loadingEl = $yr('yrLoading');
+    const genBtn = $yr('yrGenerateBtn');
+
+    errorEl.style.display = 'none';
+    errorEl.className = 'status error yr-msg';
+    if(!username){ errorEl.textContent = t('contribErrorUsername'); errorEl.style.display = 'block'; return; }
+    if(!domains.length){ errorEl.textContent = t('contribErrorWikis'); errorEl.style.display = 'block'; return; }
+
+    genBtn.disabled = true;
+    loadingEl.style.display = 'block';
+    try{
+      const startDate = `${year}-01-01T00:00:00.000Z`;
+      const endDate = `${year}-12-31T23:59:59.000Z`;
+      let totalEdits = 0, totalPages = 0, totalAdded = 0, anyCapped = false;
+      const active = [];
+
+      for(let i = 0; i < domains.length; i++){
+        loadingEl.textContent = `${t('contribLoading')} (${i + 1}/${domains.length}) ${domains[i]}`;
+        try{
+          const s = await yrFetchWikiStats(domains[i], username, startDate, endDate);
+          if(s.edits > 0){
+            totalEdits += s.edits; totalPages += s.articles; totalAdded += s.added;
+            anyCapped = anyCapped || s.capped;
+            active.push({ domain: domains[i], label: yrProjectName(domains[i]) });
+          }
+        } catch(e){
+          console.warn('Gagal mengambil', domains[i], e);
+        }
+      }
+      if(!active.length) throw new Error('No contributions found');
+
+      $yr('yrPreviewImage').src = 'https://upload.wikimedia.org/wikipedia/commons/c/ca/WP25_World.gif';
+      $yr('yrImageAttribution').innerHTML =
+        '<a href="https://commons.wikimedia.org/wiki/File:WP25_World.gif" target="_blank" rel="noopener">File:WP25 World.gif</a>' +
+        ' | Wikimedia Foundation staff and contractors, ' +
+        '<a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons';
+
+      const plus = anyCapped ? '+' : '';
+      $yr('yrPreviewYear').textContent = year;
+      $yr('yrPreviewUsername').textContent = '@' + username;
+      $yr('yrEditsCount').textContent = yrFormatNumber(totalEdits) + plus;
+      $yr('yrArticlesCount').textContent = yrFormatNumber(totalPages) + plus;
+      $yr('yrBytesCount').textContent = yrFormatNumber(totalAdded) + plus;
+      yrRenderBadges(active);
+
+      loadingEl.style.display = 'none';
+      if(anyCapped){
+        errorEl.className = 'status yr-msg';
+        errorEl.textContent = t('contribCapped', YR_MAX_PAGES * 500);
+        errorEl.style.display = 'block';
+      }
+      $yr('contribResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch(err){
+      console.error(err);
+      loadingEl.style.display = 'none';
+      errorEl.className = 'status error yr-msg';
+      errorEl.textContent = t('contribErrorFetch');
+      errorEl.style.display = 'block';
+    } finally {
+      genBtn.disabled = false;
+    }
+  }
+
+  // ---- unduh gambar ----
+  function yrButtonLabel(btn, text){ btn.querySelector('span').textContent = text; }
+
+  async function yrDownloadImage(){
+    const preview = $yr('yrPreview');
+    const btn = $yr('yrDownloadImgBtn');
+    const original = btn.querySelector('span').textContent;
+    btn.disabled = true;
+    yrButtonLabel(btn, t('contribDownloading'));
+    try{
+      await ensureYrLibs();
+      const rect = preview.getBoundingClientRect();
+      const canvas = await html2canvas(preview, {
+        backgroundColor: '#ffffff',
+        scale: window.devicePixelRatio || 2,
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        useCORS: true,
+        allowTaint: true
+      });
+      const link = document.createElement('a');
+      link.download = `wiki-year-review-${$yr('yrUsername').value || 'user'}-${$yr('yrYear').value}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch(err){
+      console.error('Gagal mengunduh gambar:', err);
+      alert(t('contribDownloadFail', err.message));
+    } finally {
+      btn.disabled = false;
+      yrButtonLabel(btn, original);
+    }
+  }
+
+  // requestAnimationFrame berhenti saat tab tersembunyi; cadangan timeout agar unduhan tidak menggantung
+  function yrNextFrame(){
+    return new Promise(resolve => {
+      let done = false;
+      const finish = () => { if(!done){ done = true; resolve(); } };
+      requestAnimationFrame(finish);
+      setTimeout(finish, 120);
+    });
+  }
+
+  // ---- unduh video (GIF dunia berputar + overlay), direkam dari canvas ----
+  async function yrDownloadVideo(){
+    const preview = $yr('yrPreview');
+    const canvas = $yr('yrRecordCanvas');
+    const ctx = canvas.getContext('2d');
+    const btn = $yr('yrDownloadVideoBtn');
+    const FPS = 30;
+    const RECORD_MS = 8000;
+    const original = btn.querySelector('span').textContent;
+
+    const restore = () => { btn.disabled = false; yrButtonLabel(btn, original); };
+    btn.disabled = true;
+    yrButtonLabel(btn, t('contribRecording'));
+
+    if(typeof MediaRecorder === 'undefined'){
+      alert(t('contribVideoUnsupported'));
+      restore();
+      return;
+    }
+
+    try{
+      await ensureYrLibs();
+      const rect = preview.getBoundingClientRect();
+      canvas.width = Math.round(rect.width);
+      canvas.height = Math.round(rect.height);
+
+      const imageBox = preview.querySelector('.image-box');
+      const boxRect = imageBox.getBoundingClientRect();
+      const offX = Math.round(boxRect.left - rect.left);
+      const offY = Math.round(boxRect.top - rect.top);
+
+      // 1) lapisan dasar: seluruh poster tanpa isi kotak gambar (class yr-scope ikut ter-clone sehingga gayanya utuh)
+      const baseClone = preview.cloneNode(true);
+      baseClone.removeAttribute('id');
+      Object.assign(baseClone.style, {
+        position: 'fixed', left: '-100000px', top: '0', width: rect.width + 'px', height: rect.height + 'px',
+        background: '#ffffff', overflow: 'hidden', boxShadow: 'none', margin: '0'
+      });
+      const baseBox = baseClone.querySelector('.image-box');
+      baseBox.innerHTML = '';
+      baseBox.style.background = '#F5F5F5';
+      document.body.appendChild(baseClone);
+      await yrNextFrame();
+      const baseCanvas = await html2canvas(baseClone, { scale: 1, useCORS: true, backgroundColor: '#ffffff', logging: false });
+      document.body.removeChild(baseClone);
+
+      // 2) lapisan atas: QR, atribusi, badge proyek (tanpa GIF). Kotak gambar dipindah ke pembungkus
+      //    ber-class yr-scope karena aturan gayanya bergantung pada class itu, bukan pada posisi di dalam poster.
+      const overlayWrap = document.createElement('div');
+      overlayWrap.className = 'yr-scope';
+      Object.assign(overlayWrap.style, {
+        position: 'fixed', left: '-100000px', top: '0', width: boxRect.width + 'px', height: boxRect.height + 'px', background: 'transparent'
+      });
+      const overlayClone = imageBox.cloneNode(true);
+      Object.assign(overlayClone.style, { position: 'relative', width: boxRect.width + 'px', height: boxRect.height + 'px', background: 'transparent' });
+      const gifImg = overlayClone.querySelector('#yrPreviewImage');
+      const gifSrc = gifImg.src;
+      gifImg.remove();
+      overlayWrap.appendChild(overlayClone);
+      document.body.appendChild(overlayWrap);
+      await yrNextFrame();
+      const overlayCanvas = await html2canvas(overlayWrap, { scale: 1, useCORS: true, backgroundColor: null, logging: false });
+      document.body.removeChild(overlayWrap);
+
+      // 3) muat GIF
+      const gifRes = await fetch(gifSrc, { mode: 'cors' });
+      const gif = new GifReader(new Uint8Array(await gifRes.arrayBuffer()));
+      const gifCanvas = document.createElement('canvas');
+      gifCanvas.width = gif.width;
+      gifCanvas.height = gif.height;
+      const gifCtx = gifCanvas.getContext('2d');
+
+      // 4) perekam dengan codec yang didukung
+      const codecs = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm;codecs=h264', 'video/webm', 'video/mp4;codecs=h264', 'video/mp4'];
+      const mimeType = codecs.find(c => MediaRecorder.isTypeSupported(c));
+      if(!mimeType) throw new Error('No supported video format');
+
+      const recorder = new MediaRecorder(canvas.captureStream(FPS), { mimeType, videoBitsPerSecond: 2500000 });
+      const chunks = [];
+      let frameIndex = 0;
+      let timer;
+      recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+      recorder.onstop = () => {
+        clearTimeout(timer);
+        const a = document.createElement('a');
+        a.download = `wiki-year-review-${$yr('yrUsername').value || 'user'}-${$yr('yrYear').value}.webm`;
+        a.href = URL.createObjectURL(new Blob(chunks, { type: 'video/webm' }));
+        a.click();
+        URL.revokeObjectURL(a.href);
+        restore();
+      };
+      recorder.start();
+
+      // 5) gambar tiap frame: dasar, GIF, lalu overlay
+      const drawFrame = () => {
+        ctx.drawImage(baseCanvas, 0, 0);
+        const pixels = new Uint8ClampedArray(gif.width * gif.height * 4);
+        gif.decodeAndBlitFrameRGBA(frameIndex, pixels);
+        gifCtx.putImageData(new ImageData(pixels, gif.width, gif.height), 0, 0);
+        ctx.drawImage(gifCanvas, offX, offY, boxRect.width, boxRect.height);
+        ctx.drawImage(overlayCanvas, offX, offY);
+        const delay = Math.max(gif.frameInfo(frameIndex).delay || 10, 10) * 10;
+        frameIndex = (frameIndex + 1) % gif.numFrames();
+        timer = setTimeout(drawFrame, delay);
+      };
+      drawFrame();
+      setTimeout(() => recorder.stop(), RECORD_MS);
+    } catch(err){
+      console.error('Gagal membuat video:', err);
+      alert(String(err.message).includes('No supported video format')
+        ? t('contribVideoNoCodec')
+        : t('contribVideoFail', err.message));
+      restore();
+    }
+  }
+
+  // ---- modal bahasa (bisa menambah beberapa kode sekaligus) ----
+  let yrProject = null;
+  let yrLangs = [];
+
+  function yrUpdateConfirm(){
+    $yr('yrConfirmBtn').disabled = yrLangs.length === 0;
+  }
+  function yrAddLang(){
+    const input = $yr('yrLangInput');
+    const code = input.value.trim().toLowerCase();
+    input.value = '';
+    if(!code || code.length > 12 || yrLangs.includes(code)) return;
+    yrLangs.push(code);
+
+    const tag = document.createElement('span');
+    tag.textContent = code + ' ';
+    const x = document.createElement('span');
+    x.textContent = '×';
+    x.addEventListener('click', () => {
+      yrLangs = yrLangs.filter(l => l !== code);
+      tag.remove();
+      yrUpdateConfirm();
+    });
+    tag.appendChild(x);
+    $yr('yrSelectedLangs').appendChild(tag);
+    yrUpdateConfirm();
+  }
+  function yrCloseModal(){ $yr('yrModal').style.display = 'none'; }
+
+  document.querySelectorAll('#yrWikiButtons .wiki-button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(btn.dataset.domain){
+        yrAddDomain(btn.dataset.domain);
+        return;
+      }
+      if(btn.dataset.needsLang === 'true'){
+        yrProject = btn.dataset.project;
+        yrLangs = [];
+        $yr('yrSelectedLangs').innerHTML = '';
+        $yr('yrLangInput').value = '';
+        $yr('yrModalTitle').textContent = t('contribModalTitle', yrProject.charAt(0).toUpperCase() + yrProject.slice(1));
+        yrUpdateConfirm();
+        $yr('yrModal').style.display = 'flex';
+        $yr('yrLangInput').focus();
+      }
+    });
+  });
+
+  $yr('yrAddLangBtn').addEventListener('click', yrAddLang);
+  $yr('yrLangInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ','){
+      e.preventDefault();
+      yrAddLang();
+    }
+  });
+  $yr('yrLangInput').addEventListener('blur', yrAddLang);
+  $yr('yrConfirmBtn').addEventListener('click', () => {
+    yrAddLang(); // kode yang masih terketik ikut ditambahkan
+    if(!yrLangs.length){
+      alert(t('contribNoLanguage'));
+      return;
+    }
+    yrLangs.forEach(lang => yrAddDomain(`${lang}.${yrProject}.org`));
+    yrCloseModal();
+  });
+  $yr('yrCancelBtn').addEventListener('click', yrCloseModal);
+  $yr('yrModal').addEventListener('click', e => { if(e.target === $yr('yrModal')) yrCloseModal(); });
+
+  $yr('yrWikis').addEventListener('input', yrMarkSelected);
+  $yr('yrGenerateBtn').addEventListener('click', yrGeneratePreview);
+  $yr('yrDownloadImgBtn').addEventListener('click', yrDownloadImage);
+  $yr('yrDownloadVideoBtn').addEventListener('click', yrDownloadVideo);
+  $yr('yrYear').value = String(new Date().getFullYear()); // default: tahun berjalan
+  $yr('yrYear').max = String(new Date().getFullYear());
+  $yr('yrPreviewYear').textContent = $yr('yrYear').value; // poster sebelum pratinjau dibuat memakai tahun yang sama
+
   // Small default to demonstrate on load focus.
   applyUILanguage();
+  document.getElementById('yr').textContent = new Date().getFullYear();
   catInput.focus();
   getMwLanguageNames(); // warm the cache in the background
 })();

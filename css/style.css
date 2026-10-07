@@ -987,3 +987,36 @@ header {
         text-align: left;
     }
 }
+
+/* ========== HEADER: SMALL SCREENS ========== */
+.brand {
+    white-space: nowrap;
+}
+
+@media (max-width: 1000px) {
+    .desktop-nav a {
+        padding: 7px 10px;
+    }
+
+    .header-content {
+        gap: 12px;
+    }
+}
+
+/* collapse to hamburger before the pills start to crowd */
+@media (max-width: 900px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .desktop-controls,
+    .desktop-nav {
+        display: none;
+    }
+}
+
+@media (min-width: 901px) {
+    .mobile-menu {
+        display: none !important;
+    }
+}
