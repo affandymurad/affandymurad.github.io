@@ -2,1114 +2,272 @@
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>Daftar Ekstensi Telepon Wisma Korindo</title>
+  <script>
+    // Terapkan tema sesuai mode browser sebelum halaman digambar
+    try {
+      var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    } catch (e) { }
+  </script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --bg: #eceae4; --surface: #ffffff; --ink: #1b2b2b; --muted: #55656a; --line: #d5d9d4;
+      --brand: #8fcaca; --brand-2: #55cbcd; --brand-text: #2f6f73; --on-brand: #1b2b2b; --soft: #e1f2f0;
+      --shadow: 0 10px 30px rgba(15, 27, 45, .08);
+      color-scheme: light;
     }
+
+    :root[data-theme="dark"] {
+      --bg: #0f1a1c; --surface: #172629; --ink: #eaf4f3; --muted: #a6bfbf; --line: #2c4548; --soft: #1f383b;
+      --brand: #7fbdbd; --brand-2: #55b8bb; --brand-text: #9fdcdc;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .4);
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f8f9fa;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
-      padding: 20px;
-      color: #2d3748;
     }
 
-    /* Dark Theme Variables */
-    :root[data-theme="dark"] {
-      --bg-primary: #1a202c;
-      --bg-secondary: #2d3748;
-      --bg-card: #2d3748;
-      --text-primary: #f7fafc;
-      --text-secondary: #e2e8f0;
-      --border-color: #4a5568;
-      --input-bg: #1a202c;
-      --input-border: #4a5568;
-      --hover-bg: #4a5568;
-      --accent: #a0aec0;
-    }
+    a { color: var(--brand-text); }
+    button { font: inherit; cursor: pointer; }
+    .wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
 
-    body.dark-theme {
-      background-color: #1a202c;
-      color: #f7fafc;
+    /* ===== header ===== */
+    header.site {
+      position: sticky; top: 0; z-index: 20;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
     }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 60px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--ink); text-decoration: none; letter-spacing: -.01em; }
+    .logo i { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display: grid; place-items: center; }
+    .logo i svg { width: 18px; height: 18px; }
+    .theme-switch { position: relative; flex: none; width: 56px; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); }
+    .theme-switch:hover { border-color: var(--brand-text); }
+    .theme-switch:focus-visible { outline: 2px solid var(--brand-text); outline-offset: 2px; }
+    .theme-switch .knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--brand); color: var(--on-brand); display: grid; place-items: center; transition: transform .25s; }
+    .theme-switch[aria-checked="true"] .knob { transform: translateX(26px); }
+    .theme-switch svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .theme-switch .sun { display: none; }
+    .theme-switch[aria-checked="true"] .sun { display: block; }
+    .theme-switch[aria-checked="true"] .moon { display: none; }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+    /* ===== hero ===== */
+    .hero { padding: 44px 0 24px; }
+    .badge { display: inline-flex; gap: 8px; align-items: center; background: var(--soft); color: var(--brand-text); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+    h1 { font-size: clamp(30px, 4.6vw, 48px); line-height: 1.1; margin: 16px 0 14px; letter-spacing: -.025em; max-width: 18em; }
+    h1 em { font-style: normal; color: var(--brand-text); }
+    .lead { font-size: 18px; color: var(--muted); max-width: 40em; }
+    .meta { margin-top: 14px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+    .meta b { color: var(--ink); font-weight: 600; }
 
-    .header {
-      background: white;
-      border-radius: 16px;
-      padding: 32px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    body.dark-theme .header,
-    body.dark-theme .controls,
-    body.dark-theme .dept-card,
-    body.dark-theme .no-results {
-      background: #2d3748;
-      color: #f7fafc;
-    }
-
-    h1 {
-      font-size: 2.5em;
-      color: #1a202c;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    body.dark-theme h1 {
-      color: #f7fafc;
-    }
-
-    .meta {
-      color: #718096;
-      margin-top: 12px;
-      font-size: 0.95em;
-    }
-
-    body.dark-theme .meta {
-      color: #a0aec0;
-    }
-
-    .meta em {
-      display: block;
-      margin-top: 8px;
-      color: #6c757d;
-      font-style: normal;
-      font-weight: 500;
-    }
-
-    body.dark-theme .meta em {
-      color: #a0aec0;
-    }
-
-    .controls {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    }
-
-    .search-box {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
+    /* ===== kontrol ===== */
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .search-box { position: relative; }
+    .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; }
     .search-box input {
-      width: 100%;
-      padding: 16px 48px 16px 48px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 16px;
-      transition: all 0.3s;
-      background: white;
-      color: #2d3748;
+      width: 100%; padding: 13px 44px 13px 42px; border: 1px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px;
+      background: var(--bg); color: var(--ink); transition: border-color .2s, box-shadow .2s;
     }
+    .search-box input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent); }
+    .search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border: none; border-radius: 50%; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; display: none; }
+    .search-clear.show { display: block; }
+    .search-clear:hover { background: var(--soft); color: var(--ink); }
 
-    body.dark-theme .search-box input {
-      background: #1a202c;
-      border-color: #4a5568;
-      color: #f7fafc;
+    .filters { display: grid; grid-template-columns: auto 1fr; gap: 14px 24px; align-items: end; margin-top: 18px; }
+    .filter-label { display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .seg { display: inline-flex; gap: 8px; }
+    .seg input { position: absolute; opacity: 0; pointer-events: none; }
+    .seg label { padding: 8px 18px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-weight: 600; font-size: 14px; cursor: pointer; }
+    .seg label:hover { border-color: var(--brand); color: var(--ink); }
+    .seg input:checked + label { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+    .seg input:focus-visible + label { outline: 2px solid var(--brand); outline-offset: 2px; }
+    select {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--line); border-radius: 12px; font: inherit; font-size: 15px;
+      background: var(--bg); color: var(--ink);
     }
+    select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent); }
 
-    .search-box input:focus {
-      outline: none;
-      border-color: #6c757d;
-      box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
-    }
+    .result-info { font-size: 14px; color: var(--muted); margin: 4px 2px 14px; min-height: 22px; }
 
-    body.dark-theme .search-box input:focus {
-      border-color: #6c757d;
-      box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.2);
-    }
+    /* ===== daftar departemen ===== */
+    .departments { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; align-items: start; }
+    .dept-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+    .dept-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; background: var(--soft); border-bottom: 1px solid var(--line); }
+    .dept-name { font-size: 15px; font-weight: 800; letter-spacing: -.005em; }
+    .floor-pill { flex: none; padding: 2px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--brand-text); font-size: 12px; font-weight: 700; }
+    .contact-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 18px; border-bottom: 1px solid var(--line); }
+    .contact-item:last-child { border-bottom: none; }
+    .contact-item:hover { background: color-mix(in srgb, var(--soft) 55%, transparent); }
+    .contact-item.hidden { display: none; }
+    .contact-name { font-weight: 500; font-size: 14.5px; overflow-wrap: anywhere; }
+    .contact-ext { flex: none; min-width: 52px; text-align: center; padding: 3px 10px; border-radius: 8px; background: var(--soft); color: var(--brand-text); font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+    .contact-ext.empty { color: var(--muted); font-weight: 500; }
 
-    .search-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #a0aec0;
-      font-size: 20px;
-    }
+    .no-results { text-align: center; padding: 56px 20px; background: var(--surface); border: 1px dashed var(--line); border-radius: 18px; color: var(--muted); display: none; }
+    .no-results b { display: block; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
 
-    body.dark-theme .search-icon {
-      color: #a0aec0;
-    }
+    /* ===== footer + tombol ke atas ===== */
+    footer.site { padding: 32px 0 56px; margin-top: 20px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+    .fab { position: fixed; right: 20px; bottom: 20px; width: 48px; height: 48px; border: none; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: var(--on-brand); font-size: 20px; font-weight: 700; box-shadow: 0 8px 20px rgba(47, 111, 115, .3); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; z-index: 30; }
+    .fab.show { opacity: 1; visibility: visible; }
 
-    .filter-section {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .filter-group {
-      flex: 1;
-      min-width: 250px;
-    }
-
-    .filter-label {
-      display: block;
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 12px;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    body.dark-theme .filter-label {
-      color: #e2e8f0;
-    }
-
-    .radio-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .radio-option {
-      position: relative;
-    }
-
-    .radio-option input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-    }
-
-    .radio-option label {
-      display: inline-block;
-      padding: 10px 20px;
-      background: #f7fafc;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 14px;
-      font-weight: 500;
-      color: #4a5568;
-    }
-
-    body.dark-theme .radio-option label {
-      background: #1a202c;
-      border-color: #4a5568;
-      color: #e2e8f0;
-    }
-
-    .radio-option input[type="radio"]:checked+label {
-      background: #6c757d;
-      border-color: #6c757d;
-      color: white;
-    }
-
-    .radio-option label:hover {
-      border-color: #6c757d;
-    }
-
-    .select-wrapper {
-      position: relative;
-    }
-
-    .select-wrapper select {
-      width: 100%;
-      padding: 12px 40px 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 15px;
-      background: white;
-      cursor: pointer;
-      appearance: none;
-      transition: all 0.3s;
-      color: #2d3748;
-    }
-
-    body.dark-theme .select-wrapper select {
-      background: #1a202c;
-      border-color: #4a5568;
-      color: #f7fafc;
-    }
-
-    .select-wrapper select:focus {
-      outline: none;
-      border-color: #6c757d;
-    }
-
-    .select-wrapper::after {
-      content: '▼';
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      color: #a0aec0;
-      font-size: 12px;
-    }
-
-    body.dark-theme .select-wrapper::after {
-      color: #a0aec0;
-    }
-
-    .departments {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
-
-    .dept-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    body.dark-theme .dept-card {
-      background: #2d3748;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .dept-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    body.dark-theme .dept-card:hover {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .dept-header {
-      background: #6c757d;
-      color: white;
-      padding: 16px 20px;
-      font-weight: 600;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .contact-list {
-      padding: 8px 0;
-    }
-
-    .contact-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      border-bottom: 1px solid #f7fafc;
-      transition: background 0.2s;
-    }
-
-    body.dark-theme .contact-item {
-      border-bottom-color: #4a5568;
-    }
-
-    .contact-item:hover {
-      background: #f7fafc;
-    }
-
-    body.dark-theme .contact-item:hover {
-      background: #4a5568;
-    }
-
-    .contact-item:last-child {
-      border-bottom: none;
-    }
-
-    .contact-item.hidden {
-      display: none;
-    }
-
-    .contact-name {
-      color: #2d3748;
-      font-weight: 500;
-    }
-
-    body.dark-theme .contact-name {
-      color: #f7fafc;
-    }
-
-    .contact-ext {
-      background: #e9ecef;
-      color: #495057;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    body.dark-theme .contact-ext {
-      background: #4a5568;
-      color: #e2e8f0;
-    }
-
-    .no-results {
-      text-align: center;
-      padding: 60px 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    }
-
-    body.dark-theme .no-results {
-      background: #2d3748;
-    }
-
-    .no-results-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-    }
-
-    .no-results-text {
-      color: #718096;
-      font-size: 18px;
-    }
-
-    body.dark-theme .no-results-text {
-      color: #a0aec0;
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.8em;
-      }
-
-      .header {
-        padding: 24px;
-      }
-
-      .departments {
-        grid-template-columns: 1fr;
-      }
-
-      .filter-section {
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .filter-group {
-        width: 100%;
-      }
-    }
-
-    /* Floating Action Button */
-    .fab {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #6c757d;
-      color: white;
-      border: none;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
-      z-index: 1000;
-    }
-
-    .fab.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .fab:hover {
-      background: #5a6268;
-      transform: translateY(-2px);
-    }
-
-    body.dark-theme .fab {
-      background: #4a5568;
-    }
-
-    body.dark-theme .fab:hover {
-      background: #2d3748;
+    @media (max-width: 720px) {
+      .filters { grid-template-columns: 1fr; }
+      .card { padding: 16px; }
+      .departments { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>📞 Daftar Ekstensi Telepon Wisma Korindo</h1>
+  <header class="site">
+    <div class="wrap nav">
+      <a class="logo" href="#top" aria-label="Ekstensi Korindo">
+        <i><svg viewBox="0 0 24 24" fill="none" stroke="#1b2b2b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" /></svg></i>
+        Ekstensi Korindo
+      </a>
+      <button class="theme-switch" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="Mode gelap" title="Mode gelap">
+        <span class="knob">
+          <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+          <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top" class="wrap">
+    <section class="hero">
+      <span class="badge">● Wisma Korindo</span>
+      <h1>Daftar ekstensi <em>telepon.</em></h1>
+      <p class="lead">Cari nama atau nomor ekstensi, atau saring menurut departemen dan lantai.</p>
       <p class="meta">
-        Update: 19 Agustus 2026
-        <em>💡 Untuk penambahan atau ubah nomor ext, hubungi 252 / 218</em>
+        <span>Update: <b>30 September 2026</b></span>
+        <span>Tambah atau ubah nomor ext: hubungi <b>252 / 218</b></span>
       </p>
-    </div>
+    </section>
 
-    <div class="controls">
+    <section class="card" id="controls">
       <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Cari nama atau ekstensi..." />
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
+        <input type="text" id="searchInput" placeholder="Cari nama atau ekstensi..." autocomplete="off" aria-label="Cari nama atau ekstensi">
+        <button class="search-clear" id="searchClear" type="button" aria-label="Hapus pencarian">×</button>
       </div>
 
-      <div class="filter-section">
-        <div class="filter-group">
-          <span class="filter-label">Filter Berdasarkan</span>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" id="filterDept" name="filterType" value="department" checked />
-              <label for="filterDept">Departemen</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" id="filterFloor" name="filterType" value="floor" />
-              <label for="filterFloor">Lantai</label>
-            </div>
+      <div class="filters">
+        <div>
+          <span class="filter-label">Filter berdasarkan</span>
+          <div class="seg" role="radiogroup" aria-label="Jenis filter">
+            <input type="radio" id="filterDept" name="filterType" value="department" checked>
+            <label for="filterDept">Departemen</label>
+            <input type="radio" id="filterFloor" name="filterType" value="floor">
+            <label for="filterFloor">Lantai</label>
           </div>
         </div>
-
-        <div class="filter-group">
-          <span class="filter-label">Pilih Filter</span>
-          <div class="select-wrapper">
-            <select id="deptFilter">
-              <option value="">Semua Departemen</option>
-            </select>
-          </div>
+        <div>
+          <label class="filter-label" for="deptFilter">Pilih filter</label>
+          <select id="deptFilter"></select>
         </div>
-
-        <!-- Dropdown Tema -->
-        <div class="filter-group">
-          <span class="filter-label">Tema</span>
-          <div class="select-wrapper">
-            <select id="themeSelect">
-              <option value="system">System</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </div>
-        </div>
-
       </div>
-    </div>
+    </section>
 
+    <div class="result-info" id="resultInfo" aria-live="polite"></div>
     <div class="departments" id="departmentsContainer"></div>
-    <div class="no-results" id="noResults" style="display: none;">
-      <div class="no-results-icon">🔍</div>
-      <div class="no-results-text">Tidak ada hasil yang ditemukan</div>
+    <div class="no-results" id="noResults">
+      <b>Tidak ada hasil yang ditemukan</b>
+      Coba kata kunci lain atau ubah filter.
     </div>
-  </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">© <span id="yr">2026</span> Wisma Korindo · Daftar ekstensi telepon internal</div>
+  </footer>
 
   <button id="scrollToTopBtn" class="fab" aria-label="Kembali ke atas">↑</button>
 
+  <script src="data.js"></script>
   <script>
-        const rawData = [
-      {
-        dept: "GENERAL TRADING (APP)",
-        floor: "3",
-        people: [
-          { name: "ANTON BUDIONO", ext: "361" },
-          { name: "ZAKIYA", ext: "992" },
-          { name: "AZZA / AGUNG / ZALFA", ext: "909" },
-          { name: "DIAH", ext: "461" },
-          { name: "RUMAH KAYU", ext: "362" }
-        ]
-      },
-      {
-        dept: "RUANG PERTEMUAN",
-        floor: "6",
-        people: [
-          { name: "AQILAH RADHWA", ext: "418" }
-        ]
-      },
-      {
-        dept: "LEGAL",
-        floor: "7",
-        people: [
-          { name: "JONATAN", ext: "227" },
-          { name: "MASRI", ext: "247" },
-          { name: "NITA", ext: "245" },
-          { name: "PANDU", ext: "248" },
-          { name: "RISTON", ext: "258" },
-          { name: "HAFIDZ", ext: "259" }
-        ]
-      },
-      {
-        dept: "PAPER",
-        floor: "8",
-        people: [
-          { name: "AMBAR", ext: "133" },
-          { name: "AJI", ext: "137" },
-          { name: "ETTA", ext: "962" },
-          { name: "DIANA / ARI", ext: "963" },
-          { name: "SAFA", ext: "148" },
-          { name: "LEO", ext: "125" },
-          { name: "RYAN", ext: "147" },
-          { name: "SARI", ext: "138" },
-          { name: "TINI", ext: "139" },
-          { name: "FERRY", ext: "906" },
-          { name: "DADDY", ext: "958" },
-          { name: "TISSY", ext: "146" },
-          { name: "ACEP", ext: "135" },
-          { name: "IRWAN", ext: "136" },
-          { name: "WINDA", ext: "149" },
-          { name: "NOVRAN", ext: "145" },
-          { name: "SUGENG", ext: "144" },
-          { name: "KHAERRA", ext: "141" }
-        ]
-      },
-      {
-        dept: "LOGISTICS",
-        floor: "8",
-        people: [
-          { name: "HENNY / OKKY", ext: "270" },
-          { name: "NANANG / FADLY", ext: "292" },
-          { name: "HUSEIN", ext: "299" },
-          { name: "AHMAD", ext: "296" },
-          { name: "DENNY", ext: "264" },
-          { name: "HARRY / SALEH", ext: "287" },
-          { name: "NEVY / HAPPY", ext: "297" },
-          { name: "CHRISTINE / DIANA", ext: "265" },
-          { name: "TIARA", ext: "274" },
-          { name: "SILVA", ext: "298" },
-          { name: "HERI", ext: "273" },
-          { name: "FACHRI / ALIMIN", ext: "293" },
-          { name: "IDRIS / BAYU", ext: "275" },
-          { name: "INDIRA", ext: "271" },
-          { name: "TAUFIK / IMAN", ext: "272" },
-          { name: "HENDRO / HALIMAH", ext: "289" },
-          { name: "OKTA", ext: "291" },
-          { name: "IKO", ext: "268" },
-          { name: "RUDI", ext: "277" },
-          { name: "RETNO / AGUS", ext: "269" },
-          { name: "AUFI", ext: "393" },
-          { name: "AYU", ext: "290" },
-          { name: "DANY / JHONA", ext: "284" },
-          { name: "DARA", ext: "420" },
-          { name: "PUTRI", ext: "419" },
-          { name: "NANDAR", ext: "282" }
-        ]
-      },
-      {
-        dept: "HEAVY INDUSTRY (KHI)",
-        floor: "9",
-        people: [
-          { name: "ROBBY", ext: "940" }
-        ]
-      },
-      {
-        dept: "HEAVY INDUSTRY (KK)",
-        floor: "9",
-        people: [
-          { name: "RIDHA", ext: "925" },
-          { name: "RIDHA / NELLY", ext: "925" },
-          { name: "SUHENDRA / JOKO", ext: "926" },
-          { name: "SARAS / INDAH", ext: "" },
-          { name: "ASTA / LIA / DITA", ext: "938" },
-          { name: "R. MEETING KK", ext: "957" },
-          { name: "KOSONG", ext: "935" },
-          { name: "JOHAN", ext: "435" }
-        ]
-      },
-      {
-        dept: "PROCUREMENT",
-        floor: "10",
-        people: [
-          { name: "AGUS / ANWAR", ext: "184" },
-          { name: "FEBY", ext: "172" },
-          { name: "RAHIMAH", ext: "179" },
-          { name: "IYE", ext: "169" },
-          { name: "CITRA", ext: "185" },
-          { name: "VITA", ext: "171" },
-          { name: "RIDHA", ext: "178" },
-          { name: "ANISA", ext: "191" },
-          { name: "ERIC", ext: "175" },
-          { name: "MAE", ext: "187" },
-          { name: "MADE", ext: "186" },
-          { name: "ENADARUS", ext: "176" },
-          { name: "ELA", ext: "177" },
-          { name: "YAMIN", ext: "192" },
-          { name: "RYAN", ext: "174" },
-          { name: "AGUNG", ext: "173" },
-          { name: "YOSHUA", ext: "182" },
-          { name: "IMAM", ext: "180" },
-          { name: "STIVE", ext: "183" },
-          { name: "TOMMY", ext: "170" },
-          { name: "YULI", ext: "167" },
-          { name: "NOVAN", ext: "190" },
-          { name: "KOSONG", ext: "166" },
-          { name: "NANA", ext: "188" },
-          { name: "GALIH", ext: "164" },
-          { name: "JUMIO", ext: "168" }
-        ]
-      },
-      {
-        dept: "GOVERMENT",
-        floor: "10",
-        people: [
-          { name: "ARI", ext: "223" },
-          { name: "REZA", ext: "224" }
-        ]
-      },
-      {
-        dept: "IMPORT",
-        floor: "10",
-        people: [
-          { name: "EHA / RAHMI", ext: "915" },
-          { name: "ANDHY", ext: "920" },
-          { name: "HADI / YANTO", ext: "923" },
-          { name: "ROSIANA", ext: "924" },
-          { name: "YOGA", ext: "918" },
-          { name: "IDHAM", ext: "916" },
-          { name: "KOSONG", ext: "922" },
-          { name: "DISCA / HENDRA", ext: "917" },
-          { name: "RUBY / ANITA / LIA", ext: "921" }
-        ]
-      },
-      {
-        dept: "STRATEGY & PLANNING",
-        floor: "11",
-        people: [
-          { name: "RERE", ext: "560" },
-          { name: "BONA / FELICIA", ext: "570" }
-        ]
-      },
-      {
-        dept: "FINANCE (KASIR)",
-        floor: "11",
-        people: [
-          { name: "FEBRY / NANA", ext: "509" },
-          { name: "DIANA / FEBBY", ext: "510" },
-          { name: "MAYA / IMELDA / NORA", ext: "511" },
-          { name: "CITRA / HENY / NOVIA", ext: "512" },
-          { name: "ANGGI", ext: "515" },
-          { name: "LEO / FAUZI", ext: "522" }
-        ]
-      },
-      {
-        dept: "FINANCE",
-        floor: "11",
-        people: [
-          { name: "OLIVIA", ext: "559" },
-          { name: "STEPHANIE", ext: "558" },
-          { name: "ANGEL", ext: "557" },
-          { name: "DORTA", ext: "586" },
-          { name: "MONIC", ext: "587" },
-          { name: "FELICIA", ext: "503" },
-          { name: "MERRY", ext: "552" },
-          { name: "MARLA", ext: "549" },
-          { name: "SHELA", ext: "524" },
-          { name: "NANDA", ext: "514" },
-          { name: "AUDINA", ext: "553" },
-          { name: "LUSIANA YESISCA", ext: "430" }
-        ]
-      },
-      {
-        dept: "ACCOUNTING",
-        floor: "11",
-        people: [
-          { name: "PUTRI GMM", ext: "545" },
-          { name: "JESSICA / PUTRI PAL", ext: "543" },
-          { name: "GRECYA / RETNO", ext: "546" },
-          { name: "IBNU / FACHTUR", ext: "542" },
-          { name: "GILBERT", ext: "544" },
-          { name: "DANIEL LEHMAN", ext: "547" },
-          { name: "DIANISA / RIZKY", ext: "590" },
-          { name: "VERA / SEPRILIA", ext: "517" },
-          { name: "ASIH", ext: "538" },
-          { name: "ELVIRA", ext: "589" },
-          { name: "CICILIA", ext: "550" },
-          { name: "SISCA", ext: "533" },
-          { name: "INTAN / NATASYA", ext: "432" },
-          { name: "YULLY", ext: "518" },
-          { name: "JEANE / NITIKAH", ext: "536" },
-          { name: "VANNY / STEFFI", ext: "519" },
-          { name: "MIKA", ext: "585" },
-          { name: "RISYAH", ext: "588" },
-          { name: "NOVITA / NAIDA", ext: "525" },
-          { name: "AUDY / DITA", ext: "564" },
-          { name: "NICKY / NOVA", ext: "581" },
-          { name: "MADE ADI / AMOS", ext: "566" },
-          { name: "RANIE / THE SISKA", ext: "551" },
-          { name: "NAYLA", ext: "532" },
-          { name: "ANISA / ERLIN", ext: "507" },
-          { name: "ADIT", ext: "513" },
-          { name: "SANTY / INDRA", ext: "523" },
-          { name: "SHIANNE", ext: "521" },
-          { name: "R. MEETING BESAR", ext: "548" },
-          { name: "R. MEETING SEDANG", ext: "508" },
-          { name: "R. MEETING KECIL", ext: "556" },
-          { name: "SABRINA / TALINE", ext: "568" },
-          { name: "DIKA", ext: "541" }
-        ]
-      },
-      {
-        dept: "INTERNAL AUDIT",
-        floor: "12",
-        people: [
-          { name: "PAK ANGGI", ext: "257" },
-          { name: "NURKHOLIS", ext: "255" }
-        ]
-      },
-      {
-        dept: "YAYASAN",
-        floor: "12",
-        people: [
-          { name: "DEVI", ext: "119" }
-        ]
-      },
-      {
-        dept: "PUBLIC RELATION (EVENT)",
-        floor: "12",
-        people: [
-          { name: "WIWI / FIRMAN", ext: "996" },
-          { name: "ELFA", ext: "999" },
-          { name: "FAUZI / JEFRI", ext: "998" }
-        ]
-      },
-      {
-        dept: "PUBLIC RELATION",
-        floor: "12",
-        people: [
-          { name: "RIZA", ext: "947" },
-          { name: "ARIAN / FADEL", ext: "943" },
-          { name: "MAJID / HENDRI / RIZKY", ext: "946" },
-          { name: "R. EDITOR PR", ext: "" },
-          { name: "VALERIE / ANDINI / REYNATA", ext: "948" },
-          { name: "RIKIN / IQBAL / DIDING / ARIEL", ext: "949" }
-        ]
-      },
-      {
-        dept: "KTH",
-        floor: "12",
-        people: [
-          { name: "RATNA", ext: "242" },
-          { name: "ILHAM", ext: "241" },
-          { name: "ANDES", ext: "239" },
-          { name: "AJI", ext: "234" }
-        ]
-      },
-      {
-        dept: "GA",
-        floor: "12",
-        people: [
-          { name: "DONI / BINA", ext: "209" },
-          { name: "DESI", ext: "210" },
-          { name: "ASTI", ext: "213" },
-          { name: "RIKA / BERLIN / FACHRI", ext: "250" },
-          { name: "DENI / NANDA", ext: "207" },
-          { name: "VICKY", ext: "252" },
-          { name: "REZA KHAIRUL", ext: "218" },
-          { name: "ROVIAH", ext: "208" },
-          { name: "RICHAS - CARPOOL ( CP 4 )", ext: "705" }
-        ]
-      },
-      {
-        dept: "HRD",
-        floor: "12",
-        people: [
-          { name: "ERDIAZ", ext: "254" },
-          { name: "AYU", ext: "212" },
-          { name: "ABDUL", ext: "231" },
-          { name: "AISYAH", ext: "215" },
-          { name: "BUDI", ext: "216" },
-          { name: "NALU", ext: "217" },
-          { name: "TIWI / RIFKY", ext: "251" }
-        ]
-      },
-      {
-        dept: "LIC",
-        floor: "12",
-        people: [
-          { name: "SETIYONO", ext: "205" },
-          { name: "NOVIADI", ext: "279" },
-          { name: "VENNA / FAUZAN / SANIA / INE / SYAFIRA", ext: "211" },
-          { name: "AINA / RENDY / FAIRUZ / DILA / JIMMY", ext: "214" },
-          { name: "HERY / YOGI / RYAN", ext: "240" }
-        ]
-      },
-      {
-        dept: "KPS",
-        floor: "13",
-        people: [
-          { name: "RIA", ext: "937" },
-          { name: "ADE CRANE", ext: "927" },
-          { name: "ADJIE", ext: "928" },
-          { name: "ALISSA", ext: "320" }
-        ]
-      },
-      {
-        dept: "ESG",
-        floor: "13",
-        people: [
-          { name: "SEPTA", ext: "349" },
-          { name: "WAHYU", ext: "353" },
-          { name: "ADHITYA", ext: "347" },
-          { name: "MAY", ext: "352" },
-          { name: "FINI", ext: "498" },
-          { name: "FARHAN", ext: "354" },
-          { name: "KASYA", ext: "348" }
-        ]
-      },
-      {
-        dept: "PALM OIL",
-        floor: "13",
-        people: [
-          { name: "PAK LUWI", ext: "329" },
-          { name: "DANNU", ext: "337" },
-          { name: "KOSONG", ext: "324" },
-          { name: "AJI", ext: "339" },
-          { name: "NISA", ext: "366" },
-          { name: "VINA", ext: "331" },
-          { name: "NAYA / ANDI", ext: "365" },
-          { name: "HERU", ext: "357" },
-          { name: "FIKRI", ext: "355" },
-          { name: "HANIF", ext: "351" },
-          { name: "IRVAN", ext: "322" },
-          { name: "IVAN", ext: "348" },
-          { name: "BAPAK SARAS", ext: "336" },
-          { name: "WAHYU AGUNG", ext: "321" },
-          { name: "CELYN", ext: "373" },
-          { name: "RANTI", ext: "372" },
-          { name: "STEPHANIE", ext: "369" }
-        ]
-      },
-      {
-        dept: "FOREST RESOURCES",
-        floor: "13",
-        people: [
-          { name: "SUHARIYONO", ext: "316" },
-          { name: "PATROL", ext: "389" },
-          { name: "ISOK WINARJANTO", ext: "333" },
-          { name: "MARGANA", ext: "341" },
-          { name: "MURTINI", ext: "342" },
-          { name: "DJOKO", ext: "306" },
-          { name: "LIM KIM YUN", ext: "308" },
-          { name: "MELINDA", ext: "312" },
-          { name: "MIRNA", ext: "315" },
-          { name: "MARIA", ext: "317" },
-          { name: "EMA / ALI", ext: "340" },
-          { name: "PUTRI", ext: "383" },
-          { name: "DIMA", ext: "319" }
-        ]
-      },
-      {
-        dept: "LT.14",
-        floor: "14",
-        people: [
-          { name: "UUT", ext: "109" },
-          { name: "NIA", ext: "110" }
-        ]
-      },
-      {
-        dept: "GENERAL TRADING (E-GY)",
-        floor: "15",
-        people: [
-          { name: "LILY", ext: "285" },
-          { name: "PAK KETUT", ext: "323" }
-        ]
-      },
-      {
-        dept: "GENERAL TRADING",
-        floor: "15",
-        people: [
-          { name: "DIMAS", ext: "995" },
-          { name: "RINI", ext: "318" },
-          { name: "LISA", ext: "913" },
-          { name: "DEVI", ext: "941" },
-          { name: "IMAS", ext: "910" },
-          { name: "KOSONG", ext: "386" },
-          { name: "PAIMAN CHEN", ext: "986" },
-          { name: "NOVEL", ext: "954" },
-          { name: "ALDI", ext: "929" },
-          { name: "RUSMAN", ext: "965" },
-          { name: "HAFIFAH", ext: "952" },
-          { name: "SUCI", ext: "969" },
-          { name: "FIKA", ext: "286" },
-          { name: "TIKA", ext: "919" },
-          { name: "SANTI", ext: "991" },
-          { name: "IQBAL", ext: "151" },
-          { name: "RIDWAN", ext: "959" },
-          { name: "DESI", ext: "966" },
-          { name: "AFI", ext: "960" },
-          { name: "INDAH", ext: "961" },
-          { name: "DICKY", ext: "967" },
-          { name: "IWAN", ext: "964" },
-          { name: "HE", ext: "" },
-          { name: "NICO", ext: "945" },
-          { name: "VINA", ext: "379" },
-          { name: "HANSENG", ext: "396" },
-          { name: "RIANA", ext: "398" },
-          { name: "FIKRI", ext: "397" },
-          { name: "SYIFA - BNS", ext: "378" },
-          { name: "AMALIA", ext: "364" },
-          { name: "WINDRA", ext: "" },
-          { name: "NOVIA", ext: "309" },
-          { name: "RISTI / NAOMI", ext: "310" },
-          { name: "PAUL", ext: "914" },
-          { name: "KEVIN", ext: "433" },
-          { name: "CATHERINE", ext: "434" },
-          { name: "RIZKY", ext: "936" },
-          { name: "ARIS", ext: "314" }
-        ]
-      },
-      {
-        dept: "IT",
-        floor: "15",
-        people: [
-          { name: "HERYANTO", ext: "555" },
-          { name: "EKO CIPTA / ROHMAN", ext: "584" },
-          { name: "BAGJA", ext: "582" },
-          { name: "ADRIE / BUDI", ext: "531" },
-          { name: "EKO PRASTYO", ext: "582" },
-          { name: "BENNY", ext: "574" },
-          { name: "FAUZI / ORVILE", ext: "593" },
-          { name: "DEDDY", ext: "583" },
-          { name: "RIVAN / PAULIN", ext: "556" },
-          { name: "VITA / INTAN", ext: "576" },
-          { name: "KOSONG", ext: "577" },
-          { name: "BASKORO / FERI", ext: "565" },
-          { name: "HERRY", ext: "578" },
-          { name: "SAMSUL / PATRICIA", ext: "577" },
-          { name: "NURHADI", ext: "592" },
-          { name: "ADITYO", ext: "565" },
-          { name: "SANTI", ext: "535" },
-          { name: "YULLIANA / HANIF / JHON", ext: "573" },
-          { name: "WIWI / GANI", ext: "591" },
-          { name: "TOMMY (MINSAN)", ext: "528" },
-          { name: "HESTI", ext: "598" },
-          { name: "KENDY / HENGKY", ext: "595" },
-          { name: "YOSEFINA", ext: "527" },
-          { name: "INDRA", ext: "575" },
-          { name: "FREDDY", ext: "572" },
-          { name: "MAYANG / HERI", ext: "526" },
-          { name: "RAMA", ext: "" },
-          { name: "AFFANDY", ext: "530" },
-          { name: "JUANDITO / LIE REUBENSTO", ext: "596" }
-        ]
-      },
-      {
-        dept: "SECURITY",
-        floor: "12",
-        people: [
-          { name: "RANDOM", ext: "232" }
-        ]
-      },
-      {
-        dept: "DONGBANG",
-        floor: "10",
-        people: [
-          { name: "ADYTIA / MONIC", ext: "228" },
-          { name: "ALPIAN / NANI", ext: "226" },
-          { name: "ZULFAHMI / AKBAR", ext: "230" },
-          { name: "AMEL", ext: "229" },
-          { name: "YUDAN", ext: "225" },
-          { name: "YURI / TIARA", ext: "" }
-        ]
-      },
-      {
-        dept: "BAS",
-        floor: "1",
-        people: [
-          { name: "TEAM RUANG BAS", ext: "704" },
-          { name: "EKO", ext: "706" }
-        ]
-      },
-      {
-        dept: "CAR CALL",
-        floor: "1",
-        people: [
-          { name: "FITRI", ext: "155" }
-        ]
-      },
-      {
-        dept: "LOKASI",
-        floor: "-",
-        people: [
-          { name: "KPS", ext: "0254 - 600882" }
-        ]
-      },
-      {
-        dept: "FAX",
-        floor: "-",
-        people: [
-          { name: "ACCOUNTING", ext: "797 - 5989" },
-          { name: "FINANCE", ext: "797 - 6407" },
-          { name: "LT. 14 ( PANTRY )", ext: "797 - 6406" }
-        ]
-      }
-    ]
+    const rawData = window.KORINDO_DATA;
+
     const container = document.getElementById('departmentsContainer');
     const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
     const deptFilter = document.getElementById('deptFilter');
     const noResults = document.getElementById('noResults');
+    const resultInfo = document.getElementById('resultInfo');
     const filterTypeRadios = document.querySelectorAll('input[name="filterType"]');
 
     function populateFilters() {
-      const filterType = document.querySelector('input[name="filterType"]:checked').value;
+      const type = document.querySelector('input[name="filterType"]:checked').value;
       deptFilter.innerHTML = '';
-
-      if (filterType === 'department') {
+      const add = (value, text) => {
         const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'Semua Departemen';
+        opt.value = value;
+        opt.textContent = text;
         deptFilter.appendChild(opt);
+      };
 
-        rawData.forEach(d => {
-          const opt = document.createElement('option');
-          opt.value = d.dept;
-          opt.textContent = d.dept;
-          deptFilter.appendChild(opt);
-        });
+      if (type === 'department') {
+        add('', 'Semua departemen');
+        rawData.forEach(d => add(d.dept, d.dept));
       } else {
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'Semua Lantai';
-        deptFilter.appendChild(opt);
-
-        const floors = [...new Set(rawData.map(d => d.floor))].sort();
-        floors.forEach(floor => {
-          if (floor && floor !== '-') {
-            const opt = document.createElement('option');
-            opt.value = floor;
-            opt.textContent = `Lantai ${floor}`;
-            deptFilter.appendChild(opt);
-          }
-        });
+        add('', 'Semua lantai');
+        [...new Set(rawData.map(d => d.floor))]
+          .filter(f => f && f !== '-')
+          .sort((a, b) => Number(a) - Number(b))
+          .forEach(f => add(f, 'Lantai ' + f));
       }
     }
 
-    function render(departments = rawData) {
+    function render() {
       container.innerHTML = '';
-      departments.forEach(dept => {
+      rawData.forEach(dept => {
         const card = document.createElement('div');
         card.className = 'dept-card';
-        card.innerHTML = `
-          <div class="dept-header">${dept.dept} ${dept.floor !== '-' ? '(Lt. ' + dept.floor + ')' : ''}</div>
-          <div class="contact-list"></div>
-        `;
-        const list = card.querySelector('.contact-list');
+
+        const header = document.createElement('div');
+        header.className = 'dept-header';
+        const name = document.createElement('span');
+        name.className = 'dept-name';
+        name.textContent = dept.dept;
+        header.appendChild(name);
+        if (dept.floor && dept.floor !== '-') {
+          const pill = document.createElement('span');
+          pill.className = 'floor-pill';
+          pill.textContent = 'Lt. ' + dept.floor;
+          header.appendChild(pill);
+        }
+        card.appendChild(header);
+
         dept.people.forEach(p => {
           const item = document.createElement('div');
           item.className = 'contact-item';
           item.dataset.name = p.name.toLowerCase();
-          item.dataset.ext = p.ext.toLowerCase();
+          item.dataset.ext = String(p.ext || '').toLowerCase();
           item.dataset.dept = dept.dept;
           item.dataset.floor = dept.floor;
-          item.innerHTML = `
-            <span class="contact-name">${p.name}</span>
-            <span class="contact-ext">${p.ext}</span>
-          `;
-          list.appendChild(item);
+
+          const n = document.createElement('span');
+          n.className = 'contact-name';
+          n.textContent = p.name;
+          const e = document.createElement('span');
+          e.className = 'contact-ext' + (p.ext ? '' : ' empty');
+          e.textContent = p.ext || '–';
+          item.append(n, e);
+          card.appendChild(item);
         });
         container.appendChild(card);
       });
@@ -1117,109 +275,63 @@
 
     function filter() {
       const term = searchInput.value.toLowerCase().trim();
-      const filterType = document.querySelector('input[name="filterType"]:checked').value;
-      const selectedFilter = deptFilter.value;
+      const type = document.querySelector('input[name="filterType"]:checked').value;
+      const selected = deptFilter.value;
+      searchClear.classList.toggle('show', searchInput.value.length > 0);
 
       let visibleCount = 0;
-
       document.querySelectorAll('.contact-item').forEach(item => {
-        const matchName = item.dataset.name.includes(term);
-        const matchExt = item.dataset.ext.includes(term);
-        const matchFilter = !selectedFilter ||
-          (filterType === 'department' ? item.dataset.dept === selectedFilter : item.dataset.floor === selectedFilter);
-
-        const isVisible = (matchName || matchExt) && matchFilter;
-        item.classList.toggle('hidden', !isVisible);
-        if (isVisible) visibleCount++;
+        const matchText = item.dataset.name.includes(term) || item.dataset.ext.includes(term);
+        const matchFilter = !selected || (type === 'department' ? item.dataset.dept === selected : item.dataset.floor === selected);
+        const visible = matchText && matchFilter;
+        item.classList.toggle('hidden', !visible);
+        if (visible) visibleCount++;
       });
 
+      let visibleCards = 0;
       document.querySelectorAll('.dept-card').forEach(card => {
-        const visible = card.querySelectorAll('.contact-item:not(.hidden)').length > 0;
-        card.style.display = visible ? 'block' : 'none';
+        const show = card.querySelectorAll('.contact-item:not(.hidden)').length > 0;
+        card.style.display = show ? '' : 'none';
+        if (show) visibleCards++;
       });
 
       container.style.display = visibleCount > 0 ? 'grid' : 'none';
       noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      resultInfo.textContent = visibleCount > 0
+        ? visibleCount.toLocaleString('id-ID') + ' kontak di ' + visibleCards + ' departemen'
+        : '';
     }
 
-    // --- Tema Switching ---
-    const themeSelect = document.getElementById('themeSelect');
-
-    function applyTheme(theme) {
-      if (theme === 'system') {
-        const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
-        document.body.className = systemPrefersDark ? 'dark-theme' : '';
-      } else {
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.className = theme === 'dark' ? 'dark-theme' : '';
-      }
+    // ---- Tema: status mengikuti mode browser; geser switch untuk mengganti sementara ----
+    const themeBtn = document.getElementById('themeBtn');
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    function setTheme(dark) {
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      themeBtn.setAttribute('aria-checked', String(dark));
     }
+    themeBtn.addEventListener('click', () => setTheme(themeBtn.getAttribute('aria-checked') !== 'true'));
+    mq.addEventListener('change', (e) => setTheme(e.matches));
+    setTheme(mq.matches);
 
-    // Load saved theme or default to 'system'
-    const savedTheme = localStorage.getItem('phonebook-theme') || 'system';
-    themeSelect.value = savedTheme;
-    applyTheme(savedTheme);
-
-    // Listen for changes
-    themeSelect.addEventListener('change', () => {
-      const selected = themeSelect.value;
-      localStorage.setItem('phonebook-theme', selected);
-      applyTheme(selected);
-    });
-
-    // Optional: update theme if system preference changes (when in 'system' mode)
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (themeSelect.value === 'system') {
-        applyTheme('system');
-      }
-    });
-
-    // Event listeners for filtering
+    // ---- Penyaringan ----
     searchInput.addEventListener('input', filter);
+    searchClear.addEventListener('click', () => { searchInput.value = ''; filter(); searchInput.focus(); });
     deptFilter.addEventListener('change', filter);
-    filterTypeRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        populateFilters();
-        filter();
-      });
-    });
+    filterTypeRadios.forEach(r => r.addEventListener('change', () => { populateFilters(); filter(); }));
 
     populateFilters();
     render();
+    filter();
+    document.getElementById('yr').textContent = new Date().getFullYear();
 
-    // --- Scroll-to-Top FAB ---
+    // ---- Tombol kembali ke atas ----
     const fab = document.getElementById('scrollToTopBtn');
-    const controls = document.querySelector('.controls');
-
+    const controls = document.getElementById('controls');
     function toggleFab() {
-      const controlsRect = controls.getBoundingClientRect();
-      const controlsHeight = controlsRect.height;
-      const scrollY = window.scrollY;
-
-      // Tampilkan FAB jika bagian atas .controls sudah tidak terlihat penuh
-      // (misalnya jika discroll lebih dari tinggi controls + margin)
-      const threshold = controlsHeight + 50; // sedikit buffer
-
-      if (scrollY > threshold) {
-        fab.classList.add('show');
-      } else {
-        fab.classList.remove('show');
-      }
+      fab.classList.toggle('show', window.scrollY > controls.offsetHeight + 250);
     }
-
-    function scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
-
-    // Event listeners
-    window.addEventListener('scroll', toggleFab);
-    fab.addEventListener('click', scrollToTop);
-
-    // Trigger once on load
+    window.addEventListener('scroll', toggleFab, { passive: true });
+    fab.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     toggleFab();
   </script>
 </body>
