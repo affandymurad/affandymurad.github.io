@@ -39,37 +39,8 @@
                 <i class="fas fa-bars"></i>
             </button>
             <div class="desktop-controls">
-                <div class="language-dropdown" id="language-dropdown">
-                    <button class="language-toggle" id="language-toggle">
-                        <span class="lang-text">EN</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="language-menu" id="language-menu">
-                        <button class="language-option active" data-lang="EN">English</button>
-                        <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
-                    </div>
-                </div>
-                <div class="theme-dropdown">
-                    <button class="theme-toggle" id="theme-toggle">
-                        <i class="fas fa-desktop"></i>
-                        <span>System</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="theme-menu" id="theme-menu">
-                        <button class="theme-option active" data-theme="system">
-                            <i class="fas fa-desktop"></i>
-                            <span>System</span>
-                        </button>
-                        <button class="theme-option" data-theme="light">
-                            <i class="fas fa-sun"></i>
-                            <span>Light</span>
-                        </button>
-                        <button class="theme-option" data-theme="dark">
-                            <i class="fas fa-moon"></i>
-                            <span>Dark</span>
-                        </button>
-                    </div>
-                </div>
+                <button class="lang-switch" type="button" id="theme-toggle" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode"><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
+                <button class="lang-switch" type="button" id="lang-switch" role="switch" aria-checked="false" aria-label="Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
             </div>
         </div>
     </header>
@@ -79,37 +50,8 @@
     <nav class="mobile-menu" id="mobile-menu">
         <!-- Language & Theme Controls di dalam menu -->
         <div class="mobile-controls-inner">
-            <div class="language-dropdown">
-                <button class="language-toggle" id="mobile-language-toggle">
-                    <span class="lang-text">EN</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="language-menu" id="mobile-language-menu">
-                    <button class="language-option active" data-lang="EN">English</button>
-                    <button class="language-option" data-lang="ID">Bahasa Indonesia</button>
-                </div>
-            </div>
-            <div class="theme-dropdown">
-                <button class="theme-toggle" id="mobile-theme-toggle">
-                    <i class="fas fa-desktop"></i>
-                    <span>System</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="theme-menu" id="mobile-theme-menu">
-                    <button class="theme-option active" data-theme="system">
-                        <i class="fas fa-desktop"></i>
-                        <span>System</span>
-                    </button>
-                    <button class="theme-option" data-theme="light">
-                        <i class="fas fa-sun"></i>
-                        <span>Light</span>
-                    </button>
-                    <button class="theme-option" data-theme="dark">
-                        <i class="fas fa-moon"></i>
-                        <span>Dark</span>
-                    </button>
-                </div>
-            </div>
+            <button class="lang-switch" type="button" id="mobile-theme-toggle" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode"><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
+            <button class="lang-switch" type="button" id="mobile-lang-switch" role="switch" aria-checked="false" aria-label="Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
         </div>
 
         <div class="menu-items" id="menu-items">
@@ -566,14 +508,7 @@
                 resumeLink.href = t.resumeUrl;
             }
 
-            document.querySelectorAll('.lang-text').forEach(el => el.textContent = lang);
-
-            document.querySelectorAll('.language-option').forEach(option => {
-                option.classList.remove('active');
-                if (option.getAttribute('data-lang') === lang) {
-                    option.classList.add('active');
-                }
-            });
+            document.querySelectorAll('#lang-switch, #mobile-lang-switch').forEach(btn => btn.setAttribute('aria-checked', String(lang === 'EN')));
         }
 
         function applyTheme(theme) {
@@ -605,57 +540,9 @@
             }
         }
 
-        function updateThemeUI(theme) {
-            const sets = [
-                { toggle: 'theme-toggle', menu: 'theme-menu' },
-                { toggle: 'mobile-theme-toggle', menu: 'mobile-theme-menu' }
-            ];
-
-            sets.forEach(({ toggle, menu }) => {
-                const themeToggle = document.getElementById(toggle);
-                const themeMenu = document.getElementById(menu);
-
-                if (themeToggle) {
-                    const icon = themeToggle.querySelector('i:first-child');
-                    const text = themeToggle.querySelector('span');
-
-                    if (theme === 'light') {
-                        icon.className = 'fas fa-sun';
-                        text.textContent = 'Light';
-                    } else if (theme === 'dark') {
-                        icon.className = 'fas fa-moon';
-                        text.textContent = 'Dark';
-                    } else {
-                        icon.className = 'fas fa-desktop';
-                        text.textContent = 'System';
-                    }
-                }
-
-                if (themeMenu) {
-                    themeMenu.querySelectorAll('.theme-option').forEach(option => {
-                        option.classList.remove('active');
-                        if (option.getAttribute('data-theme') === theme) {
-                            option.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }
-
-        function setupDropdown(toggleId, menuId) {
-            const toggle = document.getElementById(toggleId);
-            const menu = document.getElementById(menuId);
-            if (!toggle || !menu) return;
-
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                menu.classList.toggle('active');
-
-                // Close other menus
-                document.querySelectorAll('.language-menu, .theme-menu').forEach(m => {
-                    if (m !== menu) m.classList.remove('active');
-                });
-            });
+        function updateThemeUI() {
+            const dark = document.body.classList.contains('dark-mode');
+            ['theme-toggle', 'mobile-theme-toggle'].forEach(id => { const btn = document.getElementById(id); if (btn) btn.setAttribute('aria-checked', String(dark)); });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -669,31 +556,22 @@
             currentLang = storedLang;
             updatePageLanguage(currentLang);
 
-            // Setup dropdowns (desktop and mobile)
-            setupDropdown('language-toggle', 'language-menu');
-            setupDropdown('theme-toggle', 'theme-menu');
-            setupDropdown('mobile-language-toggle', 'mobile-language-menu');
-            setupDropdown('mobile-theme-toggle', 'mobile-theme-menu');
-
-            // Theme selection
-            document.querySelectorAll('.theme-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const theme = option.getAttribute('data-theme');
-                    localStorage.setItem('theme', theme);
-                    applyTheme(theme);
-                    updateThemeUI(theme);
-                    document.querySelectorAll('.theme-menu').forEach(m => m.classList.remove('active'));
+            // Dark mode: tombol bulan/matahari (desktop dan mobile)
+            ['theme-toggle', 'mobile-theme-toggle'].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => {
+                    const next = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    localStorage.setItem('theme', next);
+                    applyTheme(next);
+                    updateThemeUI();
                 });
             });
 
-            // Language selection
-            document.querySelectorAll('.language-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const lang = option.getAttribute('data-lang');
-                    currentLang = lang;
-                    localStorage.setItem('language', lang);
+            // Bahasa: switch geser ID | EN (desktop dan mobile)
+            document.querySelectorAll('#lang-switch, #mobile-lang-switch').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentLang = currentLang === 'EN' ? 'ID' : 'EN';
+                    localStorage.setItem('language', currentLang);
                     updatePageLanguage(currentLang);
-                    document.querySelectorAll('.language-menu').forEach(m => m.classList.remove('active'));
                 });
             });
 
@@ -733,16 +611,8 @@
 
             // Close all dropdowns when clicking outside
             document.addEventListener('click', (e) => {
-                const isLanguageClick = e.target.closest('.language-dropdown');
-                const isThemeClick = e.target.closest('.theme-dropdown');
                 const isMobileMenuClick = e.target.closest('.mobile-menu') || e.target.closest('#menu-toggle');
 
-                if (!isLanguageClick) {
-                    document.querySelectorAll('.language-menu').forEach(m => m.classList.remove('active'));
-                }
-                if (!isThemeClick) {
-                    document.querySelectorAll('.theme-menu').forEach(m => m.classList.remove('active'));
-                }
                 if (!isMobileMenuClick && mobileMenu) {
                     mobileMenu.style.display = 'none';
                     if (menuToggle) {
@@ -755,6 +625,7 @@
             window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
                 if (currentTheme === 'system') {
                     applyTheme('system');
+                    updateThemeUI();
                 }
             });
         });
