@@ -468,6 +468,18 @@
                         <img class="favicon-placeholder" alt="Wikimania">
                         <span class="label">Wikimania</span>
                     </div>
+                    <div class="wiki-button" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
+                        <img class="favicon-placeholder" alt="Abstract Wikipedia">
+                        <span class="label">Abstract Wikipedia</span>
+                    </div>
+                    <div class="wiki-button" data-domain="wikisource.org" title="Wikisource (multibahasa)">
+                        <img class="favicon-placeholder" alt="Wikisource (multibahasa)">
+                        <span class="label">Wikisource Multi</span>
+                    </div>
+                    <div class="wiki-button" data-domain="test.wikipedia.org" title="Test Wikipedia">
+                        <img class="favicon-placeholder" alt="Test Wikipedia">
+                        <span class="label">Test Wikipedia</span>
+                    </div>
                 </div>
 
                 <!-- Language Modal -->
@@ -1720,6 +1732,8 @@
             const badgeLabel = t.newBadge;
             font('bold', 7);
             const badgeW = doc.getTextWidth(badgeLabel) + 4.5;
+            // Penanda baris badge wiki: spasi lebar angka (ada di Roboto), atau spasi tak-putus untuk font bawaan (Latin-1)
+            const wikiBadgeMark = canvasFallback ? '\u2007' : '\u00A0';
 
             pdfLimit.users.forEach((group, groupIndex) => {
                 // Judul username + subtotal hanya pada urutan default (setelah diurutkan: satu tabel rata)
@@ -1744,8 +1758,9 @@
                     const row = [
                         article.no,
                         article.title + (article.label ? ` - ${article.label}` : '')
-                            + (tableState.isGlobal && article.wiki ? `\n${article.wiki}` : '')
-                            + (group.flat && tableState.multiUser ? `\n${article.username}` : ''),
+                            + (group.flat && tableState.multiUser ? `\n${article.username}` : '')
+                            // Baris kosong di akhir = tempat badge wiki (mode Global); badge digambar di didDrawCell
+                            + (tableState.isGlobal && article.wiki ? `\n${wikiBadgeMark}` : ''),
                         article.edits,
                         article.bytes.toLocaleString(),
                         `${dt.text} ${dt.tz}`,
@@ -1776,7 +1791,7 @@
                         6: isCommons ? { halign: 'right' } : {}
                     },
                     showHead: 'everyPage',
-                    rowPageBreak: 'auto',
+                    rowPageBreak: 'avoid', // jangan memecah satu baris di dua halaman (badge wiki dan badge Baru ada di sel itu)
                     // Sisakan ruang di kanan sel judul untuk badge "Baru/New"
                     didParseCell: function (data) {
                         if (data.section === 'body' && data.column.index === 1) {
@@ -1801,6 +1816,28 @@
                             if (article && article.url) {
                                 // Link yang bisa diklik di atas seluruh sel judul
                                 doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, { url: article.url });
+                            }
+
+                            // Badge nama wiki (mode Global) di baris terakhir sel, seperti chip di layar
+                            if (tableState.isGlobal && article && article.wiki) {
+                                const cellLines = data.cell.pdfLines || data.cell.text;
+                                if (cellLines.length && cellLines[cellLines.length - 1] === wikiBadgeMark) {
+                                    const lineMm = data.cell.styles.fontSize / doc.internal.scaleFactor * (data.cell.styles.lineHeight || 1.15);
+                                    const bh = 4.2;
+                                    font('bold', 6.8);
+                                    const wikiText = doc.splitTextToSize(article.wiki, data.cell.width - 9)[0];
+                                    const ww = doc.getTextWidth(wikiText) + 4.5;
+                                    const wx = data.cell.x + data.cell.padding('left');
+                                    const wy = data.cell.y + data.cell.padding('top') + (cellLines.length - 1) * lineMm + (lineMm - bh) / 2;
+                                    fill(C.soft);
+                                    doc.setDrawColor(C.line[0], C.line[1], C.line[2]);
+                                    doc.setLineWidth(0.2);
+                                    doc.roundedRect(wx, wy, ww, bh, bh / 2, bh / 2, 'FD');
+                                    text(C.brand);
+                                    doc.text(wikiText, wx + ww / 2, wy + 3, { align: 'center' });
+                                    font('normal', 8.5);
+                                    text(C.ink);
+                                }
                             }
 
                             // Badge hijau "Baru/New" di pojok kanan atas sel, seperti di layar
@@ -2256,7 +2293,10 @@
                 'wikifunctions.org': 'Wikifunctions',
                 'incubator.wikimedia.org': 'Wikimedia Incubator',
                 'wikitech.wikimedia.org': 'Wikitech',
-                'wikimania.wikimedia.org': 'Wikimania'
+                'wikimania.wikimedia.org': 'Wikimania',
+                'abstract.wikipedia.org': 'Abstract Wikipedia',
+                'test.wikipedia.org': 'Test Wikipedia',
+                'wikisource.org': 'Wikisource (Multi)'
             };
 
             if (specialProjects[url]) {
@@ -2350,9 +2390,11 @@
             if (isGlobalSelected()) setGlobalMode(false);
             document.getElementById('project').value = domain;
             // Sorot proyek yang dipilih
+            // Domain khusus (mis. abstract.wikipedia.org) tidak boleh ikut menyorot tombol "per bahasa" (Wikipedia)
+            const specials = new Set([...document.querySelectorAll('.wiki-button[data-domain]')].map(b => b.dataset.domain));
             document.querySelectorAll('.wiki-button').forEach(btn => {
                 const exact = btn.dataset.domain && btn.dataset.domain === domain;
-                const byBase = btn.dataset.domainBase && domain.endsWith('.' + btn.dataset.domainBase);
+                const byBase = btn.dataset.domainBase && !specials.has(domain) && domain.endsWith('.' + btn.dataset.domainBase);
                 btn.classList.toggle('selected', !!(exact || byBase));
             });
         }
