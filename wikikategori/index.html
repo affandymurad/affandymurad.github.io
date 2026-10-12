@@ -376,7 +376,7 @@
   <div class="mode-switch" id="modeSwitch">
     <button type="button" class="mode-btn active" data-mode="category" data-i18n="modeCategory">Cari Kategori</button>
     <button type="button" class="mode-btn" data-mode="article" data-i18n="modeArticle">Cari Artikel</button>
-    <button type="button" class="mode-btn" data-mode="user" data-i18n="modeUser">Cari Acara per Pengguna</button>
+    <button type="button" class="mode-btn" data-mode="user" data-i18n="modeUser">Cari Acara dan Detail Pengguna</button>
     <button type="button" class="mode-btn" data-mode="trending" data-i18n="modeTrending">Pageview</button>
     <button type="button" class="mode-btn" data-mode="contrib" data-i18n="modeContrib">Kontribusi Wikimedia</button>
   </div>
@@ -402,7 +402,7 @@
       <input type="text" id="userUsernameInput" autocomplete="off" data-i18n-placeholder="userUsernamePlaceholder" placeholder="Misal: Example">
     </div>
     <div>
-      <button type="submit" id="userSearchBtn" data-i18n="userSearchBtn">Cari Acara per Pengguna</button>
+      <button type="submit" id="userSearchBtn" data-i18n="userSearchBtn">Cari Acara dan Detail Pengguna</button>
     </div>
   </form>
 
@@ -896,7 +896,7 @@
       backHome: 'Kembali ke Affandy Murad',
       modeCategory: 'Cari Kategori',
       modeArticle: 'Cari Artikel',
-      modeUser: 'Cari Acara per Pengguna',
+      modeUser: 'Cari Acara dan Detail Pengguna',
       modeTrending: 'Pageview',
       langFieldLabel: 'Bahasa',
       catLabelCategory: 'Nama kategori',
@@ -911,10 +911,12 @@
       userUsernamePlaceholder: 'Misal: Example',
       projectLabel: 'URL Proyek Wikimedia',
       projectPlaceholder: 'id.wikipedia.org (Klik proyek wikimedia di bawah)',
-      userSearchBtn: 'Cari Acara per Pengguna',
+      userSearchBtn: 'Cari Acara dan Detail Pengguna',
       eventsOrganizerHeading: 'Acara sebagai Penyelenggara',
       eventsParticipantHeading: 'Acara sebagai Peserta',
       eventsNone: 'Tidak ada acara.',
+      eventsPrev: 'Halaman sebelumnya',
+      eventsNext: 'Halaman berikutnya',
       eventsLoading: 'Memuat acara …',
       eventsLoadingDetail: (done, total) => `Memuat detail acara (${done}/${total}) …`,
       eventsCount: (n) => `(${n})`,
@@ -1056,7 +1058,7 @@
       backHome: 'Back to Affandy Murad',
       modeCategory: 'Search Category',
       modeArticle: 'Search Article',
-      modeUser: 'Search Events by User',
+      modeUser: 'Search Events and User Details',
       modeTrending: 'Pageview',
       langFieldLabel: 'Language',
       catLabelCategory: 'Category name',
@@ -1071,10 +1073,12 @@
       userUsernamePlaceholder: 'e.g.: Example',
       projectLabel: 'Wikimedia Project URL',
       projectPlaceholder: 'id.wikipedia.org (Click a Wikimedia project below)',
-      userSearchBtn: 'Search Events by User',
+      userSearchBtn: 'Search Events and User Details',
       eventsOrganizerHeading: 'Events as Organizer',
       eventsParticipantHeading: 'Events as Participant',
       eventsNone: 'No events.',
+      eventsPrev: 'Previous page',
+      eventsNext: 'Next page',
       eventsLoading: 'Loading events …',
       eventsLoadingDetail: (done, total) => `Loading event details (${done}/${total}) …`,
       eventsCount: (n) => `(${n})`,
@@ -2478,7 +2482,9 @@
     return el;
   }
 
-  function renderEventList(container, countEl, items){
+  const EVENTS_PER_PAGE = 10;
+
+  function renderEventList(container, countEl, items, page = 1){
     container.innerHTML = '';
     countEl.textContent = t('eventsCount', items.length);
     if(!items.length){
@@ -2488,9 +2494,11 @@
       container.appendChild(p);
       return;
     }
+    const totalPages = Math.ceil(items.length / EVENTS_PER_PAGE);
+    page = Math.min(Math.max(page, 1), totalPages);
     const ul = document.createElement('ul');
     ul.className = 'event-list';
-    items.forEach(ev => {
+    items.slice((page - 1) * EVENTS_PER_PAGE, page * EVENTS_PER_PAGE).forEach(ev => {
       const li = document.createElement('li');
       li.className = 'event-item';
 
@@ -2541,6 +2549,38 @@
       ul.appendChild(li);
     });
     container.appendChild(ul);
+
+    if(totalPages > 1){
+      const nav = document.createElement('div');
+      nav.className = 'pagination';
+      const go = n => { renderEventList(container, countEl, items, n); container.scrollIntoView({ block: 'nearest' }); };
+      const btn = (label, n, opts = {}) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'page-btn' + (opts.active ? ' active' : '');
+        b.textContent = label;
+        if(opts.aria) b.setAttribute('aria-label', opts.aria);
+        if(opts.active) b.setAttribute('aria-current', 'page');
+        b.disabled = !!opts.disabled;
+        if(!opts.active && !opts.disabled) b.addEventListener('click', () => go(n));
+        nav.appendChild(b);
+      };
+      btn('‹', page - 1, { disabled: page === 1, aria: t('eventsPrev') });
+      // halaman pertama, terakhir, dan sekitar halaman aktif; sisanya diringkas "…"
+      let last = 0;
+      for(let n = 1; n <= totalPages; n++){
+        if(n !== 1 && n !== totalPages && Math.abs(n - page) > 1) continue;
+        if(n - last > 1){
+          const gap = document.createElement('span');
+          gap.textContent = '…';
+          nav.appendChild(gap);
+        }
+        btn(String(n), n, { active: n === page });
+        last = n;
+      }
+      btn('›', page + 1, { disabled: page === totalPages, aria: t('eventsNext') });
+      container.appendChild(nav);
+    }
   }
 
   async function loadEventKind(kind, globalId, container, countEl, runId){
