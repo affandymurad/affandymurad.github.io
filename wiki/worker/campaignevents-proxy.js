@@ -7,7 +7,7 @@
 // Pasang: wrangler deploy, lalu isi EVENTS_API_BASE di ../index.html dengan URL worker (tanpa garis miring akhir).
 
 const UPSTREAM = 'https://www.mediawiki.org/w/rest.php/campaignevents/v0';
-const USER_AGENT = 'wikikategori-campaignevents-proxy/1.0 (https://affandymurad.github.io/wikikategori/)';
+const USER_AGENT = 'wikikategori-campaignevents-proxy/1.0 (https://affandymurad.github.io/wiki/)';
 const ALLOWED_ORIGINS = ['https://affandymurad.github.io'];
 
 // Hanya endpoint baca yang dipakai Wikikategori
