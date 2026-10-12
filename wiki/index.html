@@ -521,6 +521,22 @@
           <img class="favicon-placeholder" alt="Wikimania">
           <span class="label">Wikimania</span>
         </div>
+        <div class="wiki-button" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
+          <img class="favicon-placeholder" alt="Abstract Wikipedia">
+          <span class="label">Abstract Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-domain="wikisource.org" title="Wikisource (multibahasa)">
+          <img class="favicon-placeholder" alt="Wikisource (multibahasa)">
+          <span class="label">Wikisource Multi</span>
+        </div>
+        <div class="wiki-button" data-domain="test.wikipedia.org" title="Test Wikipedia">
+          <img class="favicon-placeholder" alt="Test Wikipedia">
+          <span class="label">Test Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-project="wikimedia" data-needs-lang="true" data-domain-base="wikimedia.org" data-favicon="id.wikimedia.org" title="Wikimedia Chapter">
+          <img class="favicon-placeholder" alt="Wikimedia Chapter">
+          <span class="label">Chapter</span>
+        </div>
       </div>
     </div>
     <div>
@@ -616,6 +632,22 @@
         <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
           <img class="favicon-placeholder" alt="Wikimania">
           <span class="label">Wikimania</span>
+        </div>
+        <div class="wiki-button" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
+          <img class="favicon-placeholder" alt="Abstract Wikipedia">
+          <span class="label">Abstract Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-domain="wikisource.org" title="Wikisource (multibahasa)">
+          <img class="favicon-placeholder" alt="Wikisource (multibahasa)">
+          <span class="label">Wikisource Multi</span>
+        </div>
+        <div class="wiki-button" data-domain="test.wikipedia.org" title="Test Wikipedia">
+          <img class="favicon-placeholder" alt="Test Wikipedia">
+          <span class="label">Test Wikipedia</span>
+        </div>
+        <div class="wiki-button" data-project="wikimedia" data-needs-lang="true" data-domain-base="wikimedia.org" data-favicon="id.wikimedia.org" title="Wikimedia Chapter">
+          <img class="favicon-placeholder" alt="Wikimedia Chapter">
+          <span class="label">Chapter</span>
         </div>
       </div>
     </div>
@@ -2186,10 +2218,15 @@
       'wikifunctions.org': 'Wikifunctions',
       'incubator.wikimedia.org': 'Wikimedia Incubator',
       'wikitech.wikimedia.org': 'Wikitech',
-      'wikimania.wikimedia.org': 'Wikimania'
+      'wikimania.wikimedia.org': 'Wikimania',
+      'abstract.wikipedia.org': 'Abstract Wikipedia',
+      'test.wikipedia.org': 'Test Wikipedia',
+      'wikisource.org': 'Wikisource (Multi)'
     };
     if(specialProjects[url]) return specialProjects[url];
     const match = url.match(/^([a-z\-]+)\.(wikipedia|wiktionary|wikibooks|wikisource|wikiquote|wikinews|wikiversity|wikivoyage)\.org$/);
+    const chapter = url.match(/^([a-z\-]+)\.wikimedia\.org$/);
+    if(chapter) return `Wikimedia Chapter (${chapter[1].toUpperCase()})`;
     if(match){
       const [, lang, project] = match;
       const projectNames = {
@@ -2219,7 +2256,9 @@
       const img = button.querySelector('.favicon-placeholder');
       if(!img) return;
       let domainToUse;
-      if(button.dataset.domainBase){
+      if(button.dataset.favicon){
+        domainToUse = button.dataset.favicon;
+      } else if(button.dataset.domainBase){
         domainToUse = `en.${button.dataset.domainBase}`;
       } else if(button.dataset.domain){
         domainToUse = button.dataset.domain;
@@ -2227,7 +2266,7 @@
       if(domainToUse){
         img.src = getProjectFavicon(domainToUse);
         img.onerror = function(){
-          this.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Wikimedia-logo_black.svg/64px-Wikimedia-logo_black.svg.png';
+          this.src = 'https://upload.wikimedia.org/wikipedia/commons/8/81/Wikimedia-logo.svg';
           this.onerror = null;
         };
       }
@@ -2247,9 +2286,10 @@
   function markSelectedProject(input){
     const container = document.querySelector('.wiki-buttons-container[data-target="' + input.id + '"]');
     if(!container) return;
+    const specials = new Set([...container.querySelectorAll('.wiki-button[data-domain]')].map(b => b.dataset.domain));
     container.querySelectorAll('.wiki-button').forEach(btn => {
       const exact = btn.dataset.domain && btn.dataset.domain === input.value;
-      const byBase = btn.dataset.domainBase && input.value.endsWith('.' + btn.dataset.domainBase);
+      const byBase = btn.dataset.domainBase && !specials.has(input.value) && input.value.endsWith('.' + btn.dataset.domainBase);
       btn.classList.toggle('selected', !!(exact || byBase));
     });
   }
@@ -3067,7 +3107,10 @@
     'www.wikifunctions.org': 'Wikifunctions',
     'incubator.wikimedia.org': 'Incubator',
     'wikitech.wikimedia.org': 'Wikitech',
-    'wikimania.wikimedia.org': 'Wikimania'
+    'wikimania.wikimedia.org': 'Wikimania',
+    'abstract.wikipedia.org': 'Abstract Wikipedia',
+    'test.wikipedia.org': 'Test Wikipedia',
+    'wikisource.org': 'Wikisource (Multi)'
   };
   const YR_SISTER = ['wikipedia', 'wiktionary', 'wikibooks', 'wikisource', 'wikivoyage', 'wikinews', 'wikiquote', 'wikiversity'];
 
@@ -3075,6 +3118,7 @@
     const clean = domain.toLowerCase().trim();
     if(yrSpecialProjects[clean]) return yrSpecialProjects[clean];
     const code = clean.split('.')[0];
+    if(/^[a-z-]+\.wikimedia\.org$/.test(clean)) return `Wikimedia (${code})`;
     const sister = YR_SISTER.find(p => clean.includes(p));
     return sister ? `${sister.charAt(0).toUpperCase() + sister.slice(1)} (${code})` : domain;
   }
@@ -3108,9 +3152,10 @@
   // Sorot tombol proyek yang domainnya sudah ada di daftar
   function yrMarkSelected(){
     const list = yrParseDomains($yr('yrWikis').value).map(yrNormalize);
+    const specials = new Set([...document.querySelectorAll('#yrWikiButtons .wiki-button[data-domain]')].map(b => b.dataset.domain));
     document.querySelectorAll('#yrWikiButtons .wiki-button').forEach(btn => {
       const exact = btn.dataset.domain && list.includes(btn.dataset.domain);
-      const byBase = btn.dataset.domainBase && list.some(d => d.endsWith('.' + btn.dataset.domainBase));
+      const byBase = btn.dataset.domainBase && list.some(d => !specials.has(d) && d.endsWith('.' + btn.dataset.domainBase));
       btn.classList.toggle('selected', !!(exact || byBase));
     });
   }

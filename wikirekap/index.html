@@ -159,6 +159,10 @@
         .wiki-button img { width: 36px; height: 36px; object-fit: contain; }
         .wiki-button .label { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.2; font-weight: 500; }
         .wiki-button.selected .label { color: var(--brand-text); font-weight: 700; }
+        .global-hint { display: none; grid-column: 1 / -1; order: 2; font-size: 13px; color: var(--muted); }
+        .wiki-buttons-container.global-on .global-hint { display: block; }
+        .wiki-buttons-container.global-on .wiki-button:not(.wiki-global) { display: none; }
+        .wiki-tag { display: inline-block; margin-left: 6px; padding: 0 8px; border-radius: 999px; background: var(--soft); color: var(--brand-text); border: 1px solid var(--line); font-size: 11px; font-weight: 600; white-space: nowrap; vertical-align: middle; }
 
         /* periode */
         .date-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
@@ -373,7 +377,13 @@
                 <input type="text" id="project" data-i18n-placeholder="projectPlaceholder"
                     placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)" readonly>
 
-                <div class="wiki-buttons-container">
+                <div class="wiki-buttons-container" id="wikiButtons">
+                    <div class="global-hint" id="globalHint" data-i18n="globalHint">Mode Global: kontribusi dicari di semua proyek Wikimedia tempat akun punya suntingan. Klik Global lagi untuk memilih proyek tertentu.</div>
+                    <!-- Global: semua proyek sekaligus -->
+                    <div class="wiki-button wiki-global" data-global="true" title="Global">
+                        <img class="favicon-placeholder" alt="Global" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a6fd0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M2.5 12h19M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5z'/%3E%3C/svg%3E">
+                        <span class="label">Global</span>
+                    </div>
                     <!-- Projects with language codes -->
                     <div class="wiki-button" data-project="wikipedia" data-needs-lang="true"
                         data-domain-base="wikipedia.org" title="Wikipedia">
@@ -691,6 +701,9 @@
                 generatedFrom: 'Dibuat dari',
                 modalTitle: 'Pilih bahasa',
                 projectPlaceholder: 'id.wikipedia.org (Klik proyek wikimedia di bawah)',
+                globalValue: 'Global (semua proyek Wikimedia)',
+                globalHint: 'Mode Global: kontribusi dicari di semua proyek Wikimedia tempat akun punya suntingan. Klik Global lagi untuk memilih proyek tertentu.',
+                errorGlobalNone: 'Tidak ditemukan akun global yang punya suntingan untuk username tersebut.',
                 currentProject: 'Proyek Saat Ini',
                 wikiKategori: 'Wiki',
                 truncatedWarning: 'Baru {loaded} edit yang termuat (satu pemuatan maksimal {n} edit, atau dibatalkan). Masih ada data berikutnya yang belum dimuat. Ekspor PDF/JSON saat ini hanya berisi data yang sudah dimuat.',
@@ -713,7 +726,7 @@
                 formEyebrow: 'Mulai analisis',
                 formTitle: 'Empat langkah singkat',
                 formLead: 'Isi sesuai urutan. Semua pengaturan hanya dipakai di browser ini.',
-                projectInfo: 'Klik salah satu proyek di bawah. Untuk Wikipedia dan sejenisnya, kamu akan diminta memilih kode bahasa (mis. id, en).',
+                projectInfo: 'Klik salah satu proyek di bawah. Untuk Wikipedia dan sejenisnya, kamu akan diminta memilih kode bahasa (mis. id, en). Pilih Global untuk mencari di semua proyek sekaligus.',
                 filterInfo: 'Opsional. Biarkan kosong untuk menghitung semua kontribusi.',
                 preset7: '7 hari',
                 preset30: '30 hari',
@@ -826,6 +839,9 @@
                 generatedFrom: 'Generated from',
                 modalTitle: 'Select language',
                 projectPlaceholder: 'id.wikipedia.org (Click the wikimedia project below)',
+                globalValue: 'Global (all Wikimedia projects)',
+                globalHint: 'Global mode: contributions are searched on every Wikimedia project where the account has edits. Click Global again to pick a specific project.',
+                errorGlobalNone: 'No global account with edits was found for that username.',
                 currentProject: 'Current Project',
                 wikiKategori: 'Wiki',
                 truncatedWarning: 'Only {loaded} edits are loaded so far (a single load fetches at most {n} edits, or it was cancelled). More data has not been loaded yet. PDF/JSON export currently contains only the data loaded so far.',
@@ -848,7 +864,7 @@
                 formEyebrow: 'Start analysing',
                 formTitle: 'Four quick steps',
                 formLead: 'Fill them in order. Settings are only used in this browser.',
-                projectInfo: 'Click a project below. For Wikipedia and similar projects you will be asked for a language code (e.g. id, en).',
+                projectInfo: 'Click a project below. For Wikipedia and similar projects you will be asked for a language code (e.g. id, en). Choose Global to search every project at once.',
                 filterInfo: 'Optional. Leave empty to count every contribution.',
                 preset7: '7 days',
                 preset30: '30 days',
@@ -980,6 +996,7 @@
 
             document.getElementById('langBtn').setAttribute('aria-checked', String(currentLang === 'en'));
             document.documentElement.lang = currentLang;
+            if (isGlobalSelected()) document.getElementById('project').value = translations[currentLang].globalValue;
         }
 
         // Utility functions
@@ -1282,7 +1299,7 @@
         const MAX_CONTRIB_PAGES = 50; // 50 x 500 = 25.000 edit per pemuatan
         const CONTRIB_BATCH_LIMIT = MAX_CONTRIB_PAGES * 500;
 
-        // filters.mainNamespaceOnly -> ucnamespace (0|6|14 = artikel, berkas, kategori; tidak berlaku di Commons)
+        // filters.mainNamespaceOnly -> ucnamespace=0 (hanya ruang nama utama/artikel; tidak berlaku di Commons)
         // filters.newPagesOnly      -> ucshow=new
         // Keduanya difilter di API sehingga batas CONTRIB_BATCH_LIMIT tidak habis oleh data yang akan dibuang.
         async function fetchAllUserContribs(proj, ucUserParam, endISO, startISO, { onPage, startContinue = {}, filters = {}, signal } = {}) {
@@ -1307,7 +1324,7 @@
                     ucend: startISO,
                     ...continueParams
                 });
-                if (filters.mainNamespaceOnly && !isCommons) params.set('ucnamespace', '0|6|14');
+                if (filters.mainNamespaceOnly && !isCommons) params.set('ucnamespace', '0');
                 if (filters.newPagesOnly) params.set('ucshow', 'new');
 
                 let data;
@@ -1337,6 +1354,67 @@
             } while (page < maxPages);
 
             return { contribs: allContribs, next };
+        }
+
+        // ---- Mode Global: semua wiki tempat akun punya suntingan ----
+        // Daftar wiki dari globaluserinfo (meta=globaluserinfo&guiprop=merged), hanya yang editcount > 0.
+        async function findGlobalWikis(users, signal) {
+            const wikis = new Map();
+            let found = 0;
+            for (const u of users) {
+                const params = new URLSearchParams({
+                    origin: '*', action: 'query', format: 'json', meta: 'globaluserinfo', guiuser: u, guiprop: 'merged'
+                });
+                const data = await fetchJSON(`https://meta.wikimedia.org/w/api.php?${params.toString()}`, { signal });
+                const info = data.query?.globaluserinfo;
+                if (!info || 'missing' in info) continue;
+                found++;
+                (info.merged || []).filter(m => m.editcount > 0 && m.url).forEach(m => {
+                    const url = m.url.replace(/\/$/, '');
+                    if (!wikis.has(url)) wikis.set(url, { db: m.wiki, url, key: keyFrom(url), next: {} });
+                });
+            }
+            if (!found || !wikis.size) throw new Error(translations[currentLang].errorGlobalNone);
+            return [...wikis.values()];
+        }
+
+        // Satu putaran pengambilan kontribusi Global: fresh = mulai dari awal; selain itu lanjutkan wiki yang masih punya
+        // token continuation. Tiap wiki memakai batas yang sama dengan mode biasa. Maksimal 3 wiki sekaligus.
+        const GLOBAL_PARALLEL = 3;
+        async function fetchGlobalContribs(onPage, signal, fresh) {
+            const s = session;
+            if (fresh || !s.wikis) {
+                s.contribs = [];
+                s.wikis = await findGlobalWikis(s.users, signal);
+            }
+            const todo = s.wikis.filter(w => w.next);
+            let collected = 0, gotAny = false, abortErr = null, i = 0;
+
+            const worker = async () => {
+                while (i < todo.length && !abortErr) {
+                    const w = todo[i++];
+                    try {
+                        const r = await fetchAllUserContribs(w.url, s.users.join('|'), s.endISO, s.startISO, {
+                            onPage: (page, total) => onPage(page, collected + total),
+                            startContinue: w.next, filters: s.filters, signal
+                        });
+                        r.contribs.forEach(c => { c.wiki = w; });
+                        s.contribs = s.contribs.concat(r.contribs);
+                        collected += r.contribs.length;
+                        if (r.contribs.length) gotAny = true;
+                        w.next = r.next;
+                    } catch (e) {
+                        if (e.name === 'AbortError') { abortErr = e; return; }
+                        console.warn('Kontribusi Global gagal untuk', w.url, e);
+                        w.error = e.message;
+                        w.next = null; // satu wiki yang gagal tidak menggagalkan yang lain
+                    }
+                }
+            };
+            await Promise.all(Array.from({ length: Math.min(GLOBAL_PARALLEL, todo.length) }, worker));
+            const pending = s.wikis.filter(w => w.next).length;
+            s.next = pending ? pending : null;
+            if (abortErr && !gotAny) throw abortErr;
         }
 
         function isUpload(contrib) {
@@ -1380,7 +1458,85 @@
             okBg: [209, 231, 221], okInk: [25, 135, 84]
         };
 
-        function exportPDF() {
+        // Font PDF: Roboto (subset Latin, Latin Extended, Yunani, Sirilik, Vietnam) disajikan dari situs ini.
+        // Font bawaan jsPDF hanya mencakup Latin-1, sehingga judul bermakron seperti "Kōichi Satō" rusak.
+        const PDF_FONT_FILES = { normal: 'pdf-fonts/Roboto-Regular.ttf', bold: 'pdf-fonts/Roboto-Bold.ttf' };
+        // Titik kode yang ada di font (dihasilkan dari cmap berkas di atas); selain ini digambar lewat canvas
+        const PDF_GLYPH_RANGES = [[0x20,0x7E],[0xA0,0x2AF],[0x300,0x377],[0x37A,0x37F],[0x384,0x38A],[0x38C,0x38C],[0x38E,0x3A1],[0x3A3,0x3E1],[0x3F0,0x52F],[0x1E00,0x1F15],[0x1F18,0x1F1D],[0x1F20,0x1F45],[0x1F48,0x1F4D],[0x1F50,0x1F57],[0x1F59,0x1F59],[0x1F5B,0x1F5B],[0x1F5D,0x1F5D],[0x1F5F,0x1F7D],[0x1F80,0x1FB4],[0x1FB6,0x1FC4],[0x1FC6,0x1FD3],[0x1FD6,0x1FDB],[0x1FDD,0x1FEF],[0x1FF2,0x1FF4],[0x1FF6,0x1FFE],[0x2000,0x2027],[0x202F,0x205F],[0x20A0,0x20BE],[0x2100,0x2101],[0x2103,0x2103],[0x2105,0x2106],[0x2109,0x2109],[0x2113,0x2113],[0x2116,0x2117],[0x211E,0x2123],[0x2125,0x2126],[0x212A,0x212B],[0x212E,0x212E],[0x2132,0x2132],[0x213B,0x213B],[0x214D,0x214D],[0x214F,0x214F],[0x2191,0x2191],[0x2193,0x2193],[0x2202,0x2202],[0x2206,0x2206],[0x220F,0x220F],[0x2211,0x2212],[0x221A,0x221A],[0x221E,0x221E],[0x222B,0x222B],[0x2248,0x2248],[0x2260,0x2260],[0x2264,0x2265],[0x25CA,0x25CA]];
+        let pdfFontsPromise = null;
+
+        function pdfHasUnsupportedGlyph(str) {
+            for (const ch of String(str)) {
+                const cp = ch.codePointAt(0);
+                if (cp === 9 || cp === 10 || cp === 13) continue;
+                if (!PDF_GLYPH_RANGES.some(([a, b]) => cp >= a && cp <= b)) return true;
+            }
+            return false;
+        }
+
+        function arrayBufferToBase64(buf) {
+            const bytes = new Uint8Array(buf);
+            let bin = '';
+            for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+            return btoa(bin);
+        }
+
+        function loadPdfFonts() {
+            if (!pdfFontsPromise) {
+                pdfFontsPromise = Promise.all(Object.values(PDF_FONT_FILES).map(async url => {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Font ${url}: ${res.status}`);
+                    return arrayBufferToBase64(await res.arrayBuffer());
+                })).then(([normal, bold]) => ({ normal, bold }))
+                    .catch(e => { pdfFontsPromise = null; throw e; });
+            }
+            return pdfFontsPromise;
+        }
+
+        // Mengembalikan nama font yang dipakai: 'Roboto', atau 'helvetica' jika font gagal dimuat
+        async function registerPdfFonts(doc) {
+            try {
+                const f = await loadPdfFonts();
+                doc.addFileToVFS('Roboto-Regular.ttf', f.normal);
+                doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+                doc.addFileToVFS('Roboto-Bold.ttf', f.bold);
+                doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+                return 'Roboto';
+            } catch (e) {
+                console.warn('Font PDF gagal dimuat, memakai font bawaan:', e);
+                return 'helvetica';
+            }
+        }
+
+        // Aksara di luar font (mis. Jepang, Arab, Thailand) digambar ke canvas dengan font sistem lalu ditempel
+        // sebagai gambar di sel, supaya tidak rusak. Baris sudah dipecah oleh autoTable; di sini hanya digambar.
+        function drawCanvasCellText(doc, cell, lines) {
+            const k = doc.internal.scaleFactor;                         // titik per mm
+            const fontMm = cell.styles.fontSize / k;
+            const lineMm = fontMm * (cell.styles.lineHeight || 1.15);
+            const padL = cell.padding('left'), padT = cell.padding('top'), padR = cell.padding('right');
+            const wMm = cell.width - padL - padR;
+            const px = 8;                                               // piksel per mm
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(wMm * px));
+            canvas.height = Math.max(1, Math.round(lines.length * lineMm * px));
+            const ctx = canvas.getContext('2d');
+            const c = cell.styles.textColor;
+            ctx.fillStyle = Array.isArray(c) ? `rgb(${c[0]},${c[1]},${c[2]})` : '#0c1a36';
+            ctx.font = `${cell.styles.fontStyle === 'bold' ? '700 ' : '500 '}${fontMm * px}px "Segoe UI", "Noto Sans", "Noto Sans CJK JP", "Yu Gothic", "Hiragino Sans", "Malgun Gothic", "Microsoft YaHei", "Noto Sans Arabic", "Noto Sans Thai", sans-serif`;
+            ctx.textBaseline = 'middle';
+            lines.forEach((line, i) => {
+                const w = ctx.measureText(line).width;
+                ctx.save();
+                ctx.translate(0, (i + 0.5) * lineMm * px);
+                if (w > canvas.width) ctx.scale(canvas.width / w, 1);   // muat ke lebar sel
+                ctx.fillText(line, 0, 0);
+                ctx.restore();
+            });
+            doc.addImage(canvas.toDataURL('image/png'), 'PNG', cell.x + padL, cell.y + padT, wMm, lines.length * lineMm);
+        }
+
+        async function exportPDF() {
             if (!exportData.users || !exportData.users.length) {
                 alert(translations[currentLang].noDataToExport);
                 return;
@@ -1392,6 +1548,8 @@
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape' });
+            const pdfFont = await registerPdfFonts(doc);
+            const canvasFallback = pdfFont === 'Roboto'; // font bawaan tidak bisa dipasangkan dengan gambar per sel
             const pdfView = buildPdfView(); // daftar yang sama dengan di layar (urutan + pencarian)
             const pdfLimit = limitPdfUsers(pdfView.groups); // dibatasi PDF_MAX_ROWS baris
 
@@ -1406,7 +1564,7 @@
             const isCommons = isCommonsProject(exportData.project);
             const text = (rgb) => doc.setTextColor(rgb[0], rgb[1], rgb[2]);
             const fill = (rgb) => doc.setFillColor(rgb[0], rgb[1], rgb[2]);
-            const font = (style, size) => { doc.setFont(undefined, style); doc.setFontSize(size); };
+            const font = (style, size) => { doc.setFont(pdfFont, style); doc.setFontSize(size); };
             const ensureSpace = (needed) => {
                 if (yPos + needed > BOTTOM) {
                     doc.addPage();
@@ -1525,7 +1683,7 @@
             // gaya tabel bersama
             const tableStyle = {
                 theme: 'grid',
-                styles: { fontSize: 8.5, cellPadding: 2.6, overflow: 'linebreak', halign: 'left', textColor: C.ink, lineColor: C.line, lineWidth: 0.2 },
+                styles: { font: pdfFont, fontSize: 8.5, cellPadding: 2.6, overflow: 'linebreak', halign: 'left', textColor: C.ink, lineColor: C.line, lineWidth: 0.2 },
                 headStyles: { fillColor: C.brand, textColor: C.white, fontStyle: 'bold' },
                 alternateRowStyles: { fillColor: C.bg },
                 margin: { top: TOP_NEXT, left: M, right: M, bottom: 18 },
@@ -1586,6 +1744,7 @@
                     const row = [
                         article.no,
                         article.title + (article.label ? ` - ${article.label}` : '')
+                            + (tableState.isGlobal && article.wiki ? `\n${article.wiki}` : '')
                             + (group.flat && tableState.multiUser ? `\n${article.username}` : ''),
                         article.edits,
                         article.bytes.toLocaleString(),
@@ -1621,14 +1780,23 @@
                     // Sisakan ruang di kanan sel judul untuk badge "Baru/New"
                     didParseCell: function (data) {
                         if (data.section === 'body' && data.column.index === 1) {
+                            data.cell.pdfCanvas = canvasFallback && pdfHasUnsupportedGlyph(data.cell.raw);
                             const article = group.articles[data.row.index];
                             if (article && article.isNew) {
                                 data.cell.styles.cellPadding = { top: 2.6, right: badgeW + 4, bottom: 2.6, left: 2.6 };
                             }
                         }
                     },
+                    willDrawCell: function (data) {
+                        // Teks sel dengan aksara di luar font digambar manual pada didDrawCell
+                        if (data.section === 'body' && data.column.index === 1 && data.cell.pdfCanvas) {
+                            data.cell.pdfLines = data.cell.text.slice();
+                            data.cell.text = [];
+                        }
+                    },
                     didDrawCell: function (data) {
                         if (data.column.index === 1 && data.section === 'body') {
+                            if (data.cell.pdfLines) drawCanvasCellText(doc, data.cell, data.cell.pdfLines);
                             const article = group.articles[data.row.index];
                             if (article && article.url) {
                                 // Link yang bisa diklik di atas seluruh sel judul
@@ -1782,6 +1950,7 @@
             byTitle: new Map(), // judul -> baris (satu judul bisa dimiliki beberapa username)
             isCommons: false,
             isWikidata: false,
+            isGlobal: false,
             multiUser: false,
             userCount: 0,
             pageSize: loadPageSize(),
@@ -1884,7 +2053,7 @@
 
         function pageviewsCellHtml(a) {
             if (a.pageviews != null) return `<td>${a.pageviews.toLocaleString()}</td>`;
-            return pendingCellHtml(session?.pvErr.has(a.title));
+            return pendingCellHtml(session?.pvErr.has(a.pk));
         }
 
         // Sel "Penggunaan File": jumlah halaman + chip proyek teratas (tooltip berisi rincian lengkap)
@@ -1931,7 +2100,7 @@
                 const dt = fmtDateTime(a.lastEdited);
                 html.push(`<tr>
                     <td class="col-num">${(start + i + 1).toLocaleString()}</td>
-                    <td><a href="${a.url}" target="_blank">${escapeHtml(a.title)}</a>${a.label ? ` <span class="entity-label">${escapeHtml(a.label)}</span>` : ''}${a.isNew ? ` <span class="badge-new">${t.newBadge}</span>` : ''}${sorted && s.multiUser ? `<div class="entity-label">${escapeHtml(a.username)}</div>` : ''}</td>
+                    <td><a href="${a.url}" target="_blank">${escapeHtml(a.title)}</a>${a.wikiLabel ? ` <span class="wiki-tag">${escapeHtml(a.wikiLabel)}</span>` : ''}${a.label ? ` <span class="entity-label">${escapeHtml(a.label)}</span>` : ''}${a.isNew ? ` <span class="badge-new">${t.newBadge}</span>` : ''}${sorted && s.multiUser ? `<div class="entity-label">${escapeHtml(a.username)}</div>` : ''}</td>
                     <td>${a.edits}</td>
                     <td>${a.bytes.toLocaleString()}</td>
                     <td><a href="${a.diff}" target="_blank">${dt.text}</a> <span class="tz">${dt.tz}</span></td>
@@ -2072,6 +2241,7 @@
 
         function getWikiDisplayName(projectUrl) {
             const url = projectUrl.toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+            if (url === GLOBAL_PROJECT) return 'Global';
 
             // Special projects
             const specialProjects = {
@@ -2150,14 +2320,34 @@
                     const faviconUrl = getProjectFavicon(domainToUse);
                     img.src = faviconUrl;
                     img.onerror = function () {
-                        this.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Wikimedia-logo_black.svg/64px-Wikimedia-logo_black.svg.png';
+                        this.src = 'https://upload.wikimedia.org/wikipedia/commons/8/81/Wikimedia-logo.svg';
                         this.onerror = null;
                     };
                 }
             });
         }
 
+        const GLOBAL_PROJECT = 'global';
+        const isGlobalSelected = () => document.getElementById('project').dataset.global === '1';
+
+        // Mode Global: sembunyikan proyek lain; klik Global lagi untuk membatalkan
+        function setGlobalMode(on) {
+            const input = document.getElementById('project');
+            document.getElementById('wikiButtons').classList.toggle('global-on', on);
+            document.querySelectorAll('.wiki-button').forEach(btn => {
+                btn.classList.toggle('selected', on && !!btn.dataset.global);
+            });
+            if (on) {
+                input.dataset.global = '1';
+                input.value = translations[currentLang].globalValue;
+            } else {
+                delete input.dataset.global;
+                input.value = '';
+            }
+        }
+
         function updateProjectInput(domain) {
+            if (isGlobalSelected()) setGlobalMode(false);
             document.getElementById('project').value = domain;
             // Sorot proyek yang dipilih
             document.querySelectorAll('.wiki-button').forEach(btn => {
@@ -2173,6 +2363,10 @@
 
             document.querySelectorAll('.wiki-button').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    if (btn.dataset.global) {
+                        setGlobalMode(!isGlobalSelected());
+                        return;
+                    }
                     const needsLang = btn.dataset.needsLang === 'true';
                     const directDomain = btn.dataset.domain;
 
@@ -2460,7 +2654,7 @@
         // Menyalin nilai dari cache sesi ke objek baris (null = belum dimuat)
         function syncRow(row) {
             const s = session, ts = tableState;
-            row.pageviews = row.title in s.pvCache ? s.pvCache[row.title] : null;
+            row.pageviews = row.pk in s.pvCache ? s.pvCache[row.pk] : null;
             if (ts.isCommons) {
                 if (isCommonsFile(row.title)) {
                     const u = s.fuCache[row.title];
@@ -2477,7 +2671,7 @@
                 const id = wikidataEntityId(row.title);
                 row.label = id && (labelKey(id) in s.labelCache) ? s.labelCache[labelKey(id)] : '';
             }
-            row.haystack = [row.title, row.label, row.username, ...(row.fileUsageProjects || []).map(p => p.label)]
+            row.haystack = [row.title, row.label, row.wikiLabel, row.username, ...(row.fileUsageProjects || []).map(p => p.label)]
                 .filter(Boolean).join(' ').toLowerCase();
         }
 
@@ -2505,9 +2699,9 @@
             const seen = new Set();
             let n = 0;
             rows.forEach(r => {
-                if (seen.has(r.title)) return;
-                seen.add(r.title);
-                if (titlePending(r.title)) n++;
+                if (seen.has(r.pk)) return;
+                seen.add(r.pk);
+                if (titlePending(r.pk)) n++;
             });
             return n;
         }
@@ -2542,7 +2736,7 @@
 
         async function enrichRows(rows, { signal, onProgress } = {}) {
             const s = session;
-            const titles = [...new Set(rows.map(r => r.title))];
+            const titles = [...new Set(rows.map(r => r.pk))]; // kunci baris (pada mode biasa sama dengan judul)
             const lang = currentLang;
 
             const labelOwners = new Map(); // id entitas -> judul yang memakainya
@@ -2593,7 +2787,10 @@
                 // Pageviews: REST API, paralel dengan retry/backoff
                 await runPool(pvTodo, pvThrottle, async t => {
                     try {
-                        s.pvCache[t] = await fetchPageviews(t, s, signal);
+                        const meta = s.pkMeta[t]; // mode Global: judul asli + wiki asal baris
+                        s.pvCache[t] = meta
+                            ? await fetchPageviews(meta.title, { key: meta.key, pvPlan: s.pvPlan }, signal)
+                            : await fetchPageviews(t, s, signal);
                         s.pvErr.delete(t);
                     } catch (e) {
                         if (e.name === 'AbortError') throw e;
@@ -2616,7 +2813,7 @@
             pageCtl = null;
 
             const { slice } = pageSlice();
-            if (!slice.some(r => titlePending(r.title))) {
+            if (!slice.some(r => titlePending(r.pk))) {
                 statusEl.textContent = '';
                 return;
             }
@@ -2636,7 +2833,7 @@
         async function enrichAllTask(signal) {
             const progressContainer = document.getElementById('progressContainer');
             session.wantAll = true;
-            const pending = tableState.rows.filter(r => titlePending(r.title));
+            const pending = tableState.rows.filter(r => titlePending(r.pk));
             if (!pending.length) return;
 
             progressContainer.style.display = 'block';
@@ -2648,7 +2845,7 @@
         // Memuat data hanya untuk sebagian baris (mis. baris yang akan masuk PDF); dipakai lewat executeAnalysis
         function enrichRowsTask(rows) {
             return async signal => {
-                const pending = rows.filter(r => titlePending(r.title));
+                const pending = rows.filter(r => titlePending(r.pk));
                 if (!pending.length) return;
                 const progressContainer = document.getElementById('progressContainer');
                 progressContainer.style.display = 'block';
@@ -2723,14 +2920,18 @@
                 return;
             }
 
-            const proj = normalize(projectInput);
+            const isGlobal = isGlobalSelected();
+            const proj = isGlobal ? GLOBAL_PROJECT : normalize(projectInput);
             const start = new Date(`${dateFromVal}T00:00:00`);
             const end = new Date(`${dateToVal}T23:59:59.999`);
 
             session = {
                 users,
                 proj,
-                key: keyFrom(proj),
+                key: isGlobal ? GLOBAL_PROJECT : keyFrom(proj),
+                global: isGlobal,
+                wikis: null,        // mode Global: daftar wiki beserta token continuation masing-masing
+                pkMeta: {},         // mode Global: kunci baris -> { title, key wiki } untuk pengambilan pageviews
                 dateFromVal,
                 dateToVal,
                 startISO: start.toISOString(),
@@ -2753,6 +2954,7 @@
             };
 
             await executeAnalysis(async (onPage, signal) => {
+                if (session.global) { await fetchGlobalContribs(onPage, signal, true); return; }
                 const r = await fetchAllUserContribs(session.proj, session.users.join('|'),
                     session.endISO, session.startISO, { onPage, filters: session.filters, signal });
                 session.contribs = r.contribs;
@@ -2763,6 +2965,7 @@
         async function loadMore() {
             if (!session || !session.next) return;
             await executeAnalysis(async (onPage, signal) => {
+                if (session.global) { await fetchGlobalContribs(onPage, signal, false); return; }
                 const r = await fetchAllUserContribs(session.proj, session.users.join('|'),
                     session.endISO, session.startISO,
                     { onPage, startContinue: session.next, filters: session.filters, signal });
@@ -2779,6 +2982,10 @@
             await executeAnalysis(async (onPage, signal) => {
                 while (session.next) {
                     try {
+                        if (session.global) {
+                            await fetchGlobalContribs((page, total) => onPage(page, session.contribs.length - startLen + total), signal, false);
+                            continue;
+                        }
                         const r = await fetchAllUserContribs(session.proj, session.users.join('|'),
                             session.endISO, session.startISO, {
                                 onPage: (page, total) => onPage(page, session.contribs.length - startLen + total),
@@ -2869,15 +3076,21 @@
             const isWikidata = isWikidataProject(proj);
             const rowMap = new Map();
 
+            const isGlobal = !!session.global;
             for (const c of contribs) {
-                if (!shouldIncludeContrib(c, isCommons)) continue;
-                const k = `${c.user}\u0000${c.title}`;
+                const wk = c.wiki || { url: proj, key: keyFrom(proj) };
+                if (!shouldIncludeContrib(c, isCommonsProject(wk.url))) continue;
+                const k = `${c.user}\u0000${wk.key}\u0000${c.title}`;
                 let r = rowMap.get(k);
                 if (!r) {
                     r = {
                         username: c.user,
                         title: c.title,
-                        url: `${proj}/wiki/${encodeURIComponent(c.title)}`,
+                        proj: wk.url,
+                        // kunci cache/pageviews: pada mode Global judul yang sama di wiki berbeda adalah halaman berbeda
+                        pk: isGlobal ? `${wk.key}|${c.title}` : c.title,
+                        wikiLabel: isGlobal ? getWikiDisplayName(wk.url) : '',
+                        url: `${wk.url}/wiki/${encodeURIComponent(c.title)}`,
                         edits: 0,
                         bytes: 0,
                         lastEdited: c.timestamp,
@@ -2891,6 +3104,7 @@
                         haystack: ''
                     };
                     rowMap.set(k, r);
+                    if (isGlobal) session.pkMeta[r.pk] = { title: c.title, key: wk.key };
                 }
                 r.edits++;
                 if (c.new) r.isNew = true;
@@ -2907,18 +3121,19 @@
             const rows = [...rowMap.values()].sort((a, b) =>
                 rank(a.username) - rank(b.username)
                 || COLLATOR.compare(a.username, b.username)
+                || COLLATOR.compare(a.wikiLabel, b.wikiLabel)
                 || COLLATOR.compare(a.title, b.title));
 
             const groups = {};
             const byTitle = new Map();
             rows.forEach(r => {
                 r.ts = Date.parse(r.lastEdited) || 0;
-                r.diff = `${proj}/w/index.php?title=${encodeURIComponent(r.title)}&diff=prev&oldid=${r.revid}`;
+                r.diff = `${r.proj}/w/index.php?title=${encodeURIComponent(r.title)}&diff=prev&oldid=${r.revid}`;
                 const g = groups[r.username] || (groups[r.username] = { articles: 0, edits: 0, views: 0 });
                 g.articles++;
                 g.edits += r.edits;
-                if (!byTitle.has(r.title)) byTitle.set(r.title, []);
-                byTitle.get(r.title).push(r);
+                if (!byTitle.has(r.pk)) byTitle.set(r.pk, []);
+                byTitle.get(r.pk).push(r);
             });
 
             Object.assign(tableState, {
@@ -2927,6 +3142,7 @@
                 byTitle,
                 isCommons,
                 isWikidata,
+                isGlobal,
                 multiUser: Object.keys(groups).length > 1,
                 userCount: users.length
                 // sortCol, sortDir, query, dan page sengaja TIDAK direset: pilihan pengguna tetap berlaku
@@ -2957,6 +3173,7 @@
                 lastEdited: r.lastEdited,
                 isNew: r.isNew,
                 ...(ts.isWikidata ? { label: r.label || '' } : {}),
+                ...(ts.isGlobal ? { wiki: r.wikiLabel, wikiUrl: r.proj } : {}),
                 pageviews: r.pageviews,
                 ...(ts.isCommons ? {
                     fileUsage: r.fileUsage,
@@ -3074,7 +3291,7 @@
 
             refreshSummary();
             buildExportData();
-            if (kind === 'pdf') exportPDF();
+            if (kind === 'pdf') await exportPDF();
             else exportJSON();
         }
 
