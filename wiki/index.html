@@ -229,6 +229,16 @@
   .event-tag.ok{border-color:var(--ok);color:var(--ok);}
   .event-tag.warn{border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn);}
 
+  /* pemilih palet warna poster */
+  .palette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:10px;}
+  .palette-opt{display:flex;flex-direction:column;gap:8px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:600 13px inherit;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
+  .palette-opt:hover{border-color:var(--brand);}
+  .palette-opt[aria-checked="true"]{border-color:var(--brand);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 35%,transparent);}
+  .palette-opt:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+  .palette-swatch{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;height:44px;border-radius:9px;overflow:hidden;}
+  .palette-swatch i{display:block;}
+  .palette-swatch i:first-child{grid-row:1 / 3;}
+  .palette-swatch i:last-child{grid-column:2 / 4;}
   .report-actions{display:flex;justify-content:flex-end;margin-bottom:18px;}
 
   /* laporan PDF (hanya tampil saat dicetak) */
@@ -310,6 +320,7 @@
   /* Poster (diunduh sebagai gambar/video): desainnya tetap, hanya dibatasi ke #yrPreview */
   /* .yr-scope dipasang di poster DAN di pembungkus layer video, supaya salinan yang dipotret html2canvas tetap berstyle */
   .yr-scope{
+    --yr-h1:#FFE066;--yr-h2:#FFC940;--yr-s1:#4ECDC4;--yr-s2:#95E1D3;--yr-s3:#FFE5E5;--yr-img:#F5F5F5;--yr-ink:#1a1a1a;--yr-sub:rgba(0,0,0,.5);
     color:#202122;line-height:1.6;
     font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   }
@@ -319,18 +330,18 @@
   }
   .yr-scope .grid-container{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:100%;height:100%;gap:0;}
   .yr-scope .grid-item{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;}
-  .yr-scope .hero-box{grid-column:1 / 3;grid-row:1 / 2;background:linear-gradient(135deg,#FFE066,#FFC940);}
-  .yr-scope .hero-box h2{font-size:3em;color:#1a1a1a;margin:0 0 10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;line-height:1.6;}
-  .yr-scope .hero-box .year{font-size:2em;color:#1a1a1a;font-weight:600;}
-  .yr-scope .hero-box .username{font-size:1.5em;color:#1a1a1a;margin-top:10px;font-weight:500;}
-  .yr-scope .stat-box-1{grid-column:3 / 4;grid-row:1 / 2;background:#4ECDC4;}
-  .yr-scope .stat-box-2{grid-column:1 / 2;grid-row:2 / 3;background:#95E1D3;}
-  .yr-scope .image-box{grid-column:2 / 4;grid-row:2 / 4;background:#F5F5F5;padding:0;}
+  .yr-scope .hero-box{grid-column:1 / 3;grid-row:1 / 2;background:linear-gradient(135deg,var(--yr-h1),var(--yr-h2));}
+  .yr-scope .hero-box h2{font-size:3em;color:var(--yr-ink);margin:0 0 10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;line-height:1.6;}
+  .yr-scope .hero-box .year{font-size:2em;color:var(--yr-ink);font-weight:600;}
+  .yr-scope .hero-box .username{font-size:1.5em;color:var(--yr-ink);margin-top:10px;font-weight:500;}
+  .yr-scope .stat-box-1{grid-column:3 / 4;grid-row:1 / 2;background:var(--yr-s1);}
+  .yr-scope .stat-box-2{grid-column:1 / 2;grid-row:2 / 3;background:var(--yr-s2);}
+  .yr-scope .image-box{grid-column:2 / 4;grid-row:2 / 4;background:var(--yr-img);padding:0;}
   .yr-scope .image-box img.poster-img{width:100%;height:100%;object-fit:cover;}
-  .yr-scope .stat-box-3{grid-column:1 / 2;grid-row:3 / 4;background:#FFE5E5;}
-  .yr-scope .stat-value{font-size:4em;font-weight:900;margin-bottom:10px;color:#1a1a1a;line-height:1;}
-  .yr-scope .stat-label{font-size:1.2em;color:#1a1a1a;font-weight:600;text-transform:uppercase;letter-spacing:1px;}
-  .yr-scope .attribution{position:absolute;top:5px;left:10px;font-size:.8em;color:rgba(0,0,0,.5);text-align:left;line-height:1.5;max-width:44%;}
+  .yr-scope .stat-box-3{grid-column:1 / 2;grid-row:3 / 4;background:var(--yr-s3);}
+  .yr-scope .stat-value{font-size:4em;font-weight:900;margin-bottom:10px;color:var(--yr-ink);line-height:1;}
+  .yr-scope .stat-label{font-size:1.2em;color:var(--yr-ink);font-weight:600;text-transform:uppercase;letter-spacing:1px;}
+  .yr-scope .attribution{position:absolute;top:5px;left:10px;font-size:.8em;color:var(--yr-sub);text-align:left;line-height:1.5;max-width:44%;}
   .yr-scope .attribution a{color:inherit;}
   .yr-scope .projects-overlay{position:absolute;bottom:20px;left:20px;right:20px;background:rgba(255,255,255,.95);padding:15px;border-radius:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;max-height:200px;}
   .yr-scope .project-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eaecf0;color:#2d2d2d;font-size:13px;}
@@ -607,6 +618,12 @@
           <span class="label">Wikimania</span>
         </div>
       </div>
+    </div>
+
+    <div class="contrib-field">
+      <label id="yrPaletteLabel" data-i18n="contribPalette">Palet warna</label>
+      <p class="field-hint" data-i18n="contribPaletteHint">Pilih warna poster. Pratinjau langsung berubah.</p>
+      <div class="palette-grid" id="yrPalettes" role="radiogroup" aria-labelledby="yrPaletteLabel"></div>
     </div>
 
     <button type="button" class="btn-primary" id="yrGenerateBtn" data-i18n="contribGenerate">Buat pratinjau</button>
@@ -902,6 +919,9 @@
       contribWikisPlaceholder: 'id.wikipedia.org\nen.wikipedia.org\ncommons.wikimedia.org\nwww.wikidata.org',
       contribPickHint: 'Atau klik sebuah proyek di bawah untuk menambahkannya ke daftar.',
       contribGenerate: 'Buat pratinjau',
+      contribPalette: 'Palet warna',
+      contribPaletteHint: 'Pilih warna poster. Pratinjau langsung berubah.',
+      paletteNames: { cerah: 'Cerah', laut: 'Laut', sakura: 'Sakura', hutan: 'Hutan', senja: 'Senja', lavender: 'Lavender', wikipedia: 'Wikipedia', malam: 'Malam' },
       contribDownloadImage: 'Unduh sebagai gambar',
       contribDownloadVideo: 'Unduh sebagai video',
       contribDownloading: 'Mengunduh...',
@@ -1079,6 +1099,9 @@
       contribWikisPlaceholder: 'id.wikipedia.org\nen.wikipedia.org\ncommons.wikimedia.org\nwww.wikidata.org',
       contribPickHint: 'Or click a project below to add it to the list.',
       contribGenerate: 'Generate preview',
+      contribPalette: 'Color palette',
+      contribPaletteHint: 'Pick the poster colors. The preview updates instantly.',
+      paletteNames: { cerah: 'Sunny', laut: 'Ocean', sakura: 'Blossom', hutan: 'Forest', senja: 'Sunset', lavender: 'Lavender', wikipedia: 'Wikipedia', malam: 'Night' },
       contribDownloadImage: 'Download as image',
       contribDownloadVideo: 'Download as video',
       contribDownloading: 'Downloading...',
@@ -1296,6 +1319,7 @@
     });
 
     applyModeText();
+    renderPaletteLabels();
     modalTitleEl.textContent = t('modalTitleDefault');
     syncHeroTitle(currentMode);
     refreshContribDynamic();
@@ -3345,7 +3369,7 @@
       });
       const baseBox = baseClone.querySelector('.image-box');
       baseBox.innerHTML = '';
-      baseBox.style.background = '#F5F5F5';
+      baseBox.style.background = getComputedStyle(imageBox).backgroundColor;
       document.body.appendChild(baseClone);
       await yrNextFrame();
       const baseCanvas = await html2canvas(baseClone, { scale: 1, useCORS: true, backgroundColor: '#ffffff', logging: false });
@@ -3358,6 +3382,7 @@
       Object.assign(overlayWrap.style, {
         position: 'fixed', left: '-100000px', top: '0', width: boxRect.width + 'px', height: boxRect.height + 'px', background: 'transparent'
       });
+      yrApplyPaletteVars(overlayWrap, yrPalette);
       const overlayClone = imageBox.cloneNode(true);
       Object.assign(overlayClone.style, { position: 'relative', width: boxRect.width + 'px', height: boxRect.height + 'px', background: 'transparent' });
       const gifImg = overlayClone.querySelector('#yrPreviewImage');
@@ -3498,6 +3523,79 @@
   $yr('yrPreviewYear').textContent = $yr('yrYear').value; // poster sebelum pratinjau dibuat memakai tahun yang sama
 
   // Small default to demonstrate on load focus.
+  // ---- Palet warna poster Kontribusi Wikimedia ----
+  // h1/h2: gradasi kotak judul; s1/s2/s3: kotak statistik; img: latar kotak gambar; ink: warna teks; sub: warna atribusi
+  const YR_PALETTES = {
+    cerah:     { h1: '#FFE066', h2: '#FFC940', s1: '#4ECDC4', s2: '#95E1D3', s3: '#FFE5E5', img: '#F5F5F5', ink: '#1a1a1a', sub: 'rgba(0,0,0,.5)' },
+    laut:      { h1: '#ABDEE6', h2: '#8FCACA', s1: '#55CBCD', s2: '#A2E1DB', s3: '#ECEAE4', img: '#F3F7F7', ink: '#143033', sub: 'rgba(0,0,0,.5)' },
+    sakura:    { h1: '#FFCCB6', h2: '#F3B0C3', s1: '#FFAEA5', s2: '#FFDBBE', s3: '#FEE1E8', img: '#FBF3F1', ink: '#3a1f24', sub: 'rgba(0,0,0,.5)' },
+    hutan:     { h1: '#B6CFB6', h2: '#97C1A9', s1: '#CCE2CB', s2: '#C6DBDA', s3: '#F6EAC2', img: '#F4F6F1', ink: '#1f3326', sub: 'rgba(0,0,0,.5)' },
+    senja:     { h1: '#FF9A8B', h2: '#FFB26B', s1: '#FFC38F', s2: '#FFD9A8', s3: '#FFE9D6', img: '#FBF4EC', ink: '#3b1d12', sub: 'rgba(0,0,0,.5)' },
+    lavender:  { h1: '#CBAACB', h2: '#B3A6E0', s1: '#D8C2EA', s2: '#ECD5E3', s3: '#DDE6FA', img: '#F6F3F8', ink: '#2c2138', sub: 'rgba(0,0,0,.5)' },
+    wikipedia: { h1: '#A8C7FA', h2: '#7FA8F0', s1: '#6FA3F7', s2: '#C6DBF9', s3: '#E8F0FE', img: '#F3F6FB', ink: '#0f1f3d', sub: 'rgba(0,0,0,.5)' },
+    malam:     { h1: '#24304D', h2: '#3A4A7A', s1: '#46629E', s2: '#2D4670', s3: '#3C3560', img: '#1B202B', ink: '#F4F7FB', sub: 'rgba(255,255,255,.6)' }
+  };
+  const YR_PALETTE_KEY = 'wikiYrPalette';
+  let yrPalette = 'cerah';
+  try{ const saved = localStorage.getItem(YR_PALETTE_KEY); if(YR_PALETTES[saved]) yrPalette = saved; } catch(e){ /* penyimpanan tidak tersedia */ }
+
+  function yrApplyPaletteVars(el, key){
+    const pal = YR_PALETTES[key] || YR_PALETTES.cerah;
+    Object.keys(pal).forEach(k => el.style.setProperty('--yr-' + k, pal[k]));
+  }
+
+  function renderPaletteLabels(){
+    const names = t('paletteNames') || {};
+    document.querySelectorAll('#yrPalettes .palette-opt').forEach(btn => {
+      btn.querySelector('.palette-name').textContent = names[btn.dataset.pal] || btn.dataset.pal;
+    });
+  }
+
+  function selectPalette(key){
+    yrPalette = key;
+    try{ localStorage.setItem(YR_PALETTE_KEY, key); } catch(e){ /* abaikan */ }
+    yrApplyPaletteVars($yr('yrPreview'), key);
+    document.querySelectorAll('#yrPalettes .palette-opt').forEach(btn => {
+      const on = btn.dataset.pal === key;
+      btn.setAttribute('aria-checked', String(on));
+      btn.tabIndex = on ? 0 : -1;
+    });
+  }
+
+  (function initPalettes(){
+    const grid = $yr('yrPalettes');
+    Object.keys(YR_PALETTES).forEach(key => {
+      const pal = YR_PALETTES[key];
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'palette-opt';
+      btn.dataset.pal = key;
+      btn.setAttribute('role', 'radio');
+      const sw = document.createElement('span');
+      sw.className = 'palette-swatch';
+      [`linear-gradient(135deg,${pal.h1},${pal.h2})`, pal.s1, pal.s2, pal.s3].forEach(bg => {
+        const i = document.createElement('i');
+        i.style.background = bg;
+        sw.appendChild(i);
+      });
+      const nm = document.createElement('span');
+      nm.className = 'palette-name';
+      btn.append(sw, nm);
+      btn.addEventListener('click', () => selectPalette(key));
+      btn.addEventListener('keydown', e => {
+        const keys = Object.keys(YR_PALETTES);
+        const dir = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if(!dir) return;
+        e.preventDefault();
+        const next = keys[(keys.indexOf(yrPalette) + dir + keys.length) % keys.length];
+        selectPalette(next);
+        grid.querySelector(`[data-pal="${next}"]`).focus();
+      });
+      grid.appendChild(btn);
+    });
+    selectPalette(yrPalette);
+  })();
+
   applyUILanguage();
   document.getElementById('yr').textContent = new Date().getFullYear();
   catInput.focus();
