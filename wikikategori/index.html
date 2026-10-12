@@ -209,6 +209,20 @@
   .user-badge-warning{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line);}
   .user-badge-mini{background:color-mix(in srgb,currentColor 14%,transparent);padding:1px 7px;border-radius:999px;font-size:11px;}
 
+  /* daftar acara (CampaignEvents) */
+  .event-count{font-weight:600;color:var(--muted);letter-spacing:0;text-transform:none;}
+  .event-section .status{margin:0;}
+  ul.event-list{list-style:none;margin:0;padding:0;display:grid;gap:10px;}
+  .event-item{padding:14px 16px;background:var(--soft);border-radius:14px;}
+  .event-name{font-weight:700;font-size:15.5px;color:var(--brand-text);text-decoration:none;overflow-wrap:anywhere;}
+  a.event-name:hover{text-decoration:underline;}
+  .event-name.plain{color:var(--ink);}
+  .event-meta{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:13.5px;color:var(--muted);}
+  .event-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .event-tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);}
+  .event-tag.ok{border-color:var(--ok);color:var(--ok);}
+  .event-tag.warn{border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn);}
+
   /* tabel pageview */
   .table-container{overflow-x:auto;margin-top:16px;border:1px solid var(--line);border-radius:14px;}
   .trending-table{width:100%;border-collapse:collapse;font-size:14.5px;}
@@ -362,7 +376,7 @@
   <div class="mode-switch" id="modeSwitch">
     <button type="button" class="mode-btn active" data-mode="category" data-i18n="modeCategory">Cari Kategori</button>
     <button type="button" class="mode-btn" data-mode="article" data-i18n="modeArticle">Cari Artikel</button>
-    <button type="button" class="mode-btn" data-mode="user" data-i18n="modeUser">Cari Pengguna</button>
+    <button type="button" class="mode-btn" data-mode="user" data-i18n="modeUser">Cari Acara per Pengguna</button>
     <button type="button" class="mode-btn" data-mode="trending" data-i18n="modeTrending">Pageview</button>
     <button type="button" class="mode-btn" data-mode="contrib" data-i18n="modeContrib">Kontribusi Wikimedia</button>
   </div>
@@ -388,84 +402,7 @@
       <input type="text" id="userUsernameInput" autocomplete="off" data-i18n-placeholder="userUsernamePlaceholder" placeholder="Misal: Example">
     </div>
     <div>
-      <label for="userProjectInput" data-i18n="projectLabel">URL Proyek Wikimedia</label>
-      <input type="text" id="userProjectInput" readonly autocomplete="off" data-i18n-placeholder="projectPlaceholder"
-        placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)">
-
-      <div class="wiki-buttons-container" id="userWikiButtons" data-target="userProjectInput">
-        <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
-          <img class="favicon-placeholder" alt="Wikipedia">
-          <span class="label">Wikipedia</span>
-        </div>
-        <div class="wiki-button" data-project="wiktionary" data-needs-lang="true" data-domain-base="wiktionary.org" title="Wiktionary">
-          <img class="favicon-placeholder" alt="Wiktionary">
-          <span class="label">Wiktionary</span>
-        </div>
-        <div class="wiki-button" data-project="wikibooks" data-needs-lang="true" data-domain-base="wikibooks.org" title="Wikibooks">
-          <img class="favicon-placeholder" alt="Wikibooks">
-          <span class="label">Wikibooks</span>
-        </div>
-        <div class="wiki-button" data-project="wikisource" data-needs-lang="true" data-domain-base="wikisource.org" title="Wikisource">
-          <img class="favicon-placeholder" alt="Wikisource">
-          <span class="label">Wikisource</span>
-        </div>
-        <div class="wiki-button" data-project="wikiquote" data-needs-lang="true" data-domain-base="wikiquote.org" title="Wikiquote">
-          <img class="favicon-placeholder" alt="Wikiquote">
-          <span class="label">Wikiquote</span>
-        </div>
-        <div class="wiki-button" data-project="wikinews" data-needs-lang="true" data-domain-base="wikinews.org" title="Wikinews">
-          <img class="favicon-placeholder" alt="Wikinews">
-          <span class="label">Wikinews</span>
-        </div>
-        <div class="wiki-button" data-project="wikiversity" data-needs-lang="true" data-domain-base="wikiversity.org" title="Wikiversity">
-          <img class="favicon-placeholder" alt="Wikiversity">
-          <span class="label">Wikiversity</span>
-        </div>
-        <div class="wiki-button" data-project="wikivoyage" data-needs-lang="true" data-domain-base="wikivoyage.org" title="Wikivoyage">
-          <img class="favicon-placeholder" alt="Wikivoyage">
-          <span class="label">Wikivoyage</span>
-        </div>
-
-        <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
-          <img class="favicon-placeholder" alt="Wikispecies">
-          <span class="label">Wikispecies</span>
-        </div>
-        <div class="wiki-button" data-domain="commons.wikimedia.org" title="Commons">
-          <img class="favicon-placeholder" alt="Commons">
-          <span class="label">Commons</span>
-        </div>
-        <div class="wiki-button" data-domain="www.wikidata.org" title="Wikidata">
-          <img class="favicon-placeholder" alt="Wikidata">
-          <span class="label">Wikidata</span>
-        </div>
-        <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
-          <img class="favicon-placeholder" alt="Wikifunctions">
-          <span class="label">Wikifunctions</span>
-        </div>
-        <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
-          <img class="favicon-placeholder" alt="Incubator">
-          <span class="label">Incubator</span>
-        </div>
-        <div class="wiki-button" data-domain="meta.wikimedia.org" title="Meta-Wiki">
-          <img class="favicon-placeholder" alt="Meta">
-          <span class="label">Meta</span>
-        </div>
-        <div class="wiki-button" data-domain="www.mediawiki.org" title="MediaWiki">
-          <img class="favicon-placeholder" alt="MediaWiki">
-          <span class="label">MediaWiki</span>
-        </div>
-        <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
-          <img class="favicon-placeholder" alt="Wikitech">
-          <span class="label">Wikitech</span>
-        </div>
-        <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
-          <img class="favicon-placeholder" alt="Wikimania">
-          <span class="label">Wikimania</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <button type="submit" id="userSearchBtn" data-i18n="userSearchBtn">Cari Pengguna</button>
+      <button type="submit" id="userSearchBtn" data-i18n="userSearchBtn">Cari Acara per Pengguna</button>
     </div>
   </form>
 
@@ -798,6 +735,12 @@
       <div class="user-info-grid" id="userGlobalInfo"></div>
 
       <div id="userMergedWikis"></div>
+
+      <p class="user-subhead"><span data-i18n="eventsOrganizerHeading">Acara sebagai Penyelenggara</span> <span class="event-count" id="eventsOrganizerCount"></span></p>
+      <div id="eventsOrganizer" class="event-section"></div>
+
+      <p class="user-subhead"><span data-i18n="eventsParticipantHeading">Acara sebagai Peserta</span> <span class="event-count" id="eventsParticipantCount"></span></p>
+      <div id="eventsParticipant" class="event-section"></div>
     </div>
 
     <div id="trendingModeResults" style="display:none;">
@@ -850,7 +793,6 @@
   const userMergedWikisEl = document.getElementById('userMergedWikis');
   const userQueryForm = document.getElementById('userQueryForm');
   const userUsernameInput = document.getElementById('userUsernameInput');
-  const userProjectInput = document.getElementById('userProjectInput');
   const userSearchBtn = document.getElementById('userSearchBtn');
   const wikiLanguageModal = document.getElementById('wikiLanguageModal');
   const modalTitleEl = document.getElementById('modalTitle');
@@ -947,14 +889,14 @@
       contribVideoNoCodec: "iOS/Safari tidak mendukung perekaman video dari canvas. Silakan gunakan 'Unduh sebagai gambar' atau buka di Chrome/Firefox desktop.",
       contribVideoFail: (msg) => `Gagal membuat video: ${msg}. Coba gunakan 'Unduh sebagai gambar' sebagai alternatif.`,
       subtitleArticle: 'Cari sebuah artikel Wikipedia dan lihat di bahasa mana saja artikel itu tersedia, lengkap dengan tautan langsung ke tiap edisi. Padanan antarbahasa diambil dari Wikidata.',
-      subtitleUser: 'Lihat informasi akun seorang pengguna di proyek Wikimedia mana pun: jumlah edit, grup, status blokir, dan di wiki mana saja akun itu aktif.',
+      subtitleUser: 'Cari acara Wikimedia seorang pengguna, sebagai penyelenggara maupun peserta, lengkap dengan informasi akun globalnya.',
       subtitleTrending: 'Lihat artikel yang paling banyak dibaca di sebuah proyek Wikimedia, berdasarkan pageview pada hari terakhir yang datanya tersedia.',
       footerNote: 'Alat independen, bukan produk resmi Wikimedia Foundation.',
       subtitle: 'Telusuri artikel dalam satu kategori Wikipedia, atau cari di bahasa mana saja sebuah artikel tersedia. Keduanya memakai MediaWiki API dan Wikidata untuk menautkan padanan antarbahasa.',
       backHome: 'Kembali ke Affandy Murad',
       modeCategory: 'Cari Kategori',
       modeArticle: 'Cari Artikel',
-      modeUser: 'Cari Pengguna',
+      modeUser: 'Cari Acara per Pengguna',
       modeTrending: 'Pageview',
       langFieldLabel: 'Bahasa',
       catLabelCategory: 'Nama kategori',
@@ -969,7 +911,25 @@
       userUsernamePlaceholder: 'Misal: Example',
       projectLabel: 'URL Proyek Wikimedia',
       projectPlaceholder: 'id.wikipedia.org (Klik proyek wikimedia di bawah)',
-      userSearchBtn: 'Cari Pengguna',
+      userSearchBtn: 'Cari Acara per Pengguna',
+      eventsOrganizerHeading: 'Acara sebagai Penyelenggara',
+      eventsParticipantHeading: 'Acara sebagai Peserta',
+      eventsNone: 'Tidak ada acara.',
+      eventsLoading: 'Memuat acara …',
+      eventsLoadingDetail: (done, total) => `Memuat detail acara (${done}/${total}) …`,
+      eventsCount: (n) => `(${n})`,
+      eventsError: (msg) => `Gagal memuat acara: ${msg}`,
+      eventsNoProxy: 'Alamat proxy API CampaignEvents (EVENTS_API_BASE) belum diisi. API ini menolak permintaan lintas-origin dari browser.',
+      eventsRegOpen: 'Pendaftaran dibuka',
+      eventsRegClosed: 'Pendaftaran ditutup',
+      eventsDeleted: 'Dihapus',
+      eventsPageMissing: 'Halaman acara tidak ditemukan',
+      eventsOnline: 'Daring',
+      eventsInPerson: 'Tatap muka',
+      eventsRoleCreator: 'Pembuat',
+      eventsRoleOrganizer: 'Penyelenggara',
+      eventsOpenNewTab: 'Buka halaman acara di tab baru',
+      eventTypes: { 'training-seminar': 'Pelatihan/seminar', 'meetup': 'Pertemuan', 'workshop': 'Lokakarya', 'editing-event': 'Acara penyuntingan', 'contest': 'Kontes', 'media-upload-event': 'Acara unggah media', 'conference': 'Konferensi', 'other': 'Lainnya' },
       trendingSearchBtn: 'Cari Pageview',
       modalTitleDefault: 'Pilih bahasa',
       modalTitleFor: (project) => `Pilih bahasa untuk ${project}`,
@@ -1089,14 +1049,14 @@
       contribVideoNoCodec: "iOS/Safari doesn't support video recording from canvas. Please use 'Download as image' or open this page in desktop Chrome/Firefox.",
       contribVideoFail: (msg) => `Failed to create the video: ${msg}. Try 'Download as image' as an alternative.`,
       subtitleArticle: 'Look up a Wikipedia article and see every language it is available in, with a direct link to each edition. Interlanguage matches come from Wikidata.',
-      subtitleUser: 'See a user\'s account details on any Wikimedia project: edit count, groups, block status, and every wiki where the account is active.',
+      subtitleUser: 'Find a user\'s Wikimedia events, as organizer and as participant, along with their global account details.',
       subtitleTrending: 'See the most-read articles on a Wikimedia project, ranked by pageviews on the latest day with available data.',
       footerNote: 'Independent tool, not an official Wikimedia Foundation product.',
       subtitle: 'Browse articles within a single Wikipedia category, or find which languages an article is available in. Both use the MediaWiki API and Wikidata to link equivalent versions across languages.',
       backHome: 'Back to Affandy Murad',
       modeCategory: 'Search Category',
       modeArticle: 'Search Article',
-      modeUser: 'Search User',
+      modeUser: 'Search Events by User',
       modeTrending: 'Pageview',
       langFieldLabel: 'Language',
       catLabelCategory: 'Category name',
@@ -1111,7 +1071,25 @@
       userUsernamePlaceholder: 'e.g.: Example',
       projectLabel: 'Wikimedia Project URL',
       projectPlaceholder: 'id.wikipedia.org (Click a Wikimedia project below)',
-      userSearchBtn: 'Search User',
+      userSearchBtn: 'Search Events by User',
+      eventsOrganizerHeading: 'Events as Organizer',
+      eventsParticipantHeading: 'Events as Participant',
+      eventsNone: 'No events.',
+      eventsLoading: 'Loading events …',
+      eventsLoadingDetail: (done, total) => `Loading event details (${done}/${total}) …`,
+      eventsCount: (n) => `(${n})`,
+      eventsError: (msg) => `Failed to load events: ${msg}`,
+      eventsNoProxy: 'The CampaignEvents API proxy address (EVENTS_API_BASE) is not set. The API rejects cross-origin requests from browsers.',
+      eventsRegOpen: 'Registration open',
+      eventsRegClosed: 'Registration closed',
+      eventsDeleted: 'Deleted',
+      eventsPageMissing: 'Event page not found',
+      eventsOnline: 'Online',
+      eventsInPerson: 'In person',
+      eventsRoleCreator: 'Creator',
+      eventsRoleOrganizer: 'Organizer',
+      eventsOpenNewTab: 'Open event page in a new tab',
+      eventTypes: { 'training-seminar': 'Training/seminar', 'meetup': 'Meetup', 'workshop': 'Workshop', 'editing-event': 'Editing event', 'contest': 'Contest', 'media-upload-event': 'Media upload event', 'conference': 'Conference', 'other': 'Other' },
       trendingSearchBtn: 'Search Pageview',
       modalTitleDefault: 'Select language',
       modalTitleFor: (project) => `Select language for ${project}`,
@@ -2071,13 +2049,24 @@
 
   // ---- User-info tab (ported from wikirekap, trimmed to user info + connected wikis only) ----
 
-  async function fetchWikiUserInfo(user, proj){
-    const localUrl = `${proj}/w/api.php?action=query&list=users&ususers=${encodeURIComponent(user)}&usprop=editcount|registration|groups|blockinfo&format=json&origin=*`;
-    const globalUrl = `${proj}/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged|unattached&format=json&origin=*`;
-    const [localData, globalData] = await Promise.all([fetchJson(localUrl), fetchJson(globalUrl)]);
-    const userData = localData?.query?.users?.[0];
+  // Info akun global selalu dari mediawiki.org (pencarian global, tanpa memilih proyek);
+  // info lokal diambil dari wiki asal akun.
+  async function fetchWikiUserInfo(user){
+    const globalUrl = `https://www.mediawiki.org/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(user)}&guiprop=groups|rights|merged|unattached&format=json&origin=*`;
+    const globalData = await fetchJson(globalUrl);
     const globalInfo = globalData?.query?.globaluserinfo || null;
-    return { userData, globalInfo, wiki: proj.replace(/^https?:\/\//, '') };
+    if(!globalInfo || 'missing' in globalInfo) return { userData: null, globalInfo: null, wiki: 'mediawiki.org' };
+
+    const homeEntry = globalInfo.merged?.find(m => m.wiki === globalInfo.home);
+    let userData = null;
+    if(homeEntry){
+      try{
+        const localUrl = `${homeEntry.url}/w/api.php?action=query&list=users&ususers=${encodeURIComponent(globalInfo.name)}&usprop=editcount|registration|groups|blockinfo&format=json&origin=*`;
+        userData = (await fetchJson(localUrl))?.query?.users?.[0] || null;
+      } catch(e){ /* info lokal opsional */ }
+    }
+    if(!userData || 'missing' in userData) userData = { name: globalInfo.name, userid: homeEntry?.id, editcount: homeEntry?.editcount, registration: globalInfo.registration, groups: [] };
+    return { userData, globalInfo, wiki: homeEntry ? homeEntry.url.replace(/^https?:\/\//, '') : 'mediawiki.org' };
   }
 
   function getWikiClass(wiki){
@@ -2356,16 +2345,15 @@
     }
   }
 
-  async function runUserSearch(rawUsername, rawProject){
+  async function runUserSearch(rawUsername){
     resultsEl.style.display = 'none';
     editionsEl.style.display = 'none';
     setStatus(t('statusFetchingUser'));
     userSearchBtn.disabled = true;
     try{
-      const proj = rawProject.startsWith('http') ? rawProject.replace(/\/$/, '') : 'https://' + rawProject.replace(/\/$/, '');
-      const data = await fetchWikiUserInfo(rawUsername, proj);
-      if(!data.userData || 'missing' in data.userData){
-        throw new Error(t('errorUserNotFound', rawUsername, data.wiki));
+      const data = await fetchWikiUserInfo(rawUsername);
+      if(!data.userData || !data.globalInfo){
+        throw new Error(t('errorUserNotFound', rawUsername, 'Wikimedia'));
       }
 
       resultsEl.style.display = 'block';
@@ -2375,15 +2363,242 @@
       trendingModeResultsEl.style.display = 'none';
       limitNoteEl.style.display = 'none';
 
-      langLabelEl.textContent = getWikiDisplayName(data.wiki);
+      langLabelEl.textContent = data.globalInfo.name;
       renderUserInfoPanel(data);
       setStatus('');
+      loadUserEvents(data.globalInfo.id);
     } catch(err){
       resultsEl.style.display = 'none';
       setStatus(t('errorGeneric', err.message), true);
     } finally {
       userSearchBtn.disabled = false;
     }
+  }
+
+  // ---- Acara CampaignEvents (peserta & penyelenggara) ----
+  // API REST CampaignEvents menolak permintaan anonim lintas-origin dari browser (403 rest-cross-origin-anon-write),
+  // jadi dipanggil lewat proxy yang meneruskan ke https://www.mediawiki.org/w/rest.php/campaignevents/v0 (lihat worker/campaignevents-proxy.js).
+  const EVENTS_API_BASE = 'https://campaignevents-proxy.affandymurad.workers.dev';
+  const EVENTS_MAX_PARALLEL = 5;
+  let eventsRunId = 0;
+
+  let eventSlots = EVENTS_MAX_PARALLEL;
+  const eventWaiters = [];
+  async function withEventSlot(fn){
+    if(eventSlots <= 0) await new Promise(r => eventWaiters.push(r));
+    else eventSlots--;
+    try{ return await fn(); }
+    finally{
+      const next = eventWaiters.shift();
+      if(next) next(); else eventSlots++;
+    }
+  }
+
+  async function eventsApi(path){
+    if(!EVENTS_API_BASE) throw new Error(t('eventsNoProxy'));
+    return withEventSlot(async () => {
+      for(let attempt = 0; ; attempt++){
+        const res = await fetch(EVENTS_API_BASE.replace(/\/$/, '') + path, { headers: { Accept: 'application/json' } });
+        if(res.ok) return res.json();
+        if((res.status === 429 || res.status >= 500) && attempt < 3){
+          const retryAfter = Number(res.headers.get('Retry-After'));
+          const wait = (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 800 * 2 ** attempt);
+          await new Promise(r => setTimeout(r, Math.min(wait, 10000)));
+          continue;
+        }
+        throw new Error(t('errorRequestFailed', res.status));
+      }
+    });
+  }
+
+  // Kode wiki (idwiki, metawiki, ...) -> domain
+  const WIKI_SPECIAL_DOMAINS = {
+    metawiki: 'meta.wikimedia.org', commonswiki: 'commons.wikimedia.org', wikidatawiki: 'www.wikidata.org',
+    mediawikiwiki: 'www.mediawiki.org', specieswiki: 'species.wikimedia.org', incubatorwiki: 'incubator.wikimedia.org',
+    wikifunctionswiki: 'www.wikifunctions.org', foundationwiki: 'foundation.wikimedia.org', outreachwiki: 'outreach.wikimedia.org',
+    wikimaniawiki: 'wikimania.wikimedia.org', sourceswiki: 'wikisource.org', abstractwiki: 'abstract.wikipedia.org'
+  };
+  let sitematrixPromise = null;
+  async function resolveWikiDomain(code){
+    if(WIKI_SPECIAL_DOMAINS[code]) return WIKI_SPECIAL_DOMAINS[code];
+    const m = code.match(/^(.+?)(wiktionary|wikibooks|wikisource|wikiquote|wikinews|wikiversity|wikivoyage)$/);
+    if(m) return `${m[1].replace(/_/g, '-')}.${m[2]}.org`;
+    const w = code.match(/^(.+)wiki$/);
+    if(w) return `${w[1].replace(/_/g, '-')}.wikipedia.org`;
+    // kode lain: cari di sitematrix (belum diuji untuk semua kasus)
+    try{
+      sitematrixPromise = sitematrixPromise || fetchJson('https://meta.wikimedia.org/w/api.php?action=sitematrix&format=json&origin=*');
+      const sm = await sitematrixPromise;
+      for(const k of Object.keys(sm.sitematrix || {})){
+        const group = k === 'specials' ? sm.sitematrix[k] : sm.sitematrix[k]?.site;
+        const hit = (Array.isArray(group) ? group : []).find(x => x.dbname === code);
+        if(hit) return hit.url.replace(/^https?:\/\//, '');
+      }
+    } catch(e){ /* tidak terpetakan */ }
+    return null;
+  }
+
+  function eventPageUrl(domain, title){
+    const path = encodeURIComponent(title.replace(/ /g, '_')).replace(/%3A/gi, ':').replace(/%2F/gi, '/');
+    return `https://${domain}/wiki/${path}`;
+  }
+
+  // Verifikasi halaman acara ada, per domain, maksimal 50 judul per permintaan
+  async function findMissingPages(byDomain){
+    const missing = new Set();
+    await Promise.all(Object.entries(byDomain).map(async ([domain, titles]) => {
+      const unique = [...new Set(titles)];
+      for(let i = 0; i < unique.length; i += 50){
+        const chunk = unique.slice(i, i + 50);
+        try{
+          const data = await withEventSlot(() => fetchJson(`https://${domain}/w/api.php?action=query&titles=${encodeURIComponent(chunk.join('|'))}&format=json&origin=*`));
+          const norm = {};
+          (data?.query?.normalized || []).forEach(n => { norm[n.to] = n.from; });
+          Object.values(data?.query?.pages || {}).forEach(pg => {
+            if('missing' in pg) missing.add(domain + '|' + (norm[pg.title] || pg.title));
+          });
+        } catch(e){ /* anggap ada */ }
+      }
+    }));
+    return missing;
+  }
+
+  // start_time/end_time berformat YYYYMMDDHHMMSS; ditampilkan apa adanya sebagai waktu setempat pada timezone acara
+  function formatEventTime(str){
+    const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/.exec(str || '');
+    if(!m) return '';
+    const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]));
+    return d.toLocaleString(uiLang === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' });
+  }
+
+  function eventTag(text, cls){
+    const el = document.createElement('span');
+    el.className = 'event-tag' + (cls ? ' ' + cls : '');
+    el.textContent = text;
+    return el;
+  }
+
+  function renderEventList(container, countEl, items){
+    container.innerHTML = '';
+    countEl.textContent = t('eventsCount', items.length);
+    if(!items.length){
+      const p = document.createElement('p');
+      p.className = 'status';
+      p.textContent = t('eventsNone');
+      container.appendChild(p);
+      return;
+    }
+    const ul = document.createElement('ul');
+    ul.className = 'event-list';
+    items.forEach(ev => {
+      const li = document.createElement('li');
+      li.className = 'event-item';
+
+      const name = ev.url ? document.createElement('a') : document.createElement('span');
+      name.className = 'event-name' + (ev.url ? '' : ' plain');
+      name.textContent = ev.name;
+      if(ev.url){
+        name.href = ev.url;
+        name.target = '_blank';
+        name.rel = 'noopener noreferrer';
+        name.title = t('eventsOpenNewTab');
+      }
+      li.appendChild(name);
+
+      const d = ev.detail;
+      const meta = document.createElement('div');
+      meta.className = 'event-meta';
+      if(d){
+        const start = formatEventTime(d.start_time);
+        const end = formatEventTime(d.end_time);
+        if(start){
+          const when = document.createElement('span');
+          when.textContent = (end && end !== start ? `${start} – ${end}` : start) + (d.timezone ? ` (${d.timezone})` : '');
+          meta.appendChild(when);
+        }
+        const place = [];
+        if(d.online_meeting) place.push(t('eventsOnline'));
+        if(d.inperson_meeting) place.push(t('eventsInPerson') + (d.meeting_country_code ? ` (${d.meeting_country_code})` : ''));
+        if(place.length){
+          const pl = document.createElement('span');
+          pl.textContent = place.join(' · ');
+          meta.appendChild(pl);
+        }
+      }
+      if(meta.childNodes.length) li.appendChild(meta);
+
+      const tags = document.createElement('div');
+      tags.className = 'event-tags';
+      if(ev.deleted) tags.appendChild(eventTag(t('eventsDeleted'), 'warn'));
+      if(ev.roles) ev.roles.forEach(r => tags.appendChild(eventTag(r === 'creator' ? t('eventsRoleCreator') : t('eventsRoleOrganizer'))));
+      if(d){
+        tags.appendChild(eventTag(d.status === 'open' ? t('eventsRegOpen') : t('eventsRegClosed'), d.status === 'open' ? 'ok' : ''));
+        (d.types || []).forEach(ty => tags.appendChild(eventTag(t('eventTypes')[ty] || ty)));
+      }
+      if(ev.pageMissing) tags.appendChild(eventTag(t('eventsPageMissing'), 'warn'));
+      if(tags.childNodes.length) li.appendChild(tags);
+
+      ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  }
+
+  async function loadEventKind(kind, globalId, container, countEl, runId){
+    const setMsg = (text, isError) => {
+      container.innerHTML = '';
+      const p = document.createElement('p');
+      p.className = 'status' + (isError ? ' error' : '');
+      p.textContent = text;
+      container.appendChild(p);
+    };
+    countEl.textContent = '';
+    setMsg(t('eventsLoading'));
+    try{
+      const list = await eventsApi(`/${kind}/${globalId}/event_registrations`);
+      if(runId !== eventsRunId) return;
+      const events = (Array.isArray(list) ? list : []).map(e => ({ id: e.event_id, name: e.event_name, deleted: !!e.event_deleted }));
+
+      let done = 0;
+      const live = events.filter(e => !e.deleted);
+      const tick = () => { if(runId === eventsRunId && live.length) setMsg(t('eventsLoadingDetail', done, live.length)); };
+      tick();
+      await Promise.all(live.map(async ev => {
+        try{
+          ev.detail = await eventsApi(`/event_registration/${ev.id}`);
+          if(kind === 'organizer'){
+            const orgs = await eventsApi(`/event_registration/${ev.id}/organizers`);
+            ev.roles = (orgs.find(o => o.user_id === globalId) || {}).roles || [];
+          }
+        } catch(e){ /* tetap tampil sebagai nama saja */ }
+        done++; tick();
+      }));
+      if(runId !== eventsRunId) return;
+
+      // tautan halaman acara + verifikasi keberadaannya
+      const byDomain = {};
+      await Promise.all(live.filter(e => e.detail && e.detail.event_page).map(async ev => {
+        ev.domain = await resolveWikiDomain(ev.detail.event_page_wiki);
+        if(ev.domain) (byDomain[ev.domain] = byDomain[ev.domain] || []).push(ev.detail.event_page);
+      }));
+      const missing = await findMissingPages(byDomain);
+      if(runId !== eventsRunId) return;
+      live.forEach(ev => {
+        if(!ev.domain) return;
+        if(missing.has(ev.domain + '|' + ev.detail.event_page)) ev.pageMissing = true;
+        else ev.url = eventPageUrl(ev.domain, ev.detail.event_page);
+      });
+
+      events.sort((a, b) => (b.detail?.start_time || '').localeCompare(a.detail?.start_time || ''));
+      renderEventList(container, countEl, events);
+    } catch(err){
+      if(runId === eventsRunId) setMsg(t('eventsError', err.message), true);
+    }
+  }
+
+  function loadUserEvents(globalId){
+    const runId = ++eventsRunId;
+    loadEventKind('organizer', globalId, document.getElementById('eventsOrganizer'), document.getElementById('eventsOrganizerCount'), runId);
+    loadEventKind('participant', globalId, document.getElementById('eventsParticipant'), document.getElementById('eventsParticipantCount'), runId);
   }
 
   // Tries progressively earlier dates until the pageviews API returns data
@@ -2527,16 +2742,11 @@
   userQueryForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const username = userUsernameInput.value.trim();
-    const project = userProjectInput.value.trim();
     if(!username){
       setStatus(t('errorEmptyUsername'), true);
       return;
     }
-    if(!project){
-      setStatus(t('errorEmptyProject'), true);
-      return;
-    }
-    runUserSearch(username, project);
+    runUserSearch(username);
   });
 
   trendingQueryForm.addEventListener('submit', (e) => {
