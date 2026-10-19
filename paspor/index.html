@@ -1,706 +1,1449 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paspor</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
-    <style>
-        /* Previous styles remain the same until media-container */
-        :root {
-            /* --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            */
-            /* Dark red for a strong, calm feel */
-            --primary-color: #8B0000;
-            /* Soft coral red for contrast */
-            --secondary-color: #CD5C5C;
-            --text-color: #333;
-            --bg-color: #f5f6fa;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paspor &mdash; Ensiklopedia Digital</title>
+  <meta name="description" content="Kisah di balik dokumen perjalanan paling penting di dunia: sejarah, garis waktu, peringkat, jenis, anatomi, visa, paspor Indonesia, istilah, tanya jawab, dan galeri Wikimedia Commons. Kurasi digital Affandy Murad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --desk: #e6e4df;
+      --paper: #ffffff;
+      --ink: #1b1b1d;
+      --muted: #66666d;
+      --rule: #d9d8d4;
+      --soft: #f3f2ef;
+      --accent: #8b0000;
+      --accent-soft: #fbf1f1;
+      --sans: 'Source Sans 3', 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 2rem 1rem;
-        }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--desk);
+      font-size: 15.5px;
+      line-height: 1.45;
+      padding: 28px 16px 56px;
+      -webkit-font-smoothing: antialiased;
+    }
+    body:has(dialog[open]) { overflow: hidden; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+    a { color: var(--accent); text-underline-offset: 2px; }
+    a:hover { text-decoration-thickness: 2px; }
 
-        .intro {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+    /* ===== lembar halaman ===== */
+    .sheet {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto 28px;
+      padding: 34px 40px 56px;
+      background: var(--paper);
+      box-shadow: 0 10px 30px rgba(40, 35, 25, .16), 0 1px 3px rgba(40, 35, 25, .2);
+    }
+    .folio {
+      position: absolute;
+      bottom: 18px; left: 40px; right: 40px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      font-variant-numeric: lining-nums;
+    }
+    .folio.odd { text-align: right; }
+    .folio.even { text-align: left; }
 
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
+    /* ===== tata letak: dua kolom teks + kolom foto ===== */
+    .page {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 236px;
+      gap: 28px;
+      align-items: start;
+    }
+    .main { column-count: 2; column-gap: 24px; text-align: left; hyphens: auto; -webkit-hyphens: auto; orphans: 2; widows: 2; }
+    .main p { margin: 0 0 .7em; }
+    .hw { font-weight: 700; color: var(--accent); }
+    .main h3 {
+      margin: .35em 0 .25em;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--accent);
+      break-after: avoid;
+    }
+    .rail { display: flex; flex-direction: column; gap: 16px; }
 
-        .gallery-item {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
+    /* ===== foto kecil + keterangan ===== */
+    figure { margin: 0; break-inside: avoid; page-break-inside: avoid; }
+    .main figure { margin: 0 0 1em; }
+    .thumb {
+      position: relative;
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      background: var(--soft);
+      border: 1px solid var(--rule);
+      cursor: zoom-in;
+      text-decoration: none;
+    }
+    /* foto selalu tampil utuh (tidak terpotong): selebar kotak, tinggi mengikuti rasio dan dibatasi agar tetap kecil */
+    .thumb img { display: block; width: 100%; height: auto; max-height: 160px; object-fit: contain; transition: transform .25s; }
+    .thumb:hover img { transform: scale(1.03); }
+    .thumb:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .zoom {
+      position: absolute; right: 6px; bottom: 6px;
+      display: grid; place-items: center;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: rgba(20, 18, 16, .66);
+      color: #fff;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    .zoom svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .thumb:hover .zoom, .thumb:focus-visible .zoom { opacity: 1; }
+    .thumb.video { background: #15130f; aspect-ratio: 16 / 9; }
+    .thumb.video img { width: 100%; height: 100%; max-height: none; object-fit: cover; }
+    .thumb.video:hover img { transform: none; }
+    .play {
+      position: absolute; inset: 0; margin: auto;
+      width: 46px; height: 46px;
+      display: grid; place-items: center;
+      border-radius: 50%;
+      background: rgba(139, 0, 0, .9);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+    }
+    .play svg { width: 18px; height: 18px; fill: currentColor; margin-left: 2px; }
 
-        .gallery-item:hover {
-            transform: translateY(-5px);
-        }
+    figcaption {
+      margin-top: 5px;
+      font-style: italic;
+      font-size: 13px;
+      line-height: 1.32;
+      color: #2c2c30;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    figcaption strong { font-style: italic; font-weight: 700; }
+    figcaption .credit { display: block; margin-top: 2px; font-style: normal; font-size: 11px; color: var(--muted); }
 
-        .media-container {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%;
-        }
+    /* ===== kotak samping (daftar) ===== */
+    .box { margin: 0 0 1em; padding: 10px 14px 8px; border: 1px solid var(--rule); border-top: 3px solid var(--accent); background: #fff; break-inside: avoid; }
+    .box h4 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .box ul { list-style: none; }
+    .box li { position: relative; padding: 2px 0 2px 16px; font-size: 14.5px; line-height: 1.3; }
+    .box li::before { content: ''; position: absolute; left: 3px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 
-        .media-container img,
-        .media-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    /* ===== tabel peringkat (kotak bagan) ===== */
+    .chart { margin: 0 0 1em; padding: 10px 12px 6px; border: 1px solid var(--rule); border-top: 3px solid var(--accent); background: #fff; break-inside: avoid; }
+    .chart h4 { font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+    table.ranking { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.3; text-align: left; }
+    table.ranking th { padding: 4px 6px; border-bottom: 1px solid var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    table.ranking td { padding: 4px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    table.ranking td:first-child, table.ranking th:first-child { width: 24%; text-align: right; padding-right: 12px; font-variant-numeric: lining-nums; }
+    table.ranking tr:last-child td { border-bottom: none; }
+    table.ranking tr.gap td { color: var(--muted); text-align: center; letter-spacing: .3em; }
+    table.ranking tr.me td { font-weight: 700; color: var(--accent); background: var(--accent-soft); }
+    .chart .src { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-        .media-container audio {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: calc(100% - 2rem);
-            margin: 0 1rem;
-            transform: translateY(-50%);
-        }
+    /* ===== audio ===== */
+    .slip { display: flex; flex-direction: column; gap: 6px; padding: 9px 12px 11px; background: var(--soft); border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+    .slip-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+    .slip audio { width: 100%; height: 36px; }
 
-        .swiper {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+    /* ===== sampul ===== */
+    .cover { padding: 44px 40px 38px; border-top: 8px solid var(--accent); }
+    .eyebrow { font-size: .95rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+    .cover h1 { font-size: clamp(3.6rem, 11vw, 7rem); line-height: .95; font-weight: 900; letter-spacing: -.02em; margin: 6px 0 12px; }
+    .tagline { font-size: 1.5rem; font-weight: 500; line-height: 1.25; max-width: 30ch; }
+    .byline { margin-top: 8px; color: var(--muted); }
+    .byline strong { color: var(--ink); font-weight: 600; }
+    .cover-body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--rule); align-items: start; }
+    .intro { font-size: 1.12rem; line-height: 1.55; }
+    .dropcap::first-letter { float: left; font-weight: 900; font-size: 4.2rem; line-height: .82; padding: 5px 10px 0 0; color: var(--accent); }
+    .toc h2 { font-size: .85rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); padding-bottom: 6px; margin-bottom: 4px; border-bottom: 2px solid var(--accent); }
+    .toc ol { list-style: none; }
+    .toc li a { display: flex; align-items: baseline; gap: 6px; padding: 5px 0; color: var(--ink); text-decoration: none; }
+    .toc li a:hover .t { color: var(--accent); }
+    .toc .lead { flex: 1 1 auto; border-bottom: 1px dotted var(--muted); transform: translateY(-4px); min-width: 14px; }
+    .toc .n { font-weight: 600; color: var(--accent); }
 
-        .swiper-slide {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+    .colophon { max-width: 1100px; margin: 0 auto; text-align: center; color: #55555b; font-size: .92rem; }
+    .colophon .attr { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: center; align-items: center; }
+    .colophon img { vertical-align: -3px; }
+    .colophon .sep { color: var(--accent); }
 
-        .swiper-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: scale-down;
-        }
+    /* ===== pratinjau foto / video (modal) ===== */
+    dialog.viewer { border: none; padding: 0; background: transparent; width: min(1040px, 94vw); max-width: none; max-height: none; margin: auto; overflow: visible; }
+    dialog.viewer::backdrop { background: rgba(14, 12, 10, .84); backdrop-filter: blur(3px); }
+    .v-card { position: relative; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 24px 70px rgba(0, 0, 0, .5); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: 92vh; }
+    .v-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 8px 8px 16px; border-bottom: 1px solid var(--rule); font-size: 14px; color: var(--muted); }
+    .v-bar .count { font-weight: 600; font-variant-numeric: lining-nums; }
+    .v-btn { display: grid; place-items: center; width: 38px; height: 38px; border: none; border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; }
+    .v-btn:hover { background: var(--soft); }
+    .v-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+    .v-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .v-stage { position: relative; display: grid; place-items: center; background: #151311; min-height: 220px; overflow: hidden; }
+    .v-stage img { display: block; max-width: 100%; max-height: 66vh; width: auto; height: auto; object-fit: contain; }
+    .v-stage video { display: block; width: 100%; max-height: 66vh; background: #000; }
+    .v-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: none; border-radius: 50%; background: rgba(255, 255, 255, .88); color: var(--ink); cursor: pointer; display: grid; place-items: center; box-shadow: 0 2px 10px rgba(0, 0, 0, .3); }
+    .v-nav:hover { background: #fff; }
+    .v-nav:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .v-nav svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .v-prev { left: 12px; }
+    .v-next { right: 12px; }
+    .v-caption { padding: 12px 18px 14px; font-size: 14.5px; line-height: 1.4; overflow: auto; max-height: 22vh; }
+    .v-caption .cap { font-style: italic; }
+    .v-caption .cap strong { font-weight: 700; }
+    .v-caption .credit { display: block; margin-top: 4px; font-style: normal; font-size: 12px; color: var(--muted); }
+    .v-caption a.src { display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 600; }
 
-        .swiper-pagination-bullet {
-            background: #cccccc;
-            /* Default bullet color */
-            opacity: 0.6;
-        }
+    /* ===== responsif ===== */
+    @media (max-width: 960px) {
+      .sheet { padding: 28px 28px 52px; }
+      .folio { left: 28px; right: 28px; }
+      .page { grid-template-columns: 1fr; gap: 6px; }
+      .rail { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-top: 4px; }
+      .cover { padding: 36px 28px 32px; }
+      .cover-body { grid-template-columns: 1fr; gap: 26px; }
+    }
+    @media (max-width: 620px) {
+      body { padding: 12px 8px 40px; }
+      .sheet { padding: 22px 16px 48px; margin-bottom: 16px; }
+      .folio { left: 16px; right: 16px; bottom: 14px; }
+      .main { column-count: 1; }
+      .rail { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .thumb img { max-height: 140px; }
+      .cover { padding: 28px 16px 26px; }
+      .tagline { font-size: 1.2rem; }
+      .v-stage img, .v-stage video { max-height: 52vh; }
+      .v-nav { width: 38px; height: 38px; }
+      .v-prev { left: 6px; } .v-next { right: 6px; }
+    }
 
-        .swiper-pagination-bullet-active {
-            background: var(--primary-color) !important;
-            /* Active bullet color */
-            opacity: 1;
-        }
+    @media print {
+      body { background: #fff; padding: 0; font-size: 11pt; }
+      .sheet { box-shadow: none; margin: 0; max-width: none; break-after: page; padding: 14mm 12mm 18mm; }
+      .thumb .zoom, .play { display: none; }
+      .slip audio { display: none; }
+      dialog { display: none; }
+    }
 
-        .swiper-button-next,
-        .swiper-button-prev {
-            color: var(--primary-color);
-            /* Navigation arrows color */
-        }
+    /* ===== tombol Bacakan (baca nyaring) ===== */
+    .sheet:not(.cover) { padding-top: 44px; }
+    .read-tools { position: absolute; top: 10px; right: 14px; z-index: 3; display: flex; gap: 6px; align-items: center; }
+    .read-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 30px; padding: 0 12px;
+      border: 1px solid var(--rule); border-radius: 999px;
+      background: #fff; color: var(--accent);
+      font: 600 13px/1 var(--sans);
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .read-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+    .read-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .read-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .read-btn.stop { width: 30px; padding: 0; justify-content: center; }
+    .read-btn[hidden] { display: none; }
+    .read-tools.active .read-main { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .reading { background: var(--accent-soft); box-shadow: 0 0 0 5px var(--accent-soft); border-radius: 2px; }
+    .read-toast {
+      position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 20px);
+      max-width: min(92vw, 460px); padding: 10px 16px;
+      background: #1b1b1d; color: #fff; border-radius: 8px;
+      font-size: 14px; line-height: 1.35; text-align: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50;
+    }
+    .read-toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 620px) {
+      .read-tools { top: 8px; right: 8px; }
+      .read-btn { height: 28px; padding: 0 10px; font-size: 12.5px; }
+      .read-btn.stop { width: 28px; }
+    }
+    @media print { .read-tools, .read-toast { display: none; } }
 
-        .swiper-scrollbar {
-            background: #eeeeee;
-            /* Scrollbar track color */
-        }
+    /* ===== tautan Wikipedia dan catatan kaki ===== */
+    .wp { color: inherit; text-decoration: underline dotted var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .wp:hover { color: var(--accent); text-decoration-style: solid; }
+    .wp::after { content: '\2197'; display: inline-block; margin-left: 1px; font-size: .7em; line-height: 0; vertical-align: super; color: var(--accent); }
+    .hw .wp { color: var(--accent); }
+    sup.fn { font-size: .7em; line-height: 0; vertical-align: super; margin-left: 1px; font-weight: 700; }
+    sup.fn a { color: var(--accent); text-decoration: none; padding: 0 .5px; }
+    sup.fn a:hover { text-decoration: underline; }
+    sup.fn a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .chart .src sup.fn, .box sup.fn { font-size: .75em; }
 
-        .swiper-scrollbar-drag {
-            background: var(--primary-color);
-            /* Scrollbar handle color */
-        }
+    /* ===== variasi tata letak halaman ===== */
+    .page.full { grid-template-columns: minmax(0, 1fr); }
+    .main.c1 { column-count: 1; }
+    .main.c2 { column-count: 2; }
+    .main.c3 { column-count: 3; }
+    .gloss p { margin: 0 0 .75em; }
+    .gloss p.first .hw { font-size: 1.02rem; }
+    figure.wide { column-span: all; margin: 0 0 1.1em; }
 
-        .caption {
-            padding: 1rem;
-        }
+    /* ===== garis waktu ===== */
+    ol.timeline { list-style: none; column-count: 2; column-gap: 40px; margin: 8px 0 0; padding-left: 8px; }
+    ol.timeline li { position: relative; break-inside: avoid; padding: 0 0 16px 24px; border-left: 2px solid var(--rule); }
+    ol.timeline li::before { content: ''; position: absolute; left: -8px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); }
+    .tl-year { display: block; font-weight: 900; font-size: 1.2rem; line-height: 1.1; color: var(--accent); font-variant-numeric: lining-nums; }
+    .tl-title { font-weight: 700; }
+    .tl-text { color: #34343a; font-size: 14.5px; }
 
-        .caption h3 {
-            margin: 0 0 0.5rem;
-            color: var(--primary-color);
-        }
+    /* ===== anatomi paspor ===== */
+    figure.diagram .svgbox { background: #fff; border: 1px solid var(--rule); padding: 6px; }
+    figure.diagram svg { display: block; width: 100%; height: auto; max-width: 720px; margin: 0 auto; }
+    figure.diagram .cover-svg, figure.diagram.cover-fig .svgbox { background: var(--soft); }
+    .cover-svg svg { max-width: 150px; }
+    figure.diagram figcaption { display: block; -webkit-line-clamp: unset; overflow: visible; }
+    figure.wide.diagram figcaption { text-align: center; }
+    svg .pg { fill: #f6f1e7; stroke: #cfc7b7; }
+    svg .hd { font: 700 13px var(--sans); letter-spacing: .14em; fill: #6a6358; }
+    svg .hd.r { text-anchor: end; }
+    svg .ln { stroke: #cfc7b7; stroke-width: 1; }
+    svg .ph { fill: #e5dfd1; stroke: #cfc7b7; }
+    svg .sil { fill: #b8b09f; }
+    svg .fl { font: 600 10px var(--sans); fill: #7a7468; letter-spacing: .03em; }
+    svg .fv { font: 700 15px var(--sans); fill: #1b1b1d; letter-spacing: .04em; }
+    svg .sig { fill: none; stroke: #1b1b1d; stroke-width: 1.6; stroke-linecap: round; }
+    svg .mz { fill: #fff; stroke: #cfc7b7; }
+    svg .mt { font: 600 17px 'Courier New', ui-monospace, monospace; fill: #1b1b1d; }
+    svg .co circle { fill: var(--accent); }
+    svg .co text { fill: #fff; font: 700 12px var(--sans); }
 
-        .caption p {
-            margin: 0;
-            font-size: 0.9rem;
-        }
+    ol.legend { list-style: none; counter-reset: lg; margin: 0 0 1em; padding: 0; }
+    ol.legend li { counter-increment: lg; position: relative; padding: 4px 0 4px 32px; break-inside: avoid; line-height: 1.3; }
+    ol.legend li::before { content: counter(lg); position: absolute; left: 0; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 12px; display: grid; place-items: center; }
 
-        .attribution {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 0.5rem;
-        }
+    pre.mrz { margin: 0 0 1em; padding: 9px 10px; background: #faf9f6; border: 1px solid var(--rule); font: 600 11.8px/1.55 'Courier New', ui-monospace, monospace; overflow-x: auto; white-space: pre; break-inside: avoid; }
+    .m-doc { --c: #8b0000; } .m-sub { --c: #c2410c; } .m-cty { --c: #0b6e4f; } .m-name { --c: #1d4e89; } .m-num { --c: #b45309; }
+    .m-chk { --c: #7c3aed; } .m-dob { --c: #0f766e; } .m-sex { --c: #be185d; } .m-exp { --c: #a16207; } .m-pers { --c: #6b7280; }
+    pre.mrz span { color: var(--c); }
+    pre.mrz span.m-chk { font-weight: 800; }
+    ul.mrzkey li { padding-left: 0; }
+    ul.mrzkey li::before { display: none; }
+    .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 7px; vertical-align: -1px; background: var(--c); }
 
-        .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 0.5rem;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            display: none;
-            z-index: 100;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+    /* ===== tabel jenis paspor Indonesia ===== */
+    table.types-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.3; text-align: left; }
+    table.types-table td { padding: 6px 4px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    table.types-table tr:last-child td { border-bottom: none; }
+    table.types-table td:first-child { width: 40px; }
+    table.types-table td span { display: block; color: var(--muted); font-size: 12.5px; }
+    .cv { display: block; width: 26px; height: 34px; border-radius: 3px 5px 5px 3px; border: 1px solid rgba(0, 0, 0, .25); box-shadow: inset 3px 0 0 rgba(255, 255, 255, .2); }
 
-        .media-container:hover .tooltip {
-            display: block;
-        }
+    /* ===== bagan batang ===== */
+    .bars { display: grid; gap: 7px; }
+    .bar-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) 60px; gap: 6px; align-items: center; font-size: 12.5px; }
+    .bl { white-space: nowrap; }
+    .bar { height: 14px; background: #ece9e3; border-radius: 2px; overflow: hidden; }
+    .bar i { display: block; height: 100%; background: #8e8a82; }
+    .bar-row.me .bar i { background: var(--accent); }
+    .bar-row.me .bl, .bar-row.me .bv { color: var(--accent); font-weight: 700; }
+    .bv { text-align: right; white-space: nowrap; }
+    .bv em { color: var(--muted); font-style: normal; font-size: 11px; }
+    .chart .src { margin: 6px 0 2px; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
 
-        .dynamic-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 1rem;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            font-size: 0.6rem;
-        }
+    /* ===== tanya jawab ===== */
+    .faq { column-count: 2; column-gap: 40px; margin-top: 6px; }
+    details.qa { break-inside: avoid; border-top: 1px solid var(--rule); padding: 2px 0; }
+    details.qa summary { cursor: pointer; list-style: none; padding: 9px 28px 9px 0; font-weight: 700; position: relative; line-height: 1.3; }
+    details.qa summary::-webkit-details-marker { display: none; }
+    details.qa summary::after { content: '+'; position: absolute; right: 4px; top: 5px; color: var(--accent); font-size: 1.4rem; font-weight: 400; line-height: 1.2; }
+    details.qa[open] summary::after { content: '\2212'; }
+    details.qa summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    details.qa p { margin: 0 0 10px; color: #2c2c30; font-size: 15px; }
 
-        .swiper-slide:hover .dynamic-caption {
-            transform: translateY(0);
-        }
+    /* ===== galeri Wikimedia Commons ===== */
+    .gal { margin-top: 14px; }
+    .gal-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .gal-tab { height: 32px; padding: 0 14px; border: 1px solid var(--rule); border-radius: 999px; background: #fff; color: var(--ink); font: 600 13.5px/1 var(--sans); cursor: pointer; }
+    .gal-tab:hover { background: var(--accent-soft); border-color: var(--accent); }
+    .gal-tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .gal-tab:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .gal-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 0 0 12px; font-size: 13px; color: var(--muted); }
+    .gal-open { font-weight: 600; font-size: 13px; }
+    .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 16px 14px; min-height: 60px; }
+    .gal-grid figure figcaption { -webkit-line-clamp: 3; }
+    .gal-grid .thumb img { max-height: 150px; }
+    .gal-skel { height: 150px; border: 1px solid var(--rule); background: linear-gradient(90deg, #f1efea, #f8f7f4, #f1efea); background-size: 200% 100%; animation: galsk 1.2s linear infinite; }
+    @keyframes galsk { to { background-position: -200% 0; } }
+    .gal-foot { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 16px; }
+    .gal-status { font-size: 13.5px; color: var(--muted); text-align: center; }
+    .gal-more { height: 36px; padding: 0 20px; border: 1px solid var(--accent); border-radius: 999px; background: #fff; color: var(--accent); font: 700 14px/1 var(--sans); cursor: pointer; }
+    .gal-more:hover { background: var(--accent); color: #fff; }
+    .gal-more:disabled { opacity: .55; cursor: wait; }
+    .gal-more:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { .gal-skel { animation: none; } }
 
-        footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 2rem 1rem;
-            margin-top: 3rem;
-            text-align: center;
-        }
+    /* ===== sumber ===== */
+    ol.refs { list-style: none; counter-reset: rf; padding: 0; margin: 0 0 1em; }
+    ol.refs li { counter-increment: rf; position: relative; padding: 3px 0 6px 32px; font-size: 13.5px; line-height: 1.35; break-inside: avoid; overflow-wrap: anywhere; }
+    ol.refs li::before { content: '[' counter(rf) ']'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+    ol.refs li:target { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); }
+    ol.refs .rt { font-weight: 600; }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
+    @media (max-width: 960px) {
+      .main.c3 { column-count: 2; }
+    }
+    @media (max-width: 700px) {
+      ol.timeline, .faq { column-count: 1; }
+    }
+    @media (max-width: 620px) {
+      .main.c2, .main.c3 { column-count: 1; }
+      .gal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 10px; }
+      .bar-row { grid-template-columns: 52px minmax(0, 1fr) 58px; }
+      pre.mrz { font-size: 10.8px; }
+    }
+    @media print { .gal-more, .gal-tabs, .gal-meta { display: none; } }
 
-        .attribution-line {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .icon {
-            height: 20px;
-            width: auto;
-            vertical-align: middle;
-        }
-
-        .divider {
-            margin: 0 0.5rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-
-            .attribution-line {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .divider {
-                display: none;
-            }
-        }
-    </style>
+  </style>
 </head>
 
 <body>
-    <header>
-        <h1>Paspor</h1>
-        <p>Temukan kisah menarik di balik dokumen perjalanan paling penting di dunia dalam kurasi digital Paspor karya
-            Affandy Murad</p>
-    </header>
-
-    <div class="container">
-        <div class="intro">
-            <p>Paspor lebih dari sekadar dokumen perjalanan - paspor merupakan gerbang menuju penjelajahan global dan
-                bagian menarik dari sejarah manusia. Dari <i>Safe Conduct</i> atau Jaminan Keamanan paling awal yang
-                dikenal di Persia kuno hingga dokumen biometrik berteknologi tinggi saat ini, paspor telah berkembang
-                seiring dengan peradaban
-                manusia.</p>
-        </div>
-
-        <div class="gallery">
-            <!-- Carousel Item -->
-            <div class="gallery-item">
-                <div class="media-container">
-                    <div class="swiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg"
-                                    alt="Papirus Arab dengan izin keluar, 722 SM">
-                                <div class="dynamic-caption">
-                                    <h4>Papirus Arab</h4>
-                                    <p>Papirus Arab dengan izin keluar, tertanggal 24 Januari 722 SM, menunjuk pada
-                                        pengaturan kegiatan perjalanan. Dari Hermopolis Magna, Mesir</p>
-                                    <small>CC BY-SA 4.0 | Arabic papyrus with an exit permit, dated January 24, 722 CE,
-                                        pointing to the regulation of travel activities. From Hermopolis Magna, Egypt |
-                                        Osama Shukir Muhammed Amin FRCP(Glasg) | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/First_Japanese_passport_1866.jpg"
-                                    alt="Paspor Jepang pertama tahun 1866">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Jepang pertama</h4>
-                                    <p>Paspor Jepang pertama tahun 1866</p>
-                                    <small>CC BY-SA 3.0 | First Japanese passport 1866 | World Imaging | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Italian_passport_1872.jpg"
-                                    alt="Paspor Italia tahun 1872">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Italia</h4>
-                                    <p>Paspor Italia tahun 1872 untuk Giovanni Lepetich</p>
-                                    <small>CC0 1.0 | Italian passport 1872 | Crash48 | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/QingPassport.jpg"
-                                    alt="Paspor Tiongkok tahun 1898">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Tiongkok</h4>
-                                    <p>Paspor Tiongkok dari Dinasti Qing, Tahun ke-24 Pemerintahan Guangxu, 1898</p>
-                                    <small>Public Domain | QingPassport | 呂海寰 (Lü Haihuan) | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Ottoman-russian-empire-passport.jpg"
-                                    alt="Paspor Ottoman (passavant)">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Ottoman (passavant)</h4>
-                                    <p>Paspor Ottoman (passavant) yang dikeluarkan untuk subjek Rusia, tertanggal 24
-                                        Juli 1900</p>
-                                    <small> CC BY-SA 3.0 | Ottoman-russian-empire-passport | FurkanYalcin3 | via
-                                        Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/WW2_Spanish_official_passport.jpg"
-                                    alt="Paspor Spanyol era Perang Dunia II">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Spanyol era Perang Dunia II</h4>
-                                    <p>Paspor resmi Spanyol pada masa Perang Dunia II yang dikeluarkan pada akhir tahun
-                                        1944 dan digunakan selama enam bulan terakhir perang oleh seorang pejabat yang
-                                        dikirim ke Berlin</p>
-                                    <small>Public Domain | WW2 Spanish official passport | Huddyhuddy | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
-                    </div>
-                </div>
-                <div class="caption">
-                    <h3>Sejarah Paspor</h3>
-                    <p>Sejarah timbulnya Paspor diperkirakan sudah sejak tahun 450 SM, salah satu referensi yang
-                        dianggap mewakili keberadaan paspor ditemukan dalam kitab suci yaitu Nehemia 2: 7-9 disebutkan
-                        Nehemia perwakilan dari Raja Artahsasta I dari Persia, memerintahkan Nehemia untuk pergi ke
-                        Yudea dan Raja memberikan sebuah surat kepada "pemimpin di seberang sungai" yang meminta jaminan
-                        keselamatan bagi Nehemia selama ia menjelajahi daerah tersebut.</p>
-                    <br />
-                    <p>Istilah paspor sendiri berasal berasal dari <i>sea port</i> (pelabuhan laut). Di Eropa abad
-                        pertengahan,
-                        dokumen itu dikeluarkan bagi pelancong oleh penguasa setempat, dan biasannya berisi daftar kota
-                        di mana pemilik dokumen diijinkan lewat.</p>
-                    <br />
-                    <p>Paspor adalah dokumen perjalanan resmi yang dikeluarkan oleh pemerintah yang menyatakan identitas
-                        dan kewarganegaraan seseorang untuk perjalanan internasional. Paspor memungkinkan
-                        pemegangnya untuk memasuki dan tinggal sementara di negara asing, mengakses bantuan dan
-                        perlindungan lokal, dan memperoleh bantuan konsuler dari pemerintah mereka.</p>
-                </div>
-            </div>
-
-            <!-- Regular Image Item -->
-            <div class="gallery-item">
-                <div class="media-container">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/archive/2/23/20160306194155%21Passport_design_world_map.png"
-                        alt="Peta dunia desain paspor">
-                    <div class="tooltip">Peta dunia berdasarkan warna sampul paspor</div>
-                </div>
-                <div class="caption">
-                    <h3>Peringkat Kekuatan Paspor</h3>
-                    <p>Untuk warna sampul paspor tiap negara dapat dilihat di gambar di atas</p>
-                    <br />
-                    <p>Berikut daftar peringkat dari Indeks Paspor Henley tahun 2024</p>
-                    <br />
-                    <p>Indonesia mengalami kenaikan dari peringkat 72 di tahun 2023 menjadi 65 di tahun 2024</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Peringkat</th>
-                                <th>Negara</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Singapura</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Italia, Jerman, Prancis, Jepang, Spanyol</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Austria, Finlandia, Irlandia, Luksemburg, Belanda, Korea Selatan, Swedia</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Belgia, Denamrk, Selandia Baru, Norwegia, Swiss, Inggris Raya</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Australia, Ceko, Portugal</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Yunani, Polandia</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>Kanada, Hungaria, Malta</td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>Amerika Serikat</td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td>Estonia, Lituania, Uni Emirat Arab</td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>Islandia, Latvia, Slowakia, Slovenia</td>
-                            </tr>
-                            <tr>
-                                <td>...</td>
-                                <td>...</td>
-                            </tr>
-                            <tr>
-                                <td>65</td>
-                                <td>Indonesia</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="attribution">
-                        CC BY-SA 4.0 | Passport design world map | Twofortnights | via Wikimedia Commons |
-                    </div>
-                </div>
-            </div>
-
-            <!-- Carousel Item -->
-            <div class="gallery-item">
-                <div class="media-container">
-                    <div class="swiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Paspor.JPG"
-                                    alt="Paspor Reguler">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Reguler</h4>
-                                    <p>paspor biasa yang diterbitkan negara untuk warga negaranya</p>
-                                    <small>Public Domain | Paspor | ZakiriFadhlan | via Wikimedia Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/United_States_emergency_passport.svg"
-                                    alt="Paspor Darurat">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Darurat</h4>
-                                    <p>Paspor darurat (juga disebut paspor sementara) dikeluarkan untuk orang-orang
-                                        dengan kebutuhan
-                                        mendesak untuk bepergian yang tidak memiliki paspor.</p>
-                                    <small>Public Domain | United States emergency passport | DeliciousBoson | via
-                                        Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Indonesian_Diplomatic_Passport.png"
-                                    alt="Paspor Diplomatik">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Diplomatik</h4>
-                                    <p>Berdasarkan Konvensi Wina tentang Hubungan Diplomatik, Konvensi Wina tentang
-                                        Hubungan Konsuler, dan kekebalan yang diberikan kepada pejabat negara asing
-                                        berdasarkan kebiasaan
-                                        internasional, diplomat dan individu lain yang bepergian untuk urusan
-                                        pemerintahan diberikan
-                                        paspor khusus yang menunjukkan status mereka.</p>
-                                    <small>Public Domain | Indonesian Diplomatic Passport | Amadhannn | Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Macau_Sar_Passport_Old_and_New_Style.jpg"
-                                    alt="Paspor Regional">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Regional</h4>
-                                    <p>Republik Rakyat Tiongkok (RRT) memberi wewenang kepada Daerah Administratif
-                                        Khusus Hong Kong dan Makau untuk menerbitkan paspor bagi penduduk tetap mereka
-                                        yang berkewarganegaraan Tiongkok berdasarkan pengaturan " satu negara, dua
-                                        sistem ".</p>
-                                    <small>Public Domain | the Direcção dos Serviços de Identificação (Identification
-                                        Services Bureau) of Macau SAR | Macau Sar Passport Old and New Style | via
-                                        Wikimedia Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Indonesian_Hajj_Passport.png"
-                                    alt="Paspor Haji">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Haji</h4>
-                                    <p>Khusus jamaah haji dan umrah, nama yang tertera dalam paspor harus menggunakan 3
-                                        kata misalnya "Affandy bin Muradi".</p>
-                                    <small>Public Domain | Indonesian Hajj Passport | Amadhannn | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Ukrainian_refugee_travel_document.jpg"
-                                    alt="Paspor Pengungsi">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor Pengungsi</h4>
-                                    <p>Dokumen perjalanan pengungsi (juga disebut dokumen perjalanan Konvensi 1951 atau
-                                        paspor Jenewa) adalah dokumen perjalanan yang dikeluarkan untuk pengungsi oleh
-                                        negara tempat mereka tinggal, yang memungkinkan mereka untuk bepergian ke luar
-                                        negara bagian tersebut dan kembali ke sana.</p>
-                                    <small>Public Domain | Ukrainian refugee travel document | Kabinet Menteri Ukraina |
-                                        via Wikimedia Commons</small>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Passaportoordinemalta.png"
-                                    alt="Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan">
-                                <div class="dynamic-caption">
-                                    <h4>Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan</h4>
-                                    <p>Beberapa entitas tanpa wilayah kedaulatan menerbitkan dokumen yang disebut
-                                        paspor, yang paling menonjol adalah Liga Iroquois, Pemerintah Sementara Aborigin
-                                        di Australia dan Ordo Militer Berdaulat Malta.</p>
-                                    <small>CC BY | Passaportoordinemalta | Cav. Marco Lo Giudice | via Wikimedia
-                                        Commons</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
-                    </div>
-                </div>
-                <div class="caption">
-                    <h3>Jenis Paspor</h3>
-                    <p>Jenis yang paling umum adalah paspor biasa yang diterbitkan
-                        untuk warga negara perorangan dan warga negara lainnya. Di masa lalu, beberapa negara
-                        menerbitkan paspor kolektif atau paspor keluarga. Saat ini, paspor biasanya
-                        diterbitkan untuk pelancong perorangan, bukan untuk kelompok. Selain paspor biasa yang
-                        diterbitkan untuk warga negara oleh pemerintah nasional, ada berbagai jenis paspor lain yang
-                        diterbitkan oleh pemerintah dalam situasi tertentu, yaitu:</p>
-                    <ul>
-                        <li>
-                            <h4>Paspor Darurat</h4>
-                        </li>
-                        <li>
-                            <h4>Paspor Diplomatik</h4>
-                        </li>
-                        <li>
-                            <h4>Paspor Regional</h4>
-                        </li>
-                        <li>
-                            <h4>Paspor Haji</h4>
-                        </li>
-                        <li>
-                            <h4>Paspor Pengungsi</h4>
-                        </li>
-                        <li>
-                            <h4>Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan</h4>
-                        </li>
-                    </ul>
-                    <br />
-                    <p>Sejak tahun 1998, banyak negara telah beralih ke paspor biometrik bertsandar ISO/IEC 7810, yang
-                        berisi chip mikro
-                        tertanam untuk memfasilitasi otentikasi dan perlindungan terhadap pemalsuan. Hingga Juli
-                        2024, lebih dari 150 yurisdiksi menerbitkan "e-paspor" atau paspor elektronik tersebut, paspor
-                        non-biometrik yang
-                        diterbitkan sebelumnya biasanya tetap berlaku hingga kedaluwarsa.</p>
-                </div>
-            </div>
-
-            <!-- Regular Image Item -->
-            <div class="gallery-item">
-                <div class="media-container">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/Stempel_Visa_di_Paspor_Indonesia.jpg"
-                        alt="Visa">
-                    <div class="tooltip">Contoh visa berbentuk stempel di Paspor Indonesia</div>
-                </div>
-                <div class="caption">
-                    <h3>Visa</h3>
-                    <p>Visa adalah sebuah dokumen izin masuk seseorang ke suatu negara yang bisa diperoleh di kedutaan
-                        di mana negara tersebut mempunyai Konsulat Jenderal atau kedutaan asing. Visa adalah tanda bukti
-                        ‘boleh berkunjung’ yang diberikan pada penduduk suatu negara jika memasuki wilayah negara lain
-                        yang mempersyaratkan adanya izin masuk. Bisa berbentuk stiker visa yang dapat diajukan di
-                        kedutaan atau konsulat negara yang akan dikunjungi atau berbentuk stempel pada paspor di negara
-                        tertentu. Terdapat 2 jenis visa, yaitu:</p>
-
-                    <ul>
-                        <li>
-                            <h4>Visa kunjungan saat kedatangan (<i>visa on-arrival</i>)</h4>
-                        </li>
-                        <li>
-                            <h4>Visa kunjungan sebelum kedatangan (<i>visa pre-arrival</i>)</h4>
-                        </li>
-                    </ul>
-                    <div class="attribution">
-                        CC BY-SA 4.0 | Stempel Visa di Paspor Indonesia | Affandy Murad | via Wikimedia Commons
-                    </div>
-                </div>
-            </div>
-
-            <!-- Video Item -->
-            <div class="gallery-item">
-                <div class="media-container">
-                    <video controls>
-                        <source
-                            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Walks_with_Tony-_Philadelphia_Passport_Agency.webm"
-                            type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="tooltip">Philadelphia Passport Agency</div>
-                </div>
-                <div class="caption">
-                    <h3>Philadelphia Passport Agency</h3>
-                    <p>Paspor membuka peluang bagi warga Amerika untuk bepergian. Bergabunglah dengan Menteri Luar
-                        Negeri AS Antony Blinken untuk #WalksWithTony dan lihat bagaimana Badan Paspor Philadelphia
-                        membantu memfasilitasi perjalanan dan mendukung keselamatan serta perlindungan warga AS.</p>
-                    <div class="attribution">
-                        Public Domain | Walks with Tony- Philadelphia Passport Agency | U.S. Department of State | via
-                        Wikimedia Commons
-                    </div>
-                </div>
-            </div>
-
-            <!-- Audio Item -->
-            <div class="gallery-item">
-                <div class="media-container">
-                    <audio controls>
-                        <source
-                            src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Ex-Indian_diplomat%27s_passport_revoked.ogg"
-                            type="audio/ogg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="tooltip">Ex-Indian diplomat's passport revoked
-                    </div>
-                </div>
-                <div class="caption">
-                    <h3>Paspor mantan diplomat India dicabut</h3>
-                    <p>Kementerian Luar Negeri telah mencabut paspor Tn. Harish Kumar Dogra yang dicopot dari jabatannya
-                        sebagai Komisaris Tinggi India untuk Selandia Baru pada bulan April. Pemerintah juga telah
-                        menangguhkan paspor istrinya dan pembantu rumah tangganya. Baca Selengkapnya di <a
-                            href="https://en.wikinews.org/wiki/Ex-Indian_diplomat%27s_passport_revoked"
-                            target="_blank">WikiNews</a>.
-                    <div class="attribution">
-                        Public Domain | Ex-Indian diplomat's passport revoked | NorkNork | via Wikimedia Commons
-                    </div>
-                </div>
-            </div>
-        </div>
+  <section class="sheet cover" id="top">
+    <span class="eyebrow">Ensiklopedia digital &middot; kurasi Wikimedia Commons</span>
+    <h1>Paspor</h1>
+    <p class="tagline">Kisah di balik dokumen perjalanan paling penting di dunia</p>
+    <p class="byline">Disusun oleh <strong>Affandy Murad</strong></p>
+    <div class="cover-body">
+      <p class="intro dropcap">Paspor lebih dari sekadar dokumen perjalanan &mdash; paspor merupakan gerbang menuju penjelajahan global dan bagian menarik dari sejarah manusia. Dari <em>Safe Conduct</em> atau jaminan keamanan paling awal yang dikenal di Persia kuno hingga dokumen biometrik berteknologi tinggi saat ini, paspor telah berkembang seiring dengan peradaban manusia.</p>
+      <nav class="toc" aria-label="Daftar isi">
+        <h2>Isi</h2>
+        <ol>
+          <li><a href="#sejarah"><span class="t">Sejarah Paspor</span><span class="lead"></span><span class="n">1</span></a></li>
+          <li><a href="#garis-waktu"><span class="t">Garis Waktu</span><span class="lead"></span><span class="n">2</span></a></li>
+          <li><a href="#peringkat"><span class="t">Peringkat Kekuatan Paspor</span><span class="lead"></span><span class="n">3</span></a></li>
+          <li><a href="#jenis"><span class="t">Jenis Paspor</span><span class="lead"></span><span class="n">4</span></a></li>
+          <li><a href="#anatomi"><span class="t">Anatomi Paspor</span><span class="lead"></span><span class="n">5</span></a></li>
+          <li><a href="#visa"><span class="t">Visa</span><span class="lead"></span><span class="n">6</span></a></li>
+          <li><a href="#indonesia"><span class="t">Paspor Indonesia</span><span class="lead"></span><span class="n">7</span></a></li>
+          <li><a href="#istilah"><span class="t">Istilah Penting</span><span class="lead"></span><span class="n">8</span></a></li>
+          <li><a href="#tanya-jawab"><span class="t">Tanya Jawab</span><span class="lead"></span><span class="n">9</span></a></li>
+          <li><a href="#galeri"><span class="t">Galeri Commons</span><span class="lead"></span><span class="n">10</span></a></li>
+          <li><a href="#media"><span class="t">Media</span><span class="lead"></span><span class="n">11</span></a></li>
+          <li><a href="#sumber"><span class="t">Sumber</span><span class="lead"></span><span class="n">12</span></a></li>
+        </ol>
+      </nav>
     </div>
+  </section>
 
-    <footer>
-        <div class="footer-content">
-            <div class="attribution-line">
-                <span>Judul: Paspor</span>
-                <span class="divider">|</span>
-                <span>Pembuat: Affandy Murad</span>
-                <span class="divider">|</span>
-                <span>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Cc_by-sa_%281%29.svg"
-                        alt="Creative Commons Logo" class="icon">
-                    CC BY-SA 4.0
-                </span>
-                <span class="divider">|</span>
-                <span>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Commons-logo.svg"
-                        alt="Wikimedia Commons Logo" class="icon">
-                    Sumber: Wikimedia Commons
-                </span>
-            </div>
+  <section class="sheet" id="sejarah">
+    <div class="page">
+      <div class="main">
+        <p><span class="hw">Sejarah Paspor</span> Timbulnya paspor diperkirakan sudah sejak sekitar tahun 450 SM.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup> Salah satu rujukan yang dianggap mewakili keberadaan paspor ditemukan dalam kitab suci, yaitu <a class="wp" href="https://id.wikipedia.org/wiki/Nehemia" target="_blank" rel="noopener">Nehemia</a> 2:7&ndash;9: Nehemia, perwakilan Raja <a class="wp" href="https://id.wikipedia.org/wiki/Artahsasta_I" target="_blank" rel="noopener">Artahsasta I</a> dari Persia, diperintahkan pergi ke <a class="wp" href="https://id.wikipedia.org/wiki/Yudea" target="_blank" rel="noopener">Yudea</a>, dan Raja memberinya sebuah surat kepada &ldquo;para pemimpin di seberang sungai&rdquo; yang meminta jaminan keselamatan bagi Nehemia selama ia menjelajahi daerah tersebut.</p>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Papirus Arab"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg?width=420" alt="Papirus Arab dengan izin keluar, 722 SM" loading="eager" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Papirus Arab.</strong> <a class="wp" href="https://id.wikipedia.org/wiki/Papirus" target="_blank" rel="noopener">Papirus</a> Arab dengan izin keluar, tertanggal 24 Januari 722 M, menunjuk pada pengaturan kegiatan perjalanan. Dari <a class="wp" href="https://id.wikipedia.org/wiki/Hermopolis" target="_blank" rel="noopener">Hermopolis</a> Magna, <a class="wp" href="https://id.wikipedia.org/wiki/Mesir" target="_blank" rel="noopener">Mesir</a>.<span class="credit">CC BY-SA 4.0 · Osama Shukir Muhammed Amin FRCP(Glasg) · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:First_Japanese_passport_1866.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/First_Japanese_passport_1866.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Jepang pertama"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/First_Japanese_passport_1866.jpg?width=420" alt="Paspor Jepang pertama tahun 1866" loading="eager" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Jepang pertama.</strong> Paspor Jepang pertama tahun 1866.<span class="credit">CC BY-SA 3.0 · World Imaging · Wikimedia Commons</span></figcaption>
+        </figure>
+        <h3>Asal kata</h3>
+        <p>Istilah <em>paspor</em> mungkin berasal dari dokumen yang diperlukan di beberapa negara bagian Italia pada abad pertengahan, dari frasa Italia <em>passa porto</em> (&ldquo;melewati pelabuhan&rdquo;) atau <em>passa porte</em> (&ldquo;melewati gerbang&rdquo;).<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup> Dokumen semacam itu dikeluarkan oleh penguasa setempat bagi pelancong asing dan umumnya berisi daftar kota yang boleh dimasuki atau dilewati pemegangnya.<sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup></p>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Italian_passport_1872.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Italian_passport_1872.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Italia"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Italian_passport_1872.jpg?width=420" alt="Paspor Italia tahun 1872" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Italia.</strong> Paspor Italia tahun 1872 untuk Giovanni Lepetich.<span class="credit">CC0 1.0 · Crash48 · Wikimedia Commons</span></figcaption>
+        </figure>
+        <h3>Menuju paspor modern</h3>
+        <p>Pada 1920, Konferensi Paris yang diselenggarakan <a class="wp" href="https://id.wikipedia.org/wiki/Liga_Bangsa-Bangsa" target="_blank" rel="noopener">Liga Bangsa-Bangsa</a> membahas paspor, dan paspor modern disebut mulai distandarisasi sejak tahun itu. Antara 1922 dan 1938, Liga menerbitkan <a class="wp" href="https://id.wikipedia.org/wiki/Paspor_Nansen" target="_blank" rel="noopener">Paspor Nansen</a> bagi pengungsi tanpa kewarganegaraan.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></p>
+        <h3>Paspor masa kini</h3>
+        <p>Paspor adalah dokumen perjalanan resmi yang dikeluarkan oleh pemerintah dan menyatakan identitas serta kewarganegaraan seseorang untuk perjalanan internasional. Paspor memungkinkan pemegangnya memasuki dan tinggal sementara di negara asing, mengakses bantuan dan perlindungan setempat, serta memperoleh bantuan konsuler dari pemerintahnya.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup><sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup></p>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:QingPassport.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/QingPassport.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Tiongkok"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/QingPassport.jpg?width=420" alt="Paspor Tiongkok tahun 1898" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Tiongkok.</strong> Paspor Tiongkok dari <a class="wp" href="https://id.wikipedia.org/wiki/Dinasti_Qing" target="_blank" rel="noopener">Dinasti Qing</a>, Tahun ke-24 Pemerintahan <a class="wp" href="https://id.wikipedia.org/wiki/Guangxu" target="_blank" rel="noopener">Guangxu</a>, 1898.<span class="credit">Domain publik · 呂海寰 (Lü Haihuan) · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Ottoman-russian-empire-passport.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Ottoman-russian-empire-passport.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Ottoman (passavant)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ottoman-russian-empire-passport.jpg?width=420" alt="Paspor Ottoman (passavant)" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Ottoman (passavant).</strong> Paspor Ottoman (passavant) yang dikeluarkan untuk subjek Rusia, tertanggal 24 Juli 1900.<span class="credit">CC BY-SA 3.0 · FurkanYalcin3 · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:WW2_Spanish_official_passport.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/WW2_Spanish_official_passport.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Spanyol era Perang Dunia II"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/WW2_Spanish_official_passport.jpg?width=420" alt="Paspor Spanyol era Perang Dunia II" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Spanyol era Perang Dunia II.</strong> Paspor resmi Spanyol pada masa <a class="wp" href="https://id.wikipedia.org/wiki/Perang_Dunia_II" target="_blank" rel="noopener">Perang Dunia II</a> yang dikeluarkan pada akhir tahun 1944 dan digunakan selama enam bulan terakhir perang oleh seorang pejabat yang dikirim ke Berlin.<span class="credit">Domain publik · Huddyhuddy · Wikimedia Commons</span></figcaption>
+        </figure>
+      </aside>
+    </div>
+    <footer class="folio odd">1</footer>
+  </section>
+
+  <section class="sheet" id="garis-waktu">
+    <div class="page full">
+      <div class="main c1">
+        <p><span class="hw">Garis Waktu</span> Tonggak-tonggak penting dalam perjalanan paspor, dari surat jaminan keselamatan kuno hingga paspor elektronik.</p>
+      </div>
+    </div>
+    <ol class="timeline">
+        <li><span class="tl-year">±450 SM</span><span class="tl-title">Surat jaminan Nehemia</span> <span class="tl-text">Raja Artahsasta I dari Persia memberi Nehemia surat yang meminta jaminan keselamatan perjalanan; sering dianggap salah satu rujukan paling awal tentang paspor.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">202 SM–9 M</span><span class="tl-title">Birokrasi Tiongkok</span> <span class="tl-text">Di Tiongkok, paspor sudah menjadi bagian dari birokrasi sejak masa Dinasti Han Barat.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">722 M</span><span class="tl-title">Izin keluar dari Hermopolis Magna</span> <span class="tl-text">Papirus Arab bertanggal 24 Januari 722 M memuat izin keluar yang mengatur kegiatan perjalanan.<sup class="fn"><a href="#ref-3" aria-label="Sumber 3">[3]</a></sup></span></li>
+        <li><span class="tl-year">1414</span><span class="tl-title">Paspor Inggris dalam undang-undang</span> <span class="tl-text">Henry V dianggap sebagai pencipta paspor Inggris pertama; rujukan paling awalnya tercatat dalam Undang-Undang Parlemen tahun 1414.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">1866</span><span class="tl-title">Paspor Jepang pertama</span> <span class="tl-text">Paspor Jepang pertama yang terdokumentasi di Commons bertanggal 1866.<sup class="fn"><a href="#ref-4" aria-label="Sumber 4">[4]</a></sup></span></li>
+        <li><span class="tl-year">1872</span><span class="tl-title">Paspor Italia</span> <span class="tl-text">Paspor Italia yang dikeluarkan pada 1872 untuk Giovanni Lepetich.<sup class="fn"><a href="#ref-5" aria-label="Sumber 5">[5]</a></sup></span></li>
+        <li><span class="tl-year">1898</span><span class="tl-title">Paspor Dinasti Qing</span> <span class="tl-text">Paspor dari Tahun ke-24 Pemerintahan Guangxu.<sup class="fn"><a href="#ref-6" aria-label="Sumber 6">[6]</a></sup></span></li>
+        <li><span class="tl-year">1914</span><span class="tl-title">Foto menjadi wajib</span> <span class="tl-text">Undang-Undang Kewarganegaraan dan Status Orang Asing Inggris mewajibkan foto dalam paspor.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">1920</span><span class="tl-title">Konferensi Paris</span> <span class="tl-text">Konferensi Paris Liga Bangsa-Bangsa membahas paspor; paspor modern disebut distandarisasi pada tahun ini.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">1922–1938</span><span class="tl-title">Paspor Nansen</span> <span class="tl-text">Liga Bangsa-Bangsa menerbitkan paspor Nansen bagi pengungsi tanpa kewarganegaraan.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">1944</span><span class="tl-title">Paspor Spanyol di akhir perang</span> <span class="tl-text">Paspor resmi Spanyol yang dikeluarkan pada akhir 1944 dan dipakai seorang pejabat yang dikirim ke Berlin.<sup class="fn"><a href="#ref-7" aria-label="Sumber 7">[7]</a></sup></span></li>
+        <li><span class="tl-year">1980</span><span class="tl-title">Standar ICAO</span> <span class="tl-text">Standardisasi paspor di bawah ICAO, termasuk standar paspor terbaca mesin.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></span></li>
+        <li><span class="tl-year">1998</span><span class="tl-title">Era paspor biometrik</span> <span class="tl-text">Sejak tahun ini banyak negara beralih ke paspor biometrik.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup><sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup></span></li>
+        <li><span class="tl-year">26 Jan 2011</span><span class="tl-title">Paspor elektronik Indonesia</span> <span class="tl-text">Paspor elektronik (biometrik) Indonesia diluncurkan di kantor imigrasi Jakarta Barat, Soekarno-Hatta, dan Jakarta Pusat.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></span></li>
+        <li><span class="tl-year">12 Okt 2022</span><span class="tl-title">Paspor biasa berlaku 10 tahun</span> <span class="tl-text">Masa berlaku paspor biasa Indonesia untuk pemohon 17 tahun ke atas menjadi 10 tahun.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></span></li>
+        <li><span class="tl-year">Juli 2024</span><span class="tl-title">Lebih dari 150 yurisdiksi</span> <span class="tl-text">Lebih dari 150 yurisdiksi menerbitkan paspor elektronik.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup><sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup></span></li>
+        <li><span class="tl-year">17 Agu 2024</span><span class="tl-title">Paspor merah putih diperkenalkan</span> <span class="tl-text">Desain baru paspor Indonesia berwarna merah dengan 33 motif kain tradisional Nusantara diperkenalkan, menggantikan desain sebelumnya yang didominasi warna hijau.<sup class="fn"><a href="#ref-9" aria-label="Sumber 9">[9]</a></sup></span></li>
+        <li><span class="tl-year">18 Jul 2025</span><span class="tl-title">Penerapan desain baru ditunda</span> <span class="tl-text">Ditjen Imigrasi menunda penerapan paspor desain merah putih yang semula direncanakan 17 Agustus 2025, dengan alasan efisiensi anggaran dan masukan publik.<sup class="fn"><a href="#ref-10" aria-label="Sumber 10">[10]</a></sup><sup class="fn"><a href="#ref-9" aria-label="Sumber 9">[9]</a></sup></span></li>
+        <li><span class="tl-year">2026</span><span class="tl-title">Singapura di puncak Indeks Henley</span> <span class="tl-text">Indeks Paspor Henley edisi 2026 menempatkan Singapura di peringkat 1 dengan akses ke 192 destinasi.<sup class="fn"><a href="#ref-11" aria-label="Sumber 11">[11]</a></sup></span></li>
+    </ol>
+    <footer class="folio even">2</footer>
+  </section>
+
+  <section class="sheet" id="peringkat">
+    <div class="page">
+      <div class="main">
+        <p><span class="hw">Peringkat Kekuatan Paspor</span> Warna sampul paspor tiap negara dapat dilihat pada peta di samping. Kekuatan sebuah paspor biasanya diukur dari jumlah negara yang dapat dimasuki pemegangnya tanpa visa, dan salah satu rujukan yang paling sering dipakai adalah Indeks Paspor Henley yang disusun oleh <a class="wp" href="https://id.wikipedia.org/wiki/Henley_%26_Partners" target="_blank" rel="noopener">Henley &amp; Partners</a>.<sup class="fn"><a href="#ref-11" aria-label="Sumber 11">[11]</a></sup><sup class="fn"><a href="#ref-12" aria-label="Sumber 12">[12]</a></sup></p>
+        <p>Pada edisi 2026, paspor Indonesia berada di peringkat 64 dengan akses ke 70 destinasi tanpa visa di muka (bebas visa atau visa saat kedatangan).<sup class="fn"><a href="#ref-11" aria-label="Sumber 11">[11]</a></sup> Daftar peringkat berikut menunjukkan sepuluh peringkat teratas.</p>
+        <div class="chart" data-rtext="Tabel. Indeks Paspor Henley, 2026. Peringkat 1: Singapura. Peringkat 2: Jepang, Korea Selatan, Uni Emirat Arab. Peringkat 3: Swedia. Peringkat 4: Belgia, Denmark, Finlandia, Prancis, Jerman, Irlandia, Italia, Luksemburg, Belanda, Norwegia, Spanyol, Swiss. Peringkat 5: Austria, Yunani, Malta, Portugal. Peringkat 6: Hungaria, Malaysia, Polandia, Inggris Raya. Peringkat 7: Australia, Kanada, Ceko, Latvia, Selandia Baru, Slovakia, Slovenia. Peringkat 8: Kroasia, Estonia. Peringkat 9: Liechtenstein, Lituania. Peringkat 10: Islandia, Amerika Serikat. Peringkat 64: Indonesia.">
+          <h4>Indeks Paspor Henley, 2026</h4>
+          <table class="ranking">
+            <thead><tr><th scope="col">Peringkat</th><th scope="col">Negara</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Singapura</td></tr>
+              <tr><td>2</td><td>Jepang, Korea Selatan, Uni Emirat Arab</td></tr>
+              <tr><td>3</td><td>Swedia</td></tr>
+              <tr><td>4</td><td>Belgia, Denmark, Finlandia, Prancis, Jerman, Irlandia, Italia, Luksemburg, Belanda, Norwegia, Spanyol, Swiss</td></tr>
+              <tr><td>5</td><td>Austria, Yunani, Malta, Portugal</td></tr>
+              <tr><td>6</td><td>Hungaria, Malaysia, Polandia, Inggris Raya</td></tr>
+              <tr><td>7</td><td>Australia, Kanada, Ceko, Latvia, Selandia Baru, Slovakia, Slovenia</td></tr>
+              <tr><td>8</td><td>Kroasia, Estonia</td></tr>
+              <tr><td>9</td><td>Liechtenstein, Lituania</td></tr>
+              <tr><td>10</td><td>Islandia, Amerika Serikat</td></tr>
+              <tr class="gap"><td>…</td><td>…</td></tr>
+              <tr class="me"><td>64</td><td>Indonesia</td></tr>
+            </tbody>
+          </table>
+          <p class="src">Mengikuti tabel edisi 2026 di Wikipedia; peringkat berubah setiap kuartal, angka terbaru ada di situs Henley &amp; Partners.<sup class="fn"><a href="#ref-12" aria-label="Sumber 12">[12]</a></sup></p>
         </div>
-    </footer>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Passport_design_world_map.png" data-viewer data-type="image" data-full="https://upload.wikimedia.org/wikipedia/commons/archive/2/23/20160306194155%21Passport_design_world_map.png" target="_blank" rel="noopener" aria-label="Perbesar: Warna sampul paspor"><img src="https://upload.wikimedia.org/wikipedia/commons/archive/2/23/20160306194155%21Passport_design_world_map.png" alt="Peta dunia desain paspor" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Warna sampul paspor.</strong> Peta dunia berdasarkan warna sampul paspor tiap negara.<span class="credit">CC BY-SA 4.0 · Twofortnights · Wikimedia Commons</span></figcaption>
+        </figure>
+      </aside>
+    </div>
+    <footer class="folio odd">3</footer>
+  </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const swipers = document.querySelectorAll('.swiper');
-            swipers.forEach(swiperElement => {
-                new Swiper(swiperElement, {
-                    loop: true,
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true
-                    },
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    }
-                });
-            });
+  <section class="sheet" id="jenis">
+    <div class="page">
+      <div class="main">
+        <p><span class="hw">Jenis Paspor</span> Jenis yang paling umum adalah paspor biasa yang diterbitkan untuk warga negara perorangan. Di masa lalu, beberapa negara menerbitkan paspor kolektif atau paspor keluarga; kini paspor umumnya diterbitkan untuk pelancong perorangan, bukan untuk kelompok.<sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup><sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup> Selain paspor biasa yang diterbitkan pemerintah nasional untuk warganya, ada berbagai jenis paspor lain yang diterbitkan dalam situasi tertentu, yaitu:</p>
+        <div class="box">
+          <h4>Paspor untuk situasi khusus</h4>
+          <ul>
+            <li>Paspor Darurat</li>
+            <li>Paspor Diplomatik</li>
+            <li>Paspor Regional</li>
+            <li>Paspor Haji</li>
+            <li>Paspor Pengungsi</li>
+            <li>Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan</li>
+          </ul>
+        </div>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Paspor.JPG" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Paspor.JPG?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Reguler"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Paspor.JPG?width=420" alt="Paspor Reguler" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Reguler.</strong> paspor biasa yang diterbitkan negara untuk warga negaranya.<span class="credit">Domain publik · ZakiriFadhlan · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:United_States_emergency_passport.svg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/United_States_emergency_passport.svg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Darurat"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/United_States_emergency_passport.svg?width=420" alt="Paspor Darurat" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Darurat.</strong> Paspor darurat (juga disebut paspor sementara) dikeluarkan untuk orang-orang dengan kebutuhan mendesak untuk bepergian yang tidak memiliki paspor.<span class="credit">Domain publik · DeliciousBoson · Wikimedia Commons</span></figcaption>
+        </figure>
+        <h3>Paspor biometrik</h3>
+        <p>Sejak tahun 1998, banyak negara telah beralih ke <a class="wp" href="https://id.wikipedia.org/wiki/Paspor_biometrik" target="_blank" rel="noopener">paspor biometrik</a>: paspor yang memuat chip tertanam untuk menyimpan data pemegangnya dan melindungi dari pemalsuan, dengan standar teknis mengikuti dokumen 9303 dari <a class="wp" href="https://id.wikipedia.org/wiki/Organisasi_Penerbangan_Sipil_Internasional" target="_blank" rel="noopener">Organisasi Penerbangan Sipil Internasional</a> (ICAO).<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup><sup class="fn"><a href="#ref-13" aria-label="Sumber 13">[13]</a></sup> Hingga Juli 2024, lebih dari 150 yurisdiksi menerbitkan <em>e-paspor</em> tersebut; paspor nonbiometrik yang diterbitkan sebelumnya biasanya tetap berlaku hingga kedaluwarsa.<sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup></p>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Indonesian_Diplomatic_Passport.png" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Indonesian_Diplomatic_Passport.png?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Diplomatik"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Indonesian_Diplomatic_Passport.png?width=420" alt="Paspor Diplomatik" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Diplomatik.</strong> Berdasarkan <a class="wp" href="https://id.wikipedia.org/wiki/Konvensi_Wina_tentang_Hubungan_Diplomatik" target="_blank" rel="noopener">Konvensi Wina tentang Hubungan Diplomatik</a>, Konvensi Wina tentang Hubungan Konsuler, dan kekebalan yang diberikan kepada pejabat negara asing berdasarkan kebiasaan internasional, diplomat dan individu lain yang bepergian untuk urusan pemerintahan diberikan paspor khusus yang menunjukkan status mereka.<span class="credit">Domain publik · Amadhannn · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Macau_Sar_Passport_Old_and_New_Style.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Macau_Sar_Passport_Old_and_New_Style.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Regional"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Macau_Sar_Passport_Old_and_New_Style.jpg?width=420" alt="Paspor Regional" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Regional.</strong> Republik Rakyat Tiongkok (RRT) memberi wewenang kepada Daerah Administratif Khusus <a class="wp" href="https://id.wikipedia.org/wiki/Hong_Kong" target="_blank" rel="noopener">Hong Kong</a> dan <a class="wp" href="https://id.wikipedia.org/wiki/Makau" target="_blank" rel="noopener">Makau</a> untuk menerbitkan paspor bagi penduduk tetap mereka yang berkewarganegaraan Tiongkok berdasarkan pengaturan &ldquo;satu negara, dua sistem&rdquo;.<span class="credit">Domain publik · Direcção dos Serviços de Identificação (Macau SAR) · Wikimedia Commons</span></figcaption>
+        </figure>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Indonesian_Hajj_Passport.png" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Indonesian_Hajj_Passport.png?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Haji"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Indonesian_Hajj_Passport.png?width=420" alt="Paspor Haji" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Haji.</strong> Khusus jamaah <a class="wp" href="https://id.wikipedia.org/wiki/Haji" target="_blank" rel="noopener">haji</a> dan umrah, nama yang tertera dalam paspor harus menggunakan 3 kata misalnya &ldquo;Affandy bin Muradi&rdquo;.<span class="credit">Domain publik · Amadhannn · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Ukrainian_refugee_travel_document.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Ukrainian_refugee_travel_document.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Pengungsi"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ukrainian_refugee_travel_document.jpg?width=420" alt="Paspor Pengungsi" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Pengungsi.</strong> Dokumen perjalanan <a class="wp" href="https://id.wikipedia.org/wiki/Pengungsi" target="_blank" rel="noopener">pengungsi</a> (juga disebut dokumen perjalanan Konvensi 1951 atau paspor Jenewa) adalah dokumen perjalanan yang dikeluarkan untuk pengungsi oleh negara tempat mereka tinggal, yang memungkinkan mereka untuk bepergian ke luar negara bagian tersebut dan kembali ke sana.<span class="credit">Domain publik · Kabinet Menteri Ukraina · Wikimedia Commons</span></figcaption>
+        </figure>
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Passaportoordinemalta.png" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Passaportoordinemalta.png?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Passaportoordinemalta.png?width=420" alt="Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor yang diterbitkan oleh entitas tanpa wilayah kedaulatan.</strong> Beberapa entitas tanpa wilayah kedaulatan menerbitkan dokumen yang disebut paspor, yang paling menonjol adalah Liga Iroquois, Pemerintah Sementara Aborigin di Australia dan <a class="wp" href="https://id.wikipedia.org/wiki/Ordo_Militer_Berdaulat_Malta" target="_blank" rel="noopener">Ordo Militer Berdaulat Malta</a>.<span class="credit">CC BY · Cav. Marco Lo Giudice · Wikimedia Commons</span></figcaption>
+        </figure>
+      </aside>
+    </div>
+    <footer class="folio even">4</footer>
+  </section>
+
+  <section class="sheet" id="anatomi">
+    <div class="page">
+      <div class="main">
+        <p><span class="hw">Anatomi Paspor</span> Halaman data paspor modern mengikuti tata letak yang distandarkan oleh <a class="wp" href="https://id.wikipedia.org/wiki/Organisasi_Penerbangan_Sipil_Internasional" target="_blank" rel="noopener">Organisasi Penerbangan Sipil Internasional (ICAO)</a> dalam dokumen 9303, yang oleh ISO dan IEC juga dikenal sebagai ISO/IEC 7501-1.<sup class="fn"><a href="#ref-14" aria-label="Sumber 14">[14]</a></sup><sup class="fn"><a href="#ref-15" aria-label="Sumber 15">[15]</a></sup> Dengan format yang seragam, pemeriksaan di perbatasan menjadi lebih cepat dan keamanannya lebih baik.<sup class="fn"><a href="#ref-14" aria-label="Sumber 14">[14]</a></sup></p>
+        <figure class="wide diagram">
+          <div class="svgbox"><svg viewBox="0 0 680 430" role="img" aria-label="Ilustrasi halaman data paspor dengan delapan bagian bernomor"><rect x="1" y="1" width="678" height="428" rx="10" class="pg"/><text class="hd" x="24" y="32">PASPOR &#183; PASSPORT</text><text class="hd r" x="656" y="32">CONTOH &#183; SPECIMEN</text><line x1="24" y1="42" x2="656" y2="42" class="ln"/><rect x="24" y="58" width="148" height="188" class="ph"/><circle cx="98" cy="124" r="30" class="sil"/><path d="M42 246c4-52 28-72 56-72s52 20 56 72z" class="sil"/><text class="fl" x="196" y="62">Jenis / Type</text><text class="fv" x="196" y="79">P</text><text class="fl" x="262" y="62">Kode negara / Country</text><text class="fv" x="262" y="79">IDN</text><text class="fl" x="400" y="62">No. paspor / Passport No.</text><text class="fv" x="400" y="79">X1234567</text><text class="fl" x="196" y="100">Nama keluarga / Surname</text><text class="fv" x="196" y="117">CONTOH</text><text class="fl" x="196" y="138">Nama diri / Given names</text><text class="fv" x="196" y="155">NAMA PERTAMA</text><text class="fl" x="196" y="176">Kewarganegaraan / Nationality</text><text class="fv" x="196" y="193">INDONESIA</text><text class="fl" x="400" y="176">Tanggal lahir / Date of birth</text><text class="fv" x="400" y="193">01 JAN 1990</text><text class="fl" x="560" y="176">Jenis kelamin / Sex</text><text class="fv" x="560" y="193">M</text><text class="fl" x="196" y="214">Tempat lahir / Place of birth</text><text class="fv" x="196" y="231">JAKARTA</text><text class="fl" x="400" y="214">Tanggal terbit / Date of issue</text><text class="fv" x="400" y="231">01 JAN 2023</text><text class="fl" x="196" y="252">Otoritas / Authority</text><text class="fv" x="196" y="269">IMIGRASI JAKARTA</text><text class="fl" x="400" y="252">Tanggal berlaku / Date of expiry</text><text class="fv" x="400" y="269">01 JAN 2033</text><line x1="24" y1="270" x2="172" y2="270" class="ln"/><path d="M32 264c12-20 18 8 30-6s14 12 26-2 18 6 28-4" class="sig"/><text class="fl" x="24" y="284">Tanda tangan / Signature</text><rect x="14" y="298" width="652" height="116" rx="6" class="mz"/><text class="mt" x="30" y="346" textLength="620" lengthAdjust="spacing">P&lt;IDNCONTOH&lt;&lt;NAMA&lt;PERTAMA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</text><text class="mt" x="30" y="388" textLength="620" lengthAdjust="spacing">X1234567&lt;7IDN9001011M3301018&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;02</text><g class="co" transform="translate(24 58)"><circle r="11"/><text y="4.5" text-anchor="middle">1</text></g><g class="co" transform="translate(184 56)"><circle r="11"/><text y="4.5" text-anchor="middle">2</text></g><g class="co" transform="translate(184 94)"><circle r="11"/><text y="4.5" text-anchor="middle">3</text></g><g class="co" transform="translate(184 170)"><circle r="11"/><text y="4.5" text-anchor="middle">4</text></g><g class="co" transform="translate(184 208)"><circle r="11"/><text y="4.5" text-anchor="middle">5</text></g><g class="co" transform="translate(384 208)"><circle r="11"/><text y="4.5" text-anchor="middle">6</text></g><g class="co" transform="translate(184 246)"><circle r="11"/><text y="4.5" text-anchor="middle">6</text></g><g class="co" transform="translate(176 272)"><circle r="11"/><text y="4.5" text-anchor="middle">7</text></g><g class="co" transform="translate(24 298)"><circle r="11"/><text y="4.5" text-anchor="middle">8</text></g></svg></div>
+          <figcaption><strong>Halaman data paspor.</strong> Ilustrasi fiktif yang disederhanakan; nama, nomor, dan tanggalnya hanya contoh.<span class="credit">Ilustrasi buatan penyusun halaman</span></figcaption>
+        </figure>
+        <ol class="legend" aria-label="Keterangan bagian bernomor">
+          <li>Foto pemegang paspor</li>
+          <li>Jenis dokumen (P berarti paspor), kode negara penerbit, dan nomor paspor</li>
+          <li>Nama keluarga dan nama diri</li>
+          <li>Kewarganegaraan, tanggal lahir, dan jenis kelamin</li>
+          <li>Tempat lahir</li>
+          <li>Tanggal terbit, tanggal berlaku, dan otoritas penerbit</li>
+          <li>Tanda tangan pemegang paspor</li>
+          <li>Zona terbaca mesin (MRZ): dua baris, masing-masing 44 karakter</li>
+        </ol>
+        <h3>Membaca zona terbaca mesin</h3>
+        <p>Zona terbaca mesin (MRZ) biasanya berada di dasar halaman data dan terdiri atas 2 baris, masing-masing 44 karakter.<sup class="fn"><a href="#ref-14" aria-label="Sumber 14">[14]</a></sup> Hanya huruf A&ndash;Z, angka 0&ndash;9, dan tanda pengisi <b>&lt;</b> yang dipakai; tanda pengisi menggantikan spasi dan tanda baca lain.<sup class="fn"><a href="#ref-15" aria-label="Sumber 15">[15]</a></sup> Contoh fiktif di bawah memakai digit pemeriksa yang dihitung dengan benar.</p>
+        <pre class="mrz" data-rtext="Contoh zona terbaca mesin: dua baris, masing-masing 44 karakter, memuat jenis dokumen, kode negara, nama, nomor paspor, kewarganegaraan, tanggal lahir, jenis kelamin, tanggal berlaku, dan digit pemeriksa. Tanda lebih kecil adalah pengisi." aria-label="Contoh dua baris zona terbaca mesin"><span class="m-doc">P</span><span class="m-sub">&lt;</span><span class="m-cty">IDN</span><span class="m-name">CONTOH&lt;&lt;NAMA&lt;PERTAMA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+<span class="m-num">X1234567&lt;</span><span class="m-chk">7</span><span class="m-cty">IDN</span><span class="m-dob">900101</span><span class="m-chk">1</span><span class="m-sex">M</span><span class="m-exp">330101</span><span class="m-chk">8</span><span class="m-pers">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span><span class="m-chk">0</span><span class="m-chk">2</span></pre>
+        <div class="box">
+          <h4>Baris 1</h4>
+          <ul class="mrzkey">
+            <li><i class="sw m-doc"></i>Posisi 1: <b>P</b> berarti paspor</li>
+            <li><i class="sw m-sub"></i>Posisi 2: jenis paspor (opsional, bisa <b>&lt;</b>)</li>
+            <li><i class="sw m-cty"></i>Posisi 3&ndash;5: kode negara penerbit</li>
+            <li><i class="sw m-name"></i>Posisi 6&ndash;44: nama keluarga, dua pengisi, lalu nama diri</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h4>Baris 2</h4>
+          <ul class="mrzkey">
+            <li><i class="sw m-num"></i>Posisi 1&ndash;9: nomor paspor</li>
+            <li><i class="sw m-chk"></i>Posisi 10, 20, 28, 43, dan 44: digit pemeriksa</li>
+            <li><i class="sw m-cty"></i>Posisi 11&ndash;13: kewarganegaraan</li>
+            <li><i class="sw m-dob"></i>Posisi 14&ndash;19: tanggal lahir (TTBBHH)</li>
+            <li><i class="sw m-sex"></i>Posisi 21: jenis kelamin</li>
+            <li><i class="sw m-exp"></i>Posisi 22&ndash;27: tanggal berlaku (TTBBHH)</li>
+            <li><i class="sw m-pers"></i>Posisi 29&ndash;42: nomor pribadi</li>
+          </ul>
+        </div>
+        <p>Digit pemeriksa dihitung dengan bobot 7, 3, 1 yang berulang: angka bernilai sesuai angkanya, huruf A&ndash;Z bernilai 10 sampai 35, dan tanda pengisi bernilai 0. Jumlah semua hasil kali itu diambil sisa baginya terhadap 10.<sup class="fn"><a href="#ref-15" aria-label="Sumber 15">[15]</a></sup></p>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure class="diagram">
+          <div class="svgbox cover-svg"><svg viewBox="0 0 160 200" role="img" aria-label="Ilustrasi sampul paspor biometrik dengan simbol chip"><rect x="8" y="6" width="144" height="188" rx="8" fill="#1d3557" stroke="#0e1b2d" stroke-width="2"/><circle cx="80" cy="62" r="27" fill="none" stroke="#d4af37" stroke-width="2"/><polygon points="80,44 85,57 99,57 88,66 92,80 80,72 68,80 72,66 61,57 75,57" fill="#d4af37"/><text x="80" y="112" text-anchor="middle" font-size="17" font-weight="700" fill="#d4af37" letter-spacing="3">PASPOR</text><text x="80" y="130" text-anchor="middle" font-size="11" fill="#d4af37" letter-spacing="3">PASSPORT</text><rect x="62" y="152" width="36" height="22" rx="3" fill="none" stroke="#d4af37" stroke-width="2"/><circle cx="80" cy="163" r="6" fill="none" stroke="#d4af37" stroke-width="2"/></svg></div>
+          <figcaption><strong>Sampul paspor biometrik.</strong> Simbol persegi panjang berlingkaran di bagian bawah sampul menandai adanya chip tertanam. Standar ICAO menganjurkan wajah sebagai data biometrik utama, dengan sidik jari sebagai pendukung.<sup class="fn"><a href="#ref-13" aria-label="Sumber 13">[13]</a></sup><span class="credit">Ilustrasi buatan penyusun halaman</span></figcaption>
+        </figure>
+      </aside>
+    </div>
+    <footer class="folio odd">5</footer>
+  </section>
+
+  <section class="sheet" id="visa">
+    <div class="page">
+      <div class="main">
+        <p><span class="hw">Visa</span> Visa adalah dokumen izin masuk seseorang ke suatu negara yang dapat diperoleh di kedutaan atau konsulat negara tujuan.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup> Visa merupakan tanda bukti &ldquo;boleh berkunjung&rdquo; bagi penduduk suatu negara yang memasuki wilayah negara lain yang mempersyaratkan izin masuk. Bentuknya dapat berupa stiker visa yang diajukan di kedutaan atau konsulat negara yang akan dikunjungi, atau stempel pada paspor di negara tertentu.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup> Terdapat dua jenis visa, yaitu:</p>
+        <div class="box">
+          <h4>Jenis visa</h4>
+          <ul>
+            <li>Visa kunjungan saat kedatangan (<em>visa on-arrival</em>)</li>
+            <li>Visa kunjungan sebelum kedatangan (<em>visa pre-arrival</em>)</li>
+          </ul>
+        </div>
+        <h3>Bebas visa</h3>
+        <p>Pemegang paspor dari negara yang memiliki perjanjian bebas visa tidak memerlukan visa tambahan untuk masuk; paspornya distempel petugas <a class="wp" href="https://id.wikipedia.org/wiki/Imigrasi" target="_blank" rel="noopener">imigrasi</a> saat kedatangan. Sebagian negara tetap memberlakukan syarat lain, seperti tiket pulang.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup></p>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Stempel_Visa_di_Paspor_Indonesia.jpg" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Stempel_Visa_di_Paspor_Indonesia.jpg?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Visa"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Stempel_Visa_di_Paspor_Indonesia.jpg?width=420" alt="Visa" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Visa.</strong> Contoh visa berbentuk stempel di Paspor Indonesia.<span class="credit">CC BY-SA 4.0 · Affandy Murad · Wikimedia Commons</span></figcaption>
+        </figure>
+      </aside>
+    </div>
+    <footer class="folio even">6</footer>
+  </section>
+
+  <section class="sheet" id="indonesia">
+    <div class="page">
+      <div class="main">
+        <p><span class="hw">Paspor Indonesia</span> Paspor Indonesia diterbitkan oleh <a class="wp" href="https://id.wikipedia.org/wiki/Direktorat_Jenderal_Imigrasi" target="_blank" rel="noopener">Direktorat Jenderal Imigrasi</a>.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup> Selain paspor umum, dikenal pula paspor dinas dan paspor diplomatik yang diterbitkan <a class="wp" href="https://id.wikipedia.org/wiki/Kementerian_Luar_Negeri_Republik_Indonesia" target="_blank" rel="noopener">Kementerian Luar Negeri</a>.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></p>
+        <div class="chart" data-rtext="Tabel jenis paspor Indonesia. Paspor umum: sampul toska; diterbitkan Direktorat Jenderal Imigrasi. Paspor dinas: sampul biru; diterbitkan Kementerian Luar Negeri. Paspor diplomatik: sampul hitam; diterbitkan Kementerian Luar Negeri. Paspor haji: sampul hitam; diterbitkan Kementerian Agama; sudah tidak berlaku sejak 2009.">
+          <h4>Jenis paspor Indonesia</h4>
+          <table class="types-table">
+            <tbody>
+              <tr><td><i class="cv" style="background:#1fa7a0"></i></td><td><b>Paspor umum</b><span>sampul toska; diterbitkan Direktorat Jenderal Imigrasi</span></td></tr>
+              <tr><td><i class="cv" style="background:#1f4e9c"></i></td><td><b>Paspor dinas</b><span>sampul biru; diterbitkan Kementerian Luar Negeri</span></td></tr>
+              <tr><td><i class="cv" style="background:#15151a"></i></td><td><b>Paspor diplomatik</b><span>sampul hitam; diterbitkan Kementerian Luar Negeri</span></td></tr>
+              <tr><td><i class="cv" style="background:#15151a"></i></td><td><b>Paspor haji</b><span>sampul hitam; diterbitkan Kementerian Agama; sudah tidak berlaku sejak 2009</span></td></tr>
+            </tbody>
+          </table>
+          <p class="src">Warna sampul menurut Wikipedia.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></p>
+        </div>
+        <h3>Masa berlaku</h3>
+        <div class="box">
+          <h4>Paspor biasa</h4>
+          <ul>
+            <li>10 tahun untuk pemohon 17 tahun ke atas, berlaku sejak 12 Oktober 2022</li>
+            <li>5 tahun untuk pemohon di bawah 17 tahun</li>
+            <li>Paspor dari perwakilan di luar negeri umumnya 3 tahun, dapat diperpanjang 2 tahun<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></li>
+          </ul>
+        </div>
+        <h3>Desain paspor baru</h3>
+        <p>Desain paspor merah putih diperkenalkan pada 17 Agustus 2024, dengan sampul merah dan 33 motif kain tradisional Nusantara menggantikan desain sebelumnya yang didominasi warna hijau.<sup class="fn"><a href="#ref-9" aria-label="Sumber 9">[9]</a></sup> Penerapannya yang semula direncanakan pada 17 Agustus 2025 ditunda: Ditjen Imigrasi menyampaikan pada 18 Juli 2025 bahwa keputusan itu diambil demi efisiensi anggaran (Instruksi Presiden Nomor 1 Tahun 2025) dan sebagai tanggapan atas masukan publik, tanpa menyebut tanggal pengganti.<sup class="fn"><a href="#ref-10" aria-label="Sumber 10">[10]</a></sup><sup class="fn"><a href="#ref-9" aria-label="Sumber 9">[9]</a></sup> Pemberitaan Mei 2026 menyebut rencana desain baru itu kemudian dibatalkan.<sup class="fn"><a href="#ref-17" aria-label="Sumber 17">[17]</a></sup></p>
+        <h3>Paspor elektronik</h3>
+        <p><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_biometrik" target="_blank" rel="noopener">Paspor elektronik (biometrik)</a> Indonesia diluncurkan pada 26 Januari 2011 di kantor imigrasi Jakarta Barat, Soekarno-Hatta, dan Jakarta Pusat. Sejak 1 Desember 2024, pemerintah bertahap beralih ke 100 persen paspor elektronik.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></p>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure>
+          <a class="thumb" href="https://commons.wikimedia.org/wiki/File:Indonesian_Passport_(2025).png" data-viewer data-type="image" data-full="https://commons.wikimedia.org/wiki/Special:FilePath/Indonesian_Passport_(2025).png?width=1600" target="_blank" rel="noopener" aria-label="Perbesar: Paspor Indonesia, desain merah putih"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Indonesian_Passport_(2025).png?width=420" alt="Paspor Indonesia desain merah putih" loading="lazy" decoding="async"><span class="zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></span></a>
+          <figcaption><strong>Paspor Indonesia, desain merah putih.</strong> Desain yang diperkenalkan pada 17 Agustus 2024; penerapannya yang direncanakan pada 17 Agustus 2025 ditunda oleh Ditjen Imigrasi.<span class="credit">Domain publik · ColdCuzAC · Wikimedia Commons</span></figcaption>
+        </figure>
+        <div class="chart" data-rtext="Bagan. Kekuatan paspor negara ASEAN, edisi 2026, berupa jumlah destinasi tanpa visa di muka dan peringkat dunia. Singapura: 192 destinasi, peringkat 1. Malaysia: 183 destinasi, peringkat 6. Brunei: 163 destinasi, peringkat 17. Thailand: 76 destinasi, peringkat 59. Indonesia: 70 destinasi, peringkat 64. Filipina: 65 destinasi, peringkat 69. Vietnam: 48 destinasi, peringkat 85.">
+          <h4>Paspor ASEAN, 2026</h4>
+          <div class="bars">
+          <div class="bar-row"><span class="bl">Singapura</span><span class="bar"><i style="width:100.0%"></i></span><span class="bv"><b>192</b> <em>#1</em></span></div>
+          <div class="bar-row"><span class="bl">Malaysia</span><span class="bar"><i style="width:95.3%"></i></span><span class="bv"><b>183</b> <em>#6</em></span></div>
+          <div class="bar-row"><span class="bl">Brunei</span><span class="bar"><i style="width:84.9%"></i></span><span class="bv"><b>163</b> <em>#17</em></span></div>
+          <div class="bar-row"><span class="bl">Thailand</span><span class="bar"><i style="width:39.6%"></i></span><span class="bv"><b>76</b> <em>#59</em></span></div>
+          <div class="bar-row me"><span class="bl">Indonesia</span><span class="bar"><i style="width:36.5%"></i></span><span class="bv"><b>70</b> <em>#64</em></span></div>
+          <div class="bar-row"><span class="bl">Filipina</span><span class="bar"><i style="width:33.9%"></i></span><span class="bv"><b>65</b> <em>#69</em></span></div>
+          <div class="bar-row"><span class="bl">Vietnam</span><span class="bar"><i style="width:25.0%"></i></span><span class="bv"><b>48</b> <em>#85</em></span></div>
+          </div>
+          <p class="src">Jumlah destinasi tanpa visa di muka; angka berawalan # = peringkat dunia.<sup class="fn"><a href="#ref-11" aria-label="Sumber 11">[11]</a></sup><sup class="fn"><a href="#ref-12" aria-label="Sumber 12">[12]</a></sup></p>
+        </div>
+      </aside>
+    </div>
+    <footer class="folio odd">7</footer>
+  </section>
+
+  <section class="sheet" id="istilah">
+    <div class="page full">
+      <div class="main c3 gloss">
+        <p class="first"><span class="hw">Istilah Penting</span> Daftar istilah yang sering muncul di sekitar paspor dan perjalanan lintas negara. Istilah yang bertaut membawa Anda ke artikelnya di Wikipedia bahasa Indonesia.</p>
+        <p><span class="hw">Bebas visa</span> Kebijakan berdasarkan perjanjian antarnegara yang membuat pemegang paspor tidak memerlukan visa tambahan untuk masuk. Sebagian negara tetap memberlakukan syarat lain, seperti tiket pulang.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Cekal" target="_blank" rel="noopener">Cekal</a></span> Singkatan dari cegah-tangkal: penolakan sementara oleh pejabat imigrasi terhadap orang yang terkena pencegahan keluar negeri atau penangkalan masuk. Keduanya tidak berlaku selamanya; berakhir bila masa habis, dicabut pejabat berwenang, atau dicabut berdasarkan putusan PTUN.<sup class="fn"><a href="#ref-18" aria-label="Sumber 18">[18]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_biometrik" target="_blank" rel="noopener">E-paspor</a></span> Nama lain paspor biometrik: paspor yang memakai data biometrik sebagai salah satu unsur pengamannya, disimpan dalam chip tertanam. Standar ICAO menganjurkan wajah sebagai data utama dan sidik jari sebagai pendukung.<sup class="fn"><a href="#ref-13" aria-label="Sumber 13">[13]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Kewarganegaraan_ganda" target="_blank" rel="noopener">Kewarganegaraan ganda</a></span> Status seseorang yang secara hukum menjadi warga negara sah di beberapa negara sekaligus, karena tiap negara memiliki syarat kewarganegaraan yang berbeda.<sup class="fn"><a href="#ref-19" aria-label="Sumber 19">[19]</a></sup></p>
+        <p><span class="hw">Laissez-passer</span> Dokumen perjalanan yang diterbitkan pemerintah suatu negara atau organisasi internasional, misalnya laissez-passer PBB.<sup class="fn"><a href="#ref-20" aria-label="Sumber 20">[20]</a></sup></p>
+        <p><span class="hw">Paspor diplomatik</span> Paspor khusus yang diberikan kepada diplomat dan individu lain yang bepergian untuk urusan pemerintahan, sebagai tanda status mereka.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_Nansen" target="_blank" rel="noopener">Paspor Nansen</a></span> Dokumen perjalanan yang diakui secara internasional, resminya disebut &ldquo;paspor orang tanpa negara&rdquo;, bagi pengungsi tanpa kewarganegaraan. Liga Bangsa-Bangsa menerbitkannya antara 1922 dan 1938; namanya diambil dari Fridtjof Nansen.<sup class="fn"><a href="#ref-21" aria-label="Sumber 21">[21]</a></sup><sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Perjanjian_Schengen" target="_blank" rel="noopener">Perjanjian Schengen</a></span> Perjanjian antarnegara Eropa yang menghapus pemeriksaan di perbatasan antarnegara anggota. Ditandatangani di Schengen, Luksemburg, pada 1985.<sup class="fn"><a href="#ref-22" aria-label="Sumber 22">[22]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Persona_non_grata" target="_blank" rel="noopener">Persona non grata</a></span> Istilah Latin yang berarti &ldquo;orang yang tidak diinginkan&rdquo;. Menurut Pasal 9 <a class="wp" href="https://id.wikipedia.org/wiki/Konvensi_Wina_tentang_Hubungan_Diplomatik" target="_blank" rel="noopener">Konvensi Wina tentang Hubungan Diplomatik</a>, negara penerima dapat menyatakan seseorang persona non grata kapan saja tanpa harus menjelaskan alasannya; orang itu tidak boleh berada di negara tersebut dan harus pergi bila sudah berada di sana.<sup class="fn"><a href="#ref-23" aria-label="Sumber 23">[23]</a></sup></p>
+        <p><span class="hw">Safe conduct</span> Jaminan keselamatan bagi seseorang yang melintasi wilayah suatu negara; pada masa konflik, berupa dokumen yang diterbitkan suatu negara agar orang itu dapat melintasi wilayahnya dengan aman.<sup class="fn"><a href="#ref-24" aria-label="Sumber 24">[24]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Tak_bernegara" target="_blank" rel="noopener">Tak bernegara</a></span> Keadaan seseorang yang tidak dianggap sebagai warga negara oleh suatu negara berdasarkan hukumnya (<em>statelessness</em>).<sup class="fn"><a href="#ref-25" aria-label="Sumber 25">[25]</a></sup></p>
+        <p><span class="hw">Visa saat kedatangan</span> (<em>visa on-arrival</em>) Visa yang dapat diperoleh langsung di perbatasan antarnegara atau bandar udara tertentu.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup></p>
+        <p><span class="hw">Visa sebelum kedatangan</span> (<em>visa pre-arrival</em>) Visa yang pengajuannya dilakukan di kedutaan atau konsulat sebelum berangkat; beberapa negara juga memungkinkan pengajuan daring.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup></p>
+        <p><span class="hw"><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_terbaca_mesin" target="_blank" rel="noopener">Zona terbaca mesin</a></span> (MRZ) Bagian di dasar halaman data yang terdiri atas 2 baris, masing-masing 44 karakter, memuat antara lain nama, nomor paspor, kewarganegaraan, tanggal lahir, jenis kelamin, dan tanggal berlaku, beserta digit pemeriksa.<sup class="fn"><a href="#ref-14" aria-label="Sumber 14">[14]</a></sup></p>
+      </div>
+    </div>
+    <footer class="folio even">8</footer>
+  </section>
+
+  <section class="sheet" id="tanya-jawab">
+    <div class="page full">
+      <div class="main c1">
+        <p class="first"><span class="hw">Tanya Jawab</span> Jawaban singkat untuk pertanyaan yang sering muncul. Setiap jawaban memuat nomor sumber yang bisa diperiksa di halaman terakhir.</p>
+      </div>
+    </div>
+    <div class="faq">
+      <details class="qa" open><summary>Apa bedanya paspor dan visa?</summary><p>Paspor adalah dokumen perjalanan resmi dari negara asal yang menyatakan identitas dan kewarganegaraan pemegangnya.<sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup><sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup> Visa adalah izin masuk dari negara tujuan untuk periode tertentu, dan biasanya distempel atau ditempel di paspor.<sup class="fn"><a href="#ref-16" aria-label="Sumber 16">[16]</a></sup></p></details>
+      <details class="qa" open><summary>Berapa masa berlaku paspor biasa Indonesia?</summary><p>Untuk pemohon berusia 17 tahun ke atas, masa berlakunya 10 tahun sejak 12 Oktober 2022; untuk pemohon di bawah 17 tahun, 5 tahun. Paspor yang diterbitkan perwakilan di luar negeri umumnya berlaku 3 tahun dan dapat diperpanjang 2 tahun.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></p></details>
+      <details class="qa"><summary>Apa itu e-paspor?</summary><p>E-paspor atau paspor biometrik memakai chip tertanam yang menyimpan data biometrik pemegangnya; standar ICAO menganjurkan foto wajah sebagai data utama dan sidik jari sebagai pendukung.<sup class="fn"><a href="#ref-13" aria-label="Sumber 13">[13]</a></sup> Indonesia meluncurkannya pada 26 Januari 2011 dan sejak 1 Desember 2024 beralih bertahap ke 100 persen paspor elektronik.<sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></p></details>
+      <details class="qa"><summary>Apakah semua paspor berwarna sama?</summary><p>Tidak. Sampul paspor biasa Uni Eropa umumnya merah marun (Kroasia biru), paspor Komunitas Andes berwarna bordeaux, dan paspor CA-4 di Amerika Tengah biru tua. Paspor umum Indonesia bersampul toska.<sup class="fn"><a href="#ref-2" aria-label="Sumber 2">[2]</a></sup><sup class="fn"><a href="#ref-1" aria-label="Sumber 1">[1]</a></sup><sup class="fn"><a href="#ref-8" aria-label="Sumber 8">[8]</a></sup></p></details>
+      <details class="qa"><summary>Apa itu persona non grata?</summary><p>Istilah Latin untuk &ldquo;orang yang tidak diinginkan&rdquo;. Menurut Pasal 9 Konvensi Wina tentang Hubungan Diplomatik, negara penerima dapat menyatakan status itu kapan saja tanpa harus menjelaskan alasannya.<sup class="fn"><a href="#ref-23" aria-label="Sumber 23">[23]</a></sup></p></details>
+      <details class="qa"><summary>Apa itu cekal?</summary><p>Cekal adalah singkatan dari cegah-tangkal: penolakan sementara oleh pejabat imigrasi terhadap orang yang terkena pencegahan keluar negeri atau penangkalan masuk. Keputusannya tidak berlaku selamanya dan dapat berakhir karena masa habis, dicabut, atau dibatalkan putusan PTUN.<sup class="fn"><a href="#ref-18" aria-label="Sumber 18">[18]</a></sup></p></details>
+    </div>
+    <footer class="folio odd">9</footer>
+  </section>
+
+  <section class="sheet" id="galeri">
+    <div class="page full">
+      <div class="main c1">
+        <p class="first"><span class="hw">Galeri Wikimedia Commons</span> Foto-foto di bawah dimuat langsung dari kategori Wikimedia Commons, sehingga isinya mengikuti perkembangan terbaru. Lisensi dan nama pembuat tiap foto ditampilkan otomatis dari metadata Commons. Klik foto untuk memperbesar.<sup class="fn"><a href="#ref-26" aria-label="Sumber 26">[26]</a></sup></p>
+      </div>
+    </div>
+    <div class="gal" id="gal">
+      <div class="gal-tabs" role="tablist" aria-label="Kategori Wikimedia Commons"><button type="button" class="gal-tab" role="tab" id="galtab-passports" aria-selected="true" data-cat="Category:Passports" data-label="Paspor">Paspor</button><button type="button" class="gal-tab" role="tab" id="galtab-indonesia" aria-selected="false" data-cat="Category:Passports of Indonesia" data-label="Indonesia">Indonesia</button><button type="button" class="gal-tab" role="tab" id="galtab-diplomatic" aria-selected="false" data-cat="Category:Diplomatic passports" data-label="Diplomatik">Diplomatik</button><button type="button" class="gal-tab" role="tab" id="galtab-biometric" aria-selected="false" data-cat="Category:Biometric passports" data-label="Biometrik">Biometrik</button><button type="button" class="gal-tab" role="tab" id="galtab-stamps" aria-selected="false" data-cat="Category:Passport stamps" data-label="Stempel">Stempel</button><button type="button" class="gal-tab" role="tab" id="galtab-visas" aria-selected="false" data-cat="Category:Visas" data-label="Visa">Visa</button><button type="button" class="gal-tab" role="tab" id="galtab-safe" aria-selected="false" data-cat="Category:Safe conducts" data-label="Safe conduct">Safe conduct</button><button type="button" class="gal-tab" role="tab" id="galtab-png" aria-selected="false" data-cat="Category:Persona non grata" data-label="Persona non grata">Persona non grata</button></div>
+      <div class="gal-meta"><span id="galInfo" aria-live="polite"></span><a id="galLink" class="gal-open" href="https://commons.wikimedia.org/wiki/Category:Passports" target="_blank" rel="noopener">Buka kategori di Commons</a></div>
+      <div class="gal-grid" id="galGrid" role="tabpanel" aria-labelledby="galtab-passports"></div>
+      <div class="gal-foot"><p class="gal-status" id="galStatus" role="status"></p><button type="button" class="gal-more" id="galMore" hidden>Muat lagi</button></div>
+      <noscript><p class="gal-status">Galeri memerlukan JavaScript. Buka langsung: <a href="https://commons.wikimedia.org/wiki/Category:Passports" target="_blank" rel="noopener">Paspor</a> <a href="https://commons.wikimedia.org/wiki/Category:Passports_of_Indonesia" target="_blank" rel="noopener">Indonesia</a> <a href="https://commons.wikimedia.org/wiki/Category:Diplomatic_passports" target="_blank" rel="noopener">Diplomatik</a> <a href="https://commons.wikimedia.org/wiki/Category:Biometric_passports" target="_blank" rel="noopener">Biometrik</a> <a href="https://commons.wikimedia.org/wiki/Category:Passport_stamps" target="_blank" rel="noopener">Stempel</a> <a href="https://commons.wikimedia.org/wiki/Category:Visas" target="_blank" rel="noopener">Visa</a> <a href="https://commons.wikimedia.org/wiki/Category:Safe_conducts" target="_blank" rel="noopener">Safe conduct</a> <a href="https://commons.wikimedia.org/wiki/Category:Persona_non_grata" target="_blank" rel="noopener">Persona non grata</a>.</p></noscript>
+    </div>
+    <footer class="folio even">10</footer>
+  </section>
+
+  <section class="sheet" id="media">
+    <div class="page">
+      <div class="main">
+        <h3>Philadelphia Passport Agency</h3>
+        <p>Paspor membuka peluang bagi warga Amerika untuk bepergian. Bergabunglah dengan Menteri Luar Negeri AS Antony Blinken dalam <em>#WalksWithTony</em> dan lihat bagaimana Badan Paspor Philadelphia membantu memfasilitasi perjalanan serta mendukung keselamatan dan perlindungan warga AS.</p>
+        <h3>Paspor mantan diplomat India dicabut</h3>
+        <p>Kementerian Luar Negeri telah mencabut paspor Tn. Harish Kumar Dogra, yang dicopot dari jabatannya sebagai Komisaris Tinggi India untuk Selandia Baru pada bulan April. Pemerintah juga telah menangguhkan paspor istrinya dan pembantu rumah tangganya. Baca selengkapnya di <a href="https://en.wikinews.org/wiki/Ex-Indian_diplomat%27s_passport_revoked" target="_blank" rel="noopener">Wikinews</a>.</p>
+        <figure>
+          <div class="slip"><span class="slip-label">Rekaman suara</span><audio controls preload="none"><source src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Ex-Indian_diplomat%27s_passport_revoked.ogg" type="audio/ogg">Peramban Anda tidak mendukung pemutar audio.</audio></div>
+          <figcaption><strong>Paspor mantan diplomat India dicabut.</strong> Berita audio Wikinews.<span class="credit">Domain publik · NorkNork · Wikimedia Commons</span></figcaption>
+        </figure>
+      </div>
+      <aside class="rail" aria-label="Foto dan media">
+        <figure>
+          <a class="thumb video" href="https://commons.wikimedia.org/wiki/File:Walks_with_Tony-_Philadelphia_Passport_Agency.webm" data-viewer data-type="video" data-src="https://upload.wikimedia.org/wikipedia/commons/0/04/Walks_with_Tony-_Philadelphia_Passport_Agency.webm" data-poster="https://commons.wikimedia.org/wiki/Special:FilePath/Walks_with_Tony-_Philadelphia_Passport_Agency.webm?width=1200" target="_blank" rel="noopener" aria-label="Putar video: Philadelphia Passport Agency"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Walks_with_Tony-_Philadelphia_Passport_Agency.webm?width=420" alt="Cuplikan video Philadelphia Passport Agency" loading="lazy" decoding="async"><span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span></a>
+          <figcaption><strong>Philadelphia Passport Agency.</strong> Cuplikan video Badan Paspor Philadelphia, Departemen Luar Negeri AS.<span class="credit">Domain publik · U.S. Department of State · Wikimedia Commons</span></figcaption>
+        </figure>
+      </aside>
+    </div>
+    <footer class="folio odd">11</footer>
+  </section>
+
+  <section class="sheet" data-noread id="sumber">
+    <div class="page full">
+      <div class="main c2 refs-col">
+        <h3>Sumber</h3>
+        <ol class="refs">
+          <li id="ref-1"><span class="rt">Paspor.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Paspor" target="_blank" rel="noopener">id.wikipedia.org/wiki/Paspor</a></li>
+          <li id="ref-2"><span class="rt">Passport.</span> <em>Wikipedia (Inggris)</em>. <a href="https://en.wikipedia.org/wiki/Passport" target="_blank" rel="noopener">en.wikipedia.org/wiki/Passport</a></li>
+          <li id="ref-3"><span class="rt">Arabic papyrus with an exit permit, dated January 24, 722 CE.</span> <em>Wikimedia Commons</em>. <a href="https://commons.wikimedia.org/wiki/File:Arabic_papyrus_with_an_exit_permit%2C_dated_January_24%2C_722_CE%2C_pointing_to_the_regulation_of_travel_activities._From_Hermopolis_Magna%2C_Egypt.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Arabic_papyrus_with_an_exit_permit%2C_…</a></li>
+          <li id="ref-4"><span class="rt">First Japanese passport 1866.</span> <em>Wikimedia Commons</em>. <a href="https://commons.wikimedia.org/wiki/File:First_Japanese_passport_1866.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:First_Japanese_passport_1866.jpg</a></li>
+          <li id="ref-5"><span class="rt">Italian passport 1872.</span> <em>Wikimedia Commons</em>. <a href="https://commons.wikimedia.org/wiki/File:Italian_passport_1872.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Italian_passport_1872.jpg</a></li>
+          <li id="ref-6"><span class="rt">QingPassport.</span> <em>Wikimedia Commons</em>. <a href="https://commons.wikimedia.org/wiki/File:QingPassport.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:QingPassport.jpg</a></li>
+          <li id="ref-7"><span class="rt">WW2 Spanish official passport.</span> <em>Wikimedia Commons</em>. <a href="https://commons.wikimedia.org/wiki/File:WW2_Spanish_official_passport.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:WW2_Spanish_official_passport.jpg</a></li>
+          <li id="ref-8"><span class="rt">Paspor Indonesia.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Paspor_Indonesia" target="_blank" rel="noopener">id.wikipedia.org/wiki/Paspor_Indonesia</a></li>
+          <li id="ref-9"><span class="rt">Paspor Baru Merah Indonesia Ditunda, Batal Diluncurkan 17 Agustus 2025.</span> <em>Kompas.com, 21 Juli 2025</em>. <a href="https://www.kompas.com/jawa-barat/read/2025/07/21/111500788/paspor-baru-merah-indonesia-ditunda-batal-diluncurkan-17-agustus-2025" target="_blank" rel="noopener">www.kompas.com/jawa-barat/read/2025/07/21/111500788/paspor-baru-merah-…</a></li>
+          <li id="ref-10"><span class="rt">Imigrasi Tunda Pelaksanaan Paspor Desain Merah Putih, Fokus Tingkatkan Layanan.</span> <em>detikNews, 18 Juli 2025</em>. <a href="https://news.detik.com/berita/d-8017042/imigrasi-tunda-pelaksanaan-paspor-desain-merah-putih-fokus-tingkatkan-layanan" target="_blank" rel="noopener">news.detik.com/berita/d-8017042/imigrasi-tunda-pelaksanaan-paspor-desa…</a></li>
+          <li id="ref-11"><span class="rt">Henley Passport Index.</span> <em>Wikipedia (Inggris)</em>. Tabel edisi 2026: peringkat 1–10 serta Indonesia, Singapura, Malaysia, Brunei, Thailand, Filipina, dan Vietnam. <a href="https://en.wikipedia.org/wiki/Henley_Passport_Index" target="_blank" rel="noopener">en.wikipedia.org/wiki/Henley_Passport_Index</a></li>
+          <li id="ref-12"><span class="rt">Henley Passport Index.</span> <em>Henley &amp; Partners</em>. <a href="https://www.henleyglobal.com/passport-index/ranking" target="_blank" rel="noopener">www.henleyglobal.com/passport-index/ranking</a></li>
+          <li id="ref-13"><span class="rt">Paspor biometrik.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Paspor_biometrik" target="_blank" rel="noopener">id.wikipedia.org/wiki/Paspor_biometrik</a></li>
+          <li id="ref-14"><span class="rt">Paspor terbaca mesin.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Paspor_terbaca_mesin" target="_blank" rel="noopener">id.wikipedia.org/wiki/Paspor_terbaca_mesin</a></li>
+          <li id="ref-15"><span class="rt">Machine-readable passport.</span> <em>Wikipedia (Inggris)</em>. <a href="https://en.wikipedia.org/wiki/Machine-readable_passport" target="_blank" rel="noopener">en.wikipedia.org/wiki/Machine-readable_passport</a></li>
+          <li id="ref-16"><span class="rt">Visa.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Visa" target="_blank" rel="noopener">id.wikipedia.org/wiki/Visa</a></li>
+          <li id="ref-17"><span class="rt">Komparasi Kebijakan Desain Baru Paspor Indonesia.</span> <em>TIMES Indonesia</em>. Memuat pemberitaan pembatalan rencana desain baru oleh Direktur Jenderal Imigrasi pada 6 Mei 2026. <a href="https://timesindonesia.co.id/kopi-times/597557/komparasi-kebijakan-desain-baru-paspor-indonesia" target="_blank" rel="noopener">timesindonesia.co.id/kopi-times/597557/komparasi-kebijakan-desain-baru…</a></li>
+          <li id="ref-18"><span class="rt">Cekal.</span> <em>Wikipedia bahasa Indonesia</em>. Artikel ditandai memerlukan rujukan tambahan. <a href="https://id.wikipedia.org/wiki/Cekal" target="_blank" rel="noopener">id.wikipedia.org/wiki/Cekal</a></li>
+          <li id="ref-19"><span class="rt">Kewarganegaraan ganda.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Kewarganegaraan_ganda" target="_blank" rel="noopener">id.wikipedia.org/wiki/Kewarganegaraan_ganda</a></li>
+          <li id="ref-20"><span class="rt">Laissez-passer.</span> <em>Wikipedia bahasa Indonesia (halaman disambiguasi)</em>. Halaman disambiguasi. <a href="https://id.wikipedia.org/wiki/Laissez-passer" target="_blank" rel="noopener">id.wikipedia.org/wiki/Laissez-passer</a></li>
+          <li id="ref-21"><span class="rt">Paspor Nansen.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Paspor_Nansen" target="_blank" rel="noopener">id.wikipedia.org/wiki/Paspor_Nansen</a></li>
+          <li id="ref-22"><span class="rt">Perjanjian Schengen.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Perjanjian_Schengen" target="_blank" rel="noopener">id.wikipedia.org/wiki/Perjanjian_Schengen</a></li>
+          <li id="ref-23"><span class="rt">Persona non grata.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Persona_non_grata" target="_blank" rel="noopener">id.wikipedia.org/wiki/Persona_non_grata</a></li>
+          <li id="ref-24"><span class="rt">Safe conduct.</span> <em>Wikipedia (Inggris)</em>. <a href="https://en.wikipedia.org/wiki/Safe_conduct" target="_blank" rel="noopener">en.wikipedia.org/wiki/Safe_conduct</a></li>
+          <li id="ref-25"><span class="rt">Tak bernegara.</span> <em>Wikipedia bahasa Indonesia</em>. <a href="https://id.wikipedia.org/wiki/Tak_bernegara" target="_blank" rel="noopener">id.wikipedia.org/wiki/Tak_bernegara</a></li>
+          <li id="ref-26"><span class="rt">Kategori Passports dan subkategorinya.</span> <em>Wikimedia Commons</em>. <a href="https://commons.wikimedia.org/wiki/Category:Passports" target="_blank" rel="noopener">commons.wikimedia.org/wiki/Category:Passports</a></li>
+        </ol>
+        <div class="box">
+          <h4>Lihat pula di Wikipedia</h4>
+          <ul>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Paspor" target="_blank" rel="noopener">Paspor</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_Indonesia" target="_blank" rel="noopener">Paspor Indonesia</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_biometrik" target="_blank" rel="noopener">Paspor biometrik</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_terbaca_mesin" target="_blank" rel="noopener">Paspor terbaca mesin</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Visa" target="_blank" rel="noopener">Visa</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Persona_non_grata" target="_blank" rel="noopener">Persona non grata</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Cekal" target="_blank" rel="noopener">Cekal</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Paspor_Nansen" target="_blank" rel="noopener">Paspor Nansen</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Perjanjian_Schengen" target="_blank" rel="noopener">Perjanjian Schengen</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Tak_bernegara" target="_blank" rel="noopener">Tak bernegara</a></li>
+            <li><a class="wp" href="https://id.wikipedia.org/wiki/Kewarganegaraan_ganda" target="_blank" rel="noopener">Kewarganegaraan ganda</a></li>
+          </ul>
+        </div>
+        <h3>Tentang halaman ini</h3>
+        <p>Teks dan keterangan dikurasi oleh Affandy Murad dan dilisensikan CC BY-SA 4.0. Foto bersumber dari Wikimedia Commons dengan lisensi masing-masing, sedangkan ilustrasi halaman data dan sampul adalah gambar fiktif buatan penyusun. Definisi yang merujuk Wikipedia mengikuti lisensi CC BY-SA. Peringkat Indeks Paspor Henley berubah tiap rilis, jadi periksa situs Henley &amp; Partners untuk angka terbaru.</p>
+      </div>
+    </div>
+    <footer class="folio even">12</footer>
+  </section>
+
+  <footer class="colophon">
+    <p class="attr">
+      <span>Judul: <em>Paspor</em></span>
+      <span class="sep">&middot;</span>
+      <span>Pembuat: Affandy Murad</span>
+      <span class="sep">&middot;</span>
+      <span><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Cc_by-sa_%281%29.svg?width=40" alt="" width="18" height="18"> CC BY-SA 4.0</span>
+      <span class="sep">&middot;</span>
+      <span><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Commons-logo.svg?width=40" alt="" width="14" height="18"> Sumber: Wikimedia Commons</span>
+    </p>
+  </footer>
+
+  <dialog class="viewer" id="viewer" aria-label="Pratinjau foto dan video">
+    <div class="v-card">
+      <div class="v-bar">
+        <span class="count" id="vCount" aria-live="polite"></span>
+        <button type="button" class="v-btn" id="vClose" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="v-stage" id="vStage">
+        <button type="button" class="v-nav v-prev" id="vPrev" aria-label="Sebelumnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="v-nav v-next" id="vNext" aria-label="Berikutnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="v-caption" id="vCaption"></div>
+    </div>
+  </dialog>
+
+  <script>
+    // Pratinjau foto dan video dalam modal. Tanpa dukungan <dialog>/JS, tautan tetap membuka halaman berkas di Commons.
+    // Daftar item dibaca saat modal dibuka, sehingga foto galeri yang dimuat belakangan ikut bisa digeser.
+    (function () {
+      var dlg = document.getElementById('viewer');
+      if (!dlg || typeof dlg.showModal !== 'function') return;
+
+      var links = [];
+      var stage = document.getElementById('vStage');
+      var cap = document.getElementById('vCaption');
+      var count = document.getElementById('vCount');
+      var prevBtn = document.getElementById('vPrev');
+      var nextBtn = document.getElementById('vNext');
+      var idx = 0, media = null, opener = null;
+
+      function clearMedia() {
+        if (!media) return;
+        if (media.tagName === 'VIDEO') { media.pause(); media.removeAttribute('src'); media.load(); }
+        media.remove();
+        media = null;
+      }
+
+      function show(i) {
+        idx = (i + links.length) % links.length;
+        var a = links[idx];
+        clearMedia();
+        prevBtn.hidden = nextBtn.hidden = links.length < 2;
+
+        var el;
+        if (a.dataset.type === 'video') {
+          el = document.createElement('video');
+          el.controls = true;
+          el.autoplay = true;
+          el.playsInline = true;
+          if (a.dataset.poster) el.poster = a.dataset.poster;
+          var s = document.createElement('source');
+          s.src = a.dataset.src;
+          s.type = 'video/webm';
+          el.appendChild(s);
+        } else {
+          var thumb = a.querySelector('img');
+          el = document.createElement('img');
+          el.alt = thumb.alt;
+          el.src = thumb.currentSrc || thumb.src; // gambar kecil tampil dulu, lalu diganti versi besar
+          var big = new Image();
+          big.onload = function () { if (media === el) el.src = a.dataset.full; };
+          big.src = a.dataset.full;
+        }
+        stage.insertBefore(el, stage.firstChild);
+        media = el;
+
+        var fc = a.closest('figure').querySelector('figcaption');
+        cap.textContent = '';
+        var c = document.createElement('div');
+        c.className = 'cap';
+        c.innerHTML = fc.innerHTML;
+        cap.appendChild(c);
+        var src = document.createElement('a');
+        src.className = 'src';
+        src.href = a.href;
+        src.target = '_blank';
+        src.rel = 'noopener';
+        src.textContent = 'Buka di Wikimedia Commons ↗';
+        cap.appendChild(src);
+
+        count.textContent = (idx + 1) + ' / ' + links.length;
+      }
+
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest ? e.target.closest('[data-viewer]') : null;
+        if (!a) return;
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // biarkan buka di tab baru
+        e.preventDefault();
+        links = Array.prototype.slice.call(document.querySelectorAll('[data-viewer]'));
+        opener = a;
+        show(links.indexOf(a));
+        dlg.showModal();
+        document.getElementById('vClose').focus();
+      });
+
+      document.getElementById('vClose').addEventListener('click', function () { dlg.close(); });
+      prevBtn.addEventListener('click', function () { show(idx - 1); });
+      nextBtn.addEventListener('click', function () { show(idx + 1); });
+      dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener('close', function () {
+        clearMedia();
+        if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
+      });
+      dlg.addEventListener('keydown', function (e) {
+        if (e.target.tagName === 'VIDEO' || e.target.tagName === 'AUDIO') return; // panah dipakai pemutar
+        if (e.key === 'ArrowLeft') { e.preventDefault(); show(idx - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); show(idx + 1); }
+      });
+
+      // geser jari untuk berpindah foto
+      var x0 = null;
+      stage.addEventListener('touchstart', function (e) { x0 = e.changedTouches[0].clientX; }, { passive: true });
+      stage.addEventListener('touchend', function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0;
+        x0 = null;
+        if (Math.abs(dx) > 60) show(idx + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    })();
+
+    // Bacakan: membaca nyaring isi satu halaman (teks, judul kecil, keterangan foto/video/audio, kotak, tabel, bagan,
+    // garis waktu, tanya jawab) dengan Web Speech API. Bagian yang sedang dibaca disorot; Jeda lalu Lanjut meneruskan
+    // dari potongan kalimat yang sama.
+    (function () {
+      if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return;
+      var synth = window.speechSynthesis;
+      var RATE = 0.96;
+      var voice = null;
+      var ICONS = {
+        play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg>',
+        pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>',
+        stop: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>'
+      };
+
+      function pickVoice() {
+        var list = synth.getVoices();
+        voice = null;
+        for (var i = 0; i < list.length; i++) { if (/^id([-_]|$)/i.test(list[i].lang)) { voice = list[i]; break; } }
+      }
+      pickVoice();
+      if (synth.addEventListener) synth.addEventListener('voiceschanged', pickVoice);
+
+      var toast = document.createElement('div');
+      toast.className = 'read-toast';
+      toast.setAttribute('role', 'status');
+      document.body.appendChild(toast);
+      var toastTimer = null;
+      function say(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 5200);
+      }
+
+      function clean(s) {
+        return s
+          .replace(/\s+/g, ' ')
+          .replace(/(\d+):(\d+)\s*[–-]\s*(\d+)/g, 'pasal $1 ayat $2 sampai $3')
+          .replace(/(\d)\s*[–-]\s*(\d)/g, '$1 sampai $2')
+          .replace(/±\s*/g, 'sekitar ')
+          .replace(/(\d)\s*SM\b/g, '$1 Sebelum Masehi')
+          .replace(/(\d)\s*M\b(?![A-Za-z])/g, '$1 Masehi')
+          .replace(/\s&\s/g, ' dan ')
+          .replace(/#/g, '')
+          .replace(/↗/g, '')
+          .trim();
+      }
+
+      // teks tanpa penanda catatan kaki [n]
+      function textOf(el) {
+        var c = el.cloneNode(true);
+        Array.prototype.forEach.call(c.querySelectorAll('sup.fn'), function (s) { s.remove(); });
+        return c.textContent;
+      }
+
+      // memecah teks panjang menjadi potongan pendek (mesin suara Chrome sering berhenti pada ucapan panjang)
+      function pieces(text) {
+        var parts = text.match(/[^.!?;]+(?:[.!?;]+|$)/g) || [text];
+        var out = [], cur = '';
+        parts.forEach(function (p) {
+          p = p.trim();
+          if (!p) return;
+          if (cur && (cur + ' ' + p).length > 210) { out.push(cur); cur = p; }
+          else cur = cur ? cur + ' ' + p : p;
+          if (cur.length >= 120) { out.push(cur); cur = ''; }
         });
-    </script>
+        if (cur) out.push(cur);
+        return out;
+      }
+
+      function figureText(fig) {
+        var cap = fig.querySelector('figcaption');
+        if (!cap) return '';
+        var c = cap.cloneNode(true);
+        var credit = c.querySelector('.credit');
+        if (credit) credit.remove();
+        Array.prototype.forEach.call(c.querySelectorAll('sup.fn'), function (s) { s.remove(); });
+        var kind = fig.querySelector('.thumb.video') ? 'Video'
+          : (fig.querySelector('.slip') ? 'Rekaman suara'
+          : (fig.classList.contains('diagram') ? 'Ilustrasi' : 'Foto'));
+        return kind + '. ' + c.textContent;
+      }
+
+      // satu unit baca per elemen, sesuai urutan di dokumen: teks utama dahulu, lalu kolom foto
+      var UNITS = '.main > *, .rail > *, .timeline > li, .faq > details';
+
+      function unitText(el) {
+        if (el.hasAttribute('data-rtext')) return el.getAttribute('data-rtext');
+        var tag = el.tagName;
+        if (tag === 'P' || tag === 'H3') return textOf(el);
+        if (tag === 'FIGURE') return figureText(el);
+        if (tag === 'LI') {
+          var y = el.querySelector('.tl-year'), t = el.querySelector('.tl-title'), x = el.querySelector('.tl-text');
+          return (y ? y.textContent + '. ' : '') + (t ? t.textContent + '. ' : '') + (x ? textOf(x) : '');
+        }
+        if (tag === 'DETAILS') {
+          var s = el.querySelector('summary'), p = el.querySelector('p');
+          return (s ? s.textContent + ' ' : '') + (p ? textOf(p) : '');
+        }
+        if (tag === 'OL' && el.classList.contains('legend')) {
+          return 'Keterangan bagian bernomor. ' + Array.prototype.map.call(el.querySelectorAll('li'), function (li, i) { return (i + 1) + ': ' + li.textContent + '.'; }).join(' ');
+        }
+        if (el.classList.contains('box')) {
+          var h = el.querySelector('h4');
+          var rows = Array.prototype.map.call(el.querySelectorAll('li'), function (li) { return textOf(li); });
+          return (h ? h.textContent + '. ' : '') + rows.join('; ') + '.';
+        }
+        if (el.classList.contains('chart')) return textOf(el);
+        return '';
+      }
+
+      function itemsOf(sheet) {
+        var items = [];
+        if (sheet.classList.contains('cover')) {
+          ['h1', '.tagline', '.byline', '.intro'].forEach(function (sel) {
+            var el = sheet.querySelector(sel);
+            if (el) items.push({ el: el, text: el.textContent });
+          });
+          return items;
+        }
+        Array.prototype.forEach.call(sheet.querySelectorAll(UNITS), function (el) {
+          var t = unitText(el);
+          if (t) items.push({ el: el, text: t });
+        });
+        return items;
+      }
+
+      function readableSheets() {
+        return Array.prototype.filter.call(document.querySelectorAll('.sheet'), function (s) { return !s.hasAttribute('data-noread'); });
+      }
+
+      function chunksFor(scope) {
+        var sheets = scope === 'all' ? readableSheets() : [scope];
+        var chunks = [];
+        sheets.forEach(function (sheet) {
+          itemsOf(sheet).forEach(function (it) {
+            pieces(clean(it.text)).forEach(function (p) { chunks.push({ el: it.el, text: p }); });
+          });
+        });
+        return chunks;
+      }
+
+      var st = { scope: null, chunks: [], i: 0, status: 'idle', utter: null, marked: null };
+      var controls = []; // { scope, tools, main, stop, idleLabel }
+
+      function mark(el) {
+        if (st.marked && st.marked !== el) st.marked.classList.remove('reading');
+        st.marked = el;
+        if (!el) return;
+        el.classList.add('reading');
+        var r = el.getBoundingClientRect();
+        if (r.top < 70 || r.bottom > window.innerHeight - 40) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+
+      function render() {
+        controls.forEach(function (c) {
+          var mine = st.scope === c.scope && st.status !== 'idle';
+          var playing = mine && st.status === 'playing';
+          var paused = mine && st.status === 'paused';
+          c.tools.classList.toggle('active', mine);
+          c.stop.hidden = !mine;
+          var label = playing ? 'Jeda' : (paused ? 'Lanjut' : c.idleLabel);
+          c.main.innerHTML = ICONS[playing ? 'pause' : 'play'] + '<span>' + label + '</span>';
+          c.main.setAttribute('aria-label', playing ? 'Jeda pembacaan' : (paused ? 'Lanjutkan pembacaan' : c.idleLabel));
+        });
+      }
+
+      function halt() {
+        st.utter = null;
+        synth.cancel();
+      }
+
+      function next() {
+        if (st.status !== 'playing') return;
+        if (st.i >= st.chunks.length) { finish(); return; }
+        var c = st.chunks[st.i];
+        mark(c.el);
+        var u = new SpeechSynthesisUtterance(c.text);
+        u.lang = 'id-ID';
+        if (voice) u.voice = voice;
+        u.rate = RATE;
+        u.onend = function () { if (st.utter !== u) return; st.i++; next(); };
+        u.onerror = function (e) {
+          if (st.utter !== u) return;
+          if (e.error === 'canceled' || e.error === 'interrupted') return;
+          st.i++; next();
+        };
+        st.utter = u;
+        synth.speak(u);
+      }
+
+      function finish() {
+        halt();
+        mark(null);
+        st.status = 'idle'; st.scope = null; st.chunks = []; st.i = 0;
+        render();
+      }
+
+      function start(scope) {
+        halt();
+        mark(null);
+        st.scope = scope;
+        st.chunks = chunksFor(scope);
+        st.i = 0;
+        if (!st.chunks.length) { st.status = 'idle'; render(); return; }
+        if (!voice) say('Suara bahasa Indonesia tidak ditemukan di perangkat ini; dipakai suara bawaan peramban.');
+        st.status = 'playing';
+        render();
+        setTimeout(next, 80); // jeda singkat setelah cancel agar tidak terlewat di Chrome
+      }
+
+      function toggle(scope) {
+        if (st.scope === scope && st.status === 'playing') {
+          halt();
+          st.status = 'paused';
+          render();
+        } else if (st.scope === scope && st.status === 'paused') {
+          st.status = 'playing';
+          render();
+          setTimeout(next, 80);
+        } else {
+          start(scope);
+        }
+      }
+
+      function addControls(sheet, scope, idleLabel) {
+        var tools = document.createElement('div');
+        tools.className = 'read-tools';
+        var main = document.createElement('button');
+        main.type = 'button';
+        main.className = 'read-btn read-main';
+        var stop = document.createElement('button');
+        stop.type = 'button';
+        stop.className = 'read-btn stop';
+        stop.hidden = true;
+        stop.innerHTML = ICONS.stop;
+        stop.setAttribute('aria-label', 'Berhenti membaca');
+        stop.title = 'Berhenti';
+        main.addEventListener('click', function () { toggle(scope); });
+        stop.addEventListener('click', function () { if (st.scope === scope) finish(); });
+        tools.appendChild(main);
+        tools.appendChild(stop);
+        sheet.appendChild(tools);
+        controls.push({ scope: scope, tools: tools, main: main, stop: stop, idleLabel: idleLabel });
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll('.sheet'), function (sheet) {
+        if (sheet.hasAttribute('data-noread')) return;
+        if (sheet.classList.contains('cover')) addControls(sheet, 'all', 'Bacakan semua');
+        else addControls(sheet, sheet, 'Bacakan');
+      });
+      render();
+
+      window.addEventListener('pagehide', function () { halt(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && st.status !== 'idle' && !document.getElementById('viewer').open) finish();
+      });
+    })();
+
+    // Galeri: foto dimuat langsung dari kategori Wikimedia Commons lewat MediaWiki Action API.
+    // Lisensi dan pembuat diambil dari metadata Commons; foto membuka pratinjau modal yang sama dengan foto lainnya.
+    (function () {
+      var gal = document.getElementById('gal');
+      if (!gal) return;
+      var tabs = Array.prototype.slice.call(gal.querySelectorAll('.gal-tab'));
+      var grid = document.getElementById('galGrid');
+      var info = document.getElementById('galInfo');
+      var link = document.getElementById('galLink');
+      var statusEl = document.getElementById('galStatus');
+      var moreBtn = document.getElementById('galMore');
+      var API = 'https://commons.wikimedia.org/w/api.php';
+      var PAGE = 24;
+      var OK_MIME = { 'image/jpeg': 1, 'image/png': 1, 'image/gif': 1, 'image/webp': 1, 'image/svg+xml': 1 };
+      var ICON_ZOOM = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg>';
+      var state = {};
+      var current = null;
+      var started = false;
+
+      function plain(html) {
+        var d = new DOMParser().parseFromString(html || '', 'text/html');
+        return (d.body.textContent || '').replace(/\s+/g, ' ').trim();
+      }
+      function fileName(title) { return title.replace(/^File:/, '').replace(/ /g, '_'); }
+      function pretty(title) { return title.replace(/^File:/, '').replace(/\.[A-Za-z0-9]+$/, '').replace(/_/g, ' '); }
+      function clip(s, n) { return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; }
+
+      function makeFigure(p) {
+        var ii = p.imageinfo && p.imageinfo[0];
+        if (!ii || !OK_MIME[ii.mime]) return null;
+        var meta = ii.extmetadata || {};
+        var name = fileName(p.title);
+        var title = pretty(p.title);
+        var artist = plain(meta.Artist && meta.Artist.value) || 'pembuat tidak dicantumkan';
+        var lic = (meta.LicenseShortName && meta.LicenseShortName.value) || 'lisensi di halaman berkas';
+        var desc = plain(meta.ImageDescription && meta.ImageDescription.value);
+        if (desc.toLowerCase() === title.toLowerCase()) desc = '';
+
+        var fig = document.createElement('figure');
+        var a = document.createElement('a');
+        a.className = 'thumb';
+        a.href = 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(name).replace(/%2F/g, '/');
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.setAttribute('data-viewer', '');
+        a.dataset.type = 'image';
+        a.dataset.full = 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(name) + '?width=1600';
+        a.setAttribute('aria-label', 'Perbesar: ' + title);
+        var img = document.createElement('img');
+        img.src = ii.thumburl || ii.url;
+        img.alt = title;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        var zoom = document.createElement('span');
+        zoom.className = 'zoom';
+        zoom.innerHTML = ICON_ZOOM;
+        a.appendChild(img);
+        a.appendChild(zoom);
+
+        var cap = document.createElement('figcaption');
+        var strong = document.createElement('strong');
+        strong.textContent = clip(title, 90) + '.';
+        cap.appendChild(strong);
+        if (desc) cap.appendChild(document.createTextNode(' ' + clip(desc, 240)));
+        var credit = document.createElement('span');
+        credit.className = 'credit';
+        credit.textContent = lic + ' · ' + clip(artist, 60) + ' · Wikimedia Commons';
+        cap.appendChild(credit);
+
+        fig.appendChild(a);
+        fig.appendChild(cap);
+        return fig;
+      }
+
+      function setStatus(msg) { statusEl.textContent = msg || ''; }
+
+      function paint(cat) {
+        var st = state[cat];
+        grid.textContent = '';
+        st.nodes.forEach(function (n) { grid.appendChild(n); });
+        info.textContent = st.nodes.length ? st.nodes.length + ' foto dimuat' : '';
+        moreBtn.hidden = !(st.nodes.length && !st.done);
+        moreBtn.disabled = false;
+        moreBtn.textContent = 'Muat lagi';
+        setStatus(st.done && !st.nodes.length ? 'Tidak ada foto yang dapat ditampilkan di kategori ini.' : '');
+      }
+
+      function skeleton() {
+        for (var i = 0; i < 8; i++) {
+          var s = document.createElement('div');
+          s.className = 'gal-skel';
+          s.setAttribute('aria-hidden', 'true');
+          grid.appendChild(s);
+        }
+      }
+
+      function load(cat, more) {
+        var st = state[cat];
+        if (st.loading || (more && st.done)) return;
+        st.loading = true;
+        setStatus('');
+        if (!more) { grid.textContent = ''; skeleton(); moreBtn.hidden = true; }
+        else { moreBtn.disabled = true; moreBtn.textContent = 'Memuat…'; }
+
+        var q = {
+          action: 'query', format: 'json', formatversion: '2', origin: '*',
+          generator: 'categorymembers', gcmtitle: cat, gcmtype: 'file', gcmlimit: String(PAGE),
+          prop: 'imageinfo', iiprop: 'url|mime|extmetadata', iiurlwidth: '420',
+          iiextmetadatafilter: 'ImageDescription|Artist|LicenseShortName'
+        };
+        if (st.cont) { for (var k in st.cont) q[k] = st.cont[k]; }
+        var url = API + '?' + Object.keys(q).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(q[k]); }).join('&');
+
+        var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = ctl ? setTimeout(function () { ctl.abort(); }, 15000) : null;
+        fetch(url, ctl ? { signal: ctl.signal } : {})
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+          .then(function (data) {
+            var pages = (data.query && data.query.pages) || [];
+            pages.sort(function (a, b) { return (a.index || 0) - (b.index || 0); });
+            pages.forEach(function (p) { var f = makeFigure(p); if (f) st.nodes.push(f); });
+            st.cont = data.continue || null;
+            st.done = !st.cont;
+            st.loading = false;
+            if (current === cat) paint(cat);
+          })
+          .catch(function () {
+            st.loading = false;
+            if (current !== cat) return;
+            if (!more) grid.textContent = '';
+            setStatus('Galeri gagal dimuat dari Wikimedia Commons.');
+            moreBtn.hidden = false;
+            moreBtn.disabled = false;
+            moreBtn.textContent = 'Coba lagi';
+            st.retryMore = more;
+          })
+          .then(function () { if (timer) clearTimeout(timer); });
+      }
+
+      function select(tab) {
+        var cat = tab.dataset.cat;
+        current = cat;
+        tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
+        grid.setAttribute('aria-labelledby', tab.id);
+        link.href = 'https://commons.wikimedia.org/wiki/' + cat.replace(/ /g, '_');
+        link.textContent = 'Buka kategori ' + tab.dataset.label + ' di Commons';
+        if (!state[cat]) state[cat] = { nodes: [], cont: null, done: false, loading: false };
+        var st = state[cat];
+        if (st.nodes.length) paint(cat);
+        else if (!st.loading) load(cat, false);
+      }
+
+      tabs.forEach(function (t, i) {
+        t.addEventListener('click', function () { if (started) select(t); });
+        t.addEventListener('keydown', function (e) {
+          var d = e.key === 'ArrowRight' ? 1 : (e.key === 'ArrowLeft' ? -1 : 0);
+          if (!d) return;
+          e.preventDefault();
+          var n = tabs[(i + d + tabs.length) % tabs.length];
+          n.focus();
+          select(n);
+        });
+      });
+      moreBtn.addEventListener('click', function () {
+        var st = state[current];
+        if (!st) return;
+        load(current, st.retryMore !== undefined ? st.retryMore : true);
+        st.retryMore = undefined;
+      });
+
+      function start() {
+        if (started) return;
+        started = true;
+        select(tabs[0]);
+      }
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); start(); }
+        }, { rootMargin: '500px 0px' });
+        io.observe(gal);
+        // tab bisa diklik sebelum galeri terlihat (mis. lewat daftar isi): mulai saat itu juga
+        tabs.forEach(function (t) { t.addEventListener('click', function () { if (!started) { started = true; select(t); } }, true); });
+      } else {
+        start();
+      }
+      // cadangan bila pengamat tampilan tidak terpicu (mis. tab di latar): mulai tak lama setelah halaman selesai dimuat
+      window.addEventListener('load', function () { setTimeout(start, 2500); });
+    })();
+
+  </script>
 </body>
 
 </html>
