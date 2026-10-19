@@ -192,7 +192,15 @@
   .user-subhead{font-size:13px;font-weight:700;color:var(--brand-text);text-transform:uppercase;letter-spacing:.08em;margin:26px 0 10px;}
   .user-subhead:first-child{margin-top:0;}
   .check-inline{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;cursor:pointer;margin:0 0 10px;}
-  .wiki-chip-container{display:flex;flex-wrap:wrap;gap:8px;}
+  .wiki-chip-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px 12px;}
+  .wiki-entry{display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
+  .grp-row{display:flex;flex-wrap:wrap;gap:5px;min-height:22px;align-items:center;}
+  .grp{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;line-height:1.35;border:1px solid var(--line);background:var(--soft);color:var(--ink);white-space:nowrap;cursor:help;}
+  .grp.role{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .grp.auto{color:var(--muted);}
+  .grp.blocked{background:var(--warn-bg);border-color:var(--warn-line);color:var(--danger);}
+  .grp.note{border-style:dashed;color:var(--muted);font-weight:500;cursor:default;}
+  .grp-loading{font-size:12px;color:var(--muted);}
   .wiki-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:13px;text-decoration:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap;transition:border-color .15s;}
   .wiki-chip:hover{border-color:var(--brand);}
   .wiki-chip.home{box-shadow:0 0 0 2px var(--warn-line);font-weight:700;}
@@ -1110,6 +1118,20 @@
       until: 'Hingga',
       standardUser: 'Pengguna standar',
       groupsPrefix: 'Grup',
+      userFieldGlobalGroups: 'Grup Global',
+      reportStatusCol: 'Status / Grup',
+      groupBlocked: 'Diblokir',
+      groupBlockedUntil: (when, why) => `Diblokir${when ? ' sampai ' + when : ' (permanen)'}${why ? ': ' + why : ''}`,
+      groupTemp: (when) => `Sementara, sampai ${when}`,
+      groupLoading: 'Memuat grup …',
+      groupLoadError: 'Grup tidak dapat dimuat',
+      groupInfo: {
+        sysop: 'Administrator', bureaucrat: 'Birokrat', checkuser: 'Pemeriksa pengguna (CheckUser)', oversight: 'Oversighter', suppress: 'Oversighter',
+        steward: 'Steward', 'interface-admin': 'Administrator antarmuka', bot: 'Akun bot', autoconfirmed: 'Terkonfirmasi otomatis (akun cukup umur dan punya cukup suntingan)',
+        confirmed: 'Terkonfirmasi', extendedconfirmed: 'Terkonfirmasi diperluas', autopatrolled: 'Terpatroli otomatis', patroller: 'Patroler', rollbacker: 'Pengembali (rollbacker)',
+        reviewer: 'Peninjau', uploader: 'Pengunggah', filemover: 'Pemindah berkas', templateeditor: 'Penyunting templat', abusefilter: 'Pengelola filter penyalahgunaan',
+        'import': 'Pengimpor', transwiki: 'Transwiki', flood: 'Flood (akun massal)', massmessage: 'Pengirim pesan massal', 'abusefilter-helper': 'Pembantu filter penyalahgunaan'
+      },
       home: 'UTAMA',
       tableArticle: 'Artikel',
       tablePageview: 'Pageview',
@@ -1295,6 +1317,20 @@
       until: 'Until',
       standardUser: 'Standard user',
       groupsPrefix: 'Groups',
+      userFieldGlobalGroups: 'Global Groups',
+      reportStatusCol: 'Status / Groups',
+      groupBlocked: 'Blocked',
+      groupBlockedUntil: (when, why) => `Blocked${when ? ' until ' + when : ' (permanent)'}${why ? ': ' + why : ''}`,
+      groupTemp: (when) => `Temporary, until ${when}`,
+      groupLoading: 'Loading groups …',
+      groupLoadError: 'Groups could not be loaded',
+      groupInfo: {
+        sysop: 'Administrator', bureaucrat: 'Bureaucrat', checkuser: 'CheckUser', oversight: 'Oversighter', suppress: 'Oversighter',
+        steward: 'Steward', 'interface-admin': 'Interface administrator', bot: 'Bot account', autoconfirmed: 'Autoconfirmed (account old enough with enough edits)',
+        confirmed: 'Confirmed', extendedconfirmed: 'Extended confirmed', autopatrolled: 'Autopatrolled', patroller: 'Patroller', rollbacker: 'Rollbacker',
+        reviewer: 'Reviewer', uploader: 'Uploader', filemover: 'File mover', templateeditor: 'Template editor', abusefilter: 'Abuse filter manager',
+        'import': 'Importer', transwiki: 'Transwiki', flood: 'Flood (mass account)', massmessage: 'Mass message sender', 'abusefilter-helper': 'Abuse filter helper'
+      },
       home: 'HOME',
       tableArticle: 'Article',
       tablePageview: 'Pageview',
@@ -2394,23 +2430,118 @@
     if(e.target === wikiLanguageModal) wikiLanguageModal.style.display = 'none';
   });
 
+  // ---- Status/grup pengguna per proyek ----
+  // globaluserinfo hanya memuat grup eksplisit (mis. sysop). Grup lengkap, termasuk autoconfirmed, masa berlaku grup
+  // sementara, dan status blokir, diambil per wiki lewat list=users (hanya untuk wiki yang punya suntingan).
+  const GROUP_ROLE = ['sysop', 'bureaucrat', 'checkuser', 'oversight', 'suppress', 'steward', 'interface-admin', 'bot'];
+  const GROUP_HIDDEN = new Set(['*', 'user']);
+  const GROUP_IMPLICIT = new Set(['autoconfirmed', 'extendedconfirmed', 'confirmed']);
+  const userStatusCache = new Map(); // `${pengguna}|${wiki}` -> { groups, expiry, block } atau { error: true }
+  let statusRunId = 0;
+
+  function visibleGroups(list){
+    return (list || []).filter(g => !GROUP_HIDDEN.has(g));
+  }
+
+  function groupRank(g){
+    const r = GROUP_ROLE.indexOf(g);
+    if(r > -1) return r;
+    return GROUP_IMPLICIT.has(g) ? 100 : 50;
+  }
+
+  async function fetchUserStatus(m, username){
+    const params = new URLSearchParams({
+      action: 'query', list: 'users', ususers: username, usprop: 'groups|groupmemberships|blockinfo',
+      format: 'json', formatversion: '2', origin: '*'
+    });
+    const data = await fetchJson(`${m.url}/w/api.php?${params.toString()}`);
+    const u = data?.query?.users?.[0];
+    if(!u || u.missing !== undefined) return { groups: m.groups || [], expiry: {}, block: null };
+    const expiry = {};
+    (u.groupmemberships || []).forEach(g => { if(g.expiry && g.expiry !== 'infinity') expiry[g.group] = g.expiry; });
+    const block = u.blockid ? { reason: u.blockreason || '', expiry: u.blockexpiry && !/^infinit/.test(u.blockexpiry) ? u.blockexpiry : '' } : null;
+    return { groups: u.groups || [], expiry, block };
+  }
+
+  function groupLabel(g){
+    return (t('groupInfo') || {})[g] || g;
+  }
+
+  function fillGroupRow(row, m, status){
+    row.innerHTML = '';
+    const add = (text, cls, title) => {
+      const b = document.createElement('span');
+      b.className = 'grp' + (cls ? ' ' + cls : '');
+      b.textContent = text;
+      if(title) b.title = title;
+      row.appendChild(b);
+    };
+    if(status && status.error){
+      add(t('groupLoadError'), 'note');
+      return;
+    }
+    const groups = status ? status.groups : (m.groups || []);
+    const list = visibleGroups(groups).sort((a, b) => groupRank(a) - groupRank(b));
+    if(status && status.block){
+      add(t('groupBlocked'), 'blocked', t('groupBlockedUntil', status.block.expiry ? status.block.expiry.slice(0, 10) : '', status.block.reason));
+    }
+    list.forEach(g => {
+      const until = status && status.expiry[g];
+      const title = groupLabel(g) + (until ? ` · ${t('groupTemp', until.slice(0, 10))}` : '');
+      add(g + (until ? ' ⏱' : ''), GROUP_ROLE.includes(g) ? 'role' : (GROUP_IMPLICIT.has(g) ? 'auto' : ''), title);
+    });
+    if(!list.length && !(status && status.block)) add(t('standardUser'), 'auto');
+  }
+
+  // Memuat status untuk daftar wiki dengan maksimal 5 permintaan paralel; onUpdate dipanggil tiap wiki selesai
+  async function loadUserStatuses(list, username, onUpdate, runId){
+    const todo = list.filter(m => (m.editcount ?? 0) > 0 && !userStatusCache.has(`${username}|${m.wiki}`));
+    let i = 0;
+    const worker = async () => {
+      while(i < todo.length){
+        if(runId !== undefined && runId !== statusRunId) return;
+        const m = todo[i++];
+        const key = `${username}|${m.wiki}`;
+        try{
+          userStatusCache.set(key, await fetchUserStatus(m, username));
+        } catch(e){
+          userStatusCache.set(key, { error: true });
+        }
+        if(onUpdate) onUpdate(m);
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(5, todo.length) }, worker));
+  }
+
+  function statusText(m, username){
+    const st = userStatusCache.get(`${username}|${m.wiki}`);
+    if(st && st.error) return '—';
+    const groups = visibleGroups(st ? st.groups : (m.groups || []));
+    const out = groups.sort((a, b) => groupRank(a) - groupRank(b)).map(g => g + (st && st.expiry[g] ? ` (${st.expiry[g].slice(0, 10)})` : ''));
+    if(st && st.block) out.unshift(t('groupBlocked'));
+    return out.join(', ') || t('standardUser');
+  }
+
   function renderUserWikiChips(globalInfo, username){
     const container = document.getElementById('userWikiChips');
     if(!container) return;
     const onlyActive = document.getElementById('userOnlyActiveWikis')?.checked ?? true;
+    const runId = ++statusRunId;
     container.innerHTML = '';
-    globalInfo.merged
+    const rows = new Map();
+    const shown = globalInfo.merged
       .filter(m => !onlyActive || (m.editcount ?? 0) > 0)
-      .sort((a, b) => (b.editcount ?? 0) - (a.editcount ?? 0))
-      .forEach(m => {
+      .sort((a, b) => (b.editcount ?? 0) - (a.editcount ?? 0));
+    shown.forEach(m => {
         const isHome = globalInfo.home === m.wiki;
         const wikiClass = getWikiClass(m.wiki);
+        const entry = document.createElement('div');
+        entry.className = 'wiki-entry';
         const chip = document.createElement('a');
         chip.className = `wiki-chip ${wikiClass}${isHome ? ' home' : ''}`;
         chip.href = `${m.url}/wiki/User:${encodeURIComponent(username)}`;
         chip.target = '_blank';
         chip.rel = 'noopener noreferrer';
-        chip.title = m.groups?.length ? `${t('groupsPrefix')}: ${m.groups.join(', ')}` : t('standardUser');
         chip.innerHTML = `
           <span>${m.wiki}</span>
           ${isHome ? `<span class="user-badge-mini">${t('home')}</span>` : ''}
@@ -2419,8 +2550,27 @@
           <span>|</span>
           <span>${m.timestamp?.slice(0, 10) ?? '—'}</span>
         `;
-        container.appendChild(chip);
+        const row = document.createElement('div');
+        row.className = 'grp-row';
+        const cached = userStatusCache.get(`${username}|${m.wiki}`);
+        if(cached || (m.editcount ?? 0) === 0){
+          fillGroupRow(row, m, cached || null);
+        } else {
+          const ld = document.createElement('span');
+          ld.className = 'grp-loading';
+          ld.textContent = t('groupLoading');
+          row.appendChild(ld);
+        }
+        rows.set(m.wiki, { row, m });
+        entry.appendChild(chip);
+        entry.appendChild(row);
+        container.appendChild(entry);
       });
+    loadUserStatuses(shown, username, m => {
+      if(runId !== statusRunId) return;
+      const r = rows.get(m.wiki);
+      if(r) fillGroupRow(r.row, r.m, userStatusCache.get(`${username}|${m.wiki}`));
+    }, runId);
   }
 
   function renderUserInfoPanel(data){
@@ -2453,7 +2603,7 @@
       </div>
       <div class="user-info-item">
         <div class="user-info-label">${t('userFieldGroups')}</div>
-        <div class="user-info-value">${userData.groups?.length ? userData.groups.join(', ') : 'user'}</div>
+        <div class="user-info-value">${visibleGroups(userData.groups).join(', ') || 'user'}</div>
       </div>
       <div class="user-info-item">
         <div class="user-info-label">${t('userFieldBlocked')}</div>
@@ -2489,6 +2639,10 @@
         <div class="user-info-label">${t('userFieldActiveWikis')}</div>
         <div class="user-info-value">${activeWikis}</div>
       </div>
+      ${globalInfo.groups?.length ? `<div class="user-info-item">
+        <div class="user-info-label">${t('userFieldGlobalGroups')}</div>
+        <div class="user-info-value">${globalInfo.groups.join(', ')}</div>
+      </div>` : ''}
     `;
 
     if(globalInfo.locked || globalInfo.hidden){
@@ -2898,8 +3052,8 @@
     const active = merged.filter(m => m.editcount > 0).sort((a, b) => b.editcount - a.editcount);
     if(active.length){
       root.appendChild(el('h2', t('reportWikisSection')));
-      root.appendChild(table([t('reportWikiCol'), t('reportEditsCol'), t('reportLastCol')],
-        active.map(m => [m.wiki + (m.wiki === globalInfo.home ? ' (' + t('home') + ')' : ''), num(m.editcount), m.timestamp ? m.timestamp.slice(0, 10) : '—'])));
+      root.appendChild(table([t('reportWikiCol'), t('reportEditsCol'), t('reportStatusCol'), t('reportLastCol')],
+        active.map(m => [m.wiki + (m.wiki === globalInfo.home ? ' (' + t('home') + ')' : ''), num(m.editcount), statusText(m, userData.name || globalInfo.name), m.timestamp ? m.timestamp.slice(0, 10) : '—'])));
     }
 
     // acara
@@ -2944,8 +3098,16 @@
     root.appendChild(el('p', t('reportFoot'), 'pr-foot'));
   }
 
-  userPdfBtn.addEventListener('click', () => {
+  userPdfBtn.addEventListener('click', async () => {
     if(!userReport.info) return;
+    // pastikan status/grup tiap wiki aktif sudah termuat agar masuk laporan
+    userPdfBtn.disabled = true;
+    try{
+      const g = userReport.info.globalInfo;
+      await loadUserStatuses(g.merged.filter(m => m.editcount > 0), userReport.info.userData.name || g.name);
+    } finally {
+      updatePdfBtn();
+    }
     buildPrintReport();
     // nama berkas bawaan PDF mengikuti judul halaman
     const oldTitle = document.title;
