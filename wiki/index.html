@@ -229,6 +229,13 @@
   .event-tag.ok{border-color:var(--ok);color:var(--ok);}
   .event-tag.warn{border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn);}
 
+  /* mode Global (Kontribusi Wikimedia): sembunyikan daftar domain dan proyek lain */
+  .global-hint{display:none;}
+  .contrib-field.yr-global-on .global-hint{display:block;}
+  .contrib-field.yr-global-on #yrWikis,
+  .contrib-field.yr-global-on > .field-hint:not(.global-hint),
+  .contrib-field.yr-global-on .wiki-button:not(.wiki-global){display:none;}
+
   /* pemilih palet warna poster */
   .palette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:10px;}
   .palette-opt{display:flex;flex-direction:column;gap:8px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:600 13px inherit;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
@@ -567,12 +574,17 @@
 
     <div class="contrib-field">
       <label for="yrWikis" data-i18n="contribWikis">Domain wiki</label>
+      <p class="field-hint global-hint" id="yrGlobalHint" data-i18n="contribGlobalHint">Mode Global: kontribusi dihitung di semua proyek Wikimedia tempat akun punya suntingan. Klik Global lagi untuk memilih proyek tertentu.</p>
       <p class="field-hint" data-i18n="contribWikisHint">Pisahkan dengan koma atau Enter. Domain yang sama hanya dihitung sekali.</p>
       <textarea id="yrWikis" rows="3" data-i18n-placeholder="contribWikisPlaceholder"
         placeholder="id.wikipedia.org&#10;en.wikipedia.org&#10;commons.wikimedia.org&#10;www.wikidata.org"
         autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false"></textarea>
       <p class="field-hint" style="margin-top:12px;" data-i18n="contribPickHint">Atau klik sebuah proyek di bawah untuk menambahkannya ke daftar.</p>
       <div class="wiki-buttons-container" id="yrWikiButtons">
+        <div class="wiki-button wiki-global" data-global="true" title="Global">
+          <img class="favicon-placeholder" alt="Global" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230077b6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M2.5 12h19M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5z'/%3E%3C/svg%3E">
+          <span class="label">Global</span>
+        </div>
         <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
           <img class="favicon-placeholder" alt="Wikipedia">
           <span class="label">Wikipedia</span>
@@ -969,6 +981,8 @@
       contribWikisPlaceholder: 'id.wikipedia.org\nen.wikipedia.org\ncommons.wikimedia.org\nwww.wikidata.org',
       contribPickHint: 'Atau klik sebuah proyek di bawah untuk menambahkannya ke daftar.',
       contribGenerate: 'Buat pratinjau',
+      contribGlobalHint: 'Mode Global: kontribusi dihitung di semua proyek Wikimedia tempat akun punya suntingan. Klik Global lagi untuk memilih proyek tertentu.',
+      contribErrorGlobal: 'Tidak ditemukan akun global yang punya suntingan untuk username tersebut.',
       contribPalette: 'Palet warna',
       contribPaletteHint: 'Pilih warna poster. Pratinjau langsung berubah.',
       paletteNames: { cerah: 'Cerah', laut: 'Laut', sakura: 'Sakura', hutan: 'Hutan', senja: 'Senja', lavender: 'Lavender', wikipedia: 'Wikipedia', malam: 'Malam' },
@@ -1152,6 +1166,8 @@
       contribWikisPlaceholder: 'id.wikipedia.org\nen.wikipedia.org\ncommons.wikimedia.org\nwww.wikidata.org',
       contribPickHint: 'Or click a project below to add it to the list.',
       contribGenerate: 'Generate preview',
+      contribGlobalHint: 'Global mode: contributions are counted on every Wikimedia project where the account has edits. Click Global again to pick specific projects.',
+      contribErrorGlobal: 'No global account with edits was found for that username.',
       contribPalette: 'Color palette',
       contribPaletteHint: 'Pick the poster colors. The preview updates instantly.',
       paletteNames: { cerah: 'Sunny', laut: 'Ocean', sakura: 'Blossom', hutan: 'Forest', senja: 'Sunset', lavender: 'Lavender', wikipedia: 'Wikipedia', malam: 'Night' },
@@ -3379,11 +3395,31 @@
     return [...seen.values()];
   }
 
+  // Mode Global: semua proyek tempat akun punya suntingan; daftar domain dan tombol proyek lain disembunyikan
+  let yrGlobal = false;
+  function yrSetGlobal(on){
+    yrGlobal = on;
+    $yr('yrWikis').closest('.contrib-field').classList.toggle('yr-global-on', on);
+    document.querySelector('#yrWikiButtons .wiki-global').classList.toggle('selected', on);
+    if(!on) yrMarkSelected();
+  }
+
+  // Daftar domain wiki tempat akun punya suntingan (globaluserinfo, hanya editcount > 0)
+  async function yrFindGlobalDomains(username){
+    const url = `https://meta.wikimedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=${encodeURIComponent(username)}&guiprop=merged&format=json&origin=*`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const info = (await res.json()).query?.globaluserinfo;
+    if(!info || 'missing' in info) return [];
+    return (info.merged || []).filter(m => m.editcount > 0 && m.url).map(m => m.url.replace(/^https?:\/\//, '').replace(/\/+$/, ''));
+  }
+
   // Sorot tombol proyek yang domainnya sudah ada di daftar
   function yrMarkSelected(){
     const list = yrParseDomains($yr('yrWikis').value).map(yrNormalize);
     const specials = new Set([...document.querySelectorAll('#yrWikiButtons .wiki-button[data-domain]')].map(b => b.dataset.domain));
     document.querySelectorAll('#yrWikiButtons .wiki-button').forEach(btn => {
+      if(btn.dataset.global) return;
       const exact = btn.dataset.domain && list.includes(btn.dataset.domain);
       const byBase = btn.dataset.domainBase && list.some(d => !specials.has(d) && d.endsWith('.' + btn.dataset.domainBase));
       btn.classList.toggle('selected', !!(exact || byBase));
@@ -3496,7 +3532,7 @@
   async function yrGeneratePreview(){
     const username = $yr('yrUsername').value.trim();
     const year = $yr('yrYear').value;
-    const domains = yrUniqueDomains($yr('yrWikis').value);
+    let domains = yrGlobal ? [] : yrUniqueDomains($yr('yrWikis').value);
     const errorEl = $yr('yrError');
     const loadingEl = $yr('yrLoading');
     const genBtn = $yr('yrGenerateBtn');
@@ -3504,11 +3540,21 @@
     errorEl.style.display = 'none';
     errorEl.className = 'status error yr-msg';
     if(!username){ errorEl.textContent = t('contribErrorUsername'); errorEl.style.display = 'block'; return; }
-    if(!domains.length){ errorEl.textContent = t('contribErrorWikis'); errorEl.style.display = 'block'; return; }
+    if(!yrGlobal && !domains.length){ errorEl.textContent = t('contribErrorWikis'); errorEl.style.display = 'block'; return; }
 
     genBtn.disabled = true;
     loadingEl.style.display = 'block';
     try{
+      if(yrGlobal){
+        loadingEl.textContent = t('contribLoading');
+        domains = await yrFindGlobalDomains(username);
+        if(!domains.length){
+          loadingEl.style.display = 'none';
+          errorEl.textContent = t('contribErrorGlobal');
+          errorEl.style.display = 'block';
+          return;
+        }
+      }
       const startDate = `${year}-01-01T00:00:00.000Z`;
       const endDate = `${year}-12-31T23:59:59.000Z`;
       let totalEdits = 0, totalPages = 0, totalAdded = 0, anyCapped = false;
@@ -3752,6 +3798,10 @@
 
   document.querySelectorAll('#yrWikiButtons .wiki-button').forEach(btn => {
     btn.addEventListener('click', () => {
+      if(btn.dataset.global){
+        yrSetGlobal(!yrGlobal);
+        return;
+      }
       if(btn.dataset.domain){
         yrAddDomain(btn.dataset.domain);
         return;
