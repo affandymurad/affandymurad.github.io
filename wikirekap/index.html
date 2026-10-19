@@ -1278,6 +1278,49 @@
             return m ? m[1] : null;
         }
 
+        // Nama entitas per baris: Wikidata (Q/P), Abstract Wikipedia (halaman Q = item Wikidata), Wikifunctions (Z).
+        // Mengembalikan { kind: 'wd' | 'wf', id } atau null jika halaman bukan entitas.
+        const WIKIDATA_URL = 'https://www.wikidata.org';
+        function entityRef(wikiUrl, title) {
+            const host = wikiUrl.replace(/^https?:\/\//, '').toLowerCase();
+            if (/^(www\.)?wikidata\.org$/.test(host)) {
+                const id = wikidataEntityId(title);
+                return id ? { kind: 'wd', id } : null;
+            }
+            if (host === 'abstract.wikipedia.org') return /^Q\d+$/.test(title) ? { kind: 'wd', id: title } : null;
+            if (/^(www\.)?wikifunctions\.org$/.test(host)) return /^Z\d+$/.test(title) ? { kind: 'wf', id: title } : null;
+            return null;
+        }
+
+        // Label Wikifunctions (objek Z): Action API wikilambda_fetch, label dari Z2K3 (teks multibahasa).
+        // Z11K1 berisi ZID bahasa: Z1078 = Indonesia, Z1002 = Inggris. Tanpa label di dua bahasa itu: kosong.
+        const WF_LANG_ZIDS = { id: 'Z1078', en: 'Z1002' };
+        const WF_LABEL_BATCH = 20; // objek fungsi bisa besar, jadi batch lebih kecil
+        async function fetchWikifunctionsLabels(zids, lang, signal) {
+            const prefs = [WF_LANG_ZIDS[lang], WF_LANG_ZIDS.en].filter(Boolean);
+            const params = new URLSearchParams({ origin: '*', action: 'wikilambda_fetch', format: 'json', zids: zids.join('|') });
+            try {
+                const data = await fetchJSON(`https://www.wikifunctions.org/w/api.php?${params.toString()}`, { signal });
+                const out = {};
+                zids.forEach(z => {
+                    let label = '';
+                    try {
+                        const obj = JSON.parse(data[z]?.wikilambda_fetch || 'null');
+                        const list = (obj?.Z2K3?.Z12K1 || []).slice(1); // elemen pertama = penanda tipe "Z11"
+                        for (const zl of prefs) {
+                            const hit = list.find(x => x.Z11K1 === zl && x.Z11K2);
+                            if (hit) { label = hit.Z11K2; break; }
+                        }
+                    } catch (e) { /* objek tidak terbaca: tanpa label */ }
+                    out[z] = label;
+                });
+                return out;
+            } catch (e) {
+                if (e.name === 'AbortError') throw e;
+                return Object.fromEntries(zids.map(z => [z, '']));
+            }
+        }
+
         // Ambil label entitas (bahasa pengguna, fallback otomatis ke bahasa lain) per 50 id.
         async function fetchWikidataLabels(ids, proj, lang, signal) {
             const params = new URLSearchParams({
@@ -1987,6 +2030,7 @@
             byTitle: new Map(), // judul -> baris (satu judul bisa dimiliki beberapa username)
             isCommons: false,
             isWikidata: false,
+            hasEntities: false, // ada baris Wikidata/Abstract Wikipedia/Wikifunctions yang bernama entitas
             isGlobal: false,
             multiUser: false,
             userCount: 0,
@@ -2267,7 +2311,7 @@
             const bar = document.getElementById('enrichBar');
             bar.style.display = pending ? 'flex' : 'none';
             if (pending) {
-                const extra = ts.isCommons ? t.enrichExtraFiles : (ts.isWikidata ? t.enrichExtraLabels : '');
+                const extra = ts.isCommons ? t.enrichExtraFiles : (ts.hasEntities ? t.enrichExtraLabels : '');
                 document.getElementById('enrichBarText').textContent = t.enrichBar
                     .replace('{extra}', extra)
                     .replace('{loaded}', (total - pending).toLocaleString())
@@ -2688,7 +2732,7 @@
         // halaman yang tampil; "Muat semua" mengambil sisanya (dibutuhkan untuk total, urut menurut kolom
         // tersebut, dan ekspor lengkap). Hasil disimpan di cache sesi, kegagalan dicatat (tidak dianggap 0).
         const LABEL_BATCH = 50;
-        const labelKey = id => `${currentLang}:${id}`;
+        const labelKey = e => `${currentLang}:${e.kind}:${e.id}`;
         const dirtyTitles = new Set();
         let flushTimer = null;
         let pageCtl = null; // AbortController pemuatan halaman yang sedang tampil
@@ -2709,9 +2753,9 @@
                     row.fileUsagePartial = false;
                 }
             }
-            if (ts.isWikidata) {
-                const id = wikidataEntityId(row.title);
-                row.label = id && (labelKey(id) in s.labelCache) ? s.labelCache[labelKey(id)] : '';
+            if (row.entity) {
+                const k = labelKey(row.entity);
+                row.label = k in s.labelCache ? s.labelCache[k] : '';
             }
             row.haystack = [row.title, row.label, row.wikiLabel, row.username, ...(row.fileUsageProjects || []).map(p => p.label)]
                 .filter(Boolean).join(' ').toLowerCase();
@@ -2723,9 +2767,9 @@
             if ((!kind || kind === 'pageviews') && !(title in s.pvCache) && !s.pvErr.has(title)) return true;
             if ((!kind || kind === 'fileUsage') && tableState.isCommons && isCommonsFile(title)
                 && !(title in s.fuCache) && !s.fuErr.has(title)) return true;
-            if (!kind && tableState.isWikidata) {
-                const id = wikidataEntityId(title);
-                if (id && !(labelKey(id) in s.labelCache)) return true;
+            if (!kind) {
+                const e = s.entityOf[title];
+                if (e && !(labelKey(e) in s.labelCache)) return true;
             }
             return false;
         }
@@ -2781,34 +2825,39 @@
             const titles = [...new Set(rows.map(r => r.pk))]; // kunci baris (pada mode biasa sama dengan judul)
             const lang = currentLang;
 
-            const labelOwners = new Map(); // id entitas -> judul yang memakainya
-            if (tableState.isWikidata) {
-                titles.forEach(t => {
-                    const id = wikidataEntityId(t);
-                    if (id && !(`${lang}:${id}` in s.labelCache)) {
-                        if (!labelOwners.has(id)) labelOwners.set(id, []);
-                        labelOwners.get(id).push(t);
-                    }
-                });
-            }
-            const labelIds = [...labelOwners.keys()];
+            const labelOwners = new Map(); // "jenis:id" entitas -> { e, kunci baris yang memakainya }
+            titles.forEach(t => {
+                const e = s.entityOf[t];
+                if (e && !(labelKey(e) in s.labelCache)) {
+                    const k = `${e.kind}:${e.id}`;
+                    if (!labelOwners.has(k)) labelOwners.set(k, { e, owners: [] });
+                    labelOwners.get(k).owners.push(t);
+                }
+            });
+            const labelItems = [...labelOwners.values()];
             const fuTodo = tableState.isCommons
                 ? titles.filter(t => isCommonsFile(t) && !(t in s.fuCache) && !s.fuErr.has(t)) : [];
             const pvTodo = titles.filter(t => !(t in s.pvCache) && !s.pvErr.has(t));
 
-            const total = labelIds.length + fuTodo.length + pvTodo.length;
+            const total = labelItems.length + fuTodo.length + pvTodo.length;
             if (!total) return;
             let done = 0;
             const tick = n => { done += n; if (onProgress) onProgress(done, total); };
 
             try {
-                // Label Wikidata: Action API, serial
-                for (let i = 0; i < labelIds.length; i += LABEL_BATCH) {
-                    const batch = labelIds.slice(i, i + LABEL_BATCH);
-                    const labels = await fetchWikidataLabels(batch, s.proj, lang, signal);
-                    batch.forEach(id => { s.labelCache[`${lang}:${id}`] = labels[id] || ''; });
-                    markDirty(batch.flatMap(id => labelOwners.get(id)));
-                    tick(batch.length);
+                // Nama entitas: Wikidata dan Abstract Wikipedia (label item Wikidata), lalu Wikifunctions. Action API, serial
+                for (const [kind, size] of [['wd', LABEL_BATCH], ['wf', WF_LABEL_BATCH]]) {
+                    const items = labelItems.filter(o => o.e.kind === kind);
+                    for (let i = 0; i < items.length; i += size) {
+                        const batch = items.slice(i, i + size);
+                        const ids = batch.map(o => o.e.id);
+                        const labels = kind === 'wd'
+                            ? await fetchWikidataLabels(ids, WIKIDATA_URL, lang, signal)
+                            : await fetchWikifunctionsLabels(ids, lang, signal);
+                        batch.forEach(o => { s.labelCache[labelKey(o.e)] = labels[o.e.id] || ''; });
+                        markDirty(batch.flatMap(o => o.owners));
+                        tick(batch.length);
+                    }
                 }
 
                 // Penggunaan file (Commons): Action API, serial, per batch judul File:
@@ -2992,7 +3041,8 @@
                 next: null,
                 pvCache: {},
                 fuCache: {},
-                labelCache: {}
+                labelCache: {},
+                entityOf: {}        // kunci baris -> { kind, id } entitas (Wikidata/Abstract Wikipedia/Wikifunctions)
             };
 
             await executeAnalysis(async (onPage, signal) => {
@@ -3129,6 +3179,7 @@
                         username: c.user,
                         title: c.title,
                         proj: wk.url,
+                        entity: entityRef(wk.url, c.title),
                         // kunci cache/pageviews: pada mode Global judul yang sama di wiki berbeda adalah halaman berbeda
                         pk: isGlobal ? `${wk.key}|${c.title}` : c.title,
                         wikiLabel: isGlobal ? getWikiDisplayName(wk.url) : '',
@@ -3147,6 +3198,7 @@
                     };
                     rowMap.set(k, r);
                     if (isGlobal) session.pkMeta[r.pk] = { title: c.title, key: wk.key };
+                    if (r.entity) session.entityOf[r.pk] = r.entity;
                 }
                 r.edits++;
                 if (c.new) r.isNew = true;
@@ -3184,6 +3236,7 @@
                 byTitle,
                 isCommons,
                 isWikidata,
+                hasEntities: rows.some(r => r.entity),
                 isGlobal,
                 multiUser: Object.keys(groups).length > 1,
                 userCount: users.length
@@ -3214,7 +3267,7 @@
                 bytes: r.bytes,
                 lastEdited: r.lastEdited,
                 isNew: r.isNew,
-                ...(ts.isWikidata ? { label: r.label || '' } : {}),
+                ...(r.entity ? { label: r.label || '' } : {}),
                 ...(ts.isGlobal ? { wiki: r.wikiLabel, wikiUrl: r.proj } : {}),
                 pageviews: r.pageviews,
                 ...(ts.isCommons ? {
