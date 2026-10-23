@@ -217,6 +217,10 @@
   .user-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
   .user-badge-success{background:var(--ok-bg);color:var(--ok);}
   .user-badge-warning{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line);}
+  .block-info{margin-top:8px;font-size:12.5px;font-weight:400;line-height:1.5;color:var(--muted);overflow-wrap:anywhere;}
+  .block-info > div + div{margin-top:3px;}
+  .block-info-label{font-weight:600;color:var(--ink);}
+  .block-info-label::after{content:":";}
   .user-badge-mini{background:color-mix(in srgb,currentColor 14%,transparent);padding:1px 7px;border-radius:999px;font-size:11px;}
 
   /* daftar acara (CampaignEvents) */
@@ -1116,6 +1120,7 @@
       onlyActiveWikis: 'Tampilkan hanya wiki aktif (edit > 0)',
       permanent: 'Permanen',
       until: 'Hingga',
+      blockReason: 'Alasan',
       standardUser: 'Pengguna standar',
       groupsPrefix: 'Grup',
       userFieldGlobalGroups: 'Grup Global',
@@ -1315,6 +1320,7 @@
       onlyActiveWikis: 'Show only active wikis (edits > 0)',
       permanent: 'Permanent',
       until: 'Until',
+      blockReason: 'Reason',
       standardUser: 'Standard user',
       groupsPrefix: 'Groups',
       userFieldGlobalGroups: 'Global Groups',
@@ -2573,14 +2579,36 @@
     }, runId);
   }
 
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // Block reasons are wikitext: keep the readable text, drop link/template markup.
+  function plainWikitext(s){
+    return String(s || '')
+      .replace(/\{\{[^{}]*\}\}/g, '')
+      .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
+      .replace(/\[(?:https?:)?\/\/\S+\s+([^\]]+)\]/g, '$1')
+      .replace(/'{2,}/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function renderUserInfoPanel(data){
     const { userData, globalInfo } = data;
 
     let blockInfo = '';
     if(userData.blockid){
-      const blockExpiry = userData.blockexpiry === 'infinity' ? t('permanent') : userData.blockexpiry;
-      const blockReason = userData.blockreason ? `: ${userData.blockreason}` : '';
-      blockInfo = `<div style="font-size:11px;margin-top:4px;opacity:0.75;">${t('until')}: ${blockExpiry}${blockReason}</div>`;
+      const exp = userData.blockexpiry;
+      const expDate = exp && !/^infinit/i.test(exp) ? new Date(exp) : null;
+      const blockExpiry = expDate && !isNaN(expDate)
+        ? expDate.toLocaleDateString(uiLang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+        : t('permanent');
+      const blockReason = plainWikitext(userData.blockreason);
+      blockInfo = `<div class="block-info">
+        <div><span class="block-info-label">${t('until')}</span> ${escapeHtml(blockExpiry)}</div>
+        ${blockReason ? `<div><span class="block-info-label">${t('blockReason')}</span> ${escapeHtml(blockReason)}</div>` : ''}
+      </div>`;
     }
     const localeCode = uiLang === 'id' ? 'id-ID' : 'en-US';
 
