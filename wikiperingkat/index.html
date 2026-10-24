@@ -677,27 +677,22 @@ $('modeSeg').addEventListener('click', e => {
   const b = e.target.closest('[data-mode]'); if(!b) return;
   if(b.dataset.mode !== mode) clearResults();
   mode = b.dataset.mode;
-  if(activePreset) applyPreset(activePreset); // tanggal akhir bergantung mode
   $('modeSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
   applyTexts();
 });
 const dateFromEl = $('dateFrom'), dateToEl = $('dateTo');
 const isoDay = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
-let activePreset = null;
-// Trending: data pageview hari ini belum terbit, jadi periode berakhir kemarin ("Hari ini" = kemarin).
-// Terbaru: berakhir hari ini.
+// Sampai selalu hari ini (UTC) untuk semua periode; "Hari ini" mengisi Dari dengan kemarin.
+// Trending: data pageview hari ini belum terbit, jadi pemuat memakai hari terakhir yang tersedia.
 function applyPreset(key){
   const now = new Date(); const today = utc(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  const end = mode === 'trending' ? new Date(today.getTime() - DAY) : today;
-  const first = d => d > end ? end : d; // awal bulan/tahun tidak boleh melewati tanggal akhir
   let from = null;
-  if(key === 'today') from = end;
-  else if(key === 'month') from = first(utc(end.getUTCFullYear(), end.getUTCMonth(), 1));
-  else if(key === 'year') from = first(utc(end.getUTCFullYear(), 0, 1));
-  else if(key !== 'all') from = new Date(end.getTime() - (Number(key) - 1) * DAY);
+  if(key === 'today') from = new Date(today.getTime() - DAY);
+  else if(key === 'month') from = utc(today.getUTCFullYear(), today.getUTCMonth(), 1);
+  else if(key === 'year') from = utc(today.getUTCFullYear(), 0, 1);
+  else if(key !== 'all') from = new Date(today.getTime() - (Number(key) - 1) * DAY);
   dateFromEl.value = from ? isoDay(from) : '';
-  dateToEl.value = isoDay(end);
-  activePreset = key;
+  dateToEl.value = isoDay(today);
   $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x.dataset.preset === key));
 }
 $('presetSeg').addEventListener('click', e => {
@@ -706,7 +701,7 @@ $('presetSeg').addEventListener('click', e => {
   applyPreset(b.dataset.preset);
   if(dateFromEl.value + '|' + dateToEl.value !== before) clearResults();
 });
-[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => { activePreset = null; $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active')); clearResults(); }));
+[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => { $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active')); clearResults(); }));
 
 /* ================= util tanggal ================= */
 const DAY = 864e5;
@@ -811,7 +806,10 @@ async function loadTrending(proj, key, range, nsWant, signal){
   let clamped = false;
   if(start < PV_START){ start = PV_START; clamped = true; }
   if(end > anchor){ if(end > today) clamped = true; end = anchor; } // sampai hari ini tanpa data hari ini itu wajar, bukan penyesuaian
-  if(start > end) throw new Error(t('errRange'));
+  if(start > end){
+    // rentang sampai hari ini tetapi hari itu belum punya data (mis. awal bulan): pakai hari terakhir yang tersedia
+    if(range.to && range.to >= today){ start = end; clamped = true; } else throw new Error(t('errRange'));
+  }
 
   const tasks = planTasks(start, end);
   const totals = new Map();
@@ -918,7 +916,7 @@ async function fetchThumbs(proj, titles, signal){
   const out = {};
   for(let i = 0; i < titles.length; i += 50){
     const batch = titles.slice(i, i + 50);
-    const p = new URLSearchParams({ action:'query', format:'json', formatversion:'2', origin:'*', prop:'pageimages', piprop:'thumbnail', pithumbsize:'240', pilimit:'50', redirects:'1', titles:batch.join('|') });
+    const p = new URLSearchParams({ action:'query', format:'json', formatversion:'2', origin:'*', prop:'pageimages', piprop:'thumbnail', pithumbsize:'240', pilimit:'50', pilicense:'any', redirects:'1', titles:batch.join('|') });
     try{
       const d = await getJSON(`${proj}/w/api.php?${p}`, signal);
       const map = {};
@@ -958,9 +956,32 @@ async function loadExtras(state, langOnly){
       state.thumbsLoaded = true;
       const th = await fetchThumbs(state.proj, state.items.map(i => i.title), sig);
       state.items.forEach(it => { if(th[it.title]) it.thumb = th[it.title]; });
+      state.pageimagesDone = true; // setelah ini baru kategori Commons yang masih kosong dicarikan gambar
       if(state === st) renderPage();
     }
   } catch(e){ if(e.name !== 'AbortError') console.warn('Data pelengkap gagal:', e); }
+}
+
+/* ================= thumbnail kategori Commons (dimuat per halaman yang tampil) ================= */
+// Halaman kategori Commons jarang punya "gambar halaman"; yang tampil di layar adalah berkas pertama di kategori itu.
+async function fetchCategoryThumb(proj, title, signal){
+  const p = new URLSearchParams({ action:'query', format:'json', formatversion:'2', origin:'*', generator:'categorymembers', gcmtitle:title, gcmtype:'file', gcmlimit:'1', prop:'imageinfo', iiprop:'url', iiurlwidth:'240' });
+  const d = await getJSON(`${proj}/w/api.php?${p}`, signal);
+  return d.query?.pages?.[0]?.imageinfo?.[0]?.thumburl || '';
+}
+let catThumbTimer = null;
+async function loadCategoryThumbs(state, slice){
+  if(state.ns !== 14 || state.host !== 'commons.wikimedia.org') return;
+  const todo = slice.filter(it => !it.thumb && !it.tStarted);
+  if(!todo.length) return;
+  todo.forEach(it => { it.tStarted = true; });
+  try{
+    await runPool(todo, async it => {
+      try{ const u = await fetchCategoryThumb(state.proj, it.title, state.ctrl.signal); if(u) it.thumb = u; }
+      catch(e){ if(e.name === 'AbortError') throw e; }
+      if(state === st){ clearTimeout(catThumbTimer); catThumbTimer = setTimeout(renderPage, 150); }
+    }, state.ctrl.signal);
+  } catch(e){ if(e.name !== 'AbortError') console.warn('Thumbnail kategori gagal:', e); }
 }
 
 /* ================= tanggal & pembuat halaman (Trending, dimuat per halaman yang tampil) ================= */
@@ -1122,6 +1143,7 @@ function renderPage(){
   $('rangeText').textContent = slice.length ? t('range', fmtNum(from + 1), fmtNum(from + slice.length), fmtNum(view.length)) : '';
   buildPager(st.page, pages);
   loadCreations(st, slice);
+  if(st.pageimagesDone) loadCategoryThumbs(st, slice);
 }
 function currentNote(){
   if(st.mode === 'trending') return t('noteTrending', fmtDate(st.start), fmtDate(st.end), t('nsNames')[st.ns], st.ns === 0);
@@ -1211,8 +1233,14 @@ function renderPvMeta(it){
   pvRow(dl, t('pvCreated'), createdText(it));
   pvRow(dl, t('pvCreator'), creatorText(it));
 }
+// Hentikan audio/video yang sedang diputar sebelum elemennya dibuang (elemen terlepas tetap bisa terus berbunyi)
+function stopPvMedia(){
+  const box = $('pvMedia');
+  box.querySelectorAll('audio, video').forEach(m => { try{ m.pause(); m.removeAttribute('src'); m.load(); }catch(e){} });
+  box.innerHTML = '';
+}
 function pvMedia(src, thumb, kind, mime){
-  const box = $('pvMedia'); box.innerHTML = '';
+  const box = $('pvMedia'); stopPvMedia();
   let el = null;
   if(kind === 'audio'){ el = document.createElement('audio'); el.controls = true; el.src = src; }
   else if(kind === 'video'){ el = document.createElement('video'); el.controls = true; el.src = src; if(thumb) el.poster = thumb; el.preload = 'metadata'; }
@@ -1301,6 +1329,7 @@ function openPreview(it, opener){
 }
 function closePreview(){
   if($('pv').hidden) return;
+  stopPvMedia();
   $('pv').hidden = true; document.body.style.overflow = ''; pv.token++;
   if(pv.opener && document.contains(pv.opener)) pv.opener.focus();
 }
