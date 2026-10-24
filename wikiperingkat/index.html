@@ -971,8 +971,14 @@ async function loadCreations(state, slice){
 
 /* ================= tampilan hasil ================= */
 let st = null;          // { mode, proj, host, items, query, page, pageSize, view, ctrl, ... }
-let viewMode = 'list';
-try{ if(localStorage.getItem('wikiperingkatView') === 'grid') viewMode = 'grid'; }catch(e){}
+// Bawaan: kisi di ponsel/tablet (layar sempit), daftar di desktop; pilihan pengguna yang tersimpan didahulukan
+const narrowMQ = window.matchMedia('(max-width:1024px)');
+let viewChosen = false;
+let viewMode = narrowMQ.matches ? 'grid' : 'list';
+try{
+  const saved = localStorage.getItem('wikiperingkatView');
+  if(saved === 'grid' || saved === 'list'){ viewMode = saved; viewChosen = true; }
+}catch(e){}
 let searchTimer = null;
 
 const labelOf = it => it.entity ? (labels[lk(it.entity)] || '') : '';
@@ -1518,7 +1524,13 @@ $('pdfBtn').addEventListener('click', exportPDF);
 $('viewSwitch').addEventListener('click', e => {
   const b = e.target.closest('[data-view]'); if(!b) return;
   viewMode = b.dataset.view;
+  viewChosen = true;
   try{ localStorage.setItem('wikiperingkatView', viewMode); }catch(err){}
+  syncView(); renderPage();
+});
+narrowMQ.addEventListener('change', () => {
+  if(viewChosen) return; // sudah dipilih sendiri: jangan diubah otomatis
+  viewMode = narrowMQ.matches ? 'grid' : 'list';
   syncView(); renderPage();
 });
 function syncView(){ $('viewSwitch').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.view === viewMode)); }
