@@ -210,6 +210,49 @@
   .date-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;max-width:420px;}
   input[type=date]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);}
   input[type=date]:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent);}
+  @media (max-width:640px){
+    .hero{padding:24px 0 14px;}
+    h1{margin:12px 0 10px;}
+    .lead{font-size:16px;}
+    .card{padding:16px;border-radius:16px;}
+    .field{margin-top:16px;}
+    .hint{font-size:13px;}
+    .wiki-buttons{grid-template-columns:repeat(3,1fr);gap:8px;}
+    .wiki-button{padding:10px 4px;}
+    .wiki-button img{width:28px;height:28px;}
+    .seg{gap:6px;}
+    .seg-btn{padding:6px 12px;font-size:13.5px;}
+    .date-grid{max-width:none;}
+    .results-head h2{font-size:20px;}
+    .pdf-btn{width:100%;justify-content:center;}
+    .tools-row{gap:8px;}
+    .search{flex:1 1 100%;}
+    .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+    .gcard .pic{font-size:28px;}
+    .gcard .body{padding:8px 10px 10px;}
+    .gcard .ttl{font-size:13.5px;}
+    .page-btn{min-width:32px;padding:6px 9px;}
+    .pager{gap:4px;}
+    .table-wrap{border:none;overflow:visible;}
+    table,tbody{display:block;}
+    thead{display:none;}
+    tbody tr{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:4px 10px;align-items:start;padding:10px 12px;margin-bottom:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
+    tbody tr:last-child td{border-bottom:none;}
+    tbody tr:hover{background:var(--surface);}
+    td{display:block;padding:0;border:none;font-size:12.5px;overflow-wrap:anywhere;}
+    td.rank{width:auto;text-align:left;font-weight:700;font-size:14px;grid-column:1;grid-row:1;}
+    td:nth-child(2){grid-column:2 / -1;grid-row:1;font-size:14.5px;min-width:0;}
+    td:nth-child(3){grid-column:2;grid-row:2;}
+    td:nth-child(4){grid-column:3;grid-row:2;}
+    td:nth-child(5){grid-column:2 / -1;grid-row:3;}
+    td:nth-child(n+3){color:var(--muted);}
+    td:nth-child(n+3)::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.75;}
+    td.num{text-align:left;}
+    td.none{padding:20px 0;}
+    .pv{padding:0;}
+    .pv-media,.pv-media img,.pv-media video{max-height:220px;}
+  }
+  @media (max-width:380px){.wiki-button .label{font-size:11px;}}
   footer{padding:10px 0 48px;color:var(--muted);font-size:13px;}
 </style>
 </head>
@@ -982,11 +1025,11 @@ function renderList(slice){
     if(lb){ const s = document.createElement('span'); s.className = 'sub'; s.textContent = lb; txt.appendChild(s); }
     cell.appendChild(txt); c.appendChild(cell);
     tr.append(r, c);
-    const d = document.createElement('td'); d.style.whiteSpace = 'nowrap'; d.textContent = createdText(it);
-    const u = document.createElement('td'); u.textContent = creatorText(it);
+    const d = document.createElement('td'); d.style.whiteSpace = 'nowrap'; d.textContent = createdText(it); d.dataset.label = t('colCreated');
+    const u = document.createElement('td'); u.textContent = creatorText(it); u.dataset.label = t('colUser');
     tr.append(d, u);
     if(st.mode === 'trending'){
-      const v = document.createElement('td'); v.className = 'num'; v.textContent = fmtNum(it.views); tr.appendChild(v);
+      const v = document.createElement('td'); v.className = 'num'; v.textContent = fmtNum(it.views); v.dataset.label = t('colViews'); tr.appendChild(v);
     }
     tb.appendChild(tr);
   });
