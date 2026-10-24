@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WikiPeringkat — Artikel Terpopuler dan Terbaru</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('wikikategoriTheme') || 'system';
+    var dark = saved === 'dark' || (saved === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  } catch(e){ /* localStorage unavailable */ }
+})();
+</script>
+<link rel="stylesheet" href="../css/fonts.css">
+<style>
+  :root{
+    --bg:#f6f9fc; --surface:#ffffff; --ink:#0f1b2d; --muted:#51607a; --line:#dbe4ee;
+    --brand:#0077b6; --brand-2:#00b4d8; --brand-text:#0077b6; --soft:#e8f3fa;
+    --ok:#198754; --warn:#b45309; --warn-bg:#fff3e0; --warn-line:#f1c27d;
+    --shadow:0 10px 30px rgba(15,27,45,.08);
+    color-scheme:light;
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220; --surface:#121b2e; --ink:#eaf1fb; --muted:#9fb0c9; --line:#243049; --soft:#14263d;
+    --brand-text:#5cc8ee; --ok:#4ade80; --warn:#ffc27a; --warn-bg:#3a2a10; --warn-line:#6b4a1a;
+    --shadow:0 10px 30px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  html,body{margin:0;padding:0;}
+  body{overflow-x:hidden;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;}
+  a{color:var(--brand-text);}
+  img,svg{max-width:100%;}
+  .wrap{width:min(1120px,100% - 32px);margin-inline:auto;}
+  button{font:inherit;cursor:pointer;}
+
+  /* header */
+  header.site{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav{display:flex;align-items:center;gap:20px;height:60px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:-.01em;}
+  .logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;}
+  .logo i svg{width:18px;height:18px;}
+  nav.links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+  nav.links a{padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14.5px;white-space:nowrap;}
+  nav.links a:hover{background:var(--soft);color:var(--ink);}
+  .lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;}
+  .lang:hover{border-color:var(--brand);}
+  .switch{position:relative;display:grid;grid-template-columns:1fr 1fr;width:76px;height:34px;padding:0;border-radius:999px;overflow:hidden;}
+  .switch span{position:relative;z-index:1;display:grid;place-items:center;font-size:12.5px;transition:color .2s;}
+  .switch i{position:absolute;z-index:0;top:3px;left:3px;width:calc(50% - 3px);height:26px;border-radius:999px;background:var(--brand);transition:transform .22s;}
+  .switch[aria-checked="false"] span:first-of-type,.switch[aria-checked="true"] span:last-of-type{color:#fff;}
+  .switch[aria-checked="true"] i{transform:translateX(100%);}
+  .tools{display:flex;gap:8px;align-items:center;}
+  .switch svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .crumb{display:none;color:var(--muted);text-decoration:none;font-size:14px;margin-bottom:14px;}
+  @media (max-width:720px){nav.links{display:none}.nav{justify-content:space-between}.crumb{display:inline-flex}}
+
+  /* hero */
+  .hero{padding:48px 0 28px;}
+  .badge{display:inline-flex;gap:8px;align-items:center;background:var(--soft);color:var(--brand-text);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;}
+  h1{font-size:clamp(30px,4.6vw,48px);line-height:1.1;margin:16px 0 14px;letter-spacing:-.025em;max-width:18em;}
+  h1 em{font-style:normal;background:linear-gradient(120deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lead{font-size:18px;color:var(--muted);max-width:42em;margin:0;}
+
+  /* kartu & formulir */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);}
+  .seg{display:flex;flex-wrap:wrap;gap:8px;}
+  .seg-btn{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:7px 16px;font:600 14px inherit;display:inline-flex;align-items:center;gap:8px;}
+  .seg-btn svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .seg-btn:hover{border-color:var(--brand);color:var(--ink);}
+  .seg-btn.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .field{margin-top:20px;}
+  .card > .field:first-child{margin-top:0;}
+  label,.lbl{display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .hint{font-size:13.5px;color:var(--muted);margin:8px 0 0;}
+  input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);transition:border-color .2s,box-shadow .2s;}
+  input[type=text]:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent);}
+  input[readonly]{background:var(--soft);font-weight:600;cursor:default;}
+  .primary{display:block;width:100%;margin-top:22px;padding:12px 22px;border:none;border-radius:12px;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 8px 20px rgba(0,119,182,.28);transition:filter .2s;}
+  .primary:hover{filter:brightness(1.06);}
+  .primary:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;}
+  .ghost{margin-top:10px;width:100%;padding:10px 18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-weight:600;}
+  .ghost:hover{border-color:var(--brand);}
+
+  /* pilih proyek */
+  .wiki-buttons{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin:12px 0 0;}
+  .wiki-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px 6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);transition:border-color .15s,background .15s;}
+  .wiki-button:hover{border-color:var(--brand);background:var(--soft);}
+  .wiki-button.selected{border-color:var(--brand);background:var(--soft);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 35%,transparent);}
+  .wiki-button img{width:34px;height:34px;object-fit:contain;}
+  .wiki-button .label{font-size:12px;color:var(--muted);text-align:center;line-height:1.2;}
+  .wiki-button.selected .label{color:var(--ink);font-weight:700;}
+
+  /* status & progres */
+  .status{font-size:14.5px;color:var(--muted);background:var(--soft);border-radius:14px;padding:12px 14px;margin:0 0 20px;}
+  .status.error{background:var(--warn-bg);color:var(--ink);border:1px solid var(--warn-line);}
+  .progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:10px;}
+  .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-2));transition:width .2s;}
+
+  /* hasil */
+  .results-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:12px;flex-wrap:wrap;}
+  .results-head h2{font-size:clamp(20px,2.6vw,26px);margin:0;letter-spacing:-.02em;}
+  .results-head .count{font-size:13.5px;color:var(--muted);}
+  .pdf-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--brand);border-radius:12px;background:var(--surface);color:var(--brand-text);font:700 13.5px inherit;}
+  .pdf-btn:hover{background:var(--brand);color:#fff;}
+  .pdf-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  #printReport{display:none;}
+  @media print{
+    @page{size:A4;margin:14mm;}
+    html,body{background:#fff!important;}
+    body>*:not(#printReport){display:none!important;}
+    #printReport{display:block;color:#111;background:#fff;font:10pt/1.4 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    #printReport h1{font-size:19pt;margin:0 0 2pt;line-height:1.2;}
+    #printReport h1 em{color:#0077b6;-webkit-text-fill-color:#0077b6;background:none;}
+    #printReport .pr-sub{color:#555;font-size:9.5pt;margin:0 0 12pt;padding-bottom:8pt;border-bottom:1.5pt solid #0077b6;}
+    #printReport table{width:100%;border-collapse:collapse;font-size:9.5pt;}
+    #printReport th,#printReport td{border:.5pt solid #c9d3dd;padding:3.5pt 6pt;text-align:left;vertical-align:top;}
+    #printReport th{background:#e8f3fa;font-weight:700;}
+    #printReport thead{display:table-header-group;}
+    #printReport tr{break-inside:avoid;}
+    #printReport td.n{text-align:right;color:#555;width:22pt;}
+    #printReport td.v{text-align:right;white-space:nowrap;}
+    #printReport .lb{display:block;color:#555;font-size:8.5pt;}
+    #printReport .url{display:block;color:#777;font-size:7.5pt;word-break:break-all;}
+    #printReport .pr-foot{margin-top:12pt;padding-top:6pt;border-top:.5pt solid #c9d3dd;color:#777;font-size:8.5pt;}
+  }
+  .note{font-size:13px;color:var(--muted);margin:0 0 14px;}
+  .note.warn{color:var(--warn);}
+  .tools-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:12px 0;}
+  .search{flex:1 1 240px;}
+  .view-switch{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .view-switch button{border:none;background:var(--surface);color:var(--muted);padding:8px 12px;display:inline-flex;align-items:center;gap:6px;font:600 13.5px inherit;}
+  .view-switch button+button{border-left:1px solid var(--line);}
+  .view-switch button.active{background:var(--brand);color:#fff;}
+  .view-switch svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .size{display:flex;align-items:center;gap:8px;margin:0;font-size:13.5px;font-weight:600;color:var(--muted);}
+  select{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;}
+
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  th{background:var(--soft);color:var(--muted);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+  tbody tr:hover{background:color-mix(in srgb,var(--soft) 55%,transparent);}
+  td a{color:var(--brand-text);text-decoration:none;font-weight:600;}
+  td a:hover{text-decoration:underline;}
+  th.rank,td.rank{width:48px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;}
+  th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  td.none{text-align:center;color:var(--muted);padding:28px 14px;}
+  .cell{display:flex;align-items:center;gap:12px;}
+  .cell .txt{min-width:0;display:flex;flex-direction:column;}
+  .sub{color:var(--muted);font-size:.9em;font-weight:400;}
+  .thumb{flex:none;width:44px;height:44px;border-radius:10px;background:var(--soft);object-fit:cover;display:grid;place-items:center;color:var(--muted);font-weight:700;overflow:hidden;}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;}
+  .gcard{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s;}
+  .gcard:hover{border-color:var(--brand);transform:translateY(-2px);}
+  .gcard .pic{aspect-ratio:4/3;background:var(--soft);display:grid;place-items:center;font-size:34px;font-weight:800;color:var(--muted);overflow:hidden;}
+  .gcard .pic img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gcard .rk{position:absolute;top:8px;left:8px;min-width:30px;padding:2px 9px;border-radius:999px;background:rgba(8,14,26,.72);color:#fff;font-size:12.5px;font-weight:700;text-align:center;}
+  .gcard .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px;}
+  .gcard .ttl{font-weight:700;font-size:14.5px;line-height:1.3;overflow-wrap:anywhere;}
+  .gcard .meta{font-size:12.5px;color:var(--muted);}
+  .gcard .val{font-size:13px;font-weight:700;color:var(--brand-text);margin-top:4px;}
+
+  .pager{margin-top:22px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;}
+  .page-btn{min-width:36px;font-size:14px;font-weight:600;padding:7px 11px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;}
+  .page-btn:hover{border-color:var(--brand);}
+  .page-btn.active{background:var(--brand);border-color:var(--brand);color:#fff;cursor:default;}
+  .page-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .range{text-align:center;font-size:13px;color:var(--muted);margin-top:10px;}
+
+  /* modal bahasa */
+  .modal{display:none;position:fixed;inset:0;background:rgba(8,14,26,.6);z-index:1000;align-items:center;justify-content:center;}
+  .modal-box{background:var(--surface);border:1px solid var(--line);padding:24px;border-radius:20px;max-width:420px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .modal-box h3{margin:0 0 14px;}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+  .modal-btns button{padding:10px 18px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px inherit;}
+  .modal-btns button:last-child{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .modal-btns button:disabled{opacity:.5;cursor:not-allowed;}
+  .date-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;max-width:420px;}
+  input[type=date]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);}
+  input[type=date]:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent);}
+  footer{padding:10px 0 48px;color:var(--muted);font-size:13px;}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="WikiPeringkat">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i>
+      WikiPeringkat
+    </a>
+    <nav class="links" aria-label="Menu">
+      <a href="/"><span aria-hidden="true">←</span> <span data-i18n="backHome">Kembali ke Affandy Murad</span></a>
+      <a href="../wiki/">Wiki</a>
+      <a href="../wikirekap/">Wikirekap</a>
+    </nav>
+    <div class="tools">
+      <button class="lang switch" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="Mode gelap / Dark mode" title="Mode gelap / Dark mode"><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
+      <button class="lang switch" id="langBtn" type="button" role="switch" aria-checked="false" aria-label="Bahasa / Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top" class="wrap">
+  <section class="hero">
+    <a class="crumb" href="/"><span aria-hidden="true">←</span>&nbsp;<span data-i18n="backHome">Kembali ke Affandy Murad</span></a>
+    <div><span class="badge">● <span data-i18n="kicker">100 teratas per proyek Wikimedia</span></span></div>
+    <h1>Wiki<em>Peringkat</em></h1>
+    <p class="lead" data-i18n="lead">Lihat 100 artikel paling banyak dibaca atau paling baru dibuat di sebuah proyek Wikimedia, hanya di ruang nama utama.</p>
+  </section>
+
+  <section class="card">
+    <div class="field">
+      <label for="projInput" data-i18n="projectLabel">Proyek Wikimedia</label>
+      <p class="hint" style="margin:0 0 8px" data-i18n="projectHint">Kolom ini tidak bisa diketik. Untuk mengganti proyek, klik salah satu ikon proyek di bawahnya. Untuk Wikipedia, Wiktionary, Wikibooks, dan sejenisnya, Anda akan diminta memasukkan kode bahasa (mis. id, en, fr). Commons, Wikidata, dan proyek global lain langsung terpilih.</p>
+      <input type="text" id="projInput" readonly value="id.wikipedia.org" autocomplete="off">
+      <div class="wiki-buttons" id="wikiButtons"></div>
+    </div>
+
+    <div class="field">
+      <div class="lbl" data-i18n="modeLabel">Peringkat</div>
+      <div class="seg" id="modeSeg" role="group">
+        <button type="button" class="seg-btn active" data-mode="trending"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span data-i18n="modeTrending">Trending</span></button>
+        <button type="button" class="seg-btn" data-mode="latest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="modeLatest">Terbaru</span></button>
+      </div>
+      <p class="hint" id="modeHint"></p>
+    </div>
+
+    <div class="field">
+      <div class="lbl" data-i18n="nsLabel">Ruang nama</div>
+      <div class="seg" id="nsSeg" role="group">
+        <button type="button" class="seg-btn active" data-ns="0" data-i18n="nsMain">Utama</button>
+        <button type="button" class="seg-btn" data-ns="4" data-i18n="nsProject">Proyek</button>
+        <button type="button" class="seg-btn" data-ns="6" data-i18n="nsFile">Berkas</button>
+        <button type="button" class="seg-btn" data-ns="14" data-i18n="nsCategory">Kategori</button>
+      </div>
+      <p class="hint" data-i18n="nsHint">Di Commons, berkas ada di ruang nama Berkas, jadi pilihan itu dipilih otomatis.</p>
+    </div>
+
+    <div class="field">
+      <div class="lbl" data-i18n="periodLabel">Periode</div>
+      <div class="seg" id="presetSeg" role="group">
+        <button type="button" class="seg-btn" data-preset="today" data-i18n="presetToday">Hari ini</button>
+        <button type="button" class="seg-btn" data-preset="7" data-i18n="preset7">7 hari</button>
+        <button type="button" class="seg-btn active" data-preset="30" data-i18n="preset30">30 hari</button>
+        <button type="button" class="seg-btn" data-preset="90" data-i18n="preset90">90 hari</button>
+        <button type="button" class="seg-btn" data-preset="month" data-i18n="presetMonth">Bulan ini</button>
+        <button type="button" class="seg-btn" data-preset="year" data-i18n="presetYear">Tahun ini</button>
+        <button type="button" class="seg-btn" data-preset="all" data-i18n="presetAll">Semua waktu</button>
+      </div>
+      <div class="date-grid">
+        <div><label for="dateFrom" data-i18n="dateFrom">Dari</label><input type="date" id="dateFrom"></div>
+        <div><label for="dateTo" data-i18n="dateTo">Sampai</label><input type="date" id="dateTo"></div>
+      </div>
+      <p class="hint" id="periodHint"></p>
+    </div>
+
+    <button class="primary" id="goBtn" type="button" data-i18n="go">Tampilkan peringkat</button>
+    <button class="ghost" id="cancelBtn" type="button" style="display:none" data-i18n="cancel">Batal</button>
+  </section>
+
+  <div class="status" id="status" style="display:none"></div>
+
+  <section class="card" id="results" style="display:none">
+    <div class="results-head">
+      <h2 id="resTitle"></h2>
+      <span class="count" id="resCount"></span>
+      <button type="button" class="pdf-btn" id="pdfBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg><span data-i18n="savePdf">Simpan PDF</span></button>
+    </div>
+    <p class="note" id="resNote"></p>
+    <p class="note warn" id="resWarn" style="display:none"></p>
+
+    <div class="tools-row">
+      <div class="search"><input type="text" id="search" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Cari judul atau nama…"></div>
+      <div class="view-switch" id="viewSwitch" role="group">
+        <button type="button" data-view="list" class="active"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span data-i18n="viewList">Daftar</span></button>
+        <button type="button" data-view="grid"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="viewGrid">Kisi</span></button>
+      </div>
+      <label class="size"><span data-i18n="perPage">Per halaman</span>
+        <select id="pageSize"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select>
+      </label>
+    </div>
+
+    <div id="body"></div>
+    <nav class="pager" id="pager" aria-label="Pagination"></nav>
+    <div class="range" id="rangeText"></div>
+  </section>
+</main>
+
+<div id="printReport" aria-hidden="true"></div>
+
+<div class="wrap"><footer data-i18n="footer">Data: Wikimedia Pageviews API dan MediaWiki Action API. Angka periode panjang adalah penjumlahan daftar top harian/bulanan.</footer></div>
+
+<div class="modal" id="langModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Kode bahasa</h3>
+    <input type="text" id="langCode" maxlength="12" autocomplete="off" placeholder="id, en, fr…">
+    <div class="modal-btns">
+      <button type="button" id="modalCancel" data-i18n="cancelBtn">Batal</button>
+      <button type="button" id="modalOk" disabled data-i18n="choose">Pilih</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= i18n ================= */
+const T = {
+  id: {
+    backHome:'Kembali ke Affandy Murad', kicker:'100 teratas per proyek Wikimedia',
+    lead:'Lihat 100 halaman paling banyak dibaca atau paling baru dibuat di sebuah proyek Wikimedia, per ruang nama (utama, proyek, berkas, kategori).',
+    dateFrom:'Dari', dateTo:'Sampai', errRange:'Rentang tanggal tidak mencakup data yang tersedia.',
+    clamp:'Rentang disesuaikan dengan data yang tersedia (pageview sejak 1 Okt 2015 sampai hari terakhir yang terbit).',
+    periodRange:(a,b)=>`Periode ${a} – ${b}.`, open:'awal', now:'sekarang',
+    savePdf:'Simpan PDF', pdfSub:(proj,mode,ns,period)=>`${proj} · ${mode} · ${ns} · ${period}`, pdfFoot:d=>`Dibuat ${d} dari WikiPeringkat. Data: Wikimedia.`,
+    nsLabel:'Ruang nama', nsMain:'Utama', nsProject:'Proyek', nsFile:'Berkas', nsCategory:'Kategori',
+    nsHint:'Di Commons, berkas ada di ruang nama Berkas, jadi pilihan itu dipilih otomatis. Di Wikipedia lain, berkas umumnya ada di Commons.',
+    nsNames:{0:'ruang nama utama',4:'ruang nama Proyek',6:'ruang nama Berkas',14:'ruang nama Kategori'},
+    errNs:'Daftar ruang nama proyek ini gagal dimuat, jadi hanya ruang nama Utama yang bisa ditampilkan.',
+    modeLabel:'Peringkat', modeTrending:'Trending', modeLatest:'Terbaru',
+    hintTrending:'Artikel paling banyak dibaca (pageview) pada periode yang dipilih.',
+    hintLatest:'Halaman yang paling baru dibuat pada periode yang dipilih.',
+    projectLabel:'Proyek Wikimedia', projectHint:'Kolom ini tidak bisa diketik. Untuk mengganti proyek, klik salah satu ikon proyek di bawahnya. Untuk Wikipedia, Wiktionary, Wikibooks, dan sejenisnya, Anda akan diminta memasukkan kode bahasa (mis. id, en, fr). Commons, Wikidata, dan proyek global lain langsung terpilih.', periodLabel:'Periode',
+    presetToday:'Hari ini', presetMonth:'Bulan ini', preset7:'7 hari', preset30:'30 hari', preset90:'90 hari', presetYear:'Tahun ini', presetAll:'Semua waktu',
+    periodTrending:'Data pageview harian tersedia sejak Oktober 2015; "Semua waktu" berarti sejak saat itu. Tanggal dalam UTC. Untuk "Hari ini" dan "Bulan ini", Trending berhenti di hari terakhir yang datanya sudah terbit (biasanya kemarin). Periode panjang memuat lebih banyak data dan butuh waktu lebih lama.',
+    periodLatest:'Terbaru memakai perubahan terbaru (sekitar 30 hari terakhir). Periode lebih panjang memakai log pembuatan halaman, yang bisa tidak lengkap untuk data lama.',
+    go:'Tampilkan peringkat', cancel:'Batal', cancelBtn:'Batal', choose:'Pilih',
+    modalTitle:p=>`Kode bahasa untuk ${p}`,
+    searchPlaceholder:'Cari judul atau nama…', viewList:'Daftar', viewGrid:'Kisi', perPage:'Per halaman',
+    colTitle:'Halaman', colViews:'Pageview', colCreated:'Dibuat', colUser:'Pembuat',
+    titleTrending:'Paling banyak dibaca', titleLatest:'Paling baru dibuat',
+    countItems:n=>`${n} halaman`, countFiltered:(a,b)=>`${a} / ${b} halaman`,
+    range:(a,b,c)=>`Menampilkan ${a} sampai ${b} dari ${c}`,
+    noMatch:'Tidak ada yang cocok.', empty:'Tidak ada data untuk periode ini.',
+    views:'pageview', prev:'Sebelumnya', next:'Berikutnya',
+    stFindDay:'Mencari data pageview terbaru…', stLoading:(d,n)=>`Memuat data ${d} dari ${n}…`,
+    stNs:'Memuat daftar ruang nama…', stLatest:'Memuat halaman terbaru…', stLabels:'Memuat nama entitas dan gambar…',
+    stRetry:s=>`Dibatasi server, menunggu ${s} detik lalu mencoba lagi…`,
+    errNoData:'Data pageview tidak tersedia untuk proyek ini.', errFail:m=>`Gagal memuat: ${m}`, cancelled:'Dibatalkan.',
+    notePartial:(ok,all)=>`Dihitung dari ${ok} dari ${all} permintaan data; sebagian gagal dimuat sehingga angka bisa sedikit lebih rendah.`,
+    noteTrending:(a,b,n,main)=>`Periode ${a} – ${b}. Hanya ${n}${main ? '; Halaman Utama tidak ikut' : ''}. Angka adalah penjumlahan daftar top harian/bulanan, jadi artikel di luar daftar teratas suatu hari tidak ikut terhitung.`,
+    noteLatestRc:n=>`Berdasarkan perubahan terbaru (halaman baru), ${n}, tanpa pengalihan.`,
+    noteLatestLog:(n,up)=>`Berdasarkan ${up ? 'log unggahan' : 'log pembuatan halaman'}, ${n}. Data lama bisa tidak lengkap.`,
+    langPrompt:'Kode bahasa', footer:'Data: Wikimedia Pageviews API dan MediaWiki Action API. Angka periode panjang adalah penjumlahan daftar top harian/bulanan.'
+  },
+  en: {
+    backHome:'Back to Affandy Murad', kicker:'Top 100 per Wikimedia project',
+    lead:'See the 100 most-read or most recently created pages on a Wikimedia project, by namespace (main, project, file, category).',
+    dateFrom:'From', dateTo:'To', errRange:'The date range does not cover any available data.',
+    clamp:'The range was adjusted to the available data (pageviews since 1 Oct 2015 up to the latest published day).',
+    periodRange:(a,b)=>`Period ${a} – ${b}.`, open:'the beginning', now:'now',
+    savePdf:'Save PDF', pdfSub:(proj,mode,ns,period)=>`${proj} · ${mode} · ${ns} · ${period}`, pdfFoot:d=>`Generated ${d} by WikiPeringkat. Data: Wikimedia.`,
+    nsLabel:'Namespace', nsMain:'Main', nsProject:'Project', nsFile:'File', nsCategory:'Category',
+    nsHint:'On Commons, files live in the File namespace, so it is selected automatically. On other Wikipedias, files are usually on Commons.',
+    nsNames:{0:'the main namespace',4:'the Project namespace',6:'the File namespace',14:'the Category namespace'},
+    errNs:'This project\'s namespace list failed to load, so only the Main namespace can be shown.',
+    modeLabel:'Ranking', modeTrending:'Trending', modeLatest:'Latest',
+    hintTrending:'Most-read articles (pageviews) in the selected period.',
+    hintLatest:'Most recently created pages in the selected period.',
+    projectLabel:'Wikimedia project', projectHint:'This field cannot be typed into. To change the project, click one of the project icons below it. For Wikipedia, Wiktionary, Wikibooks and similar, you will be asked for a language code (e.g. id, en, fr). Commons, Wikidata and other global projects are selected right away.', periodLabel:'Period',
+    presetToday:'Today', presetMonth:'This month', preset7:'7 days', preset30:'30 days', preset90:'90 days', presetYear:'This year', presetAll:'All time',
+    periodTrending:'Daily pageview data is available since October 2015; "All time" means since then. Dates are UTC. For "Today" and "This month", Trending stops at the latest published day (usually yesterday). Longer periods load more data and take longer.',
+    periodLatest:'Latest uses recent changes (roughly the last 30 days). Longer periods use the page creation log, which can be incomplete for older data.',
+    go:'Show ranking', cancel:'Cancel', cancelBtn:'Cancel', choose:'Select',
+    modalTitle:p=>`Language code for ${p}`,
+    searchPlaceholder:'Search title or name…', viewList:'List', viewGrid:'Grid', perPage:'Per page',
+    colTitle:'Page', colViews:'Pageviews', colCreated:'Created', colUser:'Creator',
+    titleTrending:'Most read', titleLatest:'Most recently created',
+    countItems:n=>`${n} pages`, countFiltered:(a,b)=>`${a} / ${b} pages`,
+    range:(a,b,c)=>`Showing ${a} to ${b} of ${c}`,
+    noMatch:'No matches.', empty:'No data for this period.',
+    views:'views', prev:'Previous', next:'Next',
+    stFindDay:'Finding the latest pageview data…', stLoading:(d,n)=>`Loading data ${d} of ${n}…`,
+    stNs:'Loading namespace list…', stLatest:'Loading latest pages…', stLabels:'Loading entity names and images…',
+    stRetry:s=>`Rate limited by the server, waiting ${s} s before retrying…`,
+    errNoData:'Pageview data is not available for this project.', errFail:m=>`Failed to load: ${m}`, cancelled:'Cancelled.',
+    notePartial:(ok,all)=>`Computed from ${ok} of ${all} data requests; some failed to load so figures may be slightly low.`,
+    noteTrending:(a,b,n,main)=>`Period ${a} – ${b}. Only ${n}${main ? '; the Main Page is excluded' : ''}. Figures are the sum of daily/monthly top lists, so articles outside a day's top list are not counted for that day.`,
+    noteLatestRc:n=>`Based on recent changes (new pages), ${n}, no redirects.`,
+    noteLatestLog:(n,up)=>`Based on the ${up ? 'upload log' : 'page creation log'}, ${n}. Older data may be incomplete.`,
+    langPrompt:'Language code', footer:'Data: Wikimedia Pageviews API and MediaWiki Action API. Long-period figures are sums of daily/monthly top lists.'
+  }
+};
+let uiLang = 'id';
+try{ if(localStorage.getItem('uiLanguage') === 'en') uiLang = 'en'; }catch(e){}
+const t = (k, ...a) => { const v = T[uiLang][k]; return typeof v === 'function' ? v(...a) : v; };
+const $ = id => document.getElementById(id);
+const locale = () => uiLang === 'id' ? 'id-ID' : 'en-US';
+const fmtNum = n => Number(n).toLocaleString(locale());
+const fmtDate = d => new Intl.DateTimeFormat(locale(), {dateStyle:'medium', timeZone:'UTC'}).format(d);
+
+/* ================= tema & bahasa ================= */
+const themeBtn = $('themeBtn'), langBtn = $('langBtn');
+function syncThemeBtn(){ themeBtn.setAttribute('aria-checked', String(document.documentElement.getAttribute('data-theme') === 'dark')); }
+themeBtn.addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('wikikategoriTheme', next); }catch(e){}
+  syncThemeBtn();
+});
+syncThemeBtn();
+
+function applyTexts(){
+  document.documentElement.lang = uiLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { const v = T[uiLang][el.dataset.i18n]; if(typeof v === 'string') el.textContent = v; });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = T[uiLang][el.dataset.i18nPlaceholder]; });
+  langBtn.setAttribute('aria-checked', String(uiLang === 'en'));
+  document.title = 'WikiPeringkat — ' + (uiLang === 'en' ? 'Top and Latest Articles' : 'Artikel Terpopuler dan Terbaru');
+  $('modeHint').textContent = mode === 'trending' ? t('hintTrending') : t('hintLatest');
+  $('periodHint').textContent = mode === 'trending' ? t('periodTrending') : t('periodLatest');
+}
+langBtn.addEventListener('click', () => {
+  uiLang = uiLang === 'id' ? 'en' : 'id';
+  try{ localStorage.setItem('uiLanguage', uiLang); }catch(e){}
+  applyTexts();
+  if(st){ renderAll(); loadExtras(st, true); }
+});
+
+/* ================= jaringan ================= */
+const net = { limit: 6, max: 8, min: 2, ok: 0, pauseUntil: 0, onWait: null };
+const sleep = (ms, signal) => new Promise((res, rej) => {
+  const id = setTimeout(res, ms);
+  if(signal) signal.addEventListener('abort', () => { clearTimeout(id); rej(new DOMException('Aborted', 'AbortError')); }, { once: true });
+});
+
+// JSON dengan timeout; 429/5xx/jaringan diulang dengan backoff dan jeda bersama untuk semua request.
+async function getJSON(url, signal, { retries = 4 } = {}){
+  let lastErr;
+  for(let attempt = 0; attempt <= retries; attempt++){
+    if(signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+    const wait = net.pauseUntil - Date.now();
+    if(wait > 0) await sleep(wait, signal);
+    const ctrl = new AbortController();
+    const onAbort = () => ctrl.abort();
+    if(signal) signal.addEventListener('abort', onAbort, { once: true });
+    const timer = setTimeout(() => ctrl.abort(), 25000);
+    let rateLimited = false;
+    try{
+      const res = await fetch(url, { signal: ctrl.signal });
+      if(res.ok){
+        net.ok++;
+        if(net.ok >= 20 && net.limit < net.max){ net.limit++; net.ok = 0; }
+        return await res.json();
+      }
+      const err = new Error('HTTP ' + res.status); err.status = res.status;
+      if(res.status !== 429 && res.status < 500) throw err;
+      rateLimited = res.status === 429;
+      if(rateLimited){
+        const ra = Number(res.headers.get('Retry-After'));
+        err.retryAfter = ra > 0 ? ra * 1000 : 0;
+      }
+      lastErr = err;
+    } catch(e){
+      if(signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      if(e.status && e.status !== 429 && e.status < 500) throw e;
+      lastErr = e;
+    } finally {
+      clearTimeout(timer);
+      if(signal) signal.removeEventListener('abort', onAbort);
+    }
+    if(attempt === retries) break;
+    const base = Math.min(30000, 2000 * 2 ** attempt);
+    const delay = Math.max(base, lastErr.retryAfter || 0);
+    if(rateLimited){
+      net.limit = Math.max(net.min, Math.floor(net.limit / 2)); net.ok = 0;
+      net.pauseUntil = Math.max(net.pauseUntil, Date.now() + delay);
+      if(net.onWait) net.onWait(Math.ceil(delay / 1000));
+    } else {
+      await sleep(delay, signal);
+    }
+  }
+  throw lastErr;
+}
+
+// Antrean paralel; batas net.limit boleh berubah selama berjalan
+async function runPool(items, worker, signal){
+  let i = 0, active = 0;
+  await new Promise((resolve, reject) => {
+    let failed = false;
+    const pump = () => {
+      if(failed) return;
+      if(i >= items.length && active === 0) return resolve();
+      while(active < net.limit && i < items.length){
+        const item = items[i++]; active++;
+        worker(item).then(() => { active--; pump(); }, e => { failed = true; reject(e); });
+      }
+    };
+    if(!items.length) return resolve();
+    pump();
+  });
+}
+
+/* ================= pemilih proyek ================= */
+const PROJECTS = [
+  ['wikipedia','Wikipedia','wikipedia.org'], ['wiktionary','Wiktionary','wiktionary.org'], ['wikibooks','Wikibooks','wikibooks.org'],
+  ['wikisource','Wikisource','wikisource.org'], ['wikiquote','Wikiquote','wikiquote.org'], ['wikinews','Wikinews','wikinews.org'],
+  ['wikiversity','Wikiversity','wikiversity.org'], ['wikivoyage','Wikivoyage','wikivoyage.org']
+];
+const GLOBALS = [
+  ['Wikispecies','species.wikimedia.org'], ['Commons','commons.wikimedia.org'], ['Wikidata','www.wikidata.org'],
+  ['Wikifunctions','www.wikifunctions.org'], ['Incubator','incubator.wikimedia.org'], ['Meta','meta.wikimedia.org'],
+  ['MediaWiki','www.mediawiki.org'], ['Abstract Wikipedia','abstract.wikipedia.org'], ['Wikisource Multi','wikisource.org']
+];
+let nsId = 0, lastHost = '';
+function setNs(n){
+  nsId = n;
+  $('nsSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', Number(x.dataset.ns) === n));
+}
+$('nsSeg').addEventListener('click', e => { const b = e.target.closest('[data-ns]'); if(b) setNs(Number(b.dataset.ns)); });
+const projInput = $('projInput'), btnBox = $('wikiButtons');
+let pending = null;
+function addProjBtn(label, favHost, data){
+  const b = document.createElement('div');
+  b.className = 'wiki-button'; b.setAttribute('role', 'button'); b.tabIndex = 0; b.title = label;
+  Object.assign(b.dataset, data);
+  const img = document.createElement('img'); img.alt = label; img.src = `https://${favHost}/favicon.ico`;
+  img.onerror = function(){ this.onerror = null; this.src = 'https://upload.wikimedia.org/wikipedia/commons/8/81/Wikimedia-logo.svg'; };
+  const sp = document.createElement('span'); sp.className = 'label'; sp.textContent = label;
+  b.append(img, sp);
+  const act = () => {
+    if(data.domain){ projInput.value = data.domain; markProj(); return; }
+    pending = data.base; $('modalTitle').textContent = t('modalTitle', label);
+    $('langCode').value = ''; $('modalOk').disabled = true; $('langModal').style.display = 'flex'; $('langCode').focus();
+  };
+  b.addEventListener('click', act);
+  b.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } });
+  btnBox.appendChild(b);
+}
+PROJECTS.forEach(([k, label, base]) => addProjBtn(label, 'en.' + base, { base }));
+GLOBALS.forEach(([label, domain]) => addProjBtn(label, domain, { domain }));
+function markProj(){
+  const v = projInput.value;
+  if(v !== lastHost){
+    if(v === 'commons.wikimedia.org' && nsId === 0) setNs(6);
+    else if(lastHost === 'commons.wikimedia.org' && nsId === 6) setNs(0);
+    lastHost = v;
+  }
+  btnBox.querySelectorAll('.wiki-button').forEach(b => {
+    const exact = b.dataset.domain && b.dataset.domain === v;
+    const byBase = b.dataset.base && v.endsWith('.' + b.dataset.base) && ![...btnBox.querySelectorAll('[data-domain]')].some(x => x.dataset.domain === v);
+    b.classList.toggle('selected', !!(exact || byBase));
+  });
+}
+markProj();
+$('langCode').addEventListener('input', e => { $('modalOk').disabled = !/^[a-z0-9-]{2,12}$/i.test(e.target.value.trim()); });
+const confirmLang = () => {
+  const code = $('langCode').value.trim().toLowerCase();
+  if(!/^[a-z0-9-]{2,12}$/.test(code) || !pending) return;
+  projInput.value = `${code}.${pending}`; markProj(); $('langModal').style.display = 'none';
+};
+$('modalOk').addEventListener('click', confirmLang);
+$('langCode').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); confirmLang(); } });
+$('modalCancel').addEventListener('click', () => { $('langModal').style.display = 'none'; });
+$('langModal').addEventListener('click', e => { if(e.target === $('langModal')) $('langModal').style.display = 'none'; });
+
+/* ================= pilihan mode & periode ================= */
+let mode = 'trending';
+$('modeSeg').addEventListener('click', e => {
+  const b = e.target.closest('[data-mode]'); if(!b) return;
+  mode = b.dataset.mode;
+  $('modeSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
+  applyTexts();
+});
+const dateFromEl = $('dateFrom'), dateToEl = $('dateTo');
+const isoDay = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+function applyPreset(key){
+  const now = new Date(); const today = utc(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  let from = null;
+  if(key === 'today') from = today;
+  else if(key === 'month') from = utc(today.getUTCFullYear(), today.getUTCMonth(), 1);
+  else if(key === 'year') from = utc(today.getUTCFullYear(), 0, 1);
+  else if(key !== 'all') from = new Date(today.getTime() - (Number(key) - 1) * DAY);
+  dateFromEl.value = from ? isoDay(from) : '';
+  dateToEl.value = isoDay(today);
+  $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x.dataset.preset === key));
+}
+$('presetSeg').addEventListener('click', e => { const b = e.target.closest('[data-preset]'); if(b) applyPreset(b.dataset.preset); });
+[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active'))));
+
+/* ================= util tanggal ================= */
+const DAY = 864e5;
+const utc = (y, m, d) => new Date(Date.UTC(y, m, d));
+const pad = n => String(n).padStart(2, '0');
+const PV_START = utc(2015, 9, 1); // Oktober 2015
+function planTasks(start, end){
+  // bulan yang tercakup penuh -> satu permintaan bulanan; sisanya harian
+  const tasks = [];
+  let y = start.getUTCFullYear(), m = start.getUTCMonth();
+  while(utc(y, m, 1) <= end){
+    const first = utc(y, m, 1), last = utc(y, m + 1, 0);
+    if(first >= start && last <= end){
+      tasks.push({ k: `${y}/${pad(m + 1)}/all-days` });
+    } else {
+      const from = first < start ? start : first, to = last > end ? end : last;
+      for(let d = new Date(from); d <= to; d = new Date(d.getTime() + DAY)){
+        tasks.push({ k: `${d.getUTCFullYear()}/${pad(d.getUTCMonth() + 1)}/${pad(d.getUTCDate())}` });
+      }
+    }
+    m++; if(m > 11){ m = 0; y++; }
+  }
+  return tasks;
+}
+
+/* ================= data Trending ================= */
+const topCache = new Map(); // `${key}|${k}` -> [[judul, views], ...] ; null = tidak ada data
+async function fetchTop(key, k, signal){
+  const ck = key + '|' + k;
+  if(topCache.has(ck)) return topCache.get(ck);
+  let list = null;
+  try{
+    const json = await getJSON(`https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${key}/all-access/${k}`, signal);
+    list = (json.items?.[0]?.articles || []).map(a => [a.article, a.views]);
+  } catch(e){
+    if(e.name === 'AbortError') throw e;
+    if(e.status !== 404) throw e;
+  }
+  topCache.set(ck, list);
+  return list;
+}
+
+const nsCache = new Map(); // proj -> { map: Map(awalan -> nomor), main, failed }
+async function loadNamespaces(proj, signal){
+  if(nsCache.has(proj)) return nsCache.get(proj);
+  const map = new Map(), info = { map, main: '', failed: false };
+  try{
+    const p = new URLSearchParams({ action:'query', meta:'siteinfo', siprop:'namespaces|namespacealiases|general', format:'json', formatversion:'2', origin:'*' });
+    const d = await getJSON(`${proj}/w/api.php?${p}`, signal);
+    const norm = s => String(s).replace(/_/g, ' ').trim().toLowerCase();
+    Object.values(d.query?.namespaces || {}).forEach(n => { if(n.id !== 0){ if(n.name) map.set(norm(n.name), n.id); if(n.canonical) map.set(norm(n.canonical), n.id); } });
+    (d.query?.namespacealiases || []).forEach(a => { if(a.id !== 0 && a.alias) map.set(norm(a.alias), a.id); });
+    info.main = norm(d.query?.general?.mainpage || '');
+    if(!map.size) info.failed = true;
+  } catch(e){
+    if(e.name === 'AbortError') throw e;
+    info.failed = true;
+    ['special','talk','user','user talk','wikipedia','file','image','mediawiki','template','help','category','portal','draft','module','wikidata','property','lexeme'].forEach(x => map.set(x, 9999));
+  }
+  nsCache.set(proj, info);
+  return info;
+}
+// Nomor ruang nama dari sebuah judul; null untuk judul kosong/placeholder
+function nsOfTitle(raw, ns){
+  const title = raw.replace(/_/g, ' ').trim();
+  if(!title || title === '-') return null;
+  const i = title.indexOf(':');
+  if(i > 0){ const id = ns.map.get(title.slice(0, i).trim().toLowerCase()); if(id !== undefined) return id; }
+  return 0;
+}
+function keepTitle(raw, ns, want){
+  const id = nsOfTitle(raw, ns);
+  if(id === null || id !== want) return false;
+  if(want === 0 && ns.main && raw.replace(/_/g, ' ').trim().toLowerCase() === ns.main) return false;
+  return true;
+}
+
+function setStatus(msg, isErr, progress){
+  const el = $('status');
+  if(!msg){ el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.className = 'status' + (isErr ? ' error' : '');
+  el.textContent = msg;
+  if(progress != null){
+    const bar = document.createElement('div'); bar.className = 'progress';
+    const i = document.createElement('i'); i.style.width = Math.round(progress * 100) + '%'; bar.appendChild(i);
+    el.appendChild(bar);
+  }
+}
+
+async function loadTrending(proj, key, range, nsWant, signal){
+  setStatus(t('stFindDay'));
+  const today = new Date(); today.setUTCHours(0, 0, 0, 0);
+  let anchor = null;
+  for(let i = 1; i <= 6 && !anchor; i++){
+    const d = new Date(today.getTime() - i * DAY);
+    const k = `${d.getUTCFullYear()}/${pad(d.getUTCMonth() + 1)}/${pad(d.getUTCDate())}`;
+    if(await fetchTop(key, k, signal)) anchor = d;
+  }
+  if(!anchor) throw new Error(t('errNoData'));
+  let start = range.from || PV_START, end = range.to || anchor;
+  let clamped = false;
+  if(start < PV_START){ start = PV_START; clamped = true; }
+  if(end > anchor){ end = anchor; clamped = true; }
+  if(start > end) throw new Error(t('errRange'));
+
+  const tasks = planTasks(start, end);
+  const totals = new Map();
+  let done = 0, okCount = 0;
+  net.onWait = s => setStatus(t('stRetry', s), false, done / tasks.length);
+  setStatus(t('stLoading', 0, tasks.length), false, 0);
+  await runPool(tasks, async task => {
+    try{
+      const list = await fetchTop(key, task.k, signal);
+      if(list){ okCount++; for(const [a, v] of list) totals.set(a, (totals.get(a) || 0) + v); }
+      else okCount++; // 404 = memang tidak ada data hari itu
+    } catch(e){
+      if(e.name === 'AbortError') throw e;
+      console.warn('Gagal memuat', task.k, e);
+    }
+    done++;
+    setStatus(t('stLoading', done, tasks.length), false, done / tasks.length);
+  }, signal);
+  net.onWait = null;
+  if(!totals.size) throw new Error(t('errNoData'));
+
+  setStatus(t('stNs'));
+  const ns = await loadNamespaces(proj, signal);
+  if(ns.failed && nsWant !== 0) throw new Error(t('errNs'));
+  const items = [...totals.entries()]
+    .filter(([a]) => keepTitle(a, ns, nsWant))
+    .sort((x, y) => y[1] - x[1])
+    .slice(0, 100)
+    .map(([a, v], i) => ({ rank: i + 1, raw: a, title: a.replace(/_/g, ' '), views: v }));
+  return { items, start, end, clamped, partial: okCount < tasks.length ? [okCount, tasks.length] : null };
+}
+
+/* ================= data Terbaru ================= */
+async function loadLatest(proj, range, nsWant, signal){
+  setStatus(t('stLatest'));
+  const now = new Date();
+  const startISO = range.from ? range.from.toISOString() : '';
+  const endDate = range.to ? new Date(range.to.getTime() + DAY) : null; // akhir hari "Sampai"
+  const endISO = endDate && endDate < now ? endDate.toISOString() : '';
+  if(range.from && range.to && range.from > range.to) throw new Error(t('errRange'));
+  // perubahan terbaru hanya menyimpan sekitar 30 hari; sisanya lewat log
+  let useLog = !range.from || (now - range.from) / DAY > 30;
+  if(nsWant === 6) useLog = true; // unggahan berkas tercatat di log unggahan, bukan sebagai halaman baru
+  const p = { action:'query', format:'json', formatversion:'2', origin:'*' };
+  if(useLog){
+    Object.assign(p, { list:'logevents', letype: nsWant === 6 ? 'upload' : 'create', lenamespace:String(nsWant), lelimit:'100', leprop:'title|timestamp|user' });
+    if(startISO) p.leend = startISO;
+    if(endISO) p.lestart = endISO;
+  } else {
+    Object.assign(p, { list:'recentchanges', rctype:'new', rcnamespace:String(nsWant), rcshow:'!redirect', rclimit:'100', rcprop:'title|timestamp|user' });
+    p.rcend = startISO;
+    if(endISO) p.rcstart = endISO;
+  }
+  const d = await getJSON(`${proj}/w/api.php?${new URLSearchParams(p)}`, signal);
+  if(d.error) throw new Error(d.error.info || d.error.code);
+  const rows = (useLog ? d.query?.logevents : d.query?.recentchanges) || [];
+  const seen = new Set(), items = [];
+  for(const r of rows){
+    if(!r.title || seen.has(r.title)) continue;
+    seen.add(r.title);
+    items.push({ rank: items.length + 1, raw: r.title, title: r.title, created: r.timestamp, user: r.user || '' });
+    if(items.length >= 100) break;
+  }
+  return { items, start: range.from || null, end: range.to || now, log: useLog };
+}
+
+/* ================= label entitas & thumbnail ================= */
+const WIKIDATA = 'https://www.wikidata.org';
+const WF_LANG = { id:'Z1078', en:'Z1002' };
+const labels = {};  // `${lang}:${jenis}:${id}` -> label
+function entityRef(host, title){
+  host = host.toLowerCase();
+  if(/^(www\.)?wikidata\.org$/.test(host)){ const m = title.match(/^(?:Property:)?([QP]\d+)$/); return m ? { kind:'wd', id:m[1] } : null; }
+  if(host === 'abstract.wikipedia.org') return /^Q\d+$/.test(title) ? { kind:'wd', id:title } : null;
+  if(/^(www\.)?wikifunctions\.org$/.test(host)) return /^Z\d+$/.test(title) ? { kind:'wf', id:title } : null;
+  return null;
+}
+const lk = e => `${uiLang}:${e.kind}:${e.id}`;
+async function fetchWdLabels(ids, signal){
+  const p = new URLSearchParams({ origin:'*', action:'wbgetentities', format:'json', formatversion:'2', props:'labels', languages:uiLang, languagefallback:'1', ids:ids.join('|') });
+  const d = await getJSON(`${WIKIDATA}/w/api.php?${p}`, signal);
+  const out = {};
+  ids.forEach(id => { const l = d.entities?.[id]?.labels; out[id] = l?.[uiLang]?.value || (l && Object.values(l)[0]?.value) || ''; });
+  return out;
+}
+async function fetchWfLabels(zids, signal){
+  const prefs = [WF_LANG[uiLang], WF_LANG.en].filter(Boolean);
+  const p = new URLSearchParams({ origin:'*', action:'wikilambda_fetch', format:'json', zids:zids.join('|') });
+  const d = await getJSON(`https://www.wikifunctions.org/w/api.php?${p}`, signal);
+  const out = {};
+  zids.forEach(z => {
+    let label = '';
+    try{
+      const obj = JSON.parse(d[z]?.wikilambda_fetch || 'null');
+      const list = (obj?.Z2K3?.Z12K1 || []).slice(1);
+      for(const zl of prefs){ const hit = list.find(x => x.Z11K1 === zl && x.Z11K2); if(hit){ label = hit.Z11K2; break; } }
+    } catch(e){}
+    out[z] = label;
+  });
+  return out;
+}
+const NO_THUMB = /^(www\.)?(wikidata|wikifunctions)\.org$|^abstract\.wikipedia\.org$/i;
+async function fetchThumbs(proj, titles, signal){
+  const out = {};
+  for(let i = 0; i < titles.length; i += 50){
+    const batch = titles.slice(i, i + 50);
+    const p = new URLSearchParams({ action:'query', format:'json', formatversion:'2', origin:'*', prop:'pageimages', piprop:'thumbnail', pithumbsize:'240', pilimit:'50', redirects:'1', titles:batch.join('|') });
+    try{
+      const d = await getJSON(`${proj}/w/api.php?${p}`, signal);
+      const map = {};
+      (d.query?.normalized || []).forEach(n => { map[n.from] = n.to; });
+      (d.query?.redirects || []).forEach(r => { map[r.from] = r.to; });
+      const bySrc = {};
+      (d.query?.pages || []).forEach(pg => { if(pg.thumbnail?.source) bySrc[pg.title] = pg.thumbnail.source; });
+      batch.forEach(tt => {
+        let cur = tt, guard = 0;
+        while(map[cur] && guard++ < 4) cur = map[cur];
+        if(bySrc[cur]) out[tt] = bySrc[cur];
+      });
+    } catch(e){ if(e.name === 'AbortError') throw e; }
+  }
+  return out;
+}
+
+async function loadExtras(state, langOnly){
+  const sig = state.ctrl.signal;
+  try{
+    // nama entitas (semua 100 baris sekaligus, batch kecil)
+    const need = { wd: [], wf: [] };
+    state.items.forEach(it => { if(it.entity && !(lk(it.entity) in labels) && !need[it.entity.kind].includes(it.entity.id)) need[it.entity.kind].push(it.entity.id); });
+    for(const kind of ['wd', 'wf']){
+      const size = kind === 'wd' ? 50 : 20;
+      for(let i = 0; i < need[kind].length; i += size){
+        const ids = need[kind].slice(i, i + size);
+        let res = {};
+        try{ res = kind === 'wd' ? await fetchWdLabels(ids, sig) : await fetchWfLabels(ids, sig); }
+        catch(e){ if(e.name === 'AbortError') throw e; }
+        ids.forEach(id => { labels[`${uiLang}:${kind}:${id}`] = res[id] || ''; });
+        if(state === st) renderPage();
+      }
+    }
+    // thumbnail (sekali per hasil)
+    if(!langOnly && !state.thumbsLoaded && !NO_THUMB.test(state.host)){
+      state.thumbsLoaded = true;
+      const th = await fetchThumbs(state.proj, state.items.map(i => i.title), sig);
+      state.items.forEach(it => { if(th[it.title]) it.thumb = th[it.title]; });
+      if(state === st) renderPage();
+    }
+  } catch(e){ if(e.name !== 'AbortError') console.warn('Data pelengkap gagal:', e); }
+}
+
+/* ================= tanggal & pembuat halaman (Trending, dimuat per halaman yang tampil) ================= */
+async function fetchCreation(proj, title, signal){
+  const p = new URLSearchParams({ action:'query', format:'json', formatversion:'2', origin:'*', prop:'revisions', rvprop:'timestamp|user', rvdir:'newer', rvlimit:'1', titles:title });
+  const d = await getJSON(`${proj}/w/api.php?${p}`, signal);
+  const r = d.query?.pages?.[0]?.revisions?.[0];
+  return r ? { created: r.timestamp, user: r.user || '' } : null;
+}
+let creationTimer = null;
+async function loadCreations(state, slice){
+  const todo = slice.filter(it => !it.created && !it.cStarted);
+  if(!todo.length) return;
+  todo.forEach(it => { it.cStarted = true; });
+  try{
+    await runPool(todo, async it => {
+      try{
+        const c = await fetchCreation(state.proj, it.title, state.ctrl.signal);
+        if(c){ it.created = c.created; it.user = c.user; } else it.cFail = true;
+      } catch(e){
+        if(e.name === 'AbortError') throw e;
+        it.cFail = true;
+      }
+      if(state === st){ clearTimeout(creationTimer); creationTimer = setTimeout(renderPage, 150); }
+    }, state.ctrl.signal);
+  } catch(e){ if(e.name !== 'AbortError') console.warn('Tanggal pembuatan gagal:', e); }
+}
+
+/* ================= tampilan hasil ================= */
+let st = null;          // { mode, proj, host, items, query, page, pageSize, view, ctrl, ... }
+let viewMode = 'list';
+try{ if(localStorage.getItem('wikiperingkatView') === 'grid') viewMode = 'grid'; }catch(e){}
+let searchTimer = null;
+
+const labelOf = it => it.entity ? (labels[lk(it.entity)] || '') : '';
+const urlOf = it => `${st.proj}/wiki/${encodeURIComponent(it.raw.replace(/ /g, '_'))}`;
+function visible(){
+  const q = st.query.trim().toLowerCase();
+  if(!q) return st.items;
+  return st.items.filter(it => (it.title + ' ' + labelOf(it) + ' ' + (it.user || '')).toLowerCase().includes(q));
+}
+function thumbEl(it, cls){
+  const box = document.createElement('div'); box.className = cls;
+  if(it.thumb){
+    const img = document.createElement('img'); img.src = it.thumb; img.alt = ''; img.loading = 'lazy';
+    img.onerror = () => { img.remove(); box.textContent = (it.title[0] || '?').toUpperCase(); };
+    box.appendChild(img);
+  } else box.textContent = (it.title[0] || '?').toUpperCase();
+  return box;
+}
+function dateText(iso){ const d = new Date(iso); return isNaN(d) ? '' : fmtDate(d); }
+const createdText = it => it.created ? dateText(it.created) : (it.cFail ? '—' : '…');
+const creatorText = it => it.user || (it.created || it.cFail ? '—' : '…');
+
+function renderList(slice){
+  const wrap = document.createElement('div'); wrap.className = 'table-wrap';
+  const tbl = document.createElement('table');
+  const th = document.createElement('thead');
+  const cols = st.mode === 'trending'
+    ? [['rank','#'], ['', t('colTitle')], ['', t('colCreated')], ['', t('colUser')], ['num', t('colViews')]]
+    : [['rank','#'], ['', t('colTitle')], ['', t('colCreated')], ['', t('colUser')]];
+  th.innerHTML = '<tr>' + cols.map(([c, l]) => `<th class="${c}">${l.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</th>`).join('') + '</tr>';
+  const tb = document.createElement('tbody');
+  slice.forEach(it => {
+    const tr = document.createElement('tr');
+    const r = document.createElement('td'); r.className = 'rank'; r.textContent = fmtNum(it.rank);
+    const c = document.createElement('td');
+    const cell = document.createElement('div'); cell.className = 'cell';
+    if(st.hasThumbs) cell.appendChild(thumbEl(it, 'thumb'));
+    const txt = document.createElement('div'); txt.className = 'txt';
+    const a = document.createElement('a'); a.href = urlOf(it); a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = it.title;
+    txt.appendChild(a);
+    const lb = labelOf(it);
+    if(lb){ const s = document.createElement('span'); s.className = 'sub'; s.textContent = lb; txt.appendChild(s); }
+    cell.appendChild(txt); c.appendChild(cell);
+    tr.append(r, c);
+    const d = document.createElement('td'); d.style.whiteSpace = 'nowrap'; d.textContent = createdText(it);
+    const u = document.createElement('td'); u.textContent = creatorText(it);
+    tr.append(d, u);
+    if(st.mode === 'trending'){
+      const v = document.createElement('td'); v.className = 'num'; v.textContent = fmtNum(it.views); tr.appendChild(v);
+    }
+    tb.appendChild(tr);
+  });
+  tbl.append(th, tb); wrap.appendChild(tbl);
+  return wrap;
+}
+function renderGrid(slice){
+  const g = document.createElement('div'); g.className = 'grid';
+  slice.forEach(it => {
+    const a = document.createElement('a'); a.className = 'gcard'; a.href = urlOf(it); a.target = '_blank'; a.rel = 'noopener noreferrer';
+    const pic = thumbEl(it, 'pic');
+    const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = '#' + fmtNum(it.rank);
+    const body = document.createElement('div'); body.className = 'body';
+    const ttl = document.createElement('div'); ttl.className = 'ttl'; ttl.textContent = it.title;
+    body.appendChild(ttl);
+    const lb = labelOf(it);
+    if(lb){ const m = document.createElement('div'); m.className = 'meta'; m.textContent = lb; body.appendChild(m); }
+    const info = document.createElement('div'); info.className = 'meta';
+    info.textContent = createdText(it) + ' · ' + creatorText(it);
+    body.appendChild(info);
+    if(st.mode === 'trending'){
+      const val = document.createElement('div'); val.className = 'val'; val.textContent = fmtNum(it.views) + ' ' + t('views');
+      body.appendChild(val);
+    }
+    a.append(pic, rk, body); g.appendChild(a);
+  });
+  return g;
+}
+
+function buildPager(page, pages){
+  const nav = $('pager'); nav.innerHTML = '';
+  if(pages <= 1) return;
+  const btn = (label, n, o = {}) => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.className = 'page-btn' + (o.active ? ' active' : ''); b.textContent = label; b.disabled = !!o.disabled;
+    if(o.aria) b.setAttribute('aria-label', o.aria);
+    if(o.active) b.setAttribute('aria-current', 'page');
+    if(!o.active && !o.disabled) b.addEventListener('click', () => { st.page = n; renderPage(); $('results').scrollIntoView({ block:'start', behavior:'smooth' }); });
+    nav.appendChild(b);
+  };
+  btn('‹', page - 1, { disabled: page === 1, aria: t('prev') });
+  let last = 0;
+  for(let n = 1; n <= pages; n++){
+    if(n !== 1 && n !== pages && Math.abs(n - page) > 1) continue;
+    if(n - last > 1){ const s = document.createElement('span'); s.textContent = '…'; nav.appendChild(s); }
+    btn(String(n), n, { active: n === page }); last = n;
+  }
+  btn('›', page + 1, { disabled: page === pages, aria: t('next') });
+}
+
+function renderPage(){
+  if(!st) return;
+  const view = visible();
+  const pages = Math.max(1, Math.ceil(view.length / st.pageSize));
+  st.page = Math.min(Math.max(1, st.page), pages);
+  const from = (st.page - 1) * st.pageSize, slice = view.slice(from, from + st.pageSize);
+  const body = $('body'); body.innerHTML = '';
+  if(!slice.length){
+    const p = document.createElement('p'); p.className = 'note'; p.style.textAlign = 'center'; p.textContent = st.items.length ? t('noMatch') : t('empty');
+    body.appendChild(p);
+  } else body.appendChild(viewMode === 'grid' ? renderGrid(slice) : renderList(slice));
+  $('resCount').textContent = st.query.trim() ? t('countFiltered', fmtNum(view.length), fmtNum(st.items.length)) : t('countItems', fmtNum(st.items.length));
+  $('rangeText').textContent = slice.length ? t('range', fmtNum(from + 1), fmtNum(from + slice.length), fmtNum(view.length)) : '';
+  buildPager(st.page, pages);
+  loadCreations(st, slice);
+}
+function renderAll(){
+  if(!st) return;
+  $('results').style.display = 'block';
+  $('resTitle').textContent = st.mode === 'trending' ? t('titleTrending') : t('titleLatest');
+  let note = '';
+  if(st.mode === 'trending') note = t('noteTrending', fmtDate(st.start), fmtDate(st.end), t('nsNames')[st.ns], st.ns === 0);
+  else note = t('periodRange', st.start ? fmtDate(st.start) : t('open'), st.end ? fmtDate(st.end) : t('now')) + ' ' + (st.log ? t('noteLatestLog', t('nsNames')[st.ns], st.ns === 6) : t('noteLatestRc', t('nsNames')[st.ns]));
+  $('resNote').textContent = note;
+  const w = $('resWarn');
+  const warns = [];
+  if(st.clamped) warns.push(t('clamp'));
+  if(st.partial) warns.push(t('notePartial', st.partial[0], st.partial[1]));
+  if(warns.length){ w.style.display = 'block'; w.textContent = warns.join(' '); } else w.style.display = 'none';
+  renderPage();
+}
+
+$('pdfBtn').addEventListener('click', async () => {
+  if(!st || !st.items.length) return;
+  const list = visible();
+  // pastikan tanggal & pembuat semua baris sudah termuat (Trending memuatnya per halaman)
+  const btn = $('pdfBtn'); btn.disabled = true;
+  try{
+    await loadCreations(st, list);
+    const t0 = Date.now();
+    while(list.some(it => !it.created && !it.cFail) && Date.now() - t0 < 15000) await sleep(200);
+  } finally { btn.disabled = false; }
+  const root = $('printReport'); root.innerHTML = '';
+  const el = (tag, text, cls) => { const e = document.createElement(tag); if(text != null) e.textContent = text; if(cls) e.className = cls; return e; };
+  const h1 = el('h1', 'Wiki'); h1.appendChild(el('em', 'Peringkat')); root.appendChild(h1);
+  const period = st.mode === 'trending'
+    ? `${fmtDate(st.start)} – ${fmtDate(st.end)}`
+    : `${st.start ? fmtDate(st.start) : t('open')} – ${st.end ? fmtDate(st.end) : t('now')}`;
+  const modeName = st.mode === 'trending' ? t('titleTrending') : t('titleLatest');
+  root.appendChild(el('p', t('pdfSub', st.host, modeName, t('nsNames')[st.ns], period), 'pr-sub'));
+  const tbl = el('table'); const head = el('thead'); const hr = el('tr');
+  const cols = ['#', t('colTitle'), t('colCreated'), t('colUser')].concat(st.mode === 'trending' ? [t('colViews')] : []);
+  cols.forEach(c => hr.appendChild(el('th', c))); head.appendChild(hr); tbl.appendChild(head);
+  const body = el('tbody');
+  list.forEach(it => {
+    const tr = el('tr');
+    tr.appendChild(el('td', fmtNum(it.rank), 'n'));
+    const td = el('td'); td.appendChild(el('strong', it.title));
+    const lb = labelOf(it); if(lb) td.appendChild(el('span', lb, 'lb'));
+    td.appendChild(el('span', urlOf(it), 'url')); tr.appendChild(td);
+    tr.appendChild(el('td', it.created ? dateText(it.created) : '—'));
+    tr.appendChild(el('td', it.user || '—'));
+    if(st.mode === 'trending') tr.appendChild(el('td', fmtNum(it.views), 'v'));
+    body.appendChild(tr);
+  });
+  tbl.appendChild(body); root.appendChild(tbl);
+  root.appendChild(el('p', t('pdfFoot', fmtDate(new Date())), 'pr-foot'));
+  const old = document.title;
+  document.title = `WikiPeringkat - ${st.host} - ${modeName}`;
+  window.addEventListener('afterprint', () => { document.title = old; root.innerHTML = ''; }, { once: true });
+  window.print();
+});
+$('viewSwitch').addEventListener('click', e => {
+  const b = e.target.closest('[data-view]'); if(!b) return;
+  viewMode = b.dataset.view;
+  try{ localStorage.setItem('wikiperingkatView', viewMode); }catch(err){}
+  syncView(); renderPage();
+});
+function syncView(){ $('viewSwitch').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.view === viewMode)); }
+syncView();
+$('search').addEventListener('input', () => {
+  if(!st) return;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { st.query = $('search').value; st.page = 1; renderPage(); }, 150);
+});
+$('pageSize').addEventListener('change', () => { if(!st) return; st.pageSize = Number($('pageSize').value) || 25; st.page = 1; renderPage(); });
+
+/* ================= jalankan ================= */
+let ctrl = null;
+function busy(on){
+  $('goBtn').disabled = on;
+  $('cancelBtn').style.display = on ? 'block' : 'none';
+}
+$('cancelBtn').addEventListener('click', () => { if(ctrl) ctrl.abort(); });
+$('goBtn').addEventListener('click', async () => {
+  const host = projInput.value.trim().toLowerCase();
+  if(!host) return;
+  if(ctrl) ctrl.abort();
+  ctrl = new AbortController();
+  const myCtrl = ctrl;
+  const proj = 'https://' + host;
+  const runMode = mode, runNs = nsId;
+  let from = dateFromEl.value ? new Date(dateFromEl.value + 'T00:00:00Z') : null;
+  let to = dateToEl.value ? new Date(dateToEl.value + 'T00:00:00Z') : null;
+  if(from && to && from > to){ const x = from; from = to; to = x; dateFromEl.value = isoDay(from); dateToEl.value = isoDay(to); }
+  const runRange = { from, to };
+  busy(true);
+  try{
+    const data = runMode === 'trending'
+      ? await loadTrending(proj, host, runRange, runNs, myCtrl.signal)
+      : await loadLatest(proj, runRange, runNs, myCtrl.signal);
+    if(myCtrl.signal.aborted) return;
+    data.items.forEach(it => { it.entity = runNs === 0 ? entityRef(host, it.title) : null; });
+    st = Object.assign({ mode: runMode, ns: runNs, proj, host, query: '', page: 1, pageSize: Number($('pageSize').value) || 25, ctrl: myCtrl, hasThumbs: !NO_THUMB.test(host) }, data);
+    $('search').value = '';
+    setStatus('');
+    renderAll();
+    if(data.items.length){ setStatus(t('stLabels')); loadExtras(st).finally(() => { if(ctrl === myCtrl) setStatus(''); }); }
+  } catch(e){
+    if(e.name === 'AbortError'){ if(ctrl === myCtrl) setStatus(t('cancelled')); }
+    else setStatus(t('errFail', e.message || e), true);
+  } finally {
+    net.onWait = null;
+    if(ctrl === myCtrl) busy(false);
+  }
+});
+
+applyPreset('30');
+applyTexts();
+})();
+</script>
+</body>
+</html>
