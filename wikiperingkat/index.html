@@ -677,20 +677,27 @@ $('modeSeg').addEventListener('click', e => {
   const b = e.target.closest('[data-mode]'); if(!b) return;
   if(b.dataset.mode !== mode) clearResults();
   mode = b.dataset.mode;
+  if(activePreset) applyPreset(activePreset); // tanggal akhir bergantung mode
   $('modeSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
   applyTexts();
 });
 const dateFromEl = $('dateFrom'), dateToEl = $('dateTo');
 const isoDay = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+let activePreset = null;
+// Trending: data pageview hari ini belum terbit, jadi periode berakhir kemarin ("Hari ini" = kemarin).
+// Terbaru: berakhir hari ini.
 function applyPreset(key){
   const now = new Date(); const today = utc(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const end = mode === 'trending' ? new Date(today.getTime() - DAY) : today;
+  const first = d => d > end ? end : d; // awal bulan/tahun tidak boleh melewati tanggal akhir
   let from = null;
-  if(key === 'today') from = today;
-  else if(key === 'month') from = utc(today.getUTCFullYear(), today.getUTCMonth(), 1);
-  else if(key === 'year') from = utc(today.getUTCFullYear(), 0, 1);
-  else if(key !== 'all') from = new Date(today.getTime() - (Number(key) - 1) * DAY);
+  if(key === 'today') from = end;
+  else if(key === 'month') from = first(utc(end.getUTCFullYear(), end.getUTCMonth(), 1));
+  else if(key === 'year') from = first(utc(end.getUTCFullYear(), 0, 1));
+  else if(key !== 'all') from = new Date(end.getTime() - (Number(key) - 1) * DAY);
   dateFromEl.value = from ? isoDay(from) : '';
-  dateToEl.value = isoDay(today);
+  dateToEl.value = isoDay(end);
+  activePreset = key;
   $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x.dataset.preset === key));
 }
 $('presetSeg').addEventListener('click', e => {
@@ -699,7 +706,7 @@ $('presetSeg').addEventListener('click', e => {
   applyPreset(b.dataset.preset);
   if(dateFromEl.value + '|' + dateToEl.value !== before) clearResults();
 });
-[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => { $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active')); clearResults(); }));
+[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => { activePreset = null; $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active')); clearResults(); }));
 
 /* ================= util tanggal ================= */
 const DAY = 864e5;
