@@ -14,6 +14,8 @@
 })();
 </script>
 <link rel="stylesheet" href="../css/fonts.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
 <style>
   :root{
     --bg:#f6f9fc; --surface:#ffffff; --ink:#0f1b2d; --muted:#51607a; --line:#dbe4ee;
@@ -108,26 +110,6 @@
   .pdf-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--brand);border-radius:12px;background:var(--surface);color:var(--brand-text);font:700 13.5px inherit;}
   .pdf-btn:hover{background:var(--brand);color:#fff;}
   .pdf-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  #printReport{display:none;}
-  @media print{
-    @page{size:A4;margin:14mm;}
-    html,body{background:#fff!important;}
-    body>*:not(#printReport){display:none!important;}
-    #printReport{display:block;color:#111;background:#fff;font:10pt/1.4 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
-    #printReport h1{font-size:19pt;margin:0 0 2pt;line-height:1.2;}
-    #printReport h1 em{color:#0077b6;-webkit-text-fill-color:#0077b6;background:none;}
-    #printReport .pr-sub{color:#555;font-size:9.5pt;margin:0 0 12pt;padding-bottom:8pt;border-bottom:1.5pt solid #0077b6;}
-    #printReport table{width:100%;border-collapse:collapse;font-size:9.5pt;}
-    #printReport th,#printReport td{border:.5pt solid #c9d3dd;padding:3.5pt 6pt;text-align:left;vertical-align:top;}
-    #printReport th{background:#e8f3fa;font-weight:700;}
-    #printReport thead{display:table-header-group;}
-    #printReport tr{break-inside:avoid;}
-    #printReport td.n{text-align:right;color:#555;width:22pt;}
-    #printReport td.v{text-align:right;white-space:nowrap;}
-    #printReport .lb{display:block;color:#555;font-size:8.5pt;}
-    #printReport .url{display:block;color:#777;font-size:7.5pt;word-break:break-all;}
-    #printReport .pr-foot{margin-top:12pt;padding-top:6pt;border-top:.5pt solid #c9d3dd;color:#777;font-size:8.5pt;}
-  }
   .note{font-size:13px;color:var(--muted);margin:0 0 14px;}
   .note.warn{color:var(--warn);}
   .tools-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:12px 0;}
@@ -336,8 +318,6 @@
   </section>
 </main>
 
-<div id="printReport" aria-hidden="true"></div>
-
 <div class="pv" id="pv" hidden>
   <div class="pv-box" role="dialog" aria-modal="true" aria-labelledby="pvTitle">
     <div class="pv-top">
@@ -391,7 +371,10 @@ const T = {
     openOriginal:'Buka halaman asli', pvHistory:'Riwayat', pvClose:'Tutup', pvPrev:'Sebelumnya', pvNext:'Berikutnya', pvLoading:'Memuat ringkasan…', pvNoText:'Tidak ada ringkasan untuk halaman ini.', pvFail:'Ringkasan gagal dimuat; data yang ada tetap ditampilkan.',
     pvRank:'Peringkat', pvViews:'Pageview', pvCreated:'Dibuat', pvCreator:'Pembuat', pvLicense:'Lisensi', pvUploader:'Pengunggah', pvAuthor:'Pencipta', pvSize:'Ukuran', pvType:'Tipe',
     pvLangs:n=>`Tersedia di ${n} bahasa Wikipedia`, pvWdOpen:'Buka di Wikidata', nsShort:{0:'Utama',4:'Proyek',6:'Berkas',14:'Kategori'},
-    savePdf:'Simpan PDF', pdfSub:(proj,mode,ns,period)=>`${proj} · ${mode} · ${ns} · ${period}`, pdfFoot:d=>`Dibuat ${d} dari WikiPeringkat. Data: Wikimedia.`,
+    savePdf:'Simpan PDF', pdfMaking:'Menyusun PDF…', pdfNoLib:'Pustaka PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.',
+    pdfProject:'Proyek', pdfMode:'Peringkat', pdfNs:'Ruang nama', pdfPeriod:'Periode', pdfTz:'Zona waktu', pdfFilter:'Pencarian', pdfFilterRows:(a,b)=>`${a} dari ${b} halaman`,
+    pdfPages:'Halaman', pdfTotalViews:'Total pageview', pdfCreators:'Pembuat berbeda', pdfDays:'Hari',
+    pdfGenerated:'Dibuat', pdfGeneratedBy:'dibuat dengan WikiPeringkat', pdfPage:(p,n)=>`Halaman ${p} dari ${n}`, pdfSources:'Sumber data: Wikimedia Pageviews API dan MediaWiki Action API.',
     nsLabel:'Ruang nama', nsMain:'Utama', nsProject:'Proyek', nsFile:'Berkas', nsCategory:'Kategori',
     nsHint:'Di Commons, berkas ada di ruang nama Berkas, jadi pilihan itu dipilih otomatis. Di Wikipedia lain, berkas umumnya ada di Commons.',
     nsNames:{0:'ruang nama utama',4:'ruang nama Proyek',6:'ruang nama Berkas',14:'ruang nama Kategori'},
@@ -431,7 +414,10 @@ const T = {
     openOriginal:'Open original page', pvHistory:'History', pvClose:'Close', pvPrev:'Previous', pvNext:'Next', pvLoading:'Loading summary…', pvNoText:'No summary available for this page.', pvFail:'The summary could not be loaded; available data is still shown.',
     pvRank:'Rank', pvViews:'Pageviews', pvCreated:'Created', pvCreator:'Creator', pvLicense:'License', pvUploader:'Uploader', pvAuthor:'Author', pvSize:'Size', pvType:'Type',
     pvLangs:n=>`Available in ${n} Wikipedia languages`, pvWdOpen:'Open on Wikidata', nsShort:{0:'Main',4:'Project',6:'File',14:'Category'},
-    savePdf:'Save PDF', pdfSub:(proj,mode,ns,period)=>`${proj} · ${mode} · ${ns} · ${period}`, pdfFoot:d=>`Generated ${d} by WikiPeringkat. Data: Wikimedia.`,
+    savePdf:'Save PDF', pdfMaking:'Building PDF…', pdfNoLib:'The PDF library failed to load. Check your connection and try again.',
+    pdfProject:'Project', pdfMode:'Ranking', pdfNs:'Namespace', pdfPeriod:'Period', pdfTz:'Time zone', pdfFilter:'Search', pdfFilterRows:(a,b)=>`${a} of ${b} pages`,
+    pdfPages:'Pages', pdfTotalViews:'Total pageviews', pdfCreators:'Distinct creators', pdfDays:'Days',
+    pdfGenerated:'Generated', pdfGeneratedBy:'generated by WikiPeringkat', pdfPage:(p,n)=>`Page ${p} of ${n}`, pdfSources:'Data sources: Wikimedia Pageviews API and MediaWiki Action API.',
     nsLabel:'Namespace', nsMain:'Main', nsProject:'Project', nsFile:'File', nsCategory:'Category',
     nsHint:'On Commons, files live in the File namespace, so it is selected automatically. On other Wikipedias, files are usually on Commons.',
     nsNames:{0:'the main namespace',4:'the Project namespace',6:'the File namespace',14:'the Category namespace'},
@@ -761,7 +747,7 @@ async function loadTrending(proj, key, range, nsWant, signal){
   let start = range.from || PV_START, end = range.to || anchor;
   let clamped = false;
   if(start < PV_START){ start = PV_START; clamped = true; }
-  if(end > anchor){ end = anchor; clamped = true; }
+  if(end > anchor){ if(end > today) clamped = true; end = anchor; } // sampai hari ini tanpa data hari ini itu wajar, bukan penyesuaian
   if(start > end) throw new Error(t('errRange'));
 
   const tasks = planTasks(start, end);
@@ -1068,18 +1054,23 @@ function renderPage(){
   buildPager(st.page, pages);
   loadCreations(st, slice);
 }
+function currentNote(){
+  if(st.mode === 'trending') return t('noteTrending', fmtDate(st.start), fmtDate(st.end), t('nsNames')[st.ns], st.ns === 0);
+  return t('periodRange', st.start ? fmtDate(st.start) : t('open'), st.end ? fmtDate(st.end) : t('now')) + ' ' + (st.log ? t('noteLatestLog', t('nsNames')[st.ns], st.ns === 6) : t('noteLatestRc', t('nsNames')[st.ns]));
+}
+function currentWarns(){
+  const warns = [];
+  if(st.clamped) warns.push(t('clamp'));
+  if(st.partial) warns.push(t('notePartial', st.partial[0], st.partial[1]));
+  return warns;
+}
 function renderAll(){
   if(!st) return;
   $('results').style.display = 'block';
   $('resTitle').textContent = st.mode === 'trending' ? t('titleTrending') : t('titleLatest');
-  let note = '';
-  if(st.mode === 'trending') note = t('noteTrending', fmtDate(st.start), fmtDate(st.end), t('nsNames')[st.ns], st.ns === 0);
-  else note = t('periodRange', st.start ? fmtDate(st.start) : t('open'), st.end ? fmtDate(st.end) : t('now')) + ' ' + (st.log ? t('noteLatestLog', t('nsNames')[st.ns], st.ns === 6) : t('noteLatestRc', t('nsNames')[st.ns]));
-  $('resNote').textContent = note;
+  $('resNote').textContent = currentNote();
   const w = $('resWarn');
-  const warns = [];
-  if(st.clamped) warns.push(t('clamp'));
-  if(st.partial) warns.push(t('notePartial', st.partial[0], st.partial[1]));
+  const warns = currentWarns();
   if(warns.length){ w.style.display = 'block'; w.textContent = warns.join(' '); } else w.style.display = 'none';
   renderPage();
 }
@@ -1261,46 +1252,226 @@ document.addEventListener('keydown', e => {
   }
 });
 
-$('pdfBtn').addEventListener('click', async () => {
-  if(!st || !st.items.length) return;
-  const list = visible();
-  // pastikan tanggal & pembuat semua baris sudah termuat (Trending memuatnya per halaman)
-  const btn = $('pdfBtn'); btn.disabled = true;
+/* ================= PDF (jsPDF + autoTable, gaya Wikirekap) ================= */
+const PDF_C = {
+  brand: [0, 119, 182], brand2: [0, 180, 216], ink: [15, 27, 45], muted: [81, 96, 122], line: [219, 228, 238],
+  soft: [232, 243, 250], bg: [246, 249, 252], white: [255, 255, 255], warnBg: [255, 243, 224], warnInk: [146, 64, 14], warnBar: [230, 130, 20]
+};
+// Roboto (subset Latin, Latin Extended, Yunani, Sirilik, Vietnam) dipakai bersama Wikirekap
+const PDF_FONT_FILES = { normal: '../wikirekap/pdf-fonts/Roboto-Regular.ttf', bold: '../wikirekap/pdf-fonts/Roboto-Bold.ttf' };
+const PDF_GLYPH_RANGES = [[0x20,0x7E],[0xA0,0x2AF],[0x300,0x377],[0x37A,0x37F],[0x384,0x38A],[0x38C,0x38C],[0x38E,0x3A1],[0x3A3,0x3E1],[0x3F0,0x52F],[0x1E00,0x1F15],[0x1F18,0x1F1D],[0x1F20,0x1F45],[0x1F48,0x1F4D],[0x1F50,0x1F57],[0x1F59,0x1F59],[0x1F5B,0x1F5B],[0x1F5D,0x1F5D],[0x1F5F,0x1F7D],[0x1F80,0x1FB4],[0x1FB6,0x1FC4],[0x1FC6,0x1FD3],[0x1FD6,0x1FDB],[0x1FDD,0x1FEF],[0x1FF2,0x1FF4],[0x1FF6,0x1FFE],[0x2000,0x2027],[0x202F,0x205F],[0x20A0,0x20BE],[0x2100,0x2101],[0x2103,0x2103],[0x2105,0x2106],[0x2109,0x2109],[0x2113,0x2113],[0x2116,0x2117],[0x211E,0x2123],[0x2125,0x2126],[0x212A,0x212B],[0x212E,0x212E],[0x2132,0x2132],[0x213B,0x213B],[0x214D,0x214D],[0x214F,0x214F],[0x2191,0x2191],[0x2193,0x2193],[0x2202,0x2202],[0x2206,0x2206],[0x220F,0x220F],[0x2211,0x2212],[0x221A,0x221A],[0x221E,0x221E],[0x222B,0x222B],[0x2248,0x2248],[0x2260,0x2260],[0x2264,0x2265],[0x25CA,0x25CA]];
+let pdfFontsPromise = null;
+const pdfHasUnsupportedGlyph = str => {
+  for(const ch of String(str)){
+    const cp = ch.codePointAt(0);
+    if(cp === 9 || cp === 10 || cp === 13) continue;
+    if(!PDF_GLYPH_RANGES.some(([a, b]) => cp >= a && cp <= b)) return true;
+  }
+  return false;
+};
+function bufToBase64(buf){
+  const bytes = new Uint8Array(buf); let bin = '';
+  for(let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+function loadPdfFonts(){
+  if(!pdfFontsPromise){
+    pdfFontsPromise = Promise.all(Object.values(PDF_FONT_FILES).map(async url => {
+      const res = await fetch(url);
+      if(!res.ok) throw new Error(`Font ${url}: ${res.status}`);
+      return bufToBase64(await res.arrayBuffer());
+    })).then(([normal, bold]) => ({ normal, bold })).catch(e => { pdfFontsPromise = null; throw e; });
+  }
+  return pdfFontsPromise;
+}
+async function registerPdfFonts(doc){
   try{
+    const f = await loadPdfFonts();
+    doc.addFileToVFS('Roboto-Regular.ttf', f.normal); doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+    doc.addFileToVFS('Roboto-Bold.ttf', f.bold); doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+    return 'Roboto';
+  } catch(e){ console.warn('Font PDF gagal dimuat, memakai font bawaan:', e); return 'helvetica'; }
+}
+// Aksara di luar font (mis. Jepang, Arab, Thailand) digambar ke canvas lalu ditempel sebagai gambar di sel
+function drawCanvasCellText(doc, cell, lines){
+  const k = doc.internal.scaleFactor, fontMm = cell.styles.fontSize / k, lineMm = fontMm * (cell.styles.lineHeight || 1.15);
+  const padL = cell.padding('left'), padT = cell.padding('top'), padR = cell.padding('right');
+  const wMm = cell.width - padL - padR, px = 8;
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(wMm * px)); canvas.height = Math.max(1, Math.round(lines.length * lineMm * px));
+  const ctx = canvas.getContext('2d'), c = cell.styles.textColor;
+  ctx.fillStyle = Array.isArray(c) ? `rgb(${c[0]},${c[1]},${c[2]})` : '#0f1b2d';
+  ctx.font = `${cell.styles.fontStyle === 'bold' ? '700 ' : '500 '}${fontMm * px}px "Segoe UI", "Noto Sans", "Noto Sans CJK JP", "Yu Gothic", "Hiragino Sans", "Malgun Gothic", "Microsoft YaHei", "Noto Sans Arabic", "Noto Sans Thai", sans-serif`;
+  ctx.textBaseline = 'middle';
+  lines.forEach((line, i) => {
+    const w = ctx.measureText(line).width;
+    ctx.save(); ctx.translate(0, (i + 0.5) * lineMm * px);
+    if(w > canvas.width) ctx.scale(canvas.width / w, 1);
+    ctx.fillText(line, 0, 0); ctx.restore();
+  });
+  doc.addImage(canvas.toDataURL('image/png'), 'PNG', cell.x + padL, cell.y + padT, wMm, lines.length * lineMm);
+}
+
+async function exportPDF(){
+  if(!st || !st.items.length) return;
+  if(!window.jspdf || !window.jspdf.jsPDF){ setStatus(t('pdfNoLib'), true); return; }
+  const list = visible();
+  const btn = $('pdfBtn'); btn.disabled = true;
+  setStatus(t('pdfMaking'));
+  try{
+    // pastikan tanggal & pembuat semua baris sudah termuat (Trending memuatnya per halaman)
     await loadCreations(st, list);
     const t0 = Date.now();
     while(list.some(it => !it.created && !it.cFail) && Date.now() - t0 < 15000) await sleep(200);
+
+    const C = PDF_C;
+    const doc = new window.jspdf.jsPDF({ orientation: 'landscape' });
+    const pdfFont = await registerPdfFonts(doc);
+    const canvasFallback = pdfFont === 'Roboto';
+    const pageW = doc.internal.pageSize.width, pageH = doc.internal.pageSize.height;
+    const M = 14, contentW = pageW - M * 2, TOP_NEXT = 22, BOTTOM = pageH - 18;
+    let yPos = 0;
+    const text = rgb => doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+    const fill = rgb => doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+    const font = (style, size) => { doc.setFont(pdfFont, style); doc.setFontSize(size); };
+    const ensureSpace = needed => { if(yPos + needed > BOTTOM){ doc.addPage(); yPos = TOP_NEXT; } };
+    const modeName = st.mode === 'trending' ? t('titleTrending') : t('titleLatest');
+    const periodText = st.mode === 'trending'
+      ? `${fmtDate(st.start)} - ${fmtDate(st.end)}`
+      : `${st.start ? fmtDate(st.start) : t('open')} - ${st.end ? fmtDate(st.end) : t('now')}`;
+    const nsName = t('nsShort')[st.ns];
+
+    // pita judul
+    fill(C.brand); doc.rect(0, 0, pageW, 32, 'F');
+    font('bold', 21); text(C.white); doc.text('WikiPeringkat', M, 15);
+    font('normal', 10.5); doc.text(modeName, M, 23.5);
+    font('bold', 12); doc.text(st.host, pageW - M, 14, { align: 'right' });
+    font('normal', 9.5); doc.text(periodText, pageW - M, 22, { align: 'right' });
+
+    // rincian laporan
+    const kv = (x, y, label, value, width) => {
+      font('bold', 7.5); text(C.muted); doc.text(label.toUpperCase(), x, y);
+      font('normal', 9.5); text(C.ink);
+      const lines = doc.splitTextToSize(String(value), width);
+      doc.text(lines, x, y + 4.8);
+      return y + 4.8 + lines.length * 4.4 + 3.5;
+    };
+    const leftW = 150, rightX = M + leftW + 10, rightW = contentW - leftW - 10;
+    let yl = 41, yr = 41;
+    yl = kv(M, yl, t('pdfProject'), st.host, leftW);
+    yl = kv(M, yl, t('pdfMode'), `${modeName} - ${t('pdfNs')}: ${nsName}`, leftW);
+    yr = kv(rightX, yr, t('pdfPeriod'), periodText, rightW);
+    yr = kv(rightX, yr, t('pdfTz'), 'UTC', rightW);
+    if(st.query.trim()) yl = kv(M, yl, t('pdfFilter'), `"${st.query.trim()}" - ${t('pdfFilterRows', fmtNum(list.length), fmtNum(st.items.length))}`, leftW);
+    yPos = Math.max(yl, yr) + 1;
+
+    // catatan (kotak kuning bergaris aksen)
+    const note = message => {
+      const lines = doc.splitTextToSize(message, contentW - 10);
+      const h = lines.length * 4.3 + 5;
+      ensureSpace(h + 3);
+      fill(C.warnBg); doc.roundedRect(M, yPos, contentW, h, 2, 2, 'F');
+      fill(C.warnBar); doc.rect(M, yPos, 1.6, h, 'F');
+      font('normal', 8.8); text(C.warnInk); doc.text(lines, M + 6, yPos + 4.6);
+      yPos += h + 3;
+    };
+    note(currentNote());
+    currentWarns().forEach(note);
+
+    // kartu ringkasan
+    const creators = new Set(list.map(i => i.user).filter(Boolean)).size;
+    const tiles = [[list.length, t('pdfPages')]];
+    if(st.mode === 'trending') tiles.push([list.reduce((n, i) => n + (i.views || 0), 0), t('pdfTotalViews')]);
+    tiles.push([creators, t('pdfCreators')]);
+    if(st.start && st.end) tiles.push([Math.round((st.end - st.start) / DAY) + 1, t('pdfDays')]);
+    const gap = 5, tileW = (contentW - gap * (tiles.length - 1)) / tiles.length;
+    ensureSpace(26);
+    tiles.forEach(([value, label], i) => {
+      const x = M + i * (tileW + gap);
+      fill(C.soft); doc.roundedRect(x, yPos, tileW, 21, 3, 3, 'F');
+      font('bold', 17); text(C.brand); doc.text(Number(value).toLocaleString(locale()), x + 5, yPos + 10.5);
+      font('normal', 8.5); text(C.muted); doc.text(label, x + 5, yPos + 16.5);
+    });
+    yPos += 21 + 9;
+
+    // tabel
+    ensureSpace(44);
+    fill(C.brand); doc.roundedRect(M, yPos - 4.4, 1.6, 5.8, 0.8, 0.8, 'F');
+    font('bold', 12.5); text(C.ink); doc.text(modeName, M + 4.5, yPos);
+    yPos += 6;
+    const trending = st.mode === 'trending';
+    const head = [['#', t('colTitle'), t('colCreated'), t('colUser')].concat(trending ? [t('colViews')] : [])];
+    const body = list.map(it => {
+      const lb = labelOf(it);
+      const row = [fmtNum(it.rank), it.title + (lb ? ` - ${lb}` : ''), it.created ? dateText(it.created) : '-', it.user || '-'];
+      if(trending) row.push(fmtNum(it.views));
+      return row;
+    });
+    doc.autoTable({
+      theme: 'grid',
+      styles: { font: pdfFont, fontSize: 8.5, cellPadding: 2.6, overflow: 'linebreak', halign: 'left', textColor: C.ink, lineColor: C.line, lineWidth: 0.2 },
+      headStyles: { fillColor: C.brand, textColor: C.white, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: C.bg },
+      margin: { top: TOP_NEXT, left: M, right: M, bottom: 18 },
+      tableWidth: 'auto',
+      head, body, startY: yPos,
+      columnStyles: { 0: { cellWidth: 13, halign: 'right', textColor: C.muted }, 1: { cellWidth: trending ? 110 : 120 }, 2: { cellWidth: 30 }, 4: { halign: 'right' } },
+      showHead: 'everyPage', rowPageBreak: 'avoid',
+      didParseCell: data => {
+        if(data.section === 'body' && (data.column.index === 1 || data.column.index === 3)){
+          data.cell.pdfCanvas = canvasFallback && pdfHasUnsupportedGlyph(data.cell.raw);
+        }
+      },
+      willDrawCell: data => {
+        if(data.section === 'body' && data.cell.pdfCanvas){ data.cell.pdfLines = data.cell.text.slice(); data.cell.text = []; }
+      },
+      didDrawCell: data => {
+        if(data.section !== 'body') return;
+        if(data.cell.pdfLines) drawCanvasCellText(doc, data.cell, data.cell.pdfLines);
+        if(data.column.index === 1){
+          const it = list[data.row.index];
+          if(it) doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, { url: urlOf(it) });
+        }
+      }
+    });
+    yPos = doc.lastAutoTable.finalY + 9;
+
+    // penutup
+    ensureSpace(22);
+    doc.setDrawColor(C.line[0], C.line[1], C.line[2]); doc.setLineWidth(0.3); doc.line(M, yPos, pageW - M, yPos);
+    yPos += 6;
+    font('normal', 8.5); text(C.muted);
+    doc.text(`${t('pdfGenerated')}: ${new Date().toLocaleString(locale(), { dateStyle: 'long', timeStyle: 'short' })}`, M, yPos);
+    yPos += 4.6;
+    doc.text(t('pdfSources'), M, yPos);
+    yPos += 4.6;
+    text(C.brand);
+    const pageUrl = location.origin + location.pathname;
+    doc.textWithLink(pageUrl, M, yPos, { url: pageUrl });
+
+    // header berjalan + footer di setiap halaman
+    const totalPages = doc.internal.getNumberOfPages();
+    const running = `WikiPeringkat  |  ${st.host}  |  ${modeName}`;
+    for(let pg = 1; pg <= totalPages; pg++){
+      doc.setPage(pg);
+      if(pg > 1){
+        font('normal', 8); text(C.muted); doc.text(doc.splitTextToSize(running, contentW)[0], M, 11);
+        doc.setDrawColor(C.line[0], C.line[1], C.line[2]); doc.setLineWidth(0.3); doc.line(M, 14, pageW - M, 14);
+      }
+      doc.setDrawColor(C.line[0], C.line[1], C.line[2]); doc.setLineWidth(0.3); doc.line(M, pageH - 13, pageW - M, pageH - 13);
+      font('normal', 8); text(C.muted);
+      doc.text(`WikiPeringkat  -  ${t('pdfGeneratedBy')}`, M, pageH - 8);
+      doc.text(t('pdfPage', pg, totalPages), pageW - M, pageH - 8, { align: 'right' });
+    }
+    const safe = x => String(x).replace(/[^a-zA-Z0-9_-]+/g, '_').slice(0, 60);
+    doc.save(`wikiperingkat-${safe(st.host)}-${st.mode}-ns${st.ns}-${Date.now()}.pdf`);
+    setStatus('');
+  } catch(e){
+    console.error('PDF gagal:', e);
+    setStatus(t('errFail', e.message || e), true);
   } finally { btn.disabled = false; }
-  const root = $('printReport'); root.innerHTML = '';
-  const el = (tag, text, cls) => { const e = document.createElement(tag); if(text != null) e.textContent = text; if(cls) e.className = cls; return e; };
-  const h1 = el('h1', 'Wiki'); h1.appendChild(el('em', 'Peringkat')); root.appendChild(h1);
-  const period = st.mode === 'trending'
-    ? `${fmtDate(st.start)} – ${fmtDate(st.end)}`
-    : `${st.start ? fmtDate(st.start) : t('open')} – ${st.end ? fmtDate(st.end) : t('now')}`;
-  const modeName = st.mode === 'trending' ? t('titleTrending') : t('titleLatest');
-  root.appendChild(el('p', t('pdfSub', st.host, modeName, t('nsNames')[st.ns], period), 'pr-sub'));
-  const tbl = el('table'); const head = el('thead'); const hr = el('tr');
-  const cols = ['#', t('colTitle'), t('colCreated'), t('colUser')].concat(st.mode === 'trending' ? [t('colViews')] : []);
-  cols.forEach(c => hr.appendChild(el('th', c))); head.appendChild(hr); tbl.appendChild(head);
-  const body = el('tbody');
-  list.forEach(it => {
-    const tr = el('tr');
-    tr.appendChild(el('td', fmtNum(it.rank), 'n'));
-    const td = el('td'); td.appendChild(el('strong', it.title));
-    const lb = labelOf(it); if(lb) td.appendChild(el('span', lb, 'lb'));
-    td.appendChild(el('span', urlOf(it), 'url')); tr.appendChild(td);
-    tr.appendChild(el('td', it.created ? dateText(it.created) : '—'));
-    tr.appendChild(el('td', it.user || '—'));
-    if(st.mode === 'trending') tr.appendChild(el('td', fmtNum(it.views), 'v'));
-    body.appendChild(tr);
-  });
-  tbl.appendChild(body); root.appendChild(tbl);
-  root.appendChild(el('p', t('pdfFoot', fmtDate(new Date())), 'pr-foot'));
-  const old = document.title;
-  document.title = `WikiPeringkat - ${st.host} - ${modeName}`;
-  window.addEventListener('afterprint', () => { document.title = old; root.innerHTML = ''; }, { once: true });
-  window.print();
-});
+}
+$('pdfBtn').addEventListener('click', exportPDF);
 $('viewSwitch').addEventListener('click', e => {
   const b = e.target.closest('[data-view]'); if(!b) return;
   viewMode = b.dataset.view;
