@@ -282,9 +282,9 @@
 <main id="top" class="wrap">
   <section class="hero">
     <a class="crumb" href="/"><span aria-hidden="true">←</span>&nbsp;<span data-i18n="backHome">Kembali ke Affandy Murad</span></a>
-    <div><span class="badge">● <span data-i18n="kicker">100 teratas per proyek Wikimedia</span></span></div>
+    <div><span class="badge">● <span data-i18n="kicker">100 sampai 500 teratas per proyek Wikimedia</span></span></div>
     <h1>Wiki<em>Peringkat</em></h1>
-    <p class="lead" data-i18n="lead">Lihat 100 artikel paling banyak dibaca atau paling baru dibuat di sebuah proyek Wikimedia, hanya di ruang nama utama.</p>
+    <p class="lead" data-i18n="lead">Lihat 100 sampai 500 halaman paling banyak dibaca atau paling baru dibuat di sebuah proyek Wikimedia, per ruang nama (utama, proyek, berkas, kategori).</p>
   </section>
 
   <section class="card">
@@ -331,6 +331,16 @@
         <div><label for="dateTo" data-i18n="dateTo">Sampai</label><input type="date" id="dateTo"></div>
       </div>
       <p class="hint" id="periodHint"></p>
+    </div>
+
+    <div class="field">
+      <div class="lbl" data-i18n="limitLabel">Jumlah hasil</div>
+      <div class="seg" id="limitSeg" role="group">
+        <button type="button" class="seg-btn active" data-limit="100">100</button>
+        <button type="button" class="seg-btn" data-limit="250">250</button>
+        <button type="button" class="seg-btn" data-limit="500">500</button>
+      </div>
+      <p class="hint" data-i18n="limitHint">Makin banyak, makin lama memuat gambar dan data pelengkap. Peringkat di bawah 100 kurang akurat untuk periode panjang.</p>
     </div>
 
     <button class="primary" id="goBtn" type="button" data-i18n="go">Tampilkan peringkat</button>
@@ -411,8 +421,11 @@
 /* ================= i18n ================= */
 const T = {
   id: {
-    backHome:'Kembali ke Affandy Murad', kicker:'100 teratas per proyek Wikimedia',
-    lead:'Lihat 100 halaman paling banyak dibaca atau paling baru dibuat di sebuah proyek Wikimedia, per ruang nama (utama, proyek, berkas, kategori).',
+    backHome:'Kembali ke Affandy Murad', kicker:'100 sampai 500 teratas per proyek Wikimedia',
+    lead:'Lihat 100 sampai 500 halaman paling banyak dibaca atau paling baru dibuat di sebuah proyek Wikimedia, per ruang nama (utama, proyek, berkas, kategori).',
+    limitLabel:'Jumlah hasil', limitHint:'Makin banyak, makin lama memuat gambar dan data pelengkap. Peringkat di bawah 100 kurang akurat untuk periode panjang.',
+    noteLowRank:'Peringkat di bawah 100 kurang akurat untuk periode panjang: daftar top harian terpotong sekitar 1000 artikel, sehingga artikel di peringkat bawah bisa terhitung terlalu rendah.',
+    pdfLoadCreations:(a,b)=>`Memuat tanggal dan pembuat ${a} dari ${b}…`, pdfSkip:'Lewati, buat PDF sekarang',
     dateFrom:'Dari', dateTo:'Sampai', errRange:'Rentang tanggal tidak mencakup data yang tersedia.',
     clamp:'Rentang disesuaikan dengan data yang tersedia (pageview sejak 1 Okt 2015 sampai hari terakhir yang terbit).',
     periodRange:(a,b)=>`Periode ${a} – ${b}.`, open:'awal', now:'sekarang',
@@ -454,8 +467,11 @@ const T = {
     langPrompt:'Kode bahasa', footer:'Data: Wikimedia Pageviews API dan MediaWiki Action API. Angka periode panjang adalah penjumlahan daftar top harian/bulanan.'
   },
   en: {
-    backHome:'Back to Affandy Murad', kicker:'Top 100 per Wikimedia project',
-    lead:'See the 100 most-read or most recently created pages on a Wikimedia project, by namespace (main, project, file, category).',
+    backHome:'Back to Affandy Murad', kicker:'Top 100 to 500 per Wikimedia project',
+    lead:'See the 100 to 500 most-read or most recently created pages on a Wikimedia project, by namespace (main, project, file, category).',
+    limitLabel:'Number of results', limitHint:'The more results, the longer images and extra data take to load. Ranks below 100 are less accurate for long periods.',
+    noteLowRank:'Ranks below 100 are less accurate for long periods: the daily top list is cut off at about 1000 articles, so articles ranked lower can be undercounted.',
+    pdfLoadCreations:(a,b)=>`Loading dates and creators ${a} of ${b}…`, pdfSkip:'Skip, build the PDF now',
     dateFrom:'From', dateTo:'To', errRange:'The date range does not cover any available data.',
     clamp:'The range was adjusted to the available data (pageviews since 1 Oct 2015 up to the latest published day).',
     periodRange:(a,b)=>`Period ${a} – ${b}.`, open:'the beginning', now:'now',
@@ -624,6 +640,14 @@ function setNs(n){
   $('nsSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', Number(x.dataset.ns) === n));
 }
 $('nsSeg').addEventListener('click', e => { const b = e.target.closest('[data-ns]'); if(!b) return; const n = Number(b.dataset.ns); if(n === nsId) return; setNs(n); clearResults(); });
+let limitN = 100;
+$('limitSeg').addEventListener('click', e => {
+  const b = e.target.closest('[data-limit]'); if(!b) return;
+  const n = Number(b.dataset.limit); if(n === limitN) return;
+  limitN = n;
+  $('limitSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
+  clearResults();
+});
 const projInput = $('projInput'), btnBox = $('wikiButtons');
 let pending = null;
 function addProjBtn(label, favHost, data){
@@ -792,7 +816,7 @@ function setStatus(msg, isErr, progress){
   }
 }
 
-async function loadTrending(proj, key, range, nsWant, signal){
+async function loadTrending(proj, key, range, nsWant, limit, signal){
   setStatus(t('stFindDay'));
   const today = new Date(); today.setUTCHours(0, 0, 0, 0);
   let anchor = null;
@@ -837,13 +861,13 @@ async function loadTrending(proj, key, range, nsWant, signal){
   const items = [...totals.entries()]
     .filter(([a]) => keepTitle(a, ns, nsWant))
     .sort((x, y) => y[1] - x[1])
-    .slice(0, 100)
+    .slice(0, limit)
     .map(([a, v], i) => ({ rank: i + 1, raw: a, title: a.replace(/_/g, ' '), views: v }));
   return { items, start, end, clamped, partial: okCount < tasks.length ? [okCount, tasks.length] : null };
 }
 
 /* ================= data Terbaru ================= */
-async function loadLatest(proj, range, nsWant, signal){
+async function loadLatest(proj, range, nsWant, limit, signal){
   setStatus(t('stLatest'));
   const now = new Date();
   const startISO = range.from ? range.from.toISOString() : '';
@@ -855,11 +879,11 @@ async function loadLatest(proj, range, nsWant, signal){
   if(nsWant === 6) useLog = true; // unggahan berkas tercatat di log unggahan, bukan sebagai halaman baru
   const p = { action:'query', format:'json', formatversion:'2', origin:'*' };
   if(useLog){
-    Object.assign(p, { list:'logevents', letype: nsWant === 6 ? 'upload' : 'create', lenamespace:String(nsWant), lelimit:'100', leprop:'title|timestamp|user' });
+    Object.assign(p, { list:'logevents', letype: nsWant === 6 ? 'upload' : 'create', lenamespace:String(nsWant), lelimit:String(limit), leprop:'title|timestamp|user' });
     if(startISO) p.leend = startISO;
     if(endISO) p.lestart = endISO;
   } else {
-    Object.assign(p, { list:'recentchanges', rctype:'new', rcnamespace:String(nsWant), rcshow:'!redirect', rclimit:'100', rcprop:'title|timestamp|user' });
+    Object.assign(p, { list:'recentchanges', rctype:'new', rcnamespace:String(nsWant), rcshow:'!redirect', rclimit:String(limit), rcprop:'title|timestamp|user' });
     p.rcend = startISO;
     if(endISO) p.rcstart = endISO;
   }
@@ -871,7 +895,7 @@ async function loadLatest(proj, range, nsWant, signal){
     if(!r.title || seen.has(r.title)) continue;
     seen.add(r.title);
     items.push({ rank: items.length + 1, raw: r.title, title: r.title, created: r.timestamp, user: r.user || '' });
-    if(items.length >= 100) break;
+    if(items.length >= limit) break;
   }
   return { items, start: range.from || null, end: range.to || now, log: useLog };
 }
@@ -992,12 +1016,13 @@ async function fetchCreation(proj, title, signal){
   return r ? { created: r.timestamp, user: r.user || '' } : null;
 }
 let creationTimer = null;
-async function loadCreations(state, slice){
+async function loadCreations(state, slice, opts = {}){
   const todo = slice.filter(it => !it.created && !it.cStarted);
   if(!todo.length) return;
   todo.forEach(it => { it.cStarted = true; });
   try{
     await runPool(todo, async it => {
+      if(opts.skip && opts.skip.on){ it.cStarted = false; return; } // dilewati: nanti bisa dimuat lagi saat halamannya tampil
       try{
         const c = await fetchCreation(state.proj, it.title, state.ctrl.signal);
         if(c){ it.created = c.created; it.user = c.user; } else it.cFail = true;
@@ -1153,6 +1178,7 @@ function currentWarns(){
   const warns = [];
   if(st.clamped) warns.push(t('clamp'));
   if(st.partial) warns.push(t('notePartial', st.partial[0], st.partial[1]));
+  if(st.mode === 'trending' && st.limit > 100) warns.push(t('noteLowRank'));
   return warns;
 }
 function renderFilters(){
@@ -1160,7 +1186,7 @@ function renderFilters(){
   const period = st.mode === 'trending'
     ? `${fmtDate(st.start)} – ${fmtDate(st.end)}`
     : `${st.start ? fmtDate(st.start) : t('open')} – ${st.end ? fmtDate(st.end) : t('now')}`;
-  [[t('pdfProject'), st.host], [t('nsLabel'), t('nsShort')[st.ns]], [t('periodLabel'), period]].forEach(([k, v]) => {
+  [[t('pdfProject'), st.host], [t('nsLabel'), t('nsShort')[st.ns]], [t('periodLabel'), period], [t('limitLabel'), fmtNum(st.limit)]].forEach(([k, v]) => {
     const c = document.createElement('span'); c.className = 'res-chip';
     const b = document.createElement('b'); b.textContent = k + ': ';
     c.append(b, document.createTextNode(v)); box.appendChild(c);
@@ -1430,9 +1456,21 @@ async function exportPDF(){
   setStatus(t('pdfMaking'));
   try{
     // pastikan tanggal & pembuat semua baris sudah termuat (Trending memuatnya per halaman)
-    await loadCreations(st, list);
+    const skip = { on: false };
+    const showProgress = () => {
+      const done = list.filter(it => it.created || it.cFail).length;
+      setStatus(t('pdfLoadCreations', fmtNum(done), fmtNum(list.length)), false, list.length ? done / list.length : 1);
+      const sb = document.createElement('button'); sb.type = 'button'; sb.className = 'ghost'; sb.style.marginTop = '10px'; sb.textContent = t('pdfSkip');
+      sb.addEventListener('click', () => { skip.on = true; });
+      $('status').appendChild(sb);
+    };
+    const loading = loadCreations(st, list, { skip });
     const t0 = Date.now();
-    while(list.some(it => !it.created && !it.cFail) && Date.now() - t0 < 15000) await sleep(200);
+    showProgress();
+    while(!skip.on && list.some(it => !it.created && !it.cFail) && Date.now() - t0 < 300000){ await sleep(400); showProgress(); }
+    skip.on = true; // hentikan sisa antrean (jika ada), lalu tunggu pemuat selesai
+    await loading;
+    setStatus(t('pdfMaking'));
 
     const C = PDF_C;
     const doc = new window.jspdf.jsPDF({ orientation: 'landscape' });
@@ -1629,7 +1667,7 @@ $('goBtn').addEventListener('click', async () => {
   ctrl = new AbortController();
   const myCtrl = ctrl;
   const proj = 'https://' + host;
-  const runMode = mode, runNs = nsId;
+  const runMode = mode, runNs = nsId, runLimit = limitN;
   let from = dateFromEl.value ? new Date(dateFromEl.value + 'T00:00:00Z') : null;
   let to = dateToEl.value ? new Date(dateToEl.value + 'T00:00:00Z') : null;
   if(from && to && from > to){ const x = from; from = to; to = x; dateFromEl.value = isoDay(from); dateToEl.value = isoDay(to); }
@@ -1637,11 +1675,11 @@ $('goBtn').addEventListener('click', async () => {
   busy(true);
   try{
     const data = runMode === 'trending'
-      ? await loadTrending(proj, host, runRange, runNs, myCtrl.signal)
-      : await loadLatest(proj, runRange, runNs, myCtrl.signal);
+      ? await loadTrending(proj, host, runRange, runNs, runLimit, myCtrl.signal)
+      : await loadLatest(proj, runRange, runNs, runLimit, myCtrl.signal);
     if(myCtrl.signal.aborted) return;
     data.items.forEach(it => { it.entity = runNs === 0 ? entityRef(host, it.title) : null; });
-    st = Object.assign({ mode: runMode, ns: runNs, proj, host, query: '', page: 1, pageSize: Number($('pageSize').value) || 25, ctrl: myCtrl, hasThumbs: !NO_THUMB.test(host) }, data);
+    st = Object.assign({ mode: runMode, ns: runNs, limit: runLimit, proj, host, query: '', page: 1, pageSize: Number($('pageSize').value) || 25, ctrl: myCtrl, hasThumbs: !NO_THUMB.test(host) }, data);
     $('search').value = '';
     setStatus('');
     renderAll();
