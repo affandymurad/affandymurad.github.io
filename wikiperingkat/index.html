@@ -545,7 +545,7 @@ function applyTexts(){
 langBtn.addEventListener('click', () => {
   uiLang = uiLang === 'id' ? 'en' : 'id';
   try{ localStorage.setItem('uiLanguage', uiLang); }catch(e){}
-  applyTexts();
+  applyTexts(); syncUrl();
   if(st){ renderAll(); loadExtras(st, true); if(!$('pv').hidden) showPreview(); }
 });
 
@@ -639,14 +639,14 @@ function setNs(n){
   nsId = n;
   $('nsSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', Number(x.dataset.ns) === n));
 }
-$('nsSeg').addEventListener('click', e => { const b = e.target.closest('[data-ns]'); if(!b) return; const n = Number(b.dataset.ns); if(n === nsId) return; setNs(n); clearResults(); });
+$('nsSeg').addEventListener('click', e => { const b = e.target.closest('[data-ns]'); if(!b) return; const n = Number(b.dataset.ns); if(n === nsId) return; setNs(n); clearResults(); syncUrl(); });
 let limitN = 100;
 $('limitSeg').addEventListener('click', e => {
   const b = e.target.closest('[data-limit]'); if(!b) return;
   const n = Number(b.dataset.limit); if(n === limitN) return;
   limitN = n;
   $('limitSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
-  clearResults();
+  clearResults(); syncUrl();
 });
 const projInput = $('projInput'), btnBox = $('wikiButtons');
 let pending = null;
@@ -675,7 +675,7 @@ function markProj(){
     if(v === 'commons.wikimedia.org' && nsId === 0) setNs(6);
     else if(lastHost === 'commons.wikimedia.org' && nsId === 6) setNs(0);
     lastHost = v;
-    clearResults();
+    clearResults(); syncUrl();
   }
   btnBox.querySelectorAll('.wiki-button').forEach(b => {
     const exact = b.dataset.domain && b.dataset.domain === v;
@@ -702,9 +702,10 @@ $('modeSeg').addEventListener('click', e => {
   if(b.dataset.mode !== mode) clearResults();
   mode = b.dataset.mode;
   $('modeSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
-  applyTexts();
+  applyTexts(); syncUrl();
 });
 const dateFromEl = $('dateFrom'), dateToEl = $('dateTo');
+let curPreset = null; // preset periode yang aktif; null bila tanggal diisi manual
 const isoDay = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 // Sampai selalu hari ini (UTC) untuk semua periode; "Hari ini" mengisi Dari dengan kemarin.
 // Trending: data pageview hari ini belum terbit, jadi pemuat memakai hari terakhir yang tersedia.
@@ -717,6 +718,7 @@ function applyPreset(key){
   else if(key !== 'all') from = new Date(today.getTime() - (Number(key) - 1) * DAY);
   dateFromEl.value = from ? isoDay(from) : '';
   dateToEl.value = isoDay(today);
+  curPreset = key;
   $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x.dataset.preset === key));
 }
 $('presetSeg').addEventListener('click', e => {
@@ -724,8 +726,55 @@ $('presetSeg').addEventListener('click', e => {
   const before = dateFromEl.value + '|' + dateToEl.value;
   applyPreset(b.dataset.preset);
   if(dateFromEl.value + '|' + dateToEl.value !== before) clearResults();
+  syncUrl();
 });
-[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => { $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active')); clearResults(); }));
+[dateFromEl, dateToEl].forEach(el => el.addEventListener('change', () => { curPreset = null; $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active')); clearResults(); syncUrl(); }));
+
+/* ================= URL query ================= */
+// Parameter: project, mode (trending|latest), ns (0|4|6|14), period (today|7|30|90|month|year|all) atau from/to (YYYY-MM-DD),
+// limit (100|250|500), lang (id|en). Bila project ada, peringkat langsung ditampilkan.
+const PRESET_KEYS = ['today', '7', '30', '90', 'month', 'year', 'all'];
+function syncUrl(){
+  if(!uiReady) return;
+  const p = new URLSearchParams();
+  p.set('project', projInput.value.trim().toLowerCase());
+  p.set('mode', mode);
+  p.set('ns', String(nsId));
+  if(curPreset) p.set('period', curPreset);
+  else { if(dateFromEl.value) p.set('from', dateFromEl.value); if(dateToEl.value) p.set('to', dateToEl.value); }
+  p.set('limit', String(limitN));
+  p.set('lang', uiLang);
+  try{ history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash); }catch(e){}
+}
+function readUrl(){
+  const p = new URLSearchParams(location.search);
+  const lang = (p.get('lang') || '').toLowerCase();
+  if(lang === 'id' || lang === 'en') uiLang = lang;
+  const proj = (p.get('project') || '').trim().toLowerCase();
+  if(/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(proj)){ projInput.value = proj; markProj(); }
+  const m = (p.get('mode') || '').toLowerCase();
+  if(m === 'trending' || m === 'latest'){
+    mode = m;
+    $('modeSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x.dataset.mode === m));
+  }
+  const ns = Number(p.get('ns'));
+  if(p.has('ns') && [0, 4, 6, 14].includes(ns)) setNs(ns);
+  const lim = Number(p.get('limit'));
+  if([100, 250, 500].includes(lim)){
+    limitN = lim;
+    $('limitSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', Number(x.dataset.limit) === lim));
+  }
+  const per = (p.get('period') || '').toLowerCase();
+  const isoOk = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '') && !isNaN(new Date(s + 'T00:00:00Z'));
+  if(PRESET_KEYS.includes(per)) applyPreset(per);
+  else if(isoOk(p.get('from')) || isoOk(p.get('to'))){
+    dateFromEl.value = isoOk(p.get('from')) ? p.get('from') : '';
+    dateToEl.value = isoOk(p.get('to')) ? p.get('to') : '';
+    curPreset = null;
+    $('presetSeg').querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active'));
+  } else applyPreset('30');
+  return p.has('project');
+}
 
 /* ================= util tanggal ================= */
 const DAY = 864e5;
@@ -1693,9 +1742,11 @@ $('goBtn').addEventListener('click', async () => {
   }
 });
 
-applyPreset('30');
+const autoRun = readUrl();
 applyTexts();
 uiReady = true;
+syncUrl();
+if(autoRun) $('goBtn').click();
 })();
 </script>
 </body>

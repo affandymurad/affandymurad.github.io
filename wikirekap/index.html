@@ -3392,6 +3392,65 @@
             else exportJSON();
         }
 
+        // URL Query: user (pisahkan dengan koma), project (domain atau "global"), period (7|30|90|year|all)
+        // atau from/to (YYYY-MM-DD), main=1, new=1, lang (id|en). Bila user dan project ada, analisis langsung dijalankan.
+        function syncUrl() {
+            const parts = [];
+            if (usernameChips.length) parts.push('user=' + usernameChips.map(encodeURIComponent).join(','));
+            const project = document.getElementById('project');
+            const projVal = isGlobalSelected() ? GLOBAL_PROJECT : project.value.trim().toLowerCase();
+            if (projVal) parts.push('project=' + encodeURIComponent(projVal));
+            const preset = document.querySelector('#datePresets .preset.active');
+            if (preset) parts.push('period=' + preset.dataset.preset);
+            else {
+                const from = document.getElementById('dateFrom').value, to = document.getElementById('dateTo').value;
+                if (from) parts.push('from=' + from);
+                if (to) parts.push('to=' + to);
+            }
+            if (document.getElementById('mainNamespaceOnly').checked) parts.push('main=1');
+            if (document.getElementById('newPagesOnly').checked) parts.push('new=1');
+            parts.push('lang=' + currentLang);
+            try { history.replaceState(null, '', location.pathname + '?' + parts.join('&') + location.hash); } catch (e) { }
+        }
+
+        function readUrl() {
+            const p = new URLSearchParams(location.search);
+            const lang = (p.get('lang') || '').toLowerCase();
+            if ((lang === 'id' || lang === 'en') && lang !== currentLang) {
+                currentLang = lang;
+                updateLanguage();
+            }
+            const users = (p.get('user') || p.get('users') || '').split(/[,|\n]+/).map(u => u.trim()).filter(Boolean);
+            if (users.length) addUsernameChips(users.join(','));
+
+            const proj = (p.get('project') || '').trim().toLowerCase();
+            if (proj === GLOBAL_PROJECT) setGlobalMode(true);
+            else if (/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(proj)) updateProjectInput(proj);
+
+            const per = (p.get('period') || '').toLowerCase();
+            const isoOk = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '') && !isNaN(new Date(s + 'T00:00:00'));
+            if (['7', '30', '90', 'year', 'all'].includes(per)) applyDatePreset(per);
+            else if (isoOk(p.get('from')) || isoOk(p.get('to'))) {
+                const today = toDateInputValue(new Date());
+                const dateFrom = document.getElementById('dateFrom'), dateTo = document.getElementById('dateTo');
+                let to = isoOk(p.get('to')) ? p.get('to') : today;
+                if (to > today) to = today;
+                let from = isoOk(p.get('from')) ? p.get('from') : to;
+                if (from > to) from = to;
+                dateFrom.value = from;
+                dateTo.value = to;
+                dateFrom.max = to;
+                dateTo.max = today;
+                dateTo.min = from;
+                markDatePreset(null);
+                updatePvEraNote();
+            }
+            const on = v => ['1', 'true', 'yes'].includes((p.get(v) || '').toLowerCase());
+            document.getElementById('mainNamespaceOnly').checked = on('main');
+            document.getElementById('newPagesOnly').checked = on('new');
+            return users.length > 0 && p.has('project');
+        }
+
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             updateLanguage();
@@ -3416,6 +3475,13 @@
             updatePvEraNote();
             ['change', 'input'].forEach(ev => document.getElementById('dateFrom').addEventListener(ev, updatePvEraNote));
             document.getElementById('cancelBtn').addEventListener('click', () => abortController?.abort());
+
+            // Setiap perubahan input memperbarui URL (ditunda satu tick agar state sudah berubah)
+            ['click', 'input', 'change', 'keydown', 'focusout'].forEach(ev =>
+                document.addEventListener(ev, () => setTimeout(syncUrl, 0)));
+            const autoRun = readUrl();
+            syncUrl();
+            if (autoRun) document.getElementById('analyzeBtn').click();
 
             document.getElementById('exportPDFBtn').addEventListener('click', () => requestExport('pdf'));
             document.getElementById('exportJSONBtn').addEventListener('click', () => requestExport('json'));
