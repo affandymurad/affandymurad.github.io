@@ -3650,14 +3650,14 @@
   })();
 
   // ---- URL Query ----
-  // mode=category|article|user|contrib, ui=id|en (bahasa antarmuka).
-  // category/article: lang (kode bahasa wiki), q (nama kategori atau artikel)
+  // mode=category|article|user|contrib, lang=id|en (bahasa antarmuka).
+  // category/article: wikilang (kode bahasa wiki), q (nama kategori atau artikel)
   // user: user. contrib: user, year, wikis (domain dipisah koma, atau "global"), palette.
   // Pencarian langsung dijalankan bila parameter wajibnya ada (q, user, atau user + wikis).
   function syncUrl(){
     const parts = ['mode=' + currentMode];
     if(currentMode === 'category' || currentMode === 'article'){
-      parts.push('lang=' + encodeURIComponent(langInput.value.trim().toLowerCase()));
+      parts.push('wikilang=' + encodeURIComponent(langInput.value.trim().toLowerCase()));
       if(catInput.value.trim()) parts.push('q=' + encodeURIComponent(catInput.value.trim()));
     } else if(currentMode === 'user'){
       if(userUsernameInput.value.trim()) parts.push('user=' + encodeURIComponent(userUsernameInput.value.trim()));
@@ -3668,18 +3668,18 @@
       if(wikis) parts.push('wikis=' + encodeURIComponent(wikis).replace(/%2C/g, ','));
       parts.push('palette=' + yrPalette);
     }
-    parts.push('ui=' + uiLang);
+    parts.push('lang=' + uiLang);
     try{ history.replaceState(null, '', location.pathname + '?' + parts.join('&') + location.hash); }catch(e){}
   }
 
   function readUrl(){
     const p = new URLSearchParams(location.search);
-    const ui = (p.get('ui') || '').toLowerCase();
+    const ui = (p.get('lang') || '').toLowerCase();
     if(ui === 'id' || ui === 'en') uiLang = ui;
     const mode = (p.get('mode') || '').toLowerCase();
     const q = (p.get('q') || '').trim();
     const user = (p.get('user') || '').trim();
-    const lang = (p.get('lang') || '').trim().toLowerCase();
+    const lang = (p.get('wikilang') || '').trim().toLowerCase();
     const wikisRaw = (p.get('wikis') || '').trim().toLowerCase();
     let run = null;
 
