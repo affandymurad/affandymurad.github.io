@@ -140,6 +140,10 @@
   .ext{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;color:var(--muted);flex:none;}
   .ext:hover{background:var(--soft);color:var(--brand-text);}
   .ext svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .srch,td a.srch{display:inline-flex;align-items:center;height:22px;padding:0 8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font-size:11.5px;font-weight:700;line-height:1;text-decoration:none;flex:none;}
+  .srch:hover,td a.srch:hover{border-color:var(--brand);color:var(--brand-text);text-decoration:none;}
+  .srch-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .gcard .srch-row{position:relative;z-index:2;margin-top:8px;}
   .pv{position:fixed;inset:0;z-index:900;background:rgba(8,14,26,.62);display:flex;align-items:center;justify-content:center;padding:16px;}
   .pv[hidden]{display:none;}
   .pv-box{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:20px;width:min(560px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;}
@@ -429,7 +433,7 @@ const T = {
     dateFrom:'Dari', dateTo:'Sampai', errRange:'Rentang tanggal tidak mencakup data yang tersedia.',
     clamp:'Rentang disesuaikan dengan data yang tersedia (pageview sejak 1 Okt 2015 sampai hari terakhir yang terbit).',
     periodRange:(a,b)=>`Periode ${a} – ${b}.`, open:'awal', now:'sekarang',
-    openOriginal:'Buka halaman asli', pvHistory:'Riwayat', pvClose:'Tutup', pvPrev:'Sebelumnya', pvNext:'Berikutnya', pvLoading:'Memuat ringkasan…', pvNoText:'Tidak ada ringkasan untuk halaman ini.', pvFail:'Ringkasan gagal dimuat; data yang ada tetap ditampilkan.',
+    openOriginal:'Buka halaman asli', searchWith:n=>`Cari di ${n}`, pvHistory:'Riwayat', pvClose:'Tutup', pvPrev:'Sebelumnya', pvNext:'Berikutnya', pvLoading:'Memuat ringkasan…', pvNoText:'Tidak ada ringkasan untuk halaman ini.', pvFail:'Ringkasan gagal dimuat; data yang ada tetap ditampilkan.',
     pvRank:'Peringkat', pvViews:'Pageview', pvCreated:'Dibuat', pvCreator:'Pembuat', pvLicense:'Lisensi', pvUploader:'Pengunggah', pvAuthor:'Pencipta', pvSize:'Ukuran', pvType:'Tipe',
     pvLangs:n=>`Tersedia di ${n} bahasa Wikipedia`, pvWdOpen:'Buka di Wikidata', nsShort:{0:'Utama',4:'Proyek',6:'Berkas',14:'Kategori'},
     savePdf:'Simpan PDF', pdfMaking:'Menyusun PDF…', pdfNoLib:'Pustaka PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.',
@@ -475,7 +479,7 @@ const T = {
     dateFrom:'From', dateTo:'To', errRange:'The date range does not cover any available data.',
     clamp:'The range was adjusted to the available data (pageviews since 1 Oct 2015 up to the latest published day).',
     periodRange:(a,b)=>`Period ${a} – ${b}.`, open:'the beginning', now:'now',
-    openOriginal:'Open original page', pvHistory:'History', pvClose:'Close', pvPrev:'Previous', pvNext:'Next', pvLoading:'Loading summary…', pvNoText:'No summary available for this page.', pvFail:'The summary could not be loaded; available data is still shown.',
+    openOriginal:'Open original page', searchWith:n=>`Search on ${n}`, pvHistory:'History', pvClose:'Close', pvPrev:'Previous', pvNext:'Next', pvLoading:'Loading summary…', pvNoText:'No summary available for this page.', pvFail:'The summary could not be loaded; available data is still shown.',
     pvRank:'Rank', pvViews:'Pageviews', pvCreated:'Created', pvCreator:'Creator', pvLicense:'License', pvUploader:'Uploader', pvAuthor:'Author', pvSize:'Size', pvType:'Type',
     pvLangs:n=>`Available in ${n} Wikipedia languages`, pvWdOpen:'Open on Wikidata', nsShort:{0:'Main',4:'Project',6:'File',14:'Category'},
     savePdf:'Save PDF', pdfMaking:'Building PDF…', pdfNoLib:'The PDF library failed to load. Check your connection and try again.',
@@ -1122,6 +1126,15 @@ function extLink(it){
   e.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg>';
   return e;
 }
+// Tombol cari judul di Google dan Bing (tab baru)
+const SEARCH_ENGINES = [['Google', 'https://www.google.com/search?q='], ['Bing', 'https://www.bing.com/search?q=']];
+function searchLinks(it){
+  return SEARCH_ENGINES.map(([name, base]) => {
+    const a = document.createElement('a'); a.className = 'srch'; a.href = base + encodeURIComponent(it.title); a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.textContent = name; a.title = t('searchWith', name); a.setAttribute('aria-label', t('searchWith', name) + ': ' + it.title);
+    return a;
+  });
+}
 function renderList(slice){
   const wrap = document.createElement('div'); wrap.className = 'table-wrap';
   const tbl = document.createElement('table');
@@ -1140,7 +1153,7 @@ function renderList(slice){
     const txt = document.createElement('div'); txt.className = 'txt';
     const a = document.createElement('a'); a.href = urlOf(it); a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = it.title;
     a.className = 'pv-link'; a.dataset.rank = it.rank;
-    const line = document.createElement('span'); line.className = 'tline'; line.append(a, extLink(it));
+    const line = document.createElement('span'); line.className = 'tline'; line.append(a, extLink(it), ...searchLinks(it));
     txt.appendChild(line);
     const lb = labelOf(it);
     if(lb){ const s = document.createElement('span'); s.className = 'sub'; s.textContent = lb; txt.appendChild(s); }
@@ -1176,6 +1189,7 @@ function renderGrid(slice){
       const val = document.createElement('div'); val.className = 'val'; val.textContent = fmtNum(it.views) + ' ' + t('views');
       body.appendChild(val);
     }
+    const sr = document.createElement('div'); sr.className = 'srch-row'; sr.append(...searchLinks(it)); body.appendChild(sr);
     a.append(pic, rk, body, extLink(it)); g.appendChild(a);
   });
   return g;
