@@ -602,6 +602,8 @@
                     <span class="fine" data-i18n="exportHint">PDF mengikuti urutan dan pencarian di tabel; JSON berisi data lengkap.</span>
                 </div>
 
+                <div class="alert alert-warning" id="pdfLimitNote" role="note" style="display:none; margin-bottom: 18px;"></div>
+
                 <div class="summary" id="summary"></div>
 
                 <div class="enrich-bar" id="enrichBar" style="display:none">
@@ -769,6 +771,7 @@
                 pdfPartial: 'Data parsial: baru {n} edit yang dimuat; masih ada data berikutnya.',
                 pdfMissingViews: 'Pageviews belum dimuat untuk {n} dari {total} artikel yang tercantum; ditampilkan "-".',
                 pdfTruncated: 'Menampilkan {max} baris pertama dari {total}. Gunakan ekspor JSON untuk data lengkap.',
+                pdfLimitNote: 'Daftar di tabel berisi {n} baris, sedangkan PDF dibatasi {max} baris pertama (mengikuti urutan dan pencarian di tabel). Untuk data lengkap gunakan Ekspor JSON, atau persempit daftar dengan pencarian lalu ekspor PDF.',
                 pdfGenerated: 'Dibuat',
                 pdfSources: 'Sumber data: API Wikimedia (kontribusi, pageviews, penggunaan file). Angka pageviews dihitung pada periode yang dipilih.',
                 pdfGeneratedBy: 'laporan dibuat otomatis',
@@ -907,6 +910,7 @@
                 pdfPartial: 'Partial data: only {n} edits were loaded; more data is available.',
                 pdfMissingViews: 'Pageviews are not loaded for {n} of {total} listed articles; shown as "-".',
                 pdfTruncated: 'Showing the first {max} of {total} rows. Use the JSON export for the complete data.',
+                pdfLimitNote: 'The table list has {n} rows, but the PDF is limited to the first {max} rows (following the table order and search). For the complete data use JSON export, or narrow the list with search and then export the PDF.',
                 pdfGenerated: 'Generated',
                 pdfSources: 'Data source: Wikimedia APIs (contributions, pageviews, file usage). Pageviews are counted over the selected period.',
                 pdfGeneratedBy: 'report generated automatically',
@@ -2046,6 +2050,7 @@
         function resetTable() {
             Object.assign(tableState, { rows: [], view: [], groups: {}, byTitle: new Map(), query: '', page: 1, sortCol: -1, sortDir: 'asc' });
             document.getElementById('resultTable').querySelector('tbody').innerHTML = '';
+            document.getElementById('pdfLimitNote').style.display = 'none';
             document.getElementById('pagerTop').innerHTML = '';
             document.getElementById('pagerBottom').innerHTML = '';
             document.getElementById('tableSearch').value = '';
@@ -2155,9 +2160,24 @@
                 + `</td>`;
         }
 
+        // Keterangan batas PDF: tampil selama daftar di tabel melebihi PDF_MAX_ROWS (mengikuti bahasa antarmuka)
+        function updatePdfLimitNote() {
+            const el = document.getElementById('pdfLimitNote');
+            const n = tableState.view.length;
+            if (n <= PDF_MAX_ROWS) {
+                el.style.display = 'none';
+                return;
+            }
+            el.textContent = translations[currentLang].pdfLimitNote
+                .replace('{n}', n.toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US'))
+                .replace('{max}', PDF_MAX_ROWS.toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US'));
+            el.style.display = 'block';
+        }
+
         function renderTable() {
             const t = translations[currentLang];
             const s = tableState;
+            updatePdfLimitNote();
             const { total, pages, start, slice } = pageSlice();
             const sorted = s.sortCol >= 0;
             const totalCols = s.isCommons ? 7 : 6; // termasuk kolom nomor
