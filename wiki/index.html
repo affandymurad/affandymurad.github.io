@@ -3659,6 +3659,8 @@
     if(currentMode === 'category' || currentMode === 'article'){
       parts.push('wikilang=' + encodeURIComponent(langInput.value.trim().toLowerCase()));
       if(catInput.value.trim()) parts.push('q=' + encodeURIComponent(catInput.value.trim()));
+      const avail = currentMode === 'category' ? getSelectedAvailCodes() : [];
+      if(avail.length) parts.push('avail=' + encodeURIComponent(avail.join(',')).replace(/%2C/g, ','));
     } else if(currentMode === 'user'){
       if(userUsernameInput.value.trim()) parts.push('user=' + encodeURIComponent(userUsernameInput.value.trim()));
     } else if(currentMode === 'contrib'){
@@ -3702,7 +3704,15 @@
       yrMarkSelected();
     }
 
-    if(currentMode === 'category' && q) run = () => runSearch(langInput.value.trim().toLowerCase() || 'id', q);
+    const avail = (p.get('avail') || '').toLowerCase().split(/[\s,;]+/).filter(c => /^[a-z0-9-]{2,12}$/.test(c));
+    if(currentMode === 'category' && q) run = async () => {
+      await runSearch(langInput.value.trim().toLowerCase() || 'id', q);
+      if(avail.length){
+        syncAvailCheckboxesUI(avail);
+        syncUrl();
+        checkAvailability(avail);
+      }
+    };
     else if(currentMode === 'article' && q) run = () => runArticleSearch(langInput.value.trim().toLowerCase() || 'id', q);
     else if(currentMode === 'user' && user) run = () => runUserSearch(user);
     else if(currentMode === 'contrib' && user && wikisRaw) run = () => yrGeneratePreview();
