@@ -3649,10 +3649,75 @@
     selectPalette(yrPalette);
   })();
 
+  // ---- URL Query ----
+  // mode=category|article|user|contrib, ui=id|en (bahasa antarmuka).
+  // category/article: lang (kode bahasa wiki), q (nama kategori atau artikel)
+  // user: user. contrib: user, year, wikis (domain dipisah koma, atau "global"), palette.
+  // Pencarian langsung dijalankan bila parameter wajibnya ada (q, user, atau user + wikis).
+  function syncUrl(){
+    const parts = ['mode=' + currentMode];
+    if(currentMode === 'category' || currentMode === 'article'){
+      parts.push('lang=' + encodeURIComponent(langInput.value.trim().toLowerCase()));
+      if(catInput.value.trim()) parts.push('q=' + encodeURIComponent(catInput.value.trim()));
+    } else if(currentMode === 'user'){
+      if(userUsernameInput.value.trim()) parts.push('user=' + encodeURIComponent(userUsernameInput.value.trim()));
+    } else if(currentMode === 'contrib'){
+      if($yr('yrUsername').value.trim()) parts.push('user=' + encodeURIComponent($yr('yrUsername').value.trim()));
+      if($yr('yrYear').value) parts.push('year=' + $yr('yrYear').value);
+      const wikis = yrGlobal ? 'global' : yrUniqueDomains($yr('yrWikis').value).map(yrNormalize).join(',');
+      if(wikis) parts.push('wikis=' + encodeURIComponent(wikis).replace(/%2C/g, ','));
+      parts.push('palette=' + yrPalette);
+    }
+    parts.push('ui=' + uiLang);
+    try{ history.replaceState(null, '', location.pathname + '?' + parts.join('&') + location.hash); }catch(e){}
+  }
+
+  function readUrl(){
+    const p = new URLSearchParams(location.search);
+    const ui = (p.get('ui') || '').toLowerCase();
+    if(ui === 'id' || ui === 'en') uiLang = ui;
+    const mode = (p.get('mode') || '').toLowerCase();
+    const q = (p.get('q') || '').trim();
+    const user = (p.get('user') || '').trim();
+    const lang = (p.get('lang') || '').trim().toLowerCase();
+    const wikisRaw = (p.get('wikis') || '').trim().toLowerCase();
+    let run = null;
+
+    if(['category', 'article', 'user', 'contrib'].includes(mode)) setMode(mode);
+    else if(user && !q) setMode('user');
+    else if(q) setMode('category');
+
+    if(/^[a-z0-9-]{2,12}$/.test(lang)) langInput.value = lang;
+    if(q) catInput.value = q;
+    if(user){
+      userUsernameInput.value = user;
+      $yr('yrUsername').value = user;
+    }
+    const year = Number(p.get('year'));
+    if(Number.isInteger(year) && year >= 2001 && year <= new Date().getFullYear()) $yr('yrYear').value = String(year);
+    if(YR_PALETTES[p.get('palette')]) selectPalette(p.get('palette'));
+    if(wikisRaw === 'global') yrSetGlobal(true);
+    else if(wikisRaw){
+      $yr('yrWikis').value = wikisRaw.split(/[\s,;]+/).filter(d => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(d)).join('\n');
+      yrMarkSelected();
+    }
+
+    if(currentMode === 'category' && q) run = () => runSearch(langInput.value.trim().toLowerCase() || 'id', q);
+    else if(currentMode === 'article' && q) run = () => runArticleSearch(langInput.value.trim().toLowerCase() || 'id', q);
+    else if(currentMode === 'user' && user) run = () => runUserSearch(user);
+    else if(currentMode === 'contrib' && user && wikisRaw) run = () => yrGeneratePreview();
+    return run;
+  }
+
+  const urlRun = readUrl();
   applyUILanguage();
   document.getElementById('yr').textContent = new Date().getFullYear();
-  catInput.focus();
+  if(currentMode === 'category' || currentMode === 'article') catInput.focus();
   getMwLanguageNames(); // warm the cache in the background
+  syncUrl();
+  ['click', 'input', 'change', 'keydown', 'focusout'].forEach(ev =>
+    document.addEventListener(ev, () => setTimeout(syncUrl, 0)));
+  if(urlRun) urlRun();
 })();
 </script>
 </body>
