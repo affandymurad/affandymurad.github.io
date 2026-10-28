@@ -512,6 +512,7 @@ function applyLang() {
 }
 
 // ---------- parsing ----------
+const DATE_LABEL = /^[A-Za-z]{3,9}\.?(?:\s|&nbsp;)*\d{1,2},\s*\d{2,4}$/; // mis. "Dec 7,15", "Apr&nbsp;2,23"
 function parse(text) {
   const wikitext = text.includes('[[');
   const out = [];
@@ -533,6 +534,10 @@ function parse(text) {
     for (const c of candidates) {
       const title = c.split('|')[0].trim().replace(/_/g, ' ');
       if (!title) continue;
+      // Sel tanggal di tabel daftar juga berisi tautan ([[Judul|Dec 7,15]]), bukan entri artikel. Tautannya
+      // bisa menunjuk judul lain (mis. baris "Hepatitis A vaccine" yang sel tanggalnya menaut ke "Hepatitis A"),
+      // sehingga akan terbaca sebagai duplikat palsu.
+      if (wikitext && c.includes('|') && DATE_LABEL.test(c.slice(c.indexOf('|') + 1).trim())) continue;
       if (title === 'WikiProjectMed') { skipRest = true; continue; }
       if (skipRest) continue;
       if (/^(WikiProjectMed|Image|File|Category):/i.test(title) || /^\w{2}$/.test(title) || title.includes('[')) continue;
