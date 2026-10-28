@@ -148,6 +148,14 @@ textarea::placeholder { color: color-mix(in srgb, var(--muted) 70%, transparent)
 .src { font-size: 13px; color: var(--muted); }
 .note { font-size: 13px; color: var(--ok); font-weight: 600; }
 .note.err { color: var(--danger); }
+.notice { margin-top: 12px; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid transparent; font-size: 13.5px; line-height: 1.5; }
+.notice[hidden] { display: none; }
+.notice.ok { background: var(--ok-bg); color: var(--ok); }
+.notice.warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-line); }
+.notice.err { background: color-mix(in srgb, var(--danger) 10%, var(--surface)); color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, transparent); }
+.notice b { font-weight: 700; }
+.notice ul { margin: 6px 0 0; padding-left: 18px; }
+.notice li { margin: 1px 0; }
 
 /* ===== tombol ===== */
 button { font: inherit; }
@@ -291,6 +299,7 @@ footer a:hover { color: var(--brand-text); }
         <span class="src" data-i18n-html="listSource"></span>
         <span class="note" id="listnote" role="status"></span>
       </div>
+      <div id="listnotice" class="notice" role="status" aria-live="polite" hidden></div>
     </div>
     <div class="step">
       <div class="step-title" data-i18n="step2"></div>
@@ -342,7 +351,8 @@ footer a:hover { color: var(--brand-text); }
 
 <script>
 const API = 'https://mdwiki.org/w/api.php';
-const LIST_PAGE = 'WikiProjectMed:List/Prior';
+// Daftar lengkap = gabungan dua halaman WikiProjectMed (judul yang sama hanya dipakai sekali)
+const LIST_SOURCES = ['WikiProjectMed:List', 'WikiProjectMed:List/Prior'];
 const BATCH = 20;       // judul per request
 const PARALLEL = 3;     // request bersamaan
 const TIMEOUT = 30000;  // ms per request
@@ -357,7 +367,8 @@ const A_DOC = 'href="https://mdwiki.org/wiki/User:Doc_James" target="_blank" rel
 const A_META = 'href="https://meta.wikimedia.org/wiki/User:Doc_James" target="_blank" rel="noopener"';
 const A_ME = 'href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" target="_blank" rel="noopener"';
 const A_WMANIA = 'href="https://meta.wikimedia.org/wiki/User:Affandy_Murad/Wikimania_2025" target="_blank" rel="noopener"';
-const A_LIST = 'href="https://mdwiki.org/wiki/WikiProjectMed:List/Prior" target="_blank" rel="noopener"';
+const A_LIST = 'href="https://mdwiki.org/wiki/WikiProjectMed:List" target="_blank" rel="noopener"';
+const A_PRIOR = 'href="https://mdwiki.org/wiki/WikiProjectMed:List/Prior" target="_blank" rel="noopener"';
 
 const I18N = {
   en: {
@@ -375,9 +386,12 @@ const I18N = {
     autoHint: 'Prefer not to paste a list? Click <b>Get Complete List</b> below to load every article automatically from WikiProjectMed.',
     placeholder: 'Wikitext with sections:\n== Meds ==\n[[Melphalan]]\n[[Mumps vaccine|label]]\n\nor one title per line:\nSelinexor\nPrucalopride',
     getList: 'Get Complete List',
-    listSource: `Parsed directly from <a ${A_LIST}>WikiProjectMed:List/Prior</a>`,
+    listSource: `Parsed directly from <a ${A_LIST}>WikiProjectMed:List</a> and <a ${A_PRIOR}>WikiProjectMed:List/Prior</a>`,
     loading: 'Loading…',
-    loaded: (n, s) => `Loaded ${n} articles in ${s} sections`,
+    loadedTitle: (n, s) => `Loaded ${n} unique articles in ${s} sections.`,
+    sourceLine: (name, n) => `${name}: ${n} articles`,
+    dupLine: (d) => d ? `${d} duplicate title${d === 1 ? '' : 's'} skipped (each article is listed once).` : 'No duplicates found.',
+    partialFail: (names) => `Could not load: ${names}. The list below is incomplete, try again.`,
     loadFail: 'Could not load the list',
     overwrite: 'Replace the current text with the complete list?',
     step2: 'Check for images',
@@ -418,9 +432,12 @@ const I18N = {
     autoHint: 'Tidak ingin menempel daftar manual? Klik <b>Ambil Daftar Lengkap</b> di bawah untuk memuat semua artikel secara otomatis dari WikiProjectMed.',
     placeholder: 'Wikitext ber-section:\n== Meds ==\n[[Melphalan]]\n[[Mumps vaccine|label]]\n\natau satu judul per baris:\nSelinexor\nPrucalopride',
     getList: 'Ambil Daftar Lengkap',
-    listSource: `Diparse langsung dari <a ${A_LIST}>WikiProjectMed:List/Prior</a>`,
+    listSource: `Diparse langsung dari <a ${A_LIST}>WikiProjectMed:List</a> dan <a ${A_PRIOR}>WikiProjectMed:List/Prior</a>`,
     loading: 'Memuat…',
-    loaded: (n, s) => `Dimuat ${n} artikel dalam ${s} section`,
+    loadedTitle: (n, s) => `Dimuat ${n} artikel unik dalam ${s} section.`,
+    sourceLine: (name, n) => `${name}: ${n} artikel`,
+    dupLine: (d) => d ? `${d} judul ganda dilewati (tiap artikel hanya dicantumkan sekali).` : 'Tidak ada judul ganda.',
+    partialFail: (names) => `Gagal memuat: ${names}. Daftar di bawah belum lengkap, coba lagi.`,
     loadFail: 'Gagal memuat daftar',
     overwrite: 'Ganti teks saat ini dengan daftar lengkap?',
     step2: 'Cek gambar',
@@ -924,31 +941,94 @@ async function exportPDF() {
 $('run').onclick = () => run(false);
 $('retry').onclick = () => run(true);
 $('stop').onclick = () => controller && controller.abort();
+// ---------- daftar lengkap (WikiProjectMed:List + WikiProjectMed:List/Prior) ----------
+const titleKey = (t) => { const x = t.replace(/_/g, ' ').trim(); return x.charAt(0).toUpperCase() + x.slice(1); };
+
+// Ambil wikitext semua sumber dalam satu request; sumber yang gagal/tidak ada -> text null
+async function fetchListSources() {
+  const params = new URLSearchParams({
+    action: 'query', prop: 'revisions', rvprop: 'content', rvslots: 'main',
+    format: 'json', formatversion: '2', redirects: '1', origin: '*', titles: LIST_SOURCES.join('|'),
+  });
+  const res = await fetch(`${API}?${params}`, { signal: AbortSignal.timeout(TIMEOUT) });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.info);
+  const q = data.query || {};
+  const alias = new Map();
+  for (const r of [...(q.normalized || []), ...(q.redirects || [])]) alias.set(r.from, r.to);
+  const pages = new Map((q.pages || []).map((p) => [p.title, p]));
+  return LIST_SOURCES.map((name) => {
+    let k = name, n = 0;
+    while (alias.has(k) && n++ < 10) k = alias.get(k);
+    const p = pages.get(k);
+    const text = p && !p.missing && !p.invalid ? p.revisions?.[0]?.slots?.main?.content : null;
+    return { name, text: text || null };
+  });
+}
+
+// Gabungkan semua sumber: satu judul hanya sekali di seluruh daftar (di antara section dan sumber).
+// Section bernama sama digabung; section yang kosong setelah penyaringan dibuang.
+function mergeSources(sources) {
+  const seen = new Set(), merged = [], byName = new Map(), per = [];
+  let dups = 0;
+  for (const src of sources) {
+    if (src.text == null) { per.push({ name: src.name, n: null }); continue; }
+    let kept = 0;
+    for (const sec of parse(src.text)) {
+      const titles = [];
+      for (const title of sec.titles) {
+        const key = titleKey(title);
+        if (seen.has(key)) { dups++; continue; }
+        seen.add(key); titles.push(title); kept++;
+      }
+      if (!titles.length) continue;
+      const target = sec.name ? byName.get(sec.name) : null;
+      if (target) target.titles.push(...titles);
+      else { const s = { name: sec.name, titles }; merged.push(s); if (sec.name) byName.set(sec.name, s); }
+    }
+    per.push({ name: src.name, n: kept });
+  }
+  return { merged, per, dups, total: seen.size };
+}
+
+function showListNotice(kind, title, lines) {
+  const box = $('listnotice');
+  box.className = 'notice ' + kind;
+  box.replaceChildren();
+  box.append(el('b', '', title));
+  if (lines && lines.length) {
+    const ul = el('ul');
+    for (const l of lines) ul.append(el('li', '', l));
+    box.append(ul);
+  }
+  box.hidden = false;
+}
+
 $('list').onclick = async () => {
   const note = $('listnote');
   if ($('input').value.trim() && !confirm(t('overwrite'))) return;
   $('list').disabled = true;
+  $('listnotice').hidden = true;
   note.className = 'note';
   note.textContent = t('loading');
   try {
-    const params = new URLSearchParams({
-      action: 'query', prop: 'revisions', rvprop: 'content', rvslots: 'main',
-      format: 'json', formatversion: '2', redirects: '1', origin: '*', titles: LIST_PAGE,
-    });
-    const res = await fetch(`${API}?${params}`, { signal: AbortSignal.timeout(TIMEOUT) });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const page = (await res.json()).query?.pages?.[0];
-    const wikitext = page?.revisions?.[0]?.slots?.main?.content;
-    if (!wikitext) throw new Error('empty');
-    const parsed = parse(wikitext);
-    $('input').value = parsed.map((s) => (s.name ? `== ${s.name} ==\n` : '') + s.titles.join('\n')).join('\n\n') + '\n';
-    note.textContent = t('loaded', new Set(parsed.flatMap((s) => s.titles)).size, parsed.length);
+    const { merged, per, dups, total } = mergeSources(await fetchListSources());
+    const failed = per.filter((x) => x.n == null).map((x) => x.name);
+    if (!total) throw new Error('empty');
+    $('input').value = merged.map((s) => (s.name ? `== ${s.name} ==\n` : '') + s.titles.join('\n')).join('\n\n') + '\n';
+    note.textContent = '';
+    const lines = per.filter((x) => x.n != null).map((x) => t('sourceLine', x.name, x.n.toLocaleString()));
+    lines.push(t('dupLine', dups));
+    if (failed.length) lines.push(t('partialFail', failed.join(', ')));
+    showListNotice(failed.length ? 'warn' : 'ok', t('loadedTitle', total.toLocaleString(), merged.length), lines);
   } catch {
-    note.className = 'note err';
-    note.textContent = t('loadFail');
+    note.textContent = '';
+    showListNotice('err', t('loadFail'));
   }
   $('list').disabled = false;
 };
+$('input').addEventListener('input', () => { $('listnotice').hidden = true; });
 $('copy').onclick = async () => {
   try { await navigator.clipboard.writeText(toText()); flash(t('copied')); }
   catch { flash(t('copyFail'), true); }
@@ -956,6 +1036,7 @@ $('copy').onclick = async () => {
 $('download').onclick = exportPDF;
 $('lang').onclick = () => {
   lang = lang === 'en' ? 'id' : 'en';
+  $('listnotice').hidden = true; // teks pemberitahuan memakai bahasa saat dimuat
   try { localStorage.setItem('mwni-lang', lang); } catch {}
   applyLang();
 };
