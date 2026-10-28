@@ -400,7 +400,7 @@
     <div class="pv-foot">
       <button type="button" class="navb" id="pvPrev">‹</button>
       <button type="button" class="navb" id="pvNext">›</button>
-      <div class="pv-acts"><a id="pvHist" target="_blank" rel="noopener noreferrer"></a><a id="pvOpen" class="main" target="_blank" rel="noopener noreferrer"></a></div>
+      <div class="pv-acts"><a id="pvGoogle" target="_blank" rel="noopener noreferrer">Google</a><a id="pvBing" target="_blank" rel="noopener noreferrer">Bing</a><a id="pvHist" target="_blank" rel="noopener noreferrer"></a><a id="pvOpen" class="main" target="_blank" rel="noopener noreferrer"></a></div>
     </div>
   </div>
 </div>
@@ -1391,6 +1391,9 @@ async function showPreview(){
   pvMedia(st.hasThumbs ? (it.thumb || '') : '', '', 'image');
   renderPvMeta(it);
   $('pvOpen').href = urlOf(it); $('pvOpen').textContent = t('openOriginal');
+  [['pvGoogle', 'Google', SEARCH_ENGINES[0][1]], ['pvBing', 'Bing', SEARCH_ENGINES[1][1]]].forEach(([id, name, base]) => {
+    const a = $(id); a.href = base + encodeURIComponent(it.title); a.title = t('searchWith', name); a.setAttribute('aria-label', t('searchWith', name) + ': ' + it.title);
+  });
   $('pvHist').href = `${st.proj}/w/index.php?title=${encodeURIComponent(it.raw.replace(/ /g, '_'))}&action=history`; $('pvHist').textContent = t('pvHistory');
   $('pvClose').setAttribute('aria-label', t('pvClose'));
   $('pvPrev').setAttribute('aria-label', t('pvPrev')); $('pvNext').setAttribute('aria-label', t('pvNext'));
