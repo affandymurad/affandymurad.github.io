@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Koran Wikipedia</title>
+<script>
+/* Terapkan tema pilihan pengguna sebelum halaman digambar (menghindari kedipan). Tanpa pilihan: ikut tema browser. */
+try{var t=localStorage.getItem('koran-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light dark;
+  --paper:#f5f0e4; --ink:#1b1a17; --muted:#5d584d; --rule:#2a2823; --soft:#cfc7b3; --accent:#8a1c1c;
+  --page:#e6dfcd; --skel:#e9e2d0; --hover:rgba(138,28,28,.08); --imgf:grayscale(.85) contrast(1.05);
+  --head:"Playfair Display","Times New Roman",serif;
+  --body:"Libre Baskerville",Georgia,"Times New Roman",serif;
+}
+/* Tema gelap: otomatis mengikuti browser kecuali pengguna memilih sendiri lewat toggle */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#1d1c19; --ink:#ebe6da; --muted:#a8a191; --rule:#5c574c; --soft:#38352e; --accent:#e58f7f;
+    --page:#11100e; --skel:#46423a; --hover:rgba(229,143,127,.14); --imgf:grayscale(.85) contrast(1.05) brightness(.88);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#1d1c19; --ink:#ebe6da; --muted:#a8a191; --rule:#5c574c; --soft:#38352e; --accent:#e58f7f;
+  --page:#11100e; --skel:#46423a; --hover:rgba(229,143,127,.14); --imgf:grayscale(.85) contrast(1.05) brightness(.88);
+}
+:root[data-theme="light"]{color-scheme:light}
+*{box-sizing:border-box}
+html{background:var(--page)}
+body{margin:0;color:var(--ink);font-family:var(--body);line-height:1.6;font-size:15px}
+.sheet{max-width:1200px;margin:0 auto;background:var(--paper);padding:0 clamp(12px,3vw,32px) 24px;
+  box-shadow:0 0 0 1px var(--soft),0 8px 30px rgba(0,0,0,.15)}
+
+/* Masthead */
+.topbar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--rule);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.topbar .meta{color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.controls a.pdfbtn{text-decoration:none;display:inline-flex;align-items:center}
+.controls select,.controls .pdfbtn,.controls a.pdfbtn{font:inherit;font-size:12px;color:var(--ink);background:transparent;
+  border:1px solid var(--rule);padding:4px 8px;border-radius:0;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.controls select option{background:var(--paper);color:var(--ink);text-transform:none}
+.controls select:hover,.controls .pdfbtn:hover:not(:disabled),.controls a.pdfbtn:hover{background:var(--soft)}
+.controls :disabled{opacity:.55;cursor:progress}
+/* Toggle geser mode gelap */
+.controls .switch{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--rule);padding:4px 8px;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;user-select:none;position:relative}
+.controls .switch:hover{background:var(--soft)}
+.controls .switch input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.switch .track{width:30px;height:16px;border:1px solid var(--rule);border-radius:16px;position:relative;background:var(--soft);transition:background .2s}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--ink);transition:transform .2s,background .2s}
+.switch input:checked + .track{background:var(--ink)}
+.switch input:checked + .track::after{transform:translateX(14px);background:var(--paper)}
+.switch input:focus-visible + .track{outline:2px solid var(--accent);outline-offset:2px}
+.controls .qtoggle{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);padding:4px 8px;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;user-select:none}
+.controls .qtoggle:hover{background:var(--soft)}
+.controls .qtoggle input{margin:0;accent-color:var(--ink)}
+/* Lencana Q-ID Wikidata di samping tautan */
+.card a.qid{font:600 9.5px/1 ui-monospace,Menlo,Consolas,monospace;color:var(--muted);border:1px solid var(--soft);
+  padding:1px 3px;margin:0 2px 0 3px;vertical-align:.15em;letter-spacing:0;text-transform:none;border-radius:2px;white-space:nowrap}
+.card a.qid:hover{color:var(--accent);border-color:var(--accent);background:transparent}
+.masthead{text-align:center;padding:18px 0 10px;border-bottom:4px double var(--rule)}
+.masthead h1{margin:0;font-family:var(--head);font-weight:900;font-size:clamp(2.2rem,8vw,5.2rem);line-height:1.05;letter-spacing:-.01em}
+.masthead p{margin:.35rem 0 0;font-style:italic;color:var(--muted)}
+.dateline{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:7px 0;
+  border-bottom:1px solid var(--rule);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--rule);
+  border-bottom:1px solid var(--rule);margin-top:0}
+.card{background:var(--paper);padding:16px 18px 14px;min-width:0;display:flex;flex-direction:column}
+.dyk,.otd,.news{grid-column:span 4}
+.featured{grid-column:span 7}
+.mostread{grid-column:span 5}
+.card h2{margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ink);font-family:var(--head);
+  font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase}
+.card .body{flex:1}
+.card .body p{margin:0 0 .8em;text-align:justify;hyphens:auto}
+.tfa .body p:first-of-type::first-letter{font-family:var(--head);font-weight:900;font-size:3.4em;line-height:.85;
+  float:left;padding:.08em .1em 0 0}
+.tfa .title{font-family:var(--head);font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.15;margin:0 0 .5rem}
+.tfa .title a{color:var(--accent);text-decoration:none;border-bottom:2px solid var(--accent)}
+.tfa .title a:hover{background:var(--hover)}
+/* Paling banyak dibaca: peringkat 1–50 dalam kolom koran */
+.rank{margin:0;padding:0;list-style:none;counter-reset:r;columns:2 190px;column-gap:22px;column-rule:1px solid var(--soft);font-size:13.5px;line-height:1.35}
+.rank li{counter-increment:r;break-inside:avoid;display:grid;grid-template-columns:1.7em minmax(0,1fr) auto;column-gap:8px;
+  align-items:baseline;padding:5px 0;border-bottom:1px dotted var(--soft)}
+.rank li::before{content:counter(r);text-align:right;font-family:var(--head);font-weight:700;color:var(--accent)}
+.rank .t{min-width:0;overflow-wrap:anywhere}
+.rank .v{font-size:11px;color:var(--muted);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.card a{color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent)}
+.card a:hover{background:var(--hover)}
+.card figure{margin:0 0 .8em}
+.card img{max-width:100%;height:auto;display:block;filter:var(--imgf);transition:filter .3s}
+.card img:hover{filter:none}
+.card a:has(>img){border:0}
+.pic{float:left;margin:0 14px 8px 0 !important;width:min(42%,190px)}
+.pic img{width:100%;height:auto}
+/* Kartu gabungan: artikel pilihan di atas, gambar pilihan di bawah */
+.sub h3{margin:0 0 8px;font-family:var(--head);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.sub + .sub{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule)}
+.potd figure{display:grid;grid-template-columns:minmax(0,46%) 1fr;gap:14px;align-items:start;margin:0 0 .4em}
+.potd figcaption{font-size:13.5px;line-height:1.5;color:var(--muted);font-style:italic;margin:0}
+.list{list-style:none;margin:0;padding:0}
+.list li{padding:8px 0;border-bottom:1px solid var(--soft);font-size:14px}
+.list li:last-child{border-bottom:0}
+.list li ul{margin:.3em 0 0;padding-left:1.1em;font-size:13px}
+.list li ul li{border:0;padding:2px 0}
+.otd .list b.yr{font-family:var(--head);color:var(--accent);margin-right:.4em}
+.src{margin-top:10px;padding-top:6px;border-top:1px solid var(--soft);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);clear:both}
+.src a{color:var(--muted);border-bottom:1px dotted var(--muted)}
+.status{color:var(--muted);font-style:italic}
+/* Tombol Bacakan di kepala tiap bagian + label status/kesalahan di sebelahnya */
+.card h2,.sub h3{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.card h2 .ht,.sub h3 .ht{margin-right:auto}
+.tts{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-family:var(--body);font-weight:400;letter-spacing:0;text-transform:none}
+.readbtn{font:700 11.5px/1 var(--body);letter-spacing:.02em;color:var(--ink);background:transparent;border:1px solid var(--ink);
+  border-radius:999px;padding:5px 11px 5px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.readbtn:hover:not(:disabled){background:var(--hover);color:var(--accent);border-color:var(--accent)}
+.readbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.readbtn:disabled{opacity:.45;cursor:not-allowed}
+.readbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.readbtn .ico{font-size:9px;line-height:1}
+.ttsmsg{font-size:11.5px;font-style:italic;color:var(--muted);line-height:1.3}
+.ttsmsg.err{color:var(--accent)}
+.pdfnote{font-size:11.5px;font-style:italic;color:var(--muted);max-width:16em;line-height:1.3}
+/* aksara bersambung/Indic: jarak huruf dan huruf kapital memutus bentuk hurufnya */
+:lang(ar) *,:lang(he) *,:lang(ta) *,:lang(th) *,:lang(ja) *,:lang(zh) *,:lang(ko) *{letter-spacing:0 !important;text-transform:none !important}
+.skeleton{height:10px;margin:10px 0;background:linear-gradient(90deg,var(--soft),var(--skel),var(--soft));
+  background-size:200% 100%;animation:sh 1.2s infinite linear}
+@keyframes sh{to{background-position:-200% 0}}
+footer{padding-top:14px;text-align:center;font-size:12px;color:var(--muted)}
+
+@media (max-width:900px){
+  .dyk,.otd{grid-column:span 6}
+  .news,.featured,.mostread{grid-column:span 12}
+  .rank{columns:3 180px}
+}
+@media (max-width:600px){
+  .dyk,.otd,.news,.featured,.mostread{grid-column:span 12}
+  .rank{columns:2 140px}
+  .potd figure{grid-template-columns:1fr}
+  .pic{float:none;width:min(70%,260px);margin:0 0 .8em !important}
+  .topbar{justify-content:center}
+  .card .body p{text-align:left}
+}
+@media print{
+  html{background:#fff}.sheet{box-shadow:none}.controls{display:none}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="topbar">
+    <span class="meta" id="vol"></span>
+    <div class="controls">
+      <a class="pdfbtn" id="author" href="https://affandymurad.github.io/" target="_blank" rel="noopener">Affandy Murad</a>
+      <button type="button" class="pdfbtn" id="pdf">Unduh PDF</button><span class="pdfnote" id="pdfnote" hidden></span>
+      <select id="lang" aria-label="Bahasa / Language">
+        <option value="en">English</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="ko">한국어</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="ja">日本語</option>
+        <option value="zh">中文</option>
+        <option value="ar">العربية</option>
+        <option value="nl">Nederlands</option>
+        <option value="ru">Русский</option>
+        <option value="th">ไทย</option>
+        <option value="ta">தமிழ்</option>
+        <option value="he">עברית</option>
+      </select>
+      <label class="qtoggle" id="qwrap"><input type="checkbox" id="qid"><span id="qlabel">Q-ID Wikidata</span></label>
+      <label class="switch" id="darkwrap"><input type="checkbox" id="dark" role="switch"><span class="track"></span><span id="darklabel">Mode gelap</span></label>
+    </div>
+  </div>
+  <header class="masthead">
+    <h1 id="title"></h1>
+    <p id="tagline"></p>
+  </header>
+  <div class="dateline"><span id="edition"></span><span id="dateText"></span></div>
+
+  <main class="grid" id="grid"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Konfigurasi per bahasa ----------
+   main : judul Halaman Utama edisi tersebut (sumber kelima bagian)
+   sel  : selector (atau fungsi) elemen tiap bagian di Halaman Utama
+   feed : true jika feed REST harian berfungsi untuk edisi itu (en saja), dipakai sebagai cadangan
+   main (judul Halaman Utama) dipakai pula untuk menyaring "Paling Banyak Dibaca" */
+const LANGS = {
+  id: {
+    host:'id.wikipedia.org', locale:'id-ID', html:'id', feed:false,
+    title:'Koran Wikipedia', tagline:'Bacaan harian dari ensiklopedia bebas',
+    edition:'Edisi Indonesia', vol:'Vol.', no:'No.',
+    labels:{tfa:'Artikel Pilihan', potd:'Gambar Pilihan', dyk:'Tahukah Anda?', otd:'Hari Ini dalam Sejarah', news:'Peristiwa Terkini', mostread:'Paling Banyak Dibaca', featured:'Pilihan Hari Ini'},
+    pdf:{making:'Membuat PDF…', fail:'PDF gagal dibuat: ', edition:'Edisi', date:'Tanggal', source:'Sumber', generated:'Dibuat',
+         mostReadDay:'Data paling banyak dibaca', timezone:'Zona waktu', article:'Artikel', views:'Dibaca', topViews:'Dibaca terbanyak',
+         empty:'Tidak ada data untuk bagian ini.', partial:'Bagian berikut belum tersedia saat PDF dibuat: {list}.',
+         report:'laporan dibuat otomatis', page:'Halaman {p} dari {n}',
+         sources:'Sumber data: Wikipedia (CC BY-SA 4.0) dan Wikimedia Pageviews. Angka dibaca adalah tayangan halaman pada hari yang tertera.'},
+    ui:{read:'Bacakan', stop:'Berhenti', reading:'Membaca…', speechName:'Indonesia',
+        noSupport:'Browser ini tidak mendukung fitur bacakan.', noVoice:'Suara bahasa {lang} tidak ditemukan di perangkat; memakai suara bawaan.',
+        noText:'Tidak ada teks untuk dibacakan.', notReady:'Bagian ini belum selesai dimuat.',
+        noStart:'Suara tidak terdengar. Periksa suara teks-ke-ucapan di perangkat.', readFail:'Gagal membacakan: ', num:'Nomor',
+        pdf:'Unduh PDF', dark:'Mode gelap', darkTip:'Ganti tampilan terang/gelap (default mengikuti browser)',
+        na:'Bagian ini belum tersedia di edisi ini.', src:'Sumber', today:'Hari ini', date:'Tanggal', qid:'Q-ID Wikidata', qidTip:'Tampilkan nilai Q Wikidata di samping tiap tautan',
+        dateNote:'Edisi ini mengikuti Halaman Utama Wikipedia hari ini',
+        lic:'Konten bersumber dari Wikipedia dan berlisensi CC BY-SA 4.0. Setiap kartu menautkan ke halaman sumbernya.'},
+    main:'Halaman Utama',
+    sel:{tfa:'#mf-artikelpilihan', potd:'#mf-gambarpilihan', dyk:'#mf-tahukahanda', otd:'#mf-hids', news:'#mf-peristiwaterkini'}
+  },
+  ms: {
+    host:'ms.wikipedia.org', locale:'ms-MY', html:'ms', feed:false,
+    title:'Akhbar Wikipedia', tagline:'Bacaan harian daripada ensiklopedia bebas',
+    edition:'Edisi Melayu', vol:'Jil.', no:'Bil.',
+    labels:{tfa:'Rencana Pilihan', potd:'Gambar Pilihan', dyk:'Tahukah Anda?', otd:'Hari Ini dalam Sejarah', news:'Peristiwa Semasa', mostread:'Paling Banyak Dibaca', featured:'Pilihan Hari Ini'},
+    pdf:{making:'Menjana PDF…', fail:'PDF gagal dijana: ', edition:'Edisi', date:'Tarikh', source:'Sumber', generated:'Dijana',
+         mostReadDay:'Data paling banyak dibaca', timezone:'Zon waktu', article:'Rencana', views:'Dibaca', topViews:'Paling banyak dibaca',
+         empty:'Tiada data untuk bahagian ini.', partial:'Bahagian berikut belum tersedia semasa PDF dijana: {list}.',
+         report:'laporan dijana secara automatik', page:'Halaman {p} daripada {n}',
+         sources:'Sumber data: Wikipedia (CC BY-SA 4.0) dan Wikimedia Pageviews. Angka dibaca ialah tontonan halaman pada hari yang tertera.'},
+    ui:{read:'Bacakan', stop:'Berhenti', reading:'Membaca…', speechName:'Melayu',
+        noSupport:'Pelayar ini tidak menyokong ciri bacakan.', noVoice:'Suara bahasa {lang} tidak ditemui pada peranti; menggunakan suara lalai.',
+        noText:'Tiada teks untuk dibacakan.', notReady:'Bahagian ini belum selesai dimuatkan.',
+        noStart:'Suara tidak kedengaran. Semak suara teks-ke-pertuturan pada peranti.', readFail:'Gagal membacakan: ', num:'Nombor',
+        pdf:'Muat turun PDF', dark:'Mod gelap', darkTip:'Tukar paparan cerah/gelap (lalai mengikut pelayar)',
+        na:'Bahagian ini belum tersedia dalam edisi ini.', src:'Sumber', today:'Hari ini', date:'Tarikh', qid:'Q-ID Wikidata', qidTip:'Papar nilai Q Wikidata di sebelah setiap pautan',
+        dateNote:'Edisi ini mengikut Laman Utama Wikipedia hari ini',
+        lic:'Kandungan daripada Wikipedia dan dilesenkan CC BY-SA 4.0. Setiap kad memaut ke halaman sumbernya.'},
+    main:'Laman Utama',
+    sel:{tfa:'#mp-tfa', potd:'#mp-gp .mp-gp-content',
+         dyk:r=>[...r.querySelectorAll('.flex-item')].find(e=>/Tahukah anda\.\.\./i.test(txt(e))),
+         otd:'#mp-otd', news:'#mp-itn'}
+  },
+  en: {
+    host:'en.wikipedia.org', locale:'en-GB', html:'en', feed:true,
+    title:'The Wikipedia Gazette', tagline:'Daily reading from the free encyclopedia',
+    edition:'English Edition', vol:'Vol.', no:'No.',
+    labels:{tfa:"Today's Featured Article", potd:'Picture of the Day', dyk:'Did You Know…?', otd:'On This Day', news:'In the News', mostread:'Most Read', featured:'Featured Today'},
+    pdf:{making:'Building PDF…', fail:'Could not build the PDF: ', edition:'Edition', date:'Date', source:'Source', generated:'Generated',
+         mostReadDay:'Most-read data', timezone:'Time zone', article:'Article', views:'Views', topViews:'Top article views',
+         empty:'No data for this section.', partial:'These sections were not available when the PDF was built: {list}.',
+         report:'report generated automatically', page:'Page {p} of {n}',
+         sources:'Data source: Wikipedia (CC BY-SA 4.0) and Wikimedia Pageviews. View counts are page views on the date shown.'},
+    ui:{read:'Read aloud', stop:'Stop', reading:'Reading…', speechName:'English',
+        noSupport:'This browser does not support read-aloud.', noVoice:'No {lang} voice found on this device; using the default voice.',
+        noText:'There is no text to read.', notReady:'This section is still loading.',
+        noStart:'No sound played. Check the text-to-speech voices on your device.', readFail:'Could not read aloud: ', num:'Number',
+        pdf:'Download PDF', dark:'Dark mode', darkTip:'Switch light/dark appearance (defaults to your browser)',
+        na:'This section is not available in this edition.', src:'Source', today:'Today', date:'Date', dateNote:'', qid:'Wikidata Q-IDs', qidTip:'Show the Wikidata Q-ID next to each link',
+        lic:'Content from Wikipedia, licensed under CC BY-SA 4.0. Each card links to its source page.'},
+    main:'Main Page',
+    sel:{tfa:'#mp-tfa', potd:'#mp-tfp', dyk:'#mp-dyk', otd:'#mp-otd', news:'#mp-itn'}
+  },
+  ko: {
+    host:'ko.wikipedia.org', locale:'ko-KR', html:'ko', feed:false, raster:true,
+    title:'위키백과 신문', tagline:'자유 백과사전이 전하는 오늘의 읽을거리',
+    edition:'한국어판', vol:'제', no:'호', volFmt:'제 {v}권 · 제 {n}호',
+    labels:{tfa:'알찬 글', potd:'오늘의 그림', dyk:'알고 계십니까?', otd:'오늘의 역사', news:'새로 들어온 소식', mostread:'가장 많이 읽은 글', featured:'오늘의 추천'},
+    pdf:{making:'PDF 만드는 중…', fail:'PDF를 만들지 못했습니다: ', empty:'이 섹션에 데이터가 없습니다.',
+         partial:'PDF를 만들 때 다음 섹션을 사용할 수 없었습니다: {list}.', report:'자동 생성된 보고서', page:'{p} / {n} 페이지',
+         sources:'데이터 출처: 위키백과(CC BY-SA 4.0) 및 Wikimedia Pageviews. 조회수는 표시된 날짜의 페이지 조회수입니다.'},
+    ui:{read:'읽어주기', stop:'멈춤', reading:'읽는 중…', speechName:'한국어',
+        noSupport:'이 브라우저는 읽어주기를 지원하지 않습니다.', noVoice:'이 기기에서 {lang} 음성을 찾을 수 없어 기본 음성을 사용합니다.',
+        noText:'읽을 내용이 없습니다.', notReady:'이 섹션을 아직 불러오는 중입니다.',
+        noStart:'소리가 나지 않습니다. 기기의 음성 합성 설정을 확인하세요.', readFail:'읽어주기 실패: ', num:'순위',
+        pdf:'PDF 다운로드', dark:'다크 모드', darkTip:'밝은/어두운 화면 전환 (기본값은 브라우저 설정)',
+        na:'이 에디션에서는 이 섹션을 사용할 수 없습니다.', src:'출처', qid:'위키데이터 Q-ID', qidTip:'각 링크 옆에 위키데이터 Q-ID 표시',
+        lic:'콘텐츠는 위키백과에서 가져왔으며 CC BY-SA 4.0 라이선스입니다. 각 카드는 원본 문서로 연결됩니다.'},
+    main:'위키백과:대문',
+    sel:{tfa:'.main-recommended', potd:'.todaypircute', dyk:'.dyk.main-box', otd:'.history.main-box', news:'.news.main-box'}
+  },
+  es: {
+    host:'es.wikipedia.org', locale:'es-ES', html:'es', feed:false,
+    title:'La Gaceta de Wikipedia', tagline:'Lectura diaria de la enciclopedia libre',
+    edition:'Edición en español', vol:'Vol.', no:'N.º',
+    labels:{tfa:'Artículo destacado', potd:'Imagen del día', dyk:'Artículo bueno', otd:'Efemérides', news:'Actualidad', mostread:'Más leídos', featured:'Destacados de hoy'},
+    pdf:{making:'Creando PDF…', fail:'No se pudo crear el PDF: ', empty:'No hay datos para esta sección.',
+         partial:'Estas secciones no estaban disponibles al crear el PDF: {list}.', report:'informe generado automáticamente', page:'Página {p} de {n}',
+         sources:'Fuente de datos: Wikipedia (CC BY-SA 4.0) y Wikimedia Pageviews. Las lecturas son visitas de página en la fecha indicada.'},
+    ui:{read:'Leer en voz alta', stop:'Detener', reading:'Leyendo…', speechName:'español',
+        noSupport:'Este navegador no admite la lectura en voz alta.', noVoice:'No se encontró una voz en {lang} en este dispositivo; se usa la voz predeterminada.',
+        noText:'No hay texto que leer.', notReady:'Esta sección aún se está cargando.',
+        noStart:'No se oyó ningún sonido. Revisa las voces de síntesis de voz del dispositivo.', readFail:'No se pudo leer en voz alta: ', num:'Número',
+        pdf:'Descargar PDF', dark:'Modo oscuro', darkTip:'Alternar apariencia clara/oscura (por defecto, la del navegador)',
+        na:'Esta sección no está disponible en esta edición.', src:'Fuente', qid:'Q-ID de Wikidata', qidTip:'Mostrar el Q-ID de Wikidata junto a cada enlace',
+        lic:'Contenido de Wikipedia con licencia CC BY-SA 4.0. Cada tarjeta enlaza con su página de origen.'},
+    main:'Wikipedia:Portada',
+    sel:{tfa:'#main-tfa', potd:'#main-potd', dyk:'#main-tga', otd:'#main-itd', news:'#main-cur'},
+    ext:{dyk:'tfa'}   // Portada tidak punya "¿Sabías que…?": bagian ini diisi artículo bueno del día
+  },
+  fr: {
+    host:'fr.wikipedia.org', locale:'fr-FR', html:'fr', feed:false,
+    title:'Le Journal de Wikipédia', tagline:'La lecture du jour de l’encyclopédie libre',
+    edition:'Édition française', vol:'Vol.', no:'N°',
+    labels:{tfa:'Article du jour', potd:'Image du jour', dyk:'Le saviez-vous ?', otd:'Éphéméride', news:'Actualités', mostread:'Les plus lus', featured:'À la une'},
+    pdf:{making:'Création du PDF…', fail:'Impossible de créer le PDF : ', empty:'Aucune donnée pour cette section.',
+         partial:'Ces sections n’étaient pas disponibles lors de la création du PDF : {list}.', report:'rapport généré automatiquement', page:'Page {p} sur {n}',
+         sources:'Source des données : Wikipédia (CC BY-SA 4.0) et Wikimedia Pageviews. Les chiffres sont des consultations de page à la date indiquée.'},
+    ui:{read:'Lire à voix haute', stop:'Arrêter', reading:'Lecture…', speechName:'français',
+        noSupport:'Ce navigateur ne prend pas en charge la lecture à voix haute.', noVoice:'Aucune voix en {lang} trouvée sur cet appareil ; la voix par défaut est utilisée.',
+        noText:'Aucun texte à lire.', notReady:'Cette section est encore en cours de chargement.',
+        noStart:'Aucun son. Vérifiez les voix de synthèse vocale de l’appareil.', readFail:'Échec de la lecture : ', num:'Numéro',
+        pdf:'Télécharger le PDF', dark:'Mode sombre', darkTip:'Basculer entre apparence claire et sombre (par défaut, celle du navigateur)',
+        na:'Cette section n’est pas disponible dans cette édition.', src:'Source', qid:'Q-ID Wikidata', qidTip:'Afficher le Q-ID Wikidata à côté de chaque lien',
+        lic:'Contenu de Wikipédia sous licence CC BY-SA 4.0. Chaque carte renvoie vers sa page source.'},
+    main:'Wikipédia:Accueil principal',
+    sel:{tfa:H(/Article labellisé du jour/), potd:H(/Image labellisée du jour/), dyk:H(/Le saviez-vous/), otd:H(/Éphéméride/), news:H(/^Actualités/)}
+  },
+  de: {
+    host:'de.wikipedia.org', locale:'de-DE', html:'de', feed:false,
+    title:'Die Wikipedia-Zeitung', tagline:'Tägliche Lektüre aus der freien Enzyklopädie',
+    edition:'Deutsche Ausgabe', vol:'Jg.', no:'Nr.',
+    labels:{tfa:'Artikel des Tages', potd:'Bild des Tages', dyk:'Schon gewusst?', otd:'Was geschah heute?', news:'In den Nachrichten', mostread:'Meistgelesen', featured:'Heute empfohlen'},
+    pdf:{making:'PDF wird erstellt…', fail:'PDF konnte nicht erstellt werden: ', empty:'Keine Daten für diesen Abschnitt.',
+         partial:'Diese Abschnitte waren beim Erstellen des PDFs nicht verfügbar: {list}.', report:'automatisch erstellter Bericht', page:'Seite {p} von {n}',
+         sources:'Datenquelle: Wikipedia (CC BY-SA 4.0) und Wikimedia Pageviews. Die Zahlen sind Seitenaufrufe am angegebenen Datum.'},
+    ui:{read:'Vorlesen', stop:'Stopp', reading:'Lese vor…', speechName:'Deutsch',
+        noSupport:'Dieser Browser unterstützt Vorlesen nicht.', noVoice:'Keine Stimme für „{lang}“ auf diesem Gerät gefunden; die Standardstimme wird verwendet.',
+        noText:'Kein Text zum Vorlesen.', notReady:'Dieser Abschnitt wird noch geladen.',
+        noStart:'Kein Ton zu hören. Prüfen Sie die Sprachausgabe-Stimmen des Geräts.', readFail:'Vorlesen fehlgeschlagen: ', num:'Nummer',
+        pdf:'PDF herunterladen', dark:'Dunkelmodus', darkTip:'Zwischen hell und dunkel wechseln (Standard: Browser-Einstellung)',
+        na:'Dieser Abschnitt ist in dieser Ausgabe nicht verfügbar.', src:'Quelle', qid:'Wikidata-Q-IDs', qidTip:'Wikidata-Q-ID neben jedem Link anzeigen',
+        lic:'Inhalte aus Wikipedia unter CC BY-SA 4.0. Jede Karte verlinkt auf ihre Quellseite.'},
+    main:'Wikipedia:Hauptseite',
+    sel:{tfa:'#artikel', potd:null, dyk:'#wissenswertes', otd:'#ereignisse', news:'#nachrichten'}
+  },
+  ja: {
+    host:'ja.wikipedia.org', locale:'ja-JP', html:'ja', feed:false, raster:true,
+    title:'ウィキペディア新聞', tagline:'フリー百科事典から届ける毎日の読み物',
+    edition:'日本語版', vol:'第', no:'号', volFmt:'第{v}巻 · 第{n}号',
+    labels:{tfa:'選り抜き記事', potd:'今日の一枚', dyk:'新しい記事', otd:'今日は何の日', news:'ニュース', mostread:'よく読まれている記事', featured:'今日のおすすめ'},
+    pdf:{making:'PDFを作成中…', fail:'PDFを作成できませんでした: ', empty:'このセクションにはデータがありません。',
+         partial:'PDF作成時に次のセクションが利用できませんでした: {list}。', report:'自動生成レポート', page:'{p} / {n} ページ',
+         sources:'データの出典: ウィキペディア（CC BY-SA 4.0）およびWikimedia Pageviews。閲覧数は表示された日のページビューです。'},
+    ui:{read:'読み上げ', stop:'停止', reading:'読み上げ中…', speechName:'日本語',
+        noSupport:'このブラウザは読み上げに対応していません。', noVoice:'この端末に{lang}の音声が見つからないため、既定の音声を使用します。',
+        noText:'読み上げるテキストがありません。', notReady:'このセクションはまだ読み込み中です。',
+        noStart:'音が出ません。端末の音声合成の設定を確認してください。', readFail:'読み上げに失敗しました: ', num:'順位',
+        pdf:'PDFをダウンロード', dark:'ダークモード', darkTip:'ライト/ダークの切り替え（既定はブラウザの設定）',
+        na:'このセクションはこの版では利用できません。', src:'出典', qid:'ウィキデータ Q-ID', qidTip:'各リンクの横にウィキデータのQ-IDを表示',
+        lic:'ウィキペディアの内容はCC BY-SA 4.0で提供されています。各カードは元のページにリンクしています。'},
+    main:'メインページ',
+    sel:{tfa:'#fa_and_ga', potd:'#frame-main2', dyk:'#new_articles', otd:'#on_this_day', news:null},
+    fb:{news:'Portal:最近の出来事'}
+  },
+  zh: {
+    host:'zh.wikipedia.org', locale:'zh-CN', html:'zh', feed:false, raster:true,
+    title:'维基百科报', tagline:'来自自由百科全书的每日阅读',
+    edition:'中文版', vol:'第', no:'号', volFmt:'第{v}卷 · 第{n}号',
+    labels:{tfa:'典范条目', potd:'每日图片', dyk:'你知道吗？', otd:'历史上的今天', news:'新闻动态', mostread:'阅读量最高', featured:'今日精选'},
+    pdf:{making:'正在生成 PDF…', fail:'无法生成 PDF：', empty:'此栏目没有数据。',
+         partial:'生成 PDF 时以下栏目不可用：{list}。', report:'自动生成的报告', page:'第 {p} 页，共 {n} 页',
+         sources:'数据来源：维基百科（CC BY-SA 4.0）与 Wikimedia Pageviews。阅读量为所示日期的页面浏览次数。'},
+    ui:{read:'朗读', stop:'停止', reading:'朗读中…', speechName:'中文',
+        noSupport:'此浏览器不支持朗读功能。', noVoice:'此设备上未找到{lang}语音，将使用默认语音。',
+        noText:'没有可朗读的文字。', notReady:'此栏目仍在加载。',
+        noStart:'没有声音。请检查设备的语音合成设置。', readFail:'朗读失败：', num:'排名',
+        pdf:'下载 PDF', dark:'深色模式', darkTip:'切换浅色/深色外观（默认跟随浏览器）',
+        na:'此版本暂无该栏目。', src:'来源', qid:'维基数据 Q-ID', qidTip:'在每个链接旁显示维基数据 Q-ID',
+        lic:'内容来自维基百科，采用 CC BY-SA 4.0 许可。每张卡片均链接到原始页面。'},
+    main:'Wikipedia:首页',
+    sel:{tfa:'#column-feature', potd:'#mp-2012-column-featurepic-block', dyk:'#column-dyk', otd:'#column-otd', news:'#column-itn'}
+  },
+  ar: {
+    host:'ar.wikipedia.org', locale:'ar', html:'ar', dir:'rtl', feed:false, raster:true,
+    title:'جريدة ويكيبيديا', tagline:'قراءة يومية من الموسوعة الحرة',
+    edition:'النسخة العربية', vol:'المجلد', no:'العدد',
+    labels:{tfa:'مقالة اليوم المختارة', potd:'صورة اليوم', dyk:'هل تعلم؟', otd:'في هذا اليوم', news:'في الأخبار', mostread:'الأكثر قراءة', featured:'مختارات اليوم'},
+    pdf:{making:'جارٍ إنشاء PDF…', fail:'تعذّر إنشاء PDF: ', empty:'لا توجد بيانات لهذا القسم.',
+         partial:'لم تكن الأقسام التالية متاحة عند إنشاء PDF: {list}.', report:'تقرير أُنشئ تلقائيًا', page:'الصفحة {p} من {n}',
+         sources:'مصدر البيانات: ويكيبيديا (CC BY-SA 4.0) وWikimedia Pageviews. الأرقام هي مرات عرض الصفحات في التاريخ المذكور.'},
+    ui:{read:'اقرأ بصوت عالٍ', stop:'إيقاف', reading:'جارٍ القراءة…', speechName:'العربية',
+        noSupport:'هذا المتصفح لا يدعم القراءة الصوتية.', noVoice:'لم يتم العثور على صوت «{lang}» على هذا الجهاز؛ سيتم استخدام الصوت الافتراضي.',
+        noText:'لا يوجد نص للقراءة.', notReady:'هذا القسم لا يزال قيد التحميل.',
+        noStart:'لم يُسمع أي صوت. تحقق من أصوات تحويل النص إلى كلام على الجهاز.', readFail:'تعذّرت القراءة: ', num:'رقم',
+        pdf:'تنزيل PDF', dark:'الوضع الداكن', darkTip:'التبديل بين المظهر الفاتح والداكن (الافتراضي حسب المتصفح)',
+        na:'هذا القسم غير متوفر في هذه النسخة.', src:'المصدر', qid:'معرّفات ويكي بيانات Q', qidTip:'إظهار معرّف Q لويكي بيانات بجانب كل رابط',
+        lic:'المحتوى من ويكيبيديا ومرخّص بموجب CC BY-SA 4.0. تشير كل بطاقة إلى صفحتها المصدر.'},
+    main:'الصفحة الرئيسة',
+    sel:{tfa:H(/مقالة اليوم المختارة/), potd:H(/صورة اليوم المختارة/), dyk:H(/هل تعلم/), otd:H(/في هذا اليوم/), news:H(/في الأخبار/)}
+  },
+  nl: {
+    host:'nl.wikipedia.org', locale:'nl-NL', html:'nl', feed:false,
+    title:'De Wikipedia Krant', tagline:'Dagelijkse lectuur uit de vrije encyclopedie',
+    edition:'Nederlandse editie', vol:'Jg.', no:'Nr.',
+    labels:{tfa:'Uitgelicht', potd:'Afbeelding van de dag', dyk:'Wist je dat…?', otd:'Op deze dag', news:'Actueel', mostread:'Meest gelezen', featured:'Vandaag uitgelicht'},
+    pdf:{making:'PDF wordt gemaakt…', fail:'PDF kon niet worden gemaakt: ', empty:'Geen gegevens voor deze sectie.',
+         partial:'Deze secties waren niet beschikbaar bij het maken van de PDF: {list}.', report:'automatisch gegenereerd rapport', page:'Pagina {p} van {n}',
+         sources:'Gegevensbron: Wikipedia (CC BY-SA 4.0) en Wikimedia Pageviews. De aantallen zijn paginaweergaven op de vermelde datum.'},
+    ui:{read:'Voorlezen', stop:'Stop', reading:'Voorlezen…', speechName:'Nederlands',
+        noSupport:'Deze browser ondersteunt voorlezen niet.', noVoice:'Geen stem voor “{lang}” gevonden op dit apparaat; de standaardstem wordt gebruikt.',
+        noText:'Geen tekst om voor te lezen.', notReady:'Deze sectie wordt nog geladen.',
+        noStart:'Geen geluid te horen. Controleer de spraaksynthese-stemmen van het apparaat.', readFail:'Voorlezen mislukt: ', num:'Nummer',
+        pdf:'PDF downloaden', dark:'Donkere modus', darkTip:'Wissel tussen licht en donker (standaard volgt de browser)',
+        na:'Deze sectie is niet beschikbaar in deze editie.', src:'Bron', qid:'Wikidata Q-ID’s', qidTip:'Toon de Wikidata Q-ID naast elke link',
+        lic:'Inhoud van Wikipedia onder CC BY-SA 4.0. Elke kaart verwijst naar de bronpagina.'},
+    main:'Hoofdpagina',
+    sel:{tfa:'#segment-Uitgelicht', potd:'#segment-Afbeelding', dyk:'#segment-Wist_je_dat', otd:null, news:'#segment-Actueel'},
+    fb:{date:d=>`${d.D} ${d.month}`, dateHead:/Gebeurtenissen/i}
+  },
+  ru: {
+    host:'ru.wikipedia.org', locale:'ru-RU', html:'ru', feed:false,
+    title:'Газета Википедии', tagline:'Ежедневное чтение из свободной энциклопедии',
+    edition:'Русское издание', vol:'Т.', no:'№',
+    labels:{tfa:'Избранная статья', potd:'Изображение дня', dyk:'Знаете ли вы?', otd:'В этот день', news:'Текущие события', mostread:'Самые читаемые', featured:'Избранное сегодня'},
+    pdf:{making:'Создание PDF…', fail:'Не удалось создать PDF: ', empty:'Нет данных для этого раздела.',
+         partial:'Эти разделы были недоступны при создании PDF: {list}.', report:'автоматически созданный отчёт', page:'Страница {p} из {n}',
+         sources:'Источник данных: Википедия (CC BY-SA 4.0) и Wikimedia Pageviews. Числа — просмотры страниц за указанную дату.'},
+    ui:{read:'Озвучить', stop:'Стоп', reading:'Чтение…', speechName:'русский',
+        noSupport:'Этот браузер не поддерживает озвучивание.', noVoice:'На устройстве не найден голос «{lang}»; используется голос по умолчанию.',
+        noText:'Нет текста для озвучивания.', notReady:'Этот раздел ещё загружается.',
+        noStart:'Звука нет. Проверьте голоса синтеза речи на устройстве.', readFail:'Не удалось озвучить: ', num:'Номер',
+        pdf:'Скачать PDF', dark:'Тёмная тема', darkTip:'Переключить светлую/тёмную тему (по умолчанию — как в браузере)',
+        na:'Этот раздел недоступен в этом издании.', src:'Источник', qid:'Q-ID Викиданных', qidTip:'Показывать Q-ID Викиданных рядом с каждой ссылкой',
+        lic:'Материалы Википедии по лицензии CC BY-SA 4.0. Каждая карточка ведёт на страницу-источник.'},
+    main:'Заглавная страница',
+    sel:{tfa:'#main-tfa', potd:'#main-potd', dyk:'#main-dyk', otd:'#main-itd', news:'#main-cur'}
+  },
+  th: {
+    host:'th.wikipedia.org', locale:'th-TH', html:'th', feed:false, raster:true,
+    title:'หนังสือพิมพ์วิกิพีเดีย', tagline:'บทความอ่านประจำวันจากสารานุกรมเสรี',
+    edition:'ฉบับภาษาไทย', vol:'ปีที่', no:'ฉบับที่',
+    labels:{tfa:'บทความคัดสรร', potd:'ภาพแห่งวัน', dyk:'รู้หรือไม่', otd:'วันนี้ในอดีต', news:'ข่าวเด่น', mostread:'อ่านมากที่สุด', featured:'คัดสรรวันนี้'},
+    pdf:{making:'กำลังสร้าง PDF…', fail:'สร้าง PDF ไม่สำเร็จ: ', empty:'ไม่มีข้อมูลสำหรับส่วนนี้',
+         partial:'ส่วนต่อไปนี้ยังไม่พร้อมตอนสร้าง PDF: {list}', report:'รายงานที่สร้างโดยอัตโนมัติ', page:'หน้า {p} จาก {n}',
+         sources:'แหล่งข้อมูล: วิกิพีเดีย (CC BY-SA 4.0) และ Wikimedia Pageviews ตัวเลขคือยอดเข้าชมหน้าในวันที่ระบุ'},
+    ui:{read:'อ่านออกเสียง', stop:'หยุด', reading:'กำลังอ่าน…', speechName:'ไทย',
+        noSupport:'เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง', noVoice:'ไม่พบเสียงภาษา{lang}ในอุปกรณ์นี้ จึงใช้เสียงเริ่มต้น',
+        noText:'ไม่มีข้อความให้อ่าน', notReady:'ส่วนนี้ยังโหลดไม่เสร็จ',
+        noStart:'ไม่มีเสียง โปรดตรวจสอบเสียงแปลงข้อความเป็นเสียงพูดของอุปกรณ์', readFail:'อ่านออกเสียงไม่สำเร็จ: ', num:'อันดับ',
+        pdf:'ดาวน์โหลด PDF', dark:'โหมดมืด', darkTip:'สลับโหมดสว่าง/มืด (ค่าเริ่มต้นตามเบราว์เซอร์)',
+        na:'ส่วนนี้ไม่มีในฉบับนี้', src:'แหล่งที่มา', qid:'Q-ID วิกิสนเทศ', qidTip:'แสดง Q-ID ของวิกิสนเทศข้างลิงก์แต่ละรายการ',
+        lic:'เนื้อหามาจากวิกิพีเดียภายใต้สัญญาอนุญาต CC BY-SA 4.0 การ์ดแต่ละใบมีลิงก์ไปยังหน้าต้นทาง'},
+    main:'หน้าหลัก',
+    sel:{tfa:'#mf-fa', potd:null, dyk:'#mf-dyk', otd:'#mf-tfa', news:'#mf-itn'}
+  },
+  ta: {
+    host:'ta.wikipedia.org', locale:'ta-IN', html:'ta', feed:false, raster:true,
+    title:'விக்கிப்பீடியா நாளிதழ்', tagline:'கட்டற்ற கலைக்களஞ்சியத்திலிருந்து தினசரி வாசிப்பு',
+    edition:'தமிழ்ப் பதிப்பு', vol:'தொகுதி', no:'இதழ்',
+    labels:{tfa:'சிறப்புக் கட்டுரை', potd:'சிறப்புப் படம்', dyk:'உங்களுக்குத் தெரியுமா?', otd:'இன்றைய நாள்', news:'செய்திகளில்', mostread:'அதிகம் படிக்கப்பட்டவை', featured:'இன்றைய தேர்வு'},
+    pdf:{making:'PDF உருவாக்கப்படுகிறது…', fail:'PDF உருவாக்க முடியவில்லை: ', empty:'இந்தப் பிரிவுக்குத் தரவு இல்லை.',
+         partial:'PDF உருவாக்கும்போது பின்வரும் பிரிவுகள் கிடைக்கவில்லை: {list}.', report:'தானாக உருவாக்கப்பட்ட அறிக்கை', page:'பக்கம் {p} / {n}',
+         sources:'தரவு மூலம்: விக்கிப்பீடியா (CC BY-SA 4.0) மற்றும் Wikimedia Pageviews. எண்கள் குறிப்பிட்ட நாளின் பக்கப் பார்வைகள்.'},
+    ui:{read:'படித்துக் காட்டு', stop:'நிறுத்து', reading:'படிக்கிறது…', speechName:'தமிழ்',
+        noSupport:'இந்த உலாவி படித்துக் காட்டும் வசதியை ஆதரிக்கவில்லை.', noVoice:'இந்தச் சாதனத்தில் {lang} குரல் கிடைக்கவில்லை; இயல்புநிலைக் குரல் பயன்படுத்தப்படுகிறது.',
+        noText:'படிக்க உரை இல்லை.', notReady:'இந்தப் பிரிவு இன்னும் ஏற்றப்படுகிறது.',
+        noStart:'ஒலி இல்லை. சாதனத்தின் உரை-பேச்சு குரல்களைச் சரிபார்க்கவும்.', readFail:'படிக்க முடியவில்லை: ', num:'எண்',
+        pdf:'PDF பதிவிறக்கு', dark:'இருண்ட பயன்முறை', darkTip:'ஒளி/இருள் தோற்றத்தை மாற்று (இயல்பாக உலாவியைப் பின்பற்றும்)',
+        na:'இந்தப் பதிப்பில் இந்தப் பிரிவு இல்லை.', src:'மூலம்', qid:'விக்கித்தரவு Q-ID', qidTip:'ஒவ்வொரு இணைப்பின் அருகிலும் விக்கித்தரவு Q-ID காட்டு',
+        lic:'உள்ளடக்கம் விக்கிப்பீடியாவிலிருந்து, CC BY-SA 4.0 உரிமத்தில். ஒவ்வொரு அட்டையும் மூலப் பக்கத்துடன் இணைகிறது.'},
+    main:'முதற்பக்கம்',
+    sel:{tfa:'#mp-tfa', potd:H(/சிறப்புப் படம்/), dyk:'#mp-dyk', otd:'#mp-otd', news:'#mp-itn'}
+  },
+  he: {
+    host:'he.wikipedia.org', locale:'he-IL', html:'he', dir:'rtl', feed:false, raster:true,
+    title:'עיתון ויקיפדיה', tagline:'קריאה יומית מהאנציקלופדיה החופשית',
+    edition:'מהדורה בעברית', vol:'כרך', no:'גיליון',
+    labels:{tfa:'ערך מומלץ', potd:'תמונת היום', dyk:'הידעת?', otd:'היום בהיסטוריה', news:'חדשות ואקטואליה', mostread:'הנקראים ביותר', featured:'מומלצים היום'},
+    pdf:{making:'יוצר PDF…', fail:'יצירת ה-PDF נכשלה: ', empty:'אין נתונים למדור זה.',
+         partial:'המדורים הבאים לא היו זמינים בעת יצירת ה-PDF: {list}.', report:'דוח שנוצר אוטומטית', page:'עמוד {p} מתוך {n}',
+         sources:'מקור הנתונים: ויקיפדיה (CC BY-SA 4.0) ו-Wikimedia Pageviews. המספרים הם צפיות בדפים בתאריך המצוין.'},
+    ui:{read:'הקראה', stop:'עצירה', reading:'מקריא…', speechName:'עברית',
+        noSupport:'הדפדפן הזה אינו תומך בהקראה.', noVoice:'לא נמצא קול ב{lang} במכשיר; משתמשים בקול ברירת המחדל.',
+        noText:'אין טקסט להקראה.', notReady:'המדור הזה עדיין נטען.',
+        noStart:'לא נשמע קול. בדקו את קולות הקריאה במכשיר.', readFail:'ההקראה נכשלה: ', num:'מספר',
+        pdf:'הורדת PDF', dark:'מצב כהה', darkTip:'מעבר בין מראה בהיר לכהה (ברירת המחדל לפי הדפדפן)',
+        na:'המדור הזה אינו זמין במהדורה זו.', src:'מקור', qid:'מזהי Q של ויקינתונים', qidTip:'הצגת מזהה ה-Q של ויקינתונים ליד כל קישור',
+        lic:'התוכן מוויקיפדיה ברישיון CC BY-SA 4.0. כל כרטיס מקשר לדף המקור.'},
+    main:'עמוד ראשי',
+    sel:{tfa:HP(/^ערך מומלץ/), potd:HP(/תמונת היום/), dyk:HP(/^הידעת/), otd:HP(/היום בהיסטוריה/), news:HP(/חדשות ואקטואליה/)}
+  }
+};
+/* Urutan kartu: berita di atas, bagian pilihan dan paling banyak dibaca di bawah */
+const ORDER = ['dyk','otd','news','tfa','potd','mostread'];
+
+/* ---------- Util ---------- */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2,'0');
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const txt = e => (e.textContent||'').replace(/\s+/g,' ').trim();
+const memo = new Map();
+function jget(url){
+  if(!memo.has(url)){
+    const p = fetch(url).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+    p.catch(()=>memo.delete(url));
+    memo.set(url,p);
+  }
+  return memo.get(url);
+}
+const wikiUrl = (host,title) => `https://${host}/wiki/` + encodeURIComponent(title.replace(/ /g,'_')).replace(/%2F/g,'/').replace(/%3A/g,':');
+
+function ymd(str){
+  const [y,m,dd] = str.split('-').map(Number);
+  const date = new Date(Date.UTC(y,m-1,dd));
+  return {y, m, dd:pad(dd), mm:pad(m), D:dd, date};
+}
+function todayStr(){
+  const n = new Date();
+  return `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
+}
+function dayOfYear(date){
+  return Math.round((date - Date.UTC(date.getUTCFullYear(),0,0))/86400000);
+}
+
+/* ---------- Ambil & bersihkan HTML Wikipedia ---------- */
+async function parsePage(host,page){
+  const u = `https://${host}/w/api.php?action=parse&format=json&formatversion=2&origin=*&redirects=1`
+          + `&prop=text&disableeditsection=1&disablelimitreport=1&disabletoc=1&page=${encodeURIComponent(page)}`;
+  const j = await jget(u);
+  if(j.error) throw new Error(j.error.code || 'parse error');
+  return j.parse.text;
+}
+function unwrap(el){ el.replaceWith(...Array.from(el.childNodes)); }
+function clean(html,host){
+  const root = new DOMParser().parseFromString(html,'text/html').body;
+  root.querySelectorAll('style,script,.mw-editsection,.navbox,.noprint,.mw-empty-elt,.reference,.hatnote,.metadata,.ambox,.toc,#toc,.mw-cite-backlink').forEach(e=>e.remove());
+  root.querySelectorAll('a').forEach(a=>{
+    let h = a.getAttribute('href') || '';
+    if(!h || h.startsWith('#') || h.includes('redlink=1')){ unwrap(a); return; }
+    if(h.startsWith('//')) h = 'https:'+h;
+    else if(h.startsWith('./')) h = `https://${host}/wiki/`+h.slice(2);
+    else if(h.startsWith('/')) h = `https://${host}`+h;
+    a.setAttribute('href',h); a.target = '_blank'; a.rel = 'noopener';
+  });
+  root.querySelectorAll('img').forEach(img=>{
+    let s = img.getAttribute('src') || '';
+    if(s.startsWith('//')) s = 'https:'+s;
+    img.setAttribute('src',s);
+    img.removeAttribute('srcset');
+    img.loading = 'lazy';
+    const w = parseInt(img.getAttribute('width')||'0',10);
+    if(w && w < 60){ const a = img.closest('a'); (a||img).remove(); }
+  });
+  return root;
+}
+
+/* Halaman Utama dibersihkan sekali per edisi lalu dipakai bersama oleh semua bagian */
+const mainCache = new Map();
+function mainRoot(L){
+  if(!mainCache.has(L.host)){
+    const p = parsePage(L.host,L.main).then(h=>clean(h,L.host));
+    p.catch(()=>mainCache.delete(L.host));
+    mainCache.set(L.host,p);
+  }
+  return mainCache.get(L.host);
+}
+
+/* ---------- Ekstraktor (elemen bagian -> HTML kartu) ---------- */
+function topLis(root){
+  return [...root.querySelectorAll('li')].filter(li=>!li.parentElement.closest('li') && txt(li).length>25);
+}
+/* isi butir tanpa gambar/figur yang tersangkut di dalamnya */
+function liHtml(li){
+  const c = li.cloneNode(true);
+  c.querySelectorAll('figure,.thumb,.thumbinner,.gallery').forEach(e=>e.remove());
+  return c.innerHTML.trim();
+}
+const ulOf = items => items.length ? '<ul class="list">'+items.map(i=>`<li>${typeof i==='string'?i:liHtml(i)}</li>`).join('')+'</ul>' : '';
+/* Daftar definisi dt/dd (tahun + peristiwa), dipakai Wikipedia Mandarin */
+function dlItems(root,max){
+  return [...root.querySelectorAll('dt')].slice(0,max).map(dt=>{
+    const dd = dt.nextElementSibling;
+    return dd && dd.tagName==='DD' ? `<b class="yr">${dt.innerHTML}</b> ${dd.innerHTML}` : '';
+  }).filter(Boolean);
+}
+/* Paragraf panjang sebagai butir (dipakai edisi yang menulis berita sebagai paragraf, bukan daftar) */
+function paraItems(root,max){
+  return [...root.querySelectorAll('p')].filter(p=>!p.closest('figure') && txt(p).length>40).slice(0,Math.min(max,3)).map(p=>p.innerHTML);
+}
+function listOut(root,max){
+  let items = topLis(root).slice(0,max);
+  if(!items.length) items = dlItems(root,max);
+  if(!items.length) items = paraItems(root,max);
+  return ulOf(items);
+}
+/* Daftar pertama saja (menghindari daftar tambahan seperti "Kematian terkini") */
+function firstListOut(root,max){
+  const ul = root.querySelector('ul');
+  if(ul){
+    const lis = [...ul.children].filter(c=>c.tagName==='LI' && txt(c).length>15).slice(0,max);
+    if(lis.length) return ulOf(lis);
+  }
+  return listOut(root,max);
+}
+/* ---- Mencari bagian lewat judulnya (untuk Wikipedia yang tak memberi id pada bagian Halaman Utama) ---- */
+const HEADSEL = 'h2,h3,h4,.mp-h2,.mw-heading,[class*="header"],[class*="-head"],[class*="titre"]';
+function sectionByHead(root,re){
+  const ok = e => { const t = txt(e); return t.length>1 && t.length<70; };
+  const climb = h => {
+    let el = h;
+    while(el.parentElement && el.parentElement !== root && !el.parentElement.classList.contains('mw-parser-output')){
+      const p = el.parentElement;
+      const other = [...p.querySelectorAll(HEADSEL)].some(x=>!el.contains(x) && !x.contains(el) && ok(x) && !x.querySelector(HEADSEL));
+      if(other) break;
+      el = p;
+    }
+    if(txt(el).length - txt(h).length > 40) return el;
+    /* judul dan isi bersaudara (mis. dua baris tabel): gabungkan judul dengan saudara berikutnya */
+    const sib = el.nextElementSibling;
+    if(sib && !sib.querySelector(HEADSEL) && txt(sib).length > 40){
+      const box = document.createElement('div');
+      box.append(el.cloneNode(true),sib.cloneNode(true));
+      return box;
+    }
+    return null;
+  };
+  let heads = [...root.querySelectorAll(HEADSEL)].filter(e=>ok(e) && !e.querySelector(HEADSEL) && re.test(txt(e)));
+  if(!heads.length) heads = [...root.querySelectorAll('div,p,b,th,td,span,strong')].filter(e=>e.children.length<3 && ok(e) && re.test(txt(e)));
+  for(const h of heads){ const el = climb(h); if(el) return el; }
+  return null;
+}
+function H(re){ return r => sectionByHead(r,re); }
+/* Wikipedia Ibrani: judul <h2> dan isinya berada dalam satu <div> pembungkus */
+function HP(re){ return r => { const h = [...r.querySelectorAll('h2')].find(e=>re.test(txt(e))); return h ? h.parentElement : null; }; }
+function firstImg(root){
+  const img = root.querySelector('img');
+  return img ? (img.closest('a')||img).outerHTML : '';
+}
+/* thumbnail kecil (120px/250px) diganti ukuran standar 330px agar tidak buram */
+const bigger = html => html.replace(/\/\d+px-/,'/330px-');
+function tfaOut(root){
+  const ps = [...root.querySelectorAll('p')].filter(p=>txt(p).length>60).slice(0,2);
+  if(!ps.length) return '';
+  const im = firstImg(root);
+  return (im?`<figure class="pic">${bigger(im)}</figure>`:'') + ps.map(p=>`<p>${p.innerHTML}</p>`).join('');
+}
+function potdOut(root){
+  const imgEl = root.querySelector('img');
+  if(!imgEl) return '';
+  const im = (imgEl.closest('a')||imgEl).outerHTML;
+  const fc = root.querySelector('figcaption');
+  let cap = fc ? fc.innerHTML : '';
+  if(!cap){
+    /* takarir bisa berupa <p> (ms, en) atau <div> biasa (id): ambil elemen "daun" pertama yang berisi teks */
+    const leaf = [...root.querySelectorAll('p,div')].find(e=>!e.querySelector('img,p,div') && txt(e).length>15);
+    cap = leaf ? leaf.innerHTML : esc(imgEl.getAttribute('alt') || '');
+  }
+  return `<figure>${im}${cap?`<figcaption>${cap}</figcaption>`:''}</figure>`;
+}
+function dykOut(root){
+  let lis = [...root.querySelectorAll('li')].filter(li=>!li.parentElement.closest('li') && /^["“]?\s*\.\.\./.test(txt(li))).slice(0,6);
+  if(!lis.length) lis = topLis(root).slice(0,6);
+  if(!lis.length){   // satu fakta sebagai paragraf (mis. edisi Ibrani)
+    const c = root.cloneNode(true);
+    c.querySelectorAll('h2,h3,figure,img,.thumb').forEach(e=>e.remove());
+    return txt(c).length > 30 ? ulOf([c.innerHTML.trim()]) : '';
+  }
+  const im = firstImg(root);
+  return (im?`<figure class="pic">${bigger(im)}</figure>`:'') + ulOf(lis);
+}
+const EXTRACT = {
+  tfa:tfaOut,
+  potd:potdOut,
+  dyk:dykOut,
+  otd:r=>firstListOut(r,8),
+  news:r=>firstListOut(r,8)
+};
+
+/* ---------- Sumber 1: feed REST harian (hanya edisi Inggris) ---------- */
+const feed = (L,d) => jget(`https://${L.host}/api/rest_v1/feed/featured/${d.y}/${d.mm}/${d.dd}`);
+const FEED = {
+  async tfa(L,d){
+    const f = await feed(L,d); const t = f.tfa; if(!t) throw new Error('no tfa');
+    const img = t.thumbnail ? `<figure class="pic"><img src="${esc(t.thumbnail.source)}" alt="" loading="lazy"></figure>` : '';
+    const url = t.content_urls?.desktop?.page || wikiUrl(L.host,t.title);
+    const name = t.normalizedtitle || t.title;
+    return {html: `<h3 class="title"><a href="${esc(url)}" target="_blank" rel="noopener">${esc(name)}</a></h3>${img}<p>${esc(t.extract||'')}</p>`, src:url, srcLabel:name};
+  },
+  async potd(L,d){
+    const f = await feed(L,d); const i = f.image; if(!i) throw new Error('no image');
+    const src = i.thumbnail?.source || i.image?.source; if(!src) throw new Error('no src');
+    const url = i.file_page || wikiUrl('commons.wikimedia.org',i.title);
+    const cap = i.description?.text || '';
+    return {html:`<figure><a href="${esc(url)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="" loading="lazy"></a>${cap?`<figcaption>${esc(cap)}</figcaption>`:''}</figure>`, src:url, srcLabel:i.title};
+  },
+  async dyk(L,d){
+    const f = await feed(L,d); const n = f.dyk; if(!n||!n.length) throw new Error('no dyk');
+    const li = n.slice(0,6).map(x=>`<li>${clean(x.html||'',L.host).innerHTML}</li>`).join('');
+    return {html:`<ul class="list">${li}</ul>`, src:wikiUrl(L.host,L.main), srcLabel:L.main};
+  },
+  async otd(L,d){
+    const j = await jget(`https://${L.host}/api/rest_v1/feed/onthisday/selected/${d.mm}/${d.dd}`);
+    const ev = (j.selected||[]).slice().sort((a,b)=>b.year-a.year).slice(0,8);
+    if(!ev.length) throw new Error('empty');
+    const li = ev.map(e=>{
+      const p = e.pages && e.pages[0];
+      const link = p ? ` <a href="${esc(p.content_urls?.desktop?.page||'#')}" target="_blank" rel="noopener">↗</a>` : '';
+      return `<li><b class="yr">${esc(e.year)}</b>${esc(e.text)}${link}</li>`;
+    }).join('');
+    const page = `${d.month} ${d.D}`;
+    return {html:`<ul class="list">${li}</ul>`, src:wikiUrl(L.host,page), srcLabel:page};
+  },
+  async news(L,d){
+    const f = await feed(L,d); const n = f.news; if(!n||!n.length) throw new Error('no news');
+    const li = n.slice(0,8).map(x=>`<li>${clean(x.story||'',L.host).innerHTML}</li>`).join('');
+    return {html:`<ul class="list">${li}</ul>`, src:wikiUrl(L.host,'Portal:Current events'), srcLabel:'Portal:Current events'};
+  }
+};
+
+/* ---------- Sumber 2: Halaman Utama edisi tersebut ---------- */
+async function fromMain(L,key){
+  const root = await mainRoot(L);
+  const s = L.sel[key];
+  if(!s) throw new Error('section not in this edition');
+  const el = typeof s === 'function' ? s(root) : root.querySelector(s);
+  if(!el) throw new Error('section not found');
+  const html = EXTRACT[(L.ext && L.ext[key]) || key](el);
+  if(!html) throw new Error('empty');
+  return {html, src:wikiUrl(L.host,L.main), srcLabel:L.main};
+}
+/* Cadangan 1: halaman lain di Wikipedia yang sama (mis. Portal peristiwa terkini) */
+async function fromPage(L,key,title){
+  const root = clean(await parsePage(L.host,title),L.host);
+  const html = EXTRACT[key](root);
+  if(!html) throw new Error('empty');
+  return {html, src:wikiUrl(L.host,title), srcLabel:title};
+}
+/* Cadangan 2: artikel tanggal ("1 november") -> daftar peristiwa, 8 tahun terbaru */
+async function fromDatePage(L,d){
+  const title = L.fb.date(d);
+  const root = clean(await parsePage(L.host,title),L.host);
+  const head = [...root.querySelectorAll('h2,h3')].find(h=>L.fb.dateHead.test(txt(h)));
+  let n = head && (head.closest('.mw-heading') || head), ul = null;
+  while(n && !ul){ n = n.nextElementSibling; if(n && n.tagName === 'UL') ul = n; }
+  if(!ul) throw new Error('no events');
+  const items = [...ul.querySelectorAll('li')].filter(li=>!li.querySelector('li') && /^\W*\d{3,4}\b/.test(txt(li)))
+    .map(li=>({y:parseInt(txt(li).match(/\d{3,4}/)[0],10),li})).sort((a,b)=>b.y-a.y).slice(0,8);
+  if(!items.length) throw new Error('no events');
+  return {html:ulOf(items.map(i=>i.li)), src:wikiUrl(L.host,title), srcLabel:title};
+}
+/* ---------- Paling Banyak Dibaca: 50 teratas dari Wikimedia Pageviews ----------
+   Data harian baru lengkap setelah hari UTC berakhir, jadi yang dipakai hari terakhir yang tersedia
+   (biasanya kemarin). Halaman Utama, halaman khusus, dan namespace non-artikel disaring. */
+const nsCache = new Map();
+async function nonArticlePrefixes(L){
+  if(!nsCache.has(L.host)){
+    const p = jget(`https://${L.host}/w/api.php?action=query&format=json&formatversion=2&origin=*&meta=siteinfo&siprop=namespaces|namespacealiases`)
+      .then(j=>{
+        const set = new Set();
+        const norm = s => String(s||'').replace(/_/g,' ').trim().toLowerCase();
+        Object.values(j.query.namespaces||{}).forEach(n=>{ if(n.id!==0){ set.add(norm(n.name)); set.add(norm(n.canonical)); } });
+        (j.query.namespacealiases||[]).forEach(a=>set.add(norm(a.alias)));
+        set.delete('');
+        return set;
+      });
+    p.catch(()=>nsCache.delete(L.host));
+    nsCache.set(L.host,p);
+  }
+  return nsCache.get(L.host);
+}
+async function loadMostRead(L){
+  let prefixes;
+  try{ prefixes = await nonArticlePrefixes(L); }
+  catch(e){ prefixes = new Set(['special','istimewa','khas','wikipedia','portal','help','talk','user','file','category','template']); }
+  const mainTitle = L.main.replace(/ /g,'_');
+  const isArticle = t=>{
+    if(t === mainTitle || t === '-') return false;
+    const i = t.indexOf(':');
+    return !(i>0 && prefixes.has(t.slice(0,i).replace(/_/g,' ').toLowerCase()));
+  };
+  let lastErr;
+  for(let back=1; back<=3; back++){
+    const dt = new Date(Date.now() - back*86400000);   // hari UTC yang sudah selesai
+    const y = dt.getUTCFullYear(), mm = pad(dt.getUTCMonth()+1), dd = pad(dt.getUTCDate());
+    try{
+      const j = await jget(`https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${L.host}/all-access/${y}/${mm}/${dd}`);
+      const list = ((j.items&&j.items[0]&&j.items[0].articles)||[]).filter(a=>isArticle(a.article)).slice(0,50);
+      if(!list.length) throw new Error('empty');
+      const nf = new Intl.NumberFormat(L.locale,{notation:'compact',maximumFractionDigits:1});
+      const html = '<ol class="rank">' + list.map(a=>
+        `<li><span class="t"><a href="${esc(wikiUrl(L.host,a.article))}" target="_blank" rel="noopener">${esc(a.article.replace(/_/g,' '))}</a></span><span class="v" data-views="${a.views}" title="${esc(a.views.toLocaleString(L.locale))}">${esc(nf.format(a.views))}</span></li>`
+      ).join('') + '</ol>';
+      const dayLabel = new Intl.DateTimeFormat(L.locale,{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(dt);
+      return {html, src:`https://pageviews.wmcloud.org/topviews/?project=${L.host}&platform=all-access&date=${y}-${mm}-${dd}&excludes=`,
+              srcLabel:`Wikimedia Pageviews · ${dayLabel}`};
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('empty');
+}
+
+async function loadSection(L,d,key){
+  if(key === 'mostread') return loadMostRead(L);
+  /* Halaman Utama lebih dulu (identik dengan yang dilihat pembaca Wikipedia); feed REST jadi cadangan (en) */
+  const attempts = [()=>fromMain(L,key)];
+  if(L.fb && L.fb[key]) attempts.push(()=>fromPage(L,key,L.fb[key]));
+  if(key === 'otd' && L.fb && L.fb.date) attempts.push(()=>fromDatePage(L,d));
+  if(L.feed && FEED[key]) attempts.push(()=>FEED[key](L,d));
+  else if(key === 'potd') attempts.push(()=>FEED.potd(L,d));   // feed gambar harian tersedia untuk semua edisi
+  let lastErr;
+  for(const run of attempts){
+    try{ return await run(); }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('empty');
+}
+
+/* ---------- Q-ID Wikidata untuk tiap tautan ----------
+   Satu permintaan prop=pageprops menerima sampai 50 judul; redirect dan normalisasi judul
+   ditangani API. Hasil disimpan per edisi agar judul yang sama tidak dicari dua kali. */
+const state = { lang:'id', date:todayStr(), qid:false };
+let token = 0;
+const qcache = new Map();   // host -> Map(judul -> 'Q123' atau '')
+
+function linkTitle(a,L){
+  const h = a.getAttribute('href') || '';
+  const pre = `https://${L.host}/wiki/`;
+  if(!h.startsWith(pre) || h.includes('?') || a.querySelector('img')) return null;
+  try{ return decodeURIComponent(h.slice(pre.length).split('#')[0]).replace(/_/g,' ') || null; }
+  catch(e){ return null; }
+}
+async function lookupQids(L,titles){
+  if(!qcache.has(L.host)) qcache.set(L.host,new Map());
+  const cache = qcache.get(L.host);
+  const todo = [...new Set(titles)].filter(t=>!cache.has(t));
+  for(let i=0;i<todo.length;i+=50){
+    const chunk = todo.slice(i,i+50);
+    const u = `https://${L.host}/w/api.php?action=query&format=json&formatversion=2&origin=*&redirects=1`
+            + `&prop=pageprops&ppprop=wikibase_item&titles=${encodeURIComponent(chunk.join('|'))}`;
+    try{
+      const q = (await jget(u)).query || {};
+      const norm = new Map((q.normalized||[]).map(x=>[x.from,x.to]));
+      const redir = new Map((q.redirects||[]).map(x=>[x.from,x.to]));
+      const qs = new Map((q.pages||[]).map(p=>[p.title, p.pageprops?.wikibase_item || '']));
+      for(const t of chunk){
+        let r = norm.get(t) || t; r = redir.get(r) || r;
+        cache.set(t, qs.get(r) || '');
+      }
+    }catch(e){ /* tidak disimpan: dicoba lagi saat tombol dinyalakan ulang */ }
+  }
+  return cache;
+}
+async function annotate(L,root){
+  const pairs = [...root.querySelectorAll('a[href]')]
+    .filter(a=>!a.classList.contains('qid') && !a.dataset.q)
+    .map(a=>[a,linkTitle(a,L)]).filter(p=>p[1]);
+  if(!pairs.length) return;
+  const cache = await lookupQids(L,pairs.map(p=>p[1]));
+  if(!state.qid) return;
+  for(const [a,t] of pairs){
+    const q = cache.get(t);
+    if(!q || !a.isConnected || a.dataset.q) continue;
+    a.dataset.q = q;
+    const b = document.createElement('a');
+    b.className = 'qid'; b.href = `https://www.wikidata.org/wiki/${q}`;
+    b.target = '_blank'; b.rel = 'noopener'; b.textContent = q; b.title = 'Wikidata ' + q;
+    a.after(b);
+  }
+}
+function clearQids(){
+  document.querySelectorAll('a.qid').forEach(b=>b.remove());
+  document.querySelectorAll('[data-q]').forEach(a=>delete a.dataset.q);
+}
+
+/* ---------- Render ---------- */
+function loadPrefs(){
+  try{
+    const l = localStorage.getItem('koran-lang');
+    if(l && LANGS[l]) state.lang = l;
+    state.qid = localStorage.getItem('koran-qid') === '1';
+  }catch(e){}
+  const h = location.hash.replace('#','');
+  if(LANGS[h]) state.lang = h;
+}
+function savePrefs(){
+  try{ localStorage.setItem('koran-lang',state.lang); }catch(e){}
+  history.replaceState(null,'','#'+state.lang);
+}
+
+function render(){
+  const L = LANGS[state.lang];
+  state.date = todayStr();
+  const d = ymd(state.date);
+  d.month = new Intl.DateTimeFormat(L.locale,{month:'long',timeZone:'UTC'}).format(d.date);
+  document.documentElement.lang = L.html;
+  document.documentElement.dir = L.dir || 'ltr';
+  document.title = L.title;
+  $('#title').textContent = L.title;
+  $('#tagline').textContent = L.tagline;
+  $('#edition').textContent = L.edition;
+  $('#dateText').textContent = new Intl.DateTimeFormat(L.locale,{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(d.date);
+  const vv = d.y-2000, nn = dayOfYear(d.date);
+  $('#vol').textContent = L.volFmt ? L.volFmt.replace('{v}',vv).replace('{n}',nn) : `${L.vol} ${vv} · ${L.no} ${nn}`;
+  $('#lang').value = state.lang;
+  /* PDF memakai font Roboto (Latin/Yunani/Sirilik); aksara lain belum didukung sehingga tombolnya dinonaktifkan dengan keterangan */
+  if(!pdfBusy){ $('#pdf').textContent = L.ui.pdf; $('#pdf').disabled = !!L.nopdf; }
+  $('#pdfnote').hidden = !L.nopdf; $('#pdfnote').textContent = L.nopdf ? L.ui.pdfNo : '';
+  $('#darklabel').textContent = L.ui.dark;
+  $('#darkwrap').title = L.ui.darkTip;
+  $('#qlabel').textContent = L.ui.qid;
+  $('#qwrap').title = L.ui.qidTip;
+  $('#qid').checked = state.qid;
+  $('#foot').textContent = L.ui.lic;
+
+  const skel = '<div class="body"><div class="skeleton"></div><div class="skeleton" style="width:80%"></div><div class="skeleton" style="width:90%"></div></div>';
+  /* Kepala tiap bagian: judul + tombol Bacakan (label di sebelahnya memberi tahu bila gagal/tidak didukung) */
+  const head = k => `<span class="ht">${esc(L.labels[k])}</span><span class="tts" data-key="${k}"><button type="button" class="readbtn" aria-pressed="false" aria-label="${esc(L.ui.read+': '+L.labels[k])}"><span class="ico" aria-hidden="true">▶</span><span class="lbl">${esc(L.ui.read)}</span></button><span class="ttsmsg" role="status" aria-live="polite"></span></span>`;
+  const simple = k => `<section class="card ${k}" id="c-${k}"><h2>${head(k)}</h2>${skel}</section>`;
+  /* Artikel pilihan dan gambar pilihan digabung dalam satu kartu; tiap bagian tetap dimuat dan diberi sumber sendiri */
+  const featured = `<section class="card featured"><h2>${esc(L.labels.featured)}</h2>
+      <div class="sub tfa" id="c-tfa"><h3>${head('tfa')}</h3>${skel}</div>
+      <div class="sub potd" id="c-potd"><h3>${head('potd')}</h3>${skel}</div>
+    </section>`;
+  ttsStop();
+  $('#grid').innerHTML = simple('dyk') + simple('otd') + simple('news') + featured + simple('mostread');
+  ttsInit();
+
+  const t = ++token;
+  const fill = (key,html,src,label)=>{
+    const c = $('#c-'+key); if(!c) return;
+    c.querySelector('.body').innerHTML = html;
+    c.dataset.ready = '1';
+    const s = document.createElement('div');
+    s.className = 'src';
+    s.innerHTML = `${esc(L.ui.src)}: <a href="${esc(src)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+    c.appendChild(s);
+    if(state.qid) annotate(L,c.querySelector('.body'));
+  };
+  /* Hasil tiap bagian disimpan agar PDF memakai data yang sama dengan yang tampil di layar */
+  const results = {};
+  state.res = results;
+  state.ready = Promise.all(ORDER.map(key=>
+    loadSection(L,d,key).then(res=>{
+      results[key] = res;
+      if(t!==token) return;
+      fill(key,res.html,res.src,res.srcLabel||res.src);
+    }).catch(()=>{
+      if(t!==token) return;
+      fill(key,`<p class="status">${esc(L.ui.na)}</p>`,wikiUrl(L.host,L.main),L.main);
+    })
+  ));
+}
+
+/* ---------- Bacakan (Web Speech API) ----------
+   Tiap bagian punya tombol sendiri. Hanya satu bagian dibacakan pada satu waktu; menekan tombol yang sama menghentikan.
+   Teks dipecah per kalimat/butir karena beberapa browser menghentikan ucapan yang terlalu panjang.
+   Label di sebelah tombol menampilkan kesalahan: tidak didukung, belum dimuat, tanpa teks, suara tidak ada, atau gagal. */
+const TTS_OK = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+let ttsRun = null, ttsSeq = 0;
+function ttsSet(key,on,msg,err){
+  const w = document.querySelector(`.tts[data-key="${key}"]`); if(!w) return;
+  const L = LANGS[state.lang], b = w.querySelector('.readbtn'), m = w.querySelector('.ttsmsg');
+  b.setAttribute('aria-pressed',on?'true':'false');
+  b.querySelector('.ico').textContent = on ? '■' : '▶';
+  b.querySelector('.lbl').textContent = on ? L.ui.stop : L.ui.read;
+  m.textContent = msg || '';
+  m.classList.toggle('err',!!err);
+}
+function ttsStop(){
+  ttsSeq++;
+  const cur = ttsRun; ttsRun = null;
+  if(TTS_OK){ try{ speechSynthesis.cancel(); }catch(e){} }
+  if(cur) ttsSet(cur.key,false,'');
+}
+function ttsInit(){
+  if(TTS_OK){ try{ speechSynthesis.getVoices(); }catch(e){} return; }
+  const L = LANGS[state.lang];
+  document.querySelectorAll('.tts').forEach(w=>{
+    w.querySelector('.readbtn').disabled = true;
+    const m = w.querySelector('.ttsmsg'); m.textContent = L.ui.noSupport; m.classList.add('err');
+  });
+}
+function ttsVoice(L){
+  let vs = [];
+  try{ vs = speechSynthesis.getVoices() || []; }catch(e){}
+  if(!vs.length) return {voice:null,known:false};   // daftar suara bisa kosong sebelum browser selesai memuatnya
+  const norm = v => String(v.lang||'').replace('_','-').toLowerCase();
+  const exact = vs.find(v=>norm(v)===L.locale.toLowerCase());
+  if(exact) return {voice:exact,known:true};
+  for(const p of (state.lang==='ms' ? ['ms','id'] : [L.html])){   // suara Melayu jarang ada; Indonesia paling dekat
+    const v = vs.find(v=>norm(v).split('-')[0]===p);
+    if(v) return {voice:v,known:true};
+  }
+  return {voice:null,known:true};
+}
+function ttsSplit(s,max=170){
+  const out = []; let rest = s;
+  while(rest.length > max){
+    let cut = Math.max(rest.lastIndexOf('. ',max),rest.lastIndexOf('; ',max),rest.lastIndexOf(', ',max));
+    if(cut < max*0.4) cut = rest.lastIndexOf(' ',max);
+    if(cut <= 0) cut = max;
+    out.push(rest.slice(0,cut+1).trim()); rest = rest.slice(cut+1).trim();
+  }
+  if(rest) out.push(rest);
+  return out;
+}
+/* null = bagian belum selesai dimuat; array pertama = judul bagian, sisanya isi */
+function ttsChunks(key){
+  const L = LANGS[state.lang], c = document.getElementById('c-'+key), body = c && c.querySelector('.body');
+  if(!c || c.dataset.ready !== '1' || !body) return null;
+  const root = body.cloneNode(true);
+  root.querySelectorAll('.qid,img,sup,script,style,.status').forEach(e=>e.remove());   // badge Q-ID dan catatan tidak ikut dibaca
+  root.querySelectorAll('br').forEach(b=>b.replaceWith(' '));
+  const clean = s => s.replace(/\[[^\]]*\]/g,' ').replace(/^[\s"“”]*(\.{3}|…)\s*/,'').replace(/^[\s"“”]+|[\s"“”]+$/g,'').replace(/\s+/g,' ').trim();
+  let items;
+  if(key === 'mostread'){
+    items = [...root.querySelectorAll('.rank li .t')].map((e,i)=>`${L.ui.num} ${i+1}. ${clean(txt(e))}`);
+  }else{
+    const lis = [...root.querySelectorAll('li')].filter(li=>!li.parentElement.closest('li'));
+    const els = lis.length ? lis : [...root.querySelectorAll('h3,p,figcaption')].filter(e=>!e.parentElement.closest('p,figcaption,h3'));
+    items = els.map(e=>clean(txt(e)));
+  }
+  const out = [/[.!?…]$/.test(L.labels[key]) ? L.labels[key] : L.labels[key] + '.'];
+  items.filter(Boolean).forEach(t=>{
+    ttsSplit(/[.!?…]$/.test(t) ? t : t + '.').forEach(p=>out.push(p));
+  });
+  return out;
+}
+function ttsToggle(key){
+  const L = LANGS[state.lang];
+  if(ttsRun && ttsRun.key === key){ ttsStop(); return; }
+  ttsStop();
+  if(!TTS_OK){ ttsSet(key,false,L.ui.noSupport,true); return; }
+  const chunks = ttsChunks(key);
+  if(chunks === null){ ttsSet(key,false,L.ui.notReady,true); return; }
+  if(chunks.length < 2){ ttsSet(key,false,L.ui.noText,true); return; }
+  const sel = ttsVoice(L), id = ++ttsSeq;
+  ttsRun = {key,id};
+  ttsSet(key,true,(sel.known && !sel.voice) ? L.ui.noVoice.replace('{lang}',L.ui.speechName) : L.ui.reading,false);
+  const alive = () => ttsRun && ttsRun.id === id;
+  const fail = m => { if(!alive()) return; ttsStop(); ttsSet(key,false,m,true); };
+  let i = 0, started = false;
+  const watchdog = setTimeout(()=>{ if(!started) fail(L.ui.noStart); },6000);   // speak() tanpa suara tidak melempar kesalahan
+  const next = () => {
+    if(!alive()) return;
+    if(i >= chunks.length){ clearTimeout(watchdog); ttsRun = null; ttsSet(key,false,''); return; }
+    const u = new SpeechSynthesisUtterance(chunks[i++]);
+    u.lang = L.locale;
+    if(sel.voice){ u.voice = sel.voice; u.lang = sel.voice.lang; }
+    u.onstart = () => { started = true; };
+    u.onend = next;
+    u.onerror = e => {
+      if(!alive() || e.error === 'interrupted' || e.error === 'canceled') return;
+      clearTimeout(watchdog); fail(L.ui.readFail + (e.error || '?'));
+    };
+    try{ speechSynthesis.speak(u); }catch(err){ clearTimeout(watchdog); fail(L.ui.readFail + (err.message || err)); }
+  };
+  setTimeout(()=>{ try{ speechSynthesis.resume(); }catch(e){} next(); },80);   // jeda singkat setelah cancel() agar tidak diabaikan
+}
+
+/* ---------- Unduh PDF ----------
+   PDF sungguhan (jsPDF + autoTable), bukan mode cetak. Layout dan paletnya meniru laporan Wikirekap:
+   pita judul biru, rincian dua kolom, kartu ringkasan, judul bagian bergaris biru, tabel grid,
+   header berjalan, serta footer "laporan dibuat otomatis" dan nomor halaman.
+   Pustaka dimuat hanya saat tombol ditekan. */
+const PDF_LIBS = [
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js'
+];
+const PDF_C = {
+  brand:[45,79,156], ink:[12,26,54], muted:[82,96,128], line:[221,228,241], soft:[234,239,249], bg:[243,246,252],
+  white:[255,255,255], warnBg:[255,243,224], warnInk:[146,64,14], warnBar:[230,130,20]
+};
+/* Font Roboto: pertama dari folder pdf-fonts/ di sebelah berkas ini (subset kecil milik Wikirekap, bila disalin),
+   lalu dari jsDelivr. Jika keduanya gagal, dipakai font bawaan jsPDF (hanya Latin-1). */
+const PDF_FONT_SRC = {
+  normal:['pdf-fonts/Roboto-Regular.ttf','https://cdn.jsdelivr.net/gh/googlefonts/roboto@v2.138/src/hinted/Roboto-Regular.ttf'],
+  bold:['pdf-fonts/Roboto-Bold.ttf','https://cdn.jsdelivr.net/gh/googlefonts/roboto@v2.138/src/hinted/Roboto-Bold.ttf']
+};
+/* Titik kode yang ada di Roboto; karakter lain (mis. aksara Jawi, Jepang) dibuang agar PDF tidak berisi kotak kosong */
+const PDF_GLYPHS = [[0x20,0x7E],[0xA0,0x2AF],[0x300,0x377],[0x37A,0x37F],[0x384,0x38A],[0x38C,0x38C],[0x38E,0x3A1],[0x3A3,0x3E1],[0x3F0,0x52F],[0x1E00,0x1F15],[0x1F18,0x1F1D],[0x1F20,0x1F45],[0x1F48,0x1F4D],[0x1F50,0x1F57],[0x1F59,0x1F59],[0x1F5B,0x1F5B],[0x1F5D,0x1F5D],[0x1F5F,0x1F7D],[0x1F80,0x1FB4],[0x1FB6,0x1FC4],[0x1FC6,0x1FD3],[0x1FD6,0x1FDB],[0x1FDD,0x1FEF],[0x1FF2,0x1FF4],[0x1FF6,0x1FFE],[0x2000,0x2027],[0x202F,0x205F],[0x20A0,0x20BE],[0x2100,0x2101],[0x2103,0x2103],[0x2105,0x2106],[0x2109,0x2109],[0x2113,0x2113],[0x2116,0x2117],[0x211E,0x2123],[0x2125,0x2126],[0x212A,0x212B],[0x212E,0x212E],[0x2132,0x2132],[0x213B,0x213B],[0x214D,0x214D],[0x214F,0x214F],[0x2191,0x2191],[0x2193,0x2193],[0x2202,0x2202],[0x2206,0x2206],[0x220F,0x220F],[0x2211,0x2212],[0x221A,0x221A],[0x221E,0x221E],[0x222B,0x222B],[0x2248,0x2248],[0x2260,0x2260],[0x2264,0x2265],[0x25CA,0x25CA]];
+let pdfFontsPromise = null;
+
+const scriptPromises = new Map();
+function loadScript(src){
+  if(!scriptPromises.has(src)){
+    scriptPromises.set(src,new Promise((resolve,reject)=>{
+      const s = document.createElement('script');
+      s.src = src; s.dataset.lib = src;
+      s.onload = resolve;
+      s.onerror = ()=>{ s.remove(); scriptPromises.delete(src); reject(new Error('gagal memuat ' + src.split('/').pop())); };
+      document.head.appendChild(s);
+    }));
+  }
+  return scriptPromises.get(src);
+}
+/* Setiap langkah PDF diberi batas waktu agar tombol tidak berputar tanpa akhir */
+const withTimeout = (p,ms,what) => new Promise((res,rej)=>{
+  const t = setTimeout(()=>rej(new Error(`${what}: waktu habis (${Math.round(ms/1000)} dtk)`)),ms);
+  p.then(v=>{ clearTimeout(t); res(v); },e=>{ clearTimeout(t); rej(e); });
+});
+function bytesToBase64(buf){
+  const bytes = new Uint8Array(buf);
+  let bin = '';
+  for(let i=0;i<bytes.length;i+=0x8000) bin += String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));
+  return btoa(bin);
+}
+async function firstFont(urls){
+  for(const u of urls){
+    const ac = new AbortController(), t = setTimeout(()=>ac.abort(),20000);
+    try{ const r = await fetch(u,{signal:ac.signal}); if(r.ok) return bytesToBase64(await r.arrayBuffer()); }catch(e){}
+    finally{ clearTimeout(t); }
+  }
+  throw new Error('font tidak tersedia');
+}
+function loadPdfFonts(){
+  if(!pdfFontsPromise){
+    pdfFontsPromise = Promise.all([firstFont(PDF_FONT_SRC.normal),firstFont(PDF_FONT_SRC.bold)])
+      .then(([normal,bold])=>({normal,bold}))
+      .catch(e=>{ pdfFontsPromise = null; throw e; });
+  }
+  return pdfFontsPromise;
+}
+async function registerPdfFonts(doc){
+  try{
+    const f = await loadPdfFonts();
+    doc.addFileToVFS('Roboto-Regular.ttf',f.normal); doc.addFont('Roboto-Regular.ttf','Roboto','normal');
+    doc.addFileToVFS('Roboto-Bold.ttf',f.bold);      doc.addFont('Roboto-Bold.ttf','Roboto','bold');
+    return 'Roboto';
+  }catch(e){
+    console.warn('Font PDF gagal dimuat, memakai font bawaan:', e);
+    return 'helvetica';
+  }
+}
+function pdfSanitize(s,full){
+  let t = String(s).replace(/[   ]/g,' ').replace(/\s+/g,' ');
+  if(!full){   // font bawaan jsPDF hanya Latin-1: ganti tanda baca umum dengan padanan ASCII
+    t = t.replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/…/g,'...');
+  }
+  let out = '', removed = false;
+  for(const ch of t){
+    const cp = ch.codePointAt(0);
+    const ok = full ? PDF_GLYPHS.some(r=>cp>=r[0]&&cp<=r[1]) : ((cp>=0x20&&cp<=0x7E)||(cp>=0xA0&&cp<=0xFF));
+    if(ok) out += ch; else removed = true;
+  }
+  if(removed) out = out.replace(/\(\s*[,;:\-]?\s*\)/g,'').replace(/\s{2,}/g,' ').replace(/\s+([,.;:?!])/g,'$1');
+  return out.trim();
+}
+function utcOffsetLabel(){
+  const m = -new Date().getTimezoneOffset(), a = Math.abs(m);
+  return 'UTC' + (m>=0?'+':'-') + Math.floor(a/60) + (a%60 ? ':'+pad(a%60) : '');
+}
+/* Gambar Wikimedia → JPEG data URL (CORS terbuka). Gagal = null, PDF tetap jadi tanpa gambar. */
+async function fetchPdfImage(url,maxW=900,gray=false){
+  if(!url) return null;
+  const ac = new AbortController(), timer = setTimeout(()=>ac.abort(),15000);
+  try{
+    const r = await fetch(url,{mode:'cors',signal:ac.signal}); if(!r.ok) return null;
+    const bmp = await createImageBitmap(await r.blob());
+    const k = Math.min(1,maxW/bmp.width), w = Math.round(bmp.width*k), h = Math.round(bmp.height*k);
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0,0,w,h);
+    if(gray && 'filter' in cx) cx.filter = 'grayscale(.85) contrast(1.05)';   // sama dengan tampilan layar
+    cx.drawImage(bmp,0,0,w,h);
+    return {data:cv.toDataURL('image/jpeg',0.85), w, h, cv};
+  }catch(e){ return null; }
+  finally{ clearTimeout(timer); }
+}
+
+/* ---- Mengubah HTML kartu (yang sudah dimuat) menjadi data untuk PDF ---- */
+const parseHtml = html => {
+  const doc = new DOMParser().parseFromString(html||'','text/html');
+  doc.querySelectorAll('br').forEach(b=>b.replaceWith(' '));   // agar teks sebelum/sesudah <br> tidak menempel
+  return doc;
+};
+function listItems(html){
+  const doc = parseHtml(html);
+  const lis = [...doc.querySelectorAll('li')].filter(li=>!li.parentElement.closest('li'));
+  if(!lis.length){   // bagian berupa paragraf (mis. artikel bagus pada edisi Spanyol)
+    return [...doc.querySelectorAll('p')].map(p=>{ const a = p.querySelector('b a[href]') || p.querySelector('a[href]'); return {text:txt(p),url:a?a.href:''}; }).filter(i=>i.text.length>40);
+  }
+  return lis.map(li=>{
+    const a = li.querySelector('b a[href]') || li.querySelector('a[href]');
+    return {text:txt(li).replace(/^"|"$/g,''), url:a?a.href:''};
+  }).filter(i=>i.text);
+}
+function featuredData(html){
+  const doc = parseHtml(html);
+  const h3 = doc.querySelector('h3.title a');
+  const first = doc.querySelector('p b a[href]') || doc.querySelector('p a[href]');
+  const link = h3 || first;
+  const img = doc.querySelector('img');
+  return {title:link?txt(link):'', url:link?link.href:'', img:img?img.src:'',
+          paras:[...doc.querySelectorAll('p')].map(txt).filter(Boolean)};
+}
+function potdData(html){
+  const doc = parseHtml(html);
+  const img = doc.querySelector('img');
+  const a = img && img.closest('a');
+  const cap = doc.querySelector('figcaption');
+  return {img:img?img.src:'', url:a?a.href:'', caption:cap?txt(cap):(img?img.getAttribute('alt')||'':'')};
+}
+function mostReadData(html){
+  return [...parseHtml(html).querySelectorAll('.rank li')].map(li=>{
+    const a = li.querySelector('.t a'), v = li.querySelector('.v');
+    return {title:a?txt(a):'', url:a?a.href:'', views:Number(v&&v.dataset.views)||0};
+  }).filter(i=>i.title);
+}
+
+/* Palet koran: sama dengan tampilan layar (kertas krem, tinta hitam hangat, aksen merah tua) */
+const PDF_N = {paper:[245,240,228], ink:[27,26,23], muted:[93,88,77], soft:[207,199,179], accent:[138,28,28]};
+
+/* ---------- PDF mode gambar untuk aksara yang tidak ada di Roboto (Korea, Jepang, Mandarin, Arab, Thai, Tamil, Ibrani) ----------
+   jsPDF tidak bisa membentuk huruf bersambung (Arab, Tamil), mengurutkan teks kanan-ke-kiri, atau memuat font CJK ringan.
+   Jadi halaman digambar di kanvas memakai mesin teks browser (font sistem, bentuk huruf, bidi), lalu tiap kanvas
+   dijadikan satu halaman PDF. Kelas ini meniru bagian API jsPDF yang dipakai makePdf; untuk edisi kanan-ke-kiri
+   seluruh sumbu x dicerminkan sehingga susunan kolom koran ikut terbalik. Tautan tetap bisa diklik; teks tidak bisa dipilih. */
+const RASTER_SANS = '"Roboto","Noto Sans","Segoe UI","Apple SD Gothic Neo","Hiragino Sans","PingFang SC","Microsoft YaHei","Malgun Gothic","Noto Sans CJK SC","Noto Sans Hebrew","Arial Hebrew","Geeza Pro","Noto Sans Arabic","Thonburi","Noto Sans Thai","Tamil Sangam MN","Noto Sans Tamil",system-ui,sans-serif';
+const RASTER_SERIF = '"Times New Roman",Times,"Noto Serif",serif';
+class RasterDoc{
+  constructor(rtl,lang){
+    this.rtl = rtl; this.lang = lang; this.W = 297; this.H = 210; this.K = 7.5;   // 7,5 px per mm = sekitar 190 dpi
+    this.pages = []; this.cur = 0;
+    this.internal = {pageSize:{width:this.W,height:this.H},getNumberOfPages:()=>this.pages.length};
+    this.fam = 'sans'; this.style = 'normal'; this.size = 10;
+    this.tcol = '#000'; this.dcol = '#000'; this.fcol = '#fff'; this.lw = 0.2;
+    this.addPage();
+  }
+  addPage(){
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(this.W*this.K); cv.height = Math.round(this.H*this.K);
+    this.pages.push({cv,cx:cv.getContext('2d'),links:[]});
+    this.cur = this.pages.length - 1;
+  }
+  setPage(p){ this.cur = p - 1; }
+  get pg(){ return this.pages[this.cur]; }
+  setFont(f,st){ this.fam = f; this.style = st || 'normal'; }
+  setFontSize(n){ this.size = n; }
+  setTextColor(r,g,b){ this.tcol = `rgb(${r},${g},${b})`; }
+  setDrawColor(r,g,b){ this.dcol = `rgb(${r},${g},${b})`; }
+  setFillColor(r,g,b){ this.fcol = `rgb(${r},${g},${b})`; }
+  setLineWidth(w){ this.lw = w; }
+  _font(){
+    const px = this.size*0.3528*this.K;
+    return `${this.style==='italic'?'italic ':''}${this.style==='bold'?'700':'400'} ${px}px ${this.fam==='times'?RASTER_SERIF:RASTER_SANS}`;
+  }
+  _prep(spacing){
+    const cx = this.pg.cx;
+    cx.font = this._font(); cx.textBaseline = 'alphabetic'; cx.direction = this.rtl ? 'rtl' : 'ltr';
+    if('letterSpacing' in cx) cx.letterSpacing = spacing ? (spacing*this.K)+'px' : '0px';
+    return cx;
+  }
+  _rx(x,w=0){ return this.rtl ? this.W - x - w : x; }
+  rect(x,y,w,h,style){
+    const cx = this.pg.cx, K = this.K;
+    if(style === 'F'){ cx.fillStyle = this.fcol; cx.fillRect(this._rx(x,w)*K,y*K,w*K,h*K); }
+    else{ cx.strokeStyle = this.dcol; cx.lineWidth = this.lw*K; cx.strokeRect(this._rx(x,w)*K,y*K,w*K,h*K); }
+  }
+  line(x1,y1,x2,y2){
+    const cx = this.pg.cx, K = this.K;
+    cx.strokeStyle = this.dcol; cx.lineWidth = Math.max(1,this.lw*K); cx.lineCap = 'butt';
+    cx.beginPath(); cx.moveTo(this._rx(x1)*K,y1*K); cx.lineTo(this._rx(x2)*K,y2*K); cx.stroke();
+  }
+  link(x,y,w,h,o){ this.pg.links.push({x:this._rx(x,w),y,w,h,url:o.url}); }
+  addImage(src,fmt,x,y,w,h){
+    if(typeof src === 'string') return;   // mode ini diberi kanvas langsung oleh makePdf
+    this.pg.cx.drawImage(src,this._rx(x,w)*this.K,y*this.K,w*this.K,h*this.K);
+  }
+  getTextWidth(str){ return this._prep(0).measureText(str).width / this.K; }
+  splitTextToSize(str,maxW){
+    const cx = this._prep(0), m = s => cx.measureText(s).width / this.K;
+    str = String(str);
+    let toks;
+    if(/^(ja|zh|th)$/.test(this.lang)){   // tanpa spasi antarkata: pecah di batas kata (atau huruf bila Segmenter tak ada)
+      toks = (typeof Intl !== 'undefined' && Intl.Segmenter)
+        ? [...new Intl.Segmenter(this.lang,{granularity:'word'}).segment(str)].map(s=>s.segment)
+        : Array.from(str);
+    }else toks = str.match(/\S+\s*/g) || [];
+    const lines = []; let cur = '';
+    for(const t of toks){
+      if(cur && m((cur+t).trimEnd()) > maxW){ lines.push(cur.trimEnd()); cur = t.trimStart(); }
+      else cur += t;
+      while(m(cur.trimEnd()) > maxW && Array.from(cur).length > 1){   // satu kata lebih lebar dari kolom: potong per huruf
+        const ch = Array.from(cur); let k = ch.length - 1;
+        while(k > 1 && m(ch.slice(0,k).join('')) > maxW) k--;
+        lines.push(ch.slice(0,k).join('')); cur = ch.slice(k).join('');
+      }
+    }
+    if(cur.trim()) lines.push(cur.trim());
+    return lines.length ? lines : [''];
+  }
+  text(str,x,y,o={}){
+    if(Array.isArray(str)){ const lh = this.size*0.3528*1.15; str.forEach((s,i)=>this.text(s,x,y+i*lh,o)); return; }
+    str = String(str);
+    const cx = this._prep(o.charSpace), K = this.K;
+    cx.fillStyle = this.tcol;
+    let align = o.align || 'left';
+    if(align === 'justify'){
+      const words = str.split(' ');
+      if(words.length > 1 && o.maxWidth){
+        cx.letterSpacing = '0px';
+        const ws = words.map(w=>cx.measureText(w).width / K), sum = ws.reduce((a,b)=>a+b,0);
+        const gap = Math.max((o.maxWidth - sum)/(words.length-1),0);
+        let pos = this.rtl ? this.W - x : x;
+        cx.textAlign = this.rtl ? 'right' : 'left';
+        words.forEach((w,i)=>{ cx.fillText(w,pos*K,y*K); pos += (this.rtl?-1:1)*(ws[i]+gap); });
+        return;
+      }
+      align = 'left';
+    }
+    let X = x;
+    if(this.rtl){ X = this.W - x; if(align === 'left') align = 'right'; else if(align === 'right') align = 'left'; }
+    cx.textAlign = align;
+    cx.fillText(str,X*K,y*K);
+  }
+  save(name){
+    const {jsPDF} = window.jspdf;
+    const out = new jsPDF({orientation:'landscape',compress:true});
+    this.pages.forEach((p,i)=>{
+      if(i) out.addPage();
+      out.addImage(p.cv.toDataURL('image/jpeg',0.86),'JPEG',0,0,this.W,this.H,undefined,'FAST');
+      p.links.forEach(l=>out.link(l.x,l.y,l.w,l.h,{url:l.url}));
+    });
+    out.save(name);
+  }
+}
+
+async function makePdf(L,R,dateText,dateKey,step=()=>{}){
+  const N = PDF_N, P = L.pdf;
+  const {jsPDF} = window.jspdf;
+  const raster = !!L.raster;   // aksara non-Latin: halaman digambar di kanvas (lihat RasterDoc)
+  const doc = raster ? new RasterDoc(L.dir === 'rtl',L.html) : new jsPDF({orientation:'landscape',compress:true});
+  step(3,'font');
+  const fontName = raster ? 'sans' : await registerPdfFonts(doc);
+  const full = fontName === 'Roboto';
+  const S = raster ? (s=>String(s).replace(/[\u00a0\u2007\u202f]/g,' ').replace(/\s+/g,' ').trim()) : (s=>pdfSanitize(s,full));
+  const S0 = raster ? S : (s=>pdfSanitize(s,false));    // font Times bawaan hanya mengenal Latin-1
+  const isLatin = s => /^[\x20-\x7E -ÿ]*$/.test(s);
+  /* Judul bergaya koran memakai Times bawaan (hanya Latin-1); aksara lain (mis. Sirilik) memakai Roboto tebal */
+  const F = str => { const t = S(str); return isLatin(t) ? {fam:'times',t:S0(str)} : {fam:fontName,t}; };
+  const fmtP = (str,vars) => Object.entries(vars).reduce((s,[k,v])=>s.replace(`{${k}}`,v),str);
+  const compact = n => new Intl.NumberFormat(L.locale,{notation:'compact',maximumFractionDigits:1}).format(n);
+
+  const pageW = doc.internal.pageSize.width, pageH = doc.internal.pageSize.height;
+  const M = 12, contentW = pageW - M*2, TOP_NEXT = 20, BOTTOM = pageH - 17, G = 8, PT = 0.3528, HEAD_H = 9;
+  let y = 0;
+  const tc = c => doc.setTextColor(c[0],c[1],c[2]);
+  const dc = c => doc.setDrawColor(c[0],c[1],c[2]);
+  const fc = c => doc.setFillColor(c[0],c[1],c[2]);
+  const setF = (fam,st,sz) => { doc.setFont(fam,st); doc.setFontSize(sz); };
+  const hline = (x1,x2,yy,c,w) => { dc(c); doc.setLineWidth(w); doc.line(x1,yy,x2,yy); };
+  const paintBg = () => { fc(N.paper); doc.rect(0,0,pageW,pageH,'F'); };
+  const newPage = () => { doc.addPage(); paintBg(); };
+  const ensure = n => { if(y+n > BOTTOM){ newPage(); y = TOP_NEXT; } };
+
+  /* ---------- data ---------- */
+  const dyk = R.dyk ? listItems(R.dyk.html) : [];
+  const otd = R.otd ? listItems(R.otd.html) : [];
+  const news = R.news ? listItems(R.news.html) : [];
+  const mr = R.mostread ? mostReadData(R.mostread.html) : [];
+  const tfa = R.tfa ? featuredData(R.tfa.html) : null;
+  const potd = R.potd ? potdData(R.potd.html) : null;
+  step(4,'gambar');
+  const [tfaImg,potdImg] = await Promise.all([
+    tfa && tfa.img ? fetchPdfImage(tfa.img,900,true) : null,
+    potd && potd.img ? fetchPdfImage(potd.img,1000,true) : null
+  ]);
+
+  step(5,'susun halaman');
+  /* ---------- lebar kolom (rumus sama dengan drawRow) ---------- */
+  const avail2 = contentW - G, featW = avail2*7/12, mrW = avail2*5/12;
+  const subF = (featW - 8)/2, subM = (mrW - 6)/2;
+
+  /* ---------- pembuat blok ---------- */
+  const emptyBlock = () => [{k:'text',t:S(P.empty),size:8.2,color:N.muted}];
+  const srcBlock = key => R[key]
+    ? [{k:'text',t:S(`${L.ui.src}: ${R[key].srcLabel||R[key].src}`).toUpperCase(),size:6.2,color:N.muted,cs:0.25,url:R[key].src,before:2.5}]
+    : [];
+  const kicker = label => { const f = F(label); return {k:'text',t:f.t.toUpperCase(),fam:f.fam,style:'bold',size:7.6,color:N.accent,cs:0.9,gap:1.6}; };
+  const listBlocks = (items,year) => {
+    if(!items.length) return emptyBlock();
+    const rows = items.map(it=>{
+      let t = S(it.text), mark = '';
+      if(year){
+        const m = t.match(/^(\d{1,4}(?:\s?(?:SM|M|BC|AD|CE|BCE|SH))?)\s*[–—-]\s*([\s\S]*)$/);
+        if(m){ mark = m[1]; t = m[2]; }
+      }
+      return {t,mark,url:it.url};
+    });
+    setF('times','bold',8.6);
+    const hang = year ? Math.max(0,...rows.map(r=>doc.getTextWidth(r.mark))) + 2.2 : 0;
+    return rows.map(r=>({k:'text',t:r.t,mark:r.mark,hang,size:8.4,url:r.url,sep:true}));
+  };
+  const fitImg = (img,w,maxH) => {
+    let iw = w, ih = w*img.h/img.w;
+    if(ih > maxH){ ih = maxH; iw = ih*img.w/img.h; }
+    return {iw,ih};
+  };
+
+  const dykB = R.dyk ? [...listBlocks(dyk,false),...srcBlock('dyk')] : emptyBlock();
+  const otdB = R.otd ? [...listBlocks(otd,true),...srcBlock('otd')] : emptyBlock();
+  const newsB = R.news ? [...listBlocks(news,false),...srcBlock('news')] : emptyBlock();
+
+  const tfaB = [kicker(L.labels.tfa)];
+  if(tfa){
+    if(tfaImg){ const s = fitImg(tfaImg,subF,48); tfaB.push({k:'img',data:raster?tfaImg.cv:tfaImg.data,w:s.iw,h:s.ih,url:tfa.url}); }
+    if(tfa.title){
+      const t = S(tfa.title), latin = isLatin(t);
+      tfaB.push({k:'text',t:latin?S0(tfa.title):t,fam:latin?'times':fontName,style:'bold',size:15,lead:1.18,color:N.accent,url:tfa.url,gap:1.8});
+    }
+    /* Teks dibatasi (~950 huruf, dipotong di akhir kalimat) agar kolom artikel pilihan selalu muat satu halaman */
+    let budget = 950;
+    tfa.paras.forEach((p,i)=>{
+      let t = S(p); if(!t || budget < 120) return;
+      if(t.length > budget){
+        const cut = t.slice(0,budget), end = Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
+        t = end > budget*0.5 ? cut.slice(0,end+1) : cut.slice(0,cut.lastIndexOf(' ')) + '…';
+        if(!full) t = t.replace(/…$/,'...');
+      }
+      budget -= t.length;
+      const drop = i===0 && /^[A-Za-zÀ-ÿ]/.test(t) && t.length > 120;
+      tfaB.push({k:'text',t:drop?t.slice(1):t,dropCh:drop?t[0]:'',drop,align:'justify',size:8.2,gap:1.8});
+    });
+    tfaB.push(...srcBlock('tfa'));
+  }else tfaB.push(...emptyBlock());
+
+  const potdB = [kicker(L.labels.potd)];
+  if(potd){
+    if(potdImg){ const s = fitImg(potdImg,subF,70); potdB.push({k:'img',data:raster?potdImg.cv:potdImg.data,w:s.iw,h:s.ih,url:potd.url}); }
+    if(potd.caption) potdB.push({k:'text',t:S(potd.caption),size:8,color:N.muted,url:potd.url,gap:1});
+    potdB.push(...srcBlock('potd'));
+  }else potdB.push(...emptyBlock());
+
+  const half = Math.ceil(mr.length/2);
+  const rankBlocks = (items,offset) => items.map((it,i)=>({
+    k:'text',t:S(it.title),mark:String(offset+i+1),hang:6.4,right:compact(it.views),rw:10,size:7.6,url:it.url,sep:true,sepPad:[0.55,0.65]
+  }));
+  const mrLeft = mr.length ? rankBlocks(mr.slice(0,half),0) : emptyBlock();
+  const mrRight = mr.length ? [...rankBlocks(mr.slice(half),half),...srcBlock('mostread')] : [];
+  const mrDay = R.mostread ? String(R.mostread.srcLabel||'').split('·').pop().trim() : '';
+
+  /* ---------- mesin alir kolom ---------- */
+  const prep = (b,w) => {
+    if(b.lines) return;
+    const fam = b.fam || fontName;
+    setF(fam,b.style||'normal',b.size);
+    const tw = (w - (b.hang||0) - (b.rw||0)) * (b.cs ? 0.86 : 1);   // teks berjarak huruf lebih lebar dari ukuran yang diukur
+    if(b.drop){
+      const first = doc.splitTextToSize(b.t,tw - 10).slice(0,3);
+      const rest = b.t.slice(first.join(' ').length).trim();
+      b.lines = first.concat(rest ? doc.splitTextToSize(rest,tw) : []);
+      b.dropW = 10;
+    }else b.lines = doc.splitTextToSize(b.t,tw);
+  };
+  /* Menggambar blok sebanyak yang muat di halaman ini; sisanya dikembalikan untuk halaman berikutnya */
+  const flow = (x,w,y0,blocks) => {
+    let yy = y0; const rest = blocks.slice();
+    while(rest.length){
+      const b = rest[0];
+      if(b.before && yy > y0 + 0.1 && !b.cont) yy += b.before;
+      if(b.k === 'img'){
+        if(yy + b.h + 2.5 > BOTTOM) break;
+        const ix = x + (w - b.w)/2;
+        doc.addImage(b.data,'JPEG',ix,yy,b.w,b.h);
+        if(b.url) doc.link(ix,yy,b.w,b.h,{url:b.url});
+        yy += b.h + 2.5; rest.shift(); continue;
+      }
+      prep(b,w);
+      const fam = b.fam || fontName, lh = b.size*PT*(b.lead||1.4), n = b.lines.length;
+      const room = Math.floor((BOTTOM - yy - 0.5)/lh);
+      let take = n;
+      if(room < n){
+        const minTake = b.drop ? 5 : 2;
+        if(n < 4 || room < minTake) break;
+        take = room;
+        if(n - take < 2) take = n - 2;
+        if(take < minTake) break;
+      }
+      const tx = x + (b.hang||0), tw = w - (b.hang||0) - (b.rw||0);
+      const base = i => yy + i*lh + b.size*PT*0.88;
+      if(b.mark && !b.cont){
+        setF('times','bold',b.size+0.4); tc(N.accent); doc.text(b.mark,x,base(0));
+      }
+      if(b.dropCh && !b.cont){
+        setF('times','bold',36); tc(N.accent); doc.text(b.dropCh,tx,yy + 8.9);
+      }
+      setF(fam,b.style||'normal',b.size); tc(b.color || N.ink);
+      b.lines.slice(0,take).forEach((ln,i)=>{
+        const dx = (b.dropW && i < 3) ? b.dropW : 0;
+        const lastOfBlock = take === n && i === take - 1;
+        if(b.align === 'justify' && !lastOfBlock) doc.text(ln,tx+dx,base(i),{align:'justify',maxWidth:tw-dx+0.2});
+        else if(b.cs) doc.text(ln,tx+dx,base(i),{charSpace:b.cs});
+        else doc.text(ln,tx+dx,base(i));
+      });
+      if(b.right && !b.cont){
+        setF(fontName,'normal',b.size-0.8); tc(N.muted); doc.text(b.right,x+w,base(0),{align:'right'});
+      }
+      if(b.url) doc.link(tx,yy,tw,take*lh,{url:b.url});
+      yy += take*lh;
+      if(take < n){
+        rest[0] = {...b,lines:b.lines.slice(take),cont:true,mark:'',right:'',dropCh:'',dropW:0,drop:false};
+        break;
+      }
+      rest.shift();
+      yy += b.gap || 0;
+      if(b.sep){
+        const pad = b.sepPad || [1.4,1.6];
+        yy += pad[0]; hline(x,x+w,yy,N.soft,0.15); yy += pad[1];
+      }
+    }
+    return {y:yy,rest};
+  };
+  const drawHead = s => {
+    const f = F(s.title);
+    setF(f.fam,'bold',11.5); tc(N.ink);
+    doc.text(f.t.toUpperCase(),s._x,y+4.3,{charSpace:0.5});
+    if(s.note){ setF(fontName,'normal',6.8); tc(N.muted); doc.text(S(s.note),s._x+s._w,y+4.1,{align:'right'}); }
+    hline(s._x,s._x+s._w,y+6.3,N.ink,0.5);
+  };
+  /* Satu baris kolom koran: judul bagian, kolom-kolom, garis pemisah vertikal; bila isi panjang, lanjut di halaman berikutnya */
+  const drawRow = (secs,minNeed) => {
+    ensure(minNeed);
+    const total = secs.reduce((n,s)=>n+s.span,0), avail = contentW - G*(secs.length-1);
+    let x = M; const cols = [], rules = [];
+    secs.forEach((s,si)=>{
+      const sw = avail*s.span/total, gs = s.gs || 8, n = s.subs.length, cw = (sw - gs*(n-1))/n;
+      s._x = x; s._w = sw;
+      s.subs.forEach((blocks,ci)=>{
+        cols.push({x:x + ci*(cw+gs),w:cw,blocks:blocks.slice()});
+        if(ci < n-1) rules.push({x:x + ci*(cw+gs) + cw + gs/2,c:N.soft,w:0.2,sub:true});
+      });
+      x += sw + G;
+      if(si < secs.length-1) rules.push({x:x - G/2,c:N.ink,w:0.35});
+    });
+    let first = true, guard = 0;
+    for(;;){
+      const top = y;
+      let cy = y;
+      if(first){ secs.forEach(drawHead); cy = y + HEAD_H; }
+      const ends = cols.map(c=>{ const r = flow(c.x,c.w,cy,c.blocks); c.blocks = r.rest; return r.y; });
+      const more = cols.some(c=>c.blocks.length);
+      const bottom = more ? BOTTOM : Math.max(...ends) + 1;
+      rules.forEach(r=>{   // garis antar-sub-kolom mulai di bawah judul bagian agar tidak menembusnya
+        dc(r.c); doc.setLineWidth(r.w); doc.line(r.x,(r.sub && first) ? top + HEAD_H : top,r.x,bottom);
+      });
+      first = false;
+      if(!more || ++guard > 6){ y = bottom; break; }
+      newPage(); y = TOP_NEXT;
+    }
+    hline(M,pageW-M,y+0.8,N.ink,0.35);
+    y += 4;
+  };
+
+  /* ---------- kepala koran ---------- */
+  paintBg();
+  hline(M,pageW-M,9,N.ink,0.9);
+  const ft = F(L.title), fg = F(L.tagline);
+  setF(ft.fam,'bold',42); tc(N.ink);
+  doc.text(ft.t,pageW/2,25,{align:'center'});
+  setF(fg.fam,fg.fam==='times'?'italic':'normal',11); tc(N.muted);
+  doc.text(fg.t,pageW/2,32,{align:'center'});
+  hline(M,pageW-M,35.5,N.ink,0.9);
+  hline(M,pageW-M,37.1,N.ink,0.3);
+  setF(fontName,'bold',8); tc(N.ink);
+  doc.text(S($('#vol').textContent).toUpperCase(),M,42.4,{charSpace:0.3});
+  doc.text(S(dateText).toUpperCase(),pageW/2,42.4,{align:'center',charSpace:0.3});
+  doc.text(S(L.edition).toUpperCase(),pageW-M,42.4,{align:'right',charSpace:0.3});
+  hline(M,pageW-M,45,N.ink,0.5);
+  y = 51;
+
+  const missing = ORDER.filter(k=>!R[k]);
+  if(missing.length){
+    setF(fontName,'normal',8); tc(N.accent);
+    const ln = doc.splitTextToSize(S(fmtP(P.partial,{list:missing.map(k=>L.labels[k]).join(', ')})),contentW);
+    doc.text(ln,M,y); y += ln.length*3.8 + 2;
+  }
+
+  /* ---------- isi: susunan sama dengan halaman (4 + 4 + 4, lalu 7 + 5 dari 12 kolom) ---------- */
+  drawRow([
+    {title:L.labels.dyk,span:4,subs:[dykB]},
+    {title:L.labels.otd,span:4,subs:[otdB]},
+    {title:L.labels.news,span:4,subs:[newsB]}
+  ],45);
+  drawRow([
+    {title:L.labels.featured,span:7,gs:8,subs:[tfaB,potdB]},
+    {title:L.labels.mostread,span:5,gs:6,note:mrDay,subs:[mrLeft,mrRight]}
+  ],Math.min(BOTTOM - TOP_NEXT - 2,Math.max(80,HEAD_H + half*5.1 + 4)));   // baris ini dimulai di halaman baru bila daftar 50 teratas tidak muat utuh
+
+  /* ---------- header berjalan (halaman 2 dst) + footer ---------- */
+  const total = doc.internal.getNumberOfPages();
+  for(let p=1;p<=total;p++){
+    doc.setPage(p);
+    if(p > 1){
+      const fr = F(L.title); setF(fr.fam,'bold',10); tc(N.ink); doc.text(fr.t,M,11.5);
+      setF(fontName,'normal',7.4); tc(N.muted); doc.text(S(`${L.edition}  |  ${dateText}`),pageW-M,11.5,{align:'right'});
+      hline(M,pageW-M,14,N.ink,0.5);
+    }
+    hline(M,pageW-M,pageH-13,N.soft,0.3);
+    setF(fontName,'normal',7.4); tc(N.muted);
+    doc.text(S(`${L.title}  -  ${P.report}`),M,pageH-8.6);
+    doc.text(S(fmtP(P.page,{p,n:total})),pageW-M,pageH-8.6,{align:'right'});
+    if(p === total){   // catatan sumber di dasar halaman terakhir, agar tidak memakan halaman sendiri
+      setF(fontName,'normal',6.6); tc(N.muted); doc.text(S(P.sources),pageW/2,pageH-3.8,{align:'center'});
+    }
+  }
+  doc.save(`koran-wikipedia-${state.lang}-${dateKey}.pdf`);
+}
+
+let pdfBusy = false;
+async function downloadPdf(){
+  const btn = $('#pdf');
+  if(btn.disabled || pdfBusy) return;
+  const L = LANGS[state.lang];
+  const R = state.res, ready = state.ready, dateText = $('#dateText').textContent, dateKey = state.date;
+  pdfBusy = true; btn.disabled = true; btn.textContent = L.pdf.making;
+  const step = (n,what) => { btn.textContent = `${L.pdf.making} ${n}/5`; console.info(`[PDF] langkah ${n}/5: ${what}`); };
+  try{
+    step(1,'menunggu semua bagian dimuat');
+    await withTimeout(ready,30000,'langkah 1/5 (memuat bagian)');       // tunggu semua kartu selesai dimuat
+    step(2,'memuat pustaka PDF');
+    await withTimeout(loadScript(PDF_LIBS[0]),20000,'langkah 2/5 (pustaka jsPDF)');
+    await withTimeout(loadScript(PDF_LIBS[1]),20000,'langkah 2/5 (pustaka tabel)');
+    await makePdf(L,R,dateText,dateKey,step);
+  }catch(e){
+    console.error(e);
+    alert(L.pdf.fail + (e && e.message ? e.message : e));
+  }finally{
+    pdfBusy = false; btn.disabled = !!LANGS[state.lang].nopdf; btn.textContent = LANGS[state.lang].ui.pdf;
+  }
+}
+
+/* ---------- Tema gelap/terang ----------
+   Tanpa pilihan tersimpan, tema mengikuti browser (prefers-color-scheme) dan ikut berubah bila pengaturan sistem berubah. */
+const darkMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+function isDark(){
+  const t = document.documentElement.getAttribute('data-theme');
+  return t ? t === 'dark' : !!(darkMQ && darkMQ.matches);
+}
+function syncDark(){ $('#dark').checked = isDark(); }
+
+/* ---------- Event ---------- */
+$('#lang').addEventListener('change',e=>{
+  state.lang = e.target.value; savePrefs(); render();
+});
+$('#pdf').addEventListener('click',downloadPdf);
+$('#grid').addEventListener('click',e=>{
+  const b = e.target.closest('.readbtn');
+  if(b && !b.disabled) ttsToggle(b.closest('.tts').dataset.key);
+});
+window.addEventListener('pagehide',()=>{ if(TTS_OK){ try{ speechSynthesis.cancel(); }catch(e){} } });
+$('#dark').addEventListener('change',e=>{
+  const th = e.target.checked ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme',th);
+  try{ localStorage.setItem('koran-theme',th); }catch(err){}
+});
+if(darkMQ){
+  if(darkMQ.addEventListener) darkMQ.addEventListener('change',syncDark);
+  else if(darkMQ.addListener) darkMQ.addListener(syncDark);
+}
+$('#qid').addEventListener('change',e=>{
+  state.qid = e.target.checked;
+  try{ localStorage.setItem('koran-qid', state.qid ? '1' : '0'); }catch(err){}
+  if(state.qid){
+    const L = LANGS[state.lang];
+    document.querySelectorAll('.card .body').forEach(b=>annotate(L,b));
+  }else clearQids();
+});
+window.addEventListener('hashchange',()=>{
+  const h = location.hash.replace('#','');
+  if(LANGS[h] && h!==state.lang){ state.lang = h; render(); }
+});
+
+loadPrefs();
+syncDark();
+render();
+})();
+</script>
+</body>
+</html>
