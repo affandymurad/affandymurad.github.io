@@ -48,6 +48,7 @@ body{margin:0;color:var(--ink);font-family:var(--body);line-height:1.6;font-size
   border:1px solid var(--rule);padding:4px 8px;border-radius:0;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .controls select option{background:var(--paper);color:var(--ink);text-transform:none}
 .controls select:hover,.controls .pdfbtn:hover:not(:disabled),.controls a.pdfbtn:hover{background:var(--soft)}
+.controls input[type=date]{font:inherit;font-size:12px;color:var(--ink);background:transparent;border:1px solid var(--rule);padding:3px 6px;border-radius:0;cursor:pointer;min-width:0}
 .controls :disabled{opacity:.55;cursor:progress}
 /* Toggle geser mode gelap */
 .controls .switch{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--rule);padding:4px 8px;
@@ -66,6 +67,7 @@ body{margin:0;color:var(--ink);font-family:var(--body);line-height:1.6;font-size
 /* Lencana Q-ID Wikidata di samping tautan */
 .card a.qid{font:600 9.5px/1 ui-monospace,Menlo,Consolas,monospace;color:var(--muted);border:1px solid var(--soft);
   padding:1px 3px;margin:0 2px 0 3px;vertical-align:.15em;letter-spacing:0;text-transform:none;border-radius:2px;white-space:nowrap}
+.card a.qid.abs{margin-left:3px;font-family:inherit;font-size:9px;letter-spacing:.04em;text-transform:uppercase}
 .card a.qid:hover{color:var(--accent);border-color:var(--accent);background:transparent}
 .masthead{text-align:center;padding:18px 0 10px;border-bottom:4px double var(--rule)}
 .masthead h1{margin:0;font-family:var(--head);font-weight:900;font-size:clamp(2.2rem,8vw,5.2rem);line-height:1.05;letter-spacing:-.01em}
@@ -182,6 +184,8 @@ footer{padding-top:14px;text-align:center;font-size:12px;color:var(--muted)}
         <option value="ta">தமிழ்</option>
         <option value="he">עברית</option>
       </select>
+      <input type="date" id="date" min="2016-01-01">
+      <button type="button" class="pdfbtn" id="today">Hari ini</button>
       <label class="qtoggle" id="qwrap"><input type="checkbox" id="qid"><span id="qlabel">Q-ID Wikidata</span></label>
       <label class="switch" id="darkwrap"><input type="checkbox" id="dark" role="switch"><span class="track"></span><span id="darklabel">Mode gelap</span></label>
     </div>
@@ -216,13 +220,14 @@ const LANGS = {
          empty:'Tidak ada data untuk bagian ini.', partial:'Bagian berikut belum tersedia saat PDF dibuat: {list}.',
          report:'laporan dibuat otomatis', page:'Halaman {p} dari {n}',
          sources:'Sumber data: Wikipedia (CC BY-SA 4.0) dan Wikimedia Pageviews. Angka dibaca adalah tayangan halaman pada hari yang tertera.'},
-    ui:{read:'Bacakan', stop:'Berhenti', reading:'Membaca…', speechName:'Indonesia',
+    ui:{today:'Hari ini', date:'Tanggal', noDate:'Tidak tersedia untuk {date}.',
+        read:'Bacakan', stop:'Berhenti', reading:'Membaca…', speechName:'Indonesia',
         noSupport:'Browser ini tidak mendukung fitur bacakan.', noVoice:'Suara bahasa {lang} tidak ditemukan di perangkat; memakai suara bawaan.',
         noText:'Tidak ada teks untuk dibacakan.', notReady:'Bagian ini belum selesai dimuat.',
         noStart:'Suara tidak terdengar. Periksa suara teks-ke-ucapan di perangkat.', readFail:'Gagal membacakan: ', num:'Nomor',
         pdf:'Unduh PDF', dark:'Mode gelap', darkTip:'Ganti tampilan terang/gelap (default mengikuti browser)',
-        na:'Bagian ini belum tersedia di edisi ini.', src:'Sumber', today:'Hari ini', date:'Tanggal', qid:'Q-ID Wikidata', qidTip:'Tampilkan nilai Q Wikidata di samping tiap tautan',
-        dateNote:'Edisi ini mengikuti Halaman Utama Wikipedia hari ini',
+        na:'Bagian ini belum tersedia di edisi ini.', src:'Sumber', qid:'Q-ID Wikidata', qidTip:'Tampilkan nilai Q Wikidata di samping tiap tautan',
+       
         lic:'Konten bersumber dari Wikipedia dan berlisensi CC BY-SA 4.0. Setiap kartu menautkan ke halaman sumbernya.'},
     main:'Halaman Utama',
     sel:{tfa:'#mf-artikelpilihan', potd:'#mf-gambarpilihan', dyk:'#mf-tahukahanda', otd:'#mf-hids', news:'#mf-peristiwaterkini'}
@@ -237,13 +242,14 @@ const LANGS = {
          empty:'Tiada data untuk bahagian ini.', partial:'Bahagian berikut belum tersedia semasa PDF dijana: {list}.',
          report:'laporan dijana secara automatik', page:'Halaman {p} daripada {n}',
          sources:'Sumber data: Wikipedia (CC BY-SA 4.0) dan Wikimedia Pageviews. Angka dibaca ialah tontonan halaman pada hari yang tertera.'},
-    ui:{read:'Bacakan', stop:'Berhenti', reading:'Membaca…', speechName:'Melayu',
+    ui:{today:'Hari ini', date:'Tarikh', noDate:'Tidak tersedia untuk {date}.',
+        read:'Bacakan', stop:'Berhenti', reading:'Membaca…', speechName:'Melayu',
         noSupport:'Pelayar ini tidak menyokong ciri bacakan.', noVoice:'Suara bahasa {lang} tidak ditemui pada peranti; menggunakan suara lalai.',
         noText:'Tiada teks untuk dibacakan.', notReady:'Bahagian ini belum selesai dimuatkan.',
         noStart:'Suara tidak kedengaran. Semak suara teks-ke-pertuturan pada peranti.', readFail:'Gagal membacakan: ', num:'Nombor',
         pdf:'Muat turun PDF', dark:'Mod gelap', darkTip:'Tukar paparan cerah/gelap (lalai mengikut pelayar)',
-        na:'Bahagian ini belum tersedia dalam edisi ini.', src:'Sumber', today:'Hari ini', date:'Tarikh', qid:'Q-ID Wikidata', qidTip:'Papar nilai Q Wikidata di sebelah setiap pautan',
-        dateNote:'Edisi ini mengikut Laman Utama Wikipedia hari ini',
+        na:'Bahagian ini belum tersedia dalam edisi ini.', src:'Sumber', qid:'Q-ID Wikidata', qidTip:'Papar nilai Q Wikidata di sebelah setiap pautan',
+       
         lic:'Kandungan daripada Wikipedia dan dilesenkan CC BY-SA 4.0. Setiap kad memaut ke halaman sumbernya.'},
     main:'Laman Utama',
     sel:{tfa:'#mp-tfa', potd:'#mp-gp .mp-gp-content',
@@ -260,12 +266,13 @@ const LANGS = {
          empty:'No data for this section.', partial:'These sections were not available when the PDF was built: {list}.',
          report:'report generated automatically', page:'Page {p} of {n}',
          sources:'Data source: Wikipedia (CC BY-SA 4.0) and Wikimedia Pageviews. View counts are page views on the date shown.'},
-    ui:{read:'Read aloud', stop:'Stop', reading:'Reading…', speechName:'English',
+    ui:{today:'Today', date:'Date', noDate:'Not available for {date}.',
+        read:'Read aloud', stop:'Stop', reading:'Reading…', speechName:'English',
         noSupport:'This browser does not support read-aloud.', noVoice:'No {lang} voice found on this device; using the default voice.',
         noText:'There is no text to read.', notReady:'This section is still loading.',
         noStart:'No sound played. Check the text-to-speech voices on your device.', readFail:'Could not read aloud: ', num:'Number',
         pdf:'Download PDF', dark:'Dark mode', darkTip:'Switch light/dark appearance (defaults to your browser)',
-        na:'This section is not available in this edition.', src:'Source', today:'Today', date:'Date', dateNote:'', qid:'Wikidata Q-IDs', qidTip:'Show the Wikidata Q-ID next to each link',
+        na:'This section is not available in this edition.', src:'Source', qid:'Wikidata Q-IDs', qidTip:'Show the Wikidata Q-ID next to each link',
         lic:'Content from Wikipedia, licensed under CC BY-SA 4.0. Each card links to its source page.'},
     main:'Main Page',
     sel:{tfa:'#mp-tfa', potd:'#mp-tfp', dyk:'#mp-dyk', otd:'#mp-otd', news:'#mp-itn'}
@@ -278,7 +285,8 @@ const LANGS = {
     pdf:{making:'PDF 만드는 중…', fail:'PDF를 만들지 못했습니다: ', empty:'이 섹션에 데이터가 없습니다.',
          partial:'PDF를 만들 때 다음 섹션을 사용할 수 없었습니다: {list}.', report:'자동 생성된 보고서', page:'{p} / {n} 페이지',
          sources:'데이터 출처: 위키백과(CC BY-SA 4.0) 및 Wikimedia Pageviews. 조회수는 표시된 날짜의 페이지 조회수입니다.'},
-    ui:{read:'읽어주기', stop:'멈춤', reading:'읽는 중…', speechName:'한국어',
+    ui:{today:'오늘', date:'날짜', noDate:'{date}에는 제공되지 않습니다.',
+        read:'읽어주기', stop:'멈춤', reading:'읽는 중…', speechName:'한국어',
         noSupport:'이 브라우저는 읽어주기를 지원하지 않습니다.', noVoice:'이 기기에서 {lang} 음성을 찾을 수 없어 기본 음성을 사용합니다.',
         noText:'읽을 내용이 없습니다.', notReady:'이 섹션을 아직 불러오는 중입니다.',
         noStart:'소리가 나지 않습니다. 기기의 음성 합성 설정을 확인하세요.', readFail:'읽어주기 실패: ', num:'순위',
@@ -296,7 +304,8 @@ const LANGS = {
     pdf:{making:'Creando PDF…', fail:'No se pudo crear el PDF: ', empty:'No hay datos para esta sección.',
          partial:'Estas secciones no estaban disponibles al crear el PDF: {list}.', report:'informe generado automáticamente', page:'Página {p} de {n}',
          sources:'Fuente de datos: Wikipedia (CC BY-SA 4.0) y Wikimedia Pageviews. Las lecturas son visitas de página en la fecha indicada.'},
-    ui:{read:'Leer en voz alta', stop:'Detener', reading:'Leyendo…', speechName:'español',
+    ui:{today:'Hoy', date:'Fecha', noDate:'No disponible para el {date}.',
+        read:'Leer en voz alta', stop:'Detener', reading:'Leyendo…', speechName:'español',
         noSupport:'Este navegador no admite la lectura en voz alta.', noVoice:'No se encontró una voz en {lang} en este dispositivo; se usa la voz predeterminada.',
         noText:'No hay texto que leer.', notReady:'Esta sección aún se está cargando.',
         noStart:'No se oyó ningún sonido. Revisa las voces de síntesis de voz del dispositivo.', readFail:'No se pudo leer en voz alta: ', num:'Número',
@@ -315,7 +324,8 @@ const LANGS = {
     pdf:{making:'Création du PDF…', fail:'Impossible de créer le PDF : ', empty:'Aucune donnée pour cette section.',
          partial:'Ces sections n’étaient pas disponibles lors de la création du PDF : {list}.', report:'rapport généré automatiquement', page:'Page {p} sur {n}',
          sources:'Source des données : Wikipédia (CC BY-SA 4.0) et Wikimedia Pageviews. Les chiffres sont des consultations de page à la date indiquée.'},
-    ui:{read:'Lire à voix haute', stop:'Arrêter', reading:'Lecture…', speechName:'français',
+    ui:{today:'Aujourd’hui', date:'Date', noDate:'Non disponible pour le {date}.',
+        read:'Lire à voix haute', stop:'Arrêter', reading:'Lecture…', speechName:'français',
         noSupport:'Ce navigateur ne prend pas en charge la lecture à voix haute.', noVoice:'Aucune voix en {lang} trouvée sur cet appareil ; la voix par défaut est utilisée.',
         noText:'Aucun texte à lire.', notReady:'Cette section est encore en cours de chargement.',
         noStart:'Aucun son. Vérifiez les voix de synthèse vocale de l’appareil.', readFail:'Échec de la lecture : ', num:'Numéro',
@@ -333,7 +343,8 @@ const LANGS = {
     pdf:{making:'PDF wird erstellt…', fail:'PDF konnte nicht erstellt werden: ', empty:'Keine Daten für diesen Abschnitt.',
          partial:'Diese Abschnitte waren beim Erstellen des PDFs nicht verfügbar: {list}.', report:'automatisch erstellter Bericht', page:'Seite {p} von {n}',
          sources:'Datenquelle: Wikipedia (CC BY-SA 4.0) und Wikimedia Pageviews. Die Zahlen sind Seitenaufrufe am angegebenen Datum.'},
-    ui:{read:'Vorlesen', stop:'Stopp', reading:'Lese vor…', speechName:'Deutsch',
+    ui:{today:'Heute', date:'Datum', noDate:'Für den {date} nicht verfügbar.',
+        read:'Vorlesen', stop:'Stopp', reading:'Lese vor…', speechName:'Deutsch',
         noSupport:'Dieser Browser unterstützt Vorlesen nicht.', noVoice:'Keine Stimme für „{lang}“ auf diesem Gerät gefunden; die Standardstimme wird verwendet.',
         noText:'Kein Text zum Vorlesen.', notReady:'Dieser Abschnitt wird noch geladen.',
         noStart:'Kein Ton zu hören. Prüfen Sie die Sprachausgabe-Stimmen des Geräts.', readFail:'Vorlesen fehlgeschlagen: ', num:'Nummer',
@@ -351,7 +362,8 @@ const LANGS = {
     pdf:{making:'PDFを作成中…', fail:'PDFを作成できませんでした: ', empty:'このセクションにはデータがありません。',
          partial:'PDF作成時に次のセクションが利用できませんでした: {list}。', report:'自動生成レポート', page:'{p} / {n} ページ',
          sources:'データの出典: ウィキペディア（CC BY-SA 4.0）およびWikimedia Pageviews。閲覧数は表示された日のページビューです。'},
-    ui:{read:'読み上げ', stop:'停止', reading:'読み上げ中…', speechName:'日本語',
+    ui:{today:'今日', date:'日付', noDate:'{date}の分は利用できません。',
+        read:'読み上げ', stop:'停止', reading:'読み上げ中…', speechName:'日本語',
         noSupport:'このブラウザは読み上げに対応していません。', noVoice:'この端末に{lang}の音声が見つからないため、既定の音声を使用します。',
         noText:'読み上げるテキストがありません。', notReady:'このセクションはまだ読み込み中です。',
         noStart:'音が出ません。端末の音声合成の設定を確認してください。', readFail:'読み上げに失敗しました: ', num:'順位',
@@ -370,7 +382,8 @@ const LANGS = {
     pdf:{making:'正在生成 PDF…', fail:'无法生成 PDF：', empty:'此栏目没有数据。',
          partial:'生成 PDF 时以下栏目不可用：{list}。', report:'自动生成的报告', page:'第 {p} 页，共 {n} 页',
          sources:'数据来源：维基百科（CC BY-SA 4.0）与 Wikimedia Pageviews。阅读量为所示日期的页面浏览次数。'},
-    ui:{read:'朗读', stop:'停止', reading:'朗读中…', speechName:'中文',
+    ui:{today:'今天', date:'日期', noDate:'{date}暂无此内容。',
+        read:'朗读', stop:'停止', reading:'朗读中…', speechName:'中文',
         noSupport:'此浏览器不支持朗读功能。', noVoice:'此设备上未找到{lang}语音，将使用默认语音。',
         noText:'没有可朗读的文字。', notReady:'此栏目仍在加载。',
         noStart:'没有声音。请检查设备的语音合成设置。', readFail:'朗读失败：', num:'排名',
@@ -388,7 +401,8 @@ const LANGS = {
     pdf:{making:'جارٍ إنشاء PDF…', fail:'تعذّر إنشاء PDF: ', empty:'لا توجد بيانات لهذا القسم.',
          partial:'لم تكن الأقسام التالية متاحة عند إنشاء PDF: {list}.', report:'تقرير أُنشئ تلقائيًا', page:'الصفحة {p} من {n}',
          sources:'مصدر البيانات: ويكيبيديا (CC BY-SA 4.0) وWikimedia Pageviews. الأرقام هي مرات عرض الصفحات في التاريخ المذكور.'},
-    ui:{read:'اقرأ بصوت عالٍ', stop:'إيقاف', reading:'جارٍ القراءة…', speechName:'العربية',
+    ui:{today:'اليوم', date:'التاريخ', noDate:'غير متاح بتاريخ {date}.',
+        read:'اقرأ بصوت عالٍ', stop:'إيقاف', reading:'جارٍ القراءة…', speechName:'العربية',
         noSupport:'هذا المتصفح لا يدعم القراءة الصوتية.', noVoice:'لم يتم العثور على صوت «{lang}» على هذا الجهاز؛ سيتم استخدام الصوت الافتراضي.',
         noText:'لا يوجد نص للقراءة.', notReady:'هذا القسم لا يزال قيد التحميل.',
         noStart:'لم يُسمع أي صوت. تحقق من أصوات تحويل النص إلى كلام على الجهاز.', readFail:'تعذّرت القراءة: ', num:'رقم',
@@ -406,7 +420,8 @@ const LANGS = {
     pdf:{making:'PDF wordt gemaakt…', fail:'PDF kon niet worden gemaakt: ', empty:'Geen gegevens voor deze sectie.',
          partial:'Deze secties waren niet beschikbaar bij het maken van de PDF: {list}.', report:'automatisch gegenereerd rapport', page:'Pagina {p} van {n}',
          sources:'Gegevensbron: Wikipedia (CC BY-SA 4.0) en Wikimedia Pageviews. De aantallen zijn paginaweergaven op de vermelde datum.'},
-    ui:{read:'Voorlezen', stop:'Stop', reading:'Voorlezen…', speechName:'Nederlands',
+    ui:{today:'Vandaag', date:'Datum', noDate:'Niet beschikbaar voor {date}.',
+        read:'Voorlezen', stop:'Stop', reading:'Voorlezen…', speechName:'Nederlands',
         noSupport:'Deze browser ondersteunt voorlezen niet.', noVoice:'Geen stem voor “{lang}” gevonden op dit apparaat; de standaardstem wordt gebruikt.',
         noText:'Geen tekst om voor te lezen.', notReady:'Deze sectie wordt nog geladen.',
         noStart:'Geen geluid te horen. Controleer de spraaksynthese-stemmen van het apparaat.', readFail:'Voorlezen mislukt: ', num:'Nummer',
@@ -425,7 +440,8 @@ const LANGS = {
     pdf:{making:'Создание PDF…', fail:'Не удалось создать PDF: ', empty:'Нет данных для этого раздела.',
          partial:'Эти разделы были недоступны при создании PDF: {list}.', report:'автоматически созданный отчёт', page:'Страница {p} из {n}',
          sources:'Источник данных: Википедия (CC BY-SA 4.0) и Wikimedia Pageviews. Числа — просмотры страниц за указанную дату.'},
-    ui:{read:'Озвучить', stop:'Стоп', reading:'Чтение…', speechName:'русский',
+    ui:{today:'Сегодня', date:'Дата', noDate:'Недоступно на {date}.',
+        read:'Озвучить', stop:'Стоп', reading:'Чтение…', speechName:'русский',
         noSupport:'Этот браузер не поддерживает озвучивание.', noVoice:'На устройстве не найден голос «{lang}»; используется голос по умолчанию.',
         noText:'Нет текста для озвучивания.', notReady:'Этот раздел ещё загружается.',
         noStart:'Звука нет. Проверьте голоса синтеза речи на устройстве.', readFail:'Не удалось озвучить: ', num:'Номер',
@@ -443,7 +459,8 @@ const LANGS = {
     pdf:{making:'กำลังสร้าง PDF…', fail:'สร้าง PDF ไม่สำเร็จ: ', empty:'ไม่มีข้อมูลสำหรับส่วนนี้',
          partial:'ส่วนต่อไปนี้ยังไม่พร้อมตอนสร้าง PDF: {list}', report:'รายงานที่สร้างโดยอัตโนมัติ', page:'หน้า {p} จาก {n}',
          sources:'แหล่งข้อมูล: วิกิพีเดีย (CC BY-SA 4.0) และ Wikimedia Pageviews ตัวเลขคือยอดเข้าชมหน้าในวันที่ระบุ'},
-    ui:{read:'อ่านออกเสียง', stop:'หยุด', reading:'กำลังอ่าน…', speechName:'ไทย',
+    ui:{today:'วันนี้', date:'วันที่', noDate:'ไม่มีข้อมูลสำหรับวันที่ {date}',
+        read:'อ่านออกเสียง', stop:'หยุด', reading:'กำลังอ่าน…', speechName:'ไทย',
         noSupport:'เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง', noVoice:'ไม่พบเสียงภาษา{lang}ในอุปกรณ์นี้ จึงใช้เสียงเริ่มต้น',
         noText:'ไม่มีข้อความให้อ่าน', notReady:'ส่วนนี้ยังโหลดไม่เสร็จ',
         noStart:'ไม่มีเสียง โปรดตรวจสอบเสียงแปลงข้อความเป็นเสียงพูดของอุปกรณ์', readFail:'อ่านออกเสียงไม่สำเร็จ: ', num:'อันดับ',
@@ -461,7 +478,8 @@ const LANGS = {
     pdf:{making:'PDF உருவாக்கப்படுகிறது…', fail:'PDF உருவாக்க முடியவில்லை: ', empty:'இந்தப் பிரிவுக்குத் தரவு இல்லை.',
          partial:'PDF உருவாக்கும்போது பின்வரும் பிரிவுகள் கிடைக்கவில்லை: {list}.', report:'தானாக உருவாக்கப்பட்ட அறிக்கை', page:'பக்கம் {p} / {n}',
          sources:'தரவு மூலம்: விக்கிப்பீடியா (CC BY-SA 4.0) மற்றும் Wikimedia Pageviews. எண்கள் குறிப்பிட்ட நாளின் பக்கப் பார்வைகள்.'},
-    ui:{read:'படித்துக் காட்டு', stop:'நிறுத்து', reading:'படிக்கிறது…', speechName:'தமிழ்',
+    ui:{today:'இன்று', date:'தேதி', noDate:'{date} அன்று கிடைக்கவில்லை.',
+        read:'படித்துக் காட்டு', stop:'நிறுத்து', reading:'படிக்கிறது…', speechName:'தமிழ்',
         noSupport:'இந்த உலாவி படித்துக் காட்டும் வசதியை ஆதரிக்கவில்லை.', noVoice:'இந்தச் சாதனத்தில் {lang} குரல் கிடைக்கவில்லை; இயல்புநிலைக் குரல் பயன்படுத்தப்படுகிறது.',
         noText:'படிக்க உரை இல்லை.', notReady:'இந்தப் பிரிவு இன்னும் ஏற்றப்படுகிறது.',
         noStart:'ஒலி இல்லை. சாதனத்தின் உரை-பேச்சு குரல்களைச் சரிபார்க்கவும்.', readFail:'படிக்க முடியவில்லை: ', num:'எண்',
@@ -479,7 +497,8 @@ const LANGS = {
     pdf:{making:'יוצר PDF…', fail:'יצירת ה-PDF נכשלה: ', empty:'אין נתונים למדור זה.',
          partial:'המדורים הבאים לא היו זמינים בעת יצירת ה-PDF: {list}.', report:'דוח שנוצר אוטומטית', page:'עמוד {p} מתוך {n}',
          sources:'מקור הנתונים: ויקיפדיה (CC BY-SA 4.0) ו-Wikimedia Pageviews. המספרים הם צפיות בדפים בתאריך המצוין.'},
-    ui:{read:'הקראה', stop:'עצירה', reading:'מקריא…', speechName:'עברית',
+    ui:{today:'היום', date:'תאריך', noDate:'לא זמין עבור {date}.',
+        read:'הקראה', stop:'עצירה', reading:'מקריא…', speechName:'עברית',
         noSupport:'הדפדפן הזה אינו תומך בהקראה.', noVoice:'לא נמצא קול ב{lang} במכשיר; משתמשים בקול ברירת המחדל.',
         noText:'אין טקסט להקראה.', notReady:'המדור הזה עדיין נטען.',
         noStart:'לא נשמע קול. בדקו את קולות הקריאה במכשיר.', readFail:'ההקראה נכשלה: ', num:'מספר',
@@ -705,15 +724,16 @@ const FEED = {
     const li = ev.map(e=>{
       const p = e.pages && e.pages[0];
       const link = p ? ` <a href="${esc(p.content_urls?.desktop?.page||'#')}" target="_blank" rel="noopener">↗</a>` : '';
-      return `<li><b class="yr">${esc(e.year)}</b>${esc(e.text)}${link}</li>`;
+      return `<li><b class="yr">${esc(e.year)}</b> – ${esc(e.text)}${link}</li>`;
     }).join('');
-    const page = `${d.month} ${d.D}`;
+    const page = L.host === 'en.wikipedia.org' ? `${d.month} ${d.D}` : (L.fb && L.fb.date ? L.fb.date(d) : L.main);
     return {html:`<ul class="list">${li}</ul>`, src:wikiUrl(L.host,page), srcLabel:page};
   },
   async news(L,d){
     const f = await feed(L,d); const n = f.news; if(!n||!n.length) throw new Error('no news');
     const li = n.slice(0,8).map(x=>`<li>${clean(x.story||'',L.host).innerHTML}</li>`).join('');
-    return {html:`<ul class="list">${li}</ul>`, src:wikiUrl(L.host,'Portal:Current events'), srcLabel:'Portal:Current events'};
+    const en = L.host === 'en.wikipedia.org', t = en ? 'Portal:Current events' : L.main;
+    return {html:`<ul class="list">${li}</ul>`, src:wikiUrl(L.host,t), srcLabel:t};
   }
 };
 
@@ -768,7 +788,7 @@ async function nonArticlePrefixes(L){
   }
   return nsCache.get(L.host);
 }
-async function loadMostRead(L){
+async function loadMostRead(L,sel){   // sel = tanggal terpilih (ymd) bila bukan hari ini
   let prefixes;
   try{ prefixes = await nonArticlePrefixes(L); }
   catch(e){ prefixes = new Set(['special','istimewa','khas','wikipedia','portal','help','talk','user','file','category','template']); }
@@ -779,8 +799,9 @@ async function loadMostRead(L){
     return !(i>0 && prefixes.has(t.slice(0,i).replace(/_/g,' ').toLowerCase()));
   };
   let lastErr;
-  for(let back=1; back<=3; back++){
-    const dt = new Date(Date.now() - back*86400000);   // hari UTC yang sudah selesai
+  /* hari ini: hari UTC terakhir yang sudah selesai (1-3 hari lalu); tanggal lampau: tanggal itu, atau sehari sebelumnya bila datanya belum lengkap */
+  const days = sel ? [sel.date, new Date(sel.date.getTime() - 86400000)] : [1,2,3].map(b=>new Date(Date.now() - b*86400000));
+  for(const dt of days){
     const y = dt.getUTCFullYear(), mm = pad(dt.getUTCMonth()+1), dd = pad(dt.getUTCDate());
     try{
       const j = await jget(`https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${L.host}/all-access/${y}/${mm}/${dd}`);
@@ -798,8 +819,15 @@ async function loadMostRead(L){
   throw lastErr || new Error('empty');
 }
 
-async function loadSection(L,d,key){
-  if(key === 'mostread') return loadMostRead(L);
+/* Tanggal lampau: Halaman Utama selalu menampilkan hari ini, jadi hanya feed REST per tanggal yang dipakai.
+   Bagian yang tidak diisi feed edisi itu pada tanggal tersebut dianggap tidak tersedia. */
+async function fromFeed(L,d,key){
+  if(!FEED[key]) throw new Error('no feed');
+  return FEED[key](L,d);
+}
+async function loadSection(L,d,key,isToday=true){
+  if(key === 'mostread') return loadMostRead(L,isToday ? null : d);
+  if(!isToday) return fromFeed(L,d,key);
   /* Halaman Utama lebih dulu (identik dengan yang dilihat pembaca Wikipedia); feed REST jadi cadangan (en) */
   const attempts = [()=>fromMain(L,key)];
   if(L.fb && L.fb[key]) attempts.push(()=>fromPage(L,key,L.fb[key]));
@@ -863,6 +891,11 @@ async function annotate(L,root){
     b.className = 'qid'; b.href = `https://www.wikidata.org/wiki/${q}`;
     b.target = '_blank'; b.rel = 'noopener'; b.textContent = q; b.title = 'Wikidata ' + q;
     a.after(b);
+    /* tautan kedua: halaman Wikiabstrak untuk item Wikidata ini, dalam bahasa antarmuka yang sedang dipakai */
+    const c = document.createElement('a');
+    c.className = 'qid abs'; c.href = `https://wikiabstrak.web.app/?lang=${encodeURIComponent(state.lang)}&id=${encodeURIComponent(q)}`;
+    c.target = '_blank'; c.rel = 'noopener'; c.textContent = 'Abstrak'; c.title = `Wikiabstrak · ${q} · ${state.lang}`;
+    b.after(c);
   }
 }
 function clearQids(){
@@ -887,9 +920,12 @@ function savePrefs(){
 
 function render(){
   const L = LANGS[state.lang];
-  state.date = todayStr();
+  const today = todayStr();
+  if(!state.date || state.date > today) state.date = today;   // tanggal tidak boleh di masa depan
+  const isToday = state.date === today;
   const d = ymd(state.date);
   d.month = new Intl.DateTimeFormat(L.locale,{month:'long',timeZone:'UTC'}).format(d.date);
+  const dateStr = new Intl.DateTimeFormat(L.locale,{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(d.date);
   document.documentElement.lang = L.html;
   document.documentElement.dir = L.dir || 'ltr';
   document.title = L.title;
@@ -905,6 +941,8 @@ function render(){
   $('#pdfnote').hidden = !L.nopdf; $('#pdfnote').textContent = L.nopdf ? L.ui.pdfNo : '';
   $('#darklabel').textContent = L.ui.dark;
   $('#darkwrap').title = L.ui.darkTip;
+  const di = $('#date'); di.value = state.date; di.max = today; di.setAttribute('aria-label',L.ui.date); di.title = L.ui.date;
+  $('#today').textContent = L.ui.today; $('#today').disabled = isToday;
   $('#qlabel').textContent = L.ui.qid;
   $('#qwrap').title = L.ui.qidTip;
   $('#qid').checked = state.qid;
@@ -924,13 +962,15 @@ function render(){
   ttsInit();
 
   const t = ++token;
-  const fill = (key,html,src,label)=>{
+  const fill = (key,html,src,label,missing)=>{
     const c = $('#c-'+key); if(!c) return;
     c.querySelector('.body').innerHTML = html;
     c.dataset.ready = '1';
     const s = document.createElement('div');
     s.className = 'src';
-    s.innerHTML = `${esc(L.ui.src)}: <a href="${esc(src)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+    /* tanggal lampau: sebutkan tanggal isi kartu; bagian yang tak ada datanya juga menyebut tanggalnya */
+    const when = (!isToday && !missing && key !== 'mostread') ? ` · ${esc(dateStr)}` : '';
+    s.innerHTML = `${esc(L.ui.src)}: <a href="${esc(src)}" target="_blank" rel="noopener">${esc(label)}</a>${when}`;
     c.appendChild(s);
     if(state.qid) annotate(L,c.querySelector('.body'));
   };
@@ -938,13 +978,13 @@ function render(){
   const results = {};
   state.res = results;
   state.ready = Promise.all(ORDER.map(key=>
-    loadSection(L,d,key).then(res=>{
+    loadSection(L,d,key,isToday).then(res=>{
       results[key] = res;
       if(t!==token) return;
       fill(key,res.html,res.src,res.srcLabel||res.src);
     }).catch(()=>{
       if(t!==token) return;
-      fill(key,`<p class="status">${esc(L.ui.na)}</p>`,wikiUrl(L.host,L.main),L.main);
+      fill(key,`<p class="status">${esc(isToday ? L.ui.na : L.ui.noDate.replace('{date}',dateStr))}</p>`,wikiUrl(L.host,L.main),L.main,true);
     })
   ));
 }
@@ -1641,6 +1681,8 @@ $('#lang').addEventListener('change',e=>{
   state.lang = e.target.value; savePrefs(); render();
 });
 $('#pdf').addEventListener('click',downloadPdf);
+$('#date').addEventListener('change',e=>{ if(!e.target.value) return; state.date = e.target.value; render(); });
+$('#today').addEventListener('click',()=>{ state.date = todayStr(); render(); });
 $('#grid').addEventListener('click',e=>{
   const b = e.target.closest('.readbtn');
   if(b && !b.disabled) ttsToggle(b.closest('.tts').dataset.key);
