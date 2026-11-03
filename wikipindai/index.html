@@ -170,7 +170,7 @@ try{var t=localStorage.getItem('wp-theme');if(t==='dark'||t==='light')document.d
     <h1><span lang="id">Cari Wikimedia <em>tanpa meninggalkan halaman</em>.</span><span lang="en">Look up Wikimedia <em>without leaving the page</em>.</span></h1>
     <p class="lead"><span lang="id">Blok teks, klik kanan, dan hasilnya terbuka di panel samping Chrome. Wikipindai mencari di berbagai proyek Wikimedia, dalam 15 bahasa.</span><span lang="en">Select text, right-click, and the result opens in Chrome's side panel. Wikipindai searches across various Wikimedia projects, in 15 languages.</span></p>
     <div class="cta">
-      <a class="btn primary" id="cwsBtn" href="#pasang" aria-disabled="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M8.9 14l-4.1-7.1M15.1 14l-4.1 7.1"/></svg><span id="cwsLabel"><span lang="id">Chrome Web Store (segera)</span><span lang="en">Chrome Web Store (soon)</span></span></a>
+      <a class="btn primary" id="cwsBtn" href="https://chromewebstore.google.com/detail/wikipindai/glcobijbpcbmoafkildiogicojdbdnkg" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M8.9 14l-4.1-7.1M15.1 14l-4.1 7.1"/></svg><span id="cwsLabel"><span lang="id">Pasang di Chrome Web Store</span><span lang="en">Add to Chrome</span></span></a>
       <a class="btn ghost" href="#pasang"><span lang="id">Pasang manual</span><span lang="en">Manual install</span></a>
     </div>
     <p class="fine"><span lang="id">Dibuat oleh <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>. Proyek independen, tidak berafiliasi dengan Wikimedia Foundation.</span><span lang="en">Made by <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>. An independent project, not affiliated with the Wikimedia Foundation.</span></p>
@@ -250,10 +250,10 @@ try{var t=localStorage.getItem('wp-theme');if(t==='dark'||t==='light')document.d
   <h2><span lang="id">Pasang Wikipindai</span><span lang="en">Get Wikipindai</span></h2>
   <p class="sec-lead"><span lang="id">Perlu Chrome 116 atau lebih baru.</span><span lang="en">Requires Chrome 116 or newer.</span></p>
   <div class="plats">
-    <div class="plat soon">
-      <h3>Chrome Web Store <span class="tag"><span lang="id">Segera</span><span lang="en">Soon</span></span></h3>
-      <p><span lang="id">Cara termudah dan memperbarui diri sendiri. Tautannya akan muncul di sini setelah ekstensi tayang.</span><span lang="en">The easiest way, and it updates itself. The link will appear here once the extension is published.</span></p>
-      <a class="btn primary" id="cwsBtn2" href="#pasang" aria-disabled="true"><span lang="id">Belum tersedia</span><span lang="en">Not available yet</span></a>
+    <div class="plat">
+      <h3>Chrome Web Store</h3>
+      <p><span lang="id">Cara termudah dan memperbarui diri sendiri.</span><span lang="en">The easiest way, and it updates itself.</span></p>
+      <a class="btn primary" id="cwsBtn2" href="https://chromewebstore.google.com/detail/wikipindai/glcobijbpcbmoafkildiogicojdbdnkg" target="_blank" rel="noopener"><span lang="id">Pasang di Chrome Web Store</span><span lang="en">Add to Chrome</span></a>
     </div>
     <div class="plat">
       <h3><span lang="id">Pasang manual</span><span lang="en">Manual install</span></h3>
@@ -326,8 +326,8 @@ try{var t=localStorage.getItem('wp-theme');if(t==='dark'||t==='light')document.d
 
 <script>
 (function(){
-  /* Set this to the Chrome Web Store address once the extension is published; the buttons switch on by themselves. */
-  var CWS_URL='';
+  /* Chrome Web Store address of the published extension; the buttons switch on by themselves. */
+  var CWS_URL='https://chromewebstore.google.com/detail/wikipindai/glcobijbpcbmoafkildiogicojdbdnkg';
 
   var root=document.documentElement,btn=document.getElementById('langBtn');
   function set(l){root.lang=l;btn.setAttribute('aria-checked',l==='en');try{localStorage.setItem('wp-lang',l)}catch(e){}}
