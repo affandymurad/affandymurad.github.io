@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikipindai — Cari Wikimedia di panel samping Chrome</title>
+<meta name="description" content="Wikipindai: ekstensi Chrome untuk mencari teks terpilih di Wikidata, Wikipedia, Commons, Wikivoyage, Wiktionary, Wikiquote, dan Wikisource lewat panel samping. Tanpa AI, tanpa pelacakan, tanpa server sendiri.">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wikipindai — Cari Wikimedia di panel samping Chrome">
+<meta property="og:description" content="Cari Wikidata, Wikipedia, Commons, dan proyek Wikimedia lain tanpa meninggalkan halaman. 15 bahasa. Tanpa AI, tanpa pelacakan.">
+<meta property="og:image" content="https://affandymurad.github.io/wikipindai/images/og.jpg">
+<meta property="og:url" content="https://affandymurad.github.io/wikipindai/">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{
+  --bg:#f6f8fd; --surface:#ffffff; --ink:#0f172a; --muted:#52607a; --line:#dde4f0;
+  --brand:#4f46e5; --brand-2:#38bdf8; --accent:#e65100; --ok:#2e7d32;
+  --soft:#eceefc; --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+:root{color-scheme:light}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){color-scheme:dark;--bg:#0b1020;--surface:#121a2f;--ink:#eaf0fb;--muted:#9fb0c9;--line:#243049;--soft:#171f3d;--brand:#818cf8;--shadow:0 10px 30px rgba(0,0,0,.4)}
+}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0b1020;--surface:#121a2f;--ink:#eaf0fb;--muted:#9fb0c9;--line:#243049;--soft:#171f3d;--brand:#818cf8;--shadow:0 10px 30px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--brand)}
+img,svg{max-width:100%}
+.wrap{width:min(1120px,100% - 32px);margin-inline:auto}
+html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{display:none!important}
+code{background:var(--soft);border-radius:6px;padding:1px 6px;font-size:.92em}
+
+/* nav */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:20px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:-.01em}
+.logo img{width:32px;height:32px;border-radius:9px;background:#fff;padding:2px;border:1px solid var(--line)}
+nav.links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.links a{padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14.5px;white-space:nowrap}
+nav.links a:hover{background:var(--soft);color:var(--ink)}
+.lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;cursor:pointer}
+.switch{position:relative;display:grid;grid-template-columns:1fr 1fr;width:76px;height:34px;padding:0;border-radius:999px;overflow:hidden}
+.switch span{position:relative;z-index:1;display:grid;place-items:center;font-size:12.5px;transition:color .2s}
+.switch i{position:absolute;z-index:0;top:3px;left:3px;width:calc(50% - 3px);height:26px;border-radius:999px;background:var(--brand);transition:transform .22s}
+.switch[aria-checked="false"] span:first-of-type,.switch[aria-checked="true"] span:last-of-type{color:#fff}
+.switch[aria-checked="true"] i{transform:translateX(100%)}
+.tools{display:flex;gap:8px;align-items:center}
+.switch svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:820px){nav.links{display:none}.nav{justify-content:space-between}}
+
+/* hero */
+.hero{padding:64px 0 40px;display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
+@media (max-width:900px){.hero{grid-template-columns:1fr;padding-top:40px}}
+.badge{display:inline-flex;gap:8px;align-items:center;background:var(--soft);color:var(--brand);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+h1{font-size:clamp(34px,5.2vw,54px);line-height:1.08;margin:16px 0 14px;letter-spacing:-.025em}
+h1 em{font-style:normal;background:linear-gradient(120deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:19px;color:var(--muted);max-width:34em}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 12px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:14px;font-weight:700;text-decoration:none;border:1px solid transparent}
+.btn svg{flex:none}
+.btn.primary{background:linear-gradient(135deg,var(--brand),#2563eb);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.3)}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn[aria-disabled="true"]{opacity:.6;pointer-events:none}
+.fine{color:var(--muted);font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chips > span{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--muted)}
+.win{border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.win img{display:block;width:100%;height:auto}
+
+/* sections */
+section{padding:72px 0}
+.alt{background:var(--surface);border-block:1px solid var(--line)}
+.eyebrow{color:var(--brand);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+h2{font-size:clamp(26px,3.6vw,38px);line-height:1.15;margin:8px 0 12px;letter-spacing:-.02em}
+.sec-lead{color:var(--muted);max-width:40em;font-size:17.5px;margin:0 0 34px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.card .ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--soft);margin-bottom:14px}
+.card .ic svg{width:24px;height:24px;stroke:var(--brand);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:15.5px}
+.projects{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.projects span{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:600}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;counter-reset:s}
+.step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px 22px 22px 70px;box-shadow:var(--shadow)}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:20px;top:20px;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;display:grid;place-items:center;font-weight:800}
+.step h3{margin:0 0 4px;font-size:17px}.step p{margin:0;color:var(--muted);font-size:15px}
+
+/* gallery */
+.shots{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 18px;scrollbar-width:thin}
+.shots figure{flex:none;margin:0;scroll-snap-align:start;width:min(560px,86vw)}
+.shots figcaption{margin-top:10px;font-size:14px;color:var(--muted);text-align:center}
+.shots figcaption b{display:block;color:var(--ink);font-size:15px}
+
+/* install */
+.plats{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.plat{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.plat h3{margin:0 0 6px;font-size:20px}
+.plat p{margin:0 0 16px;color:var(--muted);font-size:15px}
+.plat ol{margin:0 0 18px;padding-left:20px;color:var(--muted);font-size:15px}
+.plat li{margin:4px 0}
+.plat .btn{justify-content:center;padding:11px 16px;margin-top:auto}
+.plat.soon{border-style:dashed}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;background:#fff3e0;color:#b45309;border-radius:999px;padding:2px 9px;margin-left:6px;vertical-align:2px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tag{background:#3a2a10;color:#ffc27a}}
+:root[data-theme="dark"] .tag{background:#3a2a10;color:#ffc27a}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.checks{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
+.checks li{display:flex;gap:10px}
+.checks li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--brand);display:grid;place-items:center;font-size:13px;font-weight:800;margin-top:2px}
+
+/* faq + final */
+details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:4px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:700;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--brand);font-size:22px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:0 0 16px;color:var(--muted)}
+.final{background:linear-gradient(135deg,#4338ca,#0ea5e9);color:#fff;border-radius:30px;padding:48px 28px;text-align:center}
+.final h2{margin-top:0}.final p{opacity:.92;max-width:34em;margin:0 auto 22px}
+.final .btn{background:#fff;color:#3730a3;margin:4px}
+.final .btn[aria-disabled="true"]{opacity:.7}
+footer{padding:36px 0 56px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .row{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+footer a{color:var(--muted)}
+</style>
+<script>
+try{var t=localStorage.getItem('wp-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Wikipindai">
+      <img src="icon-192.png" alt="" width="32" height="32">
+      Wikipindai
+    </a>
+    <nav class="links" aria-label="Menu">
+      <a href="#fitur"><span lang="id">Fitur</span><span lang="en">Features</span></a>
+      <a href="#cara"><span lang="id">Cara pakai</span><span lang="en">How it works</span></a>
+      <a href="#galeri"><span lang="id">Galeri</span><span lang="en">Gallery</span></a>
+      <a href="#pasang"><span lang="id">Pasang</span><span lang="en">Install</span></a>
+      <a href="#privasi"><span lang="id">Privasi</span><span lang="en">Privacy</span></a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="tools">
+      <button class="lang switch" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="Mode gelap / Dark mode" title="Mode gelap / Dark mode"><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
+      <button class="lang switch" id="langBtn" type="button" role="switch" aria-checked="false" aria-label="Bahasa / Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<div class="wrap hero">
+  <div>
+    <span class="badge">● <span lang="id">Ekstensi Chrome · Gratis · Kode sumber MIT</span><span lang="en">Chrome extension · Free · MIT source</span></span>
+    <h1><span lang="id">Cari Wikimedia <em>tanpa meninggalkan halaman</em>.</span><span lang="en">Look up Wikimedia <em>without leaving the page</em>.</span></h1>
+    <p class="lead"><span lang="id">Blok teks, klik kanan, dan hasilnya terbuka di panel samping Chrome. Wikipindai mencari di Wikidata, Wikipedia, Commons, Wikivoyage, Wiktionary, Wikiquote, dan Wikisource, dalam 15 bahasa.</span><span lang="en">Select text, right-click, and the result opens in Chrome's side panel. Wikipindai searches Wikidata, Wikipedia, Commons, Wikivoyage, Wiktionary, Wikiquote and Wikisource, in 15 languages.</span></p>
+    <div class="cta">
+      <a class="btn primary" id="cwsBtn" href="#pasang" aria-disabled="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M8.9 14l-4.1-7.1M15.1 14l-4.1 7.1"/></svg><span id="cwsLabel"><span lang="id">Chrome Web Store (segera)</span><span lang="en">Chrome Web Store (soon)</span></span></a>
+      <a class="btn ghost" href="#pasang"><span lang="id">Pasang manual</span><span lang="en">Manual install</span></a>
+    </div>
+    <p class="fine"><span lang="id">Dibuat oleh <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>. Proyek independen, tidak berafiliasi dengan Wikimedia Foundation.</span><span lang="en">Made by <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>. An independent project, not affiliated with the Wikimedia Foundation.</span></p>
+    <div class="chips"><span><span lang="id">Tanpa AI</span><span lang="en">No AI</span></span><span><span lang="id">Tanpa pelacakan</span><span lang="en">No tracking</span></span><span><span lang="id">Tanpa server sendiri</span><span lang="en">No own server</span></span><span><span lang="id">Tanpa izin situs web</span><span lang="en">No website access</span></span></div>
+  </div>
+  <div class="win">
+    <img lang="id" src="images/shots/id-01-detail.jpg" alt="Wikipindai di panel samping Chrome menampilkan detail Wikidata Candi Borobudur" width="1280" height="800" fetchpriority="high" decoding="async">
+    <img lang="en" src="images/shots/en-01-detail.jpg" alt="Wikipindai in Chrome's side panel showing the Wikidata detail for Borobudur Temple" width="1280" height="800" fetchpriority="high" decoding="async">
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="fitur" class="alt"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Fitur</span><span lang="en">Features</span></div>
+  <h2><span lang="id">Satu kotak cari, tujuh proyek Wikimedia</span><span lang="en">One search box, seven Wikimedia projects</span></h2>
+  <p class="sec-lead"><span lang="id">Semua yang Anda perlukan untuk memeriksa sebuah topik, di samping halaman yang sedang Anda baca.</span><span lang="en">Everything you need to check a topic, right next to the page you are reading.</span></p>
+  <div class="cards">
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M15 4v16"/></svg></div>
+      <h3><span lang="id">Panel samping</span><span lang="en">Side panel</span></h3>
+      <p><span lang="id">Hasil tampil di samping halaman, jadi bacaan Anda tidak tergeser. Buka dari klik kanan atau ikon toolbar.</span><span lang="en">Results appear beside the page, so your reading is never interrupted. Open it from the right-click menu or the toolbar icon.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div>
+      <h3><span lang="id">Tujuh mode pencarian</span><span lang="en">Seven search modes</span></h3>
+      <p><span lang="id">Ganti proyek dengan satu klik; kata yang sama langsung dicari ulang. Kolom kosong menjelaskan fungsi tiap mode.</span><span lang="en">Switch project with one click and the same word is searched again. An empty box explains what each mode is for.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg></div>
+      <h3><span lang="id">Detail Wikidata</span><span lang="en">Wikidata detail</span></h3>
+      <p><span lang="id">Deskripsi, paragraf pembuka Wikipedia dalam bahasa Anda, dan tombol baca yang memakai suara di perangkat.</span><span lang="en">A description, the opening paragraph from Wikipedia in your language, and a read-aloud button that uses on-device voices.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></svg></div>
+      <h3><span lang="id">Direktori interwiki</span><span lang="en">Interwiki directory</span></h3>
+      <p><span lang="id">Lihat di bahasa dan proyek mana saja sebuah topik ada, dengan filter proyek, pencarian, dan 12 tautan per halaman.</span><span lang="en">See every language and project a topic exists in, with project filters, search and 12 links per page.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/></svg></div>
+      <h3><span lang="id">Thumbnail di Commons</span><span lang="en">Commons thumbnails</span></h3>
+      <p><span lang="id">Hasil Wikimedia Commons menampilkan pratinjau gambar, dan ikon untuk audio, video, dan kategori.</span><span lang="en">Wikimedia Commons results show image previews, and icons for audio, video and categories.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6.5 3h11A1.5 1.5 0 0 1 19 4.5V21l-7-4.2L5 21V4.5A1.5 1.5 0 0 1 6.5 3z"/></svg></div>
+      <h3><span lang="id">Riwayat dan item tersimpan</span><span lang="en">History and saved items</span></h3>
+      <p><span lang="id">Riwayat per tanggal dan jam, item tersimpan per proyek, lengkap dengan ekspor dan impor JSON.</span><span lang="en">History by date and time, saved items by project, with JSON export and import.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h9M8.5 3v2M6 5c0 4 3 7 7 8M12 5c0 4-3 7-7 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg></div>
+      <h3><span lang="id">15 bahasa antarmuka</span><span lang="en">15 interface languages</span></h3>
+      <p><span lang="id">Mengganti bahasa memuat ulang hasil dari edisi bahasa itu. Tersedia mode terang dan gelap.</span><span lang="en">Changing language reloads results from that language's edition. Light and dark themes included.</span></p></article>
+    <article class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h3><span lang="id">Privasi sebagai dasar</span><span lang="en">Private by design</span></h3>
+      <p><span lang="id">Tanpa AI, pelacakan, atau server sendiri, dan tidak meminta akses ke situs web mana pun.</span><span lang="en">No AI, no tracking, no server of its own, and no access to any website.</span></p></article>
+  </div>
+  <div class="projects" aria-label="Proyek / Projects">
+    <span>Wikidata</span><span>Wikipedia</span><span>Wikimedia Commons</span><span>Wikivoyage</span><span>Wiktionary</span><span>Wikiquote</span><span>Wikisource</span>
+  </div>
+</div></section>
+
+<!-- HOW -->
+<section id="cara"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Cara pakai</span><span lang="en">How it works</span></div>
+  <h2><span lang="id">Tiga langkah</span><span lang="en">Three steps</span></h2>
+  <p class="sec-lead"><span lang="id">Tidak ada akun, tidak ada pengaturan awal.</span><span lang="en">No account, no setup.</span></p>
+  <div class="steps">
+    <div class="step"><h3><span lang="id">Blok teks</span><span lang="en">Select text</span></h3><p><span lang="id">Pilih sebuah kata atau frasa (paling banyak 5 kata) di halaman web mana pun.</span><span lang="en">Select a word or phrase (up to 5 words) on any web page.</span></p></div>
+    <div class="step"><h3><span lang="id">Klik kanan</span><span lang="en">Right-click</span></h3><p><span lang="id">Pilih “Cari … di Wikipindai”, atau klik ikon ekstensi lalu ketik pencarian.</span><span lang="en">Choose “Look up … on Wikipindai”, or click the extension icon and type a search.</span></p></div>
+    <div class="step"><h3><span lang="id">Baca, simpan, buka</span><span lang="en">Read, save, open</span></h3><p><span lang="id">Baca hasilnya di panel, simpan dengan bookmark, atau buka halaman aslinya di tab baru.</span><span lang="en">Read the result in the panel, bookmark it, or open the original page in a new tab.</span></p></div>
+  </div>
+</div></section>
+
+<!-- GALLERY -->
+<section id="galeri" class="alt"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Galeri</span><span lang="en">Gallery</span></div>
+  <h2><span lang="id">Lihat langsung</span><span lang="en">See it in action</span></h2>
+  <p class="sec-lead"><span lang="id">Tampilan nyata dari ekstensi. Geser ke samping untuk melihat semuanya.</span><span lang="en">Real screens from the extension. Scroll sideways to see them all.</span></p>
+  <div class="shots" tabindex="0">
+    <figure><div class="win"><img lang="id" src="images/shots/id-01-detail.jpg" alt="Detail Wikidata" loading="lazy" decoding="async" width="1280" height="800"><img lang="en" src="images/shots/en-01-detail.jpg" alt="Wikidata detail" loading="lazy" decoding="async" width="1280" height="800"></div><figcaption><b><span lang="id">Detail Wikidata</span><span lang="en">Wikidata detail</span></b><span lang="id">Deskripsi dan paragraf pembuka.</span><span lang="en">Description and opening paragraph.</span></figcaption></figure>
+    <figure><div class="win"><img lang="id" src="images/shots/id-02-interwiki.jpg" alt="Direktori interwiki" loading="lazy" decoding="async" width="1280" height="800"><img lang="en" src="images/shots/en-02-interwiki.jpg" alt="Interwiki directory" loading="lazy" decoding="async" width="1280" height="800"></div><figcaption><b><span lang="id">Direktori interwiki</span><span lang="en">Interwiki directory</span></b><span lang="id">Semua bahasa dan proyek dalam satu daftar.</span><span lang="en">Every language and project in one list.</span></figcaption></figure>
+    <figure><div class="win"><img lang="id" src="images/shots/id-03-commons.jpg" alt="Hasil Commons dengan thumbnail" loading="lazy" decoding="async" width="1280" height="800"><img lang="en" src="images/shots/en-03-commons.jpg" alt="Commons results with thumbnails" loading="lazy" decoding="async" width="1280" height="800"></div><figcaption><b>Wikimedia Commons</b><span lang="id">Gambar dan media bebas dengan thumbnail.</span><span lang="en">Free images and media with thumbnails.</span></figcaption></figure>
+    <figure><div class="win"><img lang="id" src="images/shots/id-04-saved.jpg" alt="Item tersimpan per proyek" loading="lazy" decoding="async" width="1280" height="800"><img lang="en" src="images/shots/en-04-saved.jpg" alt="Saved items grouped by project" loading="lazy" decoding="async" width="1280" height="800"></div><figcaption><b><span lang="id">Item tersimpan</span><span lang="en">Saved items</span></b><span lang="id">Dikelompokkan per proyek, ekspor dan impor JSON.</span><span lang="en">Grouped by project, with JSON export and import.</span></figcaption></figure>
+    <figure><div class="win"><img lang="id" src="images/shots/id-05-languages.jpg" alt="Antarmuka bahasa Jepang dalam mode gelap" loading="lazy" decoding="async" width="1280" height="800"><img lang="en" src="images/shots/en-05-languages.jpg" alt="Japanese interface in dark mode" loading="lazy" decoding="async" width="1280" height="800"></div><figcaption><b><span lang="id">15 bahasa, terang dan gelap</span><span lang="en">15 languages, light and dark</span></b><span lang="id">Contoh: antarmuka Jepang, mode gelap.</span><span lang="en">Example: Japanese interface, dark mode.</span></figcaption></figure>
+  </div>
+</div></section>
+
+<!-- INSTALL -->
+<section id="pasang"><div class="wrap">
+  <div class="eyebrow"><span lang="id">Pasang</span><span lang="en">Install</span></div>
+  <h2><span lang="id">Pasang Wikipindai</span><span lang="en">Get Wikipindai</span></h2>
+  <p class="sec-lead"><span lang="id">Perlu Chrome 116 atau lebih baru.</span><span lang="en">Requires Chrome 116 or newer.</span></p>
+  <div class="plats">
+    <div class="plat soon">
+      <h3>Chrome Web Store <span class="tag"><span lang="id">Segera</span><span lang="en">Soon</span></span></h3>
+      <p><span lang="id">Cara termudah dan memperbarui diri sendiri. Tautannya akan muncul di sini setelah ekstensi tayang.</span><span lang="en">The easiest way, and it updates itself. The link will appear here once the extension is published.</span></p>
+      <a class="btn primary" id="cwsBtn2" href="#pasang" aria-disabled="true"><span lang="id">Belum tersedia</span><span lang="en">Not available yet</span></a>
+    </div>
+    <div class="plat">
+      <h3><span lang="id">Pasang manual</span><span lang="en">Manual install</span></h3>
+      <ol>
+        <li><span lang="id">Unduh ZIP di bawah, lalu ekstrak.</span><span lang="en">Download the ZIP below and extract it.</span></li>
+        <li><span lang="id">Buka <code>chrome://extensions</code> dan aktifkan <b>Mode pengembang</b>.</span><span lang="en">Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>.</span></li>
+        <li><span lang="id">Klik <b>Muat yang belum dipaketkan</b> dan pilih folder hasil ekstrak.</span><span lang="en">Click <b>Load unpacked</b> and choose the extracted folder.</span></li>
+        <li><span lang="id">Sematkan ikonnya di toolbar (opsional).</span><span lang="en">Pin the icon to the toolbar (optional).</span></li>
+      </ol>
+      <a class="btn primary" href="downloads/wikipindai-1.0.0.zip" download><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg><span><span lang="id">Unduh ZIP · v1.0.0</span><span lang="en">Download ZIP · v1.0.0</span></span></a>
+    </div>
+  </div>
+</div></section>
+
+<!-- PRIVACY -->
+<section id="privasi" class="alt"><div class="wrap split">
+  <div>
+    <div class="eyebrow"><span lang="id">Privasi</span><span lang="en">Privacy</span></div>
+    <h2><span lang="id">Datamu tetap di perangkatmu</span><span lang="en">Your data stays on your device</span></h2>
+    <p class="sec-lead" style="margin-bottom:10px"><span lang="id">Wikipindai tidak punya server dan tidak menjual atau membagikan data.</span><span lang="en">Wikipindai has no server and does not sell or share data.</span></p>
+    <ul class="checks">
+      <li><span lang="id"><b>Pencarian hanya ke Wikimedia.</b> Teks dikirim langsung dari peramban ke situs proyek Wikimedia untuk mengambil hasil.</span><span lang="en"><b>Searches go only to Wikimedia.</b> Text is sent straight from your browser to Wikimedia project sites to fetch results.</span></li>
+      <li><span lang="id"><b>Riwayat dan item tersimpan</b> hanya ada di perangkat Anda. Ekspor JSON terjadi bila Anda menekannya.</span><span lang="en"><b>History and saved items</b> stay on your device. A JSON export happens only when you press it.</span></li>
+      <li><span lang="id"><b>Tombol baca</b> memakai suara yang terpasang di perangkat, bukan suara online.</span><span lang="en"><b>Read aloud</b> uses voices installed on your device, not online voices.</span></li>
+      <li><span lang="id"><b>Tanpa izin akses situs web.</b> Ekstensi hanya meminta izin panel samping, menu klik kanan, dan penyimpanan.</span><span lang="en"><b>No website access.</b> The extension asks only for the side panel, the context menu and storage.</span></li>
+    </ul>
+    <p style="margin-top:18px"><a class="btn ghost" href="privacy.html"><span lang="id">Baca Kebijakan Privasi</span><span lang="en">Read the Privacy Policy</span></a></p>
+  </div>
+  <div class="win" style="padding:22px">
+    <p style="margin:0 0 10px;font-weight:800;font-size:18px"><span lang="id">Izin yang diminta</span><span lang="en">Permissions requested</span></p>
+    <p style="margin:0 0 8px;color:var(--muted)"><code>sidePanel</code> — <span lang="id">menampilkan hasil di panel samping.</span><span lang="en">shows results in the side panel.</span></p>
+    <p style="margin:0 0 8px;color:var(--muted)"><code>contextMenus</code> — <span lang="id">item “Cari … di Wikipindai” saat teks dipilih.</span><span lang="en">the “Look up … on Wikipindai” item when text is selected.</span></p>
+    <p style="margin:0;color:var(--muted)"><code>storage</code> — <span lang="id">menyimpan bahasa, tema, riwayat, dan item tersimpan di perangkat.</span><span lang="en">keeps language, theme, history and saved items on the device.</span></p>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section id="faq"><div class="wrap" style="max-width:820px">
+  <div class="eyebrow"><span lang="id">Tanya jawab</span><span lang="en">FAQ</span></div>
+  <h2 style="margin-bottom:22px"><span lang="id">Pertanyaan yang sering muncul</span><span lang="en">Frequently asked questions</span></h2>
+  <details><summary><span lang="id">Apakah ini ekstensi resmi Wikimedia?</span><span lang="en">Is this an official Wikimedia extension?</span></summary><p><span lang="id">Bukan. Wikipindai adalah proyek independen dan tidak berafiliasi dengan, didukung, atau disponsori oleh Wikimedia Foundation. Wikipedia, Wikidata, Wikimedia Commons, dan nama proyek lainnya adalah merek dagang Wikimedia Foundation. Wikipindai hanya memakai API publik proyek-proyek itu.</span><span lang="en">No. Wikipindai is an independent project and is not affiliated with, endorsed by, or sponsored by the Wikimedia Foundation. Wikipedia, Wikidata, Wikimedia Commons and the other project names are trademarks of the Wikimedia Foundation. Wikipindai only uses those projects' public APIs.</span></p></details>
+  <details><summary><span lang="id">Apakah Wikipindai memakai AI atau melacak saya?</span><span lang="en">Does Wikipindai use AI or track me?</span></summary><p><span lang="id">Tidak. Tidak ada AI, analitik, iklan, atau server milik Wikipindai. Riwayat dan item tersimpan hanya ada di perangkat Anda.</span><span lang="en">No. There is no AI, analytics, ads or server of Wikipindai's own. History and saved items stay on your device.</span></p></details>
+  <details><summary><span lang="id">Kenapa pilihan teks dibatasi 5 kata?</span><span lang="en">Why is the selection limited to 5 words?</span></summary><p><span lang="id">Menu klik kanan dirancang untuk istilah dan frasa pendek. Pilihan yang lebih panjang hanya menampilkan pesan di panel. Anda tetap bisa mengetik pencarian apa pun di kolom cari.</span><span lang="en">The right-click item is meant for terms and short phrases. A longer selection only shows a message in the panel. You can still type any search in the search box.</span></p></details>
+  <details><summary><span lang="id">Tombol Baca bilang suara belum terpasang. Kenapa?</span><span lang="en">Read aloud says no voice is installed. Why?</span></summary><p><span lang="id">Wikipindai hanya memakai suara yang terpasang di perangkat, supaya teks tidak dikirim ke layanan suara online. Tambahkan suara untuk bahasa itu di pengaturan suara sistem operasi Anda.</span><span lang="en">Wikipindai only uses voices installed on the device, so text is never sent to an online speech service. Add a voice for that language in your operating system's speech settings.</span></p></details>
+  <details><summary><span lang="id">Bahasa apa saja yang didukung?</span><span lang="en">Which languages are supported?</span></summary><p><span lang="id">English, Bahasa Indonesia, Bahasa Melayu, 한국어, Español, Français, Deutsch, 日本語, 中文, العربية, Nederlands, Русский, ไทย, தமிழ், dan עברית. Bahasa antarmuka sekaligus menentukan edisi Wikipedia, Wiktionary, dan proyek lain yang dicari.</span><span lang="en">English, Bahasa Indonesia, Bahasa Melayu, 한국어, Español, Français, Deutsch, 日本語, 中文, العربية, Nederlands, Русский, ไทย, தமிழ், and עברית. The interface language also decides which edition of Wikipedia, Wiktionary and the other projects is searched.</span></p></details>
+  <details><summary><span lang="id">Bagaimana cara memindahkan item tersimpan ke peramban lain?</span><span lang="en">How do I move saved items to another browser?</span></summary><p><span lang="id">Di tab Tersimpan, tekan Ekspor untuk mengunduh berkas JSON, lalu tekan Impor di peramban tujuan dan pilih berkas itu. Item yang sudah ada dilewati.</span><span lang="en">In the Saved tab, press Export to download a JSON file, then press Import in the other browser and choose that file. Items you already have are skipped.</span></p></details>
+  <details><summary><span lang="id">Siapa yang membuatnya, dan apa lisensinya?</span><span lang="en">Who made it, and what is the license?</span></summary><p><span lang="id">Dibuat oleh <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>. Kode sumbernya berlisensi MIT. Konten yang ditampilkan berasal dari proyek Wikimedia dan memakai lisensinya sendiri, misalnya CC BY-SA 4.0; setiap berkas di Commons punya lisensinya sendiri.</span><span lang="en">Made by <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a>. The source code is MIT licensed. Displayed content comes from Wikimedia projects and keeps its own licenses, such as CC BY-SA 4.0; each file on Commons has its own license.</span></p></details>
+</div></section>
+
+<!-- FINAL CTA -->
+<section style="padding-top:0"><div class="wrap">
+  <div class="final">
+    <h2><span lang="id">Siap mencari tanpa berpindah tab?</span><span lang="en">Ready to look things up without switching tabs?</span></h2>
+    <p><span lang="id">Pasang Wikipindai dan biarkan Wikimedia terbuka di samping halaman Anda.</span><span lang="en">Get Wikipindai and keep Wikimedia open beside your page.</span></p>
+    <a class="btn" href="#pasang"><span lang="id">Cara memasang</span><span lang="en">How to install</span></a>
+    <a class="btn" href="downloads/wikipindai-1.0.0.zip" download><span lang="id">Unduh ZIP</span><span lang="en">Download ZIP</span></a>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap row">
+  <div>© <span id="yr">2026</span> <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a> · Wikipindai · <span lang="id">Proyek independen, tidak berafiliasi dengan Wikimedia Foundation.</span><span lang="en">Independent project, not affiliated with the Wikimedia Foundation.</span></div>
+  <div>
+    <a href="privacy.html"><span lang="id">Kebijakan Privasi</span><span lang="en">Privacy Policy</span></a> ·
+    <a href="../wikilokal/">Wikilokal</a> ·
+    <a href="https://commons.wikimedia.org" rel="noopener" target="_blank">Wikimedia Commons</a> ·
+    <a href="https://www.wikidata.org" rel="noopener" target="_blank">Wikidata</a>
+  </div>
+</div></footer>
+
+<script>
+(function(){
+  /* Set this to the Chrome Web Store address once the extension is published; the buttons switch on by themselves. */
+  var CWS_URL='';
+
+  var root=document.documentElement,btn=document.getElementById('langBtn');
+  function set(l){root.lang=l;btn.setAttribute('aria-checked',l==='en');try{localStorage.setItem('wp-lang',l)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('wp-lang')}catch(e){}
+  set(saved||((navigator.language||'id').toLowerCase().indexOf('id')===0?'id':'en'));
+  btn.addEventListener('click',function(){set(root.lang==='id'?'en':'id')});
+
+  var mq=window.matchMedia('(prefers-color-scheme: dark)'),tb=document.getElementById('themeBtn');
+  function effective(){var t=root.getAttribute('data-theme');return t||(mq.matches?'dark':'light')}
+  function paint(){tb.setAttribute('aria-checked',effective()==='dark')}
+  tb.addEventListener('click',function(){
+    var next=effective()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);try{localStorage.setItem('wp-theme',next)}catch(e){}
+    paint();
+  });
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(paint);
+  paint();
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  if(CWS_URL){
+    [['cwsBtn','cwsLabel'],['cwsBtn2',null]].forEach(function(p){
+      var a=document.getElementById(p[0]);a.href=CWS_URL;a.target='_blank';a.rel='noopener';a.removeAttribute('aria-disabled');
+      var t=p[1]?document.getElementById(p[1]):a;
+      t.innerHTML='<span lang="id">Pasang di Chrome Web Store</span><span lang="en">Add to Chrome</span>';
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikipindai — Kebijakan Privasi / Privacy Policy</title>
+<meta name="description" content="Kebijakan privasi Wikipindai: data apa yang diproses, ke mana dikirim, dan apa yang tersimpan di perangkat Anda.">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<style>
+:root{
+  --bg:#f6f8fd; --surface:#ffffff; --ink:#0f172a; --muted:#52607a; --line:#dde4f0;
+  --brand:#4f46e5; --brand-2:#38bdf8; --soft:#eceefc; --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+:root{color-scheme:light}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){color-scheme:dark;--bg:#0b1020;--surface:#121a2f;--ink:#eaf0fb;--muted:#9fb0c9;--line:#243049;--soft:#171f3d;--brand:#818cf8;--shadow:0 10px 30px rgba(0,0,0,.4)}
+}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0b1020;--surface:#121a2f;--ink:#eaf0fb;--muted:#9fb0c9;--line:#243049;--soft:#171f3d;--brand:#818cf8;--shadow:0 10px 30px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--brand)}
+.wrap{width:min(860px,100% - 32px);margin-inline:auto}
+html[lang="id"] [lang="en"], html[lang="en"] [lang="id"]{display:none!important}
+code{background:var(--soft);border-radius:6px;padding:1px 6px;font-size:.92em}
+
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:12px;height:60px}
+.back{display:inline-flex;align-items:center;gap:6px;padding:7px 14px 7px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{border-color:var(--brand)}
+.back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:-.01em;white-space:nowrap;margin-right:auto}
+.logo img{width:30px;height:30px;border-radius:9px;background:#fff;padding:2px;border:1px solid var(--line)}
+.lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;cursor:pointer}
+.switch{position:relative;display:grid;grid-template-columns:1fr 1fr;width:76px;height:34px;padding:0;border-radius:999px;overflow:hidden}
+.switch span{position:relative;z-index:1;display:grid;place-items:center;font-size:12.5px;transition:color .2s}
+.switch i{position:absolute;z-index:0;top:3px;left:3px;width:calc(50% - 3px);height:26px;border-radius:999px;background:var(--brand);transition:transform .22s}
+.switch[aria-checked="false"] span:first-of-type,.switch[aria-checked="true"] span:last-of-type{color:#fff}
+.switch[aria-checked="true"] i{transform:translateX(100%)}
+@media (max-width:520px){.back .t{display:none}.back{padding:7px 9px}}
+
+.head{padding:48px 0 8px}
+.eyebrow{color:var(--brand);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.12;margin:8px 0 10px;letter-spacing:-.02em}
+.meta{color:var(--muted);font-size:14px;margin:0}
+.summary{background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:18px 22px;margin:26px 0 8px}
+.summary b{display:block;margin-bottom:6px}
+.summary ul{margin:0;padding-left:20px}
+.summary li{margin:3px 0}
+section{padding:26px 0 0}
+h2{font-size:22px;line-height:1.25;margin:0 0 8px;letter-spacing:-.01em;scroll-margin-top:76px}
+p{margin:0 0 12px}
+section ul{margin:0 0 12px;padding-left:22px}
+section li{margin:5px 0}
+.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);font-size:14.5px;margin:0 0 12px}
+.table th,.table td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+.table tr:last-child td{border-bottom:0}
+.table th{background:var(--soft);font-size:13px;color:var(--muted)}
+.scroll{overflow-x:auto}
+.scroll .table{min-width:560px}
+footer{margin-top:44px;padding:30px 0 56px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer a{color:var(--muted)}
+</style>
+<script>
+try{var t=localStorage.getItem('wp-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+</script>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="back" href="./" aria-label="Kembali / Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span class="t"><span lang="id">Kembali</span><span lang="en">Back</span></span></a>
+    <a class="logo" href="./" aria-label="Wikipindai"><img src="icon-192.png" alt="" width="30" height="30">Wikipindai</a>
+    <button class="lang switch" id="langBtn" type="button" role="switch" aria-checked="false" aria-label="Bahasa / Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="eyebrow"><span lang="id">Kebijakan</span><span lang="en">Policy</span></div>
+    <h1><span lang="id">Kebijakan Privasi</span><span lang="en">Privacy Policy</span></h1>
+    <p class="meta"><span lang="id">Berlaku untuk ekstensi Chrome Wikipindai. Terakhir diperbarui: 3 November 2026.</span><span lang="en">Applies to the Wikipindai Chrome extension. Last updated: 3 November 2026.</span></p>
+
+    <div class="summary">
+      <b><span lang="id">Ringkasnya</span><span lang="en">In short</span></b>
+      <ul>
+        <li><span lang="id">Wikipindai tidak punya akun, server, iklan, AI, atau analitik, dan tidak melacak Anda.</span><span lang="en">Wikipindai has no accounts, server, ads, AI or analytics, and does not track you.</span></li>
+        <li><span lang="id">Teks yang Anda cari dikirim langsung ke situs proyek Wikimedia untuk mengambil hasil.</span><span lang="en">The text you search for is sent straight to Wikimedia project sites to fetch results.</span></li>
+        <li><span lang="id">Riwayat, item tersimpan, dan pengaturan hanya ada di perangkat Anda.</span><span lang="en">History, saved items and settings stay on your device.</span></li>
+        <li><span lang="id">Wikipindai tidak meminta izin akses ke situs web mana pun.</span><span lang="en">Wikipindai does not ask for access to any website.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="data">
+    <h2><span lang="id">1. Data yang diproses</span><span lang="en">1. Data processed</span></h2>
+    <ul>
+      <li><span lang="id"><b>Teks pencarian:</b> kata yang Anda ketik di panel, atau teks yang Anda blok di halaman web lalu kirim lewat “Cari … di Wikipindai”. Dipakai hanya untuk mencari.</span><span lang="en"><b>Search text:</b> what you type in the panel, or text you select on a web page and send with “Look up … on Wikipindai”. Used only to search.</span></li>
+      <li><span lang="id"><b>Pengaturan dan data lokal:</b> bahasa, tema, mode pencarian, riwayat pencarian (maksimal 200 kata), dan item tersimpan. Disimpan di perangkat lewat <code>chrome.storage.local</code> dan tidak dikirim ke mana pun.</span><span lang="en"><b>Settings and local data:</b> language, theme, search mode, search history (up to 200 terms) and saved items. Stored on your device with <code>chrome.storage.local</code> and not sent anywhere.</span></li>
+    </ul>
+  </section>
+
+  <section id="kirim">
+    <h2><span lang="id">2. Ke mana data dikirim</span><span lang="en">2. Where data is sent</span></h2>
+    <p><span lang="id">Teks pencarian dikirim langsung dari peramban Anda ke situs berikut untuk mengambil hasil:</span><span lang="en">Search text goes straight from your browser to these sites to fetch results:</span></p>
+    <div class="scroll"><table class="table">
+      <tr><th><span lang="id">Situs</span><span lang="en">Site</span></th><th><span lang="id">Dipakai untuk</span><span lang="en">Used for</span></th></tr>
+      <tr><td><code>*.wikipedia.org</code></td><td><span lang="id">Pencarian Wikipedia, ringkasan artikel (paragraf pembuka)</span><span lang="en">Wikipedia search, article summaries (opening paragraph)</span></td></tr>
+      <tr><td><code>www.wikidata.org</code></td><td><span lang="id">Pencarian dan detail Wikidata</span><span lang="en">Wikidata search and item details</span></td></tr>
+      <tr><td><code>commons.wikimedia.org</code></td><td><span lang="id">Pencarian Commons dan data thumbnail</span><span lang="en">Commons search and thumbnail data</span></td></tr>
+      <tr><td><code>*.wikivoyage.org</code>, <code>*.wiktionary.org</code>, <code>*.wikiquote.org</code>, <code>*.wikisource.org</code></td><td><span lang="id">Pencarian di proyek masing-masing</span><span lang="en">Search in each project</span></td></tr>
+      <tr><td><code>upload.wikimedia.org</code></td><td><span lang="id">Gambar pratinjau (thumbnail) dan logo proyek</span><span lang="en">Preview images (thumbnails) and project logos</span></td></tr>
+    </table></div>
+    <p><span lang="id">Seperti permintaan web pada umumnya, Wikimedia dapat menerima alamat IP dan informasi peramban Anda. Hal itu diatur oleh <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" rel="noopener" target="_blank">Kebijakan Privasi Wikimedia Foundation</a>.</span><span lang="en">As with any web request, Wikimedia can receive your IP address and browser information. That is covered by the <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" rel="noopener" target="_blank">Wikimedia Foundation Privacy Policy</a>.</span></p>
+    <p><span lang="id">Wikipindai tidak menjual atau membagikan data kepada pihak lain, dan tidak memakai data untuk tujuan di luar pencarian.</span><span lang="en">Wikipindai does not sell or share data with anyone else, and does not use data for anything beyond searching.</span></p>
+  </section>
+
+  <section id="tautan">
+    <h2><span lang="id">3. Tautan ke alat lain</span><span lang="en">3. Links to other tools</span></h2>
+    <p><span lang="id">Di Pengaturan ada tautan ke alat buatan Affandy Murad. Tautan itu hanya dibuka bila Anda mengkliknya. Tautan Wikiabstrak dan Kumpulan Alat Wiki menyertakan kata pencarian di kolom cari (parameter <code>q</code>), dan Wikiabstrak juga bahasa antarmuka (<code>lang</code>), hanya saat Anda membukanya.</span><span lang="en">Settings has links to tools made by Affandy Murad. They open only when you click them. The Wikiabstrak and Wiki Tools links carry the text from the search box (the <code>q</code> parameter), and Wikiabstrak also the interface language (<code>lang</code>), only when you open them.</span></p>
+  </section>
+
+  <section id="baca">
+    <h2><span lang="id">4. Fitur baca</span><span lang="en">4. Read aloud</span></h2>
+    <p><span lang="id">Tombol Baca memakai suara yang terpasang di perangkat Anda lewat peramban. Suara online tidak digunakan, sehingga teks tidak dikirim ke layanan suara.</span><span lang="en">The Read button uses voices installed on your device through the browser. Online voices are not used, so the text is never sent to a speech service.</span></p>
+  </section>
+
+  <section id="izin">
+    <h2><span lang="id">5. Izin ekstensi</span><span lang="en">5. Extension permissions</span></h2>
+    <ul>
+      <li><code>sidePanel</code> — <span lang="id">menampilkan hasil di panel samping.</span><span lang="en">shows results in the side panel.</span></li>
+      <li><code>contextMenus</code> — <span lang="id">item “Cari … di Wikipindai” saat teks dipilih.</span><span lang="en">the “Look up … on Wikipindai” item when text is selected.</span></li>
+      <li><code>storage</code> — <span lang="id">menyimpan pengaturan, riwayat, dan item tersimpan di perangkat, serta meneruskan teks terpilih dari menu klik kanan ke panel.</span><span lang="en">keeps settings, history and saved items on the device, and passes the selected text from the context menu to the panel.</span></li>
+    </ul>
+    <p><span lang="id">Tidak ada izin host: Wikipindai tidak dapat membaca isi situs web yang Anda kunjungi. Teks hanya diterima saat Anda memilihnya lalu memakai menu klik kanan.</span><span lang="en">There are no host permissions: Wikipindai cannot read the sites you visit. It receives text only when you select it and use the context menu.</span></p>
+  </section>
+
+  <section id="pilihan">
+    <h2><span lang="id">6. Pilihan Anda</span><span lang="en">6. Your choices</span></h2>
+    <ul>
+      <li><span lang="id">Matikan penyimpanan riwayat di Pengaturan, atau hapus lewat tombol “Hapus riwayat”.</span><span lang="en">Turn history off in Settings, or clear it with the “Clear history” button.</span></li>
+      <li><span lang="id">Hapus item tersimpan satu per satu, atau ekspor sebagai berkas JSON yang hanya ada di komputer Anda.</span><span lang="en">Remove saved items one by one, or export them as a JSON file that stays on your computer.</span></li>
+      <li><span lang="id">Hapus semua data dengan mencopot ekstensi.</span><span lang="en">Remove all data by uninstalling the extension.</span></li>
+    </ul>
+  </section>
+
+  <section id="status">
+    <h2><span lang="id">7. Perubahan dan kontak</span><span lang="en">7. Changes and contact</span></h2>
+    <p><span lang="id">Jika kebijakan ini berubah, tanggal pembaruan di atas akan diperbarui. Wikipindai adalah proyek independen dan tidak berafiliasi dengan, didukung, atau disponsori oleh Wikimedia Foundation. Pertanyaan: <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a> di Meta-Wiki.</span><span lang="en">If this policy changes, the update date above will change. Wikipindai is an independent project and is not affiliated with, endorsed by, or sponsored by the Wikimedia Foundation. Questions: <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" rel="noopener" target="_blank">Affandy Murad</a> on Meta-Wiki.</span></p>
+  </section>
+</main>
+
+<footer><div class="wrap">© <span id="yr">2026</span> Affandy Murad · Wikipindai · <a href="./"><span lang="id">Beranda</span><span lang="en">Home</span></a></div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('langBtn');
+  function set(l){root.lang=l;btn.setAttribute('aria-checked',l==='en');try{localStorage.setItem('wp-lang',l)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('wp-lang')}catch(e){}
+  set(saved||((navigator.language||'id').toLowerCase().indexOf('id')===0?'id':'en'));
+  btn.addEventListener('click',function(){set(root.lang==='id'?'en':'id')});
+  document.getElementById('yr').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
