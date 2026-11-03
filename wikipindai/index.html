@@ -42,6 +42,8 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 nav.links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.links a{padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14.5px;white-space:nowrap}
 nav.links a:hover{background:var(--soft);color:var(--ink)}
+nav.links a.owner{border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;margin-right:6px}
+nav.links a.owner:hover{border-color:var(--brand);color:var(--brand)}
 .lang{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:600 13px inherit;cursor:pointer}
 .switch{position:relative;display:grid;grid-template-columns:1fr 1fr;width:76px;height:34px;padding:0;border-radius:999px;overflow:hidden}
 .switch span{position:relative;z-index:1;display:grid;place-items:center;font-size:12.5px;transition:color .2s}
@@ -145,6 +147,7 @@ try{var t=localStorage.getItem('wp-theme');if(t==='dark'||t==='light')document.d
       Wikipindai
     </a>
     <nav class="links" aria-label="Menu">
+      <a class="owner" href="https://affandymurad.github.io/">Affandy Murad</a>
       <a href="#fitur"><span lang="id">Fitur</span><span lang="en">Features</span></a>
       <a href="#cara"><span lang="id">Cara pakai</span><span lang="en">How it works</span></a>
       <a href="#galeri"><span lang="id">Galeri</span><span lang="en">Gallery</span></a>
