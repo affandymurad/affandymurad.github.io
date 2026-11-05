@@ -651,8 +651,18 @@ function sectionByHead(root,re){
 function H(re){ return r => sectionByHead(r,re); }
 /* Wikipedia Ibrani: judul <h2> dan isinya berada dalam satu <div> pembungkus */
 function HP(re){ return r => { const h = [...r.querySelectorAll('h2')].find(e=>re.test(txt(e))); return h ? h.parentElement : null; }; }
+/* Gambar dekoratif Halaman Utama (latar judul, ikon bagian, logo) bukan gambar artikel/foto: dilewati.
+   Contoh: Wikipedia Arab menaruh Blue-bg_rounded_cropped_right.svg (250px) paling awal di tiap bagian. */
+const DECOR_IMG = /Blue-bg|bg_rounded|Wikibar|\/Crystal_|\/HS[A-Za-z]*\.(?:svg|png)|Twemoji|Emojione|Information_icon|Commons-logo|Wikimedia-logo|Ambox/i;
+function mainImg(root){
+  return [...root.querySelectorAll('img')].find(img=>{
+    let s = img.getAttribute('src') || '';
+    try{ s = decodeURIComponent(s); }catch(e){}
+    return !DECOR_IMG.test(s);
+  }) || null;
+}
 function firstImg(root){
-  const img = root.querySelector('img');
+  const img = mainImg(root);
   return img ? (img.closest('a')||img).outerHTML : '';
 }
 /* thumbnail kecil (120px/250px) diganti ukuran standar 330px agar tidak buram */
@@ -664,7 +674,7 @@ function tfaOut(root){
   return (im?`<figure class="pic">${bigger(im)}</figure>`:'') + ps.map(p=>`<p>${p.innerHTML}</p>`).join('');
 }
 function potdOut(root){
-  const imgEl = root.querySelector('img');
+  const imgEl = mainImg(root);
   if(!imgEl) return '';
   const im = (imgEl.closest('a')||imgEl).outerHTML;
   const fc = root.querySelector('figcaption');
@@ -695,6 +705,25 @@ const EXTRACT = {
   news:r=>firstListOut(r,8)
 };
 
+/* Takarir gambar dari Wikimedia Commons: bahasa edisi bila ada, kalau tidak Inggris, kalau tidak yang tersedia.
+   Dipakai saat Halaman Utama edisi tidak menulis takarir (mis. Korea) atau memakai gambar Commons apa adanya (Thailand). */
+async function commonsCaption(L,fileTitle){
+  const j = await jget('https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&prop=imageinfo&iiprop=extmetadata'
+    + '&iiextmetadatafilter=ImageDescription&iiextmetadatamultilang=1&titles=' + encodeURIComponent(fileTitle));
+  let v = j.query?.pages?.[0]?.imageinfo?.[0]?.extmetadata?.ImageDescription?.value;
+  if(v && typeof v === 'object'){
+    const want = [L.html, ...(L.html === 'zh' ? ['zh-hans','zh-cn','zh-hant'] : []), 'en'];
+    const k = want.find(x=>v[x]) || Object.keys(v).find(x=>x !== '_type');
+    v = k ? v[k] : '';
+  }
+  return typeof v === 'string' && v.trim() ? clean(v,'commons.wikimedia.org').innerHTML.trim() : '';
+}
+function commonsFileOf(html){
+  const m = html.match(/\/commons\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^\/"'?\s>]+)/);
+  if(!m) return '';
+  try{ return 'File:' + decodeURIComponent(m[1]).replace(/_/g,' '); }catch(e){ return ''; }
+}
+
 /* ---------- Sumber 1: feed REST harian (hanya edisi Inggris) ---------- */
 const feed = (L,d) => jget(`https://${L.host}/api/rest_v1/feed/featured/${d.y}/${d.mm}/${d.dd}`);
 const FEED = {
@@ -709,8 +738,11 @@ const FEED = {
     const f = await feed(L,d); const i = f.image; if(!i) throw new Error('no image');
     const src = i.thumbnail?.source || i.image?.source; if(!src) throw new Error('no src');
     const url = i.file_page || wikiUrl('commons.wikimedia.org',i.title);
-    const cap = i.description?.text || '';
-    return {html:`<figure><a href="${esc(url)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="" loading="lazy"></a>${cap?`<figcaption>${esc(cap)}</figcaption>`:''}</figure>`, src:url, srcLabel:i.title};
+    let cap = esc(i.description?.text || '');
+    if(L.html !== 'en'){   // edisi lain: takarir berbahasa edisi dari Commons bila tersedia
+      try{ cap = await commonsCaption(L,i.title) || cap; }catch(e){}
+    }
+    return {html:`<figure><a href="${esc(url)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="" loading="lazy"></a>${cap?`<figcaption>${cap}</figcaption>`:''}</figure>`, src:url, srcLabel:i.title};
   },
   async dyk(L,d){
     const f = await feed(L,d); const n = f.dyk; if(!n||!n.length) throw new Error('no dyk');
@@ -744,8 +776,17 @@ async function fromMain(L,key){
   if(!s) throw new Error('section not in this edition');
   const el = typeof s === 'function' ? s(root) : root.querySelector(s);
   if(!el) throw new Error('section not found');
-  const html = EXTRACT[(L.ext && L.ext[key]) || key](el);
+  let html = EXTRACT[(L.ext && L.ext[key]) || key](el);
   if(!html) throw new Error('empty');
+  if(key === 'potd' && !/<figcaption/.test(html)){   // Halaman Utama tanpa takarir: ambil deskripsi gambar dari Commons
+    const file = commonsFileOf(html);
+    if(file){
+      try{
+        const cap = await commonsCaption(L,file);
+        if(cap) html = html.replace('</figure>',`<figcaption>${cap}</figcaption></figure>`);
+      }catch(e){}
+    }
+  }
   return {html, src:wikiUrl(L.host,L.main), srcLabel:L.main};
 }
 /* Cadangan 1: halaman lain di Wikipedia yang sama (mis. Portal peristiwa terkini) */
