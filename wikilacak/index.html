@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikilacak</title>
+<script>try{var p=JSON.parse(localStorage.getItem("wikilacak.prefs.v1"));if(p&&(p.theme==="light"||p.theme==="dark"))document.documentElement.setAttribute("data-theme",p.theme)}catch(e){}</script>
+<style>
+:root{
+  --bg:#f3f5f9; --card:#fff; --ink:#111827; --muted:#6b7280; --line:#e6e8ee; --soft:#f7f8fb;
+  --primary:#1f6feb; --on-primary:#fff; --primary-soft:#e8f1ff;
+  --green:#15803d; --green-soft:#e6f6ec; --red:#dc2626;
+  --new-row:#f1f6ff; --shadow:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.04);
+  --pulse:rgba(31,111,235,.5); --radius:14px;
+}
+/* tema: Sistem = ikuti perangkat, Terang/Gelap = pilihan manual */
+:root{color-scheme:light}
+:root[data-theme="dark"]{
+    --bg:#0d1117; --card:#151a22; --ink:#e6edf3; --muted:#8b95a3; --line:#262d38; --soft:#1a212b;
+    --primary:#58a6ff; --on-primary:#06101f; --primary-soft:#12284a;
+    --green:#4ac26b; --green-soft:#12301d; --red:#ff7b72; --new-row:#132238; --shadow:none;
+    --pulse:rgba(88,166,255,.5);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1117; --card:#151a22; --ink:#e6edf3; --muted:#8b95a3; --line:#262d38; --soft:#1a212b;
+    --primary:#58a6ff; --on-primary:#06101f; --primary-soft:#12284a;
+    --green:#4ac26b; --green-soft:#12301d; --red:#ff7b72; --new-row:#132238; --shadow:none;
+    --pulse:rgba(88,166,255,.5);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* ---------- navbar ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1320px;margin:0 auto;padding:10px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+.chips{display:flex;gap:6px;justify-content:center}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-weight:600;white-space:nowrap;transition:background .15s,color .15s}
+.chip:hover{background:var(--soft);color:var(--ink)}
+.chip[aria-selected="true"]{background:var(--primary-soft);color:var(--primary)}
+.tools{display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.select-wrap{position:relative;display:inline-flex;align-items:center;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding-block:0;padding-inline:10px 8px;gap:6px;color:var(--muted);max-width:100%}
+.wmark{font-family:"Linux Libertine","Libertine",Georgia,"Times New Roman",serif;font-weight:700;font-size:20px;line-height:1;color:var(--ink);letter-spacing:-.04em;margin-top:-2px}
+.select-wrap select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:var(--ink);font-weight:600;padding:0;padding-inline-end:18px;height:100%;cursor:pointer;max-width:100%}
+.select-wrap select:focus-visible{outline:none}
+.select-wrap:focus-within{outline:2px solid var(--primary);outline-offset:2px}
+.select-wrap::after{content:"";position:absolute;inset-inline-end:11px;top:13px;width:6px;height:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);pointer-events:none}
+.select-wrap option{color:#111;background:#fff}
+.icon-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-weight:600;color:var(--muted);white-space:nowrap}
+.icon-btn[aria-pressed="true"]{background:var(--primary-soft);border-color:transparent;color:var(--primary)}
+.progress{height:2px}
+.progress i{display:block;height:100%;width:0;background:var(--primary);transition:width .25s linear}
+
+/* ---------- kartu ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.title{display:flex;align-items:center;gap:10px}
+h1{margin:0;font-size:19px;letter-spacing:-.01em}
+.count{font-size:12px;font-weight:600;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums}
+.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.status.err{color:var(--red)}
+.live{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.live.on{background:#22c55e;animation:ping 2s infinite}
+.live.err{background:var(--red)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%,100%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
+
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 20px;border-bottom:1px solid var(--line)}
+.search{position:relative;flex:1 1 240px;max-width:380px}
+.search svg{position:absolute;inset-inline-start:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search input{width:100%;height:38px;padding:0;padding-inline:36px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.toolbar-right{margin-inline-start:auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.lbl{color:var(--muted);font-size:12.5px;font-weight:600}
+.field{display:flex;align-items:center;gap:8px}
+.seg{display:inline-flex;padding:3px;gap:2px;background:var(--soft);border:1px solid var(--line);border-radius:10px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:7px;color:var(--muted);font-weight:600}
+.seg button[aria-checked="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.interval{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.interval input{width:68px;height:38px;padding:0 8px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-align:center;font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.btn.primary{background:var(--primary);border-color:transparent;color:var(--on-primary)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn svg{flex:none}
+.btn.busy svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:10px 20px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--muted);background:var(--soft)}
+.fchip{display:inline-flex;padding:2px 9px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink)}
+.legend{margin-inline-start:auto;display:inline-flex;align-items:center;gap:7px}
+.legend .dot{opacity:1!important;animation:none!important}
+
+/* ---------- tabel ---------- */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead th{padding:10px 14px;text-align:start;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line);white-space:nowrap}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tr.row{transition:background .8s}
+tr.row.is-new{background:var(--new-row)}
+th.c-dot,td.c-dot{width:30px;padding-inline-end:0}
+.num{text-align:end}
+.c-title{width:24%;min-width:200px}
+.c-user{width:17%;min-width:150px}
+.c-type{width:92px}
+.c-size{width:120px}
+.c-time{width:112px;white-space:nowrap}
+.dot{display:block;width:9px;height:9px;border-radius:50%;background:var(--primary);transition:opacity .6s}
+tr.row:not(.is-new) .dot{opacity:0}
+tr.row.is-new .dot{animation:pulse 1.5s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--pulse)}100%{box-shadow:0 0 0 9px transparent}}
+
+.ttl{font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.ttl:hover{color:var(--primary);text-decoration:underline}
+.sub{margin-top:2px;font-size:12px;color:var(--muted)}
+.sub a{color:var(--muted);text-decoration:none}
+.sub a:hover{color:var(--primary);text-decoration:underline}
+.sep{margin:0 5px;opacity:.5}
+.u{display:flex;align-items:center;gap:9px;min-width:0}
+.av{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700}
+.un{min-width:0;display:flex;flex-direction:column;align-items:flex-start;line-height:1.25}
+.un a,.un span.n{font-weight:600;text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.un a:hover{color:var(--primary);text-decoration:underline}
+.badge{font-size:11px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-size:12.5px;font-weight:600;white-space:nowrap}
+.pill.new{color:var(--green);background:var(--green-soft);border-color:transparent}
+.delta{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.delta::before{font-size:9px;margin-inline-end:6px;vertical-align:1px}
+.delta.up{color:var(--green)}.delta.up::before{content:"▲"}
+.delta.down{color:var(--red)}.delta.down::before{content:"▼"}
+.delta.zero{color:var(--muted)}.delta.zero::before{content:"●"}
+.cmt{color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.cmt:empty{display:none}
+.tg{display:inline-block;margin:4px 0 0;margin-inline-end:5px;padding:1px 7px;border:1px solid var(--line);border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px}
+.c-time b{display:block;font-weight:600}
+.c-time small{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+
+.skel{height:44px;margin:10px 20px;border-radius:10px;background:linear-gradient(90deg,var(--soft),var(--line),var(--soft));background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+.empty{padding:48px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+
+.card-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.pager{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pg{min-width:34px;height:34px;padding:0 8px;border:1px solid var(--line);border-radius:9px;background:var(--card);font-weight:600;color:var(--ink)}
+.pg:hover:not(:disabled){background:var(--soft)}
+.pg[aria-current="page"],.pg[aria-current="page"]:hover{background:var(--primary);border-color:transparent;color:var(--on-primary)}
+.pg:disabled{opacity:.4;cursor:default}
+.gap{color:var(--muted);padding:0 2px}
+.note{margin:14px 4px 0;color:var(--muted);font-size:12.5px;text-align:center}
+
+/* ---------- jendela pengguna aktif ---------- */
+.head-right{display:flex;align-items:center;gap:12px;min-width:0}
+.head-right .status{min-width:0}
+.icon-btn.keep-link,a.icon-btn{text-decoration:none}
+.icon-btn span.keep{display:inline!important}
+a.icon-btn:hover{color:var(--ink);background:var(--soft)}
+.modal{border:1px solid var(--line);border-radius:16px;padding:0;background:var(--card);color:var(--ink);width:min(440px,calc(100vw - 24px));max-height:min(780px,calc(100dvh - 24px));box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
+.modal[open]{display:flex;flex-direction:column;animation:pop .18s ease-out}
+.modal::backdrop{background:rgba(8,12,20,.55)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}}
+.side-head{display:flex;flex-direction:column;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.side-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.side-head h2{margin:0;font-size:17px;letter-spacing:-.01em}
+.x-btn{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--muted)}
+.x-btn:hover{background:var(--soft);color:var(--ink)}
+.modal .seg{display:flex}
+.modal .seg button{flex:1;padding:7px 8px;font-size:13px}
+.ulist{list-style:none;margin:0;padding:6px 8px;overflow-y:auto;flex:1 1 auto;min-height:0}
+.urow{display:grid;grid-template-columns:18px 28px minmax(0,1fr) auto;align-items:center;gap:4px 9px;padding:8px;border-radius:10px}
+.urow:hover{background:var(--soft)}
+.urow .nm:hover{color:var(--primary);text-decoration:underline}
+.urow .rk{color:var(--muted);font-size:12px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.urow .nm{text-decoration:none;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.urow .ct{font-weight:700;font-variant-numeric:tabular-nums}
+.urow .ubar{grid-column:3 / 5;height:4px;border-radius:99px;background:var(--soft);overflow:hidden}
+.urow .ubar i{display:block;height:100%;border-radius:99px;background:var(--primary);opacity:.8}
+.side-foot{border-top:1px solid var(--line);flex:none}
+.side-foot .pager{justify-content:center;padding:10px 12px 0}
+.side-foot .pager:empty{display:none}
+.side-note{margin:0;padding:10px 16px 14px;color:var(--muted);font-size:12px}
+.side-empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:13px}
+.foot-l{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+.perpage{height:32px;font-size:13px}
+.perpage span{white-space:nowrap}
+@media (max-width:480px){
+  .modal{margin:auto auto 0;width:100vw;max-width:100vw;border-radius:18px 18px 0 0;border-bottom:0}
+  .modal[open]{animation:sheet .22s ease-out}
+}
+@keyframes sheet{from{transform:translateY(40px);opacity:0}}
+
+/* ---------- toast (bar bawah) ---------- */
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);display:flex;align-items:center;gap:12px;padding:9px 10px 9px 16px;background:#111827;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:60;max-width:calc(100vw - 24px)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{border:0;border-radius:8px;padding:6px 12px;background:var(--primary);color:var(--on-primary);font-weight:600}
+
+/* ---------- responsif ---------- */
+@media (max-width:1100px){
+  .c-title{width:28%}
+  .legend{margin-inline-start:0}
+}
+@media (max-width:860px){
+  .topbar-inner{grid-template-columns:1fr auto;grid-template-areas:"brand tools" "chips chips"}
+  .brand{grid-area:brand}
+  .tools{grid-area:tools}
+  .chips{grid-area:chips;justify-content:flex-start;overflow-x:auto}
+  .icon-btn span{display:none}
+  .icon-btn{padding:0 10px}
+  .card-head,.toolbar,.filters,.card-foot{padding-inline:14px}
+  .head-right{width:100%}
+  .search{max-width:none;flex-basis:100%}
+  .toolbar-right{margin-inline-start:0;width:100%;justify-content:space-between}
+  table,thead,tbody,tr,td{display:block;min-width:0}
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  tr.row{display:grid;grid-template-columns:1fr auto;grid-template-areas:"title type" "user time" "cmt size";gap:6px 12px;padding:12px 14px;padding-inline-start:32px;position:relative;border-bottom:1px solid var(--line)}
+  tbody td{padding:0;border:0}
+  td.c-dot{position:absolute;inset-inline-start:14px;top:18px;width:auto}
+  .c-title{grid-area:title;width:auto;min-width:0}
+  .c-user{grid-area:user;width:auto;min-width:0}
+  .c-type{grid-area:type;width:auto;justify-self:end}
+  .c-size{grid-area:size;width:auto;text-align:end;align-self:start}
+  .c-time{grid-area:time;width:auto;text-align:end}
+  .c-cmt{grid-area:cmt;min-width:0}
+}
+@media (max-width:480px){
+  .topbar-inner{grid-template-columns:auto minmax(0,1fr);padding-inline:10px}
+  .brand span{display:none}
+  .tools{min-width:0;gap:6px}
+  .select-wrap select{text-overflow:ellipsis}
+  .tools .select-wrap{min-width:0;flex:0 1 auto}
+  .wrap{padding:10px}
+  .lbl{display:none}
+  .seg button{padding:6px 10px}
+  .btn.primary span{display:none}
+  .btn.primary{padding:0 12px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="8" fill="var(--primary)"/><path d="M5 15h4l2.5-6 4 11 2.5-5H23" stroke="var(--on-primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Wikilacak</span>
+    </div>
+
+    <nav class="chips" role="tablist" aria-label="Jenis data">
+      <button class="chip" role="tab" data-tab="changes" aria-selected="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span data-i18n="tabChanges">Perubahan Terbaru</span>
+      </button>
+      <button class="chip" role="tab" data-tab="newpages" aria-selected="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6M9 15h6"/></svg>
+        <span data-i18n="tabNew">Halaman Baru</span>
+      </button>
+    </nav>
+
+    <div class="tools">
+      <label class="select-wrap" data-i18n-title="themeTitle" title="">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <select id="theme" data-i18n-aria="themeTitle" aria-label=""></select>
+      </label>
+      <label class="select-wrap" data-i18n-title="langTitle" title="">
+        <span class="wmark" aria-hidden="true">W</span>
+        <select id="wiki" data-i18n-aria="langTitle" aria-label=""></select>
+      </label>
+      <button id="soundBtn" class="icon-btn" aria-pressed="false" data-i18n-title="soundTitle" title="">
+        <svg id="soundIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+        <span id="soundTxt">Bunyi mati</span>
+      </button>
+    </div>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <div class="card-head">
+      <div class="title">
+        <h1 id="title">Perubahan Terbaru</h1>
+        <span class="count" id="count" data-i18n-title="countTitle" title="">–</span>
+      </div>
+      <div class="head-right">
+        <a class="icon-btn" id="authorLink" href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+          <span class="keep">Affandy Murad</span>
+        </a>
+        <button type="button" class="icon-btn" id="usersBtn" aria-haspopup="dialog" data-i18n-title="usersTitle" title="">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+          <span data-i18n="usersTitle">Pengguna aktif</span>
+        </button>
+        <div class="status" id="status" role="status">
+          <span class="live" id="live"></span>
+          <span id="statusTxt">Memuat data…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" data-i18n-ph="search" data-i18n-aria="search" placeholder="" aria-label="" autocomplete="off">
+      </div>
+
+      <div class="toolbar-right">
+        <div class="field">
+          <span class="lbl" data-i18n="refreshLbl">Penyegaran</span>
+          <div class="seg" id="seg" role="radiogroup" data-i18n-aria="refreshLbl" aria-label="">
+            <button role="radio" data-mode="auto" aria-checked="true" data-i18n="mAuto" data-i18n-title="mAutoT" title="">Otomatis</button>
+            <button role="radio" data-mode="interval" aria-checked="false" data-i18n="mInt" data-i18n-title="mIntT" title="">Interval</button>
+            <button role="radio" data-mode="off" aria-checked="false" data-i18n="mOff" data-i18n-title="mOffT" title="">Mati</button>
+          </div>
+        </div>
+        <label class="interval" id="intervalWrap" hidden>
+          <input id="interval" type="number" min="5" max="3600" step="1" inputmode="numeric" data-i18n-aria="intAria" aria-label="">
+          <span id="secWord">detik</span>
+        </label>
+        <button id="refreshBtn" class="btn primary" data-i18n-aria="refreshBtn" data-i18n-title="refreshBtn" aria-label="" title="">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+          <span data-i18n="refreshBtn">Segarkan</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <span data-i18n="filtersLbl">Filter aktif:</span>
+      <span id="filterChips"></span>
+      <span class="legend"><i class="dot"></i> <span id="legendTxt"></span></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="c-dot"></th>
+            <th data-i18n="thPage">Halaman</th>
+            <th data-i18n="thUser">Pengguna</th>
+            <th data-i18n="thType">Jenis</th>
+            <th class="num" data-i18n="thSize">Ukuran (bita)</th>
+            <th data-i18n="thSum">Ringkasan</th>
+            <th data-i18n="thTime">Waktu</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="card-foot">
+      <div class="foot-l">
+        <div id="range"></div>
+        <label class="select-wrap perpage">
+          <span data-i18n="perPage">Baris per halaman</span>
+          <select id="perPage"></select>
+        </label>
+      </div>
+      <nav class="pager" id="pager" data-i18n-aria="pagerAria" aria-label=""></nav>
+    </div>
+  </section>
+  <p class="note" data-i18n="note"></p>
+</main>
+
+<dialog class="modal" id="usersDlg" aria-labelledby="usersTitle">
+  <div class="side-head">
+    <div class="side-top">
+      <h2 id="usersTitle" data-i18n="usersTitle">Pengguna aktif</h2>
+      <button type="button" class="x-btn" id="usersClose" data-i18n-aria="close" aria-label=""><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="seg" id="useg" role="radiogroup" data-i18n-aria="usersTitle" aria-label="">
+      <button type="button" role="radio" data-umode="most" aria-checked="true" data-i18n="usersMost" data-i18n-title="usersMostT" title="">Paling banyak</button>
+      <button type="button" role="radio" data-umode="active" aria-checked="false" data-i18n="usersActive" data-i18n-title="usersActiveT" title="">Paling aktif</button>
+    </div>
+  </div>
+  <ol class="ulist" id="ulist"></ol>
+  <div class="side-foot"><nav class="pager" id="upager" data-i18n-aria="pagerAria" aria-label=""></nav><p class="side-note" id="usersNote"></p></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span id="toastMsg"></span>
+  <button id="toastBtn" data-i18n="top" hidden>Ke atas</button>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= bahasa Wikipedia = bahasa antarmuka ================= */
+const LANGS = {
+  en:{name:"English"}, id:{name:"Bahasa Indonesia"}, ms:{name:"Bahasa Melayu"}, ko:{name:"한국어"},
+  es:{name:"Español"}, fr:{name:"Français"}, de:{name:"Deutsch"}, ja:{name:"日本語"},
+  zh:{name:"中文"}, ar:{name:"العربية", rtl:true}, nl:{name:"Nederlands"}, ru:{name:"Русский"},
+  th:{name:"ไทย"}, ta:{name:"தமிழ்"}, he:{name:"עברית", rtl:true}
+};
+
+const I18N = {
+id:{
+  tabChanges:"Perubahan Terbaru", tabNew:"Halaman Baru", langTitle:"Bahasa antarmuka dan data",
+  soundOn:"Bunyi aktif", soundOff:"Bunyi mati", soundTitle:"Bunyi “ting-tong” saat ada entri baru",
+  countTitle:"Jumlah entri yang dimuat",
+  loading:"Memuat data…", refreshing:"Menyegarkan…", failed:"Gagal memuat: {e}", retry:"coba lagi dalam {t}",
+  updated:"Diperbarui {t}", nextIn:"berikutnya {t}", autoOff:"penyegaran otomatis mati",
+  search:"Cari judul, pengguna, atau ringkasan…", refreshLbl:"Penyegaran",
+  mAuto:"Otomatis", mAutoT:"Menyegarkan sendiri setiap {t}", mInt:"Interval", mIntT:"Atur sendiri jeda penyegaran",
+  mOff:"Mati", mOffT:"Penyegaran otomatis dimatikan. Tombol Segarkan tetap bisa dipakai",
+  intAria:"Jeda penyegaran", refreshBtn:"Segarkan",
+  filtersLbl:"Filter aktif:", legend:"Entri baru ditandai selama {t}",
+  fNotBot:"Bukan bot", fEditNew:"Suntingan dan halaman baru", fAllNs:"Semua ruang nama", fNoLogs:"Tanpa log tindakan",
+  fLast500:"500 terbaru", fMain:"Ruang nama utama", fNoRedirect:"Tanpa pengalihan", fOnlyNew:"Hanya halaman baru",
+  thPage:"Halaman", thUser:"Pengguna", thType:"Jenis", thSize:"Ukuran (bita)", thSum:"Ringkasan", thTime:"Waktu",
+  diff:"beda", hist:"riwayat", tNew:"Baru", tEdit:"Suntingan", anon:"Pengguna anonim", temp:"Akun sementara",
+  minor:"Kecil", minorT:"Suntingan kecil", redir:"Pengalihan", redirT:"Halaman pengalihan",
+  hiddenU:"(disembunyikan)", hiddenC:"(ringkasan disembunyikan)", unknownU:"(tidak diketahui)",
+  eTimeout:"waktu habis", eOffline:"tidak ada koneksi atau diblokir", eBad:"respons tidak dikenali",
+  emptyFail:"Data belum bisa dimuat", emptyFailHint:"{e}. Klik “Segarkan” untuk mencoba lagi.",
+  noRes:"Tidak ada hasil", noResHint:"Tidak ada yang cocok dengan “{q}”.", noEnt:"Belum ada entri", noEntHint:"Coba segarkan beberapa saat lagi.",
+  showing:"Entri {a}–{b} dari {n}", filteredFrom:"(disaring dari {m})", zero:"Tidak ada entri",
+  prev:"Halaman sebelumnya", next:"Halaman berikutnya", pagerAria:"Halaman daftar",
+  blocked:"Bunyi diblokir browser. Klik di halaman sekali agar aktif.", newN:"Entri baru: {n}", top:"Ke atas",
+  note:"Data langsung dari Wikipedia · setelan tersimpan di browser ini.",
+  talk:"pembicaraan", contribs:"kontribusi", themeTitle:"Tema tampilan", themeSystem:"Sistem", themeLight:"Terang", themeDark:"Gelap",
+  usersTitle:"Pengguna aktif", usersMost:"Paling banyak", usersMostT:"Pengguna dengan entri terbanyak di seluruh data yang dimuat", usersActive:"Paling aktif", usersActiveT:"Pengguna dengan entri terbanyak dalam {w} terakhir", usersEmpty:"Belum ada pengguna yang signifikan (minimal 2 entri).", usersBasis:"Dari {n} data terbaru · minimal 2 entri", perPage:"Baris per halaman", usersEntries:"{n} entri",
+  close:"Tutup"
+},
+en:{
+  tabChanges:"Recent Changes", tabNew:"New Pages", langTitle:"Interface and data language",
+  soundOn:"Sound on", soundOff:"Sound off", soundTitle:"Play a “ding-dong” when new entries arrive",
+  countTitle:"Number of entries loaded",
+  loading:"Loading data…", refreshing:"Refreshing…", failed:"Failed to load: {e}", retry:"retrying in {t}",
+  updated:"Updated {t}", nextIn:"next in {t}", autoOff:"automatic refresh off",
+  search:"Search titles, users, or summaries…", refreshLbl:"Refresh",
+  mAuto:"Automatic", mAutoT:"Refreshes itself every {t}", mInt:"Interval", mIntT:"Set your own refresh delay",
+  mOff:"Off", mOffT:"Automatic refresh is off. The Refresh now button still works",
+  intAria:"Refresh delay", refreshBtn:"Refresh now",
+  filtersLbl:"Active filters:", legend:"New entries are marked for {t}",
+  fNotBot:"Not bots", fEditNew:"Edits and new pages", fAllNs:"All namespaces", fNoLogs:"No log actions",
+  fLast500:"Latest 500", fMain:"Main namespace", fNoRedirect:"No redirects", fOnlyNew:"New pages only",
+  thPage:"Page", thUser:"User", thType:"Type", thSize:"Size (bytes)", thSum:"Summary", thTime:"Time",
+  diff:"difference", hist:"history", tNew:"New", tEdit:"Edit", anon:"Anonymous user", temp:"Temporary account",
+  minor:"Minor", minorT:"Minor edit", redir:"Redirect", redirT:"Redirect page",
+  hiddenU:"(hidden)", hiddenC:"(summary hidden)", unknownU:"(unknown)",
+  eTimeout:"timed out", eOffline:"no connection or blocked", eBad:"unrecognized response",
+  emptyFail:"Data could not be loaded", emptyFailHint:"{e}. Click “Refresh now” to try again.",
+  noRes:"No results", noResHint:"Nothing matches “{q}”.", noEnt:"No entries yet", noEntHint:"Try refreshing again in a moment.",
+  showing:"Entries {a}–{b} of {n}", filteredFrom:"(filtered from {m})", zero:"No entries",
+  prev:"Previous page", next:"Next page", pagerAria:"List pages",
+  blocked:"The browser blocked the sound. Click the page once to enable it.", newN:"New entries: {n}", top:"Back to top",
+  note:"Live data from Wikipedia · settings are saved in this browser.",
+  talk:"talk", contribs:"contributions", themeTitle:"Color theme", themeSystem:"System", themeLight:"Light", themeDark:"Dark",
+  usersTitle:"Active users", usersMost:"Most entries", usersMostT:"Users with the most entries across all loaded data", usersActive:"Most active", usersActiveT:"Users with the most entries in the last {w}", usersEmpty:"No significant users yet (at least 2 entries).", usersBasis:"Based on the latest {n} entries · at least 2 entries", perPage:"Rows per page", usersEntries:"{n} entries",
+  close:"Close"
+},
+ms:{
+  tabChanges:"Perubahan Terkini", tabNew:"Halaman Baharu", langTitle:"Bahasa antara muka dan data",
+  soundOn:"Bunyi hidup", soundOff:"Bunyi mati", soundTitle:"Mainkan bunyi “ting-tong” apabila ada entri baharu",
+  countTitle:"Bilangan entri dimuatkan",
+  loading:"Memuatkan data…", refreshing:"Menyegarkan…", failed:"Gagal memuatkan: {e}", retry:"cuba lagi dalam {t}",
+  updated:"Dikemas kini {t}", nextIn:"seterusnya dalam {t}", autoOff:"penyegaran automatik mati",
+  search:"Cari tajuk, pengguna atau ringkasan…", refreshLbl:"Penyegaran",
+  mAuto:"Automatik", mAutoT:"Menyegarkan sendiri setiap {t}", mInt:"Sela", mIntT:"Tetapkan sendiri sela penyegaran",
+  mOff:"Mati", mOffT:"Penyegaran automatik dimatikan. Butang Segarkan masih boleh digunakan",
+  intAria:"Sela penyegaran", refreshBtn:"Segarkan",
+  filtersLbl:"Penapis aktif:", legend:"Entri baharu ditandakan selama {t}",
+  fNotBot:"Bukan bot", fEditNew:"Suntingan dan halaman baharu", fAllNs:"Semua ruang nama", fNoLogs:"Tanpa log tindakan",
+  fLast500:"500 terkini", fMain:"Ruang nama utama", fNoRedirect:"Tanpa lencongan", fOnlyNew:"Halaman baharu sahaja",
+  thPage:"Halaman", thUser:"Pengguna", thType:"Jenis", thSize:"Saiz (bait)", thSum:"Ringkasan", thTime:"Masa",
+  diff:"beza", hist:"sejarah", tNew:"Baharu", tEdit:"Suntingan", anon:"Pengguna tanpa nama", temp:"Akaun sementara",
+  minor:"Kecil", minorT:"Suntingan kecil", redir:"Lencongan", redirT:"Halaman lencongan",
+  hiddenU:"(disembunyikan)", hiddenC:"(ringkasan disembunyikan)", unknownU:"(tidak diketahui)",
+  eTimeout:"tamat masa", eOffline:"tiada sambungan atau disekat", eBad:"respons tidak dikenali",
+  emptyFail:"Data tidak dapat dimuatkan", emptyFailHint:"{e}. Klik “Segarkan” untuk mencuba lagi.",
+  noRes:"Tiada hasil", noResHint:"Tiada yang sepadan dengan “{q}”.", noEnt:"Belum ada entri", noEntHint:"Cuba segarkan sebentar lagi.",
+  showing:"Entri {a}–{b} daripada {n}", filteredFrom:"(ditapis daripada {m})", zero:"Tiada entri",
+  prev:"Halaman sebelumnya", next:"Halaman seterusnya", pagerAria:"Halaman senarai",
+  blocked:"Bunyi disekat oleh pelayar. Klik halaman sekali untuk mengaktifkannya.", newN:"Entri baharu: {n}", top:"Ke atas",
+  note:"Data langsung daripada Wikipedia · tetapan disimpan dalam pelayar ini.",
+  talk:"perbincangan", contribs:"sumbangan", themeTitle:"Tema warna", themeSystem:"Sistem", themeLight:"Cerah", themeDark:"Gelap",
+  usersTitle:"Pengguna aktif", usersMost:"Paling banyak", usersMostT:"Pengguna dengan entri terbanyak dalam semua data yang dimuatkan", usersActive:"Paling aktif", usersActiveT:"Pengguna dengan entri terbanyak dalam {w} yang lalu", usersEmpty:"Belum ada pengguna ketara (sekurang-kurangnya 2 entri).", usersBasis:"Berdasarkan {n} entri terkini · sekurang-kurangnya 2 entri", perPage:"Baris setiap halaman", usersEntries:"{n} entri",
+  close:"Tutup"
+},
+ko:{
+  tabChanges:"최근 바뀜", tabNew:"새 문서", langTitle:"인터페이스 및 데이터 언어",
+  soundOn:"소리 켜짐", soundOff:"소리 꺼짐", soundTitle:"새 항목이 들어오면 “딩동” 소리 재생",
+  countTitle:"불러온 항목 수",
+  loading:"데이터를 불러오는 중…", refreshing:"새로 고치는 중…", failed:"불러오지 못함: {e}", retry:"{t} 후 다시 시도",
+  updated:"{t}에 업데이트됨", nextIn:"다음 새로 고침까지 {t}", autoOff:"자동 새로 고침 꺼짐",
+  search:"제목, 사용자 또는 요약 검색…", refreshLbl:"새로 고침",
+  mAuto:"자동", mAutoT:"{t}마다 자동으로 새로 고침", mInt:"간격", mIntT:"새로 고침 간격을 직접 설정",
+  mOff:"끔", mOffT:"자동 새로 고침이 꺼집니다. 지금 새로 고침 버튼은 계속 사용할 수 있습니다",
+  intAria:"새로 고침 간격", refreshBtn:"지금 새로 고침",
+  filtersLbl:"적용된 필터:", legend:"새 항목은 {t} 동안 표시됩니다",
+  fNotBot:"봇 제외", fEditNew:"편집 및 새 문서", fAllNs:"모든 이름공간", fNoLogs:"기록 작업 제외",
+  fLast500:"최근 500개", fMain:"일반 이름공간", fNoRedirect:"넘겨주기 제외", fOnlyNew:"새 문서만",
+  thPage:"문서", thUser:"사용자", thType:"유형", thSize:"크기(바이트)", thSum:"요약", thTime:"시간",
+  diff:"차이", hist:"역사", tNew:"새 문서", tEdit:"편집", anon:"익명 사용자", temp:"임시 계정",
+  minor:"사소함", minorT:"사소한 편집", redir:"넘겨주기", redirT:"넘겨주기 문서",
+  hiddenU:"(숨김)", hiddenC:"(요약 숨김)", unknownU:"(알 수 없음)",
+  eTimeout:"시간 초과", eOffline:"연결 없음 또는 차단됨", eBad:"알 수 없는 응답",
+  emptyFail:"데이터를 불러올 수 없습니다", emptyFailHint:"{e}. “지금 새로 고침”을 눌러 다시 시도하세요.",
+  noRes:"결과 없음", noResHint:"“{q}”와(과) 일치하는 항목이 없습니다.", noEnt:"아직 항목이 없습니다", noEntHint:"잠시 후 다시 새로 고쳐 보세요.",
+  showing:"항목 {a}–{b} / 전체 {n}", filteredFrom:"(전체 {m} 중 필터링됨)", zero:"항목 없음",
+  prev:"이전 페이지", next:"다음 페이지", pagerAria:"목록 페이지",
+  blocked:"브라우저가 소리를 차단했습니다. 페이지를 한 번 클릭하면 활성화됩니다.", newN:"새 항목: {n}", top:"맨 위로",
+  note:"위키백과 실시간 데이터 · 설정은 이 브라우저에 저장됩니다.",
+  talk:"토론", contribs:"기여", themeTitle:"색상 테마", themeSystem:"시스템", themeLight:"밝게", themeDark:"어둡게",
+  usersTitle:"활동 중인 사용자", usersMost:"가장 많이", usersMostT:"불러온 전체 데이터에서 항목이 가장 많은 사용자", usersActive:"가장 활발", usersActiveT:"최근 {w} 동안 항목이 가장 많은 사용자", usersEmpty:"눈에 띄는 사용자가 아직 없습니다(항목 2개 이상).", usersBasis:"최근 항목 {n}개 기준 · 2개 이상", perPage:"페이지당 행 수", usersEntries:"항목 {n}개",
+  close:"닫기"
+},
+es:{
+  tabChanges:"Cambios recientes", tabNew:"Páginas nuevas", langTitle:"Idioma de la interfaz y de los datos",
+  soundOn:"Sonido activado", soundOff:"Sonido desactivado", soundTitle:"Reproducir un “ding-dong” cuando lleguen entradas nuevas",
+  countTitle:"Número de entradas cargadas",
+  loading:"Cargando datos…", refreshing:"Actualizando…", failed:"Error al cargar: {e}", retry:"reintentando en {t}",
+  updated:"Actualizado a las {t}", nextIn:"próxima en {t}", autoOff:"actualización automática desactivada",
+  search:"Buscar títulos, usuarios o resúmenes…", refreshLbl:"Actualización",
+  mAuto:"Automático", mAutoT:"Se actualiza solo cada {t}", mInt:"Intervalo", mIntT:"Define tu propio intervalo de actualización",
+  mOff:"Apagado", mOffT:"La actualización automática está apagada. El botón Actualizar sigue funcionando",
+  intAria:"Intervalo de actualización", refreshBtn:"Actualizar",
+  filtersLbl:"Filtros activos:", legend:"Las entradas nuevas se marcan durante {t}",
+  fNotBot:"Sin bots", fEditNew:"Ediciones y páginas nuevas", fAllNs:"Todos los espacios de nombres", fNoLogs:"Sin acciones de registro",
+  fLast500:"Últimas 500", fMain:"Espacio de nombres principal", fNoRedirect:"Sin redirecciones", fOnlyNew:"Solo páginas nuevas",
+  thPage:"Página", thUser:"Usuario", thType:"Tipo", thSize:"Tamaño (bytes)", thSum:"Resumen", thTime:"Hora",
+  diff:"diferencia", hist:"historial", tNew:"Nueva", tEdit:"Edición", anon:"Usuario anónimo", temp:"Cuenta temporal",
+  minor:"Menor", minorT:"Edición menor", redir:"Redirección", redirT:"Página de redirección",
+  hiddenU:"(oculto)", hiddenC:"(resumen oculto)", unknownU:"(desconocido)",
+  eTimeout:"tiempo agotado", eOffline:"sin conexión o bloqueado", eBad:"respuesta no reconocida",
+  emptyFail:"No se pudieron cargar los datos", emptyFailHint:"{e}. Pulsa «Actualizar» para intentarlo de nuevo.",
+  noRes:"Sin resultados", noResHint:"Nada coincide con «{q}».", noEnt:"Aún no hay entradas", noEntHint:"Prueba a actualizar de nuevo en un momento.",
+  showing:"Entradas {a}–{b} de {n}", filteredFrom:"(filtradas de {m})", zero:"Sin entradas",
+  prev:"Página anterior", next:"Página siguiente", pagerAria:"Páginas de la lista",
+  blocked:"El navegador bloqueó el sonido. Haz clic en la página una vez para activarlo.", newN:"Entradas nuevas: {n}", top:"Volver arriba",
+  note:"Datos en vivo de Wikipedia · los ajustes se guardan en este navegador.",
+  talk:"discusión", contribs:"contribuciones", themeTitle:"Tema de color", themeSystem:"Sistema", themeLight:"Claro", themeDark:"Oscuro",
+  usersTitle:"Usuarios activos", usersMost:"Más entradas", usersMostT:"Usuarios con más entradas en todos los datos cargados", usersActive:"Más activos", usersActiveT:"Usuarios con más entradas en los últimos {w}", usersEmpty:"Aún no hay usuarios significativos (al menos 2 entradas).", usersBasis:"Basado en las {n} entradas más recientes · al menos 2 entradas", perPage:"Filas por página", usersEntries:"{n} entradas",
+  close:"Cerrar"
+},
+fr:{
+  tabChanges:"Modifications récentes", tabNew:"Nouvelles pages", langTitle:"Langue de l’interface et des données",
+  soundOn:"Son activé", soundOff:"Son désactivé", soundTitle:"Jouer un « ding-dong » à l’arrivée de nouvelles entrées",
+  countTitle:"Nombre d’entrées chargées",
+  loading:"Chargement des données…", refreshing:"Actualisation…", failed:"Échec du chargement : {e}", retry:"nouvel essai dans {t}",
+  updated:"Actualisé à {t}", nextIn:"prochaine dans {t}", autoOff:"actualisation automatique désactivée",
+  search:"Rechercher des titres, utilisateurs ou résumés…", refreshLbl:"Actualisation",
+  mAuto:"Automatique", mAutoT:"S’actualise tout seul, délai : {t}", mInt:"Intervalle", mIntT:"Définir votre propre délai d’actualisation",
+  mOff:"Désactivé", mOffT:"L’actualisation automatique est désactivée. Le bouton Actualiser reste utilisable",
+  intAria:"Délai d’actualisation", refreshBtn:"Actualiser",
+  filtersLbl:"Filtres actifs :", legend:"Les nouvelles entrées sont signalées pendant {t}",
+  fNotBot:"Hors robots", fEditNew:"Modifications et nouvelles pages", fAllNs:"Tous les espaces de noms", fNoLogs:"Sans actions de journal",
+  fLast500:"500 dernières", fMain:"Espace de noms principal", fNoRedirect:"Sans redirections", fOnlyNew:"Nouvelles pages uniquement",
+  thPage:"Page", thUser:"Utilisateur", thType:"Type", thSize:"Taille (octets)", thSum:"Résumé", thTime:"Heure",
+  diff:"différence", hist:"historique", tNew:"Nouvelle", tEdit:"Modification", anon:"Utilisateur anonyme", temp:"Compte temporaire",
+  minor:"Mineure", minorT:"Modification mineure", redir:"Redirection", redirT:"Page de redirection",
+  hiddenU:"(masqué)", hiddenC:"(résumé masqué)", unknownU:"(inconnu)",
+  eTimeout:"délai dépassé", eOffline:"aucune connexion ou accès bloqué", eBad:"réponse non reconnue",
+  emptyFail:"Impossible de charger les données", emptyFailHint:"{e}. Cliquez sur « Actualiser » pour réessayer.",
+  noRes:"Aucun résultat", noResHint:"Rien ne correspond à « {q} ».", noEnt:"Aucune entrée pour l’instant", noEntHint:"Réessayez d’actualiser dans un instant.",
+  showing:"Entrées {a}–{b} sur {n}", filteredFrom:"(filtrées parmi {m})", zero:"Aucune entrée",
+  prev:"Page précédente", next:"Page suivante", pagerAria:"Pages de la liste",
+  blocked:"Le navigateur a bloqué le son. Cliquez une fois sur la page pour l’activer.", newN:"Nouvelles entrées : {n}", top:"Haut de page",
+  note:"Données en direct de Wikipédia · les réglages sont enregistrés dans ce navigateur.",
+  talk:"discussion", contribs:"contributions", themeTitle:"Thème de couleur", themeSystem:"Système", themeLight:"Clair", themeDark:"Sombre",
+  usersTitle:"Utilisateurs actifs", usersMost:"Les plus nombreux", usersMostT:"Utilisateurs ayant le plus d’entrées parmi toutes les données chargées", usersActive:"Les plus actifs", usersActiveT:"Utilisateurs ayant le plus d’entrées (période : {w})", usersEmpty:"Aucun utilisateur significatif pour l’instant (au moins 2 entrées).", usersBasis:"D’après les {n} entrées les plus récentes · au moins 2 entrées", perPage:"Lignes par page", usersEntries:"{n} entrées",
+  close:"Fermer"
+},
+de:{
+  tabChanges:"Letzte Änderungen", tabNew:"Neue Seiten", langTitle:"Sprache der Oberfläche und der Daten",
+  soundOn:"Ton an", soundOff:"Ton aus", soundTitle:"„Ding-Dong“ abspielen, wenn neue Einträge eintreffen",
+  countTitle:"Anzahl geladener Einträge",
+  loading:"Daten werden geladen…", refreshing:"Aktualisiere…", failed:"Laden fehlgeschlagen: {e}", retry:"neuer Versuch in {t}",
+  updated:"Aktualisiert um {t}", nextIn:"nächste in {t}", autoOff:"automatische Aktualisierung aus",
+  search:"Titel, Benutzer oder Zusammenfassungen suchen…", refreshLbl:"Aktualisierung",
+  mAuto:"Automatisch", mAutoT:"Aktualisiert sich selbst, Abstand: {t}", mInt:"Intervall", mIntT:"Eigenen Aktualisierungsabstand festlegen",
+  mOff:"Aus", mOffT:"Automatische Aktualisierung ist aus. Die Schaltfläche Jetzt aktualisieren funktioniert weiterhin",
+  intAria:"Aktualisierungsabstand", refreshBtn:"Jetzt aktualisieren",
+  filtersLbl:"Aktive Filter:", legend:"Neue Einträge werden {t} lang markiert",
+  fNotBot:"Ohne Bots", fEditNew:"Bearbeitungen und neue Seiten", fAllNs:"Alle Namensräume", fNoLogs:"Ohne Logbuchaktionen",
+  fLast500:"Neueste 500", fMain:"Hauptnamensraum", fNoRedirect:"Ohne Weiterleitungen", fOnlyNew:"Nur neue Seiten",
+  thPage:"Seite", thUser:"Benutzer", thType:"Art", thSize:"Größe (Byte)", thSum:"Zusammenfassung", thTime:"Zeit",
+  diff:"Unterschied", hist:"Versionen", tNew:"Neu", tEdit:"Bearbeitung", anon:"Anonymer Benutzer", temp:"Temporäres Konto",
+  minor:"Klein", minorT:"Kleine Änderung", redir:"Weiterleitung", redirT:"Weiterleitungsseite",
+  hiddenU:"(verborgen)", hiddenC:"(Zusammenfassung verborgen)", unknownU:"(unbekannt)",
+  eTimeout:"Zeitüberschreitung", eOffline:"keine Verbindung oder blockiert", eBad:"unbekannte Antwort",
+  emptyFail:"Daten konnten nicht geladen werden", emptyFailHint:"{e}. Klicke auf „Jetzt aktualisieren“, um es erneut zu versuchen.",
+  noRes:"Keine Ergebnisse", noResHint:"Nichts passt zu „{q}“.", noEnt:"Noch keine Einträge", noEntHint:"Versuche es in einem Moment erneut.",
+  showing:"Einträge {a}–{b} von {n}", filteredFrom:"(gefiltert aus {m})", zero:"Keine Einträge",
+  prev:"Vorherige Seite", next:"Nächste Seite", pagerAria:"Listenseiten",
+  blocked:"Der Browser hat den Ton blockiert. Klicke einmal auf die Seite, um ihn zu aktivieren.", newN:"Neue Einträge: {n}", top:"Nach oben",
+  note:"Live-Daten von Wikipedia · Einstellungen werden in diesem Browser gespeichert.",
+  talk:"Diskussion", contribs:"Beiträge", themeTitle:"Farbschema", themeSystem:"System", themeLight:"Hell", themeDark:"Dunkel",
+  usersTitle:"Aktive Benutzer", usersMost:"Meiste Einträge", usersMostT:"Benutzer mit den meisten Einträgen in allen geladenen Daten", usersActive:"Am aktivsten", usersActiveT:"Benutzer mit den meisten Einträgen in den letzten {w}", usersEmpty:"Noch keine auffälligen Benutzer (mindestens 2 Einträge).", usersBasis:"Basierend auf den neuesten {n} Einträgen · mindestens 2 Einträge", perPage:"Zeilen pro Seite", usersEntries:"{n} Einträge",
+  close:"Schließen"
+},
+ja:{
+  tabChanges:"最近の更新", tabNew:"新規ページ", langTitle:"インターフェースとデータの言語",
+  soundOn:"音あり", soundOff:"音なし", soundTitle:"新しい項目が届いたら「ピンポン」と鳴らす",
+  countTitle:"読み込んだ項目数",
+  loading:"データを読み込み中…", refreshing:"更新中…", failed:"読み込みに失敗しました: {e}", retry:"{t}後に再試行",
+  updated:"{t} に更新", nextIn:"次の更新まで {t}", autoOff:"自動更新はオフ",
+  search:"タイトル、利用者、要約を検索…", refreshLbl:"更新",
+  mAuto:"自動", mAutoT:"自動更新の間隔: {t}", mInt:"間隔", mIntT:"更新の間隔を自分で設定",
+  mOff:"オフ", mOffT:"自動更新をオフにします。「今すぐ更新」ボタンは引き続き使えます",
+  intAria:"更新の間隔", refreshBtn:"今すぐ更新",
+  filtersLbl:"適用中のフィルター:", legend:"新しい項目は {t} のあいだ印が付きます",
+  fNotBot:"ボットを除く", fEditNew:"編集と新規ページ", fAllNs:"すべての名前空間", fNoLogs:"ログ操作を除く",
+  fLast500:"最新500件", fMain:"標準名前空間", fNoRedirect:"リダイレクトを除く", fOnlyNew:"新規ページのみ",
+  thPage:"ページ", thUser:"利用者", thType:"種類", thSize:"サイズ（バイト）", thSum:"要約", thTime:"時刻",
+  diff:"差分", hist:"履歴", tNew:"新規", tEdit:"編集", anon:"匿名の利用者", temp:"一時アカウント",
+  minor:"細部", minorT:"細部の編集", redir:"リダイレクト", redirT:"リダイレクトページ",
+  hiddenU:"（非表示）", hiddenC:"（要約は非表示）", unknownU:"（不明）",
+  eTimeout:"タイムアウト", eOffline:"接続なし、またはブロックされました", eBad:"不明な応答",
+  emptyFail:"データを読み込めませんでした", emptyFailHint:"{e}。「今すぐ更新」を押して再試行してください。",
+  noRes:"結果なし", noResHint:"「{q}」に一致するものはありません。", noEnt:"まだ項目がありません", noEntHint:"しばらくしてからもう一度更新してください。",
+  showing:"項目 {a}–{b} / 全 {n} 件", filteredFrom:"（全 {m} 件から絞り込み）", zero:"項目なし",
+  prev:"前のページ", next:"次のページ", pagerAria:"一覧のページ",
+  blocked:"ブラウザーが音をブロックしました。ページを一度クリックすると有効になります。", newN:"新しい項目: {n}", top:"先頭へ",
+  note:"ウィキペディアのリアルタイムデータ · 設定はこのブラウザーに保存されます。",
+  talk:"会話", contribs:"投稿記録", themeTitle:"配色テーマ", themeSystem:"システム", themeLight:"ライト", themeDark:"ダーク",
+  usersTitle:"アクティブな利用者", usersMost:"最多", usersMostT:"読み込んだ全データで項目が最も多い利用者", usersActive:"最も活発", usersActiveT:"直近{w}で項目が最も多い利用者", usersEmpty:"目立つ利用者はまだいません(2件以上)。", usersBasis:"最新{n}件に基づく · 2件以上", perPage:"1ページあたりの行数", usersEntries:"{n}件",
+  close:"閉じる"
+},
+zh:{
+  tabChanges:"最近更改", tabNew:"新页面", langTitle:"界面和数据语言",
+  soundOn:"声音已开启", soundOff:"声音已关闭", soundTitle:"有新条目时播放“叮咚”提示音",
+  countTitle:"已加载的条目数",
+  loading:"正在加载数据…", refreshing:"正在刷新…", failed:"加载失败：{e}", retry:"{t}后重试",
+  updated:"更新于 {t}", nextIn:"{t}后刷新", autoOff:"自动刷新已关闭",
+  search:"搜索标题、用户或摘要…", refreshLbl:"刷新",
+  mAuto:"自动", mAutoT:"自动刷新间隔：{t}", mInt:"间隔", mIntT:"自行设置刷新间隔",
+  mOff:"关闭", mOffT:"关闭自动刷新，“立即刷新”按钮仍可使用",
+  intAria:"刷新间隔", refreshBtn:"立即刷新",
+  filtersLbl:"当前筛选：", legend:"新条目会被标记 {t}",
+  fNotBot:"不含机器人", fEditNew:"编辑和新页面", fAllNs:"所有命名空间", fNoLogs:"不含日志操作",
+  fLast500:"最新 500 条", fMain:"主命名空间", fNoRedirect:"不含重定向", fOnlyNew:"仅新页面",
+  thPage:"页面", thUser:"用户", thType:"类型", thSize:"大小（字节）", thSum:"摘要", thTime:"时间",
+  diff:"差异", hist:"历史", tNew:"新建", tEdit:"编辑", anon:"匿名用户", temp:"临时账户",
+  minor:"小修改", minorT:"小修改", redir:"重定向", redirT:"重定向页面",
+  hiddenU:"（已隐藏）", hiddenC:"（摘要已隐藏）", unknownU:"（未知）",
+  eTimeout:"请求超时", eOffline:"无网络连接或被阻止", eBad:"无法识别的响应",
+  emptyFail:"无法加载数据", emptyFailHint:"{e}。请点击“立即刷新”重试。",
+  noRes:"没有结果", noResHint:"没有与“{q}”匹配的内容。", noEnt:"暂无条目", noEntHint:"请稍后再刷新。",
+  showing:"条目 {a}–{b}，共 {n} 条", filteredFrom:"（从 {m} 条中筛选）", zero:"没有条目",
+  prev:"上一页", next:"下一页", pagerAria:"列表分页",
+  blocked:"浏览器已阻止声音。请在页面上点击一次以启用。", newN:"新条目：{n}", top:"回到顶部",
+  note:"维基百科实时数据 · 设置保存在此浏览器中。",
+  talk:"讨论", contribs:"贡献", themeTitle:"颜色主题", themeSystem:"跟随系统", themeLight:"浅色", themeDark:"深色",
+  usersTitle:"活跃用户", usersMost:"最多", usersMostT:"已载入数据中条目最多的用户", usersActive:"最活跃", usersActiveT:"最近{w}内条目最多的用户", usersEmpty:"暂无显著用户(至少 2 条)。", usersBasis:"基于最新 {n} 条 · 至少 2 条", perPage:"每页行数", usersEntries:"{n} 条",
+  close:"关闭"
+},
+ar:{
+  tabChanges:"أحدث التغييرات", tabNew:"صفحات جديدة", langTitle:"لغة الواجهة والبيانات",
+  soundOn:"الصوت مفعّل", soundOff:"الصوت متوقف", soundTitle:"تشغيل صوت «دينغ دونغ» عند وصول إدخالات جديدة",
+  countTitle:"عدد الإدخالات المحمّلة",
+  loading:"جارٍ تحميل البيانات…", refreshing:"جارٍ التحديث…", failed:"تعذّر التحميل: {e}", retry:"إعادة المحاولة خلال {t}",
+  updated:"آخر تحديث {t}", nextIn:"التالي خلال {t}", autoOff:"التحديث التلقائي متوقف",
+  search:"ابحث في العناوين أو المستخدمين أو الملخصات…", refreshLbl:"التحديث",
+  mAuto:"تلقائي", mAutoT:"يحدّث نفسه، الفاصل: {t}", mInt:"فاصل زمني", mIntT:"حدّد فاصل التحديث بنفسك",
+  mOff:"متوقف", mOffT:"التحديث التلقائي متوقف، ويبقى زر التحديث متاحًا",
+  intAria:"فاصل التحديث", refreshBtn:"حدّث الآن",
+  filtersLbl:"المرشحات المفعّلة:", legend:"تُميَّز الإدخالات الجديدة لمدة {t}",
+  fNotBot:"بدون روبوتات", fEditNew:"التعديلات والصفحات الجديدة", fAllNs:"كل النطاقات", fNoLogs:"بدون إجراءات السجل",
+  fLast500:"أحدث 500", fMain:"النطاق الرئيسي", fNoRedirect:"بدون تحويلات", fOnlyNew:"الصفحات الجديدة فقط",
+  thPage:"الصفحة", thUser:"المستخدم", thType:"النوع", thSize:"الحجم (بايت)", thSum:"الملخص", thTime:"الوقت",
+  diff:"الفرق", hist:"السجل", tNew:"جديدة", tEdit:"تعديل", anon:"مستخدم مجهول", temp:"حساب مؤقت",
+  minor:"طفيف", minorT:"تعديل طفيف", redir:"تحويلة", redirT:"صفحة تحويل",
+  hiddenU:"(مخفي)", hiddenC:"(ملخص مخفي)", unknownU:"(غير معروف)",
+  eTimeout:"انتهت المهلة", eOffline:"لا يوجد اتصال أو تم الحظر", eBad:"استجابة غير معروفة",
+  emptyFail:"تعذّر تحميل البيانات", emptyFailHint:"{e}. اضغط «حدّث الآن» للمحاولة مجددًا.",
+  noRes:"لا توجد نتائج", noResHint:"لا شيء يطابق «{q}».", noEnt:"لا توجد إدخالات بعد", noEntHint:"جرّب التحديث بعد قليل.",
+  showing:"الإدخالات {a}–{b} من {n}", filteredFrom:"(مصفّاة من {m})", zero:"لا توجد إدخالات",
+  prev:"الصفحة السابقة", next:"الصفحة التالية", pagerAria:"صفحات القائمة",
+  blocked:"حظر المتصفح الصوت. انقر على الصفحة مرة واحدة لتفعيله.", newN:"إدخالات جديدة: {n}", top:"إلى الأعلى",
+  note:"بيانات مباشرة من ويكيبيديا · تُحفظ الإعدادات في هذا المتصفح.",
+  talk:"نقاش", contribs:"مساهمات", themeTitle:"سمة الألوان", themeSystem:"النظام", themeLight:"فاتح", themeDark:"داكن",
+  usersTitle:"المستخدمون النشطون", usersMost:"الأكثر", usersMostT:"المستخدمون الأكثر إدخالات في كل البيانات المحمّلة", usersActive:"الأكثر نشاطًا", usersActiveT:"المستخدمون الأكثر إدخالات (المدة: {w})", usersEmpty:"لا يوجد مستخدمون بارزون بعد (إدخالان على الأقل).", usersBasis:"استنادًا إلى أحدث {n} إدخال · إدخالان على الأقل", perPage:"الصفوف في كل صفحة", usersEntries:"{n} إدخال",
+  close:"إغلاق"
+},
+nl:{
+  tabChanges:"Recente wijzigingen", tabNew:"Nieuwe pagina’s", langTitle:"Taal van interface en gegevens",
+  soundOn:"Geluid aan", soundOff:"Geluid uit", soundTitle:"Speel een “ding-dong” af bij nieuwe items",
+  countTitle:"Aantal geladen items",
+  loading:"Gegevens laden…", refreshing:"Vernieuwen…", failed:"Laden mislukt: {e}", retry:"opnieuw proberen over {t}",
+  updated:"Bijgewerkt om {t}", nextIn:"volgende over {t}", autoOff:"automatisch vernieuwen uit",
+  search:"Zoek op titels, gebruikers of samenvattingen…", refreshLbl:"Vernieuwen",
+  mAuto:"Automatisch", mAutoT:"Vernieuwt zichzelf, tijd ertussen: {t}", mInt:"Interval", mIntT:"Stel zelf de vernieuwingstijd in",
+  mOff:"Uit", mOffT:"Automatisch vernieuwen staat uit. De knop Nu vernieuwen werkt nog steeds",
+  intAria:"Vernieuwingstijd", refreshBtn:"Nu vernieuwen",
+  filtersLbl:"Actieve filters:", legend:"Nieuwe items worden {t} lang gemarkeerd",
+  fNotBot:"Geen bots", fEditNew:"Bewerkingen en nieuwe pagina’s", fAllNs:"Alle naamruimten", fNoLogs:"Zonder logacties",
+  fLast500:"Laatste 500", fMain:"Hoofdnaamruimte", fNoRedirect:"Geen doorverwijzingen", fOnlyNew:"Alleen nieuwe pagina’s",
+  thPage:"Pagina", thUser:"Gebruiker", thType:"Soort", thSize:"Grootte (bytes)", thSum:"Samenvatting", thTime:"Tijd",
+  diff:"verschil", hist:"geschiedenis", tNew:"Nieuw", tEdit:"Bewerking", anon:"Anonieme gebruiker", temp:"Tijdelijk account",
+  minor:"Klein", minorT:"Kleine bewerking", redir:"Doorverwijzing", redirT:"Doorverwijspagina",
+  hiddenU:"(verborgen)", hiddenC:"(samenvatting verborgen)", unknownU:"(onbekend)",
+  eTimeout:"time-out", eOffline:"geen verbinding of geblokkeerd", eBad:"onbekend antwoord",
+  emptyFail:"Gegevens konden niet worden geladen", emptyFailHint:"{e}. Klik op “Nu vernieuwen” om het opnieuw te proberen.",
+  noRes:"Geen resultaten", noResHint:"Niets komt overeen met “{q}”.", noEnt:"Nog geen items", noEntHint:"Probeer het zo nog eens.",
+  showing:"Items {a}–{b} van {n}", filteredFrom:"(gefilterd uit {m})", zero:"Geen items",
+  prev:"Vorige pagina", next:"Volgende pagina", pagerAria:"Lijstpagina’s",
+  blocked:"De browser heeft het geluid geblokkeerd. Klik één keer op de pagina om het te activeren.", newN:"Nieuwe items: {n}", top:"Naar boven",
+  note:"Live gegevens van Wikipedia · instellingen worden in deze browser opgeslagen.",
+  talk:"overleg", contribs:"bijdragen", themeTitle:"Kleurthema", themeSystem:"Systeem", themeLight:"Licht", themeDark:"Donker",
+  usersTitle:"Actieve gebruikers", usersMost:"Meeste items", usersMostT:"Gebruikers met de meeste items in alle geladen gegevens", usersActive:"Meest actief", usersActiveT:"Gebruikers met de meeste items in de afgelopen {w}", usersEmpty:"Nog geen opvallende gebruikers (minimaal 2 items).", usersBasis:"Gebaseerd op de laatste {n} items · minimaal 2 items", perPage:"Rijen per pagina", usersEntries:"{n} items",
+  close:"Sluiten"
+},
+ru:{
+  tabChanges:"Свежие правки", tabNew:"Новые страницы", langTitle:"Язык интерфейса и данных",
+  soundOn:"Звук включён", soundOff:"Звук выключен", soundTitle:"Воспроизводить «динь-дон» при появлении новых записей",
+  countTitle:"Количество загруженных записей",
+  loading:"Загрузка данных…", refreshing:"Обновление…", failed:"Не удалось загрузить: {e}", retry:"повтор через {t}",
+  updated:"Обновлено в {t}", nextIn:"следующее через {t}", autoOff:"автообновление выключено",
+  search:"Поиск по названиям, участникам и описаниям…", refreshLbl:"Обновление",
+  mAuto:"Автоматически", mAutoT:"Обновляется само, интервал: {t}", mInt:"Интервал", mIntT:"Задать свой интервал обновления",
+  mOff:"Выключено", mOffT:"Автообновление выключено. Кнопка «Обновить сейчас» по-прежнему работает",
+  intAria:"Интервал обновления", refreshBtn:"Обновить сейчас",
+  filtersLbl:"Активные фильтры:", legend:"Новые записи помечаются на {t}",
+  fNotBot:"Без ботов", fEditNew:"Правки и новые страницы", fAllNs:"Все пространства имён", fNoLogs:"Без действий журналов",
+  fLast500:"Последние 500", fMain:"Основное пространство имён", fNoRedirect:"Без перенаправлений", fOnlyNew:"Только новые страницы",
+  thPage:"Страница", thUser:"Участник", thType:"Тип", thSize:"Размер (байты)", thSum:"Описание", thTime:"Время",
+  diff:"разница", hist:"история", tNew:"Новая", tEdit:"Правка", anon:"Анонимный участник", temp:"Временная учётная запись",
+  minor:"Малая", minorT:"Малая правка", redir:"Перенаправление", redirT:"Страница-перенаправление",
+  hiddenU:"(скрыто)", hiddenC:"(описание скрыто)", unknownU:"(неизвестно)",
+  eTimeout:"время ожидания истекло", eOffline:"нет соединения или доступ заблокирован", eBad:"неизвестный ответ",
+  emptyFail:"Не удалось загрузить данные", emptyFailHint:"{e}. Нажмите «Обновить сейчас», чтобы повторить.",
+  noRes:"Ничего не найдено", noResHint:"Нет совпадений с «{q}».", noEnt:"Записей пока нет", noEntHint:"Попробуйте обновить чуть позже.",
+  showing:"Записи {a}–{b} из {n}", filteredFrom:"(отфильтровано из {m})", zero:"Записей нет",
+  prev:"Предыдущая страница", next:"Следующая страница", pagerAria:"Страницы списка",
+  blocked:"Браузер заблокировал звук. Щёлкните по странице один раз, чтобы включить его.", newN:"Новые записи: {n}", top:"Наверх",
+  note:"Данные Википедии в реальном времени · настройки сохраняются в этом браузере.",
+  talk:"обсуждение", contribs:"вклад", themeTitle:"Цветовая тема", themeSystem:"Системная", themeLight:"Светлая", themeDark:"Тёмная",
+  usersTitle:"Активные участники", usersMost:"Больше всего", usersMostT:"Участники с наибольшим числом записей среди всех загруженных данных", usersActive:"Самые активные", usersActiveT:"Участники с наибольшим числом записей за последние {w}", usersEmpty:"Заметных участников пока нет (минимум 2 записи).", usersBasis:"По последним {n} записям · минимум 2 записи", perPage:"Строк на странице", usersEntries:"записей: {n}",
+  close:"Закрыть"
+},
+th:{
+  tabChanges:"การเปลี่ยนแปลงล่าสุด", tabNew:"หน้าใหม่", langTitle:"ภาษาของอินเทอร์เฟซและข้อมูล",
+  soundOn:"เปิดเสียง", soundOff:"ปิดเสียง", soundTitle:"เล่นเสียง “ติ๊งต่อง” เมื่อมีรายการใหม่",
+  countTitle:"จำนวนรายการที่โหลดแล้ว",
+  loading:"กำลังโหลดข้อมูล…", refreshing:"กำลังรีเฟรช…", failed:"โหลดไม่สำเร็จ: {e}", retry:"ลองใหม่ใน {t}",
+  updated:"อัปเดตเมื่อ {t}", nextIn:"รอบถัดไปใน {t}", autoOff:"ปิดการรีเฟรชอัตโนมัติ",
+  search:"ค้นหาชื่อหน้า ผู้ใช้ หรือสรุปการแก้ไข…", refreshLbl:"การรีเฟรช",
+  mAuto:"อัตโนมัติ", mAutoT:"รีเฟรชเอง ช่วงเวลา: {t}", mInt:"ช่วงเวลา", mIntT:"ตั้งช่วงเวลารีเฟรชเอง",
+  mOff:"ปิด", mOffT:"ปิดการรีเฟรชอัตโนมัติ แต่ปุ่มรีเฟรชทันทียังใช้งานได้",
+  intAria:"ช่วงเวลารีเฟรช", refreshBtn:"รีเฟรชทันที",
+  filtersLbl:"ตัวกรองที่ใช้อยู่:", legend:"รายการใหม่จะมีจุดกำกับนาน {t}",
+  fNotBot:"ไม่รวมบอต", fEditNew:"การแก้ไขและหน้าใหม่", fAllNs:"ทุกเนมสเปซ", fNoLogs:"ไม่รวมรายการบันทึก",
+  fLast500:"ล่าสุด 500 รายการ", fMain:"เนมสเปซหลัก", fNoRedirect:"ไม่รวมหน้าเปลี่ยนทาง", fOnlyNew:"เฉพาะหน้าใหม่",
+  thPage:"หน้า", thUser:"ผู้ใช้", thType:"ประเภท", thSize:"ขนาด (ไบต์)", thSum:"สรุป", thTime:"เวลา",
+  diff:"ความแตกต่าง", hist:"ประวัติ", tNew:"ใหม่", tEdit:"แก้ไข", anon:"ผู้ใช้นิรนาม", temp:"บัญชีชั่วคราว",
+  minor:"เล็กน้อย", minorT:"การแก้ไขเล็กน้อย", redir:"หน้าเปลี่ยนทาง", redirT:"หน้าเปลี่ยนทาง",
+  hiddenU:"(ซ่อนอยู่)", hiddenC:"(ซ่อนสรุป)", unknownU:"(ไม่ทราบ)",
+  eTimeout:"หมดเวลา", eOffline:"ไม่มีการเชื่อมต่อหรือถูกบล็อก", eBad:"การตอบกลับที่ไม่รู้จัก",
+  emptyFail:"ไม่สามารถโหลดข้อมูลได้", emptyFailHint:"{e} กด “รีเฟรชทันที” เพื่อลองอีกครั้ง",
+  noRes:"ไม่พบผลลัพธ์", noResHint:"ไม่มีรายการที่ตรงกับ “{q}”", noEnt:"ยังไม่มีรายการ", noEntHint:"ลองรีเฟรชอีกครั้งในอีกสักครู่",
+  showing:"รายการ {a}–{b} จาก {n}", filteredFrom:"(กรองจาก {m})", zero:"ไม่มีรายการ",
+  prev:"หน้าก่อนหน้า", next:"หน้าถัดไป", pagerAria:"หน้าของรายการ",
+  blocked:"เบราว์เซอร์บล็อกเสียงไว้ คลิกที่หน้าเว็บหนึ่งครั้งเพื่อเปิดใช้งาน", newN:"รายการใหม่: {n}", top:"กลับขึ้นด้านบน",
+  note:"ข้อมูลสดจากวิกิพีเดีย · การตั้งค่าบันทึกไว้ในเบราว์เซอร์นี้",
+  talk:"พูดคุย", contribs:"ส่วนร่วม", themeTitle:"ธีมสี", themeSystem:"ตามระบบ", themeLight:"สว่าง", themeDark:"มืด",
+  usersTitle:"ผู้ใช้ที่ใช้งานอยู่", usersMost:"มากที่สุด", usersMostT:"ผู้ใช้ที่มีรายการมากที่สุดในข้อมูลที่โหลดทั้งหมด", usersActive:"ใช้งานมากที่สุด", usersActiveT:"ผู้ใช้ที่มีรายการมากที่สุดใน {w} ที่ผ่านมา", usersEmpty:"ยังไม่มีผู้ใช้ที่โดดเด่น (อย่างน้อย 2 รายการ)", usersBasis:"จาก {n} รายการล่าสุด · อย่างน้อย 2 รายการ", perPage:"แถวต่อหน้า", usersEntries:"{n} รายการ",
+  close:"ปิด"
+},
+ta:{
+  tabChanges:"சமீபத்திய மாற்றங்கள்", tabNew:"புதிய பக்கங்கள்", langTitle:"இடைமுகம் மற்றும் தரவு மொழி",
+  soundOn:"ஒலி இயக்கத்தில்", soundOff:"ஒலி நிறுத்தத்தில்", soundTitle:"புதிய பதிவுகள் வந்தால் “டிங்-டாங்” ஒலி எழுப்பு",
+  countTitle:"ஏற்றப்பட்ட பதிவுகளின் எண்ணிக்கை",
+  loading:"தரவு ஏற்றப்படுகிறது…", refreshing:"புதுப்பிக்கப்படுகிறது…", failed:"ஏற்ற முடியவில்லை: {e}", retry:"{t} இல் மீண்டும் முயற்சி",
+  updated:"{t} இல் புதுப்பிக்கப்பட்டது", nextIn:"அடுத்தது {t} இல்", autoOff:"தானியங்கிப் புதுப்பிப்பு நிறுத்தத்தில்",
+  search:"தலைப்புகள், பயனர்கள் அல்லது சுருக்கங்களைத் தேடுங்கள்…", refreshLbl:"புதுப்பிப்பு",
+  mAuto:"தானியங்கி", mAutoT:"தானாகப் புதுப்பிக்கும் இடைவெளி: {t}", mInt:"இடைவெளி", mIntT:"புதுப்பிப்பு இடைவெளியை நீங்களே அமைக்கவும்",
+  mOff:"நிறுத்தம்", mOffT:"தானியங்கிப் புதுப்பிப்பு நிறுத்தப்பட்டது. “இப்போது புதுப்பி” பொத்தான் தொடர்ந்து செயல்படும்",
+  intAria:"புதுப்பிப்பு இடைவெளி", refreshBtn:"இப்போது புதுப்பி",
+  filtersLbl:"செயலில் உள்ள வடிகட்டிகள்:", legend:"புதிய பதிவுகள் {t} வரை குறிக்கப்படும்",
+  fNotBot:"தானியங்கிகள் இல்லாமல்", fEditNew:"தொகுப்புகளும் புதிய பக்கங்களும்", fAllNs:"எல்லாப் பெயர்வெளிகளும்", fNoLogs:"பதிவு நடவடிக்கைகள் இல்லாமல்",
+  fLast500:"சமீபத்திய 500", fMain:"முதன்மைப் பெயர்வெளி", fNoRedirect:"வழிமாற்றுகள் இல்லாமல்", fOnlyNew:"புதிய பக்கங்கள் மட்டும்",
+  thPage:"பக்கம்", thUser:"பயனர்", thType:"வகை", thSize:"அளவு (பைட்டுகள்)", thSum:"சுருக்கம்", thTime:"நேரம்",
+  diff:"வேறுபாடு", hist:"வரலாறு", tNew:"புதியது", tEdit:"தொகுப்பு", anon:"பெயரிலாப் பயனர்", temp:"தற்காலிகக் கணக்கு",
+  minor:"சிறியது", minorT:"சிறிய தொகுப்பு", redir:"வழிமாற்று", redirT:"வழிமாற்றுப் பக்கம்",
+  hiddenU:"(மறைக்கப்பட்டது)", hiddenC:"(சுருக்கம் மறைக்கப்பட்டது)", unknownU:"(தெரியாதது)",
+  eTimeout:"நேரம் முடிந்தது", eOffline:"இணைப்பு இல்லை அல்லது தடுக்கப்பட்டது", eBad:"அறியப்படாத பதில்",
+  emptyFail:"தரவை ஏற்ற முடியவில்லை", emptyFailHint:"{e}. மீண்டும் முயல “இப்போது புதுப்பி” என்பதை அழுத்துங்கள்.",
+  noRes:"முடிவுகள் இல்லை", noResHint:"“{q}” உடன் பொருந்துவது எதுவும் இல்லை.", noEnt:"இன்னும் பதிவுகள் இல்லை", noEntHint:"சிறிது நேரம் கழித்து மீண்டும் புதுப்பிக்கவும்.",
+  showing:"பதிவுகள் {a}–{b} / {n}", filteredFrom:"({m} இலிருந்து வடிகட்டப்பட்டது)", zero:"பதிவுகள் இல்லை",
+  prev:"முந்தைய பக்கம்", next:"அடுத்த பக்கம்", pagerAria:"பட்டியல் பக்கங்கள்",
+  blocked:"உலாவி ஒலியைத் தடுத்துள்ளது. இயக்க பக்கத்தை ஒருமுறை சொடுக்கவும்.", newN:"புதிய பதிவுகள்: {n}", top:"மேலே செல்",
+  note:"விக்கிப்பீடியாவின் நேரடித் தரவு · அமைப்புகள் இந்த உலாவியில் சேமிக்கப்படும்.",
+  talk:"பேச்சு", contribs:"பங்களிப்புகள்", themeTitle:"நிறத் தீம்", themeSystem:"கணினி", themeLight:"ஒளி", themeDark:"இருள்",
+  usersTitle:"செயலில் உள்ள பயனர்கள்", usersMost:"அதிகம்", usersMostT:"ஏற்றப்பட்ட அனைத்துத் தரவிலும் அதிக உள்ளீடுகள் உள்ள பயனர்கள்", usersActive:"மிகவும் செயலில்", usersActiveT:"கடந்த {w} இல் அதிக உள்ளீடுகள் உள்ள பயனர்கள்", usersEmpty:"குறிப்பிடத்தக்க பயனர்கள் இன்னும் இல்லை (குறைந்தது 2 உள்ளீடுகள்).", usersBasis:"சமீபத்திய {n} உள்ளீடுகளின் அடிப்படையில் · குறைந்தது 2 உள்ளீடுகள்", perPage:"ஒரு பக்கத்திற்கு வரிசைகள்", usersEntries:"{n} உள்ளீடுகள்",
+  close:"மூடு"
+},
+he:{
+  tabChanges:"שינויים אחרונים", tabNew:"דפים חדשים", langTitle:"שפת הממשק והנתונים",
+  soundOn:"צליל פועל", soundOff:"צליל כבוי", soundTitle:"השמע “דינג-דונג” כשמגיעות רשומות חדשות",
+  countTitle:"מספר הרשומות שנטענו",
+  loading:"טוען נתונים…", refreshing:"מרענן…", failed:"הטעינה נכשלה: {e}", retry:"ניסיון חוזר בעוד {t}",
+  updated:"עודכן ב־{t}", nextIn:"הבא בעוד {t}", autoOff:"הרענון האוטומטי כבוי",
+  search:"חיפוש כותרות, משתמשים או תקצירים…", refreshLbl:"רענון",
+  mAuto:"אוטומטי", mAutoT:"מתרענן מעצמו, מרווח: {t}", mInt:"מרווח", mIntT:"קביעת מרווח רענון משלך",
+  mOff:"כבוי", mOffT:"הרענון האוטומטי כבוי. כפתור הרענון עדיין פועל",
+  intAria:"מרווח רענון", refreshBtn:"רענן עכשיו",
+  filtersLbl:"מסננים פעילים:", legend:"רשומות חדשות מסומנות למשך {t}",
+  fNotBot:"ללא בוטים", fEditNew:"עריכות ודפים חדשים", fAllNs:"כל מרחבי השם", fNoLogs:"ללא פעולות יומן",
+  fLast500:"500 אחרונות", fMain:"מרחב השם הראשי", fNoRedirect:"ללא הפניות", fOnlyNew:"דפים חדשים בלבד",
+  thPage:"דף", thUser:"משתמש", thType:"סוג", thSize:"גודל (בתים)", thSum:"תקציר", thTime:"זמן",
+  diff:"הבדלים", hist:"היסטוריה", tNew:"חדש", tEdit:"עריכה", anon:"משתמש אנונימי", temp:"חשבון זמני",
+  minor:"קטנה", minorT:"עריכה קטנה", redir:"הפניה", redirT:"דף הפניה",
+  hiddenU:"(מוסתר)", hiddenC:"(תקציר מוסתר)", unknownU:"(לא ידוע)",
+  eTimeout:"תם הזמן", eOffline:"אין חיבור או שנחסם", eBad:"תגובה לא מזוהה",
+  emptyFail:"לא ניתן לטעון את הנתונים", emptyFailHint:"{e}. לחצו על “רענן עכשיו” כדי לנסות שוב.",
+  noRes:"אין תוצאות", noResHint:"שום דבר לא תואם ל־“{q}”.", noEnt:"אין עדיין רשומות", noEntHint:"נסו לרענן שוב בעוד רגע.",
+  showing:"רשומות {a}–{b} מתוך {n}", filteredFrom:"(מסוננות מתוך {m})", zero:"אין רשומות",
+  prev:"הדף הקודם", next:"הדף הבא", pagerAria:"דפי הרשימה",
+  blocked:"הדפדפן חסם את הצליל. לחצו פעם אחת על הדף כדי להפעיל אותו.", newN:"רשומות חדשות: {n}", top:"חזרה למעלה",
+  note:"נתונים חיים מוויקיפדיה · ההגדרות נשמרות בדפדפן זה.",
+  talk:"שיחה", contribs:"תרומות", themeTitle:"ערכת צבעים", themeSystem:"מערכת", themeLight:"בהיר", themeDark:"כהה",
+  usersTitle:"משתמשים פעילים", usersMost:"הכי הרבה", usersMostT:"משתמשים עם מספר הרשומות הגבוה ביותר בכל הנתונים שנטענו", usersActive:"הכי פעילים", usersActiveT:"משתמשים עם מספר הרשומות הגבוה ביותר ב-{w} האחרונות", usersEmpty:"עדיין אין משתמשים בולטים (לפחות 2 רשומות).", usersBasis:"לפי {n} הרשומות האחרונות · לפחות 2 רשומות", perPage:"שורות בעמוד", usersEntries:"{n} רשומות",
+  close:"סגירה"
+}
+};
+
+/* ================= konfigurasi ================= */
+const TABS = {
+  changes:{
+    title:'tabChanges',
+    params:{ rctype:'edit|new', rcshow:'!bot' },
+    filters:['fNotBot','fEditNew','fAllNs','fNoLogs','fLast500']
+  },
+  newpages:{
+    title:'tabNew',
+    params:{ rctype:'new', rcnamespace:'0', rcshow:'!redirect' },
+    filters:['fMain','fNoRedirect','fOnlyNew','fLast500']
+  }
+};
+const AUTO_MS = 10000;          // mode Otomatis (refresh sendiri)
+const MIN_INTERVAL = 5, MAX_INTERVAL = 3600;
+const NEW_MS = 10000;           // lama dot penanda
+const MAX_ITEMS = 1000;
+const PER_PAGE_OPTIONS = [20, 50, 100, 250, 500];
+const USERS_SAMPLE = 500, USERS_MIN = 2, USERS_ROWS = 50, USERS_PER_PAGE = 10, ACTIVE_WINDOW_MS = 30 * 60 * 1000;
+const OVERLAP_MS = 30000;       // tumpang tindih saat ambil entri baru (dedupe by id)
+const STALE_MS = 10 * 60 * 1000;// terlalu lama tak refresh: muat ulang dari awal tanpa dot/bunyi
+
+/* ================= util ================= */
+const $ = id => document.getElementById(id);
+const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clock = ms => new Date(ms).toLocaleTimeString('en-GB');
+const hue = str => { let h = 0; for (const c of str) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const wikiPath = s => '/wiki/' + encodeURIComponent(s.replace(/ /g,'_')).replace(/%2F/g,'/').replace(/%3A/g,':');
+
+/* ================= setelan tersimpan ================= */
+const LS = 'wikilacak.prefs.v1';
+const readPrefs = () => { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch { return {}; } };
+const savePrefs = () => { try { localStorage.setItem(LS, JSON.stringify(prefs)); } catch {} };
+const prefs = Object.assign({ wiki:'id', tab:'changes', sound:false, mode:'auto', interval:30, theme:'system', perPage:20, umode:'most' }, readPrefs());
+if (!['system','light','dark'].includes(prefs.theme)) prefs.theme = 'system';
+if (!LANGS[prefs.wiki]) prefs.wiki = 'id';
+if (!TABS[prefs.tab]) prefs.tab = 'changes';
+if (prefs.mode === 'manual') prefs.mode = 'off'; // setelan lama
+if (!['auto','interval','off'].includes(prefs.mode)) prefs.mode = 'auto';
+prefs.interval = clamp(parseInt(prefs.interval, 10) || 30, MIN_INTERVAL, MAX_INTERVAL);
+prefs.sound = !!prefs.sound;
+prefs.perPage = PER_PAGE_OPTIONS.includes(+prefs.perPage) ? +prefs.perPage : 20;
+if (!['most','active'].includes(prefs.umode)) prefs.umode = 'most';
+
+/* ================= terjemahan & format menurut bahasa ================= */
+const isRtl = () => !!LANGS[prefs.wiki].rtl;
+const t = (key, vars) => {
+  const s = (I18N[prefs.wiki] && I18N[prefs.wiki][key]) ?? I18N.en[key] ?? key;
+  return vars ? s.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m)) : s;
+};
+const F = {};
+function setLocale() {
+  const loc = prefs.wiki;
+  F.rtf = new Intl.RelativeTimeFormat(loc, { numeric:'auto', style:'long' });
+  F.sec = new Intl.NumberFormat(loc, { style:'unit', unit:'second', unitDisplay:'long' });
+  F.num = new Intl.NumberFormat(loc);
+  F.min = new Intl.NumberFormat(loc, { style:'unit', unit:'minute', unitDisplay:'long' });
+}
+const fmt = n => F.num.format(n);
+const secs = n => F.sec.format(n);
+const secWord = n => { const p = F.sec.formatToParts(n).find(x => x.type === 'unit'); return p ? p.value : ''; };
+const rel = ms => {
+  const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
+  if (s < 10) return F.rtf.format(0, 'second');
+  if (s < 60) return F.rtf.format(-s, 'second');
+  const m = Math.floor(s / 60); if (m < 60) return F.rtf.format(-m, 'minute');
+  const h = Math.floor(m / 60); if (h < 24) return F.rtf.format(-h, 'hour');
+  return F.rtf.format(-Math.floor(h / 24), 'day');
+};
+const absTime = ms => {
+  const d = new Date(ms);
+  return d.toDateString() === new Date().toDateString()
+    ? clock(ms)
+    : d.toLocaleDateString(prefs.wiki, { day:'numeric', month:'long' }) + ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+};
+const cleanComment = c => c.replace(/\/\*\s*(.*?)\s*\*\/\s*/g, (m, s) => (isRtl() ? '←' : '→') + s + ': ').trim();
+
+/* ================= state ================= */
+let store = null;               // { items:[], ids:Set }
+let page = 1, query = '';
+let loading = false, error = null, lastOk = 0;
+let timer = null, nextAt = 0, startedAt = 0;
+let ctl = null, seq = 0;
+let unseen = 0, lastSoundHint = 0, toastTimer = null;
+
+/* ================= API ================= */
+const host = () => prefs.wiki + '.wikipedia.org';
+function apiUrl(extra = {}) {
+  const p = new URLSearchParams({
+    action:'query', list:'recentchanges', format:'json', formatversion:'2', origin:'*',
+    rcprop:'title|ids|user|comment|timestamp|sizes|flags|tags|redirect', rclimit:'500',
+    ...TABS[prefs.tab].params, ...extra
+  });
+  return `https://${host()}/w/api.php?${p}`;
+}
+async function fetchJson(url, signal) {
+  const r = await fetch(url, { signal, headers:{ 'Api-User-Agent':'Wikilacak/1.0 (pelacak pribadi, file HTML lokal)' } });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.info || j.error.code);
+  if (!j.query) throw new Error(t('eBad'));
+  return j;
+}
+
+/* nama tag dalam bahasa wiki yang dipilih (diambil dari Wikipedia sendiri) */
+const tagCache = {};
+const stripHtml = h => new DOMParser().parseFromString(h, 'text/html').body.textContent.trim();
+const tagLabel = n => { const m = tagCache[prefs.wiki]; return (m && m.get(n)) || n; };
+async function loadTagNames() {
+  const w = prefs.wiki;
+  if (tagCache[w]) return;
+  tagCache[w] = new Map();
+  try {
+    const p = new URLSearchParams({ action:'query', list:'tags', tgprop:'displayname', tglimit:'500', format:'json', formatversion:'2', origin:'*', uselang:w });
+    const j = await fetchJson(`https://${w}.wikipedia.org/w/api.php?${p}`);
+    j.query.tags.forEach(x => { const s = stripHtml(x.displayname || ''); if (s.length >= 3) tagCache[w].set(x.name, s); });
+    if (w === prefs.wiki && store) render();
+  } catch { delete tagCache[w]; }
+}
+
+function norm(x) {
+  const user = x.userhidden ? t('hiddenU') : (x.user || t('unknownU'));
+  const comment = x.commenthidden ? t('hiddenC') : cleanComment(x.comment || '');
+  const tags = x.tags || [];
+  return {
+    id:x.rcid, ts:x.timestamp, ms:Date.parse(x.timestamp), type:x.type, title:x.title,
+    user, hiddenUser:!!x.userhidden, anon:!!x.anon, temp:!!x.temp,
+    minor:!!x.minor, redirect:!!x.redirect, comment, tags,
+    size: x.type === 'new' ? (x.newlen || 0) : (x.newlen || 0) - (x.oldlen || 0),
+    revid:x.revid, old:x.old_revid || 0, newUntil:0,
+    hay:(x.title + ' ' + user + ' ' + comment + ' ' + tags.join(' ')).toLowerCase()
+  };
+}
+const byNewest = (a, b) => b.ts < a.ts ? -1 : b.ts > a.ts ? 1 : b.id - a.id;
+
+async function fetchNewer(signal) {
+  const base = store.items.length ? store.items[0].ms : Date.now() - 3600e3;
+  const start = new Date(base - OVERLAP_MS).toISOString().replace(/\.\d+Z$/, 'Z');
+  let out = [], cont = null, guard = 0;
+  do {
+    const j = await fetchJson(apiUrl({ rcdir:'newer', rcstart:start, ...(cont || {}) }), signal);
+    out = out.concat(j.query.recentchanges);
+    cont = j.continue || null;
+  } while (cont && ++guard < 4);
+  const seen = new Set();
+  return out.map(norm).filter(x => !store.ids.has(x.id) && !seen.has(x.id) && seen.add(x.id));
+}
+
+/* ================= refresh ================= */
+async function refresh(opts = {}) {
+  clearTimeout(timer); nextAt = 0;
+  if (ctl) ctl.abort();
+  const c = new AbortController(); ctl = c;
+  const my = ++seq;
+  const to = setTimeout(() => c.abort(), 25000);
+  loading = true; setBusy(true); updateStatus();
+  try {
+    const baseline = opts.baseline || !store || (Date.now() - lastOk > STALE_MS);
+    if (baseline) {
+      const j = await fetchJson(apiUrl(), c.signal);
+      if (my !== seq) return;
+      const items = j.query.recentchanges.map(norm);
+      store = { items, ids:new Set(items.map(x => x.id)) };
+    } else {
+      const added = await fetchNewer(c.signal);
+      if (my !== seq) return;
+      if (added.length) {
+        const until = Date.now() + NEW_MS;
+        added.forEach(x => { x.newUntil = until; store.ids.add(x.id); });
+        store.items = added.concat(store.items).sort(byNewest).slice(0, MAX_ITEMS);
+        announce(added.length);
+      }
+    }
+    error = null; lastOk = Date.now();
+  } catch (e) {
+    if (my !== seq) return;
+    error = e.name === 'AbortError' ? t('eTimeout')
+          : (e instanceof TypeError || /Failed to fetch|NetworkError/i.test(e.message || '')) ? t('eOffline')
+          : (e.message || '?');
+  } finally {
+    clearTimeout(to);
+    if (my === seq) { loading = false; setBusy(false); schedule(); render(); updateStatus(); }
+  }
+}
+function schedule() {
+  clearTimeout(timer); nextAt = 0;
+  if (prefs.mode === 'off') return;
+  const ms = prefs.mode === 'auto' ? AUTO_MS : prefs.interval * 1000;
+  startedAt = Date.now(); nextAt = startedAt + ms;
+  timer = setTimeout(() => refresh(), ms);
+}
+function resetData() {
+  if (ctl) ctl.abort();
+  seq++; store = null; error = null; page = 1; unseen = 0; updateTitle();
+  render(); refresh({ baseline:true });
+}
+
+/* ================= bunyi ting-tong ================= */
+let ac = null;
+function audio() {
+  if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ac = new C(); }
+  if (ac.state === 'suspended') ac.resume().catch(() => {});
+  return ac;
+}
+function note(c, at, f, d) {
+  [[1, .32], [2.01, .08]].forEach(([mul, vol]) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = f * mul;
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(vol, at + .015);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + d);
+    o.connect(g).connect(c.destination);
+    o.start(at); o.stop(at + d + .05);
+  });
+}
+function playDing() {
+  const c = audio();
+  if (!c || c.state !== 'running') return false;
+  const at = c.currentTime;
+  note(c, at, 988, .9);        // ting
+  note(c, at + .32, 740, 1.3); // tong
+  return true;
+}
+const unlock = () => {
+  if (!prefs.sound) return;
+  const c = audio();
+  if (c && c.state === 'running') { removeEventListener('pointerdown', unlock); removeEventListener('keydown', unlock); }
+};
+addEventListener('pointerdown', unlock, { passive:true });
+addEventListener('keydown', unlock);
+
+/* ================= notifikasi entri baru ================= */
+function announce(n) {
+  if (prefs.sound && !playDing() && Date.now() - lastSoundHint > 60000) {
+    lastSoundHint = Date.now();
+    toast(t('blocked'));
+  }
+  if (document.hidden) { unseen += n; updateTitle(); }
+  if (page > 1 || scrollY > 260) toast(t('newN', { n:fmt(n) }), true);
+}
+function updateTitle() { document.title = (unseen ? `(${unseen}) ` : '') + 'Wikilacak'; }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { unseen = 0; updateTitle(); } });
+
+function toast(msg, withBtn = false) {
+  $('toastMsg').textContent = msg;
+  $('toastBtn').hidden = !withBtn;
+  $('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('show'), withBtn ? 6000 : 4500);
+}
+
+/* ================= render ================= */
+const filtered = () => {
+  if (!store) return [];
+  const q = query.trim().toLowerCase();
+  return q ? store.items.filter(x => x.hay.includes(q)) : store.items;
+};
+const emptyHtml = (title, desc) => `<tr><td colspan="7"><div class="empty"><b>${esc(title)}</b>${esc(desc || '')}</div></td></tr>`;
+
+function rowHtml(x, now) {
+  const h = 'https://' + host();
+  const pageUrl = h + wikiPath(x.title);
+  const hist = `${h}/w/index.php?title=${encodeURIComponent(x.title.replace(/ /g,'_'))}&action=history`;
+  const diff = x.type === 'edit' && x.old ? `${h}/w/index.php?diff=${x.revid}&oldid=${x.old}` : '';
+  const ext = 'target="_blank" rel="noopener noreferrer"';
+  const sub = [diff && `<a href="${esc(diff)}" ${ext}>${esc(t('diff'))}</a>`, `<a href="${esc(hist)}" ${ext}>${esc(t('hist'))}</a>`]
+    .filter(Boolean).join('<span class="sep">·</span>');
+
+  const initial = (x.anon || x.temp || x.hiddenUser) ? '?' : ([...x.user][0] || '?').toUpperCase();
+  const uname = encodeURIComponent(x.user.replace(/ /g,'_'));
+  const contribUrl = `${h}/wiki/Special:Contributions/${uname}`;
+  const talkUrl = `${h}/wiki/User_talk:${uname}`;
+  const userUrl = x.anon ? contribUrl : `${h}/wiki/User:${uname}`;
+  const userEl = x.hiddenUser
+    ? `<span class="n">${esc(x.user)}</span>`
+    : `<a href="${esc(userUrl)}" ${ext}>${esc(x.user)}</a>`;
+  const userSub = x.hiddenUser ? '' : `<div class="sub"><a href="${esc(talkUrl)}" ${ext}>${esc(t('talk'))}</a><span class="sep">·</span><a href="${esc(contribUrl)}" ${ext}>${esc(t('contribs'))}</a></div>`;
+  const badge = x.anon ? `<span class="badge">${esc(t('anon'))}</span>` : x.temp ? `<span class="badge">${esc(t('temp'))}</span>` : '';
+
+  const tg = [];
+  if (x.minor) tg.push([t('minor'), t('minorT')]);
+  if (x.redirect) tg.push([t('redir'), t('redirT')]);
+  x.tags.forEach(n => tg.push([tagLabel(n), n]));
+  const tagHtml = tg.map(([l, title]) => `<span class="tg" title="${esc(title)}">${esc(l)}</span>`).join('');
+
+  const cls = x.size > 0 ? 'up' : x.size < 0 ? 'down' : 'zero';
+  const sizeTxt = (x.size > 0 ? '+' : x.size < 0 ? '−' : '') + fmt(Math.abs(x.size));
+  const isNew = x.newUntil > now;
+  const pill = x.type === 'new'
+    ? `<span class="pill new"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>${esc(t('tNew'))}</span>`
+    : `<span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>${esc(t('tEdit'))}</span>`;
+
+  return `<tr class="row${isNew ? ' is-new' : ''}" data-until="${x.newUntil}">
+    <td class="c-dot"><i class="dot"></i></td>
+    <td class="c-title"><a class="ttl" href="${esc(pageUrl)}" ${ext}>${esc(x.title)}</a><div class="sub">${sub}</div></td>
+    <td class="c-user"><div class="u"><span class="av" style="background:hsl(${hue(x.user)} 52% 46%)">${esc(initial)}</span><div class="un">${userEl}${userSub}${badge}</div></div></td>
+    <td class="c-type">${pill}</td>
+    <td class="c-size num"><span class="delta ${cls}" dir="ltr">${sizeTxt}</span></td>
+    <td class="c-cmt"><div class="cmt">${esc(x.comment)}</div>${tagHtml}</td>
+    <td class="c-time"><b data-ts="${x.ms}">${esc(rel(x.ms))}</b><small>${esc(absTime(x.ms))}</small></td>
+  </tr>`;
+}
+
+function pagerHtml(pages, cur = page) {
+  if (pages <= 1) return '';
+  const [P, N] = isRtl() ? ['›', '‹'] : ['‹', '›'];
+  const nums = [...new Set([1, pages, cur - 1, cur, cur + 1])].filter(n => n >= 1 && n <= pages).sort((a, b) => a - b);
+  let out = `<button class="pg" data-page="${cur - 1}" ${cur <= 1 ? 'disabled' : ''} aria-label="${esc(t('prev'))}">${P}</button>`;
+  let prev = 0;
+  for (const n of nums) {
+    if (n - prev > 1) out += '<span class="gap">…</span>';
+    out += `<button class="pg" data-page="${n}" ${n === cur ? 'aria-current="page"' : ''}>${esc(fmt(n))}</button>`;
+    prev = n;
+  }
+  return out + `<button class="pg" data-page="${cur + 1}" ${cur >= pages ? 'disabled' : ''} aria-label="${esc(t('next'))}">${N}</button>`;
+}
+
+function render() {
+  const tab = TABS[prefs.tab];
+  $('title').textContent = t(tab.title);
+  $('filterChips').innerHTML = tab.filters.map(f => `<span class="fchip">${esc(t(f))}</span>`).join(' ');
+  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-selected', String(c.dataset.tab === prefs.tab)));
+
+  if (!store) {
+    $('count').textContent = '–';
+    $('rows').innerHTML = error
+      ? emptyHtml(t('emptyFail'), t('emptyFailHint', { e:error }))
+      : '<tr><td colspan="7">' + '<div class="skel"></div>'.repeat(7) + '</td></tr>';
+    $('range').textContent = ''; $('pager').innerHTML = '';
+    renderUsers(Date.now());
+    return;
+  }
+  const now = Date.now();
+  const list = filtered(), total = list.length;
+  const pages = Math.max(1, Math.ceil(total / prefs.perPage));
+  page = Math.min(Math.max(1, page), pages);
+  const from = (page - 1) * prefs.perPage;
+  const slice = list.slice(from, from + prefs.perPage);
+
+  $('count').textContent = fmt(store.items.length);
+  $('rows').innerHTML = slice.length
+    ? slice.map(x => rowHtml(x, now)).join('')
+    : (query.trim() ? emptyHtml(t('noRes'), t('noResHint', { q:query.trim() })) : emptyHtml(t('noEnt'), t('noEntHint')));
+  $('range').textContent = total
+    ? t('showing', { a:fmt(from + 1), b:fmt(from + slice.length), n:fmt(total) }) + (query.trim() ? ' ' + t('filteredFrom', { m:fmt(store.items.length) }) : '')
+    : t('zero');
+  $('pager').innerHTML = pagerHtml(pages);
+  renderUsers(now);
+}
+
+/* ================= panel pengguna aktif (dari 500 data terbaru) ================= */
+function topUsers(now) {
+  if (!store) return { list: [], sample: 0, w: 30 };
+  const sample = store.items.slice(0, USERS_SAMPLE);
+  // jendela "paling aktif": seperempat rentang waktu data, antara 1 dan 30 menit (di wiki ramai, 500 data hanya mencakup beberapa menit)
+  const span = sample.length ? sample[0].ms - sample[sample.length - 1].ms : 0;
+  const w = clamp(Math.round(span / 4 / 60000), 1, ACTIVE_WINDOW_MS / 60000);
+  const map = new Map();
+  for (const x of sample) {
+    if (x.hiddenUser) continue;
+    if (prefs.umode === 'active' && now - x.ms > w * 60000) continue;
+    let u = map.get(x.user);
+    if (!u) map.set(x.user, u = { user:x.user, n:0, last:x.ms, anon:x.anon, temp:x.temp });
+    u.n++; if (x.ms > u.last) u.last = x.ms;
+  }
+  const list = [...map.values()].filter(u => u.n >= USERS_MIN)
+    .sort((a, b) => b.n - a.n || b.last - a.last || (a.user < b.user ? -1 : 1)).slice(0, USERS_ROWS);
+  return { list, sample: sample.length, w };
+}
+let usersSig = '', upage = 1;
+function renderUsers(now = Date.now()) {
+  if (!$('usersDlg').open) return;
+  const { list, sample, w } = topUsers(now);
+  $('useg').querySelector('[data-umode="active"]').title = t('usersActiveT', { w:F.min.format(w) });
+  const h = 'https://' + host();
+  const max = list.length ? list[0].n : 1;
+  const upages = Math.max(1, Math.ceil(list.length / USERS_PER_PAGE));
+  upage = clamp(upage, 1, upages);
+  const off = (upage - 1) * USERS_PER_PAGE;
+  const html = !store ? '' : list.length ? list.slice(off, off + USERS_PER_PAGE).map((u, j) => {
+    const i = off + j;
+    const uname = encodeURIComponent(u.user.replace(/ /g, '_'));
+    const url = `${h}/wiki/User_talk:${uname}`;
+    const initial = (u.anon || u.temp) ? '?' : ([...u.user][0] || '?').toUpperCase();
+    return `<li class="urow"><span class="rk">${esc(fmt(i + 1))}</span><span class="av" style="background:hsl(${hue(u.user)} 52% 46%)">${esc(initial)}</span>`
+      + `<a class="nm" href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="${esc(u.user)}">${esc(u.user)}</a>`
+      + `<span class="ct" title="${esc(t('usersEntries', { n:fmt(u.n) }))}">${esc(fmt(u.n))}</span>`
+      + `<span class="ubar" aria-hidden="true"><i style="width:${Math.max(6, Math.round(u.n / max * 100))}%"></i></span></li>`;
+  }).join('') : '';
+  const empty = store && !list.length ? `<div class="side-empty">${esc(t('usersEmpty'))}</div>` : '';
+  const note = store ? t('usersBasis', { n:fmt(sample) }) : '';
+  const sig = prefs.umode + '|' + prefs.wiki + '|' + upage + '|' + html + empty + note;
+  if (sig === usersSig) return;
+  usersSig = sig;
+  $('ulist').innerHTML = html + empty;
+  $('upager').innerHTML = pagerHtml(upages, upage);
+  $('ulist').scrollTop = 0;
+  $('usersNote').textContent = note;
+}
+
+function updateStatus(now = Date.now()) {
+  const left = nextAt ? Math.max(0, Math.ceil((nextAt - now) / 1000)) : 0;
+  let text = '';
+  if (!store && loading) text = t('loading');
+  else if (error) text = t('failed', { e:error }) + (nextAt ? ' · ' + t('retry', { t:secs(left) }) : '');
+  else if (loading) text = t('refreshing');
+  else if (store) text = t('updated', { t:clock(lastOk) }) + ' · ' + (prefs.mode === 'off' ? t('autoOff') : t('nextIn', { t:secs(left) }));
+  if ($('statusTxt').textContent !== text) $('statusTxt').textContent = text;
+  $('status').classList.toggle('err', !!error);
+  $('live').className = 'live' + (error ? ' err' : prefs.mode !== 'off' ? ' on' : '');
+  const pct = (!nextAt || loading || prefs.mode === 'off') ? 0 : Math.min(100, (now - startedAt) / (nextAt - startedAt) * 100);
+  $('bar').style.width = pct + '%';
+}
+const setBusy = b => $('refreshBtn').classList.toggle('busy', b);
+
+/* ================= kontrol & teks antarmuka ================= */
+const BELL = '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>';
+function applyTheme() {
+  const r = document.documentElement;
+  if (prefs.theme === 'system') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', prefs.theme);
+}
+function applyI18n() {
+  const de = document.documentElement;
+  de.lang = prefs.wiki; de.dir = isRtl() ? 'rtl' : 'ltr';
+  const v = { t:secs(AUTO_MS / 1000), w:F.min.format(ACTIVE_WINDOW_MS / 60000) };
+  document.querySelectorAll('[data-i18n]').forEach(e => { e.textContent = t(e.dataset.i18n, v); });
+  document.querySelectorAll('[data-i18n-title]').forEach(e => { e.title = t(e.dataset.i18nTitle, v); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(e => { e.setAttribute('aria-label', t(e.dataset.i18nAria, v)); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(e => { e.placeholder = t(e.dataset.i18nPh, v); });
+  $('legendTxt').textContent = t('legend', { t:secs(NEW_MS / 1000) });
+  $('perPage').innerHTML = PER_PAGE_OPTIONS.map(n => `<option value="${n}">${esc(fmt(n))}</option>`).join('');
+  $('theme').innerHTML = [['system','themeSystem'],['light','themeLight'],['dark','themeDark']].map(([v, k]) => `<option value="${v}">${esc(t(k))}</option>`).join('');
+}
+function syncControls() {
+  $('wiki').value = prefs.wiki;
+  $('theme').value = prefs.theme;
+  $('perPage').value = String(prefs.perPage);
+  document.querySelectorAll('#useg button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.umode === prefs.umode)));
+  $('interval').value = prefs.interval;
+  $('secWord').textContent = secWord(prefs.interval);
+  $('intervalWrap').hidden = prefs.mode !== 'interval';
+  document.querySelectorAll('#seg button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.mode === prefs.mode)));
+  $('soundBtn').setAttribute('aria-pressed', String(prefs.sound));
+  $('soundTxt').textContent = prefs.sound ? t('soundOn') : t('soundOff');
+  $('soundIcon').innerHTML = BELL + (prefs.sound ? '' : '<path d="M2 2l20 20"/>');
+}
+
+$('wiki').innerHTML = Object.entries(LANGS).map(([code, l]) => `<option value="${code}" lang="${code}">${esc(l.name)}</option>`).join('');
+
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+  if (c.dataset.tab === prefs.tab) return;
+  prefs.tab = c.dataset.tab; savePrefs(); resetData();
+}));
+$('perPage').addEventListener('change', e => { prefs.perPage = +e.target.value; savePrefs(); page = 1; render(); });
+document.querySelectorAll('#useg button').forEach(b => b.addEventListener('click', () => {
+  prefs.umode = b.dataset.umode; savePrefs(); syncControls(); upage = 1; renderUsers();
+}));
+const dlg = $('usersDlg');
+function openUsers() {
+  usersSig = ''; upage = 1;
+  if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
+  renderUsers(); $('usersBtn').setAttribute('aria-expanded', 'true');
+}
+function closeUsers() {
+  if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+  $('usersBtn').setAttribute('aria-expanded', 'false');
+}
+$('usersBtn').addEventListener('click', openUsers);
+$('usersClose').addEventListener('click', closeUsers);
+dlg.addEventListener('click', e => { if (e.target === dlg) closeUsers(); });
+$('upager').addEventListener('click', e => {
+  const b = e.target.closest('button[data-page]');
+  if (!b || b.disabled) return;
+  upage = +b.dataset.page; renderUsers();
+});
+dlg.addEventListener('close', () => $('usersBtn').setAttribute('aria-expanded', 'false'));
+$('theme').addEventListener('change', e => { prefs.theme = e.target.value; savePrefs(); applyTheme(); });
+$('wiki').addEventListener('change', e => {
+  prefs.wiki = e.target.value; savePrefs();
+  setLocale(); applyI18n(); syncControls();
+  resetData(); loadTagNames();
+});
+
+$('soundBtn').addEventListener('click', () => {
+  prefs.sound = !prefs.sound; savePrefs(); syncControls();
+  if (prefs.sound) { const c = audio(); if (c) c.resume().then(playDing).catch(() => {}); }
+});
+
+document.querySelectorAll('#seg button').forEach(b => b.addEventListener('click', () => {
+  prefs.mode = b.dataset.mode; savePrefs(); syncControls();
+  if (!loading) schedule();
+  updateStatus();
+}));
+function applyInterval() {
+  prefs.interval = clamp(parseInt($('interval').value, 10) || prefs.interval, MIN_INTERVAL, MAX_INTERVAL);
+  $('interval').value = prefs.interval; $('secWord').textContent = secWord(prefs.interval); savePrefs();
+  if (prefs.mode === 'interval' && !loading) schedule();
+}
+let ivTimer;
+$('interval').addEventListener('change', applyInterval);
+$('interval').addEventListener('input', () => { clearTimeout(ivTimer); ivTimer = setTimeout(applyInterval, 700); });
+$('refreshBtn').addEventListener('click', () => refresh());
+
+let qTimer;
+$('q').addEventListener('input', e => {
+  clearTimeout(qTimer);
+  qTimer = setTimeout(() => { query = e.target.value; page = 1; render(); }, 120);
+});
+$('pager').addEventListener('click', e => {
+  const b = e.target.closest('button[data-page]');
+  if (!b || b.disabled) return;
+  page = +b.dataset.page; render(); scrollTo({ top:0 });
+});
+$('toastBtn').addEventListener('click', () => {
+  page = 1; render(); scrollTo({ top:0, behavior:'smooth' }); $('toast').classList.remove('show');
+});
+
+/* ================= ticker: dot 10 detik, waktu relatif, hitung mundur ================= */
+let tickN = 0;
+setInterval(() => {
+  const now = Date.now();
+  document.querySelectorAll('tr.is-new').forEach(tr => { if (+tr.dataset.until <= now) tr.classList.remove('is-new'); });
+  if (++tickN % 4 === 0) document.querySelectorAll('[data-ts]').forEach(b => { b.textContent = rel(+b.dataset.ts); });
+  if (tickN % 20 === 0) renderUsers(now);
+  updateStatus(now);
+}, 250);
+
+/* ================= mulai ================= */
+setLocale();
+applyTheme();
+applyI18n();
+syncControls();
+render();
+refresh({ baseline:true });
+loadTagNames();
+})();
+</script>
+</body>
+</html>
