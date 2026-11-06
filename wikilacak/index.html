@@ -50,6 +50,7 @@ a{color:inherit}
 .chip[aria-selected="true"]{background:var(--primary-soft);color:var(--primary)}
 .tools{display:flex;gap:8px;justify-content:flex-end;align-items:center}
 .select-wrap{position:relative;display:inline-flex;align-items:center;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding-block:0;padding-inline:10px 8px;gap:6px;color:var(--muted);max-width:100%}
+.wmark.ico{display:inline-flex;align-items:center;margin-top:0;color:var(--muted)}
 .wmark{font-family:"Linux Libertine","Libertine",Georgia,"Times New Roman",serif;font-weight:700;font-size:20px;line-height:1;color:var(--ink);letter-spacing:-.04em;margin-top:-2px}
 .select-wrap select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:var(--ink);font-weight:600;padding:0;padding-inline-end:18px;height:100%;cursor:pointer;max-width:100%}
 .select-wrap select:focus-visible{outline:none}
@@ -60,6 +61,19 @@ a{color:inherit}
 .icon-btn[aria-pressed="true"]{background:var(--primary-soft);border-color:transparent;color:var(--primary)}
 .progress{height:2px}
 .progress i{display:block;height:100%;width:0;background:var(--primary);transition:width .25s linear}
+
+/* ---------- pilihan proyek ---------- */
+.projects{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.pchip img{width:20px;height:20px;object-fit:contain;flex:none}
+.pchip{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-weight:600;white-space:nowrap;transition:background .15s,color .15s}
+.pchip:hover{background:var(--soft);color:var(--ink)}
+.pchip[aria-checked="true"]{background:var(--primary-soft);border-color:transparent;color:var(--primary)}
+.tw{display:flex;align-items:center;gap:10px;min-width:0}
+.tx{min-width:0}
+.fthumb{flex:none;width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--soft);border:1px solid var(--line)}
+.ftype{display:inline-block;margin-inline-start:6px;padding:1px 7px;border:1px solid var(--line);border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:600;white-space:nowrap;vertical-align:1px}
+.qd{margin-inline-start:6px;font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.qd b{color:var(--ink);font-weight:600}
 
 /* ---------- kartu ---------- */
 .wrap{max-width:1320px;margin:0 auto;padding:16px}
@@ -285,6 +299,13 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
 </header>
 
 <main class="wrap">
+  <nav class="projects" id="projects" role="radiogroup" data-i18n-aria="projectsLbl" aria-label="">
+    <button type="button" class="pchip" role="radio" data-project="wikipedia" aria-checked="true"><img src="https://en.wikipedia.org/static/images/project-logos/enwiki.png" alt="" width="20" height="20" decoding="async">Wikipedia</button>
+    <button type="button" class="pchip" role="radio" data-project="commons" aria-checked="false"><img src="https://commons.wikimedia.org/static/images/project-logos/commonswiki.png" alt="" width="20" height="20" decoding="async">Wikimedia Commons</button>
+    <button type="button" class="pchip" role="radio" data-project="wikidata" aria-checked="false"><img src="https://www.wikidata.org/static/images/project-logos/wikidatawiki.png" alt="" width="20" height="20" decoding="async">Wikidata</button>
+    <button type="button" class="pchip" role="radio" data-project="abstract" aria-checked="false"><img src="https://abstract.wikipedia.org/static/images/project-logos/abstractwiki.png" alt="" width="20" height="20" decoding="async">Abstract Wikipedia</button>
+  </nav>
+
   <section class="card">
     <div class="card-head">
       <div class="title">
@@ -298,7 +319,7 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
         </a>
         <button type="button" class="icon-btn" id="usersBtn" aria-haspopup="dialog" data-i18n-title="usersTitle" title="">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>
-          <span data-i18n="usersTitle">Pengguna aktif</span>
+          <span data-i18n="usersTitle">Suntingan terbanyak</span>
         </button>
         <div class="status" id="status" role="status">
           <span class="live" id="live"></span>
@@ -373,12 +394,8 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
 <dialog class="modal" id="usersDlg" aria-labelledby="usersTitle">
   <div class="side-head">
     <div class="side-top">
-      <h2 id="usersTitle" data-i18n="usersTitle">Pengguna aktif</h2>
+      <h2 id="usersTitle" data-i18n="usersTitle">Suntingan terbanyak</h2>
       <button type="button" class="x-btn" id="usersClose" data-i18n-aria="close" aria-label=""><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-    </div>
-    <div class="seg" id="useg" role="radiogroup" data-i18n-aria="usersTitle" aria-label="">
-      <button type="button" role="radio" data-umode="most" aria-checked="true" data-i18n="usersMost" data-i18n-title="usersMostT" title="">Paling banyak</button>
-      <button type="button" role="radio" data-umode="active" aria-checked="false" data-i18n="usersActive" data-i18n-title="usersActiveT" title="">Paling aktif</button>
     </div>
   </div>
   <ol class="ulist" id="ulist"></ol>
@@ -428,7 +445,7 @@ id:{
   blocked:"Bunyi diblokir browser. Klik di halaman sekali agar aktif.", newN:"Entri baru: {n}", top:"Ke atas",
   note:"Data langsung dari Wikipedia · setelan tersimpan di browser ini.",
   talk:"pembicaraan", contribs:"kontribusi", themeTitle:"Tema tampilan", themeSystem:"Sistem", themeLight:"Terang", themeDark:"Gelap",
-  usersTitle:"Pengguna aktif", usersMost:"Paling banyak", usersMostT:"Pengguna dengan entri terbanyak di seluruh data yang dimuat", usersActive:"Paling aktif", usersActiveT:"Pengguna dengan entri terbanyak dalam {w} terakhir", usersEmpty:"Belum ada pengguna yang signifikan (minimal 2 entri).", usersBasis:"Dari {n} data terbaru · minimal 2 entri", perPage:"Baris per halaman", usersEntries:"{n} entri",
+  usersTitle:"Suntingan terbanyak", usersEmpty:"Belum ada pengguna yang signifikan (minimal 2 entri).", usersBasis:"Dari {n} data terbaru · minimal 2 entri", perPage:"Baris per halaman", usersEntries:"{n} entri",
   close:"Tutup"
 },
 en:{
@@ -456,7 +473,7 @@ en:{
   blocked:"The browser blocked the sound. Click the page once to enable it.", newN:"New entries: {n}", top:"Back to top",
   note:"Live data from Wikipedia · settings are saved in this browser.",
   talk:"talk", contribs:"contributions", themeTitle:"Color theme", themeSystem:"System", themeLight:"Light", themeDark:"Dark",
-  usersTitle:"Active users", usersMost:"Most entries", usersMostT:"Users with the most entries across all loaded data", usersActive:"Most active", usersActiveT:"Users with the most entries in the last {w}", usersEmpty:"No significant users yet (at least 2 entries).", usersBasis:"Based on the latest {n} entries · at least 2 entries", perPage:"Rows per page", usersEntries:"{n} entries",
+  usersTitle:"Most edits", usersEmpty:"No significant users yet (at least 2 entries).", usersBasis:"Based on the latest {n} entries · at least 2 entries", perPage:"Rows per page", usersEntries:"{n} entries",
   close:"Close"
 },
 ms:{
@@ -484,7 +501,7 @@ ms:{
   blocked:"Bunyi disekat oleh pelayar. Klik halaman sekali untuk mengaktifkannya.", newN:"Entri baharu: {n}", top:"Ke atas",
   note:"Data langsung daripada Wikipedia · tetapan disimpan dalam pelayar ini.",
   talk:"perbincangan", contribs:"sumbangan", themeTitle:"Tema warna", themeSystem:"Sistem", themeLight:"Cerah", themeDark:"Gelap",
-  usersTitle:"Pengguna aktif", usersMost:"Paling banyak", usersMostT:"Pengguna dengan entri terbanyak dalam semua data yang dimuatkan", usersActive:"Paling aktif", usersActiveT:"Pengguna dengan entri terbanyak dalam {w} yang lalu", usersEmpty:"Belum ada pengguna ketara (sekurang-kurangnya 2 entri).", usersBasis:"Berdasarkan {n} entri terkini · sekurang-kurangnya 2 entri", perPage:"Baris setiap halaman", usersEntries:"{n} entri",
+  usersTitle:"Suntingan terbanyak", usersEmpty:"Belum ada pengguna ketara (sekurang-kurangnya 2 entri).", usersBasis:"Berdasarkan {n} entri terkini · sekurang-kurangnya 2 entri", perPage:"Baris setiap halaman", usersEntries:"{n} entri",
   close:"Tutup"
 },
 ko:{
@@ -512,7 +529,7 @@ ko:{
   blocked:"브라우저가 소리를 차단했습니다. 페이지를 한 번 클릭하면 활성화됩니다.", newN:"새 항목: {n}", top:"맨 위로",
   note:"위키백과 실시간 데이터 · 설정은 이 브라우저에 저장됩니다.",
   talk:"토론", contribs:"기여", themeTitle:"색상 테마", themeSystem:"시스템", themeLight:"밝게", themeDark:"어둡게",
-  usersTitle:"활동 중인 사용자", usersMost:"가장 많이", usersMostT:"불러온 전체 데이터에서 항목이 가장 많은 사용자", usersActive:"가장 활발", usersActiveT:"최근 {w} 동안 항목이 가장 많은 사용자", usersEmpty:"눈에 띄는 사용자가 아직 없습니다(항목 2개 이상).", usersBasis:"최근 항목 {n}개 기준 · 2개 이상", perPage:"페이지당 행 수", usersEntries:"항목 {n}개",
+  usersTitle:"편집 최다 사용자", usersEmpty:"눈에 띄는 사용자가 아직 없습니다(항목 2개 이상).", usersBasis:"최근 항목 {n}개 기준 · 2개 이상", perPage:"페이지당 행 수", usersEntries:"항목 {n}개",
   close:"닫기"
 },
 es:{
@@ -540,7 +557,7 @@ es:{
   blocked:"El navegador bloqueó el sonido. Haz clic en la página una vez para activarlo.", newN:"Entradas nuevas: {n}", top:"Volver arriba",
   note:"Datos en vivo de Wikipedia · los ajustes se guardan en este navegador.",
   talk:"discusión", contribs:"contribuciones", themeTitle:"Tema de color", themeSystem:"Sistema", themeLight:"Claro", themeDark:"Oscuro",
-  usersTitle:"Usuarios activos", usersMost:"Más entradas", usersMostT:"Usuarios con más entradas en todos los datos cargados", usersActive:"Más activos", usersActiveT:"Usuarios con más entradas en los últimos {w}", usersEmpty:"Aún no hay usuarios significativos (al menos 2 entradas).", usersBasis:"Basado en las {n} entradas más recientes · al menos 2 entradas", perPage:"Filas por página", usersEntries:"{n} entradas",
+  usersTitle:"Más ediciones", usersEmpty:"Aún no hay usuarios significativos (al menos 2 entradas).", usersBasis:"Basado en las {n} entradas más recientes · al menos 2 entradas", perPage:"Filas por página", usersEntries:"{n} entradas",
   close:"Cerrar"
 },
 fr:{
@@ -568,7 +585,7 @@ fr:{
   blocked:"Le navigateur a bloqué le son. Cliquez une fois sur la page pour l’activer.", newN:"Nouvelles entrées : {n}", top:"Haut de page",
   note:"Données en direct de Wikipédia · les réglages sont enregistrés dans ce navigateur.",
   talk:"discussion", contribs:"contributions", themeTitle:"Thème de couleur", themeSystem:"Système", themeLight:"Clair", themeDark:"Sombre",
-  usersTitle:"Utilisateurs actifs", usersMost:"Les plus nombreux", usersMostT:"Utilisateurs ayant le plus d’entrées parmi toutes les données chargées", usersActive:"Les plus actifs", usersActiveT:"Utilisateurs ayant le plus d’entrées (période : {w})", usersEmpty:"Aucun utilisateur significatif pour l’instant (au moins 2 entrées).", usersBasis:"D’après les {n} entrées les plus récentes · au moins 2 entrées", perPage:"Lignes par page", usersEntries:"{n} entrées",
+  usersTitle:"Plus de modifications", usersEmpty:"Aucun utilisateur significatif pour l’instant (au moins 2 entrées).", usersBasis:"D’après les {n} entrées les plus récentes · au moins 2 entrées", perPage:"Lignes par page", usersEntries:"{n} entrées",
   close:"Fermer"
 },
 de:{
@@ -596,7 +613,7 @@ de:{
   blocked:"Der Browser hat den Ton blockiert. Klicke einmal auf die Seite, um ihn zu aktivieren.", newN:"Neue Einträge: {n}", top:"Nach oben",
   note:"Live-Daten von Wikipedia · Einstellungen werden in diesem Browser gespeichert.",
   talk:"Diskussion", contribs:"Beiträge", themeTitle:"Farbschema", themeSystem:"System", themeLight:"Hell", themeDark:"Dunkel",
-  usersTitle:"Aktive Benutzer", usersMost:"Meiste Einträge", usersMostT:"Benutzer mit den meisten Einträgen in allen geladenen Daten", usersActive:"Am aktivsten", usersActiveT:"Benutzer mit den meisten Einträgen in den letzten {w}", usersEmpty:"Noch keine auffälligen Benutzer (mindestens 2 Einträge).", usersBasis:"Basierend auf den neuesten {n} Einträgen · mindestens 2 Einträge", perPage:"Zeilen pro Seite", usersEntries:"{n} Einträge",
+  usersTitle:"Meiste Bearbeitungen", usersEmpty:"Noch keine auffälligen Benutzer (mindestens 2 Einträge).", usersBasis:"Basierend auf den neuesten {n} Einträgen · mindestens 2 Einträge", perPage:"Zeilen pro Seite", usersEntries:"{n} Einträge",
   close:"Schließen"
 },
 ja:{
@@ -624,7 +641,7 @@ ja:{
   blocked:"ブラウザーが音をブロックしました。ページを一度クリックすると有効になります。", newN:"新しい項目: {n}", top:"先頭へ",
   note:"ウィキペディアのリアルタイムデータ · 設定はこのブラウザーに保存されます。",
   talk:"会話", contribs:"投稿記録", themeTitle:"配色テーマ", themeSystem:"システム", themeLight:"ライト", themeDark:"ダーク",
-  usersTitle:"アクティブな利用者", usersMost:"最多", usersMostT:"読み込んだ全データで項目が最も多い利用者", usersActive:"最も活発", usersActiveT:"直近{w}で項目が最も多い利用者", usersEmpty:"目立つ利用者はまだいません(2件以上)。", usersBasis:"最新{n}件に基づく · 2件以上", perPage:"1ページあたりの行数", usersEntries:"{n}件",
+  usersTitle:"編集が多い利用者", usersEmpty:"目立つ利用者はまだいません(2件以上)。", usersBasis:"最新{n}件に基づく · 2件以上", perPage:"1ページあたりの行数", usersEntries:"{n}件",
   close:"閉じる"
 },
 zh:{
@@ -652,7 +669,7 @@ zh:{
   blocked:"浏览器已阻止声音。请在页面上点击一次以启用。", newN:"新条目：{n}", top:"回到顶部",
   note:"维基百科实时数据 · 设置保存在此浏览器中。",
   talk:"讨论", contribs:"贡献", themeTitle:"颜色主题", themeSystem:"跟随系统", themeLight:"浅色", themeDark:"深色",
-  usersTitle:"活跃用户", usersMost:"最多", usersMostT:"已载入数据中条目最多的用户", usersActive:"最活跃", usersActiveT:"最近{w}内条目最多的用户", usersEmpty:"暂无显著用户(至少 2 条)。", usersBasis:"基于最新 {n} 条 · 至少 2 条", perPage:"每页行数", usersEntries:"{n} 条",
+  usersTitle:"编辑最多的用户", usersEmpty:"暂无显著用户(至少 2 条)。", usersBasis:"基于最新 {n} 条 · 至少 2 条", perPage:"每页行数", usersEntries:"{n} 条",
   close:"关闭"
 },
 ar:{
@@ -680,7 +697,7 @@ ar:{
   blocked:"حظر المتصفح الصوت. انقر على الصفحة مرة واحدة لتفعيله.", newN:"إدخالات جديدة: {n}", top:"إلى الأعلى",
   note:"بيانات مباشرة من ويكيبيديا · تُحفظ الإعدادات في هذا المتصفح.",
   talk:"نقاش", contribs:"مساهمات", themeTitle:"سمة الألوان", themeSystem:"النظام", themeLight:"فاتح", themeDark:"داكن",
-  usersTitle:"المستخدمون النشطون", usersMost:"الأكثر", usersMostT:"المستخدمون الأكثر إدخالات في كل البيانات المحمّلة", usersActive:"الأكثر نشاطًا", usersActiveT:"المستخدمون الأكثر إدخالات (المدة: {w})", usersEmpty:"لا يوجد مستخدمون بارزون بعد (إدخالان على الأقل).", usersBasis:"استنادًا إلى أحدث {n} إدخال · إدخالان على الأقل", perPage:"الصفوف في كل صفحة", usersEntries:"{n} إدخال",
+  usersTitle:"الأكثر تعديلًا", usersEmpty:"لا يوجد مستخدمون بارزون بعد (إدخالان على الأقل).", usersBasis:"استنادًا إلى أحدث {n} إدخال · إدخالان على الأقل", perPage:"الصفوف في كل صفحة", usersEntries:"{n} إدخال",
   close:"إغلاق"
 },
 nl:{
@@ -708,7 +725,7 @@ nl:{
   blocked:"De browser heeft het geluid geblokkeerd. Klik één keer op de pagina om het te activeren.", newN:"Nieuwe items: {n}", top:"Naar boven",
   note:"Live gegevens van Wikipedia · instellingen worden in deze browser opgeslagen.",
   talk:"overleg", contribs:"bijdragen", themeTitle:"Kleurthema", themeSystem:"Systeem", themeLight:"Licht", themeDark:"Donker",
-  usersTitle:"Actieve gebruikers", usersMost:"Meeste items", usersMostT:"Gebruikers met de meeste items in alle geladen gegevens", usersActive:"Meest actief", usersActiveT:"Gebruikers met de meeste items in de afgelopen {w}", usersEmpty:"Nog geen opvallende gebruikers (minimaal 2 items).", usersBasis:"Gebaseerd op de laatste {n} items · minimaal 2 items", perPage:"Rijen per pagina", usersEntries:"{n} items",
+  usersTitle:"Meeste bewerkingen", usersEmpty:"Nog geen opvallende gebruikers (minimaal 2 items).", usersBasis:"Gebaseerd op de laatste {n} items · minimaal 2 items", perPage:"Rijen per pagina", usersEntries:"{n} items",
   close:"Sluiten"
 },
 ru:{
@@ -736,7 +753,7 @@ ru:{
   blocked:"Браузер заблокировал звук. Щёлкните по странице один раз, чтобы включить его.", newN:"Новые записи: {n}", top:"Наверх",
   note:"Данные Википедии в реальном времени · настройки сохраняются в этом браузере.",
   talk:"обсуждение", contribs:"вклад", themeTitle:"Цветовая тема", themeSystem:"Системная", themeLight:"Светлая", themeDark:"Тёмная",
-  usersTitle:"Активные участники", usersMost:"Больше всего", usersMostT:"Участники с наибольшим числом записей среди всех загруженных данных", usersActive:"Самые активные", usersActiveT:"Участники с наибольшим числом записей за последние {w}", usersEmpty:"Заметных участников пока нет (минимум 2 записи).", usersBasis:"По последним {n} записям · минимум 2 записи", perPage:"Строк на странице", usersEntries:"записей: {n}",
+  usersTitle:"Больше всего правок", usersEmpty:"Заметных участников пока нет (минимум 2 записи).", usersBasis:"По последним {n} записям · минимум 2 записи", perPage:"Строк на странице", usersEntries:"записей: {n}",
   close:"Закрыть"
 },
 th:{
@@ -764,7 +781,7 @@ th:{
   blocked:"เบราว์เซอร์บล็อกเสียงไว้ คลิกที่หน้าเว็บหนึ่งครั้งเพื่อเปิดใช้งาน", newN:"รายการใหม่: {n}", top:"กลับขึ้นด้านบน",
   note:"ข้อมูลสดจากวิกิพีเดีย · การตั้งค่าบันทึกไว้ในเบราว์เซอร์นี้",
   talk:"พูดคุย", contribs:"ส่วนร่วม", themeTitle:"ธีมสี", themeSystem:"ตามระบบ", themeLight:"สว่าง", themeDark:"มืด",
-  usersTitle:"ผู้ใช้ที่ใช้งานอยู่", usersMost:"มากที่สุด", usersMostT:"ผู้ใช้ที่มีรายการมากที่สุดในข้อมูลที่โหลดทั้งหมด", usersActive:"ใช้งานมากที่สุด", usersActiveT:"ผู้ใช้ที่มีรายการมากที่สุดใน {w} ที่ผ่านมา", usersEmpty:"ยังไม่มีผู้ใช้ที่โดดเด่น (อย่างน้อย 2 รายการ)", usersBasis:"จาก {n} รายการล่าสุด · อย่างน้อย 2 รายการ", perPage:"แถวต่อหน้า", usersEntries:"{n} รายการ",
+  usersTitle:"แก้ไขมากที่สุด", usersEmpty:"ยังไม่มีผู้ใช้ที่โดดเด่น (อย่างน้อย 2 รายการ)", usersBasis:"จาก {n} รายการล่าสุด · อย่างน้อย 2 รายการ", perPage:"แถวต่อหน้า", usersEntries:"{n} รายการ",
   close:"ปิด"
 },
 ta:{
@@ -792,7 +809,7 @@ ta:{
   blocked:"உலாவி ஒலியைத் தடுத்துள்ளது. இயக்க பக்கத்தை ஒருமுறை சொடுக்கவும்.", newN:"புதிய பதிவுகள்: {n}", top:"மேலே செல்",
   note:"விக்கிப்பீடியாவின் நேரடித் தரவு · அமைப்புகள் இந்த உலாவியில் சேமிக்கப்படும்.",
   talk:"பேச்சு", contribs:"பங்களிப்புகள்", themeTitle:"நிறத் தீம்", themeSystem:"கணினி", themeLight:"ஒளி", themeDark:"இருள்",
-  usersTitle:"செயலில் உள்ள பயனர்கள்", usersMost:"அதிகம்", usersMostT:"ஏற்றப்பட்ட அனைத்துத் தரவிலும் அதிக உள்ளீடுகள் உள்ள பயனர்கள்", usersActive:"மிகவும் செயலில்", usersActiveT:"கடந்த {w} இல் அதிக உள்ளீடுகள் உள்ள பயனர்கள்", usersEmpty:"குறிப்பிடத்தக்க பயனர்கள் இன்னும் இல்லை (குறைந்தது 2 உள்ளீடுகள்).", usersBasis:"சமீபத்திய {n} உள்ளீடுகளின் அடிப்படையில் · குறைந்தது 2 உள்ளீடுகள்", perPage:"ஒரு பக்கத்திற்கு வரிசைகள்", usersEntries:"{n} உள்ளீடுகள்",
+  usersTitle:"அதிகம் தொகுத்தவர்கள்", usersEmpty:"குறிப்பிடத்தக்க பயனர்கள் இன்னும் இல்லை (குறைந்தது 2 உள்ளீடுகள்).", usersBasis:"சமீபத்திய {n} உள்ளீடுகளின் அடிப்படையில் · குறைந்தது 2 உள்ளீடுகள்", perPage:"ஒரு பக்கத்திற்கு வரிசைகள்", usersEntries:"{n} உள்ளீடுகள்",
   close:"மூடு"
 },
 he:{
@@ -820,7 +837,7 @@ he:{
   blocked:"הדפדפן חסם את הצליל. לחצו פעם אחת על הדף כדי להפעיל אותו.", newN:"רשומות חדשות: {n}", top:"חזרה למעלה",
   note:"נתונים חיים מוויקיפדיה · ההגדרות נשמרות בדפדפן זה.",
   talk:"שיחה", contribs:"תרומות", themeTitle:"ערכת צבעים", themeSystem:"מערכת", themeLight:"בהיר", themeDark:"כהה",
-  usersTitle:"משתמשים פעילים", usersMost:"הכי הרבה", usersMostT:"משתמשים עם מספר הרשומות הגבוה ביותר בכל הנתונים שנטענו", usersActive:"הכי פעילים", usersActiveT:"משתמשים עם מספר הרשומות הגבוה ביותר ב-{w} האחרונות", usersEmpty:"עדיין אין משתמשים בולטים (לפחות 2 רשומות).", usersBasis:"לפי {n} הרשומות האחרונות · לפחות 2 רשומות", perPage:"שורות בעמוד", usersEntries:"{n} רשומות",
+  usersTitle:"הכי הרבה עריכות", usersEmpty:"עדיין אין משתמשים בולטים (לפחות 2 רשומות).", usersBasis:"לפי {n} הרשומות האחרונות · לפחות 2 רשומות", perPage:"שורות בעמוד", usersEntries:"{n} רשומות",
   close:"סגירה"
 },
 fa:{
@@ -848,10 +865,44 @@ fa:{
   blocked:"مرورگر صدا را مسدود کرد. برای فعال‌سازی یک بار روی صفحه کلیک کنید.", newN:"ورودی‌های تازه: {n}", top:"بالای صفحه",
   note:"داده‌های زنده از ویکی‌پدیا · تنظیمات در همین مرورگر ذخیره می‌شود.",
   talk:"بحث", contribs:"مشارکت‌ها", themeTitle:"زمینهٔ نمایش", themeSystem:"سامانه", themeLight:"روشن", themeDark:"تیره",
-  usersTitle:"کاربران فعال", usersMost:"بیشترین", usersMostT:"کاربران با بیشترین ورودی در همهٔ داده‌های بارگذاری‌شده", usersActive:"فعال‌ترین", usersActiveT:"کاربران با بیشترین ورودی در {w} گذشته", usersEmpty:"هنوز کاربر برجسته‌ای نیست (دست‌کم ۲ ورودی).", usersBasis:"بر پایهٔ {n} ورودی اخیر · دست‌کم ۲ ورودی", perPage:"ردیف در هر صفحه", usersEntries:"{n} ورودی",
+  usersTitle:"بیشترین ویرایش", usersEmpty:"هنوز کاربر برجسته‌ای نیست (دست‌کم ۲ ورودی).", usersBasis:"بر پایهٔ {n} ورودی اخیر · دست‌کم ۲ ورودی", perPage:"ردیف در هر صفحه", usersEntries:"{n} ورودی",
   close:"بستن"
 }
 };
+
+/* teks tambahan: pilihan proyek, jenis berkas Commons, filter ruang nama berkas (bahasa yang tak tercantum memakai Inggris) */
+const I18N_EXT = {
+  id:{ projectsLbl:"Proyek", kPhoto:"foto", kImage:"gambar", kVector:"vektor", kDoc:"dokumen", kVideo:"video", kAudio:"audio", kModel:"model 3D", kFile:"berkas", fFile:"Ruang nama berkas" },
+  en:{ projectsLbl:"Project", kPhoto:"photo", kImage:"image", kVector:"vector", kDoc:"document", kVideo:"video", kAudio:"audio", kModel:"3D model", kFile:"file", fFile:"File namespace" },
+  ms:{ projectsLbl:"Projek", kPhoto:"foto", kImage:"imej", kVector:"vektor", kDoc:"dokumen", kVideo:"video", kAudio:"audio", kModel:"model 3D", kFile:"fail", fFile:"Ruang nama fail" },
+  ko:{ projectsLbl:"프로젝트", kPhoto:"사진", kImage:"이미지", kVector:"벡터", kDoc:"문서", kVideo:"동영상", kAudio:"오디오", kModel:"3D 모델", kFile:"파일", fFile:"파일 이름공간" },
+  es:{ projectsLbl:"Proyecto", kPhoto:"foto", kImage:"imagen", kVector:"vectorial", kDoc:"documento", kVideo:"vídeo", kAudio:"audio", kModel:"modelo 3D", kFile:"archivo", fFile:"Espacio de nombres Archivo" },
+  fr:{ projectsLbl:"Projet", kPhoto:"photo", kImage:"image", kVector:"vectoriel", kDoc:"document", kVideo:"vidéo", kAudio:"audio", kModel:"modèle 3D", kFile:"fichier", fFile:"Espace de noms Fichier" },
+  de:{ projectsLbl:"Projekt", kPhoto:"Foto", kImage:"Bild", kVector:"Vektor", kDoc:"Dokument", kVideo:"Video", kAudio:"Audio", kModel:"3D-Modell", kFile:"Datei", fFile:"Datei-Namensraum" },
+  ja:{ projectsLbl:"プロジェクト", kPhoto:"写真", kImage:"画像", kVector:"ベクター", kDoc:"文書", kVideo:"動画", kAudio:"音声", kModel:"3Dモデル", kFile:"ファイル", fFile:"ファイル名前空間" },
+  zh:{ projectsLbl:"项目", kPhoto:"照片", kImage:"图像", kVector:"矢量图", kDoc:"文档", kVideo:"视频", kAudio:"音频", kModel:"3D 模型", kFile:"文件", fFile:"文件名字空间" },
+  ar:{ projectsLbl:"المشروع", kPhoto:"صورة فوتوغرافية", kImage:"صورة", kVector:"متجهية", kDoc:"مستند", kVideo:"فيديو", kAudio:"صوت", kModel:"نموذج ثلاثي الأبعاد", kFile:"ملف", fFile:"نطاق الملف" },
+  nl:{ projectsLbl:"Project", kPhoto:"foto", kImage:"afbeelding", kVector:"vector", kDoc:"document", kVideo:"video", kAudio:"audio", kModel:"3D-model", kFile:"bestand", fFile:"Bestandsnaamruimte" },
+  ru:{ projectsLbl:"Проект", kPhoto:"фото", kImage:"изображение", kVector:"вектор", kDoc:"документ", kVideo:"видео", kAudio:"аудио", kModel:"3D-модель", kFile:"файл", fFile:"Пространство имён «Файл»" },
+  th:{ projectsLbl:"โครงการ", kPhoto:"ภาพถ่าย", kImage:"ภาพ", kVector:"เวกเตอร์", kDoc:"เอกสาร", kVideo:"วิดีโอ", kAudio:"เสียง", kModel:"โมเดล 3 มิติ", kFile:"ไฟล์", fFile:"เนมสเปซไฟล์" },
+  ta:{ projectsLbl:"திட்டம்", kPhoto:"புகைப்படம்", kImage:"படம்", kVector:"வெக்டர்", kDoc:"ஆவணம்", kVideo:"காணொளி", kAudio:"ஒலி", kModel:"3D மாதிரி", kFile:"கோப்பு", fFile:"கோப்பு பெயர்வெளி" },
+  he:{ projectsLbl:"מיזם", kPhoto:"צילום", kImage:"תמונה", kVector:"וקטור", kDoc:"מסמך", kVideo:"וידאו", kAudio:"שמע", kModel:"מודל תלת־ממדי", kFile:"קובץ", fFile:"מרחב השם קובץ" },
+  fa:{ projectsLbl:"پروژه", kPhoto:"عکس", kImage:"تصویر", kVector:"برداری", kDoc:"سند", kVideo:"ویدیو", kAudio:"صدا", kModel:"مدل سه‌بعدی", kFile:"پرونده", fFile:"فضای نام پرونده" }
+};
+for (const k in I18N_EXT) Object.assign(I18N[k], I18N_EXT[k]);
+
+/* pemilih bahasa: di mode Wikipedia = edisi bahasa Wikipedia (data + antarmuka); di proyek lain = bahasa antarmuka saja */
+const LANG_LABELS = {
+  id:["Edisi bahasa Wikipedia", "Bahasa antarmuka"], en:["Wikipedia language edition", "Interface language"],
+  ms:["Edisi bahasa Wikipedia", "Bahasa antara muka"], ko:["위키백과 언어판", "인터페이스 언어"],
+  es:["Edición lingüística de Wikipedia", "Idioma de la interfaz"], fr:["Édition linguistique de Wikipédia", "Langue de l’interface"],
+  de:["Wikipedia-Sprachversion", "Oberflächensprache"], ja:["ウィキペディアの言語版", "表示言語"],
+  zh:["维基百科语言版本", "界面语言"], ar:["النسخة اللغوية من ويكيبيديا", "لغة الواجهة"],
+  nl:["Taaleditie van Wikipedia", "Interfacetaal"], ru:["Языковой раздел Википедии", "Язык интерфейса"],
+  th:["วิกิพีเดียฉบับภาษา", "ภาษาของส่วนติดต่อ"], ta:["விக்கிப்பீடியா மொழிப் பதிப்பு", "இடைமுக மொழி"],
+  he:["מהדורת ויקיפדיה", "שפת הממשק"], fa:["نسخهٔ زبانی ویکی‌پدیا", "زبان رابط"]
+};
+for (const k in LANG_LABELS) Object.assign(I18N[k], { langEdition:LANG_LABELS[k][0], langUi:LANG_LABELS[k][1] });
 
 /* ================= konfigurasi ================= */
 const TABS = {
@@ -871,7 +922,7 @@ const MIN_INTERVAL = 5, MAX_INTERVAL = 3600;
 const NEW_MS = 10000;           // lama dot penanda
 const MAX_ITEMS = 1000;
 const PER_PAGE_OPTIONS = [20, 50, 100, 250, 500];
-const USERS_SAMPLE = 500, USERS_MIN = 2, USERS_ROWS = 50, USERS_PER_PAGE = 10, ACTIVE_WINDOW_MS = 30 * 60 * 1000;
+const USERS_SAMPLE = 500, USERS_MIN = 2, USERS_ROWS = 50, USERS_PER_PAGE = 10;
 const OVERLAP_MS = 30000;       // tumpang tindih saat ambil entri baru (dedupe by id)
 const STALE_MS = 10 * 60 * 1000;// terlalu lama tak refresh: muat ulang dari awal tanpa dot/bunyi
 
@@ -887,7 +938,15 @@ const wikiPath = s => '/wiki/' + encodeURIComponent(s.replace(/ /g,'_')).replace
 const LS = 'wikilacak.prefs.v1';
 const readPrefs = () => { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch { return {}; } };
 const savePrefs = () => { try { localStorage.setItem(LS, JSON.stringify(prefs)); } catch {} };
-const prefs = Object.assign({ wiki:'id', tab:'changes', sound:false, mode:'auto', interval:30, theme:'system', perPage:20, umode:'most' }, readPrefs());
+/* proyek yang dilacak: Wikipedia memakai bahasa terpilih, tiga lainnya global (bahasa hanya mengatur antarmuka dan label) */
+const PROJECTS = {
+  wikipedia:{ host:() => prefs.wiki + '.wikipedia.org' },
+  commons:{ host:() => 'commons.wikimedia.org', files:true },
+  wikidata:{ host:() => 'www.wikidata.org', entity:true },
+  abstract:{ host:() => 'abstract.wikipedia.org', entity:true }
+};
+const prefs = Object.assign({ wiki:'id', project:'wikipedia', tab:'changes', sound:false, mode:'auto', interval:30, theme:'system', perPage:20 }, readPrefs());
+if (!PROJECTS[prefs.project]) prefs.project = 'wikipedia';
 if (!['system','light','dark'].includes(prefs.theme)) prefs.theme = 'system';
 if (!LANGS[prefs.wiki]) prefs.wiki = 'id';
 if (!TABS[prefs.tab]) prefs.tab = 'changes';
@@ -896,7 +955,6 @@ if (!['auto','interval','off'].includes(prefs.mode)) prefs.mode = 'auto';
 prefs.interval = clamp(parseInt(prefs.interval, 10) || 30, MIN_INTERVAL, MAX_INTERVAL);
 prefs.sound = !!prefs.sound;
 prefs.perPage = PER_PAGE_OPTIONS.includes(+prefs.perPage) ? +prefs.perPage : 20;
-if (!['most','active'].includes(prefs.umode)) prefs.umode = 'most';
 
 /* ================= terjemahan & format menurut bahasa ================= */
 const isRtl = () => !!LANGS[prefs.wiki].rtl;
@@ -911,10 +969,7 @@ function setLocale() {
   F.sec = new Intl.NumberFormat(loc, { style:'unit', unit:'second', unitDisplay:'long' });
   F.num = new Intl.NumberFormat(loc);
   F.min = new Intl.NumberFormat(loc, { style:'unit', unit:'minute', unitDisplay:'long' });
-  F.hour = new Intl.NumberFormat(loc, { style:'unit', unit:'hour', unitDisplay:'long', maximumFractionDigits:1 });
 }
-// jendela waktu: menit, atau jam bila sudah 2 jam atau lebih
-const winText = m => m >= 120 ? F.hour.format(m / 60) : F.min.format(m);
 const fmt = n => F.num.format(n);
 const secs = n => F.sec.format(n);
 const secWord = n => { const p = F.sec.formatToParts(n).find(x => x.type === 'unit'); return p ? p.value : ''; };
@@ -943,12 +998,19 @@ let ctl = null, seq = 0;
 let unseen = 0, lastSoundHint = 0, toastTimer = null;
 
 /* ================= API ================= */
-const host = () => prefs.wiki + '.wikipedia.org';
+const host = () => PROJECTS[prefs.project].host();
+// filter yang tampil: di Commons, "Halaman Baru" berarti berkas baru (ruang nama Berkas), bukan galeri
+const tabFilters = () => {
+  const f = TABS[prefs.tab].filters;
+  return prefs.tab === 'newpages' && PROJECTS[prefs.project].files ? f.map(x => x === 'fMain' ? 'fFile' : x) : f;
+};
 function apiUrl(extra = {}) {
+  const params = { ...TABS[prefs.tab].params };
+  if (prefs.tab === 'newpages' && PROJECTS[prefs.project].files) params.rcnamespace = '6';
   const p = new URLSearchParams({
     action:'query', list:'recentchanges', format:'json', formatversion:'2', origin:'*',
     rcprop:'title|ids|user|comment|timestamp|sizes|flags|tags|redirect', rclimit:'500',
-    ...TABS[prefs.tab].params, ...extra
+    ...params, ...extra
   });
   return `https://${host()}/w/api.php?${p}`;
 }
@@ -964,17 +1026,18 @@ async function fetchJson(url, signal) {
 /* nama tag dalam bahasa wiki yang dipilih (diambil dari Wikipedia sendiri) */
 const tagCache = {};
 const stripHtml = h => new DOMParser().parseFromString(h, 'text/html').body.textContent.trim();
-const tagLabel = n => { const m = tagCache[prefs.wiki]; return (m && m.get(n)) || n; };
+const tagKey = () => host() + '|' + prefs.wiki;
+const tagLabel = n => { const m = tagCache[tagKey()]; return (m && m.get(n)) || n; };
 async function loadTagNames() {
-  const w = prefs.wiki;
-  if (tagCache[w]) return;
-  tagCache[w] = new Map();
+  const w = prefs.wiki, key = tagKey(), h = host();
+  if (tagCache[key]) return;
+  tagCache[key] = new Map();
   try {
     const p = new URLSearchParams({ action:'query', list:'tags', tgprop:'displayname', tglimit:'500', format:'json', formatversion:'2', origin:'*', uselang:w });
-    const j = await fetchJson(`https://${w}.wikipedia.org/w/api.php?${p}`);
-    j.query.tags.forEach(x => { const s = stripHtml(x.displayname || ''); if (s.length >= 3) tagCache[w].set(x.name, s); });
-    if (w === prefs.wiki && store) render();
-  } catch { delete tagCache[w]; }
+    const j = await fetchJson(`https://${h}/w/api.php?${p}`);
+    j.query.tags.forEach(x => { const s = stripHtml(x.displayname || ''); if (s.length >= 3) tagCache[key].set(x.name, s); });
+    if (key === tagKey() && store) render();
+  } catch { delete tagCache[key]; }
 }
 
 function norm(x) {
@@ -982,7 +1045,7 @@ function norm(x) {
   const comment = x.commenthidden ? t('hiddenC') : cleanComment(x.comment || '');
   const tags = x.tags || [];
   return {
-    id:x.rcid, ts:x.timestamp, ms:Date.parse(x.timestamp), type:x.type, title:x.title,
+    id:x.rcid, ts:x.timestamp, ms:Date.parse(x.timestamp), type:x.type, title:x.title, ns:x.ns,
     user, hiddenUser:!!x.userhidden, anon:!!x.anon, temp:!!x.temp,
     minor:!!x.minor, redirect:!!x.redirect, comment, tags,
     size: x.type === 'new' ? (x.newlen || 0) : (x.newlen || 0) - (x.oldlen || 0),
@@ -1116,6 +1179,63 @@ const filtered = () => {
 };
 const emptyHtml = (title, desc) => `<tr><td colspan="7"><div class="empty"><b>${esc(title)}</b>${esc(desc || '')}</div></td></tr>`;
 
+/* ---- Commons: thumbnail, ekstensi, dan jenis berkas ---- */
+const FILE_KINDS = {
+  jpg:'kPhoto', jpeg:'kPhoto', jpe:'kPhoto', jfif:'kPhoto',
+  png:'kImage', gif:'kImage', webp:'kImage', bmp:'kImage', tif:'kImage', tiff:'kImage', xcf:'kImage', apng:'kImage',
+  svg:'kVector',
+  pdf:'kDoc', djvu:'kDoc',
+  webm:'kVideo', ogv:'kVideo', mp4:'kVideo', mpg:'kVideo', mpeg:'kVideo',
+  ogg:'kAudio', oga:'kAudio', opus:'kAudio', mp3:'kAudio', wav:'kAudio', flac:'kAudio', mid:'kAudio', midi:'kAudio',
+  stl:'kModel'
+};
+const isFileRow = x => !!PROJECTS[prefs.project].files && x.ns === 6;
+function fileInfo(x) {
+  const name = x.title.replace(/^[^:]+:/, '');
+  const m = name.match(/\.([A-Za-z0-9]+)$/);
+  const ext = m ? m[1].toLowerCase() : '';
+  return { name, ext, kind:FILE_KINDS[ext] || 'kFile' };
+}
+
+/* ---- Wikidata / Abstract Wikipedia: keterangan di sebelah nilai Q ---- */
+const entCache = new Map();   // "bahasa|Q123" -> { l:label, d:deskripsi } atau null bila tidak ada
+const entPending = new Set();
+const entId = x => PROJECTS[prefs.project].entity ? ((x.title.match(/(?:^|:)([QP]\d+)$/) || [])[1] || '') : '';
+let entTimer = null;
+function ensureLabels(slice) {
+  const lang = prefs.wiki;
+  const ids = [...new Set(slice.map(entId).filter(id => id && !entCache.has(lang + '|' + id) && !entPending.has(lang + '|' + id)))];
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50);
+    chunk.forEach(id => entPending.add(lang + '|' + id));
+    const p = new URLSearchParams({ action:'wbgetentities', format:'json', formatversion:'2', origin:'*', props:'labels|descriptions',
+      languages:lang, languagefallback:'1', ids:chunk.join('|') });
+    fetch(`https://www.wikidata.org/w/api.php?${p}`).then(r => r.json()).then(j => {
+      chunk.forEach(id => {
+        const e = j.entities && j.entities[id];
+        entCache.set(lang + '|' + id, e && !e.missing ? { l:(e.labels && e.labels[lang] && e.labels[lang].value) || '', d:(e.descriptions && e.descriptions[lang] && e.descriptions[lang].value) || '' } : null);
+      });
+    }).catch(() => {}).finally(() => {
+      chunk.forEach(id => entPending.delete(lang + '|' + id));
+      clearTimeout(entTimer);
+      entTimer = setTimeout(() => {
+        if (store && lang === prefs.wiki) {
+          store.items.forEach(x => {   // label ikut dicari lewat kotak pencarian
+            const id = entId(x), c = id && entCache.get(lang + '|' + id);
+            if (c && !x.labHay) { x.hay += ' ' + (c.l + ' ' + c.d).toLowerCase(); x.labHay = true; }
+          });
+          render();
+        }
+      }, 150);
+    });
+  }
+}
+function entHtml(x) {
+  const id = entId(x), c = id && entCache.get(prefs.wiki + '|' + id);
+  if (!c || (!c.l && !c.d)) return '';
+  return ` <span class="qd">${c.l ? `<b>${esc(c.l)}</b>` : ''}${c.l && c.d ? ' · ' : ''}${esc(c.d)}</span>`;
+}
+
 function rowHtml(x, now) {
   const h = 'https://' + host();
   const pageUrl = h + wikiPath(x.title);
@@ -1151,13 +1271,25 @@ function rowHtml(x, now) {
 
   return `<tr class="row${isNew ? ' is-new' : ''}" data-until="${x.newUntil}">
     <td class="c-dot"><i class="dot"></i></td>
-    <td class="c-title"><a class="ttl" href="${esc(pageUrl)}" ${ext}>${esc(x.title)}</a><div class="sub">${sub}</div></td>
+    <td class="c-title">${titleCell(x, pageUrl, ext, sub)}</td>
     <td class="c-user"><div class="u"><span class="av" style="background:hsl(${hue(x.user)} 52% 46%)">${esc(initial)}</span><div class="un">${userEl}${userSub}${badge}</div></div></td>
     <td class="c-type">${pill}</td>
     <td class="c-size num"><span class="delta ${cls}" dir="ltr">${sizeTxt}</span></td>
     <td class="c-cmt"><div class="cmt">${esc(x.comment)}</div>${tagHtml}</td>
     <td class="c-time"><b data-ts="${x.ms}">${esc(rel(x.ms))}</b><small>${esc(absTime(x.ms))}</small></td>
   </tr>`;
+}
+
+function titleCell(x, pageUrl, ext, sub) {
+  const link = `<a class="ttl" href="${esc(pageUrl)}" ${ext}>${esc(x.title)}</a>`;
+  if (isFileRow(x)) {
+    const f = fileInfo(x);
+    const thumb = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f.name)}?width=96`;
+    const type = f.ext ? `<span class="ftype" dir="ltr" title="${esc(f.ext.toUpperCase())}">${esc(f.ext.toUpperCase())} (${esc(t(f.kind))})</span>` : '';
+    return `<div class="tw"><img class="fthumb" src="${esc(thumb)}" alt="" loading="lazy" decoding="async">`
+      + `<div class="tx">${link}${type}<div class="sub">${sub}</div></div></div>`;
+  }
+  return `${link}${entHtml(x)}<div class="sub">${sub}</div>`;
 }
 
 function pagerHtml(pages, cur = page) {
@@ -1177,7 +1309,7 @@ function pagerHtml(pages, cur = page) {
 function render() {
   const tab = TABS[prefs.tab];
   $('title').textContent = t(tab.title);
-  $('filterChips').innerHTML = tab.filters.map(f => `<span class="fchip">${esc(t(f))}</span>`).join(' ');
+  $('filterChips').innerHTML = tabFilters().map(f => `<span class="fchip">${esc(t(f))}</span>`).join(' ');
   document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-selected', String(c.dataset.tab === prefs.tab)));
 
   if (!store) {
@@ -1197,6 +1329,7 @@ function render() {
   const slice = list.slice(from, from + prefs.perPage);
 
   $('count').textContent = fmt(store.items.length);
+  ensureLabels(slice);
   $('rows').innerHTML = slice.length
     ? slice.map(x => rowHtml(x, now)).join('')
     : (query.trim() ? emptyHtml(t('noRes'), t('noResHint', { q:query.trim() })) : emptyHtml(t('noEnt'), t('noEntHint')));
@@ -1207,39 +1340,25 @@ function render() {
   renderUsers(now);
 }
 
-/* ================= panel pengguna aktif (dari 500 data terbaru) ================= */
-function topUsers(now) {
-  if (!store) return { list: [], sample: 0, w: 30 };
+/* ================= panel suntingan terbanyak (dari 500 data terbaru, maksimal 50 pengguna) ================= */
+function topUsers() {
+  if (!store) return { list: [], sample: 0 };
   const sample = store.items.slice(0, USERS_SAMPLE);
-  // jendela "paling aktif": seperempat rentang waktu data, antara 1 dan 30 menit (di wiki ramai, 500 data hanya mencakup beberapa menit)
-  const span = sample.length ? sample[0].ms - sample[sample.length - 1].ms : 0;
-  const w = clamp(Math.round(span / 4 / 60000), 1, ACTIVE_WINDOW_MS / 60000);
-  const build = winMin => {
-    const map = new Map();
-    for (const x of sample) {
-      if (x.hiddenUser) continue;
-      if (winMin && now - x.ms > winMin * 60000) continue;
-      let u = map.get(x.user);
-      if (!u) map.set(x.user, u = { user:x.user, n:0, last:x.ms, anon:x.anon, temp:x.temp });
-      u.n++; if (x.ms > u.last) u.last = x.ms;
-    }
-    return [...map.values()].filter(u => u.n >= USERS_MIN)
-      .sort((a, b) => b.n - a.n || b.last - a.last || (a.user < b.user ? -1 : 1)).slice(0, USERS_ROWS);
-  };
-  // "Paling aktif": jendela waktu diperlebar (dua kali lipat) sampai terkumpul USERS_ROWS pengguna atau seluruh data tercakup;
-  // dihitung juga saat mode "Paling banyak" agar keterangan tombolnya tetap akurat
-  let win = w, active = build(win);
-  if (sample.length) {
-    const reach = Math.max(1, Math.ceil((now - sample[sample.length - 1].ms) / 60000));
-    while (active.length < USERS_ROWS && win < reach) { win = Math.min(win * 2, reach); active = build(win); }
+  const map = new Map();
+  for (const x of sample) {
+    if (x.hiddenUser) continue;
+    let u = map.get(x.user);
+    if (!u) map.set(x.user, u = { user:x.user, n:0, last:x.ms, anon:x.anon, temp:x.temp });
+    u.n++; if (x.ms > u.last) u.last = x.ms;
   }
-  return { list: prefs.umode === 'active' ? active : build(0), sample: sample.length, w: win };
+  const list = [...map.values()].filter(u => u.n >= USERS_MIN)
+    .sort((a, b) => b.n - a.n || b.last - a.last || (a.user < b.user ? -1 : 1)).slice(0, USERS_ROWS);
+  return { list, sample: sample.length };
 }
 let usersSig = '', upage = 1;
-function renderUsers(now = Date.now()) {
+function renderUsers() {
   if (!$('usersDlg').open) return;
-  const { list, sample, w } = topUsers(now);
-  $('useg').querySelector('[data-umode="active"]').title = t('usersActiveT', { w:winText(w) });
+  const { list, sample } = topUsers();
   const h = 'https://' + host();
   const max = list.length ? list[0].n : 1;
   const upages = Math.max(1, Math.ceil(list.length / USERS_PER_PAGE));
@@ -1257,7 +1376,7 @@ function renderUsers(now = Date.now()) {
   }).join('') : '';
   const empty = store && !list.length ? `<div class="side-empty">${esc(t('usersEmpty'))}</div>` : '';
   const note = store ? t('usersBasis', { n:fmt(sample) }) : '';
-  const sig = prefs.umode + '|' + prefs.wiki + '|' + upage + '|' + html + empty + note;
+  const sig = prefs.project + '|' + prefs.wiki + '|' + upage + '|' + html + empty + note;
   if (sig === usersSig) return;
   usersSig = sig;
   $('ulist').innerHTML = html + empty;
@@ -1290,7 +1409,7 @@ function applyTheme() {
 function applyI18n() {
   const de = document.documentElement;
   de.lang = prefs.wiki; de.dir = isRtl() ? 'rtl' : 'ltr';
-  const v = { t:secs(AUTO_MS / 1000), w:F.min.format(ACTIVE_WINDOW_MS / 60000) };
+  const v = { t:secs(AUTO_MS / 1000) };
   document.querySelectorAll('[data-i18n]').forEach(e => { e.textContent = t(e.dataset.i18n, v); });
   document.querySelectorAll('[data-i18n-title]').forEach(e => { e.title = t(e.dataset.i18nTitle, v); });
   document.querySelectorAll('[data-i18n-aria]').forEach(e => { e.setAttribute('aria-label', t(e.dataset.i18nAria, v)); });
@@ -1299,11 +1418,20 @@ function applyI18n() {
   $('perPage').innerHTML = PER_PAGE_OPTIONS.map(n => `<option value="${n}">${esc(fmt(n))}</option>`).join('');
   $('theme').innerHTML = [['system','themeSystem'],['light','themeLight'],['dark','themeDark']].map(([v, k]) => `<option value="${v}">${esc(t(k))}</option>`).join('');
 }
+const TRANSLATE_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>';
+function syncLangLabel() {
+  const wp = prefs.project === 'wikipedia', txt = t(wp ? 'langEdition' : 'langUi');
+  const wrap = $('wiki').closest('label');
+  wrap.title = txt; $('wiki').setAttribute('aria-label', txt);
+  const mark = wrap.querySelector('.wmark');
+  if (wp) { mark.textContent = 'W'; mark.classList.remove('ico'); } else { mark.innerHTML = TRANSLATE_ICON; mark.classList.add('ico'); }
+}
 function syncControls() {
   $('wiki').value = prefs.wiki;
+  syncLangLabel();
+  document.querySelectorAll('#projects button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.project === prefs.project)));
   $('theme').value = prefs.theme;
   $('perPage').value = String(prefs.perPage);
-  document.querySelectorAll('#useg button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.umode === prefs.umode)));
   $('interval').value = prefs.interval;
   $('secWord').textContent = secWord(prefs.interval);
   $('intervalWrap').hidden = prefs.mode !== 'interval';
@@ -1319,10 +1447,14 @@ document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () =
   if (c.dataset.tab === prefs.tab) return;
   prefs.tab = c.dataset.tab; savePrefs(); resetData();
 }));
-$('perPage').addEventListener('change', e => { prefs.perPage = +e.target.value; savePrefs(); page = 1; render(); });
-document.querySelectorAll('#useg button').forEach(b => b.addEventListener('click', () => {
-  prefs.umode = b.dataset.umode; savePrefs(); syncControls(); upage = 1; renderUsers();
+document.querySelectorAll('#projects button').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.project === prefs.project) return;
+  prefs.project = b.dataset.project; savePrefs(); query = ''; $('q').value = '';
+  syncControls(); resetData(); loadTagNames();
 }));
+// thumbnail Commons yang gagal dimuat (mis. audio, berkas dihapus) disembunyikan
+$('rows').addEventListener('error', e => { if (e.target.classList && e.target.classList.contains('fthumb')) e.target.style.visibility = 'hidden'; }, true);
+$('perPage').addEventListener('change', e => { prefs.perPage = +e.target.value; savePrefs(); page = 1; render(); });
 const dlg = $('usersDlg');
 function openUsers() {
   usersSig = ''; upage = 1;
