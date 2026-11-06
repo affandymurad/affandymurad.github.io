@@ -883,7 +883,10 @@ function setLocale() {
   F.sec = new Intl.NumberFormat(loc, { style:'unit', unit:'second', unitDisplay:'long' });
   F.num = new Intl.NumberFormat(loc);
   F.min = new Intl.NumberFormat(loc, { style:'unit', unit:'minute', unitDisplay:'long' });
+  F.hour = new Intl.NumberFormat(loc, { style:'unit', unit:'hour', unitDisplay:'long', maximumFractionDigits:1 });
 }
+// jendela waktu: menit, atau jam bila sudah 2 jam atau lebih
+const winText = m => m >= 120 ? F.hour.format(m / 60) : F.min.format(m);
 const fmt = n => F.num.format(n);
 const secs = n => F.sec.format(n);
 const secWord = n => { const p = F.sec.formatToParts(n).find(x => x.type === 'unit'); return p ? p.value : ''; };
@@ -1183,23 +1186,32 @@ function topUsers(now) {
   // jendela "paling aktif": seperempat rentang waktu data, antara 1 dan 30 menit (di wiki ramai, 500 data hanya mencakup beberapa menit)
   const span = sample.length ? sample[0].ms - sample[sample.length - 1].ms : 0;
   const w = clamp(Math.round(span / 4 / 60000), 1, ACTIVE_WINDOW_MS / 60000);
-  const map = new Map();
-  for (const x of sample) {
-    if (x.hiddenUser) continue;
-    if (prefs.umode === 'active' && now - x.ms > w * 60000) continue;
-    let u = map.get(x.user);
-    if (!u) map.set(x.user, u = { user:x.user, n:0, last:x.ms, anon:x.anon, temp:x.temp });
-    u.n++; if (x.ms > u.last) u.last = x.ms;
+  const build = winMin => {
+    const map = new Map();
+    for (const x of sample) {
+      if (x.hiddenUser) continue;
+      if (winMin && now - x.ms > winMin * 60000) continue;
+      let u = map.get(x.user);
+      if (!u) map.set(x.user, u = { user:x.user, n:0, last:x.ms, anon:x.anon, temp:x.temp });
+      u.n++; if (x.ms > u.last) u.last = x.ms;
+    }
+    return [...map.values()].filter(u => u.n >= USERS_MIN)
+      .sort((a, b) => b.n - a.n || b.last - a.last || (a.user < b.user ? -1 : 1)).slice(0, USERS_ROWS);
+  };
+  // "Paling aktif": jendela waktu diperlebar (dua kali lipat) sampai terkumpul USERS_ROWS pengguna atau seluruh data tercakup;
+  // dihitung juga saat mode "Paling banyak" agar keterangan tombolnya tetap akurat
+  let win = w, active = build(win);
+  if (sample.length) {
+    const reach = Math.max(1, Math.ceil((now - sample[sample.length - 1].ms) / 60000));
+    while (active.length < USERS_ROWS && win < reach) { win = Math.min(win * 2, reach); active = build(win); }
   }
-  const list = [...map.values()].filter(u => u.n >= USERS_MIN)
-    .sort((a, b) => b.n - a.n || b.last - a.last || (a.user < b.user ? -1 : 1)).slice(0, USERS_ROWS);
-  return { list, sample: sample.length, w };
+  return { list: prefs.umode === 'active' ? active : build(0), sample: sample.length, w: win };
 }
 let usersSig = '', upage = 1;
 function renderUsers(now = Date.now()) {
   if (!$('usersDlg').open) return;
   const { list, sample, w } = topUsers(now);
-  $('useg').querySelector('[data-umode="active"]').title = t('usersActiveT', { w:F.min.format(w) });
+  $('useg').querySelector('[data-umode="active"]').title = t('usersActiveT', { w:winText(w) });
   const h = 'https://' + host();
   const max = list.length ? list[0].n : 1;
   const upages = Math.max(1, Math.ceil(list.length / USERS_PER_PAGE));
