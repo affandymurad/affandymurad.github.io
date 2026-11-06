@@ -399,7 +399,7 @@ const LANGS = {
   en:{name:"English"}, id:{name:"Bahasa Indonesia"}, ms:{name:"Bahasa Melayu"}, ko:{name:"한국어"},
   es:{name:"Español"}, fr:{name:"Français"}, de:{name:"Deutsch"}, ja:{name:"日本語"},
   zh:{name:"中文"}, ar:{name:"العربية", rtl:true}, nl:{name:"Nederlands"}, ru:{name:"Русский"},
-  th:{name:"ไทย"}, ta:{name:"தமிழ்"}, he:{name:"עברית", rtl:true}
+  th:{name:"ไทย"}, ta:{name:"தமிழ்"}, he:{name:"עברית", rtl:true}, fa:{name:"فارسی", rtl:true}
 };
 
 const I18N = {
@@ -822,6 +822,34 @@ he:{
   talk:"שיחה", contribs:"תרומות", themeTitle:"ערכת צבעים", themeSystem:"מערכת", themeLight:"בהיר", themeDark:"כהה",
   usersTitle:"משתמשים פעילים", usersMost:"הכי הרבה", usersMostT:"משתמשים עם מספר הרשומות הגבוה ביותר בכל הנתונים שנטענו", usersActive:"הכי פעילים", usersActiveT:"משתמשים עם מספר הרשומות הגבוה ביותר ב-{w} האחרונות", usersEmpty:"עדיין אין משתמשים בולטים (לפחות 2 רשומות).", usersBasis:"לפי {n} הרשומות האחרונות · לפחות 2 רשומות", perPage:"שורות בעמוד", usersEntries:"{n} רשומות",
   close:"סגירה"
+},
+fa:{
+  tabChanges:"تغییرات اخیر", tabNew:"صفحه‌های تازه", langTitle:"زبان رابط و داده‌ها",
+  soundOn:"صدا روشن", soundOff:"صدا خاموش", soundTitle:"پخش صدای «دینگ‌دانگ» هنگام رسیدن ورودی تازه",
+  countTitle:"شمار ورودی‌های بارگذاری‌شده",
+  loading:"در حال بارگذاری داده‌ها…", refreshing:"در حال تازه‌سازی…", failed:"بارگذاری ناموفق بود: {e}", retry:"تلاش دوباره تا {t} دیگر",
+  updated:"به‌روز شد {t}", nextIn:"بعدی تا {t} دیگر", autoOff:"تازه‌سازی خودکار خاموش است",
+  search:"جست‌وجوی عنوان، کاربر یا خلاصه…", refreshLbl:"تازه‌سازی",
+  mAuto:"خودکار", mAutoT:"هر {t} خودش تازه می‌شود", mInt:"فاصله", mIntT:"فاصلهٔ تازه‌سازی را خودتان تعیین کنید",
+  mOff:"خاموش", mOffT:"تازه‌سازی خودکار خاموش است. دکمهٔ تازه‌سازی همچنان کار می‌کند",
+  intAria:"فاصلهٔ تازه‌سازی", refreshBtn:"اکنون تازه کن",
+  filtersLbl:"فیلترهای فعال:", legend:"ورودی‌های تازه تا {t} علامت‌گذاری می‌شوند",
+  fNotBot:"بدون ربات", fEditNew:"ویرایش‌ها و صفحه‌های تازه", fAllNs:"همهٔ فضاهای نام", fNoLogs:"بدون ثبت‌ها",
+  fLast500:"۵۰۰ مورد آخر", fMain:"فضای نام اصلی", fNoRedirect:"بدون تغییر مسیر", fOnlyNew:"فقط صفحه‌های تازه",
+  thPage:"صفحه", thUser:"کاربر", thType:"نوع", thSize:"اندازه (بایت)", thSum:"خلاصه", thTime:"زمان",
+  diff:"تفاوت", hist:"تاریخچه", tNew:"تازه", tEdit:"ویرایش", anon:"کاربر ناشناس", temp:"حساب موقت",
+  minor:"جزئی", minorT:"ویرایش جزئی", redir:"تغییر مسیر", redirT:"صفحهٔ تغییر مسیر",
+  hiddenU:"(پنهان)", hiddenC:"(خلاصه پنهان است)", unknownU:"(نامعلوم)",
+  eTimeout:"مهلت تمام شد", eOffline:"اتصال نیست یا مسدود شده", eBad:"پاسخ ناشناخته",
+  emptyFail:"داده‌ها بارگذاری نشد", emptyFailHint:"{e}. برای تلاش دوباره «اکنون تازه کن» را بزنید.",
+  noRes:"نتیجه‌ای نیست", noResHint:"چیزی با «{q}» مطابقت ندارد.", noEnt:"هنوز ورودی‌ای نیست", noEntHint:"چند لحظهٔ دیگر دوباره تازه‌سازی کنید.",
+  showing:"ورودی‌های {a}–{b} از {n}", filteredFrom:"(فیلتر‌شده از {m})", zero:"ورودی‌ای نیست",
+  prev:"صفحهٔ قبلی", next:"صفحهٔ بعدی", pagerAria:"صفحه‌های فهرست",
+  blocked:"مرورگر صدا را مسدود کرد. برای فعال‌سازی یک بار روی صفحه کلیک کنید.", newN:"ورودی‌های تازه: {n}", top:"بالای صفحه",
+  note:"داده‌های زنده از ویکی‌پدیا · تنظیمات در همین مرورگر ذخیره می‌شود.",
+  talk:"بحث", contribs:"مشارکت‌ها", themeTitle:"زمینهٔ نمایش", themeSystem:"سامانه", themeLight:"روشن", themeDark:"تیره",
+  usersTitle:"کاربران فعال", usersMost:"بیشترین", usersMostT:"کاربران با بیشترین ورودی در همهٔ داده‌های بارگذاری‌شده", usersActive:"فعال‌ترین", usersActiveT:"کاربران با بیشترین ورودی در {w} گذشته", usersEmpty:"هنوز کاربر برجسته‌ای نیست (دست‌کم ۲ ورودی).", usersBasis:"بر پایهٔ {n} ورودی اخیر · دست‌کم ۲ ورودی", perPage:"ردیف در هر صفحه", usersEntries:"{n} ورودی",
+  close:"بستن"
 }
 };
 

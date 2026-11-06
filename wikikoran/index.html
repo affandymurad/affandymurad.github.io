@@ -136,7 +136,7 @@ body{margin:0;color:var(--ink);font-family:var(--body);line-height:1.6;font-size
 .ttsmsg.err{color:var(--accent)}
 .pdfnote{font-size:11.5px;font-style:italic;color:var(--muted);max-width:16em;line-height:1.3}
 /* aksara bersambung/Indic: jarak huruf dan huruf kapital memutus bentuk hurufnya */
-:lang(ar) *,:lang(he) *,:lang(ta) *,:lang(th) *,:lang(ja) *,:lang(zh) *,:lang(ko) *{letter-spacing:0 !important;text-transform:none !important}
+:lang(ar) *,:lang(fa) *,:lang(he) *,:lang(ta) *,:lang(th) *,:lang(ja) *,:lang(zh) *,:lang(ko) *{letter-spacing:0 !important;text-transform:none !important}
 .skeleton{height:10px;margin:10px 0;background:linear-gradient(90deg,var(--soft),var(--skel),var(--soft));
   background-size:200% 100%;animation:sh 1.2s infinite linear}
 @keyframes sh{to{background-position:-200% 0}}
@@ -183,6 +183,7 @@ footer{padding-top:14px;text-align:center;font-size:12px;color:var(--muted)}
         <option value="th">ไทย</option>
         <option value="ta">தமிழ்</option>
         <option value="he">עברית</option>
+        <option value="fa">فارسی</option>
       </select>
       <input type="date" id="date" min="2016-01-01">
       <button type="button" class="pdfbtn" id="today">Hari ini</button>
@@ -507,6 +508,25 @@ const LANGS = {
         lic:'התוכן מוויקיפדיה ברישיון CC BY-SA 4.0. כל כרטיס מקשר לדף המקור.'},
     main:'עמוד ראשי',
     sel:{tfa:HP(/^ערך מומלץ/), potd:HP(/תמונת היום/), dyk:HP(/^הידעת/), otd:HP(/היום בהיסטוריה/), news:HP(/חדשות ואקטואליה/)}
+  },
+  fa: {
+    host:'fa.wikipedia.org', locale:'fa-IR', html:'fa', dir:'rtl', feed:false, raster:true,
+    title:'روزنامهٔ ویکی‌پدیا', tagline:'خواندنی‌های روزانه از دانشنامهٔ آزاد',
+    edition:'نسخهٔ فارسی', vol:'سال', no:'شمارهٔ', volFmt:'سال {v} · شمارهٔ {n}',
+    labels:{tfa:'مقالهٔ برگزیده', potd:'نگارهٔ برگزیده', dyk:'آیا می‌دانستید؟', otd:'در چنین روزی', news:'از میان خبرها', mostread:'پربازدیدترین‌ها', featured:'برگزیده‌های امروز'},
+    pdf:{making:'در حال ساخت PDF…', fail:'ساخت PDF ناموفق بود: ', empty:'برای این بخش داده‌ای نیست.',
+         partial:'هنگام ساخت PDF بخش‌های زیر در دسترس نبودند: {list}.', report:'گزارش خودکار', page:'صفحهٔ {p} از {n}',
+         sources:'منبع داده‌ها: ویکی‌پدیا (CC BY-SA 4.0) و Wikimedia Pageviews. ارقام، بازدید صفحه در تاریخ نشان‌داده‌شده است.'},
+    ui:{today:'امروز', date:'تاریخ', noDate:'برای {date} موجود نیست.',
+        read:'بخوان', stop:'توقف', reading:'در حال خواندن…', speechName:'فارسی',
+        noSupport:'این مرورگر از خواندن با صدا پشتیبانی نمی‌کند.', noVoice:'صدای {lang} در این دستگاه پیدا نشد؛ از صدای پیش‌فرض استفاده می‌شود.',
+        noText:'متنی برای خواندن نیست.', notReady:'این بخش هنوز در حال بارگذاری است.',
+        noStart:'صدایی شنیده نشد. تنظیمات تبدیل متن به گفتار دستگاه را بررسی کنید.', readFail:'خواندن ناموفق بود: ', num:'رتبه',
+        pdf:'دریافت PDF', dark:'حالت تیره', darkTip:'جابه‌جایی میان نمای روشن و تیره (پیش‌فرض: تنظیم مرورگر)',
+        na:'این بخش در این نسخه موجود نیست.', src:'منبع', qid:'شناسهٔ Q ویکی‌داده', qidTip:'نمایش شناسهٔ Q ویکی‌داده کنار هر پیوند',
+        lic:'محتوا از ویکی‌پدیا و با پروانهٔ CC BY-SA 4.0 است. هر کارت به صفحهٔ منبع پیوند دارد.'},
+    main:'ویکی‌پدیا:صفحهٔ اصلی',
+    sel:{tfa:'#mf-fa', potd:'#mf-fp > div:not(.mp-bar)', dyk:'#mf-con', otd:'#mf-otd', news:'#mf-itn'}
   }
 };
 /* Urutan kartu: berita di atas, bagian pilihan dan paling banyak dibaca di bawah */
@@ -679,6 +699,19 @@ function potdOut(root){
   const im = (imgEl.closest('a')||imgEl).outerHTML;
   const fc = root.querySelector('figcaption');
   let cap = fc ? fc.innerHTML : '';
+  if(!cap){
+    /* takarir berupa teks langsung di samping figur (mis. Wikipedia Persia): teks pembungkus figur tanpa gambarnya */
+    /* naik dari pembungkus gambar sampai ancestor pertama yang punya teks; berhenti di situ (jangan melebar ke bagian lain) */
+    let a = (imgEl.closest('figure')||imgEl.closest('a')||imgEl).parentElement;
+    for(let k = 0; a && k < 4 && root.contains(a); k++, a = a.parentElement){
+      const c = a.cloneNode(true);
+      c.querySelectorAll('figure,img,figcaption,style,script').forEach(e=>e.remove());
+      const n = txt(c).length;
+      if(!n) continue;
+      if(n > 15 && n < 600 && !c.querySelector('div,table,h2,h3,ul,ol,li')) cap = c.innerHTML.trim();
+      break;
+    }
+  }
   if(!cap){
     /* takarir bisa berupa <p> (ms, en) atau <div> biasa (id): ambil elemen "daun" pertama yang berisi teks */
     const leaf = [...root.querySelectorAll('p,div')].find(e=>!e.querySelector('img,p,div') && txt(e).length>15);
