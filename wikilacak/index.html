@@ -937,7 +937,8 @@ const wikiPath = s => '/wiki/' + encodeURIComponent(s.replace(/ /g,'_')).replace
 /* ================= setelan tersimpan ================= */
 const LS = 'wikilacak.prefs.v1';
 const readPrefs = () => { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch { return {}; } };
-const savePrefs = () => { try { localStorage.setItem(LS, JSON.stringify(prefs)); } catch {} };
+let lastUrl = '';
+const savePrefs = () => { try { localStorage.setItem(LS, JSON.stringify(prefs)); } catch {} syncUrl(); };
 /* proyek yang dilacak: Wikipedia memakai bahasa terpilih, tiga lainnya global (bahasa hanya mengatur antarmuka dan label) */
 const PROJECTS = {
   wikipedia:{ host:() => prefs.wiki + '.wikipedia.org' },
@@ -1319,6 +1320,7 @@ function render() {
       : '<tr><td colspan="7">' + '<div class="skel"></div>'.repeat(7) + '</td></tr>';
     $('range').textContent = ''; $('pager').innerHTML = '';
     renderUsers(Date.now());
+    syncUrl();
     return;
   }
   const now = Date.now();
@@ -1338,6 +1340,7 @@ function render() {
     : t('zero');
   $('pager').innerHTML = pagerHtml(pages);
   renderUsers(now);
+  syncUrl();
 }
 
 /* ================= panel suntingan terbanyak (dari 500 data terbaru, maksimal 50 pengguna) ================= */
@@ -1363,6 +1366,7 @@ function renderUsers() {
   const max = list.length ? list[0].n : 1;
   const upages = Math.max(1, Math.ceil(list.length / USERS_PER_PAGE));
   upage = clamp(upage, 1, upages);
+  syncUrl();
   const off = (upage - 1) * USERS_PER_PAGE;
   const html = !store ? '' : list.length ? list.slice(off, off + USERS_PER_PAGE).map((u, j) => {
     const i = off + j;
@@ -1456,8 +1460,8 @@ document.querySelectorAll('#projects button').forEach(b => b.addEventListener('c
 $('rows').addEventListener('error', e => { if (e.target.classList && e.target.classList.contains('fthumb')) e.target.style.visibility = 'hidden'; }, true);
 $('perPage').addEventListener('change', e => { prefs.perPage = +e.target.value; savePrefs(); page = 1; render(); });
 const dlg = $('usersDlg');
-function openUsers() {
-  usersSig = ''; upage = 1;
+function openUsers(p) {
+  usersSig = ''; upage = p > 1 ? p : 1;
   if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
   renderUsers(); $('usersBtn').setAttribute('aria-expanded', 'true');
 }
@@ -1465,7 +1469,7 @@ function closeUsers() {
   if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
   $('usersBtn').setAttribute('aria-expanded', 'false');
 }
-$('usersBtn').addEventListener('click', openUsers);
+$('usersBtn').addEventListener('click', () => openUsers());
 $('usersClose').addEventListener('click', closeUsers);
 dlg.addEventListener('click', e => { if (e.target === dlg) closeUsers(); });
 $('upager').addEventListener('click', e => {
@@ -1473,7 +1477,7 @@ $('upager').addEventListener('click', e => {
   if (!b || b.disabled) return;
   upage = +b.dataset.page; renderUsers();
 });
-dlg.addEventListener('close', () => $('usersBtn').setAttribute('aria-expanded', 'false'));
+dlg.addEventListener('close', () => { $('usersBtn').setAttribute('aria-expanded', 'false'); syncUrl(); });
 $('theme').addEventListener('change', e => { prefs.theme = e.target.value; savePrefs(); applyTheme(); });
 $('wiki').addEventListener('change', e => {
   prefs.wiki = e.target.value; savePrefs();
@@ -1525,7 +1529,44 @@ setInterval(() => {
   updateStatus(now);
 }, 250);
 
+/* ================= URL Query =================
+   project (wikipedia|commons|wikidata|abstract), tab (changes|newpages), refresh (auto|interval|off) + interval (detik),
+   lang (bahasa Wikipedia/antarmuka), sound (1|0), page, perpage (20|50|100|250|500), users=1 (buka Suntingan terbanyak) + upage.
+   Parameter yang ada menimpa setelan tersimpan; setiap perubahan kontrol memperbarui URL. */
+function syncUrl() {
+  const p = new URLSearchParams();
+  p.set('project', prefs.project); p.set('tab', prefs.tab); p.set('refresh', prefs.mode);
+  if (prefs.mode === 'interval') p.set('interval', String(prefs.interval));
+  p.set('lang', prefs.wiki); p.set('sound', prefs.sound ? '1' : '0');
+  if (page > 1) p.set('page', String(page));
+  if (prefs.perPage !== 20) p.set('perpage', String(prefs.perPage));
+  if ($('usersDlg').open) { p.set('users', '1'); if (upage > 1) p.set('upage', String(upage)); }
+  const url = location.pathname + '?' + p.toString() + location.hash;
+  if (url === lastUrl) return;
+  lastUrl = url;
+  try { history.replaceState(null, '', url); } catch {}
+}
+function readUrl() {
+  const p = new URLSearchParams(location.search);
+  if (PROJECTS[p.get('project')]) prefs.project = p.get('project');
+  if (TABS[p.get('tab')]) prefs.tab = p.get('tab');
+  const rf = p.get('refresh');
+  if (['auto','interval','off'].includes(rf)) prefs.mode = rf;
+  if (p.has('interval')) {
+    prefs.interval = clamp(parseInt(p.get('interval'), 10) || prefs.interval, MIN_INTERVAL, MAX_INTERVAL);
+    if (!rf) prefs.mode = 'interval';
+  }
+  if (LANGS[p.get('lang')]) prefs.wiki = p.get('lang');
+  if (p.has('sound')) prefs.sound = ['1','true','on','yes'].includes(p.get('sound').toLowerCase());
+  const pp = parseInt(p.get('perpage'), 10);
+  if (PER_PAGE_OPTIONS.includes(pp)) prefs.perPage = pp;
+  const pg = parseInt(p.get('page'), 10);
+  if (pg >= 1) page = pg;
+  return { users: p.get('users') === '1', upage: parseInt(p.get('upage'), 10) || 1 };
+}
+
 /* ================= mulai ================= */
+const fromUrl = readUrl();
 setLocale();
 applyTheme();
 applyI18n();
@@ -1533,6 +1574,8 @@ syncControls();
 render();
 refresh({ baseline:true });
 loadTagNames();
+if (fromUrl.users) openUsers(fromUrl.upage);
+syncUrl();
 })();
 </script>
 </body>
