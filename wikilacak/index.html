@@ -90,7 +90,8 @@ h1{margin:0;font-size:19px;letter-spacing:-.01em}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%,100%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
 
 .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 20px;border-bottom:1px solid var(--line)}
-.search{position:relative;flex:1 1 240px;max-width:380px}
+.toolbar-left{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
+.search{position:relative;flex:1 1 200px;max-width:320px;min-width:160px}
 .search svg{position:absolute;inset-inline-start:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .search input{width:100%;height:38px;padding:0;padding-inline:36px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
 .toolbar-right{margin-inline-start:auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
@@ -218,7 +219,12 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
 .foot-l{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
 .perpage{height:32px;font-size:13px}
 .wp-opt{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
-.wp-opt[hidden]{display:none}
+.wp-opt[hidden],.wp-sel[hidden]{display:none}
+.wp-prog{font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.wp-prog.busy{color:var(--primary)}
+.wp-prog[hidden]{display:none}
+.wp-sel{height:38px;width:170px;flex:0 0 auto}
+.wp-sel select{max-width:100%;text-overflow:ellipsis}
 .wp-opt input{accent-color:var(--primary);margin:0;cursor:pointer}
 .wp-opt:has(input:checked){color:var(--primary);background:var(--primary-soft);border-color:transparent}
 .perpage span{white-space:nowrap}
@@ -247,6 +253,9 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
   .icon-btn{padding:0 10px}
   .card-head,.toolbar,.filters,.card-foot{padding-inline:14px}
   .head-right{width:100%}
+  .toolbar-left{flex-basis:100%}
+  .wp-sel{flex:1 1 0;width:auto;min-width:0}
+  .wp-sel select{width:100%}
   .search{max-width:none;flex-basis:100%}
   .toolbar-right{margin-inline-start:0;width:100%;justify-content:space-between}
   table,thead,tbody,tr,td{display:block;min-width:0}
@@ -348,11 +357,15 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
     </div>
 
     <div class="toolbar">
-      <div class="search">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="q" type="search" data-i18n-ph="search" data-i18n-aria="search" placeholder="" aria-label="" autocomplete="off">
+      <div class="toolbar-left">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="q" type="search" data-i18n-ph="search" data-i18n-aria="search" placeholder="" aria-label="" autocomplete="off">
+        </div>
+        <label class="wp-opt" id="wpOpt" hidden><input type="checkbox" id="wpChk"><span id="wpOptTxt">WikiProyek</span></label>
+        <label class="select-wrap wp-sel" id="wpSelWrap" hidden><select id="wpSel" data-i18n-aria="thWp" aria-label=""></select></label>
+        <span class="wp-prog" id="wpProg" hidden></span>
       </div>
-      <label class="wp-opt" id="wpOpt" hidden><input type="checkbox" id="wpChk"><span id="wpOptTxt">WikiProyek</span></label>
 
       <div class="toolbar-right">
         <div class="field">
@@ -1025,7 +1038,7 @@ const cleanComment = c => c.replace(/\/\*\s*(.*?)\s*\*\/\s*/g, (m, s) => (isRtl(
 
 /* ================= state ================= */
 let store = null;               // { items:[], ids:Set }
-let page = 1, query = '';
+let page = 1, query = '', wpFilter = '';
 let loading = false, error = null, lastOk = 0;
 let timer = null, nextAt = 0, startedAt = 0;
 let ctl = null, seq = 0;
@@ -1147,7 +1160,7 @@ function schedule() {
 }
 function resetData() {
   if (ctl) ctl.abort();
-  seq++; store = null; error = null; page = 1; unseen = 0; updateTitle();
+  seq++; store = null; error = null; page = 1; unseen = 0; wpFilter = ''; updateTitle();
   render(); refresh({ baseline:true });
 }
 
@@ -1209,7 +1222,9 @@ function toast(msg, withBtn = false) {
 const filtered = () => {
   if (!store) return [];
   const q = query.trim().toLowerCase();
-  return q ? store.items.filter(x => x.hay.includes(q)) : store.items;
+  let out = q ? store.items.filter(x => x.hay.includes(q)) : store.items;
+  if (wpFilter && wpOn()) { const h = host(); out = out.filter(x => (wpCache.get(h + '|' + x.title) || []).some(a => a.n === wpFilter)); }
+  return out;
 };
 const emptyHtml = (title, desc) => `<tr><td colspan="8"><div class="empty"><b>${esc(title)}</b>${esc(desc || '')}</div></td></tr>`;
 
@@ -1386,6 +1401,24 @@ function ensureWp(slice) {
     })().finally(() => { chunk.forEach(x => wpPending.delete(h + '|' + x.title)); wpRender(h); });
   }
 }
+let wpSelSig = '';
+function renderWpSel() {
+  const on = wpOn(); $('wpSelWrap').hidden = !on; $('wpProg').hidden = !on;
+  if (!on) { wpSelSig = ''; return; }
+  const h = host(), cnt = new Map();
+  let done = 0;
+  for (const x of store.items) if (wpCache.has(h + '|' + x.title)) done++;
+  $('wpProg').textContent = fmt(done) + '/' + fmt(store.items.length);
+  $('wpProg').classList.toggle('busy', done < store.items.length);
+  for (const x of store.items) for (const a of new Set((wpCache.get(h + '|' + x.title) || []).map(a => a.n))) cnt.set(a, (cnt.get(a) || 0) + 1);
+  if (wpFilter && !cnt.has(wpFilter)) cnt.set(wpFilter, 0);
+  const names = [...cnt].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], prefs.wiki));
+  const sig = prefs.wiki + '|' + wpFilter + '|' + names.map(n => n.join(':')).join('|');
+  if (sig === wpSelSig) return;
+  wpSelSig = sig;
+  $('wpSel').innerHTML = `<option value="">${esc(t('thWp'))}</option>` + names.map(([n, c]) => `<option value="${esc(n)}">${esc(n)} (${fmt(c)})</option>`).join('');
+  $('wpSel').value = wpFilter;
+}
 function wpHtml(x) {
   if (!wpOn()) return '';
   const c = wpCache.get(host() + '|' + x.title);
@@ -1487,6 +1520,8 @@ function render() {
 
   if (!store) {
     $('count').textContent = '–';
+    wpSelSig = ''; $('wpSelWrap').hidden = true; $('wpProg').hidden = true;
+    $('wpSel').innerHTML = `<option value="">${esc(t('thWp'))}</option>`;
     $('rows').innerHTML = error
       ? emptyHtml(t('emptyFail'), t('emptyFailHint', { e:error }))
       : '<tr><td colspan="8">' + '<div class="skel"></div>'.repeat(7) + '</td></tr>';
@@ -1505,12 +1540,14 @@ function render() {
   $('count').textContent = fmt(store.items.length);
   ensureLabels(slice);
   ensureWp(slice);
+  if (wpOn()) ensureWp(store.items);   // seluruh daftar, agar dropdown memuat semua WikiProject yang terdeteksi
+  renderWpSel();
   $('tbl').classList.toggle('has-wp', wpOn());
   $('rows').innerHTML = slice.length
     ? slice.map(x => rowHtml(x, now)).join('')
-    : (query.trim() ? emptyHtml(t('noRes'), t('noResHint', { q:query.trim() })) : emptyHtml(t('noEnt'), t('noEntHint')));
+    : ((query.trim() || wpFilter) ? emptyHtml(t('noRes'), t('noResHint', { q:query.trim() || wpFilter })) : emptyHtml(t('noEnt'), t('noEntHint')));
   $('range').textContent = total
-    ? t('showing', { a:fmt(from + 1), b:fmt(from + slice.length), n:fmt(total) }) + (query.trim() ? ' ' + t('filteredFrom', { m:fmt(store.items.length) }) : '')
+    ? t('showing', { a:fmt(from + 1), b:fmt(from + slice.length), n:fmt(total) }) + ((query.trim() || wpFilter) ? ' ' + t('filteredFrom', { m:fmt(store.items.length) }) : '')
     : t('zero');
   $('pager').innerHTML = pagerHtml(pages);
   renderUsers(now);
@@ -1662,7 +1699,8 @@ $('wiki').addEventListener('change', e => {
   resetData(); loadTagNames();
 });
 
-$('wpChk').addEventListener('change', e => { prefs.wp = e.target.checked; savePrefs(); render(); });
+$('wpChk').addEventListener('change', e => { prefs.wp = e.target.checked; if (!prefs.wp) wpFilter = ''; savePrefs(); page = 1; render(); });
+$('wpSel').addEventListener('change', e => { wpFilter = e.target.value; page = 1; wpSelSig = ''; render(); });
 $('soundBtn').addEventListener('click', () => {
   prefs.sound = !prefs.sound; savePrefs(); syncControls();
   if (prefs.sound) { const c = audio(); if (c) c.resume().then(playDing).catch(() => {}); }
