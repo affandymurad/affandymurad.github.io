@@ -223,8 +223,21 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
 .wp-prog{font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .wp-prog.busy{color:var(--primary)}
 .wp-prog[hidden]{display:none}
-.wp-sel{height:38px;width:170px;flex:0 0 auto}
-.wp-sel select{max-width:100%;text-overflow:ellipsis}
+.wp-sel{position:relative;width:170px;flex:0 0 auto}
+.wp-btn{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;height:38px;padding-block:0;padding-inline:12px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-weight:600;text-align:start}
+.wp-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wp-btn.set{color:var(--primary);background:var(--primary-soft);border-color:transparent}
+.wp-btn svg{flex:none;color:var(--muted)}
+.wp-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.wp-pop{position:absolute;z-index:30;top:calc(100% + 6px);inset-inline-start:0;min-width:max(100%,260px);max-width:min(340px,calc(100vw - 32px));background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:8px}
+.wp-pop[hidden]{display:none}
+.wp-pop input{width:100%;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink)}
+.wp-list{list-style:none;margin:6px 0 0;padding:0;max-height:min(320px,50vh);overflow-y:auto;overscroll-behavior:contain}
+.wp-list li{display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.wp-list li small{color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.wp-list li:hover,.wp-list li.act{background:var(--soft)}
+.wp-list li[aria-selected="true"]{color:var(--primary);font-weight:700}
+.wp-list li.none{cursor:default;color:var(--muted)}
 .wp-opt input{accent-color:var(--primary);margin:0;cursor:pointer}
 .wp-opt:has(input:checked){color:var(--primary);background:var(--primary-soft);border-color:transparent}
 .perpage span{white-space:nowrap}
@@ -255,7 +268,6 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
   .head-right{width:100%}
   .toolbar-left{flex-basis:100%}
   .wp-sel{flex:1 1 0;width:auto;min-width:0}
-  .wp-sel select{width:100%}
   .search{max-width:none;flex-basis:100%}
   .toolbar-right{margin-inline-start:0;width:100%;justify-content:space-between}
   table,thead,tbody,tr,td{display:block;min-width:0}
@@ -363,7 +375,13 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
           <input id="q" type="search" data-i18n-ph="search" data-i18n-aria="search" placeholder="" aria-label="" autocomplete="off">
         </div>
         <label class="wp-opt" id="wpOpt" hidden><input type="checkbox" id="wpChk"><span id="wpOptTxt">WikiProyek</span></label>
-        <label class="select-wrap wp-sel" id="wpSelWrap" hidden><select id="wpSel" data-i18n-aria="thWp" aria-label=""></select></label>
+        <div class="wp-sel" id="wpSelWrap" hidden>
+          <button type="button" class="wp-btn" id="wpBtn" aria-haspopup="listbox" aria-expanded="false"><span id="wpBtnTxt"></span><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 4 4 4 4-4"/></svg></button>
+          <div class="wp-pop" id="wpPop" hidden>
+            <input type="search" id="wpSrch" autocomplete="off" aria-label="">
+            <ul class="wp-list" id="wpList" role="listbox"></ul>
+          </div>
+        </div>
         <span class="wp-prog" id="wpProg" hidden></span>
       </div>
 
@@ -1401,10 +1419,22 @@ function ensureWp(slice) {
     })().finally(() => { chunk.forEach(x => wpPending.delete(h + '|' + x.title)); wpRender(h); });
   }
 }
-let wpSelSig = '';
+let wpSelSig = '', wpNames = [];
+const wpNorm = x => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function wpDrawList() {
+  const q = wpNorm($('wpSrch').value.trim());
+  const li = (v, txt, c, sel) => `<li role="option" data-v="${esc(v)}" aria-selected="${sel}"><span>${esc(txt)}</span>${c == null ? '' : `<small>${fmt(c)}</small>`}</li>`;
+  const rows = wpNames.filter(([n]) => !q || wpNorm(n).includes(q));
+  $('wpList').innerHTML = li('', t('thWp'), null, wpFilter === '') + (rows.length ? rows.map(([n, c]) => li(n, n, c, n === wpFilter)).join('') : `<li class="none" aria-disabled="true">${esc(t('noRes'))}</li>`);
+}
+function wpOpenPop(open) {
+  $('wpPop').hidden = !open; $('wpBtn').setAttribute('aria-expanded', String(open));
+  if (open) { $('wpSrch').value = ''; wpDrawList(); $('wpSrch').focus(); const s = $('wpList').querySelector('[aria-selected="true"]'); if (s) s.scrollIntoView({ block:'nearest' }); }
+}
+function wpPick(v) { wpFilter = v; page = 1; wpSelSig = ''; wpOpenPop(false); $('wpBtn').focus(); render(); }
 function renderWpSel() {
   const on = wpOn(); $('wpSelWrap').hidden = !on; $('wpProg').hidden = !on;
-  if (!on) { wpSelSig = ''; return; }
+  if (!on) { wpSelSig = ''; wpOpenPop(false); return; }
   const h = host(), cnt = new Map();
   let done = 0;
   for (const x of store.items) if (wpCache.has(h + '|' + x.title)) done++;
@@ -1412,12 +1442,15 @@ function renderWpSel() {
   $('wpProg').classList.toggle('busy', done < store.items.length);
   for (const x of store.items) for (const a of new Set((wpCache.get(h + '|' + x.title) || []).map(a => a.n))) cnt.set(a, (cnt.get(a) || 0) + 1);
   if (wpFilter && !cnt.has(wpFilter)) cnt.set(wpFilter, 0);
-  const names = [...cnt].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], prefs.wiki));
-  const sig = prefs.wiki + '|' + wpFilter + '|' + names.map(n => n.join(':')).join('|');
+  wpNames = [...cnt].sort((a, b) => a[0].localeCompare(b[0], prefs.wiki, { sensitivity:'base' }));
+  $('wpBtnTxt').textContent = wpFilter || t('thWp');
+  $('wpBtn').classList.toggle('set', !!wpFilter);
+  $('wpSrch').placeholder = t('thWp') + '…';
+  $('wpSrch').setAttribute('aria-label', t('thWp'));
+  const sig = prefs.wiki + '|' + wpFilter + '|' + wpNames.map(n => n.join(':')).join('|');
   if (sig === wpSelSig) return;
   wpSelSig = sig;
-  $('wpSel').innerHTML = `<option value="">${esc(t('thWp'))}</option>` + names.map(([n, c]) => `<option value="${esc(n)}">${esc(n)} (${fmt(c)})</option>`).join('');
-  $('wpSel').value = wpFilter;
+  if (!$('wpPop').hidden) wpDrawList();
 }
 function wpHtml(x) {
   if (!wpOn()) return '';
@@ -1520,8 +1553,8 @@ function render() {
 
   if (!store) {
     $('count').textContent = '–';
-    wpSelSig = ''; $('wpSelWrap').hidden = true; $('wpProg').hidden = true;
-    $('wpSel').innerHTML = `<option value="">${esc(t('thWp'))}</option>`;
+    wpSelSig = ''; wpNames = []; wpOpenPop(false); $('wpSelWrap').hidden = true; $('wpProg').hidden = true;
+    $('wpBtnTxt').textContent = t('thWp'); $('wpBtn').classList.remove('set');
     $('rows').innerHTML = error
       ? emptyHtml(t('emptyFail'), t('emptyFailHint', { e:error }))
       : '<tr><td colspan="8">' + '<div class="skel"></div>'.repeat(7) + '</td></tr>';
@@ -1700,7 +1733,24 @@ $('wiki').addEventListener('change', e => {
 });
 
 $('wpChk').addEventListener('change', e => { prefs.wp = e.target.checked; if (!prefs.wp) wpFilter = ''; savePrefs(); page = 1; render(); });
-$('wpSel').addEventListener('change', e => { wpFilter = e.target.value; page = 1; wpSelSig = ''; render(); });
+$('wpBtn').addEventListener('click', () => wpOpenPop($('wpPop').hidden));
+$('wpSrch').addEventListener('input', wpDrawList);
+$('wpList').addEventListener('click', e => { const li = e.target.closest('li[data-v]'); if (li) wpPick(li.dataset.v); });
+$('wpPop').addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.stopPropagation(); wpOpenPop(false); $('wpBtn').focus(); return; }
+  const items = [...$('wpList').querySelectorAll('li[data-v]')];
+  const cur = items.findIndex(i => i.classList.contains('act'));
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const n = clamp(cur + (e.key === 'ArrowDown' ? 1 : -1), 0, items.length - 1);
+    items.forEach(i => i.classList.remove('act')); items[n].classList.add('act'); items[n].scrollIntoView({ block:'nearest' });
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    const pick = items[cur] || (items.length === 2 ? items[1] : null);
+    if (pick) wpPick(pick.dataset.v);
+  }
+});
+document.addEventListener('click', e => { if (!$('wpPop').hidden && !$('wpSelWrap').contains(e.target)) wpOpenPop(false); });
 $('soundBtn').addEventListener('click', () => {
   prefs.sound = !prefs.sound; savePrefs(); syncControls();
   if (prefs.sound) { const c = audio(); if (c) c.resume().then(playDing).catch(() => {}); }
