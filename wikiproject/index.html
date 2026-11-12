@@ -65,7 +65,12 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 .lbsearch input { width: 100%; padding-right: 12px; }
 .lbmeta { padding: 6px 12px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); }
 #plistitems { position: relative; max-height: 280px; overflow: auto; }
-#proj[readonly] { cursor: pointer; }
+#proj[readonly] { cursor: pointer; caret-color: transparent; user-select: none; text-overflow: ellipsis; }
+#proj[readonly]::selection { background: transparent; }
+.nodata { padding: 48px 20px; text-align: center; color: var(--muted); border-radius: 0 0 18px 18px; }
+.nodata[hidden] { display: none; }
+.nodata b { display: block; margin-bottom: 6px; color: var(--ink); font-size: 16px; }
+.nodata p { margin: 0 auto; max-width: 440px; font-size: 14px; line-height: 1.5; }
 .chip:disabled, .chev:disabled { opacity: .5; cursor: not-allowed; }
 .opt { display: block; width: 100%; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); text-align: left; font-size: 14px; cursor: pointer; overflow-wrap: anywhere; }
 .opt:hover, .opt.act { background: var(--soft); }
@@ -83,6 +88,9 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 .note { padding: 8px 16px; font-size: 12.5px; color: var(--muted); border-bottom: 1px solid var(--line); }
 .flt { padding: 10px 16px; border-bottom: 1px solid var(--line); }
 .flt input { width: 100%; }
+.fpchk { display: flex; align-items: flex-start; gap: 8px; margin-top: 8px; font-size: 12.5px; color: var(--muted); cursor: pointer; line-height: 1.4; }
+.fpchk input { width: auto; margin-top: 2px; accent-color: var(--brand); flex: none; }
+.tg.fp { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
 .pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 10px 16px; font-size: 13px; color: var(--muted); }
 .pager:empty { display: none; }
 .pager select, .pager input { padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--soft); color: var(--ink); font-size: 13px; }
@@ -152,7 +160,7 @@ footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
       <span class="n">1</span>
       <label class="lbl" for="proj" data-i18n="wikiproject"></label>
       <div class="combo" id="combo">
-        <input id="proj" type="text" aria-haspopup="listbox" aria-expanded="false" aria-controls="plistitems" value="Medicine" autocomplete="off" spellcheck="false">
+        <input id="proj" type="text" aria-haspopup="listbox" aria-expanded="false" aria-controls="plistitems" value="" readonly data-i18n-ph="projPh" autocomplete="off" spellcheck="false">
         <button id="projBtn" class="chev" type="button" tabindex="-1" aria-label="Show all WikiProjects">&#9662;</button>
         <div id="plistbox" class="lb" hidden>
           <div class="lbsearch"><input id="projQ" type="text" role="combobox" aria-expanded="true" aria-controls="plistitems" aria-autocomplete="list" data-i18n-ph="projSearchPh" autocomplete="off" spellcheck="false"></div>
@@ -177,11 +185,17 @@ footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
     <div class="prog"><div id="bar"></div></div>
     <div class="stat" id="stat" role="status"></div>
 
-    <div class="cols">
+    <div class="nodata" id="nodata" role="status" hidden>
+      <b data-i18n="noDataT"></b>
+      <p data-i18n="noDataD"></p>
+    </div>
+
+    <div class="cols" id="cols">
       <section class="left" aria-label="Articles">
         <div class="ph"><span class="n">2</span><span data-i18n="leftTitle"></span><span class="lbl push" id="cnt"></span></div>
         <div class="note" data-i18n="heuristic"></div>
-        <div class="flt"><input id="flt" type="text" data-i18n-ph="filterPh" aria-label="Filter"></div>
+        <div class="flt"><input id="flt" type="text" data-i18n-ph="filterPh" aria-label="Filter">
+          <label class="fpchk" id="fpWrap" hidden><input id="fpChk" type="checkbox"><span id="fpTxt"></span></label></div>
         <div id="list"></div>
         <div class="pager" id="lpager"></div>
       </section>
@@ -246,8 +260,8 @@ footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
 <script>
 // Bahasa antarmuka = Wikipedia yang dibaca: EN memakai en.wikipedia.org, ID memakai id.wikipedia.org
 const WIKI = {
-  en: { api: 'https://en.wikipedia.org/w/api.php', host: 'en.wikipedia.org', defProject: 'Medicine' },
-  id: { api: 'https://id.wikipedia.org/w/api.php', host: 'id.wikipedia.org', defProject: 'Medis' },
+  en: { api: 'https://en.wikipedia.org/w/api.php', host: 'en.wikipedia.org' },
+  id: { api: 'https://id.wikipedia.org/w/api.php', host: 'id.wikipedia.org' },
 };
 let WP = WIKI.en.api;
 const COMMONS = 'https://commons.wikimedia.org/w/api.php';
@@ -275,6 +289,7 @@ const I18N = {
     pageLabel: 'Page', ofN: (n) => `of ${n.toLocaleString()}`, pageN: (p) => `Page ${p}`,
     rangeFmt: (a, b, n) => `${a.toLocaleString()}–${b.toLocaleString()} of ${n.toLocaleString()}`,
     projCount: (n, total) => (n === total ? `${total.toLocaleString()} WikiProjects` : `${n.toLocaleString()} of ${total.toLocaleString()} WikiProjects`),
+    projPh: 'Select a WikiProject', noDataT: 'No data yet', noDataD: 'Choose a WikiProject and importance levels above, then click “Load articles”. The article list and image candidates will appear here.', pickProject: 'Choose a WikiProject first.',
     projNone: 'No matching WikiProject', projAll: 'Show all WikiProjects', projSearchPh: 'Search WikiProjects…',
     filtersChanged: 'Filters changed. Click “Load articles” to refresh the list.',
     heuristic: 'Based on the lead image MediaWiki detects (PageImages). An article may still use other files.',
@@ -290,6 +305,10 @@ const I18N = {
     reading: (n) => `Reading project… ${n.toLocaleString()} articles`, cached: (d) => `Using data saved ${d}`,
     checking: (a, b) => `Checking lead images: ${a.toLocaleString()} of ${b.toLocaleString()}`,
     done: (n, t) => `Done: ${n.toLocaleString()} of ${t.toLocaleString()} articles have no lead image`,
+    checkingPhoto: (a, b) => `Double-checking the lead section: ${a.toLocaleString()} of ${b.toLocaleString()}`,
+    done2: (n, fp, t) => `Done: ${n.toLocaleString()} of ${t.toLocaleString()} articles have no photo in the lead` + (fp ? ` (${fp.toLocaleString()} more already have one that PageImages missed)` : ''),
+    fpShow: (n) => `Also show ${n.toLocaleString()} article(s) whose lead already has a photo (not detected by PageImages)`,
+    fpTag: 'Photo in lead', bodyImgs: (n) => `${n.toLocaleString()} image(s) in the body`,
     noArticles: 'No articles match these filters.', pickImp: 'Select at least one importance level.',
     unknownProject: 'Unknown WikiProject. Pick one from the list.',
     tooBig: (n) => `This project has more than ${n.toLocaleString()} pages, too many for the browser. Pick a smaller project.`,
@@ -330,6 +349,7 @@ const I18N = {
     pageLabel: 'Halaman', ofN: (n) => `dari ${n.toLocaleString('id-ID')}`, pageN: (p) => `Halaman ${p}`,
     rangeFmt: (a, b, n) => `${a.toLocaleString('id-ID')}–${b.toLocaleString('id-ID')} dari ${n.toLocaleString('id-ID')}`,
     projCount: (n, total) => (n === total ? `${total.toLocaleString('id-ID')} ProyekWiki` : `${n.toLocaleString('id-ID')} dari ${total.toLocaleString('id-ID')} ProyekWiki`),
+    projPh: 'Pilih ProyekWiki', noDataT: 'Belum ada data', noDataD: 'Pilih ProyekWiki dan level importance di atas, lalu klik “Muat artikel”. Daftar artikel dan kandidat gambar akan muncul di sini.', pickProject: 'Pilih ProyekWiki terlebih dahulu.',
     projNone: 'Tidak ada ProyekWiki yang cocok', projAll: 'Tampilkan semua ProyekWiki', projSearchPh: 'Cari ProyekWiki…',
     filtersChanged: 'Filter berubah. Klik “Muat artikel” untuk menyegarkan daftar.',
     heuristic: 'Berdasarkan gambar utama yang dideteksi MediaWiki (PageImages). Artikel mungkin masih memakai berkas lain.',
@@ -345,6 +365,10 @@ const I18N = {
     reading: (n) => `Membaca proyek… ${n.toLocaleString('id-ID')} artikel`, cached: (d) => `Memakai data yang disimpan ${d}`,
     checking: (a, b) => `Memeriksa gambar utama: ${a.toLocaleString('id-ID')} dari ${b.toLocaleString('id-ID')}`,
     done: (n, t) => `Selesai: ${n.toLocaleString('id-ID')} dari ${t.toLocaleString('id-ID')} artikel tanpa gambar utama`,
+    checkingPhoto: (a, b) => `Memeriksa ulang bagian pembuka: ${a.toLocaleString('id-ID')} dari ${b.toLocaleString('id-ID')}`,
+    done2: (n, fp, t) => `Selesai: ${n.toLocaleString('id-ID')} dari ${t.toLocaleString('id-ID')} artikel tanpa foto di bagian pembuka` + (fp ? ` (${fp.toLocaleString('id-ID')} lainnya sebenarnya sudah punya yang tidak terdeteksi PageImages)` : ''),
+    fpShow: (n) => `Tampilkan juga ${n.toLocaleString('id-ID')} artikel yang bagian pembukanya sudah punya foto (tidak terdeteksi PageImages)`,
+    fpTag: 'Foto di pembuka', bodyImgs: (n) => `${n.toLocaleString('id-ID')} gambar di isi artikel`,
     noArticles: 'Tidak ada artikel yang cocok dengan filter ini.', pickImp: 'Pilih minimal satu level importance.',
     unknownProject: 'ProyekWiki tidak dikenal. Pilih dari daftar.',
     tooBig: (n) => `Proyek ini punya lebih dari ${n.toLocaleString('id-ID')} halaman, terlalu banyak untuk browser. Pilih proyek yang lebih kecil.`,
@@ -404,6 +428,8 @@ const idb = {
 };
 
 // ---------- status ----------
+let showFP = false;
+try { showFP = localStorage.getItem('wpi-showfp') === '1'; } catch {}
 let statusFn = () => '', statusErr = false;
 function setStatus(fn, err = false) { statusFn = fn; statusErr = err; $('stat').textContent = fn(); $('stat').classList.toggle('err', err); }
 
@@ -537,7 +563,7 @@ async function loadProjects() {
     projects = list.slice().sort((a, b) => a.localeCompare(b));
     setStatus(() => '');
     $('proj').readOnly = true;         // daftar tersedia: pilih lewat dropdown (pencarian ada di dalamnya)
-  } catch { if (my === projToken) setStatus(() => t('projFail'), true); }
+  } catch { if (my === projToken) { setStatus(() => t('projFail'), true); $('proj').readOnly = false; } }   // cadangan: izinkan mengetik nama
 }
 
 // Daftar penuh ditampilkan saat dibuka (tidak disaring oleh teks yang sudah terisi); menyaring baru saat pengguna mengetik.
@@ -639,6 +665,7 @@ async function checkImages(list, signal) {
 async function load(force) {
   if (running) return;
   const project = $('proj').value.trim();
+  if (!project) { setStatus(() => t('pickProject'), true); return; }
   const imps = selectedImps();
   if (!imps.size) { setStatus(() => t('pickImp'), true); return; }
   if (projects.length && !projects.includes(project)) { setStatus(() => t('unknownProject'), true); return; }
@@ -672,8 +699,9 @@ async function load(force) {
     if (items.length > 2000 && !confirm(t('big', items.length, reqs))) { items = []; setStatus(() => t('stopped')); return; }
     renderList();
     await checkImages(items, ctrl.signal);
+    if (!ctrl.signal.aborted) await checkLead(items, ctrl.signal);
     if (ctrl.signal.aborted) setStatus(() => t('stopped'));
-    else { const n = items.filter((i) => i.img === false).length, tot = items.length; setStatus(() => t('done', n, tot)); }
+    else { const c = items.filter((i) => i.img === false), fp = c.filter((i) => i.lead === 'photo').length, tot = items.length; setStatus(() => t('done2', c.length - fp, fp, tot)); }
   } catch (e) {
     if (ctrl?.signal.aborted) setStatus(() => t('stopped'));
     else if (e.tooBig) setStatus(() => t('tooBig', MAX_RAW), true);
@@ -682,6 +710,36 @@ async function load(force) {
     // selalu dijalankan, termasuk saat ada return di atas; tanpa ini UI tertahan dalam keadaan sibuk
     running = false; ctrl = null; setBusy(false); renderList();
   }
+}
+
+// Tahap 2: artikel yang "tanpa gambar utama" menurut PageImages diperiksa ulang lewat bagian pembuka (section 0).
+// PageImages bisa melewatkan foto yang sempit/kecil; ikon dan SVG tidak dihitung sebagai foto.
+const isPhotoFile = (n) => /\.(jpe?g|png|gif|webp|tiff?|jfif)$/i.test(n);
+async function checkLead(list, signal) {
+  const cands = list.filter((i) => i.img === false);
+  let done = 0;
+  const upd = () => { setStatus(() => t('checkingPhoto', done, cands.length)); $('bar').style.width = (cands.length ? done / cands.length * 100 : 100) + '%'; renderList(); };
+  let next = 0;
+  const run = async () => {
+    while (next < cands.length && !signal.aborted) {
+      const it = cands[next++], key = `lead:${lang}:${it.title}`;
+      let v;
+      const c = await idb.get(key);
+      if (c && Date.now() - c.t < CACHE_MS) v = c.v;
+      else {
+        try {
+          const d = await apiRetry(WP, { action: 'parse', page: it.title, prop: 'images', section: '0', redirects: '1' }, signal);
+          v = (d.parse.images || []).some(isPhotoFile) ? 'photo' : 'none';
+          idb.set(key, { t: Date.now(), v });
+        } catch (e) { if (signal.aborted) return; }
+      }
+      if (v) it.lead = v;
+      done++;
+      if (done % 5 === 0 || done === cands.length) upd();
+    }
+  };
+  upd();
+  await Promise.all(Array.from({ length: PARALLEL }, run));
 }
 
 // pilihan proyek dan importance disimpan terpisah per bahasa (EN dan ID punya proyek yang berbeda)
@@ -694,7 +752,7 @@ function saveState() {
 function restoreState() {
   let s = null;
   try { s = JSON.parse(localStorage.getItem(stateKey(lang)) || 'null') || (lang === 'en' ? JSON.parse(localStorage.getItem('wpi-state') || 'null') : null); } catch {}
-  $('proj').value = s?.project || WIKI[lang].defProject;
+  $('proj').value = s?.project || '';
   const imps = Array.isArray(s?.imps) ? s.imps : DEFAULT_IMPS;
   for (const b of document.querySelectorAll('[data-imp]')) b.setAttribute('aria-pressed', String(imps.includes(b.dataset.imp)));
 }
@@ -703,7 +761,7 @@ function resetAll() {
   rctrl?.abort(); sctrl?.abort();
   items = []; cur = null; lp.page = 0; $('flt').value = '';
   tiles = []; pick = null; wdTile = null; rp.q = ''; rp.total = null; filesN = null; catName = null; rStatKey = '';
-  projects = []; $('proj').readOnly = false; comboClose();
+  projects = []; $('proj').readOnly = true; comboClose();
   $('bar').style.width = '0';
   setStatus(() => '');
   renderList(); renderRight(); drawTiles(); updatePick(); renderRPager();
@@ -730,10 +788,19 @@ function resetList() {
 // ---------- panel kiri ----------
 function visible() {
   const q = $('flt').value.trim().toLowerCase();
-  return items.filter((i) => i.img === false && (!q || i.title.toLowerCase().includes(q)))
+  return items.filter((i) => i.img === false && (showFP || i.lead !== 'photo') && (!q || i.title.toLowerCase().includes(q)))
     .sort((a, b) => RANK[a.imp] - RANK[b.imp] || a.title.localeCompare(b.title));
 }
+function renderNoData() {
+  const empty = !items.length && !running;
+  $('nodata').hidden = !empty; $('cols').hidden = empty;
+}
+function renderFP() {
+  const n = items.filter((i) => i.img === false && i.lead === 'photo').length;
+  $('fpWrap').hidden = !n; $('fpChk').checked = showFP; $('fpTxt').textContent = t('fpShow', n);
+}
 function renderList() {
+  renderNoData(); renderFP();
   const rows = visible();
   $('cnt').textContent = t('countFmt', rows.length);
   const pages = Math.max(1, Math.ceil(rows.length / lp.size));
@@ -745,6 +812,7 @@ function renderList() {
     const b = el('button', 'it'); b.type = 'button';
     if (it.title === cur) b.setAttribute('aria-current', 'true');
     const meta = el('small'); meta.append(el('span', 'tg' + (it.imp === 'Top' ? ' top' : ''), it.imp === 'Unrated' ? '-' : impLabel(it.imp)), `${t('classWord')} ${it.cls}`);
+    if (it.lead === 'photo') meta.append(' ', el('span', 'tg fp', t('fpTag')));
     b.append(el('b', '', it.title), meta);
     b.onclick = () => { cur = it.title; renderList(); openArticle(it); };
     list.append(b);
@@ -915,6 +983,7 @@ for (const b of document.querySelectorAll('[data-imp]')) b.onclick = () => {
   if (statusErr) setStatus(() => '');      // pesan galat lama (mis. "pilih minimal satu level") tidak relevan lagi
 };
 $('flt').oninput = () => { lp.page = 0; renderList(); };
+$('fpChk').onchange = (e) => { showFP = e.target.checked; try { localStorage.setItem('wpi-showfp', showFP ? '1' : '0'); } catch {} lp.page = 0; renderList(); };
 
 // combobox WikiProject
 // kotak utama hanya menampilkan pilihan; kotak pencarian ada di dalam dropdown
