@@ -1079,7 +1079,12 @@ function render(){
   $('#qlabel').textContent = L.ui.qid;
   $('#qwrap').title = L.ui.qidTip;
   $('#qid').checked = state.qid;
-  $('#foot').textContent = L.ui.lic;
+  const siteUrl = `https://affandymurad.github.io/wikikoran/#${state.lang}`;
+  const foot = $('#foot');
+  foot.textContent = '';
+  const a = document.createElement('a');
+  a.href = siteUrl; a.textContent = 'Wikikoran'; a.style.cssText = 'color:inherit;font-weight:600';
+  foot.append(a, ` - ${siteUrl.replace(/^https:\/\//,'')} | ${L.ui.lic}`);
 
   const skel = '<div class="body"><div class="skeleton"></div><div class="skeleton" style="width:80%"></div><div class="skeleton" style="width:90%"></div></div>';
   /* Kepala tiap bagian: judul + tombol Bacakan (label di sebelahnya memberi tahu bila gagal/tidak didukung) */
@@ -1787,7 +1792,10 @@ async function makePdf(L,R,dateText,dateKey,step=()=>{}){
     }
     hline(M,pageW-M,pageH-13,N.soft,0.3);
     setF(fontName,'normal',7.4); tc(N.muted);
-    doc.text(S(`${L.title}  -  ${P.report}`),M,pageH-8.6);
+    const siteUrl = `https://affandymurad.github.io/wikikoran/#${state.lang}`;
+    const foot = S(`Wikikoran - ${siteUrl}  |  ${P.report}`);
+    doc.text(foot,M,pageH-8.6);
+    doc.link(M,pageH-11.6,Math.min(doc.getTextWidth(foot),contentW*0.7),4,{url:siteUrl});
     doc.text(S(fmtP(P.page,{p,n:total})),pageW-M,pageH-8.6,{align:'right'});
     if(p === total){   // catatan sumber di dasar halaman terakhir, agar tidak memakan halaman sendiri
       setF(fontName,'normal',6.6); tc(N.muted); doc.text(S(P.sources),pageW/2,pageH-3.8,{align:'center'});
