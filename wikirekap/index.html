@@ -537,6 +537,10 @@
                     <input type="checkbox" id="newPagesOnly">
                     <span data-i18n="newPagesOnly">New pages only (article creations)</span>
                 </label>
+                <label class="check-row">
+                    <input type="checkbox" id="existingPagesOnly">
+                    <span data-i18n="existingPagesOnly">Existing pages only (improvements)</span>
+                </label>
             </div>
 
             <div class="hint">
@@ -672,6 +676,9 @@
                 filterOptions: 'Opsi Filter',
                 mainNamespaceOnly: 'Hanya namespace utama (tidak termasuk pembicaraan, halaman pengguna, dll.)',
                 newPagesOnly: 'Hanya entri baru (artikel yang baru dibuat)',
+                existingPagesOnly: 'Hanya halaman yang sudah ada (perbaikan)',
+                newPagesCount: 'Halaman Baru',
+                improvedPagesCount: 'Halaman Diperbaiki',
                 warning: 'Menganalisis banyak username membutuhkan waktu dan request API lebih banyak',
                 analyze: 'Analisis Dampak',
                 trending: 'Semua Trending Teratas',
@@ -811,6 +818,9 @@
                 filterOptions: 'Filter Options',
                 mainNamespaceOnly: 'Main namespace only (exclude talk, user pages, etc.)',
                 newPagesOnly: 'New pages only (article creations)',
+                existingPagesOnly: 'Existing pages only (improvements)',
+                newPagesCount: 'New Pages',
+                improvedPagesCount: 'Improved Pages',
                 warning: 'Analyzing multiple usernames will take more time and API requests',
                 analyze: 'Analyze Impact',
                 trending: 'All Trending Articles',
@@ -1362,6 +1372,7 @@
 
         // filters.mainNamespaceOnly -> ucnamespace=0 (hanya ruang nama utama/artikel; tidak berlaku di Commons)
         // filters.newPagesOnly      -> ucshow=new
+        // filters.existingPagesOnly -> ucshow=!new (perbaikan halaman yang sudah ada; tidak dipakai bersama newPagesOnly)
         // Keduanya difilter di API sehingga batas CONTRIB_BATCH_LIMIT tidak habis oleh data yang akan dibuang.
         async function fetchAllUserContribs(proj, ucUserParam, endISO, startISO, { onPage, startContinue = {}, filters = {}, signal } = {}) {
             let allContribs = [];
@@ -1387,6 +1398,7 @@
                 });
                 if (filters.mainNamespaceOnly && !isCommons) params.set('ucnamespace', '0');
                 if (filters.newPagesOnly) params.set('ucshow', 'new');
+                else if (filters.existingPagesOnly) params.set('ucshow', '!new');
 
                 let data;
                 try {
@@ -2292,7 +2304,7 @@
             });
         }
 
-        function updateSummary(totalEdits, totalArticles, totalViews, totalUsers, viewsNote = '') {
+        function updateSummary(totalEdits, totalArticles, totalViews, totalUsers, viewsNote = '', nNew = 0, nImproved = 0) {
             document.getElementById('summary').innerHTML = `
                 <div class="summary-item">
                     <div class="summary-value">${totalUsers.toLocaleString()}</div>
@@ -2305,6 +2317,14 @@
                 <div class="summary-item">
                     <div class="summary-value">${totalArticles.toLocaleString()}</div>
                     <div class="summary-label">${translations[currentLang].totalArticles}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">${nNew.toLocaleString()}</div>
+                    <div class="summary-label">${translations[currentLang].newPagesCount}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">${nImproved.toLocaleString()}</div>
+                    <div class="summary-label">${translations[currentLang].improvedPagesCount}</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-value">${totalViews.toLocaleString()}</div>
@@ -2326,8 +2346,11 @@
                 if (title in s.pvCache) { loaded++; views += s.pvCache[title]; }
             });
             const total = ts.byTitle.size;
+            const newKeys = new Set(), allKeys = new Set();
+            ts.rows.forEach(r => { allKeys.add(r.pk); if (r.isNew) newKeys.add(r.pk); });
             updateSummary(s.contribs.length, total, views, ts.userCount,
-                loaded < total ? ` (${loaded.toLocaleString()}/${total.toLocaleString()})` : '');
+                loaded < total ? ` (${loaded.toLocaleString()}/${total.toLocaleString()})` : '',
+                newKeys.size, allKeys.size - newKeys.size);
 
             const pending = pendingCount();
             const bar = document.getElementById('enrichBar');
@@ -3053,7 +3076,8 @@
                 // Filter disimpan saat Analyze agar "Muat berikutnya" memakai filter yang sama
                 filters: {
                     mainNamespaceOnly: document.getElementById('mainNamespaceOnly').checked,
-                    newPagesOnly: document.getElementById('newPagesOnly').checked
+                    newPagesOnly: document.getElementById('newPagesOnly').checked,
+                    existingPagesOnly: document.getElementById('existingPagesOnly').checked && !document.getElementById('newPagesOnly').checked
                 },
                 pvErr: new Set(),   // judul yang pageviews-nya gagal dimuat
                 fuErr: new Set(),   // judul yang penggunaan file-nya gagal dimuat
@@ -3429,6 +3453,7 @@
             }
             if (document.getElementById('mainNamespaceOnly').checked) parts.push('main=1');
             if (document.getElementById('newPagesOnly').checked) parts.push('new=1');
+            else if (document.getElementById('existingPagesOnly').checked) parts.push('old=1');
             parts.push('lang=' + currentLang);
             try { history.replaceState(null, '', location.pathname + '?' + parts.join('&') + location.hash); } catch (e) { }
         }
@@ -3468,8 +3493,16 @@
             const on = v => ['1', 'true', 'yes'].includes((p.get(v) || '').toLowerCase());
             document.getElementById('mainNamespaceOnly').checked = on('main');
             document.getElementById('newPagesOnly').checked = on('new');
+            document.getElementById('existingPagesOnly').checked = on('old') && !on('new');
             return users.length > 0 && p.has('project');
         }
+
+        // Dua filter ini saling meniadakan (ucshow=new vs ucshow=!new)
+        ['newPagesOnly', 'existingPagesOnly'].forEach(id => {
+            document.getElementById(id).addEventListener('change', e => {
+                if (e.target.checked) document.getElementById(id === 'newPagesOnly' ? 'existingPagesOnly' : 'newPagesOnly').checked = false;
+            });
+        });
 
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
