@@ -775,6 +775,8 @@
                 pdfDesc: 'menurun',
                 pdfFilter: 'Filter',
                 pdfFilterRows: '{shown} dari {all} baris',
+                pdfContribFilter: 'Filter kontribusi',
+                pdfNoFilter: 'Tidak ada (semua kontribusi)',
                 pdfPartial: 'Data parsial: baru {n} edit yang dimuat; masih ada data berikutnya.',
                 pdfMissingViews: 'Pageviews belum dimuat untuk {n} dari {total} artikel yang tercantum; ditampilkan "-".',
                 pdfTruncated: 'Menampilkan {max} baris pertama dari {total}. Gunakan ekspor JSON untuk data lengkap.',
@@ -917,6 +919,8 @@
                 pdfDesc: 'descending',
                 pdfFilter: 'Filter',
                 pdfFilterRows: '{shown} of {all} rows',
+                pdfContribFilter: 'Contribution filters',
+                pdfNoFilter: 'None (all contributions)',
                 pdfPartial: 'Partial data: only {n} edits were loaded; more data is available.',
                 pdfMissingViews: 'Pageviews are not loaded for {n} of {total} listed articles; shown as "-".',
                 pdfTruncated: 'Showing the first {max} of {total} rows. Use the JSON export for the complete data.',
@@ -1689,6 +1693,15 @@
             if (pdfView.query) {
                 yr = kv(rightX, yr, t.pdfFilter, `"${pdfView.query}" - ${fmtT('pdfFilterRows', { shown: pdfView.total.toLocaleString(), all: pdfView.all.toLocaleString() })}`, rightW);
             }
+            {
+                const f = exportData.filters || {};
+                const activeFilters = [
+                    f.mainNamespaceOnly && t.mainNamespaceOnly,
+                    f.newPagesOnly && t.newPagesOnly,
+                    f.existingPagesOnly && t.existingPagesOnly
+                ].filter(Boolean);
+                yr = kv(rightX, yr, t.pdfContribFilter, activeFilters.length ? activeFilters.join('; ') : t.pdfNoFilter, rightW);
+            }
             yPos = Math.max(yl, yr) + 1;
 
             // ---------- catatan (kotak kuning bergaris aksen) ----------
@@ -1724,10 +1737,12 @@
                 [exportData.summary.totalUsers, t.totalUsers],
                 [exportData.summary.totalEdits, t.totalEdits],
                 [exportData.summary.totalArticles, t.totalArticles],
+                [exportData.summary.newPages, t.newPagesCount],
+                [exportData.summary.improvedPages, t.improvedPagesCount],
                 [exportData.summary.totalViews, t.totalViews + (incomplete ? ' *' : '')]
             ];
             const gap = 5;
-            const tileW = (contentW - gap * 3) / 4;
+            const tileW = (contentW - gap * (tiles.length - 1)) / tiles.length;
             ensureSpace(26);
             tiles.forEach(([value, label], i) => {
                 const x = M + i * (tileW + gap);
@@ -3363,6 +3378,10 @@
                 if (title in s.pvCache) { loaded++; views += s.pvCache[title]; }
             });
 
+            const newKeys = new Set(), allKeys = new Set();
+            ts.rows.forEach(r => { allKeys.add(r.pk); if (r.isNew) newKeys.add(r.pk); });
+
+            exportData.filters = { ...s.filters };
             exportData.usernames = s.users;
             exportData.username = s.users.join(', ');
             exportData.project = s.proj;
@@ -3375,6 +3394,8 @@
                 totalArticles: ts.byTitle.size,
                 totalUsers: s.users.length,
                 totalViews: views,
+                newPages: newKeys.size,
+                improvedPages: allKeys.size - newKeys.size,
                 pageviewsLoaded: loaded,
                 pageviewsFailed: s.pvErr.size,
                 ...(ts.isCommons ? { fileUsageFailed: s.fuErr.size } : {})
