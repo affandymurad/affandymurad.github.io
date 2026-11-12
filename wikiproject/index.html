@@ -309,8 +309,8 @@ const I18N = {
     srcWikidata: 'Wikidata', srcSearch: 'Search', srcCategory: 'Category',
     otherFiles: (n) => (n ? `This article already uses ${n} other files (icons not counted).` : 'This article uses no files other than icons.'),
     catHint: 'Commons category from Wikidata:',
-    copyWikitext: 'Copy wikitext', openEdit: 'Open edit page', viewCommons: 'View on Commons', editShort: 'Edit', commonsShort: 'Commons',
-    copied: 'Copied', copyFail: 'Copy failed', pickImage: 'Pick an image to copy its wikitext.', picked: (n, l) => `Selected: ${n}${l ? ' · ' + l : ''}`,
+    copyWikitext: 'Copy file name', openEdit: 'Open edit page', viewCommons: 'View on Commons', editShort: 'Edit', commonsShort: 'Commons',
+    copied: 'Copied', copyFail: 'Copy failed', pickImage: 'Pick an image to copy its file name.', picked: (n, l) => `Selected: ${n}${l ? ' · ' + l : ''}`,
     projLoading: 'Loading the WikiProject list…', projFail: 'Could not load the WikiProject list.', projFailT: 'Could not load the WikiProject list', projFailD: 'Check your connection, then try again.', retry: 'Try again', projLoadingD: 'Fetching the list from Wikipedia. This usually takes a few seconds.',
     reading: (n) => `Reading project… ${n.toLocaleString()} articles`, cached: (d) => `Using data saved ${d}`,
     checking: (a, b) => `Checking lead images: ${a.toLocaleString()} of ${b.toLocaleString()}`,
@@ -341,12 +341,12 @@ const I18N = {
     h2T: 'Articles without lead image',
     h2: '<b>Section 2</b> lists the articles of the chosen project and importance for which MediaWiki (PageImages) finds no lead image, most important first. Click an article to work on it. The filter box searches by title and <b>Per page</b> sets how many items are shown at once. Note: an article may still contain other images; “no lead image” means nothing represents it at the top of the article.',
     h3T: 'Images from Commons',
-    h3: '<b>Section 3</b> appears after you click an article. It looks for free images on Wikimedia Commons: first the image linked from the article’s Wikidata item (if any), then Commons search results for the article title. Change the search term, or open a Commons category (the tool suggests the one recorded in Wikidata). Pick an image to copy its wikitext (<code>[[File:…|thumb|]]</code>), then open the edit page and paste it into the article. Results are paged as you choose, and nothing is edited automatically.',
+    h3: '<b>Section 3</b> appears after you click an article. It looks for free images on Wikimedia Commons: first the image linked from the article’s Wikidata item (if any), then Commons search results for the article title. Change the search term, or open a Commons category (the tool suggests the one recorded in Wikidata). Pick an image to copy its file name (with extension), then open the edit page and use it in the article. Results are paged as you choose, and nothing is edited automatically.',
     hStepsT: 'Quick start',
     hS1: 'Pick the Wikipedia language (EN or ID).',
     hS2: 'Choose a WikiProject and importance, then click <b>Load articles</b>.',
     hS3: 'Click an article in section 2.',
-    hS4: 'Pick an image in section 3, copy its wikitext, then open the edit page and paste it.',
+    hS4: 'Pick an image in section 3, copy its file name, then open the edit page and paste it.',
   },
   id: {
     title: 'Gambar untuk WikiProject',
@@ -369,8 +369,8 @@ const I18N = {
     srcWikidata: 'Wikidata', srcSearch: 'Pencarian', srcCategory: 'Kategori',
     otherFiles: (n) => (n ? `Artikel ini sudah memakai ${n} berkas lain (ikon tidak dihitung).` : 'Artikel ini tidak memakai berkas selain ikon.'),
     catHint: 'Kategori Commons dari Wikidata:',
-    copyWikitext: 'Salin wikitext', openEdit: 'Buka halaman edit', viewCommons: 'Lihat di Commons', editShort: 'Edit', commonsShort: 'Commons',
-    copied: 'Tersalin', copyFail: 'Gagal menyalin', pickImage: 'Pilih gambar untuk menyalin wikitext-nya.', picked: (n, l) => `Dipilih: ${n}${l ? ' · ' + l : ''}`,
+    copyWikitext: 'Salin nama berkas', openEdit: 'Buka halaman edit', viewCommons: 'Lihat di Commons', editShort: 'Edit', commonsShort: 'Commons',
+    copied: 'Tersalin', copyFail: 'Gagal menyalin', pickImage: 'Pilih gambar untuk menyalin nama berkasnya.', picked: (n, l) => `Dipilih: ${n}${l ? ' · ' + l : ''}`,
     projLoading: 'Memuat daftar ProyekWiki…', projFail: 'Gagal memuat daftar ProyekWiki.', projFailT: 'Gagal memuat daftar ProyekWiki', projFailD: 'Periksa koneksi Anda, lalu coba lagi.', retry: 'Coba lagi', projLoadingD: 'Mengambil daftar dari Wikipedia. Biasanya hanya beberapa detik.',
     reading: (n) => `Membaca proyek… ${n.toLocaleString('id-ID')} artikel`, cached: (d) => `Memakai data yang disimpan ${d}`,
     checking: (a, b) => `Memeriksa gambar utama: ${a.toLocaleString('id-ID')} dari ${b.toLocaleString('id-ID')}`,
@@ -401,12 +401,12 @@ const I18N = {
     h2T: 'Artikel tanpa gambar utama',
     h2: '<b>Bagian 2</b> menampilkan artikel dari proyek dan kepentingan yang dipilih yang tidak punya gambar utama menurut MediaWiki (PageImages), dari yang paling penting. Klik sebuah artikel untuk mengerjakannya. Kotak saring mencari berdasarkan judul, dan <b>Per halaman</b> mengatur jumlah item yang tampil sekaligus. Catatan: artikel mungkin tetap memuat gambar lain; “tanpa gambar utama” berarti tidak ada gambar yang mewakilinya di bagian atas artikel.',
     h3T: 'Gambar dari Commons',
-    h3: '<b>Bagian 3</b> muncul setelah Anda mengklik sebuah artikel. Alat mencari gambar bebas di Wikimedia Commons: lebih dulu gambar yang tertaut di item Wikidata artikel (jika ada), lalu hasil pencarian Commons dengan judul artikel. Anda bisa mengganti kata kunci atau membuka kategori Commons (alat menyarankan yang tercatat di Wikidata). Pilih sebuah gambar untuk menyalin wikitext-nya (<code>[[File:…|thumb|]]</code>), lalu buka halaman edit dan tempelkan ke artikel. Hasil dibagi per halaman sesuai pilihan Anda, dan tidak ada yang disunting otomatis.',
+    h3: '<b>Bagian 3</b> muncul setelah Anda mengklik sebuah artikel. Alat mencari gambar bebas di Wikimedia Commons: lebih dulu gambar yang tertaut di item Wikidata artikel (jika ada), lalu hasil pencarian Commons dengan judul artikel. Anda bisa mengganti kata kunci atau membuka kategori Commons (alat menyarankan yang tercatat di Wikidata). Pilih sebuah gambar untuk menyalin nama berkasnya (beserta ekstensi), lalu buka halaman edit dan gunakan di artikel. Hasil dibagi per halaman sesuai pilihan Anda, dan tidak ada yang disunting otomatis.',
     hStepsT: 'Mulai cepat',
     hS1: 'Pilih bahasa Wikipedia (EN atau ID).',
     hS2: 'Pilih ProyekWiki dan kepentingan, lalu klik <b>Muat artikel</b>.',
     hS3: 'Klik sebuah artikel di bagian 2.',
-    hS4: 'Pilih gambar di bagian 3, salin wikitext-nya, lalu buka halaman edit dan tempelkan.',
+    hS4: 'Pilih gambar di bagian 3, salin nama berkasnya, lalu buka halaman edit dan tempelkan.',
   },
 };
 let lang = 'en';
@@ -907,7 +907,7 @@ function drawTiles() {
     const act = el('div', 'tact');
     const cp = el('button', 'btn primary', t('copyWikitext')); cp.type = 'button';
     cp.onclick = async () => {
-      const text = `[[File:${tl.name}|thumb|]]`;
+      const text = tl.name;   // nama berkas beserta ekstensi, tanpa awalan File:
       const ok = await copyText(text);
       cp.textContent = ok ? t('copied') : t('copyFail');
       $('rMsg').textContent = ok ? '' : t('copyFail') + ': ' + text;   // tampilkan teks agar bisa disalin manual
