@@ -69,6 +69,12 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 #proj[readonly]::selection { background: transparent; }
 .nodata { padding: 48px 20px; text-align: center; color: var(--muted); border-radius: 0 0 18px 18px; }
 .nodata[hidden] { display: none; }
+.nodata .spin { display: inline-block; width: 22px; height: 22px; margin-bottom: 12px; border: 3px solid var(--line); border-top-color: var(--brand); border-radius: 50%; animation: wpspin .8s linear infinite; }
+.nodata .spin[hidden], .nodata .btn[hidden] { display: none; }
+.nodata .btn { margin-top: 14px; }
+.nodata.err b { color: var(--danger); }
+@keyframes wpspin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .nodata .spin { animation-duration: 3s; } }
 .nodata b { display: block; margin-bottom: 6px; color: var(--ink); font-size: 16px; }
 .nodata p { margin: 0 auto; max-width: 440px; font-size: 14px; line-height: 1.5; }
 .chip:disabled, .chev:disabled { opacity: .5; cursor: not-allowed; }
@@ -186,8 +192,10 @@ footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
     <div class="stat" id="stat" role="status"></div>
 
     <div class="nodata" id="nodata" role="status" hidden>
-      <b data-i18n="noDataT"></b>
-      <p data-i18n="noDataD"></p>
+      <i class="spin" id="projSpin" aria-hidden="true" hidden></i>
+      <b id="ndT"></b>
+      <p id="ndD"></p>
+      <button id="projRetry" class="btn primary" type="button" hidden data-i18n="retry"></button>
     </div>
 
     <div class="cols" id="cols">
@@ -301,7 +309,7 @@ const I18N = {
     catHint: 'Commons category from Wikidata:',
     copyWikitext: 'Copy wikitext', openEdit: 'Open edit page', viewCommons: 'View on Commons',
     copied: 'Copied', copyFail: 'Copy failed', pickImage: 'Pick an image to copy its wikitext.', picked: (n, l) => `Selected: ${n}${l ? ' · ' + l : ''}`,
-    projLoading: 'Loading the WikiProject list…', projFail: 'Could not load the WikiProject list (you can still type a name).',
+    projLoading: 'Loading the WikiProject list…', projFail: 'Could not load the WikiProject list.', projFailT: 'Could not load the WikiProject list', projFailD: 'Check your connection, then try again.', retry: 'Try again', projLoadingD: 'Fetching the list from Wikipedia. This usually takes a few seconds.',
     reading: (n) => `Reading project… ${n.toLocaleString()} articles`, cached: (d) => `Using data saved ${d}`,
     checking: (a, b) => `Checking lead images: ${a.toLocaleString()} of ${b.toLocaleString()}`,
     done: (n, t) => `Done: ${n.toLocaleString()} of ${t.toLocaleString()} articles have no lead image`,
@@ -361,7 +369,7 @@ const I18N = {
     catHint: 'Kategori Commons dari Wikidata:',
     copyWikitext: 'Salin wikitext', openEdit: 'Buka halaman edit', viewCommons: 'Lihat di Commons',
     copied: 'Tersalin', copyFail: 'Gagal menyalin', pickImage: 'Pilih gambar untuk menyalin wikitext-nya.', picked: (n, l) => `Dipilih: ${n}${l ? ' · ' + l : ''}`,
-    projLoading: 'Memuat daftar ProyekWiki…', projFail: 'Gagal memuat daftar ProyekWiki (nama masih bisa diketik).',
+    projLoading: 'Memuat daftar ProyekWiki…', projFail: 'Gagal memuat daftar ProyekWiki.', projFailT: 'Gagal memuat daftar ProyekWiki', projFailD: 'Periksa koneksi Anda, lalu coba lagi.', retry: 'Coba lagi', projLoadingD: 'Mengambil daftar dari Wikipedia. Biasanya hanya beberapa detik.',
     reading: (n) => `Membaca proyek… ${n.toLocaleString('id-ID')} artikel`, cached: (d) => `Memakai data yang disimpan ${d}`,
     checking: (a, b) => `Memeriksa gambar utama: ${a.toLocaleString('id-ID')} dari ${b.toLocaleString('id-ID')}`,
     done: (n, t) => `Selesai: ${n.toLocaleString('id-ID')} dari ${t.toLocaleString('id-ID')} artikel tanpa gambar utama`,
@@ -554,16 +562,15 @@ async function enumerateId(project, wanted, signal) {
 let projToken = 0;
 async function loadProjects() {
   const my = ++projToken, forLang = lang;
-  setStatus(() => t('projLoading'));
+  projState = 'loading'; renderNoData();
   try {
     let list;
     if (forLang === 'id') list = idProjects(await getIdCats());
     else list = (await api(WIKI.en.api, { action: 'query', list: 'projects' })).query.projects;
     if (my !== projToken) return;      // bahasa berganti selagi memuat
     projects = list.slice().sort((a, b) => a.localeCompare(b));
-    setStatus(() => '');
-    $('proj').readOnly = true;         // daftar tersedia: pilih lewat dropdown (pencarian ada di dalamnya)
-  } catch { if (my === projToken) { setStatus(() => t('projFail'), true); $('proj').readOnly = false; } }   // cadangan: izinkan mengetik nama
+    projState = 'ready'; renderNoData();
+  } catch { if (my === projToken) { projState = 'error'; renderNoData(); } }
 }
 
 // Daftar penuh ditampilkan saat dibuka (tidak disaring oleh teks yang sudah terisi); menyaring baru saat pengguna mengetik.
@@ -791,9 +798,15 @@ function visible() {
   return items.filter((i) => i.img === false && (showFP || i.lead !== 'photo') && (!q || i.title.toLowerCase().includes(q)))
     .sort((a, b) => RANK[a.imp] - RANK[b.imp] || a.title.localeCompare(b.title));
 }
+let projState = 'loading';   // loading | ready | error (daftar ProyekWiki)
 function renderNoData() {
   const empty = !items.length && !running;
   $('nodata').hidden = !empty; $('cols').hidden = empty;
+  $('nodata').classList.toggle('err', projState === 'error');
+  $('projSpin').hidden = projState !== 'loading';
+  $('projRetry').hidden = projState !== 'error';
+  $('ndT').textContent = projState === 'loading' ? t('projLoading') : projState === 'error' ? t('projFailT') : t('noDataT');
+  $('ndD').textContent = projState === 'loading' ? t('projLoadingD') : projState === 'error' ? t('projFailD') : t('noDataD');
 }
 function renderFP() {
   const n = items.filter((i) => i.img === false && i.lead === 'photo').length;
@@ -974,6 +987,7 @@ async function openArticle(it) {
 }
 
 // ---------- event ----------
+$('projRetry').onclick = () => loadProjects();
 $('bLoad').onclick = () => load(false);
 $('bRefresh').onclick = () => load(true);
 $('bStop').onclick = () => ctrl && ctrl.abort();
@@ -987,11 +1001,10 @@ $('fpChk').onchange = (e) => { showFP = e.target.checked; try { localStorage.set
 
 // combobox WikiProject
 // kotak utama hanya menampilkan pilihan; kotak pencarian ada di dalam dropdown
-const toggleCombo = () => { if (running || !projects.length) return; if (combo.open) comboClose(true); else comboOpen(); };
+const toggleCombo = () => { if (running) return; if (projState === 'error') { loadProjects(); return; } if (!projects.length) return; if (combo.open) comboClose(true); else comboOpen(); };
 $('proj').addEventListener('click', toggleCombo);
 $('projBtn').addEventListener('click', toggleCombo);
 $('proj').addEventListener('keydown', (e) => {
-  if (!$('proj').readOnly) { if (e.key === 'Enter') load(false); return; }   // cadangan jika daftar proyek gagal dimuat: ketik manual
   if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); if (!combo.open) toggleCombo(); }
 });
 $('projQ').addEventListener('input', () => { combo.active = -1; comboRender(); if (combo.shown.length) comboMove(1); });
@@ -1045,7 +1058,7 @@ function applyLang() {
   $('projBtn').setAttribute('aria-label', t('projAll'));
   $('wikiHost').textContent = WIKI[lang].host;
   if (combo.open) comboRender();
-  renderList(); drawTiles(); updatePick(); renderRightText(); renderRPager();
+  renderList(); renderNoData(); drawTiles(); updatePick(); renderRightText(); renderRPager();
 }
 
 // ---------- mulai ----------
