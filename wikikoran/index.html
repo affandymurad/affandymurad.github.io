@@ -730,12 +730,25 @@ function dykOut(root){
   const im = firstImg(root);
   return (im?`<figure class="pic">${bigger(im)}</figure>`:'') + ulOf(lis);
 }
+/* Peristiwa Terkini: daftar berita + gambar utama bagian itu (bila ada), seperti di Halaman Utama */
+function otdOut(root){
+  const list = firstListOut(root,8);
+  if(!list) return '';
+  const im = firstImg(root);
+  return (im?`<figure class="pic">${bigger(im)}</figure>`:'') + list;
+}
+function newsOut(root){
+  const list = firstListOut(root,8);
+  if(!list) return '';
+  const im = firstImg(root);
+  return (im?`<figure class="pic">${bigger(im)}</figure>`:'') + list;
+}
 const EXTRACT = {
   tfa:tfaOut,
   potd:potdOut,
   dyk:dykOut,
-  otd:r=>firstListOut(r,8),
-  news:r=>firstListOut(r,8)
+  otd:otdOut,
+  news:newsOut
 };
 
 /* Takarir gambar dari Wikimedia Commons: bahasa edisi bila ada, kalau tidak Inggris, kalau tidak yang tersedia.
@@ -899,7 +912,53 @@ async function fromFeed(L,d,key){
   if(!FEED[key]) throw new Error('no feed');
   return FEED[key](L,d);
 }
+/* Gambar untuk "Hari Ini dalam Sejarah": halaman pertama yang punya thumbnail di feed REST "On this day" edisi itu */
+async function otdFeedImage(L,d){
+  const j = await jget(`https://${L.host}/api/rest_v1/feed/onthisday/selected/${d.mm}/${d.dd}`);
+  for(const e of (j.selected||[])){
+    const p = (e.pages||[]).find(x=>x.thumbnail && x.thumbnail.source);
+    if(!p) continue;
+    const url = p.content_urls?.desktop?.page || wikiUrl(L.host,p.title);
+    const name = p.titles?.normalized || p.title;
+    const src = p.thumbnail.source.replace(/\/\d+px-/,'/330px-');
+    return `<figure class="pic"><a href="${esc(url)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="" loading="lazy"></a><figcaption>${esc(e.year)} · ${esc(name)}</figcaption></figure>`;
+  }
+  return '';
+}
+/* Cadangan terakhir: thumbnail artikel pertama yang bergambar di antara tautan pada daftar peristiwa (pageimages) */
+async function otdLinkImage(L,html){
+  const doc = new DOMParser().parseFromString(html,'text/html');
+  const pre = `https://${L.host}/wiki/`, titles = [];
+  doc.querySelectorAll('a[href]').forEach(a=>{
+    const h = a.getAttribute('href') || '';
+    if(!h.startsWith(pre) || h.includes('?')) return;
+    let t; try{ t = decodeURIComponent(h.slice(pre.length).split('#')[0]).replace(/_/g,' '); }catch(e){ return; }
+    if(!t || /:/.test(t) || /^[\d\s.,]+\S{0,2}$/.test(t)) return;     // ruang nama lain dan judul tahun/tanggal dilewati
+    if(!titles.includes(t)) titles.push(t);
+  });
+  if(!titles.length) return '';
+  const q = new URLSearchParams({ action:'query', format:'json', formatversion:'2', origin:'*', redirects:'1', prop:'pageimages', piprop:'thumbnail', pithumbsize:'330', titles:titles.slice(0,14).join('|') });
+  const j = await jget(`https://${L.host}/w/api.php?${q}`);
+  const map = new Map(); (j.query.normalized||[]).forEach(n=>map.set(n.from,n.to)); (j.query.redirects||[]).forEach(n=>map.set(n.from,n.to));
+  const byTitle = new Map((j.query.pages||[]).map(p=>[p.title,p]));
+  for(const t of titles){
+    let k = t; for(let i = 0; i < 3 && map.has(k); i++) k = map.get(k);
+    const p = byTitle.get(k);
+    if(p && p.thumbnail && p.thumbnail.source) return `<figure class="pic"><a href="${esc(wikiUrl(L.host,p.title))}" target="_blank" rel="noopener"><img src="${esc(p.thumbnail.source)}" alt="" loading="lazy"></a><figcaption>${esc(p.title)}</figcaption></figure>`;
+  }
+  return '';
+}
 async function loadSection(L,d,key,isToday=true){
+  const r = await loadSectionBase(L,d,key,isToday);
+  if(key === 'otd' && r && r.html && !/<img/i.test(r.html)){
+    let fig = '';
+    try{ fig = await otdFeedImage(L,d); }catch(e){}
+    if(!fig){ try{ fig = await otdLinkImage(L,r.html); }catch(e){} }
+    if(fig) r.html = fig + r.html;
+  }
+  return r;
+}
+async function loadSectionBase(L,d,key,isToday=true){
   if(key === 'mostread') return loadMostRead(L,isToday ? null : d);
   if(!isToday) return fromFeed(L,d,key);
   /* Halaman Utama lebih dulu (identik dengan yang dilihat pembaca Wikipedia); feed REST jadi cadangan (en) */
@@ -1296,6 +1355,14 @@ function listItems(html){
     return {text:txt(li).replace(/^"|"$/g,''), url:a?a.href:''};
   }).filter(i=>i.text);
 }
+/* Gambar pendamping bagian daftar (Tahukah Anda, Peristiwa Hari Ini, Peristiwa Terkini): gambar pertama + keterangannya */
+function leadImgData(html){
+  const doc = parseHtml(html);
+  const img = doc.querySelector('figure img, img');
+  if(!img || !img.src) return null;
+  const fig = img.closest('figure'), cap = fig && fig.querySelector('figcaption'), a = img.closest('a[href]');
+  return {img:img.src, url:a?a.href:'', caption:cap?txt(cap):''};
+}
 function featuredData(html){
   const doc = parseHtml(html);
   const h3 = doc.querySelector('h3.title a');
@@ -1473,10 +1540,13 @@ async function makePdf(L,R,dateText,dateKey,step=()=>{}){
   const tfa = R.tfa ? featuredData(R.tfa.html) : null;
   const potd = R.potd ? potdData(R.potd.html) : null;
   step(4,'gambar');
-  const [tfaImg,potdImg] = await Promise.all([
+  const lead = {dyk:R.dyk?leadImgData(R.dyk.html):null, otd:R.otd?leadImgData(R.otd.html):null, news:R.news?leadImgData(R.news.html):null};
+  const [tfaImg,potdImg,dykImg,otdImg,newsImg] = await Promise.all([
     tfa && tfa.img ? fetchPdfImage(tfa.img,900,true) : null,
-    potd && potd.img ? fetchPdfImage(potd.img,1000,true) : null
+    potd && potd.img ? fetchPdfImage(potd.img,1000,true) : null,
+    ...['dyk','otd','news'].map(k=>lead[k] ? fetchPdfImage(lead[k].img,700,true) : null)
   ]);
+  const leadImgs = {dyk:dykImg, otd:otdImg, news:newsImg};
 
   step(5,'susun halaman');
   /* ---------- lebar kolom (rumus sama dengan drawRow) ---------- */
@@ -1509,9 +1579,17 @@ async function makePdf(L,R,dateText,dateKey,step=()=>{}){
     return {iw,ih};
   };
 
-  const dykB = R.dyk ? [...listBlocks(dyk,false),...srcBlock('dyk')] : emptyBlock();
-  const otdB = R.otd ? [...listBlocks(otd,true),...srcBlock('otd')] : emptyBlock();
-  const newsB = R.news ? [...listBlocks(news,false),...srcBlock('news')] : emptyBlock();
+  const leadBlocks = key => {
+    const im = leadImgs[key], d = lead[key];
+    if(!im || !d) return [];
+    const s = fitImg(im,(contentW - G*2)/3,44);
+    const out = [{k:'img',data:raster?im.cv:im.data,w:s.iw,h:s.ih,url:d.url}];
+    if(d.caption) out.push({k:'text',t:S(d.caption),size:7.4,color:N.muted,url:d.url,gap:1.2});
+    return out;
+  };
+  const dykB = R.dyk ? [...leadBlocks('dyk'),...listBlocks(dyk,false),...srcBlock('dyk')] : emptyBlock();
+  const otdB = R.otd ? [...leadBlocks('otd'),...listBlocks(otd,true),...srcBlock('otd')] : emptyBlock();
+  const newsB = R.news ? [...leadBlocks('news'),...listBlocks(news,false),...srcBlock('news')] : emptyBlock();
 
   const tfaB = [kicker(L.labels.tfa)];
   if(tfa){
