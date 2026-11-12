@@ -124,7 +124,7 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 .cat button { margin-left: 6px; }
 .rstat { padding: 8px 16px 0; font-size: 13px; color: var(--muted); min-height: 28px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; padding: 8px 16px 14px; align-items: stretch; }
-.tl { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; text-align: left; cursor: pointer; color: var(--ink); }
+.tl { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; text-align: left; color: var(--ink); }
 .tl[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 3px var(--ring); }
 .th { position: relative; flex: none; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: var(--soft); border-bottom: 1px solid var(--line); }
 .th img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -134,6 +134,14 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 .src { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; background: var(--soft); color: var(--brand-text); }
 .lic { overflow-wrap: anywhere; }
 .dim { margin-top: auto; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.tl { cursor: default; }
+.tl .pv { display: flex; flex-direction: column; flex: 1; min-width: 0; color: inherit; text-decoration: none; }
+.tl .pv:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.rhead h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.rEdit { padding: 4px 10px; font-size: 12.5px; }
+.tact { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 0 10px 10px; }
+.tact .btn { padding: 6px 8px; font-size: 12.5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tact .btn.primary { grid-column: 1 / -1; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 16px 16px; }
 .sel { padding: 0 16px 10px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
 .help { margin-top: 18px; padding: 0; }
@@ -213,7 +221,7 @@ footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
         <div id="rEmpty" class="empty" data-i18n="pickArticle"></div>
         <div id="rBody" hidden>
           <div class="rhead">
-            <h2><a id="rTitle" href="#" target="_blank" rel="noopener"></a></h2>
+            <h2><a id="rTitle" href="#" target="_blank" rel="noopener"></a><a id="rEdit" class="btn rEdit" href="#" target="_blank" rel="noopener" data-i18n="openEdit"></a></h2>
             <p class="rinfo" id="rMeta"></p>
             <p class="rinfo" id="rFiles"></p>
           </div>
@@ -226,13 +234,7 @@ footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
           <div class="rstat" id="rStat" role="status"></div>
           <div class="grid" id="grid"></div>
           <div class="pager" id="rpager"></div>
-          <div class="sel" id="sel"></div>
-          <div class="actions">
-            <button id="bCopy" class="btn" type="button" disabled data-i18n="copyWikitext"></button>
-            <a id="bEdit" class="btn" href="#" target="_blank" rel="noopener" data-i18n="openEdit"></a>
-            <a id="bCommons" class="btn" href="#" target="_blank" rel="noopener" hidden data-i18n="viewCommons"></a>
-            <span class="lbl" id="rMsg" role="status"></span>
-          </div>
+          <div class="rstat" id="rMsg" role="status"></div>
         </div>
       </section>
     </div>
@@ -307,7 +309,7 @@ const I18N = {
     srcWikidata: 'Wikidata', srcSearch: 'Search', srcCategory: 'Category',
     otherFiles: (n) => (n ? `This article already uses ${n} other files (icons not counted).` : 'This article uses no files other than icons.'),
     catHint: 'Commons category from Wikidata:',
-    copyWikitext: 'Copy wikitext', openEdit: 'Open edit page', viewCommons: 'View on Commons',
+    copyWikitext: 'Copy wikitext', openEdit: 'Open edit page', viewCommons: 'View on Commons', editShort: 'Edit', commonsShort: 'Commons',
     copied: 'Copied', copyFail: 'Copy failed', pickImage: 'Pick an image to copy its wikitext.', picked: (n, l) => `Selected: ${n}${l ? ' · ' + l : ''}`,
     projLoading: 'Loading the WikiProject list…', projFail: 'Could not load the WikiProject list.', projFailT: 'Could not load the WikiProject list', projFailD: 'Check your connection, then try again.', retry: 'Try again', projLoadingD: 'Fetching the list from Wikipedia. This usually takes a few seconds.',
     reading: (n) => `Reading project… ${n.toLocaleString()} articles`, cached: (d) => `Using data saved ${d}`,
@@ -367,7 +369,7 @@ const I18N = {
     srcWikidata: 'Wikidata', srcSearch: 'Pencarian', srcCategory: 'Kategori',
     otherFiles: (n) => (n ? `Artikel ini sudah memakai ${n} berkas lain (ikon tidak dihitung).` : 'Artikel ini tidak memakai berkas selain ikon.'),
     catHint: 'Kategori Commons dari Wikidata:',
-    copyWikitext: 'Salin wikitext', openEdit: 'Buka halaman edit', viewCommons: 'Lihat di Commons',
+    copyWikitext: 'Salin wikitext', openEdit: 'Buka halaman edit', viewCommons: 'Lihat di Commons', editShort: 'Edit', commonsShort: 'Commons',
     copied: 'Tersalin', copyFail: 'Gagal menyalin', pickImage: 'Pilih gambar untuk menyalin wikitext-nya.', picked: (n, l) => `Dipilih: ${n}${l ? ' · ' + l : ''}`,
     projLoading: 'Memuat daftar ProyekWiki…', projFail: 'Gagal memuat daftar ProyekWiki.', projFailT: 'Gagal memuat daftar ProyekWiki', projFailD: 'Periksa koneksi Anda, lalu coba lagi.', retry: 'Coba lagi', projLoadingD: 'Mengambil daftar dari Wikipedia. Biasanya hanya beberapa detik.',
     reading: (n) => `Membaca proyek… ${n.toLocaleString('id-ID')} artikel`, cached: (d) => `Memakai data yang disimpan ${d}`,
@@ -421,9 +423,18 @@ async function api(base, params, signal) {
   if (data.error) throw new Error(data.error.info || data.error.code);
   return data;
 }
+// 429 (terlalu banyak permintaan) dari Wikipedia tidak membawa header CORS, sehingga browser
+// melaporkannya sebagai "Failed to fetch". Maka semua kegagalan jaringan dicoba ulang dengan jeda bertambah.
 async function apiRetry(base, params, signal) {
-  try { return await api(base, params, signal); }
-  catch (e) { if (signal?.aborted) throw e; await sleep(700); return api(base, params, signal); }
+  const waits = [1000, 2500, 6000, 12000];
+  for (let i = 0; ; i++) {
+    try { return await api(base, params, signal); }
+    catch (e) {
+      const transient = e instanceof TypeError || /^HTTP (429|5\d\d)/.test(e.message);   // galat API biasa tidak dicoba ulang
+      if (signal?.aborted || !transient || i >= waits.length) throw e;
+      await sleep(waits[i]);
+    }
+  }
 }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 const wikiUrl = (title) => 'https://' + WIKI[lang].host + '/wiki/' + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/').replace(/%3A/g, ':');
@@ -643,7 +654,7 @@ async function enumerate(project, signal) {
     if (raw > MAX_RAW) throw Object.assign(new Error('too big'), { tooBig: true });
     if (!d.continue) break;
     cont = d.continue;
-    await sleep(80);
+    await sleep(300);
   }
   return rows;
 }
@@ -868,11 +879,21 @@ function tileFrom(p, source) {
 }
 const IMGPROPS = { prop: 'imageinfo', iiprop: 'url|size|mime|extmetadata', iiurlwidth: '300', iiextmetadatafilter: 'LicenseShortName' };
 
+let curArticle = null;
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  // cadangan untuk browser/iframe yang memblokir Clipboard API
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0'; document.body.append(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch {}
+  ta.remove(); return ok;
+}
 function drawTiles() {
   const grid = $('grid'); grid.textContent = '';
   for (const tl of tiles) {
-    const b = el('button', 'tl'); b.type = 'button';
-    b.setAttribute('aria-pressed', String(pick === tl));
+    const c = el('div', 'tl');
+    const pv = el('a', 'pv'); pv.href = tl.page; pv.target = '_blank'; pv.rel = 'noopener'; pv.title = t('viewCommons');
     const th = el('span', 'th'); const img = document.createElement('img');
     img.src = tl.thumb; img.alt = tl.name; img.loading = 'lazy'; th.append(img);
     const tb = el('span', 'tb');
@@ -882,16 +903,23 @@ function drawTiles() {
     if (tl.lic) meta.append(el('span', 'lic', tl.lic));
     tb.append(name, meta);
     if (tl.w) tb.append(el('span', 'dim', `${tl.w}×${tl.h}`));
-    b.append(th, tb);
-    b.onclick = () => { pick = tl; drawTiles(); updatePick(); };
-    grid.append(b);
+    pv.append(th, tb);
+    const act = el('div', 'tact');
+    const cp = el('button', 'btn primary', t('copyWikitext')); cp.type = 'button';
+    cp.onclick = async () => {
+      const text = `[[File:${tl.name}|thumb|]]`;
+      const ok = await copyText(text);
+      cp.textContent = ok ? t('copied') : t('copyFail');
+      $('rMsg').textContent = ok ? '' : t('copyFail') + ': ' + text;   // tampilkan teks agar bisa disalin manual
+      setTimeout(() => { cp.textContent = t('copyWikitext'); }, 1800);
+    };
+    const cm = el('a', 'btn', t('commonsShort')); cm.title = t('viewCommons'); cm.href = tl.page; cm.target = '_blank'; cm.rel = 'noopener';
+    act.append(cp, cm);
+    c.append(pv, act);
+    grid.append(c);
   }
 }
-function updatePick() {
-  $('bCopy').disabled = !pick;
-  $('sel').textContent = pick ? t('picked', pick.name, pick.lic) : t('pickImage');
-  const c = $('bCommons'); c.hidden = !pick; if (pick) c.href = pick.page;
-}
+function updatePick() {}
 
 // pencarian baru: mulai dari halaman 1
 function runSearch(kind) {
@@ -951,7 +979,8 @@ async function openArticle(it) {
   const a = $('rTitle'); a.textContent = it.title; a.href = wikiUrl(it.title);
   $('rMeta').textContent = `${it.imp === 'Unrated' ? '' : impLabel(it.imp) + ' · '}${t('classWord')} ${it.cls}`;
   filesN = null; catName = null; rStatKey = ''; renderRightText();
-  $('bEdit').href = 'https://' + WIKI[lang].host + '/w/index.php?title=' + encodeURIComponent(it.title.replace(/ /g, '_')) + '&action=edit';
+  curArticle = it;
+  $('rEdit').href = 'https://' + WIKI[lang].host + '/w/index.php?title=' + encodeURIComponent(it.title.replace(/ /g, '_')) + '&action=edit';
   $('q').value = it.title; $('rMsg').textContent = '';
   tiles = []; pick = null; wdTile = null; rp.q = ''; rp.total = null; drawTiles(); updatePick(); renderRPager();
 
@@ -1019,22 +1048,6 @@ document.addEventListener('click', (e) => { if (combo.open && !$('combo').contai
 $('bSearch').onclick = () => runSearch('search');
 $('bCat').onclick = () => runSearch('category');
 $('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch('search'); });
-$('bCopy').onclick = async () => {
-  if (!pick) return;
-  const text = `[[File:${pick.name}|thumb|]]`;
-  let ok = false;
-  try { await navigator.clipboard.writeText(text); ok = true; }
-  catch {
-    // cadangan untuk browser/iframe yang memblokir Clipboard API
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0'; document.body.append(ta); ta.select();
-    try { ok = document.execCommand('copy'); } catch {}
-    ta.remove();
-  }
-  // jika semua gagal, tampilkan teksnya supaya bisa disalin manual
-  $('rMsg').textContent = ok ? t('copied') : t('copyFail') + ': ' + text;
-  if (ok) setTimeout(() => { $('rMsg').textContent = ''; }, 2000);
-};
 $('lang').onclick = () => {
   if (running) return;
   saveState();                                   // simpan pilihan bahasa lama
