@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Images for WikiProjects</title>
+<meta name="description" content="Find Wikipedia articles with no lead image in a WikiProject and match them with images from Wikimedia Commons.">
+<style>
+/* Satu file: HTML + CSS + JS. Tanpa library, font, atau ikon eksternal. */
+:root {
+  --bg: #f3f6fc; --surface: #ffffff; --ink: #0c1a36; --muted: #526080; --line: #dde4f1; --soft: #eaeff9;
+  --brand: #2d4f9c; --brand-2: #5278d0; --brand-text: #2d4f9c; --on-brand: #ffffff; --danger: #c62839; --ok: #198754;
+  --ring: color-mix(in srgb, var(--brand-2) 38%, transparent);
+  --shadow: 0 1px 2px rgba(12, 26, 54, .04), 0 12px 32px rgba(33, 58, 122, .09);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #080f20; --surface: #0f1a33; --ink: #e8eefc; --muted: #9aaccc; --line: #213056; --soft: #15244a;
+    --brand: #3f66bf; --brand-2: #6d93e8; --brand-text: #8fb1f2; --danger: #f87171; --ok: #4ade80;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 14px 36px rgba(0, 0, 0, .38);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--brand-text); text-underline-offset: 3px; }
+.wrap { width: min(1100px, 100% - 32px); margin: 0 auto; padding: 24px 0 56px; }
+.top { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 16px; margin-bottom: 20px; }
+.top h1 { margin: 0; }
+.top .sub { grid-column: 1 / -1; }
+h1 { font-size: clamp(22px, 4vw, 30px); line-height: 1.15; margin: 0 0 6px; letter-spacing: -.02em; }
+.sub { margin: 0; color: var(--muted); font-size: 15px; max-width: 46em; }
+.switch { position: relative; display: grid; grid-template-columns: 1fr 1fr; width: 80px; height: 36px; padding: 0; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; cursor: pointer; background: var(--surface); color: var(--muted); font: 600 12.5px/1 inherit; }
+.switch span { position: relative; z-index: 1; display: grid; place-items: center; }
+.switch i { position: absolute; top: 3px; left: 3px; width: calc(50% - 3px); height: 28px; border-radius: 999px; background: var(--brand); transition: transform .22s; }
+.switch[aria-checked="false"] span:first-of-type, .switch[aria-checked="true"] span:last-of-type { color: #fff; }
+.switch[aria-checked="true"] i { transform: translateX(100%); }
+.switch:disabled { opacity: .5; cursor: not-allowed; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }   /* tanpa overflow:hidden agar dropdown tidak terpotong */
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 12px 16px; }
+.bgrp { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+.acts { flex-wrap: nowrap; }
+.lbl { font-size: 13px; color: var(--muted); }
+.push { margin-left: auto; }
+.n { display: inline-grid; place-items: center; width: 22px; height: 22px; flex: none; border-radius: 50%; font-size: 12px; font-weight: 800; color: var(--on-brand); background: linear-gradient(140deg, var(--brand), var(--brand-2)); }
+button, input, select { font: inherit; }
+input[type="text"] { padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); color: var(--ink); font-size: 14px; min-width: 0; }
+input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--brand-2); outline-offset: 2px; }
+.btn { padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn:hover:not(:disabled) { border-color: var(--brand-2); background: var(--soft); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.btn.primary:hover:not(:disabled) { background: var(--brand-2); }
+.chip { padding: 5px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.chip[aria-pressed="true"] { color: var(--on-brand); background: var(--brand); border-color: var(--brand); }
+.combo { position: relative; width: 240px; }
+.combo input { width: 100%; padding-right: 34px; }
+.chev { position: absolute; right: 2px; top: 2px; bottom: 2px; width: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; font-size: 12px; }
+.chev:hover { background: var(--line); }
+.lb { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; width: max(100%, 340px); max-width: calc(100vw - 32px); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.lbsearch { padding: 8px; border-bottom: 1px solid var(--line); }
+.lbsearch input { width: 100%; padding-right: 12px; }
+.lbmeta { padding: 6px 12px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); }
+#plistitems { position: relative; max-height: 280px; overflow: auto; }
+#proj[readonly] { cursor: pointer; }
+.chip:disabled, .chev:disabled { opacity: .5; cursor: not-allowed; }
+.opt { display: block; width: 100%; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); text-align: left; font-size: 14px; cursor: pointer; overflow-wrap: anywhere; }
+.opt:hover, .opt.act { background: var(--soft); }
+.opt[aria-selected="true"] { color: var(--brand-text); font-weight: 700; box-shadow: inset 3px 0 0 var(--brand); }
+
+.prog { height: 4px; background: var(--soft); }
+.prog div { height: 100%; width: 0; background: linear-gradient(90deg, var(--brand), var(--brand-2)); transition: width .25s; }
+.stat { padding: 8px 16px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); min-height: 36px; }
+.stat.err { color: var(--danger); }
+
+.cols { display: grid; grid-template-columns: 320px minmax(0, 1fr); overflow: hidden; border-radius: 0 0 18px 18px; }
+.left { border-right: 1px solid var(--line); min-width: 0; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; } .left { border-right: 0; border-bottom: 1px solid var(--line); } .combo { width: 100%; } }
+.ph { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 15px; }
+.note { padding: 8px 16px; font-size: 12.5px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.flt { padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.flt input { width: 100%; }
+.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 10px 16px; font-size: 13px; color: var(--muted); }
+.pager:empty { display: none; }
+.pager select, .pager input { padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--soft); color: var(--ink); font-size: 13px; }
+.pager input { width: 62px; }
+.pg-size { display: inline-flex; align-items: center; gap: 6px; }
+.pg-nav { display: inline-flex; align-items: center; gap: 6px; }
+.btn.pg { padding: 4px 10px; min-width: 34px; }
+.pg-info { display: inline-flex; align-items: center; gap: 6px; }
+.it { display: block; width: 100%; padding: 9px 16px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.it:hover { background: var(--soft); }
+.it[aria-current="true"] { background: color-mix(in srgb, var(--brand-2) 16%, var(--surface)); box-shadow: inset 3px 0 0 var(--brand); }
+.it b { display: block; font-weight: 600; font-size: 14.5px; overflow-wrap: anywhere; }
+.it small { color: var(--muted); font-size: 12.5px; }
+.tg { display: inline-block; margin-right: 6px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: var(--soft); border: 1px solid var(--line); color: var(--muted); }
+.tg.top { color: var(--brand-text); border-color: color-mix(in srgb, var(--brand-2) 40%, transparent); }
+.empty { padding: 24px 16px; color: var(--muted); font-size: 14px; }
+
+.right { min-width: 0; }
+.rhead { padding: 12px 16px 0; }
+.rhead h2 { margin: 0; font-size: 18px; overflow-wrap: anywhere; }
+.rinfo { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.search { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px 0; }
+.search input { flex: 1 1 200px; }
+.cat { padding: 8px 16px 0; font-size: 13px; color: var(--muted); }
+.cat button { margin-left: 6px; }
+.rstat { padding: 8px 16px 0; font-size: 13px; color: var(--muted); min-height: 28px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; padding: 8px 16px 14px; align-items: stretch; }
+.tl { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; text-align: left; cursor: pointer; color: var(--ink); }
+.tl[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 3px var(--ring); }
+.th { position: relative; flex: none; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: var(--soft); border-bottom: 1px solid var(--line); }
+.th img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.tb { display: flex; flex-direction: column; flex: 1; gap: 6px; padding: 9px 10px 10px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+.tb b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; color: var(--ink); font-weight: 600; font-size: 12.5px; }
+.tmeta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.src { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; background: var(--soft); color: var(--brand-text); }
+.lic { overflow-wrap: anywhere; }
+.dim { margin-top: auto; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 16px 16px; }
+.sel { padding: 0 16px 10px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.help { margin-top: 18px; padding: 0; }
+.help summary { padding: 14px 18px; font-weight: 700; font-size: 16px; cursor: pointer; }
+.helpbody { padding: 0 18px 18px; }
+.hintro { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+.hgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.hitem { background: var(--soft); border-radius: 12px; padding: 12px 14px; }
+.hitem h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font-size: 14.5px; }
+.hitem p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.help b { color: var(--ink); }
+.help code { font: 12.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--surface); padding: 1px 6px; border-radius: 6px; color: var(--ink); }
+.hsteps-t { margin: 18px 0 8px; font-size: 14.5px; }
+.hsteps { margin: 0; padding-left: 20px; color: var(--muted); font-size: 13.5px; }
+.hsteps li { margin: 3px 0; }
+footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <h1 data-i18n="title"></h1>
+    <button id="lang" class="switch" type="button" role="switch" aria-checked="false"><i></i><span>EN</span><span>ID</span></button>
+    <p class="sub" data-i18n="sub"></p>
+  </div>
+
+  <div class="card">
+    <div class="bar">
+      <div class="bgrp">
+      <span class="n">1</span>
+      <label class="lbl" for="proj" data-i18n="wikiproject"></label>
+      <div class="combo" id="combo">
+        <input id="proj" type="text" aria-haspopup="listbox" aria-expanded="false" aria-controls="plistitems" value="Medicine" autocomplete="off" spellcheck="false">
+        <button id="projBtn" class="chev" type="button" tabindex="-1" aria-label="Show all WikiProjects">&#9662;</button>
+        <div id="plistbox" class="lb" hidden>
+          <div class="lbsearch"><input id="projQ" type="text" role="combobox" aria-expanded="true" aria-controls="plistitems" aria-autocomplete="list" data-i18n-ph="projSearchPh" autocomplete="off" spellcheck="false"></div>
+          <div class="lbmeta" id="plistmeta"></div>
+          <div id="plistitems" role="listbox"></div>
+        </div>
+      </div>
+      <span class="lbl" data-i18n="importance"></span>
+      <button class="chip" type="button" data-imp="Top" aria-pressed="true" data-i18n="impTop"></button>
+      <button class="chip" type="button" data-imp="High" aria-pressed="true" data-i18n="impHigh"></button>
+      <button class="chip" type="button" data-imp="Mid" aria-pressed="false" data-i18n="impMid"></button>
+      <button class="chip" type="button" data-imp="Low" aria-pressed="false" data-i18n="impLow"></button>
+      <button class="chip" type="button" data-imp="Unrated" aria-pressed="false" data-i18n="unrated"></button>
+      <span class="lbl" id="wikiHost"></span>
+      </div>
+      <div class="bgrp acts">
+      <button id="bLoad" class="btn primary" type="button" data-i18n="load"></button>
+      <button id="bRefresh" class="btn" type="button" data-i18n="refresh"></button>
+      <button id="bStop" class="btn" type="button" data-i18n="stop" disabled></button>
+      </div>
+    </div>
+    <div class="prog"><div id="bar"></div></div>
+    <div class="stat" id="stat" role="status"></div>
+
+    <div class="cols">
+      <section class="left" aria-label="Articles">
+        <div class="ph"><span class="n">2</span><span data-i18n="leftTitle"></span><span class="lbl push" id="cnt"></span></div>
+        <div class="note" data-i18n="heuristic"></div>
+        <div class="flt"><input id="flt" type="text" data-i18n-ph="filterPh" aria-label="Filter"></div>
+        <div id="list"></div>
+        <div class="pager" id="lpager"></div>
+      </section>
+
+      <section class="right" aria-label="Images">
+        <div class="ph"><span class="n">3</span><span data-i18n="rightTitle"></span></div>
+        <div id="rEmpty" class="empty" data-i18n="pickArticle"></div>
+        <div id="rBody" hidden>
+          <div class="rhead">
+            <h2><a id="rTitle" href="#" target="_blank" rel="noopener"></a></h2>
+            <p class="rinfo" id="rMeta"></p>
+            <p class="rinfo" id="rFiles"></p>
+          </div>
+          <div class="search">
+            <input id="q" type="text" data-i18n-ph="searchPh" aria-label="Search Commons">
+            <button id="bSearch" class="btn" type="button" data-i18n="search"></button>
+            <button id="bCat" class="btn" type="button" data-i18n="category"></button>
+          </div>
+          <div class="cat" id="catHint" hidden></div>
+          <div class="rstat" id="rStat" role="status"></div>
+          <div class="grid" id="grid"></div>
+          <div class="pager" id="rpager"></div>
+          <div class="sel" id="sel"></div>
+          <div class="actions">
+            <button id="bCopy" class="btn" type="button" disabled data-i18n="copyWikitext"></button>
+            <a id="bEdit" class="btn" href="#" target="_blank" rel="noopener" data-i18n="openEdit"></a>
+            <a id="bCommons" class="btn" href="#" target="_blank" rel="noopener" hidden data-i18n="viewCommons"></a>
+            <span class="lbl" id="rMsg" role="status"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <details class="card help" id="help">
+    <summary data-i18n="helpTitle"></summary>
+    <div class="helpbody">
+      <p class="hintro" data-i18n-html="helpIntro"></p>
+      <div class="hgrid">
+        <div class="hitem"><h3><span class="n">1</span><span data-i18n="hProjT"></span></h3><p data-i18n-html="hProj"></p></div>
+        <div class="hitem"><h3><span class="n">1</span><span data-i18n="hImpT"></span></h3><p data-i18n-html="hImp"></p></div>
+        <div class="hitem"><h3><span class="n">1</span><span data-i18n="hLoadT"></span></h3><p data-i18n-html="hLoad"></p></div>
+        <div class="hitem"><h3><span class="n">1</span><span data-i18n="hRefT"></span></h3><p data-i18n-html="hRef"></p></div>
+        <div class="hitem"><h3><span class="n">2</span><span data-i18n="h2T"></span></h3><p data-i18n-html="h2"></p></div>
+        <div class="hitem"><h3><span class="n">3</span><span data-i18n="h3T"></span></h3><p data-i18n-html="h3"></p></div>
+      </div>
+      <h3 class="hsteps-t" data-i18n="hStepsT"></h3>
+      <ol class="hsteps">
+        <li data-i18n-html="hS1"></li>
+        <li data-i18n-html="hS2"></li>
+        <li data-i18n-html="hS3"></li>
+        <li data-i18n-html="hS4"></li>
+      </ol>
+    </div>
+  </details>
+  <footer>
+    <span data-i18n="dataNote"></span> ·
+    <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" target="_blank" rel="noopener" data-i18n="credit"></a> ·
+    <span data-i18n-html="protoNote"></span>
+  </footer>
+</main>
+
+<script>
+// Bahasa antarmuka = Wikipedia yang dibaca: EN memakai en.wikipedia.org, ID memakai id.wikipedia.org
+const WIKI = {
+  en: { api: 'https://en.wikipedia.org/w/api.php', host: 'en.wikipedia.org', defProject: 'Medicine' },
+  id: { api: 'https://id.wikipedia.org/w/api.php', host: 'id.wikipedia.org', defProject: 'Medis' },
+};
+let WP = WIKI.en.api;
+const COMMONS = 'https://commons.wikimedia.org/w/api.php';
+const WD = 'https://www.wikidata.org/w/api.php';
+const BATCH = 50;            // judul per request (batas pageimages)
+const PARALLEL = 3;
+const MAX_RAW = 200000;      // batas halaman proyek yang dibaca dari browser
+const MAX_OFFSET = 10000;    // batas offset pencarian Commons
+const CACHE_MS = 24 * 3600 * 1000;
+const ARTICLE_CLASSES = new Set(['FA', 'A', 'GA', 'B', 'C', 'Start', 'Stub']);
+const RANK = { Top: 0, High: 1, Mid: 2, Low: 3, Unrated: 4 };
+const ICON = /(Commons-logo|Ambox|Question_book|Wiki(?:books|quote|source|tionary|news|versity|data|media)|Edit-clear|Symbol_|Flag_of|Portal-|Crystal|Padlock|OOjs|Nuvola|Folder|Increase2|Decrease2|P_vip|Text_document|Searchtool|Speaker_Icon|Gnome|Information_icon|Disambig|Mergefrom|Mergeto|Lock-|Stub|Cscr|Red_pog|Blue_pog|Green_pog|Yellow_pog|Antu)/i;
+const $ = (id) => document.getElementById(id);
+
+// ---------- bahasa ----------
+const I18N = {
+  en: {
+    title: 'Images for WikiProjects',
+    sub: 'Find English Wikipedia articles with no lead image in a WikiProject, then match them with images from Wikimedia Commons.',
+    wikiproject: 'WikiProject', importance: 'Importance', unrated: 'Unrated',
+    impTop: 'Top', impHigh: 'High', impMid: 'Mid', impLow: 'Low', classWord: 'class',
+    load: 'Load articles', refresh: 'Refresh data', stop: 'Stop',
+    leftTitle: 'Articles without lead image', filterPh: 'Filter by title',
+    perPage: 'Per page', first: 'First page', prev: 'Previous page', next: 'Next page', last: 'Last page',
+    pageLabel: 'Page', ofN: (n) => `of ${n.toLocaleString()}`, pageN: (p) => `Page ${p}`,
+    rangeFmt: (a, b, n) => `${a.toLocaleString()}–${b.toLocaleString()} of ${n.toLocaleString()}`,
+    projCount: (n, total) => (n === total ? `${total.toLocaleString()} WikiProjects` : `${n.toLocaleString()} of ${total.toLocaleString()} WikiProjects`),
+    projNone: 'No matching WikiProject', projAll: 'Show all WikiProjects', projSearchPh: 'Search WikiProjects…',
+    filtersChanged: 'Filters changed. Click “Load articles” to refresh the list.',
+    heuristic: 'Based on the lead image MediaWiki detects (PageImages). An article may still use other files.',
+    rightTitle: 'Images from Commons', pickArticle: 'Pick an article on the left.',
+    searchPh: 'Search term or category name', search: 'Search', category: 'Category',
+    searching: 'Searching Commons…', noResults: 'No images found. Try another term or a category.', imgFail: 'Could not load images.',
+    srcWikidata: 'Wikidata', srcSearch: 'Search', srcCategory: 'Category',
+    otherFiles: (n) => (n ? `This article already uses ${n} other files (icons not counted).` : 'This article uses no files other than icons.'),
+    catHint: 'Commons category from Wikidata:',
+    copyWikitext: 'Copy wikitext', openEdit: 'Open edit page', viewCommons: 'View on Commons',
+    copied: 'Copied', copyFail: 'Copy failed', pickImage: 'Pick an image to copy its wikitext.', picked: (n, l) => `Selected: ${n}${l ? ' · ' + l : ''}`,
+    projLoading: 'Loading the WikiProject list…', projFail: 'Could not load the WikiProject list (you can still type a name).',
+    reading: (n) => `Reading project… ${n.toLocaleString()} articles`, cached: (d) => `Using data saved ${d}`,
+    checking: (a, b) => `Checking lead images: ${a.toLocaleString()} of ${b.toLocaleString()}`,
+    done: (n, t) => `Done: ${n.toLocaleString()} of ${t.toLocaleString()} articles have no lead image`,
+    noArticles: 'No articles match these filters.', pickImp: 'Select at least one importance level.',
+    unknownProject: 'Unknown WikiProject. Pick one from the list.',
+    tooBig: (n) => `This project has more than ${n.toLocaleString()} pages, too many for the browser. Pick a smaller project.`,
+    big: (n, r) => `This will check ${n.toLocaleString()} articles (about ${r.toLocaleString()} requests). Continue?`,
+    loadFail: 'Loading failed. Check your connection and try again.', stopped: 'Stopped.',
+    bigRead: (n, r) => `This project has about ${n.toLocaleString()} articles at the selected importance. Reading them takes about ${r.toLocaleString()} requests and may take several minutes. Continue?`,
+    countFmt: (n) => `${n.toLocaleString()} articles`, none: 'Nothing to show yet.',
+    dataNote: 'Data from the English Wikipedia (PageAssessments), Commons, and Wikidata APIs.', credit: 'Tool created by Affandy Murad',
+    protoNote: 'Prototype for WikiProjects only · <a href="https://meta.wikimedia.org/wiki/Community_Wishlist/W693" target="_blank" rel="noopener">Community Wishlist W693</a>',
+    helpTitle: 'How it works',
+    helpIntro: 'The tool follows the language you choose with the <b>EN | ID</b> switch. <b>EN</b> reads English Wikipedia (<code>en.wikipedia.org</code>) and <b>ID</b> reads Indonesian Wikipedia (<code>id.wikipedia.org</code>). Switching language also switches the list of WikiProjects, the importance terms, and the articles, so the same topic can have a different name and size in each language.',
+    hProjT: 'WikiProject (ProyekWiki)',
+    hProj: 'A WikiProject (<i>ProyekWiki</i> in Indonesian) is a group of volunteers who look after the articles of one topic, for example “Medicine”. Each article is tagged with the projects it belongs to. The dropdown lists the projects of the <b>Wikipedia language you selected</b>: about 1,500 on English Wikipedia (from PageAssessments) and about 70 on Indonesian Wikipedia (from assessment categories, for example “Medis”).',
+    hImpT: 'Importance (Kepentingan)',
+    hImp: 'Importance is how important the project rates an article for its topic: Top, High, Mid, or Low (Indonesian Wikipedia: Sangat penting, Penting, Cukup penting, Kurang penting). “Unrated” means no rating yet. Start with the highest levels to see the most important articles. Changing the project or importance clears the lists below.',
+    hLoadT: 'Load articles',
+    hLoad: 'Reads the project’s articles, keeps the ones with the importance you selected, and checks them in batches for a lead image. The first read of a big project can take a couple of minutes; the project data is then saved in your browser for 24 hours, so loading again is fast. You can press <b>Stop</b> at any time.',
+    hRefT: 'Refresh data',
+    hRef: 'Ignores the saved copy and reads the project again from Wikipedia. Use it when articles or ratings may have changed. It takes as long as the first load.',
+    h2T: 'Articles without lead image',
+    h2: '<b>Section 2</b> lists the articles of the chosen project and importance for which MediaWiki (PageImages) finds no lead image, most important first. Click an article to work on it. The filter box searches by title and <b>Per page</b> sets how many items are shown at once. Note: an article may still contain other images; “no lead image” means nothing represents it at the top of the article.',
+    h3T: 'Images from Commons',
+    h3: '<b>Section 3</b> appears after you click an article. It looks for free images on Wikimedia Commons: first the image linked from the article’s Wikidata item (if any), then Commons search results for the article title. Change the search term, or open a Commons category (the tool suggests the one recorded in Wikidata). Pick an image to copy its wikitext (<code>[[File:…|thumb|]]</code>), then open the edit page and paste it into the article. Results are paged as you choose, and nothing is edited automatically.',
+    hStepsT: 'Quick start',
+    hS1: 'Pick the Wikipedia language (EN or ID).',
+    hS2: 'Choose a WikiProject and importance, then click <b>Load articles</b>.',
+    hS3: 'Click an article in section 2.',
+    hS4: 'Pick an image in section 3, copy its wikitext, then open the edit page and paste it.',
+  },
+  id: {
+    title: 'Gambar untuk WikiProject',
+    sub: 'Temukan artikel Wikipedia bahasa Indonesia tanpa gambar utama di sebuah ProyekWiki, lalu cocokkan dengan gambar dari Wikimedia Commons.',
+    wikiproject: 'ProyekWiki', importance: 'Kepentingan', unrated: 'Tanpa penilaian',
+    impTop: 'Sangat penting', impHigh: 'Penting', impMid: 'Cukup penting', impLow: 'Kurang penting', classWord: 'kelas',
+    load: 'Muat artikel', refresh: 'Segarkan data', stop: 'Stop',
+    leftTitle: 'Artikel tanpa gambar utama', filterPh: 'Saring judul',
+    perPage: 'Per halaman', first: 'Halaman pertama', prev: 'Halaman sebelumnya', next: 'Halaman berikutnya', last: 'Halaman terakhir',
+    pageLabel: 'Halaman', ofN: (n) => `dari ${n.toLocaleString('id-ID')}`, pageN: (p) => `Halaman ${p}`,
+    rangeFmt: (a, b, n) => `${a.toLocaleString('id-ID')}–${b.toLocaleString('id-ID')} dari ${n.toLocaleString('id-ID')}`,
+    projCount: (n, total) => (n === total ? `${total.toLocaleString('id-ID')} ProyekWiki` : `${n.toLocaleString('id-ID')} dari ${total.toLocaleString('id-ID')} ProyekWiki`),
+    projNone: 'Tidak ada ProyekWiki yang cocok', projAll: 'Tampilkan semua ProyekWiki', projSearchPh: 'Cari ProyekWiki…',
+    filtersChanged: 'Filter berubah. Klik “Muat artikel” untuk menyegarkan daftar.',
+    heuristic: 'Berdasarkan gambar utama yang dideteksi MediaWiki (PageImages). Artikel mungkin masih memakai berkas lain.',
+    rightTitle: 'Gambar dari Commons', pickArticle: 'Pilih artikel di sebelah kiri.',
+    searchPh: 'Istilah pencarian atau nama kategori', search: 'Cari', category: 'Kategori',
+    searching: 'Mencari di Commons…', noResults: 'Tidak ada gambar. Coba istilah lain atau kategori.', imgFail: 'Gagal memuat gambar.',
+    srcWikidata: 'Wikidata', srcSearch: 'Pencarian', srcCategory: 'Kategori',
+    otherFiles: (n) => (n ? `Artikel ini sudah memakai ${n} berkas lain (ikon tidak dihitung).` : 'Artikel ini tidak memakai berkas selain ikon.'),
+    catHint: 'Kategori Commons dari Wikidata:',
+    copyWikitext: 'Salin wikitext', openEdit: 'Buka halaman edit', viewCommons: 'Lihat di Commons',
+    copied: 'Tersalin', copyFail: 'Gagal menyalin', pickImage: 'Pilih gambar untuk menyalin wikitext-nya.', picked: (n, l) => `Dipilih: ${n}${l ? ' · ' + l : ''}`,
+    projLoading: 'Memuat daftar ProyekWiki…', projFail: 'Gagal memuat daftar ProyekWiki (nama masih bisa diketik).',
+    reading: (n) => `Membaca proyek… ${n.toLocaleString('id-ID')} artikel`, cached: (d) => `Memakai data yang disimpan ${d}`,
+    checking: (a, b) => `Memeriksa gambar utama: ${a.toLocaleString('id-ID')} dari ${b.toLocaleString('id-ID')}`,
+    done: (n, t) => `Selesai: ${n.toLocaleString('id-ID')} dari ${t.toLocaleString('id-ID')} artikel tanpa gambar utama`,
+    noArticles: 'Tidak ada artikel yang cocok dengan filter ini.', pickImp: 'Pilih minimal satu level importance.',
+    unknownProject: 'ProyekWiki tidak dikenal. Pilih dari daftar.',
+    tooBig: (n) => `Proyek ini punya lebih dari ${n.toLocaleString('id-ID')} halaman, terlalu banyak untuk browser. Pilih proyek yang lebih kecil.`,
+    big: (n, r) => `Ini akan memeriksa ${n.toLocaleString('id-ID')} artikel (sekitar ${r.toLocaleString('id-ID')} request). Lanjutkan?`,
+    loadFail: 'Gagal memuat. Periksa koneksi lalu coba lagi.', stopped: 'Dihentikan.',
+    bigRead: (n, r) => `Proyek ini punya sekitar ${n.toLocaleString('id-ID')} artikel pada kepentingan yang dipilih. Membacanya butuh sekitar ${r.toLocaleString('id-ID')} request dan bisa memakan beberapa menit. Lanjutkan?`,
+    countFmt: (n) => `${n.toLocaleString('id-ID')} artikel`, none: 'Belum ada yang ditampilkan.',
+    dataNote: 'Data dari API Wikipedia bahasa Indonesia (kategori ProyekWiki), Commons, dan Wikidata.', credit: 'Alat dibuat oleh Affandy Murad',
+    protoNote: 'Prototipe khusus untuk ProyekWiki · <a href="https://meta.wikimedia.org/wiki/Community_Wishlist/W693" target="_blank" rel="noopener">Community Wishlist W693</a>',
+    helpTitle: 'Cara kerja',
+    helpIntro: 'Alat ini mengikuti bahasa yang Anda pilih lewat saklar <b>EN | ID</b>. <b>EN</b> membaca Wikipedia bahasa Inggris (<code>en.wikipedia.org</code>) dan <b>ID</b> membaca Wikipedia bahasa Indonesia (<code>id.wikipedia.org</code>). Mengganti bahasa juga mengganti daftar ProyekWiki, istilah kepentingan, dan artikelnya, sehingga topik yang sama bisa punya nama dan ukuran berbeda di tiap bahasa.',
+    hProjT: 'ProyekWiki (WikiProject)',
+    hProj: 'ProyekWiki (<i>WikiProject</i> di Wikipedia bahasa Inggris) adalah kelompok sukarelawan yang merawat artikel satu topik, misalnya “Medicine” atau “Medis”. Setiap artikel ditandai dengan proyek tempatnya bernaung. Daftar di dropdown mengikuti <b>bahasa Wikipedia yang dipilih</b>: sekitar 1.500 proyek di Wikipedia bahasa Inggris (dari PageAssessments) dan sekitar 70 di Wikipedia bahasa Indonesia (dari kategori penilaian, misalnya “Medis”).',
+    hImpT: 'Kepentingan (Importance)',
+    hImp: 'Kepentingan menunjukkan seberapa penting proyek menilai sebuah artikel bagi topiknya: Top, High, Mid, Low di Wikipedia bahasa Inggris, atau Sangat penting, Penting, Cukup penting, Kurang penting di Wikipedia bahasa Indonesia. “Tanpa penilaian” berarti belum dinilai. Mulailah dari level tertinggi untuk melihat artikel yang paling penting. Mengubah proyek atau kepentingan mengosongkan daftar di bawahnya.',
+    hLoadT: 'Muat artikel',
+    hLoad: 'Membaca artikel proyek, menyaring yang sesuai kepentingan yang dipilih, lalu memeriksanya per kelompok apakah punya gambar utama. Pembacaan pertama proyek besar bisa memakan beberapa menit; datanya lalu disimpan di browser Anda selama 24 jam sehingga muat ulang jadi cepat. Tombol <b>Stop</b> bisa dipakai kapan saja.',
+    hRefT: 'Segarkan data',
+    hRef: 'Mengabaikan salinan yang tersimpan dan membaca ulang proyek dari Wikipedia. Pakai saat artikel atau penilaiannya mungkin sudah berubah. Lamanya sama dengan muat pertama.',
+    h2T: 'Artikel tanpa gambar utama',
+    h2: '<b>Bagian 2</b> menampilkan artikel dari proyek dan kepentingan yang dipilih yang tidak punya gambar utama menurut MediaWiki (PageImages), dari yang paling penting. Klik sebuah artikel untuk mengerjakannya. Kotak saring mencari berdasarkan judul, dan <b>Per halaman</b> mengatur jumlah item yang tampil sekaligus. Catatan: artikel mungkin tetap memuat gambar lain; “tanpa gambar utama” berarti tidak ada gambar yang mewakilinya di bagian atas artikel.',
+    h3T: 'Gambar dari Commons',
+    h3: '<b>Bagian 3</b> muncul setelah Anda mengklik sebuah artikel. Alat mencari gambar bebas di Wikimedia Commons: lebih dulu gambar yang tertaut di item Wikidata artikel (jika ada), lalu hasil pencarian Commons dengan judul artikel. Anda bisa mengganti kata kunci atau membuka kategori Commons (alat menyarankan yang tercatat di Wikidata). Pilih sebuah gambar untuk menyalin wikitext-nya (<code>[[File:…|thumb|]]</code>), lalu buka halaman edit dan tempelkan ke artikel. Hasil dibagi per halaman sesuai pilihan Anda, dan tidak ada yang disunting otomatis.',
+    hStepsT: 'Mulai cepat',
+    hS1: 'Pilih bahasa Wikipedia (EN atau ID).',
+    hS2: 'Pilih ProyekWiki dan kepentingan, lalu klik <b>Muat artikel</b>.',
+    hS3: 'Klik sebuah artikel di bagian 2.',
+    hS4: 'Pilih gambar di bagian 3, salin wikitext-nya, lalu buka halaman edit dan tempelkan.',
+  },
+};
+let lang = 'en';
+try { const l = localStorage.getItem('wpi-lang'); if (l === 'en' || l === 'id') lang = l; } catch {}
+WP = WIKI[lang].api;
+const t =(key, ...args) => { const v = I18N[lang][key]; return typeof v === 'function' ? v(...args) : v; };
+
+// ---------- util ----------
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function api(base, params, signal) {
+  const res = await fetch(base + '?' + new URLSearchParams({ format: 'json', formatversion: '2', origin: '*', ...params }), { signal });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.info || data.error.code);
+  return data;
+}
+async function apiRetry(base, params, signal) {
+  try { return await api(base, params, signal); }
+  catch (e) { if (signal?.aborted) throw e; await sleep(700); return api(base, params, signal); }
+}
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+const wikiUrl = (title) => 'https://' + WIKI[lang].host + '/wiki/' + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/').replace(/%3A/g, ':');
+
+// cache IndexedDB (gagal = diam-diam tanpa cache)
+const idb = {
+  open() { return new Promise((res, rej) => { const r = indexedDB.open('wpi', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
+  async get(k) { try { const db = await this.open(); return await new Promise((res) => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(undefined); }); } catch { return undefined; } },
+  async set(k, v) { try { const db = await this.open(); await new Promise((res) => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = res; tx.onerror = res; }); } catch {} },
+};
+
+// ---------- status ----------
+let statusFn = () => '', statusErr = false;
+function setStatus(fn, err = false) { statusFn = fn; statusErr = err; $('stat').textContent = fn(); $('stat').classList.toggle('err', err); }
+
+// ---------- state ----------
+let items = [];          // {title, cls, imp, img}  img: undefined | true | false
+let cur = null;
+let running = false, ctrl = null;
+let projects = [];
+
+// ukuran halaman (item per halaman) disimpan di browser
+const SIZES_L = [10, 25, 50, 100], SIZES_R = [6, 12, 24, 48];
+function savedSize(key, sizes, def) { try { const n = +localStorage.getItem(key); return sizes.includes(n) ? n : def; } catch { return def; } }
+function saveSize(key, n) { try { localStorage.setItem(key, String(n)); } catch {} }
+const lp = { page: 0, size: savedSize('wpi-lsize', SIZES_L, 10) };
+const rp = { page: 0, size: savedSize('wpi-rsize', SIZES_R, 12), total: null, kind: 'search', q: '', tokens: [{}] };
+
+// ---------- paginasi (dipakai panel 2 dan 3) ----------
+// st: {page, size, sizes, total|null, hasNext}; onChange({size,page}) atau onChange({page}); opts: {jump, range}
+function renderPager(host, st, onChange, opts = {}) {
+  const pages = st.total == null ? null : Math.max(1, Math.ceil(st.total / st.size));
+  const sig = JSON.stringify([st.page, st.size, st.total, st.hasNext, pages, !!opts.jump, !!opts.range, lang]);
+  if (host.dataset.sig === sig && host.firstChild) return;   // jangan bangun ulang jika tidak berubah (menjaga fokus)
+  host.dataset.sig = sig;
+  host.textContent = '';
+
+  const size = el('label', 'pg-size'); size.append(t('perPage'));
+  const sel = document.createElement('select');
+  for (const n of st.sizes) { const o = el('option', '', String(n)); o.value = String(n); o.selected = n === st.size; sel.append(o); }
+  sel.onchange = () => onChange({ size: +sel.value, page: 0 });
+  size.append(sel);
+  if (opts.range && st.total != null) {
+    const from = st.total ? st.page * st.size + 1 : 0, to = Math.min(st.total, (st.page + 1) * st.size);
+    size.append(el('span', '', t('rangeFmt', from, to, st.total)));
+  }
+
+  const nav = el('div', 'pg-nav');
+  const btn = (label, aria, disabled, page) => { const b = el('button', 'btn pg', label); b.type = 'button'; b.setAttribute('aria-label', aria); b.disabled = disabled; b.onclick = () => onChange({ page }); return b; };
+  const atStart = st.page <= 0, atEnd = !st.hasNext;
+  nav.append(btn('«', t('first'), atStart, 0), btn('‹', t('prev'), atStart, st.page - 1));
+  const info = el('span', 'pg-info');
+  if (opts.jump && pages != null) {
+    const input = document.createElement('input');
+    input.type = 'number'; input.min = '1'; input.max = String(pages); input.value = String(st.page + 1); input.setAttribute('aria-label', t('pageLabel'));
+    const go = () => { const v = Math.min(pages, Math.max(1, Math.floor(+input.value) || 1)); onChange({ page: v - 1 }); };
+    input.onchange = go;
+    info.append(t('pageLabel'), input, t('ofN', pages));
+  } else info.textContent = pages != null ? `${t('pageN', st.page + 1)} ${t('ofN', pages)}` : t('pageN', st.page + 1);
+  nav.append(info, btn('›', t('next'), atEnd, st.page + 1));
+  if (opts.jump && pages != null) nav.append(btn('»', t('last'), atEnd, pages - 1));
+  host.append(size, nav);
+}
+
+// ---------- Wikipedia bahasa Indonesia: ProyekWiki berbasis kategori ----------
+// id.wikipedia.org tidak memakai PageAssessments. Penilaian ada di kategori, mis. "Artikel Medis sangat penting"
+// (anggotanya halaman pembicaraan) dan "Artikel Medis kelas C" (kelas). Daftar proyek = kategori "Artikel X menurut kepentingan".
+const ID_IMP_TERMS = [['sangat penting', 'Top'], ['penting', 'High'], ['cukup penting', 'Mid'], ['kurang penting', 'Low'], ['NA', ''], ['belum dinilai', '']];
+const ID_SKIP_CLASS = new Set(['daftar', 'kategori', 'portal', 'proyek', 'templat', 'berkas', 'disambig', 'dab', 'pengalihan', 'NA', 'draf', 'buku', 'file']);
+let idCats = null;   // Map: nama kategori -> jumlah anggota
+
+async function getIdCats(signal) {
+  if (idCats) return idCats;
+  const entry = await idb.get('idcats');
+  if (entry && Date.now() - entry.t < CACHE_MS) return (idCats = new Map(entry.list));
+  const list = []; let cont = {};
+  for (;;) {
+    const d = await apiRetry(WIKI.id.api, { action: 'query', list: 'allcategories', acprefix: 'Artikel ', aclimit: '500', acprop: 'size', ...cont }, signal);
+    for (const c of d.query.allcategories) list.push([c.category, c.pages]);
+    if (!d.continue) break;
+    cont = d.continue;
+    await sleep(60);
+  }
+  idb.set('idcats', { t: Date.now(), list });
+  return (idCats = new Map(list));
+}
+// jumlah artikel bernilai suatu proyek; wanted (Set kunci Top/High/...) membatasi ke level yang dipilih
+const idImpTotal = (cats, p, wanted) => ID_IMP_TERMS.reduce((n, [term, key]) => n + (!wanted || wanted.has(impOf(key)) ? (cats.get(`Artikel ${p} ${term}`) || 0) : 0), 0);
+const BIG_READ = 20000;      // membaca >20 ribu anggota kategori: minta konfirmasi dulu
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function idProjects(cats) {
+  const names = [];
+  for (const name of cats.keys()) {
+    const m = name.match(/^Artikel (.+) menurut kepentingan$/);
+    if (m && idImpTotal(cats, m[1]) > 0) names.push(m[1]);     // hanya proyek yang punya artikel bernilai
+  }
+  return names;
+}
+async function categoryMembers(cat, signal, onPage) {
+  const out = []; let cont = {};
+  for (;;) {
+    const d = await apiRetry(WIKI.id.api, { action: 'query', list: 'categorymembers', cmtitle: 'Category:' + cat, cmnamespace: '1', cmlimit: '500', cmprop: 'title', ...cont }, signal);
+    for (const m of d.query.categorymembers) out.push(m.title.replace(/^[^:]+:/, ''));   // "Pembicaraan:X" -> "X"
+    onPage?.(d.query.categorymembers.length);
+    if (!d.continue) break;
+    cont = d.continue;
+    await sleep(60);
+  }
+  return out;
+}
+// Hanya level kepentingan yang dipilih (wanted) yang dibaca. Kategori gabungan "Artikel X kelas C penting" memberi kelas dan
+// kepentingan sekaligus; jika proyek tidak punya kategori gabungan, dipakai kategori kepentingan saja (kelas "-").
+async function enumerateId(project, wanted, signal) {
+  const cats = await getIdCats(signal);
+  const prefix = `Artikel ${project}`;
+  const rows = new Map();
+  let fetched = 0;
+  const bump = (n) => { fetched += n; setStatus(() => t('reading', fetched)); };   // kabar tiap halaman anggota kategori
+  for (const [term, key] of ID_IMP_TERMS) {
+    if (!wanted.has(impOf(key))) continue;
+    const re = new RegExp(`^${escRe(prefix)} (?:kelas (\\S+)|belum dinilai) ${escRe(term)}$`);
+    const sources = [];
+    for (const [name, size] of cats) { const m = size && name.match(re); if (m) sources.push([name, m[1] || '-']); }
+    if (!sources.length && cats.get(`${prefix} ${term}`)) sources.push([`${prefix} ${term}`, '-']);
+    for (const [name, cls] of sources) {
+      if (ID_SKIP_CLASS.has(cls)) continue;
+      for (const title of await categoryMembers(name, signal, bump)) if (!rows.has(title)) rows.set(title, [title, cls, key]);
+    }
+  }
+  return [...rows.values()];
+}
+
+// ---------- daftar proyek (combobox lengkap) ----------
+let projToken = 0;
+async function loadProjects() {
+  const my = ++projToken, forLang = lang;
+  setStatus(() => t('projLoading'));
+  try {
+    let list;
+    if (forLang === 'id') list = idProjects(await getIdCats());
+    else list = (await api(WIKI.en.api, { action: 'query', list: 'projects' })).query.projects;
+    if (my !== projToken) return;      // bahasa berganti selagi memuat
+    projects = list.slice().sort((a, b) => a.localeCompare(b));
+    setStatus(() => '');
+    $('proj').readOnly = true;         // daftar tersedia: pilih lewat dropdown (pencarian ada di dalamnya)
+  } catch { if (my === projToken) setStatus(() => t('projFail'), true); }
+}
+
+// Daftar penuh ditampilkan saat dibuka (tidak disaring oleh teks yang sudah terisi); menyaring baru saat pengguna mengetik.
+const combo = { open: false, active: -1, shown: [] };
+function comboRender() {
+  const q = $('projQ').value.trim().toLowerCase();
+  combo.shown = q ? projects.filter((p) => p.toLowerCase().includes(q)) : projects;
+  const current = $('proj').value.trim();
+  const box = $('plistitems'); box.textContent = '';
+  const frag = document.createDocumentFragment();
+  combo.shown.forEach((p, i) => {
+    const b = el('button', 'opt' + (i === combo.active ? ' act' : ''), p);
+    b.type = 'button'; b.id = 'opt' + i; b.setAttribute('role', 'option'); b.tabIndex = -1;
+    if (p === current) b.setAttribute('aria-selected', 'true');
+    b.onmousedown = (e) => e.preventDefault();      // jaga fokus di kotak isian
+    b.onclick = () => comboPick(p);
+    frag.append(b);
+  });
+  box.append(frag);
+  $('plistmeta').textContent = combo.shown.length ? t('projCount', combo.shown.length, projects.length) : t('projNone');
+}
+// Gulir HANYA di dalam daftar. scrollIntoView() juga menggulir semua induknya (termasuk kartu) sehingga layout bergeser.
+function scrollOpt(opt, center) {
+  const box = $('plistitems'), top = opt.offsetTop, bottom = top + opt.offsetHeight;
+  if (center) box.scrollTop = top - (box.clientHeight - opt.offsetHeight) / 2;
+  else if (top < box.scrollTop) box.scrollTop = top;
+  else if (bottom > box.scrollTop + box.clientHeight) box.scrollTop = bottom - box.clientHeight;
+}
+function comboOpen() {
+  if (!projects.length) return;
+  combo.open = true; combo.active = -1;
+  $('plistbox').hidden = false; $('proj').setAttribute('aria-expanded', 'true');
+  $('projQ').value = '';
+  comboRender();
+  $('projQ').focus({ preventScroll: true });
+  const selected = $('plistitems').querySelector('[aria-selected="true"]');
+  if (selected) scrollOpt(selected, true);
+}
+function comboClose(refocus) {
+  combo.open = false;
+  $('plistbox').hidden = true; $('proj').setAttribute('aria-expanded', 'false'); $('projQ').removeAttribute('aria-activedescendant');
+  if (refocus) $('proj').focus({ preventScroll: true });
+}
+function comboPick(p) {
+  const changed = p !== $('proj').value.trim();
+  $('proj').value = p; comboClose(true);
+  if (changed) { resetList(); if (statusErr) setStatus(() => ''); }      // proyek berbeda: daftar dan pesan lama tidak relevan lagi
+}
+function comboMove(d) {
+  if (!combo.shown.length) return;
+  const n = combo.shown.length;
+  combo.active = combo.active < 0 ? (d > 0 ? 0 : n - 1) : (combo.active + d + n) % n;
+  for (const o of $('plistitems').querySelectorAll('.act')) o.classList.remove('act');
+  const o = $('opt' + combo.active); o.classList.add('act'); scrollOpt(o, false);
+  $('projQ').setAttribute('aria-activedescendant', o.id);
+}
+
+// ---------- memuat artikel ----------
+function selectedImps() { return new Set([...document.querySelectorAll('[data-imp][aria-pressed="true"]')].map((b) => b.dataset.imp)); }
+function impOf(v) { return RANK[v] != null && v !== 'Unrated' ? v : 'Unrated'; }
+
+async function enumerate(project, signal) {
+  const rows = []; let raw = 0, cont = {};
+  for (;;) {
+    const d = await apiRetry(WP, { action: 'query', list: 'projectpages', wppprojects: project, wppassessments: '1', wpplimit: '500', ...cont }, signal);
+    const part = Object.values(d.query?.projects || {})[0] || [];
+    raw += part.length;
+    for (const r of part) if (r.ns === 0 && ARTICLE_CLASSES.has(r.assessment?.class)) rows.push([r.title, r.assessment.class, r.assessment.importance || '']);
+    setStatus(() => t('reading', rows.length));
+    if (raw > MAX_RAW) throw Object.assign(new Error('too big'), { tooBig: true });
+    if (!d.continue) break;
+    cont = d.continue;
+    await sleep(80);
+  }
+  return rows;
+}
+
+async function checkImages(list, signal) {
+  const batches = [];
+  for (let i = 0; i < list.length; i += BATCH) batches.push(list.slice(i, i + BATCH));
+  let next = 0, done = 0;
+  const byTitle = new Map(list.map((i) => [i.title, i]));
+  const worker = async () => {
+    while (next < batches.length && !signal.aborted) {
+      const batch = batches[next++];
+      try {
+        const d = await apiRetry(WP, { action: 'query', prop: 'pageimages', piprop: 'name', pilimit: String(BATCH), pilicense: 'any', titles: batch.map((b) => b.title).join('|') }, signal);
+        for (const p of d.query.pages) { const it = byTitle.get(p.title); if (it) it.img = !!p.pageimage; }
+      } catch (e) { if (signal.aborted) return; }
+      done += batch.length;
+      setStatus(() => t('checking', done, list.length));
+      $('bar').style.width = (done / list.length) * 100 + '%';
+      renderList();
+    }
+  };
+  await Promise.all(Array.from({ length: PARALLEL }, worker));
+}
+
+async function load(force) {
+  if (running) return;
+  const project = $('proj').value.trim();
+  const imps = selectedImps();
+  if (!imps.size) { setStatus(() => t('pickImp'), true); return; }
+  if (projects.length && !projects.includes(project)) { setStatus(() => t('unknownProject'), true); return; }
+  saveState();
+
+  running = true; ctrl = new AbortController();
+  items = []; cur = null; lp.page = 0; $('bar').style.width = '0';
+  setBusy(true); renderList(); renderRight();
+  setStatus(() => t('reading', 0));      // hapus pesan lama dan beri kabar segera
+  try {
+    // ID: hanya level kepentingan yang dipilih yang dibaca, jadi cache per proyek + level. EN: seluruh proyek.
+    const key = lang === 'id' ? `enum:id:${project}:${[...imps].sort().join(',')}` : `enum:en:${project}`;
+    let rows, entry = force ? undefined : await idb.get(key);
+    if (entry && Date.now() - entry.t < CACHE_MS) {
+      rows = entry.rows;
+      const when = new Date(entry.t).toLocaleString(lang === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' });
+      setStatus(() => t('cached', when));
+      await sleep(250);
+    } else {
+      if (lang === 'id') {
+        const total = idImpTotal(await getIdCats(ctrl.signal), project, imps);
+        if (total > MAX_RAW) throw Object.assign(new Error('too big'), { tooBig: true });
+        if (total > BIG_READ && !confirm(t('bigRead', total, Math.ceil(total / 500)))) { setStatus(() => t('stopped')); return; }
+        rows = await enumerateId(project, imps, ctrl.signal);
+      } else rows = await enumerate(project, ctrl.signal);
+      idb.set(key, { t: Date.now(), rows });
+    }
+    items = rows.filter((r) => imps.has(impOf(r[2]))).map((r) => ({ title: r[0], cls: r[1], imp: impOf(r[2]), img: undefined }));
+    if (!items.length) { setStatus(() => t('noArticles')); return; }
+    const reqs = Math.ceil(items.length / BATCH);
+    if (items.length > 2000 && !confirm(t('big', items.length, reqs))) { items = []; setStatus(() => t('stopped')); return; }
+    renderList();
+    await checkImages(items, ctrl.signal);
+    if (ctrl.signal.aborted) setStatus(() => t('stopped'));
+    else { const n = items.filter((i) => i.img === false).length, tot = items.length; setStatus(() => t('done', n, tot)); }
+  } catch (e) {
+    if (ctrl?.signal.aborted) setStatus(() => t('stopped'));
+    else if (e.tooBig) setStatus(() => t('tooBig', MAX_RAW), true);
+    else { console.error(e); setStatus(() => t('loadFail'), true); }
+  } finally {
+    // selalu dijalankan, termasuk saat ada return di atas; tanpa ini UI tertahan dalam keadaan sibuk
+    running = false; ctrl = null; setBusy(false); renderList();
+  }
+}
+
+// pilihan proyek dan importance disimpan terpisah per bahasa (EN dan ID punya proyek yang berbeda)
+const DEFAULT_IMPS = ['Top', 'High'];
+const stateKey = (l) => 'wpi-state-' + l;
+const impLabel = (k) => (k === 'Unrated' ? t('unrated') : t('imp' + k));
+function saveState() {
+  try { localStorage.setItem(stateKey(lang), JSON.stringify({ project: $('proj').value.trim(), imps: [...selectedImps()] })); } catch {}
+}
+function restoreState() {
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(stateKey(lang)) || 'null') || (lang === 'en' ? JSON.parse(localStorage.getItem('wpi-state') || 'null') : null); } catch {}
+  $('proj').value = s?.project || WIKI[lang].defProject;
+  const imps = Array.isArray(s?.imps) ? s.imps : DEFAULT_IMPS;
+  for (const b of document.querySelectorAll('[data-imp]')) b.setAttribute('aria-pressed', String(imps.includes(b.dataset.imp)));
+}
+// ganti bahasa = ganti Wikipedia: kosongkan semuanya (daftar, panel gambar, daftar proyek)
+function resetAll() {
+  rctrl?.abort(); sctrl?.abort();
+  items = []; cur = null; lp.page = 0; $('flt').value = '';
+  tiles = []; pick = null; wdTile = null; rp.q = ''; rp.total = null; filesN = null; catName = null; rStatKey = '';
+  projects = []; $('proj').readOnly = false; comboClose();
+  $('bar').style.width = '0';
+  setStatus(() => '');
+  renderList(); renderRight(); drawTiles(); updatePick(); renderRPager();
+}
+
+function setBusy(b) {
+  $('bLoad').disabled = b; $('bRefresh').disabled = b; $('bStop').disabled = !b;
+  $('lang').disabled = b;
+  $('projBtn').disabled = b;
+  for (const c of document.querySelectorAll('[data-imp]')) c.disabled = b;   // filter dikunci selama memuat
+}
+
+// Importance atau proyek berubah: kosongkan daftar section 2 (dan panel gambar); muat ulang lewat "Load articles" (cepat jika sudah di-cache)
+function resetList() {
+  if (running || !items.length) return;
+  rctrl?.abort(); sctrl?.abort();
+  items = []; cur = null; lp.page = 0;
+  tiles = []; pick = null; wdTile = null; rp.q = ''; rp.total = null; filesN = null; catName = null; rStatKey = '';
+  $('bar').style.width = '0';
+  renderList(); renderRight(); drawTiles(); updatePick(); renderRPager();
+  setStatus(() => t('filtersChanged'));
+}
+
+// ---------- panel kiri ----------
+function visible() {
+  const q = $('flt').value.trim().toLowerCase();
+  return items.filter((i) => i.img === false && (!q || i.title.toLowerCase().includes(q)))
+    .sort((a, b) => RANK[a.imp] - RANK[b.imp] || a.title.localeCompare(b.title));
+}
+function renderList() {
+  const rows = visible();
+  $('cnt').textContent = t('countFmt', rows.length);
+  const pages = Math.max(1, Math.ceil(rows.length / lp.size));
+  if (lp.page > pages - 1) lp.page = pages - 1;
+  const list = $('list'); list.textContent = '';
+  if (!rows.length) { list.append(el('div', 'empty', items.length ? '' : t('none'))); }
+  const start = lp.page * lp.size;
+  for (const it of rows.slice(start, start + lp.size)) {
+    const b = el('button', 'it'); b.type = 'button';
+    if (it.title === cur) b.setAttribute('aria-current', 'true');
+    const meta = el('small'); meta.append(el('span', 'tg' + (it.imp === 'Top' ? ' top' : ''), it.imp === 'Unrated' ? '-' : impLabel(it.imp)), `${t('classWord')} ${it.cls}`);
+    b.append(el('b', '', it.title), meta);
+    b.onclick = () => { cur = it.title; renderList(); openArticle(it); };
+    list.append(b);
+  }
+  const host = $('lpager');
+  if (rows.length) renderPager(host, { page: lp.page, size: lp.size, sizes: SIZES_L, total: rows.length, hasNext: lp.page < pages - 1 }, lpChange, { jump: true, range: true });
+  else { host.textContent = ''; host.dataset.sig = ''; }
+}
+function lpChange(ch) {
+  if (ch.size) { lp.size = ch.size; saveSize('wpi-lsize', ch.size); }
+  lp.page = ch.page;
+  renderList();
+  $('list').scrollIntoView({ block: 'nearest' });
+}
+
+// ---------- panel kanan ----------
+let rctrl = null, sctrl = null, tiles = [], pick = null, wdTile = null;
+let filesN = null, catName = null, rStatKey = '';
+function renderRight() {
+  const has = !!cur;
+  $('rEmpty').hidden = has; $('rBody').hidden = !has;
+}
+// teks dinamis di panel kanan disimpan sebagai state agar ikut berganti bahasa
+function renderRightText() {
+  $('rFiles').textContent = filesN == null ? '' : t('otherFiles', filesN);
+  $('rStat').textContent = rStatKey ? t(rStatKey) : '';
+  const h = $('catHint');
+  if (catName) {
+    h.textContent = t('catHint') + ' ';
+    const b = el('button', 'btn', catName); b.type = 'button';
+    b.onclick = () => { $('q').value = catName; runSearch('category'); };
+    h.append(b); h.hidden = false;
+  } else h.hidden = true;
+}
+function tileFrom(p, source) {
+  const ii = p.imageinfo?.[0];
+  if (!ii || !/^image\/(jpeg|png|gif|svg\+xml|webp|tiff)$/.test(ii.mime)) return null;
+  const lic = (ii.extmetadata?.LicenseShortName?.value || '').replace(/<[^>]*>/g, '');
+  return { name: p.title.replace(/^File:/, ''), thumb: ii.thumburl || ii.url, page: ii.descriptionurl, w: ii.width, h: ii.height, lic, source, idx: p.index ?? 1e9 };
+}
+const IMGPROPS = { prop: 'imageinfo', iiprop: 'url|size|mime|extmetadata', iiurlwidth: '300', iiextmetadatafilter: 'LicenseShortName' };
+
+function drawTiles() {
+  const grid = $('grid'); grid.textContent = '';
+  for (const tl of tiles) {
+    const b = el('button', 'tl'); b.type = 'button';
+    b.setAttribute('aria-pressed', String(pick === tl));
+    const th = el('span', 'th'); const img = document.createElement('img');
+    img.src = tl.thumb; img.alt = tl.name; img.loading = 'lazy'; th.append(img);
+    const tb = el('span', 'tb');
+    const name = el('b', '', tl.name); name.title = tl.name;
+    const meta = el('span', 'tmeta');
+    meta.append(el('span', 'src', t(tl.source === 'wikidata' ? 'srcWikidata' : tl.source === 'category' ? 'srcCategory' : 'srcSearch')));
+    if (tl.lic) meta.append(el('span', 'lic', tl.lic));
+    tb.append(name, meta);
+    if (tl.w) tb.append(el('span', 'dim', `${tl.w}×${tl.h}`));
+    b.append(th, tb);
+    b.onclick = () => { pick = tl; drawTiles(); updatePick(); };
+    grid.append(b);
+  }
+}
+function updatePick() {
+  $('bCopy').disabled = !pick;
+  $('sel').textContent = pick ? t('picked', pick.name, pick.lic) : t('pickImage');
+  const c = $('bCommons'); c.hidden = !pick; if (pick) c.href = pick.page;
+}
+
+// pencarian baru: mulai dari halaman 1
+function runSearch(kind) {
+  rp.kind = kind; rp.q = $('q').value.trim(); rp.page = 0; rp.total = null; rp.tokens = [{}];
+  return loadPage();
+}
+
+function renderRPager() {
+  const host = $('rpager');
+  if (!rp.q || (!tiles.length && rp.page === 0)) { host.textContent = ''; host.dataset.sig = ''; return; }
+  const pages = rp.total == null ? null : Math.max(1, Math.ceil(rp.total / rp.size));
+  const hasNext = rp.kind === 'category' ? !!rp.tokens[rp.page + 1] : pages != null ? rp.page < pages - 1 : tiles.length >= rp.size;
+  // pencarian (offset) bisa lompat ke halaman mana pun; kategori memakai token lanjutan, jadi hanya maju/mundur
+  renderPager(host, { page: rp.page, size: rp.size, sizes: SIZES_R, total: rp.total, hasNext }, rpChange, { jump: rp.kind === 'search' && pages != null });
+}
+function rpChange(ch) {
+  if (ch.size) { rp.size = ch.size; rp.tokens = [{}]; saveSize('wpi-rsize', ch.size); }
+  rp.page = ch.page;
+  loadPage();
+  $('rStat').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+// memuat SATU halaman hasil dari Commons (paginasi di sisi server: hanya item halaman ini yang diminta)
+async function loadPage() {
+  sctrl?.abort(); sctrl = new AbortController();
+  const signal = sctrl.signal, { kind, q, size, page } = rp;
+  if (!q) return;
+  rStatKey = 'searching'; renderRightText(); tiles = []; pick = null; drawTiles(); updatePick(); renderRPager();
+  try {
+    let params, totalReq = null;
+    if (kind === 'category') {
+      const title = 'Category:' + q.replace(/^Category:/i, '');
+      params = { action: 'query', generator: 'categorymembers', gcmtitle: title, gcmtype: 'file', gcmlimit: String(size), ...IMGPROPS, ...(rp.tokens[page] || {}) };
+      if (rp.total == null) totalReq = api(COMMONS, { action: 'query', prop: 'categoryinfo', titles: title }, signal).then((d) => d.query.pages[0]?.categoryinfo?.files ?? 0).catch(() => null);
+    } else {
+      const sq = q + ' filetype:bitmap|drawing';   // hanya gambar (tanpa PDF, audio, video)
+      params = { action: 'query', generator: 'search', gsrsearch: sq, gsrnamespace: '6', gsrlimit: String(size), gsroffset: String(page * size), ...IMGPROPS };
+      if (rp.total == null) totalReq = api(COMMONS, { action: 'query', list: 'search', srsearch: sq, srnamespace: '6', srlimit: '1', srinfo: 'totalhits' }, signal).then((d) => { const n = d.query.searchinfo?.totalhits; return n == null ? null : Math.min(n, MAX_OFFSET); }).catch(() => null);
+    }
+    const [d, total] = await Promise.all([apiRetry(COMMONS, params, signal), totalReq]);
+    if (signal.aborted) return;
+    if (total != null) rp.total = total;
+    if (kind === 'category') rp.tokens[page + 1] = d.continue || null;
+    const found = (d.query?.pages || []).map((p) => tileFrom(p, kind === 'category' ? 'category' : 'search')).filter(Boolean).sort((a, b) => a.idx - b.idx);
+    const head = page === 0 && wdTile ? [wdTile] : [];       // gambar Wikidata hanya di halaman 1
+    tiles = [...head, ...found.filter((x) => !head.length || x.name !== wdTile.name)];
+    rStatKey = tiles.length ? '' : 'noResults'; renderRightText();
+    drawTiles(); updatePick(); renderRPager();
+  } catch (e) { if (!signal.aborted) { rStatKey = 'imgFail'; renderRightText(); } }
+}
+
+async function openArticle(it) {
+  rctrl?.abort(); sctrl?.abort(); rctrl = new AbortController();
+  const signal = rctrl.signal;
+  renderRight();
+  if (matchMedia('(max-width: 760px)').matches) $('rBody').closest('section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const a = $('rTitle'); a.textContent = it.title; a.href = wikiUrl(it.title);
+  $('rMeta').textContent = `${it.imp === 'Unrated' ? '' : impLabel(it.imp) + ' · '}${t('classWord')} ${it.cls}`;
+  filesN = null; catName = null; rStatKey = ''; renderRightText();
+  $('bEdit').href = 'https://' + WIKI[lang].host + '/w/index.php?title=' + encodeURIComponent(it.title.replace(/ /g, '_')) + '&action=edit';
+  $('q').value = it.title; $('rMsg').textContent = '';
+  tiles = []; pick = null; wdTile = null; rp.q = ''; rp.total = null; drawTiles(); updatePick(); renderRPager();
+
+  // berapa berkas lain (bukan ikon) yang dipakai artikel ini
+  (async () => {
+    try {
+      let n = 0, cont = {};
+      do {
+        const d = await api(WP, { action: 'query', prop: 'images', imlimit: '500', titles: it.title, ...cont }, signal);
+        n += (d.query.pages[0].images || []).filter((i) => !ICON.test(i.title)).length; cont = d.continue || null;
+      } while (cont);
+      if (!signal.aborted) { filesN = n; renderRightText(); }
+    } catch {}
+  })();
+
+  // petunjuk Wikidata: gambar P18 dan kategori Commons P373
+  try {
+    const pp = await api(WP, { action: 'query', prop: 'pageprops', ppprop: 'wikibase_item', titles: it.title }, signal);
+    const qid = pp.query.pages[0]?.pageprops?.wikibase_item;
+    if (qid) {
+      const e = await api(WD, { action: 'wbgetentities', ids: qid, props: 'claims' }, signal);
+      const claims = e.entities?.[qid]?.claims || {};
+      const image = claims.P18?.[0]?.mainsnak?.datavalue?.value, cat = claims.P373?.[0]?.mainsnak?.datavalue?.value;
+      if (cat) { catName = cat; renderRightText(); }
+      if (image) {
+        const c = await api(COMMONS, { action: 'query', titles: 'File:' + image, ...IMGPROPS }, signal);
+        wdTile = tileFrom(c.query.pages[0], 'wikidata');
+      }
+    }
+  } catch (e) { if (signal.aborted) return; }
+  if (signal.aborted) return;
+  await runSearch('search');
+}
+
+// ---------- event ----------
+$('bLoad').onclick = () => load(false);
+$('bRefresh').onclick = () => load(true);
+$('bStop').onclick = () => ctrl && ctrl.abort();
+for (const b of document.querySelectorAll('[data-imp]')) b.onclick = () => {
+  b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+  resetList();
+  if (statusErr) setStatus(() => '');      // pesan galat lama (mis. "pilih minimal satu level") tidak relevan lagi
+};
+$('flt').oninput = () => { lp.page = 0; renderList(); };
+
+// combobox WikiProject
+// kotak utama hanya menampilkan pilihan; kotak pencarian ada di dalam dropdown
+const toggleCombo = () => { if (running || !projects.length) return; if (combo.open) comboClose(true); else comboOpen(); };
+$('proj').addEventListener('click', toggleCombo);
+$('projBtn').addEventListener('click', toggleCombo);
+$('proj').addEventListener('keydown', (e) => {
+  if (!$('proj').readOnly) { if (e.key === 'Enter') load(false); return; }   // cadangan jika daftar proyek gagal dimuat: ketik manual
+  if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); if (!combo.open) toggleCombo(); }
+});
+$('projQ').addEventListener('input', () => { combo.active = -1; comboRender(); if (combo.shown.length) comboMove(1); });
+$('projQ').addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); comboMove(1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); comboMove(-1); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (combo.active >= 0) comboPick(combo.shown[combo.active]); }
+  else if (e.key === 'Escape') { e.preventDefault(); comboClose(true); }
+  else if (e.key === 'Tab') comboClose();
+});
+document.addEventListener('click', (e) => { if (combo.open && !$('combo').contains(e.target)) comboClose(); });
+$('bSearch').onclick = () => runSearch('search');
+$('bCat').onclick = () => runSearch('category');
+$('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch('search'); });
+$('bCopy').onclick = async () => {
+  if (!pick) return;
+  const text = `[[File:${pick.name}|thumb|]]`;
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; }
+  catch {
+    // cadangan untuk browser/iframe yang memblokir Clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0'; document.body.append(ta); ta.select();
+    try { ok = document.execCommand('copy'); } catch {}
+    ta.remove();
+  }
+  // jika semua gagal, tampilkan teksnya supaya bisa disalin manual
+  $('rMsg').textContent = ok ? t('copied') : t('copyFail') + ': ' + text;
+  if (ok) setTimeout(() => { $('rMsg').textContent = ''; }, 2000);
+};
+$('lang').onclick = () => {
+  if (running) return;
+  saveState();                                   // simpan pilihan bahasa lama
+  lang = lang === 'en' ? 'id' : 'en';
+  try { localStorage.setItem('wpi-lang', lang); } catch {}
+  WP = WIKI[lang].api;                           // ganti Wikipedia yang dibaca
+  resetAll();
+  restoreState();                                // proyek dan importance milik bahasa baru
+  applyLang();
+  loadProjects();
+};
+
+function applyLang() {
+  document.documentElement.lang = lang; document.title = t('title');
+  for (const e of document.querySelectorAll('[data-i18n]')) e.textContent = t(e.dataset.i18n);
+  for (const e of document.querySelectorAll('[data-i18n-ph]')) e.placeholder = t(e.dataset.i18nPh);
+  for (const e of document.querySelectorAll('[data-i18n-html]')) e.innerHTML = t(e.dataset.i18nHtml);   // teks statis tepercaya (berisi <b>, <code>)
+  $('lang').setAttribute('aria-checked', String(lang === 'id'));
+  $('lang').setAttribute('aria-label', lang === 'id' ? 'Ganti bahasa' : 'Switch language');
+  $('stat').textContent = statusFn();
+  $('projBtn').setAttribute('aria-label', t('projAll'));
+  $('wikiHost').textContent = WIKI[lang].host;
+  if (combo.open) comboRender();
+  renderList(); drawTiles(); updatePick(); renderRightText(); renderRPager();
+}
+
+// ---------- mulai ----------
+restoreState();
+applyLang();
+renderRight();
+loadProjects();
+</script>
+</body>
+</html>
