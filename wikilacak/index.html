@@ -90,11 +90,11 @@ h1{margin:0;font-size:19px;letter-spacing:-.01em}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%,100%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
 
 .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 20px;border-bottom:1px solid var(--line)}
-.toolbar-left{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
+.toolbar-left{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:1 1 100%;min-width:0}
 .search{position:relative;flex:1 1 200px;max-width:320px;min-width:160px}
 .search svg{position:absolute;inset-inline-start:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .search input{width:100%;height:38px;padding:0;padding-inline:36px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
-.toolbar-right{margin-inline-start:auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.toolbar-right{margin-inline-start:0;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .lbl{color:var(--muted);font-size:12.5px;font-weight:600}
 .field{display:flex;align-items:center;gap:8px}
 .seg{display:inline-flex;padding:3px;gap:2px;background:var(--soft);border:1px solid var(--line);border-radius:10px}
@@ -240,6 +240,22 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
 .wp-list li.none{cursor:default;color:var(--muted)}
 .wp-opt input{accent-color:var(--primary);margin:0;cursor:pointer}
 .wp-opt:has(input:checked){color:var(--primary);background:var(--primary-soft);border-color:transparent}
+.tp-sel{width:190px}
+.wp-list li.grp{cursor:default;padding-block:9px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.wp-list li.grp:hover{background:none}
+.wp-list li.zero span{color:var(--muted)}
+.wp-list li.load{display:block;cursor:default;margin-bottom:4px;padding:8px 10px;background:var(--primary-soft);color:var(--primary);font-size:12.5px}
+.wp-list li.load:hover{background:var(--primary-soft)}
+.wp-list li.load b{display:block;font-weight:700}
+.wp-list li.load small{display:block;margin-top:2px;color:var(--muted);font-weight:400;font-size:11.5px}
+/* badge topik di bawah judul halaman */
+.tps{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tp{--h:212;display:inline-flex;align-items:center;max-width:100%;padding:1px 9px;border:1px solid color-mix(in srgb,hsl(var(--h) 60% 50%) 38%,transparent);border-radius:999px;background:color-mix(in srgb,hsl(var(--h) 65% 50%) 12%,var(--card));color:hsl(var(--h) 55% 33%);font-size:11.5px;font-weight:600;line-height:1.6;white-space:nowrap;cursor:pointer}
+:root[data-theme="dark"] .tp{color:hsl(var(--h) 75% 74%)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tp{color:hsl(var(--h) 75% 74%)}}
+.tp:hover{border-color:hsl(var(--h) 60% 50%)}
+.tp.reg{--h:190;background:transparent;border-style:dashed;font-weight:500}
+.tp.none,.tp.wait{--h:220;background:transparent;border-color:var(--line);color:var(--muted);font-weight:500;cursor:default}
 .perpage span{white-space:nowrap}
 @media (max-width:480px){
   .modal{margin:auto auto 0;width:100vw;max-width:100vw;border-radius:18px 18px 0 0;border-bottom:0}
@@ -383,6 +399,15 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
           </div>
         </div>
         <span class="wp-prog" id="wpProg" hidden></span>
+        <label class="wp-opt" id="tpOpt" hidden><input type="checkbox" id="tpChk"><span id="tpOptTxt">Topik</span></label>
+        <div class="wp-sel tp-sel" id="tpSelWrap" hidden>
+          <button type="button" class="wp-btn" id="tpBtn" aria-haspopup="listbox" aria-expanded="false"><span id="tpBtnTxt"></span><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 4 4 4 4-4"/></svg></button>
+          <div class="wp-pop" id="tpPop" hidden>
+            <input type="search" id="tpSrch" autocomplete="off" aria-label="">
+            <ul class="wp-list" id="tpList" role="listbox"></ul>
+          </div>
+        </div>
+        <span class="wp-prog" id="tpProg" hidden></span>
       </div>
 
       <div class="toolbar-right">
@@ -967,6 +992,40 @@ const WP_LABELS = {
 };
 for (const k in WP_LABELS) Object.assign(I18N[k], { thWp:WP_LABELS[k][0], wpClass:WP_LABELS[k][1], wpImp:WP_LABELS[k][2] });
 
+/* badge topik: judul pilihan, keterangan bila topik belum tersedia, judul kelompok di dropdown (urutan: topik, belum tersedia, wilayah) */
+const TP_LABELS = {
+  id:["Topik","Topik belum tersedia (halaman baru atau belum diklasifikasi)","Wilayah"], en:["Topic","Topic not available yet (new or unclassified page)","Regions"],
+  ms:["Topik","Topik belum tersedia (halaman baharu atau belum dikelaskan)","Wilayah"], ko:["주제","주제를 아직 알 수 없음 (새 문서이거나 분류 전)","지역"],
+  es:["Tema","Tema aún no disponible (página nueva o sin clasificar)","Regiones"], fr:["Thème","Thème pas encore disponible (page nouvelle ou non classée)","Régions"],
+  de:["Thema","Thema noch nicht verfügbar (neue oder nicht klassifizierte Seite)","Regionen"], ja:["トピック","トピックはまだありません（新規または未分類のページ）","地域"],
+  zh:["主题","暂无主题（新页面或尚未分类）","地区"], ar:["الموضوع","الموضوع غير متاح بعد (صفحة جديدة أو غير مصنّفة)","المناطق"],
+  nl:["Onderwerp","Onderwerp nog niet beschikbaar (nieuwe of niet-ingedeelde pagina)","Regio’s"], ru:["Тема","Тема пока недоступна (новая или неклассифицированная страница)","Регионы"],
+  th:["หัวข้อ","ยังไม่มีหัวข้อ (หน้าใหม่หรือยังไม่จัดหมวด)","ภูมิภาค"], ta:["தலைப்பு","தலைப்பு இன்னும் இல்லை (புதிய அல்லது வகைப்படுத்தப்படாத பக்கம்)","பகுதிகள்"],
+  he:["נושא","הנושא עדיין לא זמין (דף חדש או לא מסווג)","אזורים"], fa:["موضوع","موضوع هنوز در دسترس نیست (صفحهٔ تازه یا دسته‌بندی‌نشده)","منطقه‌ها"]
+};
+for (const k in TP_LABELS) Object.assign(I18N[k], { thTp:TP_LABELS[k][0], tpNone:TP_LABELS[k][1], tpRegions:TP_LABELS[k][2] });
+
+/* keterangan saat daftar WikiProyek/Topik masih diambil: singkat, dengan jumlah, penjelasan, dan arti angka kemajuan */
+const LIST_LABELS = {
+  id:["Memuat daftar…","Mengambil daftar… {a}/{b}","Daftar bertambah seiring halaman selesai dianalisis.","Halaman yang sudah dianalisis"],
+  en:["Loading list…","Fetching list… {a}/{b}","The list grows as pages finish being analysed.","Pages analysed so far"],
+  ms:["Memuatkan senarai…","Mengambil senarai… {a}/{b}","Senarai bertambah apabila halaman selesai dianalisis.","Halaman yang telah dianalisis"],
+  ko:["목록 불러오는 중…","목록 가져오는 중… {a}/{b}","문서 분석이 끝날 때마다 목록이 늘어납니다.","지금까지 분석한 문서"],
+  es:["Cargando lista…","Obteniendo lista… {a}/{b}","La lista crece a medida que se analizan las páginas.","Páginas analizadas hasta ahora"],
+  fr:["Chargement de la liste…","Récupération de la liste… {a}/{b}","La liste s’allonge à mesure que les pages sont analysées.","Pages analysées jusqu’ici"],
+  de:["Liste wird geladen…","Liste wird abgerufen… {a}/{b}","Die Liste wächst, sobald Seiten analysiert sind.","Bisher analysierte Seiten"],
+  ja:["リストを読み込み中…","リストを取得中… {a}/{b}","ページの解析が進むにつれてリストが増えます。","解析済みのページ"],
+  zh:["正在加载列表…","正在获取列表… {a}/{b}","列表会随页面分析完成而增加。","已分析的页面"],
+  ar:["جارٍ تحميل القائمة…","جارٍ جلب القائمة… {a}/{b}","تزداد القائمة كلما اكتمل تحليل الصفحات.","الصفحات التي تم تحليلها"],
+  nl:["Lijst laden…","Lijst ophalen… {a}/{b}","De lijst groeit naarmate pagina’s zijn geanalyseerd.","Tot nu toe geanalyseerde pagina’s"],
+  ru:["Загрузка списка…","Получение списка… {a}/{b}","Список пополняется по мере анализа страниц.","Проанализированные страницы"],
+  th:["กำลังโหลดรายการ…","กำลังดึงรายการ… {a}/{b}","รายการจะเพิ่มขึ้นเมื่อวิเคราะห์หน้าเสร็จ","หน้าที่วิเคราะห์แล้ว"],
+  ta:["பட்டியல் ஏற்றப்படுகிறது…","பட்டியல் பெறப்படுகிறது… {a}/{b}","பக்கங்கள் ஆய்வு செய்யப்படும்போது பட்டியல் வளரும்.","இதுவரை ஆய்வு செய்யப்பட்ட பக்கங்கள்"],
+  he:["טוען רשימה…","מביא רשימה… {a}/{b}","הרשימה גדלה ככל שהדפים נותחו.","דפים שנותחו עד כה"],
+  fa:["در حال بارگیری فهرست…","در حال دریافت فهرست… {a}/{b}","با پایان تحلیل صفحه‌ها فهرست بزرگ‌تر می‌شود.","صفحه‌های تحلیل‌شده تاکنون"]
+};
+for (const k in LIST_LABELS) Object.assign(I18N[k], { listLoading:LIST_LABELS[k][0], listProg:LIST_LABELS[k][1], listHint:LIST_LABELS[k][2], progTip:LIST_LABELS[k][3] });
+
 /* ================= konfigurasi ================= */
 const TABS = {
   changes:{
@@ -1009,7 +1068,7 @@ const PROJECTS = {
   wikidata:{ host:() => 'www.wikidata.org', entity:true },
   abstract:{ host:() => 'abstract.wikipedia.org', entity:true }
 };
-const prefs = Object.assign({ wiki:'id', project:'wikipedia', tab:'changes', sound:false, mode:'auto', interval:30, theme:'system', perPage:20, wp:false }, readPrefs());
+const prefs = Object.assign({ wiki:'id', project:'wikipedia', tab:'changes', sound:false, mode:'auto', interval:30, theme:'system', perPage:20, wp:false, topic:false }, readPrefs());
 if (!PROJECTS[prefs.project]) prefs.project = 'wikipedia';
 if (!['system','light','dark'].includes(prefs.theme)) prefs.theme = 'system';
 if (!LANGS[prefs.wiki]) prefs.wiki = 'id';
@@ -1019,6 +1078,7 @@ if (!['auto','interval','off'].includes(prefs.mode)) prefs.mode = 'auto';
 prefs.interval = clamp(parseInt(prefs.interval, 10) || 30, MIN_INTERVAL, MAX_INTERVAL);
 prefs.sound = !!prefs.sound;
 prefs.wp = !!prefs.wp;
+prefs.topic = !!prefs.topic;
 prefs.perPage = PER_PAGE_OPTIONS.includes(+prefs.perPage) ? +prefs.perPage : 20;
 
 /* ================= terjemahan & format menurut bahasa ================= */
@@ -1056,7 +1116,7 @@ const cleanComment = c => c.replace(/\/\*\s*(.*?)\s*\*\/\s*/g, (m, s) => (isRtl(
 
 /* ================= state ================= */
 let store = null;               // { items:[], ids:Set }
-let page = 1, query = '', wpFilter = '';
+let page = 1, query = '', wpFilter = '', tpFilter = '';
 let loading = false, error = null, lastOk = 0;
 let timer = null, nextAt = 0, startedAt = 0;
 let ctl = null, seq = 0;
@@ -1178,7 +1238,7 @@ function schedule() {
 }
 function resetData() {
   if (ctl) ctl.abort();
-  seq++; store = null; error = null; page = 1; unseen = 0; wpFilter = ''; updateTitle();
+  seq++; store = null; error = null; page = 1; unseen = 0; wpFilter = ''; tpFilter = ''; updateTitle();
   render(); refresh({ baseline:true });
 }
 
@@ -1242,6 +1302,7 @@ const filtered = () => {
   const q = query.trim().toLowerCase();
   let out = q ? store.items.filter(x => x.hay.includes(q)) : store.items;
   if (wpFilter && wpOn()) { const h = host(); out = out.filter(x => (wpCache.get(h + '|' + x.title) || []).some(a => a.n === wpFilter)); }
+  if (tpFilter && topicOn()) { const h = host(); out = out.filter(x => tpKeys(tpCache.get(h + '|' + x.title)).has(tpFilter)); }
   return out;
 };
 const emptyHtml = (title, desc) => `<tr><td colspan="8"><div class="empty"><b>${esc(title)}</b>${esc(desc || '')}</div></td></tr>`;
@@ -1419,13 +1480,16 @@ function ensureWp(slice) {
     })().finally(() => { chunk.forEach(x => wpPending.delete(h + '|' + x.title)); wpRender(h); });
   }
 }
-let wpSelSig = '', wpNames = [];
+let wpSelSig = '', wpNames = [], wpDone = 0, wpTotal = 0;
 const wpNorm = x => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+/* baris keterangan di puncak daftar selama daftar masih diambil (done/total = halaman yang sudah dianalisis) */
+const loadingLi = (done, total) => done < total
+  ? `<li class="load" aria-live="polite"><b>${esc(t('listProg', { a:fmt(done), b:fmt(total) }))}</b><small>${esc(t('listHint'))}</small></li>` : '';
 function wpDrawList() {
   const q = wpNorm($('wpSrch').value.trim());
   const li = (v, txt, c, sel) => `<li role="option" data-v="${esc(v)}" aria-selected="${sel}"><span>${esc(txt)}</span>${c == null ? '' : `<small>${fmt(c)}</small>`}</li>`;
   const rows = wpNames.filter(([n]) => !q || wpNorm(n).includes(q));
-  $('wpList').innerHTML = li('', t('thWp'), null, wpFilter === '') + (rows.length ? rows.map(([n, c]) => li(n, n, c, n === wpFilter)).join('') : `<li class="none" aria-disabled="true">${esc(t('noRes'))}</li>`);
+  $('wpList').innerHTML = loadingLi(wpDone, wpTotal) + li('', t('thWp'), null, wpFilter === '') + (rows.length ? rows.map(([n, c]) => li(n, n, c, n === wpFilter)).join('') : (wpDone < wpTotal ? '' : `<li class="none" aria-disabled="true">${esc(t('noRes'))}</li>`));
 }
 function wpOpenPop(open) {
   $('wpPop').hidden = !open; $('wpBtn').setAttribute('aria-expanded', String(open));
@@ -1433,13 +1497,17 @@ function wpOpenPop(open) {
 }
 function wpPick(v) { wpFilter = v; page = 1; wpSelSig = ''; wpOpenPop(false); $('wpBtn').focus(); render(); }
 function renderWpSel() {
-  const on = wpOn(); $('wpSelWrap').hidden = !on; $('wpProg').hidden = !on;
+  const on = wpOn(), waiting = !on && prefs.wp && wpSupported() && wpSupport.get(host()) !== false;   // dukungan PageAssessments masih dicek
+  $('wpSelWrap').hidden = !(on || waiting); $('wpProg').hidden = !(on || waiting);
+  if (waiting) { $('wpBtnTxt').textContent = t('listLoading'); $('wpProg').textContent = t('listLoading'); $('wpProg').classList.add('busy'); wpSelSig = ''; return; }
   if (!on) { wpSelSig = ''; wpOpenPop(false); return; }
   const h = host(), cnt = new Map();
   let done = 0;
   for (const x of store.items) if (wpCache.has(h + '|' + x.title)) done++;
-  $('wpProg').textContent = fmt(done) + '/' + fmt(store.items.length);
-  $('wpProg').classList.toggle('busy', done < store.items.length);
+  wpDone = done; wpTotal = store.items.length;
+  $('wpProg').textContent = done < wpTotal ? t('listProg', { a:fmt(done), b:fmt(wpTotal) }) : fmt(done) + '/' + fmt(wpTotal);
+  $('wpProg').title = t('progTip');
+  $('wpProg').classList.toggle('busy', done < wpTotal);
   for (const x of store.items) for (const a of new Set((wpCache.get(h + '|' + x.title) || []).map(a => a.n))) cnt.set(a, (cnt.get(a) || 0) + 1);
   if (wpFilter && !cnt.has(wpFilter)) cnt.set(wpFilter, 0);
   wpNames = [...cnt].sort((a, b) => a[0].localeCompare(b[0], prefs.wiki, { sensitivity:'base' }));
@@ -1447,7 +1515,7 @@ function renderWpSel() {
   $('wpBtn').classList.toggle('set', !!wpFilter);
   $('wpSrch').placeholder = t('thWp') + '…';
   $('wpSrch').setAttribute('aria-label', t('thWp'));
-  const sig = prefs.wiki + '|' + wpFilter + '|' + wpNames.map(n => n.join(':')).join('|');
+  const sig = prefs.wiki + '|' + wpFilter + '|' + wpDone + '/' + wpTotal + '|' + wpNames.map(n => n.join(':')).join('|');
   if (sig === wpSelSig) return;
   wpSelSig = sig;
   if (!$('wpPop').hidden) wpDrawList();
@@ -1466,6 +1534,235 @@ function wpHtml(x) {
   };
   const rest = c.slice(WP_MAX_CHIPS);
   return c.slice(0, WP_MAX_CHIPS).map(chip).join('') + (rest.length ? `<details class="wp-more"><summary class="wp more" title="${esc(rest.map(tip).join('\n'))}">+${rest.length}</summary>${rest.map(chip).join('')}</details>` : '');
+}
+
+/* ---- Topik artikel ----
+   Label topik tiap halaman diambil dari indeks pencarian Wikipedia (prop=cirrusdoc → weighted_tags "articletopic/…", skor 0–1000).
+   Label wilayah (Geography.Regions.*) dipisah dari topik isi agar tidak mendominasi. Hanya Wikipedia, ruang nama artikel.
+   Hasil disimpan di localStorage (12 jam; halaman tanpa topik dicoba lagi setelah 10 menit). Nama topik diterjemahkan untuk id/ms/en;
+   bahasa lain memakai nama Inggris. */
+const TP_MIN = 600, TP_BADGES = 2, TP_BG = 200, TP_CHUNK = 25, TP_TTL = 12 * 3600e3, TP_RETRY = 10 * 60e3, TP_KEEP = 2500, TP_STORE = 'wikilacak.topics.v2';
+const TP_HUE = { Culture:285, Geography:160, History_and_Society:32, STEM:212 };
+/* Pengelompokan dropdown mengikuti 11 bidang utama portal Wikipedia (Wikipedia:Contents/Portals); nilai = kunci topik */
+const TP_AREAS = [
+  ['Arts',       'Seni dan budaya', 'Seni dan budaya', 'Culture and the arts', 'Architecture Comics_and_Anime Fashion Visual_arts Performing_arts Literature Books Music Films Television Radio Entertainment Media'],
+  ['Geo',        'Geografi dan tempat', 'Geografi dan tempat', 'Geography and places', 'Geographical'],
+  ['Regions',    '', '', '', 'Africa Central_Africa Eastern_Africa Northern_Africa Southern_Africa Western_Africa Central_America North_America South_America Asia Central_Asia East_Asia North_Asia South_Asia Southeast_Asia West_Asia Europe Eastern_Europe Northern_Europe Southern_Europe Western_Europe Oceania'],
+  ['Health',     'Kesehatan dan kebugaran', 'Kesihatan dan kecergasan', 'Health and fitness', 'Medicine_&_Health'],
+  ['History',    'Sejarah dan peristiwa', 'Sejarah dan peristiwa', 'History and events', 'History Military_and_warfare'],
+  ['Activities', 'Aktivitas manusia', 'Aktiviti manusia', 'Human activities', 'Sports Food_and_drink Transportation Business_and_economics'],
+  ['Math',       'Matematika dan logika', 'Matematik dan logik', 'Mathematics and logic', 'Mathematics'],
+  ['Science',    'Sains alam dan fisika', 'Sains tabii dan fizikal', 'Natural and physical sciences', 'Physics Chemistry Biology Earth_and_environment Space'],
+  ['People',     'Orang dan diri', 'Manusia dan diri', 'People and self', 'Biography Women'],
+  ['Philosophy', 'Filsafat dan agama', 'Falsafah dan agama', 'Philosophy and religion', 'Philosophy_and_religion'],
+  ['Society',    'Masyarakat dan ilmu sosial', 'Masyarakat dan sains sosial', 'Society and social sciences', 'Society Politics_and_government Education Linguistics'],
+  ['Tech',       'Teknologi dan ilmu terapan', 'Teknologi dan sains gunaan', 'Technology and applied sciences', 'Technology Computing Engineering Software Libraries_&_Information Internet_culture Video_games STEM']
+];
+const TP_AREA_OF = {};
+TP_AREAS.forEach(a => a[4].split(' ').forEach(k => { TP_AREA_OF[k] = a[0]; }));
+const tpAreaName = a => { const r = TP_AREAS.find(x => x[0] === a); return a === 'Regions' ? t('tpRegions') : (r ? ({ id:r[1], ms:r[2] }[prefs.wiki] || r[3]) : a); };
+const TP_L = {};   // kunci -> { id, ms, en }
+`Business_and_economics|Bisnis dan ekonomi|Perniagaan dan ekonomi
+Education|Pendidikan|Pendidikan
+History|Sejarah|Sejarah
+Military_and_warfare|Militer dan perang|Ketenteraan dan peperangan
+Politics_and_government|Politik dan pemerintahan|Politik dan kerajaan
+Society|Masyarakat|Masyarakat
+Transportation|Transportasi|Pengangkutan
+Biology|Biologi|Biologi
+Chemistry|Kimia|Kimia
+Computing|Komputasi|Pengkomputeran
+Earth_and_environment|Bumi dan lingkungan|Bumi dan alam sekitar
+Engineering|Teknik|Kejuruteraan
+Libraries_&_Information|Perpustakaan dan informasi|Perpustakaan dan maklumat
+Mathematics|Matematika|Matematik
+Medicine_&_Health|Kedokteran dan kesehatan|Perubatan dan kesihatan
+Physics|Fisika|Fizik
+Space|Antariksa|Angkasa lepas
+Technology|Teknologi|Teknologi
+Food_and_drink|Makanan dan minuman|Makanan dan minuman
+Internet_culture|Budaya internet|Budaya internet
+Linguistics|Linguistik|Linguistik
+Literature|Sastra|Sastera
+Performing_arts|Seni pertunjukan|Seni persembahan
+Philosophy_and_religion|Filsafat dan agama|Falsafah dan agama
+Sports|Olahraga|Sukan
+Architecture|Arsitektur|Seni bina
+Comics_and_Anime|Komik dan anime|Komik dan anime
+Fashion|Mode|Fesyen
+Books|Buku|Buku
+Entertainment|Hiburan|Hiburan
+Films|Film|Filem
+Music|Musik|Muzik
+Radio|Radio|Radio
+Software|Perangkat lunak|Perisian
+Television|Televisi|Televisyen
+Video_games|Gim video|Permainan video
+Women|Perempuan|Wanita
+Biography|Biografi|Biografi
+Geographical|Geografi|Geografi
+Central_Africa|Afrika Tengah|Afrika Tengah
+Eastern_Africa|Afrika Timur|Afrika Timur
+Northern_Africa|Afrika Utara|Afrika Utara
+Southern_Africa|Afrika Selatan|Afrika Selatan
+Western_Africa|Afrika Barat|Afrika Barat
+Central_America|Amerika Tengah|Amerika Tengah
+North_America|Amerika Utara|Amerika Utara
+South_America|Amerika Selatan|Amerika Selatan
+Central_Asia|Asia Tengah|Asia Tengah
+East_Asia|Asia Timur|Asia Timur
+North_Asia|Asia Utara|Asia Utara
+South_Asia|Asia Selatan|Asia Selatan
+Southeast_Asia|Asia Tenggara|Asia Tenggara
+West_Asia|Asia Barat|Asia Barat
+Eastern_Europe|Eropa Timur|Eropah Timur
+Northern_Europe|Eropa Utara|Eropah Utara
+Southern_Europe|Eropa Selatan|Eropah Selatan
+Western_Europe|Eropa Barat|Eropah Barat
+Oceania|Oseania|Oseania
+Media|Media|Media
+Visual_arts|Seni rupa|Seni visual
+STEM|STEM|STEM
+Asia|Asia|Asia
+Africa|Afrika|Afrika
+Europe|Eropa|Eropah`.split('\n').forEach(l => { const [k, id, ms] = l.split('|'); TP_L[k] = { id, ms, en:k.replace(/_/g, ' ') }; });
+const tpName = k => { const L = TP_L[k]; return (L && (L[prefs.wiki] || L.en)) || k.replace(/_/g, ' '); };
+const topicSupported = () => prefs.project === 'wikipedia';
+const topicOn = () => prefs.topic && topicSupported();
+
+const tpCache = new Map();    // "host|judul" -> { t:[[kunci,kelompok,skor]…], r:[[kunci,skor]…] } atau null bila tidak ada topik
+const tpStamp = new Map();    // waktu pengisian cache (ms)
+const tpPending = new Set(), tpFail = new Map();
+try {
+  const o = JSON.parse(localStorage.getItem(TP_STORE) || '{}'), now = Date.now();
+  for (const k in o) if (now - o[k][0] < TP_TTL) { tpCache.set(k, o[k][1]); tpStamp.set(k, o[k][0]); }
+} catch {}
+let tpSaveT = null, tpTimer = null, tpBusy = 0;
+const tpWaiters = [];
+const tpSlot = async () => { if (tpBusy >= 2) await new Promise(r => tpWaiters.push(r)); tpBusy++; };
+const tpFree = () => { tpBusy--; const r = tpWaiters.shift(); if (r) r(); };
+const tpRender = h => { clearTimeout(tpTimer); tpTimer = setTimeout(() => { if (store && h === host()) render(); }, 200); };
+function tpSave() {
+  clearTimeout(tpSaveT);
+  tpSaveT = setTimeout(() => {
+    try {
+      const o = {};
+      for (const k of [...tpCache.keys()].slice(-TP_KEEP)) o[k] = [tpStamp.get(k) || Date.now(), tpCache.get(k)];
+      localStorage.setItem(TP_STORE, JSON.stringify(o));
+    } catch {}
+  }, 800);
+}
+/* Label berbintang (mis. "Asia*", "Media*", "STEM*") adalah induk agregat: dipakai untuk penyaringan, dan tampil sebagai badge
+   hanya bila halaman tidak punya label turunan yang lebih spesifik. */
+function tpParse(tags) {
+  const t = new Map(), r = new Map(), agg = [], leafParents = new Set(), a = new Set();
+  for (const w of tags || []) {
+    const m = /^classification\.prediction\.articletopic\/(.+)\|(\d+)$/.exec(w);
+    if (!m) continue;
+    const path = m[1].split('.'), s = +m[2];
+    let last = path[path.length - 1];
+    if (last === 'Biography*') last = 'Biography';
+    else if (last.endsWith('*')) { if (s >= TP_MIN) { last = last.slice(0, -1); a.add(last); agg.push([path, last, s]); } continue; }
+    if (s < TP_MIN) continue;
+    leafParents.add(path.slice(0, -1).join('.'));
+    if (path[0] === 'Geography' && path[1] === 'Regions') r.set(last, Math.max(s, r.get(last) || 0));
+    else if (!t.has(last) || t.get(last)[1] < s) t.set(last, [path[0], s]);
+  }
+  for (const [path, k, s] of agg) {
+    if (leafParents.has(path.slice(0, -1).join('.'))) continue;     // sudah ada turunan yang lebih spesifik
+    if (path[0] === 'Geography' && path[1] === 'Regions') r.set(k, Math.max(s, r.get(k) || 0));
+    else if (!t.has(k)) t.set(k, [path[0], s]);
+  }
+  const T = [...t].map(([k, [g, s]]) => [k, g, s]).sort((x, y) => y[2] - x[2]);
+  const R = [...r].sort((x, y) => y[1] - x[1]);
+  return T.length || R.length ? { t:T, r:R, a:[...a] } : null;
+}
+async function tpLoadChunk(h, chunk) {
+  const j = await wpApi(h, { prop:'cirrusdoc', titles:chunk.map(x => x.title).join('|') });
+  const q = j.query || {}, norm = new Map((q.normalized || []).map(e => [e.from, e.to])), by = new Map((q.pages || []).map(p => [p.title, p]));
+  const now = Date.now();
+  for (const x of chunk) {
+    const p = by.get(norm.get(x.title) || x.title), d = p && p.cirrusdoc && p.cirrusdoc[0] && p.cirrusdoc[0].source;
+    tpCache.set(h + '|' + x.title, tpParse(d && d.weighted_tags)); tpStamp.set(h + '|' + x.title, now);
+  }
+}
+function ensureTp(list, size = TP_CHUNK) {
+  if (!topicOn()) return;
+  const h = host(), now = Date.now(), rows = [], seen = new Set();
+  for (const x of list) {
+    if (x.ns !== 0) continue;
+    const k = h + '|' + x.title;
+    if (seen.has(k) || tpPending.has(k) || (tpFail.get(k) || 0) > now - 60e3) continue;
+    seen.add(k);
+    if (tpCache.has(k) && !(tpCache.get(k) === null && now - (tpStamp.get(k) || 0) > TP_RETRY)) continue;
+    rows.push({ title:x.title });
+  }
+  for (let i = 0; i < rows.length; i += size) {
+    const chunk = rows.slice(i, i + size);
+    chunk.forEach(x => tpPending.add(h + '|' + x.title));
+    (async () => {
+      await tpSlot();
+      try { await tpLoadChunk(h, chunk); tpSave(); }
+      catch { chunk.forEach(x => tpFail.set(h + '|' + x.title, Date.now())); }
+      finally { tpFree(); }
+    })().finally(() => { chunk.forEach(x => tpPending.delete(h + '|' + x.title)); tpRender(h); });
+  }
+}
+const tpKeys = c => new Set(c ? [...c.t.map(x => x[0]), ...c.r.map(x => x[0]), ...(c.a || [])] : []);
+function tpHtml(x) {
+  if (!topicOn() || x.ns !== 0) return '';
+  const c = tpCache.get(host() + '|' + x.title);
+  if (c === undefined) return '<div class="tps"><span class="tp wait">…</span></div>';
+  if (!c) return `<div class="tps"><span class="tp none" title="${esc(t('tpNone'))}">–</span></div>`;
+  const badge = (k, s, cls, hu) => `<button type="button" class="tp${cls}" data-tp="${esc(k)}"${hu ? ` style="--h:${hu}"` : ''} title="${esc(tpName(k) + ' · ' + Math.round(s / 10) + '%')}">${esc(tpName(k))}</button>`;
+  const top = tpFilter ? [...c.t.filter(a => a[0] === tpFilter), ...c.t.filter(a => a[0] !== tpFilter)] : c.t;   // topik yang disaring selalu tampil
+  return '<div class="tps">' + top.slice(0, TP_BADGES).map(([k, g, s]) => badge(k, s, '', TP_HUE[g] || 212)).join('') + (tpFilter ? [...c.r.filter(a => a[0] === tpFilter), ...c.r.filter(a => a[0] !== tpFilter)] : c.r).slice(0, 1).map(([k, s]) => badge(k, s, ' reg', 0)).join('') + '</div>';
+}
+let tpSelSig = '', tpNames = [], tpCount = new Map(), tpDone = 0, tpTotal = 0;   // tpCount: kunci -> jumlah halaman
+/* Dropdown memuat seluruh taksonomi (64 topik, dikelompokkan seperti bidang portal Wikipedia); topik yang belum ada di daftar tampil redup berjumlah 0 */
+function tpDrawList() {
+  const q = wpNorm($('tpSrch').value.trim());
+  const li = (v, txt, c, sel) => `<li role="option" class="${c === 0 ? 'zero' : ''}" data-v="${esc(v)}" aria-selected="${sel}"><span>${esc(txt)}</span>${c == null ? '' : `<small>${fmt(c)}</small>`}</li>`;
+  let html = loadingLi(tpDone, tpTotal) + li('', t('thTp'), null, tpFilter === ''), any = false;
+  for (const [area, , , , keys] of TP_AREAS) {
+    const rows = keys.split(' ').filter(k => !q || wpNorm(tpName(k)).includes(q))
+      .map(k => [k, tpCount.get(k) || 0])
+      .sort((a, b) => b[1] - a[1] || tpName(a[0]).localeCompare(tpName(b[0]), prefs.wiki, { sensitivity:'base' }));
+    if (!rows.length) continue;
+    any = true;
+    html += `<li class="grp" aria-hidden="true">${esc(tpAreaName(area))}</li>` + rows.map(([k, c]) => li(k, tpName(k), c, k === tpFilter)).join('');
+  }
+  $('tpList').innerHTML = html + (any ? '' : `<li class="none" aria-disabled="true">${esc(t('noRes'))}</li>`);
+}
+function tpOpenPop(open) {
+  $('tpPop').hidden = !open; $('tpBtn').setAttribute('aria-expanded', String(open));
+  if (open) { $('tpSrch').value = ''; tpDrawList(); $('tpSrch').focus(); const s = $('tpList').querySelector('[aria-selected="true"]'); if (s) s.scrollIntoView({ block:'nearest' }); }
+}
+function tpPick(v) { tpFilter = v; page = 1; tpSelSig = ''; tpOpenPop(false); render(); }
+function renderTpSel() {
+  const on = topicOn(); $('tpSelWrap').hidden = !on; $('tpProg').hidden = !on;
+  if (!on) { tpSelSig = ''; tpOpenPop(false); return; }
+  const h = host(), cnt = new Map();
+  let done = 0, total = 0;
+  store.items.forEach((x, i) => {
+    if (x.ns !== 0) return;
+    const c = tpCache.get(h + '|' + x.title);
+    if (i < TP_BG) { total++; if (c !== undefined) done++; }
+    for (const k of tpKeys(c)) cnt.set(k, (cnt.get(k) || 0) + 1);
+  });
+  tpDone = done; tpTotal = total; tpCount = cnt;
+  $('tpProg').textContent = done < total ? t('listProg', { a:fmt(done), b:fmt(total) }) : fmt(done) + '/' + fmt(total);
+  $('tpProg').title = t('progTip');
+  $('tpProg').classList.toggle('busy', done < total);
+  tpNames = [...cnt];
+  $('tpBtnTxt').textContent = tpFilter ? tpName(tpFilter) : t('thTp');
+  $('tpBtn').classList.toggle('set', !!tpFilter);
+  $('tpSrch').placeholder = t('thTp') + '…';
+  $('tpSrch').setAttribute('aria-label', t('thTp'));
+  const sig = prefs.wiki + '|' + tpFilter + '|' + tpDone + '/' + tpTotal + '|' + tpNames.map(n => n.join(':')).join('|');
+  if (sig === tpSelSig) return;
+  tpSelSig = sig;
+  if (!$('tpPop').hidden) tpDrawList();
 }
 
 function entHtml(x) {
@@ -1528,7 +1825,7 @@ function titleCell(x, pageUrl, ext, sub) {
     return `<div class="tw"><img class="fthumb" src="${esc(thumb)}" alt="" loading="lazy" decoding="async">`
       + `<div class="tx">${link}${type}<div class="sub">${sub}</div></div></div>`;
   }
-  return `${link}${entHtml(x)}<div class="sub">${sub}</div>`;
+  return `${link}${entHtml(x)}<div class="sub">${sub}</div>${tpHtml(x)}`;
 }
 
 function pagerHtml(pages, cur = page) {
@@ -1553,8 +1850,16 @@ function render() {
 
   if (!store) {
     $('count').textContent = '–';
-    wpSelSig = ''; wpNames = []; wpOpenPop(false); $('wpSelWrap').hidden = true; $('wpProg').hidden = true;
-    $('wpBtnTxt').textContent = t('thWp'); $('wpBtn').classList.remove('set');
+    wpSelSig = ''; wpNames = []; wpOpenPop(false); $('wpBtn').classList.remove('set');
+    tpSelSig = ''; tpNames = []; tpCount = new Map(); tpDone = tpTotal = 0; tpOpenPop(false);
+    // daftar belum dimuat: tampilkan kontrolnya dengan keterangan "memuat" agar tidak kosong lalu tiba-tiba berisi
+    const wl = prefs.wp && wpSupported(), tl = topicOn();
+    wpDone = wpTotal = 0;
+    $('wpSelWrap').hidden = !wl; $('wpProg').hidden = !wl; $('tpSelWrap').hidden = !tl; $('tpProg').hidden = !tl;
+    $('wpBtnTxt').textContent = wl ? t('listLoading') : t('thWp'); $('tpBtnTxt').textContent = tl ? t('listLoading') : t('thTp');
+    $('wpProg').textContent = $('tpProg').textContent = t('listLoading');
+    $('wpProg').classList.add('busy'); $('tpProg').classList.add('busy');
+    $('tpBtn').classList.remove('set');
     $('rows').innerHTML = error
       ? emptyHtml(t('emptyFail'), t('emptyFailHint', { e:error }))
       : '<tr><td colspan="8">' + '<div class="skel"></div>'.repeat(7) + '</td></tr>';
@@ -1575,12 +1880,15 @@ function render() {
   ensureWp(slice);
   if (wpOn()) ensureWp(store.items);   // seluruh daftar, agar dropdown memuat semua WikiProject yang terdeteksi
   renderWpSel();
+  ensureTp(slice, 7);                               // halaman yang tampil lebih dulu (potongan kecil agar badge cepat muncul),
+  if (topicOn()) ensureTp(store.items.slice(0, TP_BG));   // lalu 200 teratas untuk isi dropdown
+  renderTpSel();
   $('tbl').classList.toggle('has-wp', wpOn());
   $('rows').innerHTML = slice.length
     ? slice.map(x => rowHtml(x, now)).join('')
-    : ((query.trim() || wpFilter) ? emptyHtml(t('noRes'), t('noResHint', { q:query.trim() || wpFilter })) : emptyHtml(t('noEnt'), t('noEntHint')));
+    : ((query.trim() || wpFilter || tpFilter) ? emptyHtml(t('noRes'), t('noResHint', { q:query.trim() || wpFilter || tpName(tpFilter) })) : emptyHtml(t('noEnt'), t('noEntHint')));
   $('range').textContent = total
-    ? t('showing', { a:fmt(from + 1), b:fmt(from + slice.length), n:fmt(total) }) + ((query.trim() || wpFilter) ? ' ' + t('filteredFrom', { m:fmt(store.items.length) }) : '')
+    ? t('showing', { a:fmt(from + 1), b:fmt(from + slice.length), n:fmt(total) }) + ((query.trim() || wpFilter || tpFilter) ? ' ' + t('filteredFrom', { m:fmt(store.items.length) }) : '')
     : t('zero');
   $('pager').innerHTML = pagerHtml(pages);
   renderUsers(now);
@@ -1687,6 +1995,9 @@ function syncControls() {
   $('wpOpt').hidden = !wpSupported();
   $('wpChk').checked = !!prefs.wp;
   $('wpOptTxt').textContent = t('thWp');
+  $('tpOpt').hidden = !topicSupported();
+  $('tpChk').checked = !!prefs.topic;
+  $('tpOptTxt').textContent = t('thTp');
   $('soundBtn').setAttribute('aria-pressed', String(prefs.sound));
   $('soundTxt').textContent = prefs.sound ? t('soundOn') : t('soundOff');
   $('soundIcon').innerHTML = BELL + (prefs.sound ? '' : '<path d="M2 2l20 20"/>');
@@ -1751,6 +2062,30 @@ $('wpPop').addEventListener('keydown', e => {
   }
 });
 document.addEventListener('click', e => { if (!$('wpPop').hidden && !$('wpSelWrap').contains(e.target)) wpOpenPop(false); });
+
+$('tpChk').addEventListener('change', e => { prefs.topic = e.target.checked; if (!prefs.topic) tpFilter = ''; savePrefs(); page = 1; render(); });
+$('tpBtn').addEventListener('click', () => tpOpenPop($('tpPop').hidden));
+$('tpSrch').addEventListener('input', tpDrawList);
+$('tpList').addEventListener('click', e => { const li = e.target.closest('li[data-v]'); if (li) { tpPick(li.dataset.v); $('tpBtn').focus(); } });
+$('tpPop').addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.stopPropagation(); tpOpenPop(false); $('tpBtn').focus(); return; }
+  const items = [...$('tpList').querySelectorAll('li[data-v]')];
+  const cur = items.findIndex(i => i.classList.contains('act'));
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const n = clamp(cur + (e.key === 'ArrowDown' ? 1 : -1), 0, items.length - 1);
+    items.forEach(i => i.classList.remove('act')); items[n].classList.add('act'); items[n].scrollIntoView({ block:'nearest' });
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    const pick = items[cur] || (items.length === 2 ? items[1] : null);
+    if (pick) { tpPick(pick.dataset.v); $('tpBtn').focus(); }
+  }
+});
+document.addEventListener('click', e => { if (!$('tpPop').hidden && !$('tpSelWrap').contains(e.target)) tpOpenPop(false); });
+$('rows').addEventListener('click', e => {   // klik badge = saring ke topik itu (klik lagi = batal)
+  const b = e.target.closest('button[data-tp]');
+  if (b) tpPick(b.dataset.tp === tpFilter ? '' : b.dataset.tp);
+});
 $('soundBtn').addEventListener('click', () => {
   prefs.sound = !prefs.sound; savePrefs(); syncControls();
   if (prefs.sound) { const c = audio(); if (c) c.resume().then(playDing).catch(() => {}); }
@@ -1797,7 +2132,7 @@ setInterval(() => {
 
 /* ================= URL Query =================
    project (wikipedia|commons|wikidata|abstract), tab (changes|newpages), refresh (auto|interval|off) + interval (detik),
-   lang (bahasa Wikipedia/antarmuka), sound (1|0), wp=1 (kolom WikiProyek), page, perpage (20|50|100|250|500), users=1 (buka Suntingan terbanyak) + upage.
+   lang (bahasa Wikipedia/antarmuka), sound (1|0), wp=1 (kolom WikiProyek), topic=1 (badge topik) + tf (saring ke satu topik, mis. History), page, perpage (20|50|100|250|500), users=1 (buka Suntingan terbanyak) + upage.
    Parameter yang ada menimpa setelan tersimpan; setiap perubahan kontrol memperbarui URL. */
 function syncUrl() {
   const p = new URLSearchParams();
@@ -1805,6 +2140,7 @@ function syncUrl() {
   if (prefs.mode === 'interval') p.set('interval', String(prefs.interval));
   p.set('lang', prefs.wiki); p.set('sound', prefs.sound ? '1' : '0');
   if (prefs.wp) p.set('wp', '1');
+  if (topicOn()) { p.set('topic', '1'); if (tpFilter) p.set('tf', tpFilter); }
   if (page > 1) p.set('page', String(page));
   if (prefs.perPage !== 20) p.set('perpage', String(prefs.perPage));
   if ($('usersDlg').open) { p.set('users', '1'); if (upage > 1) p.set('upage', String(upage)); }
@@ -1826,6 +2162,8 @@ function readUrl() {
   if (LANGS[p.get('lang')]) prefs.wiki = p.get('lang');
   if (p.has('sound')) prefs.sound = ['1','true','on','yes'].includes(p.get('sound').toLowerCase());
   if (p.has('wp')) prefs.wp = ['1','true','on','yes'].includes(p.get('wp').toLowerCase());
+  if (p.has('topic')) prefs.topic = ['1','true','on','yes'].includes(p.get('topic').toLowerCase());
+  if (/^[\w&.-]{1,60}$/.test(p.get('tf') || '')) tpFilter = p.get('tf');
   const pp = parseInt(p.get('perpage'), 10);
   if (PER_PAGE_OPTIONS.includes(pp)) prefs.perPage = pp;
   const pg = parseInt(p.get('page'), 10);
