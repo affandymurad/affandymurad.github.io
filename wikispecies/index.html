@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikispecies gap finder</title>
+<style>
+body{font:15px/1.5 system-ui,sans-serif;max-width:960px;margin:0 auto;padding:20px;color:#111;background:#f6f8fc}
+[hidden]{display:none!important}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+h1{font-size:22px;margin:0}h2{font-size:17px;margin:0 0 6px}.sub{color:#556;margin:0 0 16px}
+.card{background:#fff;border:1px solid #dde;border-radius:12px;padding:14px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+input,select,button{font:inherit;padding:7px 10px;border:1px solid #bbc;border-radius:8px;background:#fff}
+button{cursor:pointer;font-weight:600}button.p{background:#2d4f9c;color:#fff;border-color:#2d4f9c}
+button:disabled{opacity:.5;cursor:not-allowed}
+.chip{padding:3px 10px;margin:2px;border-radius:99px;font-size:13px;font-weight:500}
+.tab{border-radius:8px 8px 0 0;padding:8px 16px}.tab.on{background:#2d4f9c;color:#fff;border-color:#2d4f9c}
+.hint,.info{background:#eef2fb;border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:14px}
+.info ul,.hint ul{margin:4px 0 0;padding-left:20px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #eef}
+th{background:#eef2fb}#st{color:#556;margin:8px 0}.err{color:#b00}
+pre{background:#f0f3fa;padding:8px;border-radius:8px;overflow:auto;font-size:12px;max-height:200px}
+.sw{position:relative;display:grid;grid-template-columns:1fr 1fr;width:76px;height:34px;padding:0;border-radius:99px;overflow:hidden;font-size:13px}
+.sw span{position:relative;z-index:1;display:grid;place-items:center;color:#556}
+.sw i{position:absolute;top:3px;left:3px;width:calc(50% - 3px);height:26px;border-radius:99px;background:#2d4f9c;transition:transform .2s}
+.sw[aria-checked=false] span:first-of-type,.sw[aria-checked=true] span:last-of-type{color:#fff}
+.sw[aria-checked=true] i{transform:translateX(100%)}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1 data-i="title"></h1>
+  <button id="lg" class="sw" role="switch" aria-checked="false" aria-label="Bahasa / Language"><span>ID</span><span>EN</span><i></i></button>
+</div>
+<p class="sub" data-i="sub"></p>
+
+<div class="info" data-i="explain"></div>
+<div class="card"><div class="row"><b data-i="settings"></b>
+  <label><span data-i="source"></span>
+    <select id="ep"><option value="q" data-i="srcQ"></option><option value="w" data-i="srcW"></option></select></label>
+  <label><span data-i="limit"></span> <select id="lim"><option>100</option><option selected>300</option><option>1000</option></select></label>
+</div></div>
+
+<div class="row" id="tabs"><button class="tab on" data-t="A" data-i="tabA"></button><button class="tab" data-t="B" data-i="tabB"></button></div>
+<div id="st"></div>
+
+<div id="tabA">
+<div class="hint"><span data-i="hintT"></span><div id="ex"></div></div>
+<div class="card">
+  <h2 data-i="secA"></h2>
+  <div class="row">
+    <b>1.</b>
+    <input id="q" value="Aves" size="26" data-ph="phTaxon">
+    <button id="bs" data-i="btnSearch"></button>
+    <select id="tx" style="min-width:260px"></select>
+  </div>
+  <div class="row">
+    <b>2.</b>
+    <label><input type="checkbox" id="idw" checked> <span data-i="onlyId"></span></label>
+    <label><input type="checkbox" id="enw"> <span data-i="onlyEn"></span></label>
+    <label><input type="checkbox" id="noimg"> <span data-i="noImg"></span></label>
+  </div>
+  <div class="row"><b>3.</b><button class="p" id="go" data-i="btnGo"></button><button id="go2" data-i="btnExist"></button><button id="stop" disabled data-i="btnStop"></button><button id="md" disabled data-i="btnMd"></button></div>
+</div>
+<div class="card" id="res" hidden>
+  <table><thead><tr><th>#</th><th data-i="hName"></th><th data-i="hLabel"></th><th>Wikidata</th><th data-i="hIdw"></th><th data-i="hEnw"></th><th>Wikispecies</th></tr></thead><tbody id="tb"></tbody></table>
+</div>
+<details class="card"><summary data-i="qTitle"></summary><pre id="sqA"></pre><a id="lnkA" target="_blank" rel="noopener" hidden data-i="qOpen"></a></details>
+</div>
+
+<div id="tabB" hidden>
+<div class="hint" data-i="profs"></div>
+<div class="card">
+  <h2 data-i="secB"></h2>
+  <p class="sub" data-i="bSub"></p>
+  <div class="row">
+    <label><input type="checkbox" id="pidw" checked> <span data-i="onlyId"></span></label>
+    <label><input type="checkbox" id="penw"> <span data-i="onlyEn"></span></label>
+    <label><input type="checkbox" id="pimg"> <span data-i="noImg"></span></label>
+    <label><input type="checkbox" id="pctz"> <span data-i="noCtz"></span></label>
+    <button class="p" id="pgo" data-i="btnPeople"></button><button id="pgo2" data-i="btnExist"></button><button id="pstop" disabled data-i="btnStop"></button><button id="pmd" disabled data-i="btnMd"></button>
+  </div>
+  <table hidden id="pt"><thead><tr><th>#</th><th data-i="hPerson"></th><th data-i="hDesc"></th><th>Wikidata</th><th data-i="hIdw"></th><th data-i="hEnw"></th><th>Wikispecies</th></tr></thead><tbody id="pb"></tbody></table>
+</div>
+<details class="card"><summary data-i="qTitle"></summary><pre id="sqB"></pre><a id="lnkB" target="_blank" rel="noopener" hidden data-i="qOpen"></a></details>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const EP = { q: 'https://qlever.dev/api/wikidata', w: 'https://query.wikidata.org/sparql' };
+
+// ---------- terjemahan ----------
+const L = {
+id: {
+  title: 'Kekurangan Wikispecies via Wikidata',
+  sub: 'Daftar item di Wikidata yang belum punya halaman Wikispecies. Hanya menampilkan kandidat; tidak ada suntingan otomatis.',
+  explain: '<b>SPARQL vs QLever, apa bedanya?</b><ul><li><b>SPARQL</b> adalah <i>bahasa pertanyaan</i> untuk menanyai Wikidata, mirip cara kita menulis pertanyaan ke pustakawan, misalnya "tampilkan semua burung yang belum punya halaman Wikispecies".</li><li><b>QLever</b> dan <b>WDQS</b> adalah dua <i>layanan</i> yang menjawab pertanyaan SPARQL itu. Pertanyaannya sama, hanya mesin penjawabnya berbeda.</li><li><b>QLever</b>: sangat cepat dan jarang kehabisan waktu, tetapi datanya tertinggal beberapa hari sampai minggu.</li><li><b>WDQS</b> (resmi Wikimedia): datanya hampir real-time, tetapi mudah gagal (timeout) kalau pertanyaannya besar.</li></ul>Saran: mulai dengan QLever.',
+  settings: 'Pengaturan:', source: 'Sumber data', srcQ: 'QLever (cepat, data tidak real-time)', srcW: 'WDQS Wikidata (real-time, mudah timeout)', limit: 'Batas',
+  tabA: 'A. Spesies', tabB: 'B. Biografi',
+  hintT: '<b>Apa itu takson?</b> Takson adalah satu kelompok makhluk hidup dalam klasifikasi ilmiah, dari yang luas (kelas, ordo, famili) sampai yang sempit (genus, spesies). Alat ini mencari <i>spesies</i> di dalam takson yang Anda pilih. Semakin luas takson, semakin banyak hasilnya.<br>Contoh (klik untuk mencoba, lalu pilih hasil takson yang sesuai):',
+  groups: ['Hewan', 'Serangga & invertebrata', 'Tumbuhan & lainnya'],
+  secA: 'A. Spesies yang belum ada di Wikispecies', phTaxon: 'Nama takson (mis. Aves, Felidae)', btnSearch: 'Cari takson',
+  onlyId: 'hanya yang sudah ada di Wikipedia Indonesia', onlyEn: 'hanya yang sudah ada di Wikipedia Inggris', noImg: 'hanya yang belum punya foto', noCtz: 'hanya yang belum punya data kewarganegaraan',
+  btnGo: 'Cari kekurangan', btnExist: 'Tampilkan yang sudah ada di Wikispecies', btnStop: 'Stop', btnMd: 'Unduh Markdown (.md)', btnPeople: 'Cari biografi',
+  hName: 'Nama ilmiah', hLabel: 'Label', hIdw: 'Wikipedia Indonesia', hEnw: 'Wikipedia Inggris', hPerson: 'Nama', hDesc: 'Deskripsi',
+  secB: 'B. Biografi ilmuwan yang belum ada di Wikispecies',
+  bSub: 'Orang di Wikidata yang tercatat sebagai penulis nama takson (punya singkatan penulis botani atau kutipan penulis zoologi), tetapi belum punya halaman penulis di Wikispecies.',
+  profs: '<b>Profesi apa yang layak masuk Wikispecies?</b> Wikispecies adalah direktori takson, jadi halaman orang umumnya untuk mereka yang berperan dalam penamaan dan penelitian takson (gambaran umum; periksa kebijakan resmi Wikispecies):<ul><li>Taksonom, ahli botani, zoolog, mikolog, ahli mikrobiologi, dan paleontolog yang menamai atau mendeskripsikan takson.</li><li>Spesialis kelompok tertentu: entomolog, ornitolog, herpetolog, iktiolog, malakolog, briolog, algolog, dan sejenisnya.</li><li>Kolektor spesimen dan naturalis penjelajah yang namanya dipakai pada takson (eponim) atau yang spesimennya menjadi rujukan.</li><li>Kurator herbarium atau museum, dan ilustrator ilmiah yang karyanya dipakai dalam deskripsi takson.</li></ul>',
+  qTitle: 'Kueri yang dipakai (SPARQL)', notRun: '(belum dijalankan)', qOpen: 'Buka kueri ini di antarmuka sumber data',
+  phFilter: 'Cari di hasil…', perPage: 'Per halaman',
+  page: (p, n) => `Hal. ${p} / ${n}`, count: (f, a) => `${f} dari ${a} hasil`,
+  searching: 'Mencari takson…', cands: n => `${n} kandidat. Pilih satu yang berupa takson.`, none: '(tidak ditemukan)', searchFail: 'Gagal mencari: ',
+  pickFirst: 'Cari dan pilih takson dulu.', running: 'Menjalankan kueri… (klik Stop untuk membatalkan)',
+  done: (n, s) => `${n} hasil (${s} detik). `, qNote: 'Data QLever tidak real-time: cek Wikispecies sebelum membuat halaman.',
+  aborted: 'Dihentikan.', failed: 'Gagal: ', toHint: ' (kemungkinan timeout; coba QLever atau takson lebih sempit)',
+  create: 'buat', open: 'buka'
+},
+en: {
+  title: 'Wikispecies gaps via Wikidata',
+  sub: 'Wikidata items that do not have a Wikispecies page yet. Candidates only; nothing is edited automatically.',
+  explain: '<b>SPARQL vs QLever: what is the difference?</b><ul><li><b>SPARQL</b> is a <i>query language</i> for asking Wikidata questions, like asking a librarian "show me every bird that has no Wikispecies page".</li><li><b>QLever</b> and <b>WDQS</b> are two <i>services</i> that answer SPARQL questions. The question is the same; only the engine answering it differs.</li><li><b>QLever</b>: very fast and rarely times out, but its data lags behind by days to weeks.</li><li><b>WDQS</b> (official Wikimedia): near real-time data, but it times out easily on big questions.</li></ul>Tip: start with QLever.',
+  settings: 'Settings:', source: 'Data source', srcQ: 'QLever (fast, not real-time)', srcW: 'Wikidata WDQS (real-time, times out easily)', limit: 'Limit',
+  tabA: 'A. Species', tabB: 'B. Biographies',
+  hintT: '<b>What is a taxon?</b> A taxon is a group of organisms in scientific classification, from broad (class, order, family) to narrow (genus, species). This tool looks for <i>species</i> inside the taxon you pick. The broader the taxon, the more results.<br>Examples (click to try, then choose the matching taxon result):',
+  groups: ['Animals', 'Insects & invertebrates', 'Plants & others'],
+  secA: 'A. Species missing from Wikispecies', phTaxon: 'Taxon name (e.g. Aves, Felidae)', btnSearch: 'Find taxon',
+  onlyId: 'only those on Indonesian Wikipedia', onlyEn: 'only those on English Wikipedia', noImg: 'only those without an image', noCtz: 'only those without citizenship data',
+  btnGo: 'Find gaps', btnExist: 'Show those already on Wikispecies', btnStop: 'Stop', btnMd: 'Download Markdown (.md)', btnPeople: 'Find biographies',
+  hName: 'Scientific name', hLabel: 'Label', hIdw: 'Indonesian Wikipedia', hEnw: 'English Wikipedia', hPerson: 'Name', hDesc: 'Description',
+  secB: 'B. Scientist biographies missing from Wikispecies',
+  bSub: 'People in Wikidata recorded as authors of taxon names (with a botanist author abbreviation or zoological author citation) who have no author page on Wikispecies.',
+  profs: '<b>Which professions fit on Wikispecies?</b> Wikispecies is a taxonomic directory, so people pages are generally for those involved in naming and studying taxa (general guide; check the official Wikispecies policy):<ul><li>Taxonomists, botanists, zoologists, mycologists, microbiologists and palaeontologists who named or described taxa.</li><li>Group specialists: entomologists, ornithologists, herpetologists, ichthyologists, malacologists, bryologists, phycologists and the like.</li><li>Specimen collectors and exploring naturalists honoured in taxon names (eponyms) or whose specimens are cited.</li><li>Herbarium or museum curators, and scientific illustrators whose work is used in taxon descriptions.</li></ul>',
+  qTitle: 'Query used (SPARQL)', notRun: '(not run yet)', qOpen: 'Open this query in the data source interface',
+  phFilter: 'Search results…', perPage: 'Per page',
+  page: (p, n) => `Page ${p} / ${n}`, count: (f, a) => `${f} of ${a} results`,
+  searching: 'Searching taxa…', cands: n => `${n} candidates. Pick one that is a taxon.`, none: '(not found)', searchFail: 'Search failed: ',
+  pickFirst: 'Search and pick a taxon first.', running: 'Running query… (click Stop to cancel)',
+  done: (n, s) => `${n} results (${s} s). `, qNote: 'QLever data is not real-time: check Wikispecies before creating a page.',
+  aborted: 'Stopped.', failed: 'Failed: ', toHint: ' (probably a timeout; try QLever or a narrower taxon)',
+  create: 'create', open: 'open'
+}};
+let lang = 'id';
+const t = (k, ...a) => { const v = L[lang][k]; return typeof v === 'function' ? v(...a) : v; };
+const st = (m, err) => { $('st').textContent = m; $('st').className = err ? 'err' : ''; };
+
+const EX = [
+  [['Aves', 'burung', 'birds'], ['Mammalia', 'mamalia', 'mammals'], ['Reptilia', 'reptil', 'reptiles'], ['Amphibia', 'amfibi', 'amphibians'], ['Actinopterygii', 'ikan bersirip', 'ray-finned fish'], ['Chondrichthyes', 'hiu & pari', 'sharks & rays'], ['Primates', 'primata', 'primates'], ['Felidae', 'kucing', 'cats'], ['Canidae', 'anjing & serigala', 'dogs & wolves'], ['Pteropodidae', 'kelelawar buah', 'fruit bats'], ['Cetacea', 'paus & lumba-lumba', 'whales & dolphins']],
+  [['Insecta', 'serangga', 'insects'], ['Lepidoptera', 'kupu-kupu & ngengat', 'butterflies & moths'], ['Coleoptera', 'kumbang', 'beetles'], ['Hymenoptera', 'semut, lebah, tawon', 'ants, bees, wasps'], ['Odonata', 'capung', 'dragonflies'], ['Arachnida', 'laba-laba & kalajengking', 'spiders & scorpions'], ['Mollusca', 'moluska', 'molluscs'], ['Anthozoa', 'karang & anemon', 'corals & anemones']],
+  [['Orchidaceae', 'anggrek', 'orchids'], ['Arecaceae', 'palem', 'palms'], ['Zingiberaceae', 'jahe-jahean', 'gingers'], ['Fabaceae', 'polong-polongan', 'legumes'], ['Poaceae', 'rumput', 'grasses'], ['Dipterocarpaceae', 'meranti', 'dipterocarps'], ['Nepenthes', 'kantong semar', 'pitcher plants'], ['Rafflesia', 'rafflesia', 'rafflesia'], ['Fungi', 'jamur', 'fungi']]
+];
+function chips() {
+  const ex = $('ex'); ex.innerHTML = '';
+  EX.forEach((list, gi) => {
+    const l = document.createElement('div'), g = document.createElement('small'), b = document.createElement('b');
+    b.textContent = t('groups')[gi] + ': '; g.append(b); l.append(g, ' '); ex.append(l);
+    list.forEach(([n, d, e]) => {
+      const c = document.createElement('button'); c.className = 'chip'; c.textContent = `${n} (${lang === 'id' ? d : e})`;
+      c.onclick = () => { $('q').value = n; $('bs').click(); }; l.append(c);
+    });
+  });
+}
+const lastQ = { A: '', B: '' };
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i]').forEach(e => e.innerHTML = t(e.dataset.i));
+  document.querySelectorAll('[data-ph]').forEach(e => e.placeholder = t(e.dataset.ph));
+  $('sqA').textContent = lastQ.A || t('notRun'); $('sqB').textContent = lastQ.B || t('notRun');
+  $('lg').setAttribute('aria-checked', lang === 'en');
+  chips(); pgA.view(); pgB.view();
+  if (!$('tx').dataset.has) $('tx').innerHTML = '';
+  st('');
+}
+
+// ---------- cari takson ----------
+$('bs').onclick = async () => {
+  const q = $('q').value.trim(); if (!q) return;
+  st(t('searching'));
+  try {
+    const u = 'https://www.wikidata.org/w/api.php?' + new URLSearchParams({ action: 'wbsearchentities', search: q, language: lang, uselang: lang, limit: 10, format: 'json', origin: '*' });
+    const j = await (await fetch(u)).json();
+    const sel = $('tx'); sel.innerHTML = '';
+    (j.search || []).forEach(r => {
+      const o = document.createElement('option');
+      o.value = r.id; o.textContent = `${r.label} (${r.id})${r.description ? ' – ' + r.description : ''}`; sel.append(o);
+    });
+    sel.dataset.has = sel.options.length ? '1' : '';
+    if (!sel.options.length) sel.innerHTML = `<option value="">${t('none')}</option>`;
+    st(t('cands', sel.options.length));
+  } catch (e) { st(t('searchFail') + e.message, 1); }
+};
+
+// ---------- kueri ----------
+const PRE = `PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+`;
+const ENW = req => (req ? '' : 'OPTIONAL { ') + '?enwiki schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> .' + (req ? '' : ' }');
+const SP = '?spwiki schema:about ?item ; schema:isPartOf <https://species.wikimedia.org/> .';
+const NOSP = 'FILTER NOT EXISTS { ?sp schema:about ?item ; schema:isPartOf <https://species.wikimedia.org/> . }';
+const NOIMG = 'FILTER NOT EXISTS { ?item wdt:P18 ?img . }';
+const IDW = req => (req ? '' : 'OPTIONAL { ') + '?idwiki schema:about ?item ; schema:isPartOf <https://id.wikipedia.org/> .' + (req ? '' : ' }');
+
+function buildTaxa(qid, lim, onlyId, noimg, en, ex) {
+  return PRE + `SELECT ?item ?nama ?label ?idwiki ?enwiki ?spwiki WHERE {
+  ?item wdt:P105 wd:Q7432 ; wdt:P225 ?nama ; wdt:P171* wd:${qid} .
+  ${IDW(onlyId)}
+  ${ENW(en)}
+  ${ex ? SP : NOSP}
+  ${noimg ? NOIMG : ''}
+  OPTIONAL { ?item rdfs:label ?label . FILTER(LANG(?label) = "${lang}") }
+}
+LIMIT ${lim}`;
+}
+function buildPeople(lim, onlyId, noimg, noctz, en, ex) {
+  return PRE + `SELECT DISTINCT ?item ?nama ?label ?idwiki ?enwiki ?spwiki WHERE {
+  ?item wdt:P31 wd:Q5 .
+  { ?item wdt:P428 ?x } UNION { ?item wdt:P835 ?x }
+  ?item rdfs:label ?nama . FILTER(LANG(?nama) = "en")
+  ${IDW(onlyId)}
+  ${ENW(en)}
+  ${ex ? SP : NOSP}
+  ${noimg ? NOIMG : ''}
+  ${noctz ? 'FILTER NOT EXISTS { ?item wdt:P27 ?ctz . }' : ''}
+  OPTIONAL { ?item schema:description ?label . FILTER(LANG(?label) = "en") }
+}
+LIMIT ${lim}`;
+}
+
+async function run(q, signal) {
+  const ep = $('ep').value;
+  const r = ep === 'q'
+    ? await fetch(EP.q, { method: 'POST', signal, headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/sparql-results+json' }, body: new URLSearchParams({ query: q }) })
+    : await fetch(EP.w + '?' + new URLSearchParams({ query: q, format: 'json' }), { signal });
+  if (!r.ok) throw new Error('HTTP ' + r.status + (ep === 'w' ? t('toHint') : ''));
+  const j = await r.json();
+  return j.results.bindings.map(b => ({
+    qid: b.item.value.split('/').pop(), nama: b.nama.value,
+    label: b.label ? b.label.value : '', idwiki: b.idwiki ? b.idwiki.value : '', enwiki: b.enwiki ? b.enwiki.value : '', spwiki: b.spwiki ? b.spwiki.value : '' }));
+}
+
+let ctl = null, rows = [], prow = [];
+function task(btn, stopBtn, build, outRows, render, k) {
+  btn.onclick = async () => {
+    const q = build(); if (!q) return;
+    lastQ[k] = q; $('sq' + k).textContent = q;
+    const lk = $('lnk' + k); lk.hidden = false;
+    lk.href = $('ep').value === 'q' ? 'https://qlever.dev/wikidata?query=' + encodeURIComponent(q) : 'https://query.wikidata.org/#' + encodeURIComponent(q);
+    ctl = new AbortController();
+    ['go', 'go2', 'pgo', 'pgo2'].forEach(i => $(i).disabled = true); $('stop').disabled = $('pstop').disabled = false;
+    st(t('running'));
+    const t0 = performance.now();
+    try {
+      const res = await run(q, ctl.signal);
+      outRows(res); render();
+      st(t('done', res.length, ((performance.now() - t0) / 1000).toFixed(1)) + ($('ep').value === 'q' ? t('qNote') : ''));
+    } catch (e) { st(e.name === 'AbortError' ? t('aborted') : t('failed') + e.message, e.name !== 'AbortError'); }
+    ['go', 'go2', 'pgo', 'pgo2'].forEach(i => $(i).disabled = false); $('stop').disabled = $('pstop').disabled = true; ctl = null;
+  };
+  stopBtn.onclick = () => ctl && ctl.abort();
+}
+
+function link(href, text) { const a = document.createElement('a'); a.href = href; a.textContent = text; a.target = '_blank'; a.rel = 'noopener'; return a; }
+function fill(tb, list, italic, off) {
+  tb.innerHTML = '';
+  list.forEach((r, i) => {
+    const tr = tb.insertRow();
+    tr.insertCell().textContent = off + i + 1;
+    const n = tr.insertCell(), e = document.createElement(italic ? 'i' : 'span'); e.textContent = r.nama; n.append(e);
+    tr.insertCell().textContent = r.label;
+    tr.insertCell().append(link('https://www.wikidata.org/wiki/' + r.qid, r.qid));
+    const w = tr.insertCell();
+    const wl = u => link(u, decodeURIComponent(u.split('/wiki/')[1] || t('open')).replace(/_/g, ' '));
+    w.append(r.idwiki ? wl(r.idwiki) : '—');
+    tr.insertCell().append(r.enwiki ? wl(r.enwiki) : '—');
+    tr.insertCell().append(r.spwiki ? wl(r.spwiki) : link('https://species.wikimedia.org/w/index.php?action=edit&title=' + encodeURIComponent(r.nama), t('create')));
+  });
+}
+
+// pencarian + paginasi di browser
+function pager(tableEl, tb, italic) {
+  const bar = document.createElement('div'); bar.className = 'row';
+  bar.innerHTML = '<input type="text" size="22"> <label><span></span> <select><option>10</option><option selected>25</option><option>50</option><option>100</option></select></label> <button>‹</button> <span class="pi"></span> <button>›</button> <span class="pc"></span>';
+  tableEl.before(bar);
+  const inp = bar.querySelector('input'), sel = bar.querySelector('select'), [prev, next] = bar.querySelectorAll('button');
+  const pi = bar.querySelector('.pi'), pc = bar.querySelector('.pc');
+  let all = [], page = 0;
+  const view = () => {
+    inp.placeholder = t('phFilter'); bar.querySelector('label span').textContent = t('perPage');
+    const q = inp.value.trim().toLowerCase(), n = +sel.value;
+    const f = q ? all.filter(r => (r.nama + ' ' + r.label + ' ' + r.qid + ' ' + r.idwiki + ' ' + r.enwiki + ' ' + r.spwiki).toLowerCase().includes(q)) : all;
+    const pages = Math.max(1, Math.ceil(f.length / n)); page = Math.min(page, pages - 1);
+    fill(tb, f.slice(page * n, page * n + n), italic, page * n);
+    pi.textContent = t('page', page + 1, pages); pc.textContent = t('count', f.length, all.length);
+    prev.disabled = page === 0; next.disabled = page >= pages - 1;
+  };
+  inp.oninput = () => { page = 0; view(); }; sel.onchange = () => { page = 0; view(); };
+  prev.onclick = () => { page--; view(); }; next.onclick = () => { page++; view(); };
+  bar.hidden = true;
+  return { view, set(list) { all = list; page = 0; inp.value = ''; bar.hidden = !list.length; view(); } };
+}
+const pgA = pager($('res').querySelector('table'), $('tb'), true);
+const pgB = pager($('pt'), $('pb'), false);
+
+[false, true].forEach(ex => {
+  task($(ex ? 'go2' : 'go'), $('stop'),
+    () => { const qid = $('tx').value; if (!/^Q\d+$/.test(qid)) { st(t('pickFirst'), 1); return null; }
+            return buildTaxa(qid, $('lim').value, $('idw').checked, $('noimg').checked, $('enw').checked, ex); },
+    r => rows = r,
+    () => { pgA.set(rows); $('res').hidden = !rows.length; $('md').disabled = !rows.length; }, 'A');
+  task($(ex ? 'pgo2' : 'pgo'), $('pstop'),
+    () => buildPeople($('lim').value, $('pidw').checked, $('pimg').checked, $('pctz').checked, $('penw').checked, ex),
+    r => prow = r,
+    () => { pgB.set(prow); $('pt').hidden = !prow.length; $('pmd').disabled = !prow.length; }, 'B');
+});
+
+function toMd(list, k) {
+  const e = x => String(x || '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
+  const head = k === 'A' ? [t('hName'), t('hLabel')] : [t('hPerson'), t('hDesc')];
+  let m = `# ${t(k === 'A' ? 'secA' : 'secB')}\n\n${new Date().toISOString().slice(0, 10)} · ${list.length}\n\n| # | ${head[0]} | ${head[1]} | Wikidata | ${t('hIdw')} | ${t('hEnw')} | Wikispecies |\n|---|---|---|---|---|---|---|\n`;
+  list.forEach((r, i) => {
+    const ml = u => u ? `[${e(decodeURIComponent(u.split('/wiki/')[1] || '').replace(/_/g, ' '))}](${u})` : '—';
+    const idw = ml(r.idwiki) + ' | ' + ml(r.enwiki);
+    m += `| ${i + 1} | ${k === 'A' ? '*' + e(r.nama) + '*' : e(r.nama)} | ${e(r.label)} | [${r.qid}](https://www.wikidata.org/wiki/${r.qid}) | ${idw} | ${r.spwiki ? ml(r.spwiki) : `[${t('create')}](https://species.wikimedia.org/w/index.php?action=edit&title=${encodeURIComponent(r.nama)})`} |\n`;
+  });
+  m += `\n\`\`\`sparql\n${lastQ[k]}\n\`\`\`\n`;
+  return m;
+}
+function dl(text, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/markdown' })); a.download = name; a.click();
+}
+$('md').onclick = () => dl(toMd(rows, 'A'), 'wikispecies-species.md');
+$('pmd').onclick = () => dl(toMd(prow, 'B'), 'wikispecies-biographies.md');
+
+// ubah filter/pengaturan => kosongkan hasil agar tidak rancu
+function reset(k) {
+  if (ctl) ctl.abort();
+  lastQ[k] = ''; $('sq' + k).textContent = t('notRun'); $('lnk' + k).hidden = true; st('');
+  if (k === 'A') { rows = []; pgA.set([]); $('res').hidden = true; $('md').disabled = true; }
+  else { prow = []; pgB.set([]); $('pt').hidden = true; $('pmd').disabled = true; }
+}
+['tx', 'idw', 'enw', 'noimg'].forEach(i => $(i).addEventListener('change', () => reset('A')));
+['pidw', 'penw', 'pimg', 'pctz'].forEach(i => $(i).addEventListener('change', () => reset('B')));
+['ep', 'lim'].forEach(i => $(i).addEventListener('change', () => { reset('A'); reset('B'); }));
+document.querySelectorAll('#tabs .tab').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs .tab').forEach(x => x.className = x === b ? 'tab on' : 'tab');
+  $('tabA').hidden = b.dataset.t !== 'A'; $('tabB').hidden = b.dataset.t !== 'B';
+});
+$('lg').onclick = () => { lang = lang === 'id' ? 'en' : 'id'; applyLang(); };
+applyLang();
+$('bs').click();
+</script>
+</body>
+</html>
