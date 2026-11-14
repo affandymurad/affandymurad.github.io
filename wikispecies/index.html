@@ -26,6 +26,19 @@ pre{background:#f0f3fa;padding:8px;border-radius:8px;overflow:auto;font-size:12p
 .sw i{position:absolute;top:3px;left:3px;width:calc(50% - 3px);height:26px;border-radius:99px;background:#2d4f9c;transition:transform .2s}
 .sw[aria-checked=false] span:first-of-type,.sw[aria-checked=true] span:last-of-type{color:#fff}
 .sw[aria-checked=true] i{transform:translateX(100%)}
+td{overflow-wrap:anywhere}
+.row input[type=text]{flex:1 1 160px;min-width:0}
+@media(max-width:720px){
+  body{padding:12px}.card{padding:12px}
+  .row>button,.row>.sw{flex:0 0 auto}
+  table,tbody{display:block}thead{display:none}
+  tr{display:grid;grid-template-columns:1fr;gap:2px;padding:10px 12px;margin-bottom:10px;border:1px solid #dde;border-radius:10px;background:#fff}
+  td{display:grid;grid-template-columns:minmax(92px,34%) 1fr;gap:8px;padding:3px 0;border:0}
+  td::before{content:attr(data-label);color:#556;font-size:12px;font-weight:600}
+  td:first-child{grid-template-columns:1fr;font-weight:700;color:#2d4f9c}td:first-child::before{content:none}
+  td:first-child::after{content:none}
+}
+@media(max-width:480px){.top{gap:8px}h1{font-size:19px}.row{gap:6px}.row>button{flex:1 1 auto}}
 </style>
 </head>
 <body>
@@ -264,9 +277,10 @@ function task(btn, stopBtn, build, outRows, render, k) {
 function link(href, text) { const a = document.createElement('a'); a.href = href; a.textContent = text; a.target = '_blank'; a.rel = 'noopener'; return a; }
 function fill(tb, list, italic, off) {
   tb.innerHTML = '';
+  const lbl = ['#', t(italic ? 'hName' : 'hPerson'), t(italic ? 'hLabel' : 'hDesc'), 'Wikidata', t('hIdw'), t('hEnw'), 'Wikispecies'];
   list.forEach((r, i) => {
     const tr = tb.insertRow();
-    tr.insertCell().textContent = off + i + 1;
+    const c0 = tr.insertCell(); c0.textContent = off + i + 1;
     const n = tr.insertCell(), e = document.createElement(italic ? 'i' : 'span'); e.textContent = r.nama; n.append(e);
     tr.insertCell().textContent = r.label;
     tr.insertCell().append(link('https://www.wikidata.org/wiki/' + r.qid, r.qid));
@@ -275,6 +289,7 @@ function fill(tb, list, italic, off) {
     w.append(r.idwiki ? wl(r.idwiki) : '—');
     tr.insertCell().append(r.enwiki ? wl(r.enwiki) : '—');
     tr.insertCell().append(r.spwiki ? wl(r.spwiki) : link('https://species.wikimedia.org/w/index.php?action=edit&title=' + encodeURIComponent(r.nama), t('create')));
+    [...tr.cells].forEach((c, k) => { c.dataset.label = lbl[k]; });
   });
 }
 
