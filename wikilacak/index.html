@@ -687,34 +687,6 @@ en:{
   usersTitle:"Most edits", usersEmpty:"No significant users yet (at least 2 entries).", usersBasis:"Based on the latest {n} entries · at least 2 entries", perPage:"Rows per page", usersEntries:"{n} entries",
   close:"Close"
 },
-ms:{
-  tabChanges:"Perubahan Terkini", tabNew:"Halaman Baharu", langTitle:"Bahasa antara muka dan data",
-  soundOn:"Bunyi hidup", soundOff:"Bunyi mati", soundTitle:"Mainkan bunyi “ting-tong” apabila ada entri baharu",
-  countTitle:"Bilangan entri dimuatkan",
-  loading:"Memuatkan data…", refreshing:"Menyegarkan…", failed:"Gagal memuatkan: {e}", retry:"cuba lagi dalam {t}",
-  updated:"Dikemas kini {t}", nextIn:"seterusnya dalam {t}", autoOff:"penyegaran automatik mati",
-  search:"Cari tajuk, pengguna atau ringkasan…", refreshLbl:"Penyegaran",
-  mAuto:"Automatik", mAutoT:"Menyegarkan sendiri setiap {t}", mInt:"Sela", mIntT:"Tetapkan sendiri sela penyegaran",
-  mOff:"Mati", mOffT:"Penyegaran automatik dimatikan. Butang Segarkan masih boleh digunakan",
-  intAria:"Sela penyegaran", refreshBtn:"Segarkan",
-  filtersLbl:"Penapis aktif:", legend:"Entri baharu ditandakan selama {t}",
-  fNotBot:"Bukan bot", fEditNew:"Suntingan dan halaman baharu", fAllNs:"Semua ruang nama", fNoLogs:"Tanpa log tindakan",
-  fLast500:"500 terkini", fMain:"Ruang nama utama", fNoRedirect:"Tanpa lencongan", fOnlyNew:"Halaman baharu sahaja",
-  thPage:"Halaman", thUser:"Pengguna", thType:"Jenis", thSize:"Saiz (bait)", thSum:"Ringkasan", thTime:"Masa",
-  diff:"beza", hist:"sejarah", tNew:"Baharu", tEdit:"Suntingan", anon:"Pengguna tanpa nama", temp:"Akaun sementara",
-  minor:"Kecil", minorT:"Suntingan kecil", redir:"Lencongan", redirT:"Halaman lencongan",
-  hiddenU:"(disembunyikan)", hiddenC:"(ringkasan disembunyikan)", unknownU:"(tidak diketahui)",
-  eTimeout:"tamat masa", eOffline:"tiada sambungan atau disekat", eBad:"respons tidak dikenali",
-  emptyFail:"Data tidak dapat dimuatkan", emptyFailHint:"{e}. Klik “Segarkan” untuk mencuba lagi.",
-  noRes:"Tiada hasil", noResHint:"Tiada yang sepadan dengan “{q}”.", noEnt:"Belum ada entri", noEntHint:"Cuba segarkan sebentar lagi.",
-  showing:"Entri {a}–{b} daripada {n}", filteredFrom:"(ditapis daripada {m})", zero:"Tiada entri",
-  prev:"Halaman sebelumnya", next:"Halaman seterusnya", pagerAria:"Halaman senarai",
-  blocked:"Bunyi disekat oleh pelayar. Klik halaman sekali untuk mengaktifkannya.", newN:"Entri baharu: {n}", top:"Ke atas",
-  note:"Data langsung daripada Wikipedia · tetapan disimpan dalam pelayar ini.",
-  talk:"perbincangan", contribs:"sumbangan", themeTitle:"Tema warna", themeSystem:"Sistem", themeLight:"Cerah", themeDark:"Gelap",
-  usersTitle:"Suntingan terbanyak", usersEmpty:"Belum ada pengguna ketara (sekurang-kurangnya 2 entri).", usersBasis:"Berdasarkan {n} entri terkini · sekurang-kurangnya 2 entri", perPage:"Baris setiap halaman", usersEntries:"{n} entri",
-  close:"Tutup"
-},
 ko:{
   tabChanges:"최근 바뀜", tabNew:"새 문서", langTitle:"인터페이스 및 데이터 언어",
   soundOn:"소리 켜짐", soundOff:"소리 꺼짐", soundTitle:"새 항목이 들어오면 “딩동” 소리 재생",
@@ -1253,7 +1225,6 @@ ml:{
 const I18N_EXT = {
   id:{ projectsLbl:"Proyek", kPhoto:"foto", kImage:"gambar", kVector:"vektor", kDoc:"dokumen", kVideo:"video", kAudio:"audio", kModel:"model 3D", kFile:"berkas", fFile:"Ruang nama berkas" },
   en:{ projectsLbl:"Project", kPhoto:"photo", kImage:"image", kVector:"vector", kDoc:"document", kVideo:"video", kAudio:"audio", kModel:"3D model", kFile:"file", fFile:"File namespace" },
-  ms:{ projectsLbl:"Projek", kPhoto:"foto", kImage:"imej", kVector:"vektor", kDoc:"dokumen", kVideo:"video", kAudio:"audio", kModel:"model 3D", kFile:"fail", fFile:"Ruang nama fail" },
   ko:{ projectsLbl:"프로젝트", kPhoto:"사진", kImage:"이미지", kVector:"벡터", kDoc:"문서", kVideo:"동영상", kAudio:"오디오", kModel:"3D 모델", kFile:"파일", fFile:"파일 이름공간" },
   es:{ projectsLbl:"Proyecto", kPhoto:"foto", kImage:"imagen", kVector:"vectorial", kDoc:"documento", kVideo:"vídeo", kAudio:"audio", kModel:"modelo 3D", kFile:"archivo", fFile:"Espacio de nombres Archivo" },
   fr:{ projectsLbl:"Projet", kPhoto:"photo", kImage:"image", kVector:"vectoriel", kDoc:"document", kVideo:"vidéo", kAudio:"audio", kModel:"modèle 3D", kFile:"fichier", fFile:"Espace de noms Fichier" },
@@ -1279,7 +1250,7 @@ for (const k in I18N_EXT) Object.assign(I18N[k], I18N_EXT[k]);
 /* pemilih bahasa: di mode Wikipedia = edisi bahasa Wikipedia (data + antarmuka); di proyek lain = bahasa antarmuka saja */
 const LANG_LABELS = {
   id:["Edisi bahasa Wikipedia", "Bahasa antarmuka"], en:["Wikipedia language edition", "Interface language"],
-  ms:["Edisi bahasa Wikipedia", "Bahasa antara muka"], ko:["위키백과 언어판", "인터페이스 언어"],
+  ko:["위키백과 언어판", "인터페이스 언어"],
   es:["Edición lingüística de Wikipedia", "Idioma de la interfaz"], fr:["Édition linguistique de Wikipédia", "Langue de l’interface"],
   de:["Wikipedia-Sprachversion", "Oberflächensprache"], ja:["ウィキペディアの言語版", "表示言語"],
   zh:["维基百科语言版本", "界面语言"], ar:["النسخة اللغوية من ويكيبيديا", "لغة الواجهة"],
@@ -1292,19 +1263,15 @@ const LANG_LABELS = {
 };
 for (const k in LANG_LABELS) Object.assign(I18N[k], { langEdition:LANG_LABELS[k][0], langUi:LANG_LABELS[k][1] });
 Object.assign(I18N.id, { langProj:"Edisi bahasa proyek", eNoSite:"Proyek ini belum tersedia untuk bahasa yang dipilih. Pilih bahasa lain." });
-Object.assign(I18N.ms, { langProj:"Edisi bahasa projek", eNoSite:"Projek ini belum tersedia untuk bahasa yang dipilih. Pilih bahasa lain." });
 Object.assign(I18N.en, { langProj:"Project language edition", eNoSite:"This project is not available for the selected language. Pick another language." });
 
 /* badge topik: judul pilihan, keterangan bila topik belum tersedia, judul kelompok di dropdown (urutan: topik, belum tersedia, wilayah) */
 /* info pengguna: id/ms/en saja; bahasa lain memakai bahasa Inggris */
 const UI_LABELS = {
-  id:{ uiOpt:"Info pengguna", uiNew:"Baru", uiFNew:"Akun baru", uiFRole:"Admin/bot", uiBlocked:"Diblokir", uiPartial:"Diblokir sebagian", uiEdits:"{n} edit", uiRegTip:"Terdaftar {d}", uiEditsTip:"{n} suntingan di wiki ini",
+  id:{ uiOpt:"Info pengguna", uiNew:"Baru", uiFYoung:"Akun baru (<6 bulan)", uiFRare:"Jarang menyunting (<{m})", uiFRole:"Admin/bot", uiBlocked:"Diblokir", uiPartial:"Diblokir sebagian", uiEdits:"{n} edit", uiRegTip:"Terdaftar {d}", uiEditsTip:"{n} suntingan di wiki ini",
        uiY:"thn", uiM:"bln", uiD:"hr", uiUntil:"hingga {d}", uiInf:"tanpa batas waktu", uiBy:"oleh {u}",
        g_sysop:"Admin", g_bureaucrat:"Birokrat", g_bot:"Bot", g_checkuser:"CheckUser", g_oversight:"Oversight", g_extendedconfirmed:"Extended" },
-  ms:{ uiOpt:"Maklumat pengguna", uiNew:"Baharu", uiFNew:"Akaun baharu", uiFRole:"Pentadbir/bot", uiBlocked:"Disekat", uiPartial:"Disekat sebahagian", uiEdits:"{n} suntingan", uiRegTip:"Berdaftar {d}", uiEditsTip:"{n} suntingan di wiki ini",
-       uiY:"thn", uiM:"bln", uiD:"hr", uiUntil:"hingga {d}", uiInf:"tanpa had masa", uiBy:"oleh {u}",
-       g_sysop:"Pentadbir", g_bureaucrat:"Birokrat", g_bot:"Bot", g_checkuser:"CheckUser", g_oversight:"Oversight", g_extendedconfirmed:"Extended" },
-  en:{ uiOpt:"User info", uiNew:"New", uiFNew:"New accounts", uiFRole:"Admins/bots", uiBlocked:"Blocked", uiPartial:"Partially blocked", uiEdits:"{n} edits", uiRegTip:"Registered {d}", uiEditsTip:"{n} edits on this wiki",
+  en:{ uiOpt:"User info", uiNew:"New", uiFYoung:"New accounts (<6 months)", uiFRare:"Infrequent editors (<{m})", uiFRole:"Admins/bots", uiBlocked:"Blocked", uiPartial:"Partially blocked", uiEdits:"{n} edits", uiRegTip:"Registered {d}", uiEditsTip:"{n} edits on this wiki",
        uiY:"y", uiM:"mo", uiD:"d", uiUntil:"until {d}", uiInf:"indefinitely", uiBy:"by {u}",
        g_sysop:"Admin", g_bureaucrat:"Bureaucrat", g_bot:"Bot", g_checkuser:"CheckUser", g_oversight:"Oversight", g_extendedconfirmed:"Extended" }
 };
@@ -1316,12 +1283,6 @@ const SEARCH_LABELS = {
        sSortEdited:"Suntingan terakhir (terbaru)", sSortCreated:"Halaman dibuat (terbaru)", sSortRel:"Paling relevan",
        sHint:"Cari kata kunci di isi halaman. Tanggal mengikuti urutan: suntingan terakhir atau tanggal halaman dibuat. Indeks pencarian bisa tertinggal beberapa menit.",
        sNone:"Tidak ada hasil", sNoneHint:"Coba kata kunci lain atau perlebar rentang tanggal.", sFound:"{n} halaman", sShown:"Menampilkan {a} dari {n}", sBusy:"Mencari…", sWords:"{n} kata", sNeed:"Isi kata kunci atau rentang tanggal.", sLast:"Penyunting terakhir" },
-  ms:{ tabProj:"WikiProjek", sPeriod:"Tempoh", sSortBy:"Susun", pjPick:"Pilih atau taip nama WikiProjek…", pjGo:"Muat", pjSince:"Aktiviti", pjClass:"Kelas", pjImp:"Kepentingan", pjAll:"Semua", pjFilter:"Tapis tajuk…", pj24h:"24 jam lepas", pj7d:"7 hari lepas", pj30d:"30 hari lepas", pjAllTime:"Semua masa", pjHint:"Pilih WikiProjek dan tekan Muat untuk melihat artikelnya dan bila terakhir disunting. Tersedia untuk Wikipedia bahasa Indonesia, Inggeris, Perancis dan Arab.", pjUnsup:"Ciri ini hanya tersedia untuk Wikipedia bahasa Indonesia, Inggeris, Perancis dan Arab.", pjNeed:"Pilih atau taip nama WikiProjek dahulu.", pjReading:"Membaca senarai artikel… {n}", pjRev:"Mengambil suntingan terakhir… {a}/{b}", pjStats:"{a} artikel disunting daripada {n} · {u} penyunting", pjCapNote:"Suntingan diambil untuk {n} artikel terpenting; sempitkan dengan Kelas atau Kepentingan.", pjFail:"Gagal memuat: {e}", pjListLoad:"Memuatkan senarai WikiProjek…", pjListLoadId:"Memuatkan senarai WikiProjek… pemuatan pertama mungkin sehingga ±20 saat, selepas itu disimpan 24 jam.", pjListFail:"Gagal memuatkan senarai WikiProjek. Semak sambungan dan cuba lagi.", pjRetry:"Cuba lagi", pjListReady:"{n} WikiProjek tersedia",
-       pjNone:"Tiada artikel yang sepadan", pjNoneHint:"Longgarkan penapis aktiviti, kelas atau kepentingan.",
-       tabSearch:"Carian", sQ:"Kata kunci…", sFrom:"Dari", sTo:"Hingga", sGo:"Cari", sMore:"Muat lebih banyak", sSortLbl:"Susunan dan jenis tarikh",
-       sSortEdited:"Suntingan terakhir (terbaharu)", sSortCreated:"Halaman dicipta (terbaharu)", sSortRel:"Paling relevan",
-       sHint:"Cari kata kunci dalam kandungan halaman. Tarikh mengikut susunan: suntingan terakhir atau tarikh halaman dicipta. Indeks carian mungkin tertinggal beberapa minit.",
-       sNone:"Tiada hasil", sNoneHint:"Cuba kata kunci lain atau lebarkan julat tarikh.", sFound:"{n} halaman", sShown:"Memaparkan {a} daripada {n}", sBusy:"Mencari…", sWords:"{n} perkataan", sNeed:"Isi kata kunci atau julat tarikh.", sLast:"Penyunting terakhir" },
   en:{ tabProj:"WikiProject", sPeriod:"Period", sSortBy:"Sort by", pjPick:"Pick or type a WikiProject name…", pjGo:"Load", pjSince:"Activity", pjClass:"Class", pjImp:"Importance", pjAll:"All", pjFilter:"Filter titles…", pj24h:"Last 24 hours", pj7d:"Last 7 days", pj30d:"Last 30 days", pjAllTime:"All time", pjHint:"Pick a WikiProject and press Load to see its articles and when they were last edited. Available for the Indonesian, English, French, and Arabic Wikipedias.", pjUnsup:"This feature is only available for the Indonesian, English, French, and Arabic Wikipedias.", pjNeed:"Pick or type a WikiProject name first.", pjReading:"Reading article list… {n}", pjRev:"Fetching last edits… {a}/{b}", pjStats:"{a} articles edited out of {n} · {u} editors", pjCapNote:"Edits were fetched for the {n} most important articles; narrow down with Class or Importance.", pjFail:"Failed to load: {e}", pjListLoad:"Loading WikiProject list…", pjListLoadId:"Loading WikiProject list… the first load can take up to ~20 seconds, then it is cached for 24 hours.", pjListFail:"Could not load the WikiProject list. Check your connection and try again.", pjRetry:"Retry", pjListReady:"{n} WikiProjects available",
        pjNone:"No matching articles", pjNoneHint:"Loosen the activity, class, or importance filter.",
        tabSearch:"Search", sQ:"Keywords…", sFrom:"From", sTo:"To", sGo:"Search", sMore:"Load more", sSortLbl:"Sort and date type",
@@ -1354,17 +1315,6 @@ const DESC_LABELS = {
        pdMeta:"Tempat relawan Wikimedia berdiskusi, mengajukan hibah, dan berkoordinasi lintas proyek.",
        pdCommons:"Gudang gambar, audio, dan video bebas pakai yang dapat digunakan semua proyek Wikimedia.",
        pdWikidata:"Basis data fakta bersama, misalnya tanggal lahir atau jumlah penduduk, yang dipakai oleh semua proyek Wikimedia." },
-  ms:{ tdChanges:"Senarai suntingan terkini di projek ini yang dikemas kini secara automatik, jadi anda boleh melihat apa yang sedang diubah sekarang.",
-       tdNew:"Halaman (di Commons: fail) yang baru dicipta. Berguna untuk mencari artikel baharu dan menyemak kualitinya.",
-       tdProj:"Pantau artikel milik satu WikiProjek, iaitu kumpulan sukarelawan yang menguruskan satu topik. Lihat bila setiap artikel disunting kali terakhir dan oleh siapa.",
-       tdSearch:"Cari perkataan dalam kandungan halaman, kemudian sempitkan hasil dengan tarikh. Hasil tidak dikemas kini secara automatik.",
-       pdWikipedia:"Ensiklopedia bebas yang ditulis dan disunting oleh sukarelawan di seluruh dunia.",
-       pdWiktionary:"Kamus bebas: makna perkataan, asal usul, sebutan dan terjemahan dalam banyak bahasa.",
-       pdWikisource:"Perpustakaan digital bebas yang mengandungi teks sumber seperti buku, manuskrip dan dokumen bersejarah yang ditaip semula oleh sukarelawan.",
-       pdWikivoyage:"Panduan pelancongan bebas: maklumat destinasi, cara bergerak dan petua perjalanan.",
-       pdMeta:"Tempat sukarelawan Wikimedia berbincang, memohon geran dan menyelaras antara projek.",
-       pdCommons:"Gedung imej, audio dan video bebas guna yang boleh digunakan oleh semua projek Wikimedia.",
-       pdWikidata:"Pangkalan data fakta bersama, contohnya tarikh lahir atau jumlah penduduk, yang digunakan oleh semua projek Wikimedia." },
   es:{ tdChanges:"Lista en vivo de las últimas ediciones de este proyecto. Se actualiza sola, así que puedes ver qué se está cambiando ahora mismo.",
        tdNew:"Páginas (en Commons: archivos) recién creadas. Útil para encontrar artículos nuevos y revisar su calidad.",
        tdProj:"Sigue los artículos de un WikiProyecto, un grupo de voluntarios que se ocupa de un tema. Mira cuándo se editó cada artículo por última vez y quién lo hizo.",
@@ -1571,7 +1521,7 @@ for (const k in DESC_LABELS) Object.assign(I18N[k], DESC_LABELS[k]);
 const LIST_LABELS = {
   id:["Memuat daftar…","Mengambil daftar… {a}/{b}","Daftar bertambah seiring halaman selesai dianalisis.","Halaman yang sudah dianalisis"],
   en:["Loading list…","Fetching list… {a}/{b}","The list grows as pages finish being analysed.","Pages analysed so far"],
-  ms:["Memuatkan senarai…","Mengambil senarai… {a}/{b}","Senarai bertambah apabila halaman selesai dianalisis.","Halaman yang telah dianalisis"],
+  
   ko:["목록 불러오는 중…","목록 가져오는 중… {a}/{b}","문서 분석이 끝날 때마다 목록이 늘어납니다.","지금까지 분석한 문서"],
   es:["Cargando lista…","Obteniendo lista… {a}/{b}","La lista crece a medida que se analizan las páginas.","Páginas analizadas hasta ahora"],
   fr:["Chargement de la liste…","Récupération de la liste… {a}/{b}","La liste s’allonge à mesure que les pages sont analysées.","Pages analysées jusqu’ici"],
@@ -1951,7 +1901,7 @@ function entHtml(x) {
 /* ---- Info pengguna ----
    Umur akun, jumlah suntingan, grup penting, dan status blokir dari list=users (50 nama per permintaan, hanya pengguna di halaman yang tampil).
    Hanya akun terdaftar (bukan IP, akun sementara, atau nama tersembunyi). Cache 1 jam di memori + localStorage karena suntingan dan blokir berubah. */
-const UI_TTL = 3600e3, UI_KEEP = 1500, UI_STORE = 'wikilacak.userinfo.v1', UI_CHUNK = 50, UI_NEW_MS = 4 * 86400e3;
+const UI_TTL = 3600e3, UI_KEEP = 1500, UI_STORE = 'wikilacak.userinfo.v1', UI_CHUNK = 50, UI_NEW_MS = 4 * 86400e3, UI_YOUNG_MS = 182 * 86400e3, UI_RARE = 500;
 const UI_ROLES = ['sysop', 'bureaucrat', 'checkuser', 'oversight', 'bot', 'extendedconfirmed'];
 const uiOn = () => prefs.ui;
 const uiCache = new Map(), uiStamp = new Map(), uiPending = new Set(), uiFail = new Map();
@@ -2042,15 +1992,15 @@ function uiHtml(x) {
   return out.length ? `<div class="ubs">${out.join('')}</div>` : '';
 }
 
-const UI_KEYS = ['new', 'role', 'blocked'];
-const uiLabel = k => t({ new:'uiFNew', role:'uiFRole', blocked:'uiBlocked' }[k]);
-const uiMatch = (c, f) => f === 'new' ? !!c.r && Date.now() - c.r < UI_NEW_MS : f === 'role' ? c.g.some(g => g !== 'extendedconfirmed') : !!c.b;
+const UI_KEYS = ['young', 'rare', 'role', 'blocked'];
+const uiLabel = k => t({ young:'uiFYoung', rare:'uiFRare', role:'uiFRole', blocked:'uiBlocked' }[k], { m:UI_RARE });
+const uiMatch = (c, f) => f === 'young' ? !!c.r && Date.now() - c.r < UI_YOUNG_MS : f === 'rare' ? c.e != null && c.e < UI_RARE : f === 'role' ? c.g.some(g => g !== 'extendedconfirmed') : !!c.b;
 let uiSelSig = '';
 function renderUiSel() {
   const on = uiOn(), sel = $('uiSel');
   $('uiSelWrap').hidden = !on; $('uiProg').hidden = !on;
   if (!on) { uiSelSig = ''; return; }
-  const h = host(), items = store ? store.items : [], cnt = { new:0, role:0, blocked:0 }, users = new Set(), done = new Set();
+  const h = host(), items = store ? store.items : [], cnt = { young:0, rare:0, role:0, blocked:0 }, users = new Set(), done = new Set();
   for (const x of items) {
     if (!uiEligible(x)) continue;
     users.add(x.user);
@@ -2154,7 +2104,7 @@ function sRender() {
   else { sEnsureEditors(S.items); ensureUi(S.items); }
   let list = S.items;
   if (uon) {
-    const cnt = { new:0, role:0, blocked:0 }; let done = 0;
+    const cnt = { young:0, rare:0, role:0, blocked:0 }; let done = 0;
     for (const x of S.items) {
       const c = x.user ? uiCache.get(uh + '|' + x.user) : undefined;
       if (x.edFail || (x.user && (!uiEligible(x) || c !== undefined))) done++;
@@ -2365,7 +2315,7 @@ function pjRender() {
   if (!uon) P.uf = '';
   $('pjUiWrap').hidden = !uon; $('pjUiProg').hidden = !uon;
   if (uon) {   // info pengguna dihitung dari seluruh daftar yang lolos saringan lain, bukan hanya halaman yang tampil
-    const full = pjView(true).map(x => P.rev.get(x.title)).filter(Boolean), uh = host(), cnt = { new:0, role:0, blocked:0 };
+    const full = pjView(true).map(x => P.rev.get(x.title)).filter(Boolean), uh = host(), cnt = { young:0, rare:0, role:0, blocked:0 };
     let done = 0;
     for (const r of full) {
       const c = r.user ? uiCache.get(uh + '|' + r.user) : undefined;
@@ -2823,7 +2773,7 @@ function readUrl() {
   if (LANGS[p.get('lang')]) prefs.wiki = p.get('lang');
   if (p.has('sound')) prefs.sound = ['1','true','on','yes'].includes(p.get('sound').toLowerCase());
   if (p.has('ui')) prefs.ui = ['1','true','on','yes'].includes(p.get('ui').toLowerCase());
-  if (['new', 'role', 'blocked'].includes(p.get('uf'))) uiFilter = p.get('uf');
+  if (['young', 'rare', 'role', 'blocked'].includes(p.get('uf'))) uiFilter = p.get('uf');
   if (p.has('proj')) P.proj = p.get('proj').slice(0, 200);
   if (P_SINCE[p.get('since')] !== undefined && p.has('since')) P.since = p.get('since');
   if (p.has('q')) S.q = p.get('q').slice(0, 300);

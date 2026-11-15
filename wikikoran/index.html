@@ -437,7 +437,7 @@ const LANGS = {
         lic:'Inhoud van Wikipedia onder CC BY-SA 4.0. Elke kaart verwijst naar de bronpagina.'},
     main:'Hoofdpagina',
     sel:{tfa:'#segment-Uitgelicht', potd:'#segment-Afbeelding', dyk:'#segment-Wist_je_dat', otd:null, news:'#segment-Actueel'},
-    fb:{date:d=>`${d.D} ${d.month}`, dateHead:/Gebeurtenissen/i}
+    fb:{date:d=>`${d.D} ${['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'][d.m-1]}`, dateHead:/Gebeurtenissen/i}
   },
   ru: {
     host:'ru.wikipedia.org', locale:'ru-RU', html:'ru', feed:false,
@@ -646,7 +646,8 @@ const LANGS = {
         na:'यह अनुभाग इस संस्करण में उपलब्ध नहीं है।', src:'स्रोत', qid:'विकिडेटा Q-ID', qidTip:'हर कड़ी के पास विकिडेटा Q-ID दिखाएँ',
         lic:'सामग्री विकिपीडिया से, CC BY-SA 4.0 लाइसेंस के अंतर्गत। हर कार्ड अपने स्रोत पृष्ठ से जुड़ा है।'},
     main:'मुखपृष्ठ',
-    sel:{tfa:H(/निर्वाचित लेख/), potd:H(/निर्वाचित चित्र/), dyk:H(/क्या आप जानते/), otd:null, news:H(/^\s*समाचार/)}
+    sel:{tfa:H(/निर्वाचित लेख/), potd:H(/निर्वाचित चित्र/), dyk:H(/क्या आप जानते/), otd:null, news:H(/^\s*समाचार/)},
+    fb:{date:d=>`${d.D} ${['जनवरी','फरवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्तूबर','नवंबर','दिसंबर'][d.m-1]}`, dateHead:/प्रमुख घटनाएँ/}
   }
 };
 /* Urutan kartu: berita di atas, bagian pilihan dan paling banyak dibaca di bawah */
