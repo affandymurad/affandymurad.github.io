@@ -190,6 +190,7 @@ footer{padding-top:14px;text-align:center;font-size:12px;color:var(--muted)}
         <option value="mr">मराठी</option>
         <option value="ml">മലയാളം</option>
         <option value="hi">हिन्दी</option>
+        <option value="vi">Tiếng Việt</option>
       </select>
       <input type="date" id="date" min="2016-01-01">
       <button type="button" class="pdfbtn" id="today">Hari ini</button>
@@ -648,6 +649,29 @@ const LANGS = {
     main:'मुखपृष्ठ',
     sel:{tfa:H(/निर्वाचित लेख/), potd:H(/निर्वाचित चित्र/), dyk:H(/क्या आप जानते/), otd:null, news:H(/^\s*समाचार/)},
     fb:{date:d=>`${d.D} ${['जनवरी','फरवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्तूबर','नवंबर','दिसंबर'][d.m-1]}`, dateHead:/प्रमुख घटनाएँ/}
+  },
+  vi: {
+    host:'vi.wikipedia.org', locale:'vi-VN', html:'vi', feed:false, raster:true,
+    title:'Báo Wikipedia', tagline:'Đọc mỗi ngày từ bách khoa toàn thư mở',
+    edition:'Phiên bản tiếng Việt', vol:'Tập', no:'Số',
+    labels:{tfa:'Bài viết chọn lọc', potd:'Hình ảnh chọn lọc', dyk:'Bạn có biết?', otd:'Ngày này năm xưa', news:'Tin tức thời sự', mostread:'Được đọc nhiều nhất', featured:'Nổi bật hôm nay'},
+    pdf:{making:'Đang tạo PDF…', fail:'Không tạo được PDF: ', edition:'Phiên bản', date:'Ngày', source:'Nguồn', generated:'Tạo lúc',
+         mostReadDay:'Dữ liệu được đọc nhiều nhất', timezone:'Múi giờ', article:'Bài viết', views:'Lượt xem', topViews:'Xem nhiều nhất',
+         empty:'Không có dữ liệu cho phần này.', partial:'Các phần sau chưa có khi tạo PDF: {list}.',
+         report:'báo cáo được tạo tự động', page:'Trang {p}/{n}',
+         sources:'Nguồn dữ liệu: Wikipedia (CC BY-SA 4.0) và Wikimedia Pageviews. Số liệu là lượt xem trang trong ngày được ghi.'},
+    ui:{today:'Hôm nay', date:'Ngày', noDate:'Không có dữ liệu cho {date}.',
+        read:'Đọc to', stop:'Dừng', reading:'Đang đọc…', speechName:'tiếng Việt',
+        noSupport:'Trình duyệt này không hỗ trợ tính năng đọc to.', noVoice:'Không tìm thấy giọng đọc {lang} trên thiết bị; đang dùng giọng mặc định.',
+        noText:'Không có văn bản để đọc.', notReady:'Phần này vẫn đang tải.',
+        noStart:'Không nghe thấy âm thanh. Hãy kiểm tra giọng đọc văn bản thành giọng nói trên thiết bị.', readFail:'Không đọc được: ', num:'Số',
+        pdf:'Tải PDF', dark:'Chế độ tối', darkTip:'Chuyển giao diện sáng/tối (mặc định theo trình duyệt)',
+        na:'Phần này chưa có trong phiên bản này.', src:'Nguồn', qid:'Q-ID Wikidata', qidTip:'Hiện mã Q của Wikidata bên cạnh mỗi liên kết',
+
+        lic:'Nội dung lấy từ Wikipedia, theo giấy phép CC BY-SA 4.0. Mỗi thẻ có liên kết đến trang nguồn.'},
+    main:'Trang Chính',
+    sel:{tfa:'#mp-tfa', potd:'#mp-tfp', dyk:'#mp-dyk', otd:'#mp-otd', news:null},
+    fb:{news:'Cổng thông tin:Thời sự'}
   }
 };
 /* Urutan kartu: berita di atas, bagian pilihan dan paling banyak dibaca di bawah */

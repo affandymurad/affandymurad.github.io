@@ -627,7 +627,7 @@ const LANGS = {
   es:{name:"Español"}, fr:{name:"Français"}, de:{name:"Deutsch"}, ja:{name:"日本語"},
   zh:{name:"中文"}, ar:{name:"العربية", rtl:true}, nl:{name:"Nederlands"}, ru:{name:"Русский"},
   th:{name:"ไทย"}, ta:{name:"தமிழ்"}, he:{name:"עברית", rtl:true}, uz:{name:"Oʻzbekcha"}, zgh:{name:"ⵜⴰⵎⴰⵣⵉⵖⵜ ⵜⴰⵏⴰⵡⴰⵢⵜ"},
-  ur:{name:"اردو", rtl:true}, te:{name:"తెలుగు"}, mr:{name:"मराठी"}, ml:{name:"മലയാളം"}, hi:{name:"हिन्दी"}
+  ur:{name:"اردو", rtl:true}, te:{name:"తెలుగు"}, mr:{name:"मराठी"}, ml:{name:"മലയാളം"}, hi:{name:"हिन्दी"}, vi:{name:"Tiếng Việt"}
 };
 
 const I18N = {
@@ -686,6 +686,34 @@ en:{
   talk:"talk", contribs:"contributions", themeTitle:"Color theme", themeSystem:"System", themeLight:"Light", themeDark:"Dark",
   usersTitle:"Most edits", usersEmpty:"No significant users yet (at least 2 entries).", usersBasis:"Based on the latest {n} entries · at least 2 entries", perPage:"Rows per page", usersEntries:"{n} entries",
   close:"Close"
+},
+vi:{
+  tabChanges:"Thay đổi gần đây", tabNew:"Trang mới", langTitle:"Ngôn ngữ giao diện và dữ liệu",
+  soundOn:"Bật âm thanh", soundOff:"Tắt âm thanh", soundTitle:"Phát tiếng “ding-dong” khi có mục mới",
+  countTitle:"Số mục đã tải",
+  loading:"Đang tải dữ liệu…", refreshing:"Đang làm mới…", failed:"Tải thất bại: {e}", retry:"thử lại sau {t}",
+  updated:"Cập nhật {t}", nextIn:"lần tới sau {t}", autoOff:"đã tắt tự động làm mới",
+  search:"Tìm tiêu đề, người dùng hoặc tóm lược…", refreshLbl:"Làm mới",
+  mAuto:"Tự động", mAutoT:"Tự làm mới sau mỗi {t}", mInt:"Khoảng thời gian", mIntT:"Tự đặt thời gian làm mới",
+  mOff:"Tắt", mOffT:"Đã tắt tự động làm mới. Nút Làm mới ngay vẫn dùng được",
+  intAria:"Thời gian làm mới", refreshBtn:"Làm mới ngay",
+  filtersLbl:"Bộ lọc đang bật:", legend:"Mục mới được đánh dấu trong {t}",
+  fNotBot:"Không phải bot", fEditNew:"Sửa đổi và trang mới", fAllNs:"Mọi không gian tên", fNoLogs:"Không có nhật trình",
+  fLast500:"500 mục mới nhất", fMain:"Không gian tên chính", fNoRedirect:"Không có trang đổi hướng", fOnlyNew:"Chỉ trang mới",
+  thPage:"Trang", thUser:"Thành viên", thType:"Loại", thSize:"Kích thước (byte)", thSum:"Tóm lược", thTime:"Thời gian",
+  diff:"khác", hist:"lịch sử", tNew:"Mới", tEdit:"Sửa", anon:"Người dùng vô danh", temp:"Tài khoản tạm thời",
+  minor:"Nhỏ", minorT:"Sửa đổi nhỏ", redir:"Đổi hướng", redirT:"Trang đổi hướng",
+  hiddenU:"(đã ẩn)", hiddenC:"(tóm lược đã ẩn)", unknownU:"(không rõ)",
+  eTimeout:"hết thời gian chờ", eOffline:"không có kết nối hoặc bị chặn", eBad:"phản hồi không nhận dạng được",
+  emptyFail:"Không tải được dữ liệu", emptyFailHint:"{e}. Hãy nhấn “Làm mới ngay” để thử lại.",
+  noRes:"Không có kết quả", noResHint:"Không có mục nào khớp “{q}”.", noEnt:"Chưa có mục nào", noEntHint:"Hãy thử làm mới lại sau giây lát.",
+  showing:"Mục {a}–{b} trong {n}", filteredFrom:"(lọc từ {m})", zero:"Không có mục",
+  prev:"Trang trước", next:"Trang sau", pagerAria:"Các trang danh sách",
+  blocked:"Trình duyệt đã chặn âm thanh. Hãy nhấp vào trang một lần để bật.", newN:"Mục mới: {n}", top:"Lên đầu trang",
+  note:"Dữ liệu trực tiếp từ Wikipedia · cài đặt được lưu trong trình duyệt này.",
+  talk:"thảo luận", contribs:"đóng góp", themeTitle:"Giao diện màu", themeSystem:"Theo hệ thống", themeLight:"Sáng", themeDark:"Tối",
+  usersTitle:"Sửa nhiều nhất", usersEmpty:"Chưa có thành viên nổi bật (cần ít nhất 2 mục).", usersBasis:"Dựa trên {n} mục mới nhất · ít nhất 2 mục", perPage:"Số dòng mỗi trang", usersEntries:"{n} mục",
+  close:"Đóng"
 },
 ko:{
   tabChanges:"최근 바뀜", tabNew:"새 문서", langTitle:"인터페이스 및 데이터 언어",
@@ -1515,6 +1543,32 @@ const DESC_LABELS = {
        pdWikidata:"Tug‘ilgan sana yoki aholi soni kabi faktlarning umumiy ma’lumotlar bazasi; barcha Vikimedia loyihalari undan foydalanadi." }
 };
 for (const k in DESC_LABELS) Object.assign(I18N[k], DESC_LABELS[k]);
+/* ===== Tiếng Việt: label tambahan ===== */
+Object.assign(I18N.vi, { projectsLbl:"Dự án", kPhoto:"ảnh", kImage:"hình", kVector:"vectơ", kDoc:"tài liệu", kVideo:"video", kAudio:"âm thanh", kModel:"mô hình 3D", kFile:"tập tin", fFile:"Không gian tên Tập tin",
+  langEdition:"Phiên bản ngôn ngữ Wikipedia", langUi:"Ngôn ngữ giao diện", langProj:"Phiên bản ngôn ngữ của dự án", eNoSite:"Dự án này chưa có cho ngôn ngữ đã chọn. Hãy chọn ngôn ngữ khác.",
+  uiOpt:"Thông tin người dùng", uiNew:"Mới", uiFYoung:"Tài khoản mới (<6 tháng)", uiFRare:"Ít chỉnh sửa (<{m})", uiFRole:"Quản trị viên/bot", uiBlocked:"Bị chặn", uiPartial:"Bị chặn một phần", uiEdits:"{n} sửa đổi", uiRegTip:"Đăng ký {d}", uiEditsTip:"{n} sửa đổi trên wiki này",
+  uiY:"năm", uiM:"tháng", uiD:"ngày", uiUntil:"đến {d}", uiInf:"vô thời hạn", uiBy:"bởi {u}",
+  g_sysop:"Quản trị viên", g_bureaucrat:"Hành chính viên", g_bot:"Bot", g_checkuser:"CheckUser", g_oversight:"Oversight", g_extendedconfirmed:"Extended",
+  tabProj:"WikiProject", sPeriod:"Khoảng thời gian", sSortBy:"Sắp xếp", pjPick:"Chọn hoặc nhập tên WikiProject…", pjGo:"Tải", pjSince:"Hoạt động", pjClass:"Hạng", pjImp:"Tầm quan trọng", pjAll:"Tất cả", pjFilter:"Lọc tiêu đề…", pj24h:"24 giờ qua", pj7d:"7 ngày qua", pj30d:"30 ngày qua", pjAllTime:"Mọi lúc",
+  pjHint:"Chọn một WikiProject rồi nhấn Tải để xem các bài viết và lần sửa gần nhất của chúng. Có cho Wikipedia tiếng Indonesia, Anh, Pháp và Ả Rập.", pjUnsup:"Tính năng này chỉ có cho Wikipedia tiếng Indonesia, Anh, Pháp và Ả Rập.", pjNeed:"Hãy chọn hoặc nhập tên WikiProject trước.", pjReading:"Đang đọc danh sách bài viết… {n}", pjRev:"Đang lấy lần sửa gần nhất… {a}/{b}", pjStats:"{a} bài được sửa trong {n} · {u} người sửa", pjCapNote:"Đã lấy các lần sửa của {n} bài quan trọng nhất; hãy thu hẹp bằng Hạng hoặc Tầm quan trọng.", pjFail:"Tải thất bại: {e}",
+  pjListLoad:"Đang tải danh sách WikiProject…", pjListLoadId:"Đang tải danh sách WikiProject… lần tải đầu có thể mất tới khoảng 20 giây, sau đó được lưu trong 24 giờ.", pjListFail:"Không tải được danh sách WikiProject. Hãy kiểm tra kết nối rồi thử lại.", pjRetry:"Thử lại", pjListReady:"Có {n} WikiProject",
+  pjNone:"Không có bài viết phù hợp", pjNoneHint:"Hãy nới lỏng bộ lọc hoạt động, hạng hoặc tầm quan trọng.",
+  tabSearch:"Tìm kiếm", sQ:"Từ khóa…", sFrom:"Từ", sTo:"Đến", sGo:"Tìm", sMore:"Tải thêm", sSortLbl:"Cách sắp xếp và loại ngày",
+  sSortEdited:"Sửa gần nhất (mới nhất)", sSortCreated:"Trang được tạo (mới nhất)", sSortRel:"Liên quan nhất",
+  sHint:"Tìm từ khóa trong nội dung trang. Ngày theo cách sắp xếp: lần sửa gần nhất hoặc ngày tạo trang. Chỉ mục tìm kiếm có thể chậm vài phút.",
+  sNone:"Không có kết quả", sNoneHint:"Hãy thử từ khóa khác hoặc mở rộng khoảng ngày.", sFound:"{n} trang", sShown:"Hiển thị {a} trong {n}", sBusy:"Đang tìm…", sWords:"{n} từ", sNeed:"Hãy nhập từ khóa hoặc khoảng ngày.", sLast:"Người sửa gần nhất",
+  tdChanges:"Danh sách trực tiếp các sửa đổi mới nhất trên dự án này. Danh sách tự làm mới nên bạn thấy được những gì đang được thay đổi ngay lúc này.",
+  tdNew:"Các trang (trên Commons: tập tin) vừa được tạo. Hữu ích để tìm bài viết mới và kiểm tra chất lượng.",
+  tdProj:"Theo dõi các bài viết của một WikiProject, tức nhóm tình nguyện viên chăm lo một chủ đề. Xem lần sửa gần nhất của từng bài và do ai thực hiện.",
+  tdSearch:"Tìm từ trong nội dung các trang và thu hẹp kết quả theo ngày. Kết quả không tự làm mới.",
+  pdWikipedia:"Bách khoa toàn thư mở do các tình nguyện viên khắp thế giới viết và biên tập.",
+  pdWiktionary:"Từ điển mở: nghĩa của từ, nguồn gốc, cách phát âm và bản dịch sang nhiều ngôn ngữ.",
+  pdWikisource:"Thư viện số mở chứa các văn bản nguồn như sách, bản thảo và tài liệu lịch sử do tình nguyện viên gõ lại.",
+  pdWikivoyage:"Cẩm nang du lịch mở với thông tin về điểm đến, cách đi lại và mẹo du lịch.",
+  pdMeta:"Nơi các tình nguyện viên Wikimedia thảo luận, xin tài trợ và phối hợp giữa mọi dự án.",
+  pdCommons:"Kho hình ảnh, âm thanh và video tự do mà mọi dự án Wikimedia đều có thể dùng.",
+  pdWikidata:"Cơ sở dữ liệu chung về các dữ kiện, như ngày sinh hay dân số, được mọi dự án Wikimedia sử dụng." });
+
 
 
 /* keterangan saat daftar WikiProyek masih diambil: singkat, dengan jumlah, penjelasan, dan arti angka kemajuan */
@@ -1543,6 +1597,7 @@ const LIST_LABELS = {
   hi:["सूची लोड हो रही है…","सूची ली जा रही है… {a}/{b}","पृष्ठों का विश्लेषण पूरा होने पर सूची बढ़ती है।","अब तक विश्लेषित पृष्ठ"]
 };
 for (const k in LIST_LABELS) Object.assign(I18N[k], { listLoading:LIST_LABELS[k][0], listProg:LIST_LABELS[k][1], listHint:LIST_LABELS[k][2], progTip:LIST_LABELS[k][3] });
+Object.assign(I18N.vi, { listLoading:"Đang tải danh sách…", listProg:"Đang lấy danh sách… {a}/{b}", listHint:"Danh sách dài thêm khi các trang được phân tích xong.", progTip:"Số trang đã phân tích" });
 
 /* ================= konfigurasi ================= */
 const TABS = {
