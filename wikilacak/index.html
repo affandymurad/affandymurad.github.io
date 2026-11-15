@@ -128,6 +128,8 @@ table.has-wp{min-width:1040px}
 thead th{padding:10px 14px;text-align:start;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line);white-space:nowrap}
 tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
 tbody tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:color-mix(in srgb,var(--ink) 5.5%,var(--card))}   /* zebra: tipis agar teks tetap terbaca di tema terang dan gelap */
+tbody tr:nth-child(even):hover{background:color-mix(in srgb,var(--ink) 8%,var(--card))}
 tr.row{transition:background .8s}
 tr.row.is-new{background:var(--new-row)}
 th.c-dot,td.c-dot{width:30px;padding-inline-end:0}
@@ -275,12 +277,12 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
   #ptbl tr{display:grid;grid-template-columns:auto auto 1fr;gap:6px 10px;padding:12px 14px;border-bottom:1px solid var(--line)}
   #ptbl td{display:block;padding:0;border:0}
   #ptbl td:nth-child(1){grid-column:1/-1;grid-row:1;font-weight:600;overflow-wrap:anywhere}
-  #ptbl td:nth-child(2){grid-column:1;grid-row:2}
-  #ptbl td:nth-child(3){grid-column:2;grid-row:2;font-size:12.5px;color:var(--muted)}
-  #ptbl td:nth-child(6){grid-column:3;grid-row:2;text-align:end}
-  #ptbl td:nth-child(4){grid-column:1/-1;grid-row:3}
-  #ptbl td:nth-child(5){grid-column:1/-1;grid-row:4}
-  #ptbl td:nth-child(5):empty{display:none}
+  #ptbl td:nth-child(3){grid-column:1;grid-row:2}
+  #ptbl td:nth-child(4){grid-column:2;grid-row:2;font-size:12.5px;color:var(--muted)}
+  #ptbl td:nth-child(2){grid-column:3;grid-row:2;text-align:end}
+  #ptbl td:nth-child(5){grid-column:1/-1;grid-row:3}
+  #ptbl td:nth-child(6){grid-column:1/-1;grid-row:4}
+  #ptbl td:nth-child(6):empty{display:none}
 }
 #ptbl .cm{color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
 #stbl .u{display:flex;align-items:flex-start;gap:8px}
@@ -487,11 +489,11 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
           <tr>
             <th class="c-dot"></th>
             <th data-i18n="thPage">Halaman</th>
+            <th data-i18n="thTime">Diff</th>
             <th data-i18n="thUser">Pengguna</th>
             <th data-i18n="thType">Jenis</th>
             <th class="num" data-i18n="thSize">Ukuran (bita)</th>
             <th data-i18n="thSum">Ringkasan</th>
-            <th data-i18n="thTime">Waktu</th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -538,7 +540,7 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
     <div class="filters"><span id="sHint"></span></div>
     <div class="table-wrap">
       <table id="stbl">
-        <thead><tr><th data-i18n="thPage">Halaman</th><th class="c-uiu" data-i18n="sLast">Penyunting terakhir</th><th class="num" data-i18n="thSize">Ukuran (bita)</th><th data-i18n="thTime">Waktu</th></tr></thead>
+        <thead><tr><th data-i18n="thPage">Halaman</th><th data-i18n="thTime">Diff</th><th class="c-uiu" data-i18n="sLast">Penyunting terakhir</th><th class="num" data-i18n="thSize">Ukuran (bita)</th></tr></thead>
         <tbody id="sRows"></tbody>
       </table>
     </div>
@@ -586,7 +588,7 @@ a.icon-btn:hover{color:var(--ink);background:var(--soft)}
     <div class="filters"><span id="pjHint"></span></div>
     <div class="table-wrap">
       <table id="ptbl">
-        <thead><tr><th data-i18n="thPage">Halaman</th><th data-i18n="pjClass">Kelas</th><th data-i18n="pjImp">Kepentingan</th><th class="c-uiu" data-i18n="sLast">Penyunting terakhir</th><th data-i18n="thSum">Ringkasan</th><th data-i18n="thTime">Waktu</th></tr></thead>
+        <thead><tr><th data-i18n="thPage">Halaman</th><th data-i18n="thTime">Diff</th><th data-i18n="pjClass">Kelas</th><th data-i18n="pjImp">Kepentingan</th><th class="c-uiu" data-i18n="sLast">Penyunting terakhir</th><th data-i18n="thSum">Ringkasan</th></tr></thead>
         <tbody id="pjRows"></tbody>
       </table>
     </div>
@@ -644,7 +646,7 @@ id:{
   filtersLbl:"Filter aktif:", legend:"Entri baru ditandai selama {t}",
   fNotBot:"Bukan bot", fEditNew:"Suntingan dan halaman baru", fAllNs:"Semua ruang nama", fNoLogs:"Tanpa log tindakan",
   fLast500:"500 terbaru", fMain:"Ruang nama utama", fNoRedirect:"Tanpa pengalihan", fOnlyNew:"Hanya halaman baru",
-  thPage:"Halaman", thUser:"Pengguna", thType:"Jenis", thSize:"Ukuran (bita)", thSum:"Ringkasan", thTime:"Waktu",
+  thPage:"Halaman", thUser:"Pengguna", thType:"Jenis", thSize:"Ukuran (bita)", thSum:"Ringkasan", thTime:"Diff",
   diff:"beda", hist:"riwayat", tNew:"Baru", tEdit:"Suntingan", anon:"Pengguna anonim", temp:"Akun sementara",
   minor:"Kecil", minorT:"Suntingan kecil", redir:"Pengalihan", redirT:"Halaman pengalihan",
   hiddenU:"(disembunyikan)", hiddenC:"(ringkasan disembunyikan)", unknownU:"(tidak diketahui)",
@@ -672,7 +674,7 @@ en:{
   filtersLbl:"Active filters:", legend:"New entries are marked for {t}",
   fNotBot:"Not bots", fEditNew:"Edits and new pages", fAllNs:"All namespaces", fNoLogs:"No log actions",
   fLast500:"Latest 500", fMain:"Main namespace", fNoRedirect:"No redirects", fOnlyNew:"New pages only",
-  thPage:"Page", thUser:"User", thType:"Type", thSize:"Size (bytes)", thSum:"Summary", thTime:"Time",
+  thPage:"Page", thUser:"User", thType:"Type", thSize:"Size (bytes)", thSum:"Summary", thTime:"Diff",
   diff:"difference", hist:"history", tNew:"New", tEdit:"Edit", anon:"Anonymous user", temp:"Temporary account",
   minor:"Minor", minorT:"Minor edit", redir:"Redirect", redirT:"Redirect page",
   hiddenU:"(hidden)", hiddenC:"(summary hidden)", unknownU:"(unknown)",
@@ -700,7 +702,7 @@ vi:{
   filtersLbl:"Bộ lọc đang bật:", legend:"Mục mới được đánh dấu trong {t}",
   fNotBot:"Không phải bot", fEditNew:"Sửa đổi và trang mới", fAllNs:"Mọi không gian tên", fNoLogs:"Không có nhật trình",
   fLast500:"500 mục mới nhất", fMain:"Không gian tên chính", fNoRedirect:"Không có trang đổi hướng", fOnlyNew:"Chỉ trang mới",
-  thPage:"Trang", thUser:"Thành viên", thType:"Loại", thSize:"Kích thước (byte)", thSum:"Tóm lược", thTime:"Thời gian",
+  thPage:"Trang", thUser:"Thành viên", thType:"Loại", thSize:"Kích thước (byte)", thSum:"Tóm lược", thTime:"Diff",
   diff:"khác", hist:"lịch sử", tNew:"Mới", tEdit:"Sửa", anon:"Người dùng vô danh", temp:"Tài khoản tạm thời",
   minor:"Nhỏ", minorT:"Sửa đổi nhỏ", redir:"Đổi hướng", redirT:"Trang đổi hướng",
   hiddenU:"(đã ẩn)", hiddenC:"(tóm lược đã ẩn)", unknownU:"(không rõ)",
@@ -728,7 +730,7 @@ ko:{
   filtersLbl:"적용된 필터:", legend:"새 항목은 {t} 동안 표시됩니다",
   fNotBot:"봇 제외", fEditNew:"편집 및 새 문서", fAllNs:"모든 이름공간", fNoLogs:"기록 작업 제외",
   fLast500:"최근 500개", fMain:"일반 이름공간", fNoRedirect:"넘겨주기 제외", fOnlyNew:"새 문서만",
-  thPage:"문서", thUser:"사용자", thType:"유형", thSize:"크기(바이트)", thSum:"요약", thTime:"시간",
+  thPage:"문서", thUser:"사용자", thType:"유형", thSize:"크기(바이트)", thSum:"요약", thTime:"Diff",
   diff:"차이", hist:"역사", tNew:"새 문서", tEdit:"편집", anon:"익명 사용자", temp:"임시 계정",
   minor:"사소함", minorT:"사소한 편집", redir:"넘겨주기", redirT:"넘겨주기 문서",
   hiddenU:"(숨김)", hiddenC:"(요약 숨김)", unknownU:"(알 수 없음)",
@@ -756,7 +758,7 @@ es:{
   filtersLbl:"Filtros activos:", legend:"Las entradas nuevas se marcan durante {t}",
   fNotBot:"Sin bots", fEditNew:"Ediciones y páginas nuevas", fAllNs:"Todos los espacios de nombres", fNoLogs:"Sin acciones de registro",
   fLast500:"Últimas 500", fMain:"Espacio de nombres principal", fNoRedirect:"Sin redirecciones", fOnlyNew:"Solo páginas nuevas",
-  thPage:"Página", thUser:"Usuario", thType:"Tipo", thSize:"Tamaño (bytes)", thSum:"Resumen", thTime:"Hora",
+  thPage:"Página", thUser:"Usuario", thType:"Tipo", thSize:"Tamaño (bytes)", thSum:"Resumen", thTime:"Diff",
   diff:"diferencia", hist:"historial", tNew:"Nueva", tEdit:"Edición", anon:"Usuario anónimo", temp:"Cuenta temporal",
   minor:"Menor", minorT:"Edición menor", redir:"Redirección", redirT:"Página de redirección",
   hiddenU:"(oculto)", hiddenC:"(resumen oculto)", unknownU:"(desconocido)",
@@ -784,7 +786,7 @@ fr:{
   filtersLbl:"Filtres actifs :", legend:"Les nouvelles entrées sont signalées pendant {t}",
   fNotBot:"Hors robots", fEditNew:"Modifications et nouvelles pages", fAllNs:"Tous les espaces de noms", fNoLogs:"Sans actions de journal",
   fLast500:"500 dernières", fMain:"Espace de noms principal", fNoRedirect:"Sans redirections", fOnlyNew:"Nouvelles pages uniquement",
-  thPage:"Page", thUser:"Utilisateur", thType:"Type", thSize:"Taille (octets)", thSum:"Résumé", thTime:"Heure",
+  thPage:"Page", thUser:"Utilisateur", thType:"Type", thSize:"Taille (octets)", thSum:"Résumé", thTime:"Diff",
   diff:"différence", hist:"historique", tNew:"Nouvelle", tEdit:"Modification", anon:"Utilisateur anonyme", temp:"Compte temporaire",
   minor:"Mineure", minorT:"Modification mineure", redir:"Redirection", redirT:"Page de redirection",
   hiddenU:"(masqué)", hiddenC:"(résumé masqué)", unknownU:"(inconnu)",
@@ -812,7 +814,7 @@ de:{
   filtersLbl:"Aktive Filter:", legend:"Neue Einträge werden {t} lang markiert",
   fNotBot:"Ohne Bots", fEditNew:"Bearbeitungen und neue Seiten", fAllNs:"Alle Namensräume", fNoLogs:"Ohne Logbuchaktionen",
   fLast500:"Neueste 500", fMain:"Hauptnamensraum", fNoRedirect:"Ohne Weiterleitungen", fOnlyNew:"Nur neue Seiten",
-  thPage:"Seite", thUser:"Benutzer", thType:"Art", thSize:"Größe (Byte)", thSum:"Zusammenfassung", thTime:"Zeit",
+  thPage:"Seite", thUser:"Benutzer", thType:"Art", thSize:"Größe (Byte)", thSum:"Zusammenfassung", thTime:"Diff",
   diff:"Unterschied", hist:"Versionen", tNew:"Neu", tEdit:"Bearbeitung", anon:"Anonymer Benutzer", temp:"Temporäres Konto",
   minor:"Klein", minorT:"Kleine Änderung", redir:"Weiterleitung", redirT:"Weiterleitungsseite",
   hiddenU:"(verborgen)", hiddenC:"(Zusammenfassung verborgen)", unknownU:"(unbekannt)",
@@ -840,7 +842,7 @@ ja:{
   filtersLbl:"適用中のフィルター:", legend:"新しい項目は {t} のあいだ印が付きます",
   fNotBot:"ボットを除く", fEditNew:"編集と新規ページ", fAllNs:"すべての名前空間", fNoLogs:"ログ操作を除く",
   fLast500:"最新500件", fMain:"標準名前空間", fNoRedirect:"リダイレクトを除く", fOnlyNew:"新規ページのみ",
-  thPage:"ページ", thUser:"利用者", thType:"種類", thSize:"サイズ（バイト）", thSum:"要約", thTime:"時刻",
+  thPage:"ページ", thUser:"利用者", thType:"種類", thSize:"サイズ（バイト）", thSum:"要約", thTime:"Diff",
   diff:"差分", hist:"履歴", tNew:"新規", tEdit:"編集", anon:"匿名の利用者", temp:"一時アカウント",
   minor:"細部", minorT:"細部の編集", redir:"リダイレクト", redirT:"リダイレクトページ",
   hiddenU:"（非表示）", hiddenC:"（要約は非表示）", unknownU:"（不明）",
@@ -868,7 +870,7 @@ zh:{
   filtersLbl:"当前筛选：", legend:"新条目会被标记 {t}",
   fNotBot:"不含机器人", fEditNew:"编辑和新页面", fAllNs:"所有命名空间", fNoLogs:"不含日志操作",
   fLast500:"最新 500 条", fMain:"主命名空间", fNoRedirect:"不含重定向", fOnlyNew:"仅新页面",
-  thPage:"页面", thUser:"用户", thType:"类型", thSize:"大小（字节）", thSum:"摘要", thTime:"时间",
+  thPage:"页面", thUser:"用户", thType:"类型", thSize:"大小（字节）", thSum:"摘要", thTime:"Diff",
   diff:"差异", hist:"历史", tNew:"新建", tEdit:"编辑", anon:"匿名用户", temp:"临时账户",
   minor:"小修改", minorT:"小修改", redir:"重定向", redirT:"重定向页面",
   hiddenU:"（已隐藏）", hiddenC:"（摘要已隐藏）", unknownU:"（未知）",
@@ -896,7 +898,7 @@ ar:{
   filtersLbl:"المرشحات المفعّلة:", legend:"تُميَّز الإدخالات الجديدة لمدة {t}",
   fNotBot:"بدون روبوتات", fEditNew:"التعديلات والصفحات الجديدة", fAllNs:"كل النطاقات", fNoLogs:"بدون إجراءات السجل",
   fLast500:"أحدث 500", fMain:"النطاق الرئيسي", fNoRedirect:"بدون تحويلات", fOnlyNew:"الصفحات الجديدة فقط",
-  thPage:"الصفحة", thUser:"المستخدم", thType:"النوع", thSize:"الحجم (بايت)", thSum:"الملخص", thTime:"الوقت",
+  thPage:"الصفحة", thUser:"المستخدم", thType:"النوع", thSize:"الحجم (بايت)", thSum:"الملخص", thTime:"Diff",
   diff:"الفرق", hist:"السجل", tNew:"جديدة", tEdit:"تعديل", anon:"مستخدم مجهول", temp:"حساب مؤقت",
   minor:"طفيف", minorT:"تعديل طفيف", redir:"تحويلة", redirT:"صفحة تحويل",
   hiddenU:"(مخفي)", hiddenC:"(ملخص مخفي)", unknownU:"(غير معروف)",
@@ -924,7 +926,7 @@ nl:{
   filtersLbl:"Actieve filters:", legend:"Nieuwe items worden {t} lang gemarkeerd",
   fNotBot:"Geen bots", fEditNew:"Bewerkingen en nieuwe pagina’s", fAllNs:"Alle naamruimten", fNoLogs:"Zonder logacties",
   fLast500:"Laatste 500", fMain:"Hoofdnaamruimte", fNoRedirect:"Geen doorverwijzingen", fOnlyNew:"Alleen nieuwe pagina’s",
-  thPage:"Pagina", thUser:"Gebruiker", thType:"Soort", thSize:"Grootte (bytes)", thSum:"Samenvatting", thTime:"Tijd",
+  thPage:"Pagina", thUser:"Gebruiker", thType:"Soort", thSize:"Grootte (bytes)", thSum:"Samenvatting", thTime:"Diff",
   diff:"verschil", hist:"geschiedenis", tNew:"Nieuw", tEdit:"Bewerking", anon:"Anonieme gebruiker", temp:"Tijdelijk account",
   minor:"Klein", minorT:"Kleine bewerking", redir:"Doorverwijzing", redirT:"Doorverwijspagina",
   hiddenU:"(verborgen)", hiddenC:"(samenvatting verborgen)", unknownU:"(onbekend)",
@@ -952,7 +954,7 @@ ru:{
   filtersLbl:"Активные фильтры:", legend:"Новые записи помечаются на {t}",
   fNotBot:"Без ботов", fEditNew:"Правки и новые страницы", fAllNs:"Все пространства имён", fNoLogs:"Без действий журналов",
   fLast500:"Последние 500", fMain:"Основное пространство имён", fNoRedirect:"Без перенаправлений", fOnlyNew:"Только новые страницы",
-  thPage:"Страница", thUser:"Участник", thType:"Тип", thSize:"Размер (байты)", thSum:"Описание", thTime:"Время",
+  thPage:"Страница", thUser:"Участник", thType:"Тип", thSize:"Размер (байты)", thSum:"Описание", thTime:"Diff",
   diff:"разница", hist:"история", tNew:"Новая", tEdit:"Правка", anon:"Анонимный участник", temp:"Временная учётная запись",
   minor:"Малая", minorT:"Малая правка", redir:"Перенаправление", redirT:"Страница-перенаправление",
   hiddenU:"(скрыто)", hiddenC:"(описание скрыто)", unknownU:"(неизвестно)",
@@ -980,7 +982,7 @@ th:{
   filtersLbl:"ตัวกรองที่ใช้อยู่:", legend:"รายการใหม่จะมีจุดกำกับนาน {t}",
   fNotBot:"ไม่รวมบอต", fEditNew:"การแก้ไขและหน้าใหม่", fAllNs:"ทุกเนมสเปซ", fNoLogs:"ไม่รวมรายการบันทึก",
   fLast500:"ล่าสุด 500 รายการ", fMain:"เนมสเปซหลัก", fNoRedirect:"ไม่รวมหน้าเปลี่ยนทาง", fOnlyNew:"เฉพาะหน้าใหม่",
-  thPage:"หน้า", thUser:"ผู้ใช้", thType:"ประเภท", thSize:"ขนาด (ไบต์)", thSum:"สรุป", thTime:"เวลา",
+  thPage:"หน้า", thUser:"ผู้ใช้", thType:"ประเภท", thSize:"ขนาด (ไบต์)", thSum:"สรุป", thTime:"Diff",
   diff:"ความแตกต่าง", hist:"ประวัติ", tNew:"ใหม่", tEdit:"แก้ไข", anon:"ผู้ใช้นิรนาม", temp:"บัญชีชั่วคราว",
   minor:"เล็กน้อย", minorT:"การแก้ไขเล็กน้อย", redir:"หน้าเปลี่ยนทาง", redirT:"หน้าเปลี่ยนทาง",
   hiddenU:"(ซ่อนอยู่)", hiddenC:"(ซ่อนสรุป)", unknownU:"(ไม่ทราบ)",
@@ -1008,7 +1010,7 @@ ta:{
   filtersLbl:"செயலில் உள்ள வடிகட்டிகள்:", legend:"புதிய பதிவுகள் {t} வரை குறிக்கப்படும்",
   fNotBot:"தானியங்கிகள் இல்லாமல்", fEditNew:"தொகுப்புகளும் புதிய பக்கங்களும்", fAllNs:"எல்லாப் பெயர்வெளிகளும்", fNoLogs:"பதிவு நடவடிக்கைகள் இல்லாமல்",
   fLast500:"சமீபத்திய 500", fMain:"முதன்மைப் பெயர்வெளி", fNoRedirect:"வழிமாற்றுகள் இல்லாமல்", fOnlyNew:"புதிய பக்கங்கள் மட்டும்",
-  thPage:"பக்கம்", thUser:"பயனர்", thType:"வகை", thSize:"அளவு (பைட்டுகள்)", thSum:"சுருக்கம்", thTime:"நேரம்",
+  thPage:"பக்கம்", thUser:"பயனர்", thType:"வகை", thSize:"அளவு (பைட்டுகள்)", thSum:"சுருக்கம்", thTime:"Diff",
   diff:"வேறுபாடு", hist:"வரலாறு", tNew:"புதியது", tEdit:"தொகுப்பு", anon:"பெயரிலாப் பயனர்", temp:"தற்காலிகக் கணக்கு",
   minor:"சிறியது", minorT:"சிறிய தொகுப்பு", redir:"வழிமாற்று", redirT:"வழிமாற்றுப் பக்கம்",
   hiddenU:"(மறைக்கப்பட்டது)", hiddenC:"(சுருக்கம் மறைக்கப்பட்டது)", unknownU:"(தெரியாதது)",
@@ -1036,7 +1038,7 @@ he:{
   filtersLbl:"מסננים פעילים:", legend:"רשומות חדשות מסומנות למשך {t}",
   fNotBot:"ללא בוטים", fEditNew:"עריכות ודפים חדשים", fAllNs:"כל מרחבי השם", fNoLogs:"ללא פעולות יומן",
   fLast500:"500 אחרונות", fMain:"מרחב השם הראשי", fNoRedirect:"ללא הפניות", fOnlyNew:"דפים חדשים בלבד",
-  thPage:"דף", thUser:"משתמש", thType:"סוג", thSize:"גודל (בתים)", thSum:"תקציר", thTime:"זמן",
+  thPage:"דף", thUser:"משתמש", thType:"סוג", thSize:"גודל (בתים)", thSum:"תקציר", thTime:"Diff",
   diff:"הבדלים", hist:"היסטוריה", tNew:"חדש", tEdit:"עריכה", anon:"משתמש אנונימי", temp:"חשבון זמני",
   minor:"קטנה", minorT:"עריכה קטנה", redir:"הפניה", redirT:"דף הפניה",
   hiddenU:"(מוסתר)", hiddenC:"(תקציר מוסתר)", unknownU:"(לא ידוע)",
@@ -1064,7 +1066,7 @@ uz:{
   filtersLbl:"Faol filtrlar:", legend:"Yangi yozuvlar {t} davomida belgilanadi",
   fNotBot:"Botlarsiz", fEditNew:"Tahrirlar va yangi sahifalar", fAllNs:"Barcha nomlar fazosi", fNoLogs:"Jurnal amallarisiz",
   fLast500:"Oxirgi 500 ta", fMain:"Asosiy nomlar fazosi", fNoRedirect:"Yo‘naltirishlarsiz", fOnlyNew:"Faqat yangi sahifalar",
-  thPage:"Sahifa", thUser:"Foydalanuvchi", thType:"Turi", thSize:"Hajmi (bayt)", thSum:"Izoh", thTime:"Vaqt",
+  thPage:"Sahifa", thUser:"Foydalanuvchi", thType:"Turi", thSize:"Hajmi (bayt)", thSum:"Izoh", thTime:"Diff",
   diff:"farq", hist:"tarix", tNew:"Yangi", tEdit:"Tahrir", anon:"Anonim foydalanuvchi", temp:"Vaqtinchalik hisob",
   minor:"Kichik", minorT:"Kichik tahrir", redir:"Yo‘naltirish", redirT:"Yo‘naltirish sahifasi",
   hiddenU:"(yashirilgan)", hiddenC:"(izoh yashirilgan)", unknownU:"(noma’lum)",
@@ -1092,7 +1094,7 @@ zgh:{
   filtersLbl:"ⵉⵙⵎⵔⵙⵏ ⵉⵜⵜⵓⵙⵙⵎⵔⴰⵙⵏ:", legend:"ⵜⵔⵎⵓⵙⵉⵏ ⵜⵉⵎⴰⵢⵏⵓⵜⵉⵏ ⵜⵜⵓⵙⵙⵏⵉⵖⵏ ⵅⴼ {t}",
   fNotBot:"ⵓⵔ ⵉⵙⵉⵎⵍⴰⵏ", fEditNew:"ⵜⵉⵙⵏⴼⵍⵉⵏ ⴷ ⵜⵉⵙⵏⵉⵔⵉⵏ ⵜⵉⵎⴰⵢⵏⵓⵜⵉⵏ", fAllNs:"ⵉⵙⵎⴰⵏ ⵉⴳⴰⵏ ⵎⴰⵏⵉⵏ", fNoLogs:"ⵀⵓⵍ ⵜⵉⴳⴰⵡⵉⵏ ⵏ ⵜⵉⵎⴰⵔⵉⵜ",
   fLast500:"500 ⵉⵎⴳⴳⴰⵔⵏ", fMain:"ⴰⵙⵎ ⴰⵏⴰⵙⵙⵓ ⴰⵎⴰⵜⴰⵢ", fNoRedirect:"ⵀⵓⵍ ⵜⵉⵙⵏⵉⵔⵉⵏ ⵏ ⵓⵙⵓⵍⵉⵣ", fOnlyNew:"ⵀⵓⵍ ⵜⵉⵙⵏⵉⵔⵉⵏ ⵜⵉⵎⴰⵢⵏⵓⵜⵉⵏ",
-  thPage:"ⵜⴰⵙⵏⴰ", thUser:"ⴰⵙⵎⵔⵙ", thType:"ⴰⵏⴰⵡ", thSize:"ⴰⵎⵇⵇⵔⴰⵏ (ⵉⴱⴰⵢⵜⵏ)", thSum:"ⴰⵙⵙⵓⵍⵉⵜ", thTime:"ⴰⵙⴰⵔⴰⵏ",
+  thPage:"ⵜⴰⵙⵏⴰ", thUser:"ⴰⵙⵎⵔⵙ", thType:"ⴰⵏⴰⵡ", thSize:"ⴰⵎⵇⵇⵔⴰⵏ (ⵉⴱⴰⵢⵜⵏ)", thSum:"ⴰⵙⵙⵓⵍⵉⵜ", thTime:"Diff",
   diff:"ⴰⵎⵣⴷⴰⵢ", hist:"ⴰⵎⵣⵔⵓⵢ", tNew:"ⴰⵎⴰⵢⵏⵓ", tEdit:"ⴰⵙⵏⴼⵍ", anon:"ⴰⵙⵎⵔⵙ ⵓⵔ ⵉⵙⵙⵏ ⵉⵙⵎ", temp:"ⴰⵎⴰⵣⵓⵣ ⴰⵎⴰⴷⴷⴰⵢ",
   minor:"ⴰⵎⵥⵥⵉⴰⵏ", minorT:"ⴰⵙⵏⴼⵍ ⴰⵎⵥⵥⵉⴰⵏ", redir:"ⴰⵙⵓⵍⵉⵣ", redirT:"ⵜⴰⵙⵏⴰ ⵏ ⵓⵙⵓⵍⵉⵣ",
   hiddenU:"(ⵉⵜⵜⵓⵙⵙⵏⴼⵍ ⴷⴳⵍⵍⴰⵏ)", hiddenC:"(ⴰⵙⵙⵓⵍⵉⵜ ⵉⵜⵜⵓⵙⵙⵏⴼⵍ ⴷⴳⵍⵍⴰⵏ)", unknownU:"(ⵓⵔ ⵉⵜⵜⵓⵙⵙⵏ)",
@@ -1120,7 +1122,7 @@ hi:{
   filtersLbl:"सक्रिय फ़िल्टर:", legend:"नई प्रविष्टियाँ {t} तक चिह्नित रहती हैं",
   fNotBot:"बॉट नहीं", fEditNew:"संपादन और नए पृष्ठ", fAllNs:"सभी नामस्थान", fNoLogs:"लॉग कार्रवाइयाँ नहीं",
   fLast500:"नवीनतम 500", fMain:"मुख्य नामस्थान", fNoRedirect:"पुनर्निर्देश नहीं", fOnlyNew:"केवल नए पृष्ठ",
-  thPage:"पृष्ठ", thUser:"सदस्य", thType:"प्रकार", thSize:"आकार (बाइट)", thSum:"सारांश", thTime:"समय",
+  thPage:"पृष्ठ", thUser:"सदस्य", thType:"प्रकार", thSize:"आकार (बाइट)", thSum:"सारांश", thTime:"Diff",
   diff:"अंतर", hist:"इतिहास", tNew:"नया", tEdit:"संपादन", anon:"अनाम सदस्य", temp:"अस्थायी खाता",
   minor:"छोटा", minorT:"छोटा संपादन", redir:"पुनर्निर्देश", redirT:"पुनर्निर्देश पृष्ठ",
   hiddenU:"(छिपा हुआ)", hiddenC:"(सारांश छिपा हुआ)", unknownU:"(अज्ञात)",
@@ -1148,7 +1150,7 @@ ur:{
   filtersLbl:"فعال فلٹر:", legend:"نئی اندراجات {t} تک نشان زد رہتی ہیں",
   fNotBot:"بوٹ نہیں", fEditNew:"ترامیم اور نئے صفحات", fAllNs:"تمام نام فضا", fNoLogs:"لاگ کارروائیاں نہیں",
   fLast500:"تازہ ترین 500", fMain:"مرکزی نام فضا", fNoRedirect:"رجوع مکرر نہیں", fOnlyNew:"صرف نئے صفحات",
-  thPage:"صفحہ", thUser:"صارف", thType:"قسم", thSize:"حجم (بائٹ)", thSum:"خلاصہ", thTime:"وقت",
+  thPage:"صفحہ", thUser:"صارف", thType:"قسم", thSize:"حجم (بائٹ)", thSum:"خلاصہ", thTime:"Diff",
   diff:"فرق", hist:"تاریخچہ", tNew:"نیا", tEdit:"ترمیم", anon:"گمنام صارف", temp:"عارضی کھاتہ",
   minor:"معمولی", minorT:"معمولی ترمیم", redir:"رجوع مکرر", redirT:"رجوع مکرر صفحہ",
   hiddenU:"(پوشیدہ)", hiddenC:"(خلاصہ پوشیدہ)", unknownU:"(نامعلوم)",
@@ -1176,7 +1178,7 @@ mr:{
   filtersLbl:"सक्रिय गाळणी:", legend:"नवीन नोंदी {t} पर्यंत चिन्हांकित राहतात",
   fNotBot:"बॉट नाहीत", fEditNew:"संपादने आणि नवीन पाने", fAllNs:"सर्व नामविश्व", fNoLogs:"नोंदवही कृती नाहीत",
   fLast500:"ताज्या 500", fMain:"मुख्य नामविश्व", fNoRedirect:"पुनर्निर्देशन नाही", fOnlyNew:"फक्त नवीन पाने",
-  thPage:"पान", thUser:"सदस्य", thType:"प्रकार", thSize:"आकार (बाइट)", thSum:"सारांश", thTime:"वेळ",
+  thPage:"पान", thUser:"सदस्य", thType:"प्रकार", thSize:"आकार (बाइट)", thSum:"सारांश", thTime:"Diff",
   diff:"फरक", hist:"इतिहास", tNew:"नवीन", tEdit:"संपादन", anon:"अनामिक सदस्य", temp:"तात्पुरते खाते",
   minor:"छोटे", minorT:"छोटे संपादन", redir:"पुनर्निर्देशन", redirT:"पुनर्निर्देशन पान",
   hiddenU:"(लपवलेले)", hiddenC:"(सारांश लपवलेला)", unknownU:"(अज्ञात)",
@@ -1204,7 +1206,7 @@ te:{
   filtersLbl:"చురుకైన ఫిల్టర్లు:", legend:"కొత్త నమోదులు {t} పాటు గుర్తించబడతాయి",
   fNotBot:"బాట్లు కాదు", fEditNew:"దిద్దుబాట్లు, కొత్త పేజీలు", fAllNs:"అన్ని నామరూపాలు", fNoLogs:"లాగ్ చర్యలు లేవు",
   fLast500:"తాజా 500", fMain:"ప్రధాన నేమ్‌స్పేసు", fNoRedirect:"దారిమార్పులు లేవు", fOnlyNew:"కొత్త పేజీలు మాత్రమే",
-  thPage:"పేజీ", thUser:"వాడుకరి", thType:"రకం", thSize:"పరిమాణం (బైట్లు)", thSum:"సారాంశం", thTime:"సమయం",
+  thPage:"పేజీ", thUser:"వాడుకరి", thType:"రకం", thSize:"పరిమాణం (బైట్లు)", thSum:"సారాంశం", thTime:"Diff",
   diff:"తేడా", hist:"చరిత్ర", tNew:"కొత్త", tEdit:"దిద్దుబాటు", anon:"అజ్ఞాత వాడుకరి", temp:"తాత్కాలిక ఖాతా",
   minor:"చిన్న", minorT:"చిన్న దిద్దుబాటు", redir:"దారిమార్పు", redirT:"దారిమార్పు పేజీ",
   hiddenU:"(దాచబడింది)", hiddenC:"(సారాంశం దాచబడింది)", unknownU:"(తెలియదు)",
@@ -1232,7 +1234,7 @@ ml:{
   filtersLbl:"സജീവ അരിപ്പകൾ:", legend:"പുതിയ രേഖകൾ {t} നേരം അടയാളപ്പെടുത്തും",
   fNotBot:"ബോട്ടുകളല്ല", fEditNew:"തിരുത്തലുകളും പുതിയ താളുകളും", fAllNs:"എല്ലാ നാമമേഖലകളും", fNoLogs:"രേഖാ പ്രവൃത്തികൾ ഇല്ല",
   fLast500:"ഏറ്റവും പുതിയ 500", fMain:"മുഖ്യ നാമമേഖല", fNoRedirect:"തിരിച്ചുവിടലുകൾ ഇല്ല", fOnlyNew:"പുതിയ താളുകൾ മാത്രം",
-  thPage:"താൾ", thUser:"ഉപയോക്താവ്", thType:"തരം", thSize:"വലിപ്പം (ബൈറ്റ്)", thSum:"സംഗ്രഹം", thTime:"സമയം",
+  thPage:"താൾ", thUser:"ഉപയോക്താവ്", thType:"തരം", thSize:"വലിപ്പം (ബൈറ്റ്)", thSum:"സംഗ്രഹം", thTime:"Diff",
   diff:"വ്യത്യാസം", hist:"നാൾവഴി", tNew:"പുതിയത്", tEdit:"തിരുത്ത്", anon:"അജ്ഞാത ഉപയോക്താവ്", temp:"താൽക്കാലിക അക്കൗണ്ട്",
   minor:"ചെറിയ", minorT:"ചെറിയ തിരുത്ത്", redir:"തിരിച്ചുവിടൽ", redirT:"തിരിച്ചുവിടൽ താൾ",
   hiddenU:"(മറച്ചത്)", hiddenC:"(സംഗ്രഹം മറച്ചത്)", unknownU:"(അജ്ഞാതം)",
@@ -2179,9 +2181,9 @@ function sRender() {
   $('sRows').innerHTML = list.length ? list.map(x => {
     const ms = Date.parse(x.timestamp) || 0;
     return `<tr><td><a href="${esc(l + wikiPath(x.title))}" target="_blank" rel="noopener noreferrer">${esc(x.title)}</a><span class="snip">${sSnip(x.snippet || '')}</span></td>
+      <td class="c-time"><b>${esc(rel(ms))}</b><small>${esc(absTime(ms))}</small></td>
       <td class="c-uiu">${sUserCell(x)}</td>
-      <td class="num">${esc(fmt(x.size))}<br><small>${esc(t('sWords', { n:fmt(x.wordcount || 0) }))}</small></td>
-      <td class="c-time"><b>${esc(rel(ms))}</b><small>${esc(absTime(ms))}</small></td></tr>`;
+      <td class="num">${esc(fmt(x.size))}<br><small>${esc(t('sWords', { n:fmt(x.wordcount || 0) }))}</small></td></tr>`;
   }).join('') : `<tr><td colspan="5"><div class="empty"><b>${esc(S.busy ? t('sBusy') : S.ran && !S.err ? t('sNone') : t('sHint'))}</b>${S.ran && !S.busy && !S.err ? esc(t('sNoneHint')) : ''}</div></td></tr>`;
   $('sRange').textContent = S.busy && S.items.length ? t('sBusy') : S.total != null ? t('sShown', { a:fmt(list.length), n:fmt(S.total) }) + (list.length !== S.items.length ? ' ' + t('filteredFrom', { m:fmt(S.items.length) }) : '') : '';
   $('sMore').hidden = S.next == null; $('sMore').disabled = S.busy;
@@ -2403,10 +2405,11 @@ function pjRender() {
   $('pjRows').innerHTML = shown.length ? shown.map(x => {
     const r = P.rev.get(x.title);
     return `<tr><td><a href="${esc(h + wikiPath(x.title))}" target="_blank" rel="noopener noreferrer">${esc(x.title)}</a></td>
+      <td class="c-time">${r ? `<a href="${esc(h + '/w/index.php?diff=' + r.revid)}" target="_blank" rel="noopener noreferrer"><b>${esc(rel(r.ts))}</b></a><small>${esc(absTime(r.ts))}</small>` : '…'}</td>
       <td>${x.cls ? `<span class="tg">${esc(x.cls)}</span>` : '–'}</td><td>${x.imp ? esc(x.imp) : '–'}</td>
       <td class="c-uiu">${r ? sUserCell(r) : '…'}</td>
       <td class="cm">${r ? esc(cleanComment(r.comment)) : ''}</td>
-      <td class="c-time">${r ? `<a href="${esc(h + '/w/index.php?diff=' + r.revid)}" target="_blank" rel="noopener noreferrer"><b>${esc(rel(r.ts))}</b></a><small>${esc(absTime(r.ts))}</small>` : '…'}</td></tr>`;
+</tr>`;
   }).join('') : `<tr><td colspan="6"><div class="empty"><b>${esc(P.state === 'reading' || have < want ? hint : P.state === 'ready' ? t('pjNone') : (ok ? t('pjHint') : t('pjUnsup')))}</b>${P.state === 'ready' && have >= want ? esc(t('pjNoneHint')) : ''}</div></td></tr>`;
   $('pjRange').textContent = view.length ? t('showing', { a:fmt((P.page - 1) * P.per + 1), b:fmt((P.page - 1) * P.per + shown.length), n:fmt(view.length) }) : '';
   pjOpts($('pjPer'), [10, 20, 50, 100].map(n => [String(n), fmt(n)]), String(P.per));
@@ -2503,11 +2506,11 @@ function rowHtml(x, now) {
   return `<tr class="row${isNew ? ' is-new' : ''}" data-until="${x.newUntil}">
     <td class="c-dot"><i class="dot"></i></td>
     <td class="c-title">${titleCell(x, pageUrl, ext, sub)}</td>
+    <td class="c-time"><b data-ts="${x.ms}">${esc(rel(x.ms))}</b><small>${esc(absTime(x.ms))}</small></td>
     <td class="c-user"><div class="u"><span class="av" style="background:hsl(${hue(x.user)} 52% 46%)">${esc(initial)}</span><div class="un">${userEl}${userSub}${badge}${uiHtml(x)}</div></div></td>
     <td class="c-type">${pill}</td>
     <td class="c-size num"><span class="delta ${cls}" dir="ltr">${sizeTxt}</span></td>
     <td class="c-cmt"><div class="cmt">${esc(x.comment)}</div>${tagHtml}</td>
-    <td class="c-time"><b data-ts="${x.ms}">${esc(rel(x.ms))}</b><small>${esc(absTime(x.ms))}</small></td>
   </tr>`;
 }
 
@@ -2849,6 +2852,7 @@ setLocale();
 applyTheme();
 applyI18n();
 syncControls();
+if (prefs.tab === 'project' && P.proj) P.key = host();   // jaga nama WikiProyek dari URL agar tidak dikosongkan render()
 render();
 refresh({ baseline:true });
 loadTagNames();
