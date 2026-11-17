@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wikitrip — Trip Planner · Wikivoyage + Wikidata</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.1/dist/maplibre-gl.css">
+<style>
+:root{
+  --bg:#f3f6fc; --surface:#fff; --ink:#0c1a36; --muted:#526080; --line:#dde4f1; --brand:#2d4f9c; --brand-2:#5278d0; --soft:#eaeff9;
+  --zebra:#f6f8fd; --ok:#198754; --danger:#c62f3d; --warn-bg:#fff3e0; --warn-ink:#92400e; --accent:#ff7a1a;
+  --radius:18px; --shadow:0 1px 2px rgba(12,26,54,.04),0 10px 28px rgba(33,58,122,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#080f20; --surface:#0f1a33; --ink:#e8eefc; --muted:#9aaccc; --line:#213056; --brand:#7c9cf0; --brand-2:#5278d0; --soft:#15244a;
+  --zebra:#12203f; --ok:#4ac26b; --danger:#ff7b72; --warn-bg:#33270f; --warn-ink:#f6c27a; --shadow:none; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--brand)}
+.wrap{max-width:1320px;margin:0 auto;padding:0 16px 40px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:16px 0 10px}
+.brand{display:flex;align-items:center;gap:10px;margin-inline-end:auto}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:#fff}
+.brand h1{margin:0;font-size:21px;line-height:1.1}.brand small{color:var(--muted);display:block;font-size:12.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+label.f{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;font-weight:600}
+input[type=text],input[type=date],input[type=number],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand-2);outline-offset:1px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;white-space:nowrap}
+.btn:hover{background:var(--soft)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}.btn.pri:hover{filter:brightness(1.08)}
+@media (prefers-color-scheme:dark){.btn.pri{color:#0b1530}}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.hint{color:var(--muted);font-size:13px;margin:6px 2px 0}
+.err{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:8px 12px;margin-top:8px;font-size:13.5px}
+
+/* tombol penulis: portofolio + Meta-Wiki, satu kelompok */
+.me{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.me a{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;color:var(--ink);text-decoration:none;font-weight:600;white-space:nowrap}
+.me a+a{border-inline-start:1px solid var(--line);color:var(--muted);padding-inline:11px}
+.me a:hover{background:var(--soft);color:var(--brand)}
+.me a:focus-visible{outline:2px solid var(--brand-2);outline-offset:-2px}
+.me svg{flex:none}
+@media (max-width:520px){.me a{padding:7px 10px;font-size:13.5px}}
+
+/* language slide switch */
+.lang{display:inline-flex;align-items:center;cursor:pointer;user-select:none}
+.lang input{position:absolute;opacity:0;width:0;height:0}
+.lang .track{position:relative;display:grid;grid-template-columns:1fr 1fr;width:92px;height:36px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-weight:700;font-size:13px;text-align:center;line-height:34px}
+.lang .track span{position:relative;z-index:1;transition:color .2s}
+.lang .knob{position:absolute;top:2px;left:2px;width:44px;height:30px;border-radius:999px;background:var(--brand);transition:transform .22s ease;z-index:0}
+.lang input:checked ~ .track .knob{transform:translateX(42px)}
+.lang .track .a{color:#fff}.lang .track .b{color:var(--muted)}
+.lang input:checked ~ .track .a{color:var(--muted)}.lang input:checked ~ .track .b{color:#fff}
+@media (prefers-color-scheme:dark){.lang .track .a{color:#0b1530}.lang input:checked ~ .track .b{color:#0b1530}}
+.lang input:focus-visible ~ .track{outline:2px solid var(--brand-2);outline-offset:2px}
+
+/* toggle switch (road) */
+.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:600}
+.sw input{position:absolute;opacity:0}
+.sw i{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;transition:background .2s;flex:none}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw input:checked + i{background:var(--brand)}.sw input:checked + i::after{transform:translateX(16px)}
+.sw input:focus-visible + i{outline:2px solid var(--brand-2);outline-offset:2px}
+
+/* guide */
+.guide{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border:0}
+@media (prefers-color-scheme:dark){.guide{color:#0b1530}}
+.guide h2{margin:0 0 4px;font-size:18px}.guide p{margin:0;opacity:.92}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:rgba(255,255,255,.16);border-radius:14px;padding:10px 12px}
+.step b{display:flex;align-items:center;gap:8px}.step .n{width:24px;height:24px;border-radius:50%;background:#fff;color:var(--brand);display:grid;place-items:center;font-size:13px;flex:none}
+.step span.d{display:block;font-size:13.5px;margin-top:4px;opacity:.95}
+.guide ul{margin:6px 0 0;padding-inline-start:20px;font-size:13.5px}
+.guide details summary{cursor:pointer;font-weight:700;margin-top:4px}
+.guide .btn{background:#fff;color:var(--brand);border-color:#fff}
+
+/* search */
+.sbox{position:relative}
+.add{display:flex;gap:8px}.add input{flex:1;padding:11px 14px;font-size:16px;border-radius:12px}
+.ac{position:absolute;left:0;right:0;top:100%;margin-top:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);z-index:50;max-height:340px;overflow:auto}
+.ac button{display:block;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 14px;cursor:pointer}
+.ac button:last-child{border-bottom:0}.ac button:hover,.ac button.on{background:var(--soft)}
+.ac b{display:block}.ac small{color:var(--muted)}.ac .src{float:inline-end;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-inline-start:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;font-weight:600}
+.chip:hover{background:var(--surface);border-color:var(--brand-2)}.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){.chip.on{color:#0b1530}}.chip[disabled]{opacity:.5}
+
+/* toolbar */
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.menuwrap{position:relative}
+.menu{position:absolute;right:0;top:100%;margin-top:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:6px;z-index:60;min-width:210px}
+.menu[hidden]{display:none}
+.menu button{display:block;width:100%;text-align:start;background:none;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.menu button:hover{background:var(--soft)}.menu p{margin:4px 12px 6px;color:var(--muted);font-size:12px}
+.stepper{display:inline-flex;align-items:center;gap:4px}.stepper .btn{padding:4px 10px}.stepper output{min-width:26px;text-align:center;font-weight:700}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+#map{height:460px;border-radius:var(--radius);border:1px solid var(--line);position:sticky;top:12px;overflow:hidden}
+@media (min-width:640px){#map{height:500px}}
+@media (min-width:1100px){#map{height:620px}}
+@media (max-width:900px){#map{position:relative;order:-1}}
+.lbtn{font:700 12px/29px Arial,sans-serif;color:#333}.lbtn.on{background:#2d4f9c!important;color:#fff}.lbtn+.lbtn{border-top:1px solid #ddd}
+.empty{text-align:center;padding:26px 14px}.empty .big{font-size:38px}.empty h3{margin:6px 0 4px}.empty p{margin:0;color:var(--muted)}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow)}
+.day>header{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:10px 14px;border-inline-start:5px solid var(--c,#8a93a3);background:var(--soft);cursor:pointer}
+.day h2{margin:0;font-size:15px}.day header span{color:var(--muted);font-size:13px}
+ol.lst{list-style:none;margin:0;padding:6px;min-height:46px}
+ol.lst:empty::before{content:attr(data-empty);display:block;color:var(--muted);font-size:13px;padding:12px 10px;border:1.5px dashed var(--line);border-radius:12px;text-align:center}
+ol.lst.over{background:color-mix(in srgb,var(--brand-2) 10%,transparent)}
+li.it{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:2px 10px;padding:9px 8px;border-radius:12px;align-items:start}
+li.it:nth-child(even){background:var(--zebra)}
+li.it.drag{opacity:.4}li.it.hl{outline:2px solid var(--brand-2)}
+.no{width:26px;height:26px;border-radius:50%;background:var(--c,#8a93a3);color:#fff;font-weight:700;font-size:12.5px;display:grid;place-items:center;margin-top:1px;cursor:grab}
+.ti{font-weight:650;text-decoration:none;color:var(--ink);overflow-wrap:anywhere}.ti:hover{text-decoration:underline}
+.sub{display:block;color:var(--muted);font-size:12.5px}
+.nt{font-size:13.5px;white-space:pre-wrap;margin-top:3px;background:color-mix(in srgb,var(--brand-2) 8%,transparent);border-radius:8px;padding:4px 8px}
+li.it textarea{width:100%;margin-top:4px;min-height:60px;resize:vertical}
+.dist{grid-column:2/-1;color:var(--muted);font-size:12.5px;padding-top:2px}
+.acts{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.acts select{padding:4px 6px;font-size:12.5px;max-width:112px}
+.ib{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:30px;height:30px;cursor:pointer;display:grid;place-items:center;font-size:13px;line-height:1}
+.ib:hover{background:var(--soft)}.ib.x:hover{color:var(--danger)}
+.pin{width:26px;height:26px;border-radius:50%;color:#fff;font:700 12px/22px Arial;text-align:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
+#msg{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:9px 16px;border-radius:12px;font-size:14px;display:none;z-index:2000;max-width:92vw;align-items:center;gap:12px}
+#msg.on{display:flex}#msg button{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font-weight:700}
+.sg{display:flex;gap:10px;align-items:center;padding:8px 4px;border-top:1px solid var(--line)}.sg div{flex:1;min-width:0}.sg b{display:block;overflow-wrap:anywhere}.sg small{color:var(--muted)}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:18px}
+.maplibregl-map{font:inherit}
+[hidden]{display:none!important}
+.gh{margin:14px 0 6px;font-size:15px}
+.gflow{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0;margin:6px 0}
+.gflow li{counter-increment:s;position:relative;background:rgba(255,255,255,.16);border-radius:14px;padding:10px 12px 10px 46px}
+.gflow li::before{content:counter(s);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;background:#fff;color:var(--brand);display:grid;place-items:center;font-weight:700;font-size:13px}
+.gflow b{display:block}.gflow span{display:block;font-size:13.5px;margin-top:2px;opacity:.95}
+.gfeat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fc{background:rgba(255,255,255,.16);border-radius:14px;padding:10px 12px}
+.fc dl{margin:6px 0 0}.fc dt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;opacity:.8;margin-top:8px}.fc dd{margin:2px 0 0;font-size:13.5px}
+@media (max-width:900px){.gflow,.gfeat{grid-template-columns:1fr}}
+.flow{padding:12px 16px}
+.fsteps{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;padding:0}
+.fsteps li{display:flex;align-items:center;gap:6px;padding:3px 12px 3px 6px;border-radius:999px;border:1px solid var(--line);background:var(--soft);font-size:12.5px;font-weight:600;color:var(--muted)}
+.fsteps li span{width:20px;height:20px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:11.5px}
+.fsteps li.done{color:var(--ok)}.fsteps li.act{background:var(--brand);border-color:var(--brand);color:#fff}.fsteps li.act span{color:var(--brand)}
+@media (prefers-color-scheme:dark){.fsteps li.act{color:#0b1530}.fsteps li.act span{color:#0b1530}}
+#fhint{font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+    <div><h1>Wikitrip</h1><small data-i="tagline"></small></div>
+  </div>
+  <div class="me">
+    <a href="https://affandymurad.github.io/" target="_blank" rel="noopener" data-it="meT" aria-label="Affandy Murad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Affandy Murad</a>
+    <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" target="_blank" rel="noopener" data-it="metaT" aria-label="Meta-Wiki"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>Meta</a>
+  </div>
+  <button class="btn" id="helpBtn">❓ <span data-i="howto"></span></button>
+  <label class="lang" title="Bahasa / Language">
+    <input type="checkbox" id="lang" role="switch" aria-label="Bahasa / Language">
+    <span class="track"><span class="a">ID</span><span class="b">EN</span><i class="knob"></i></span>
+  </label>
+</header>
+
+<!-- PANDUAN -->
+<section class="card guide" id="guide" hidden>
+  <div class="row"><h2 style="margin-inline-end:auto" data-i="gTitle"></h2><button class="btn sm" id="guideX" data-i="gotIt"></button></div>
+  <p data-i="gSub"></p>
+  <h3 class="gh" data-i="gFlowT"></h3>
+  <ol class="gflow">
+    <li><b data-i="f1t"></b><span data-i="f1d"></span></li>
+    <li><b data-i="f2t"></b><span data-i="f2d"></span></li>
+    <li><b data-i="f3t"></b><span data-i="f3d"></span></li>
+    <li><b data-i="f4t"></b><span data-i="f4d"></span></li>
+    <li><b data-i="f5t"></b><span data-i="f5d"></span></li>
+    <li><b data-i="f6t"></b><span data-i="f6d"></span></li>
+    <li><b data-i="f7t"></b><span data-i="f7d"></span></li>
+  </ol>
+  <h3 class="gh" data-i="gFeatT"></h3>
+  <div class="gfeat">
+    <div class="fc"><b data-i="c1t"></b><dl><dt data-i="lWhen"></dt><dd data-i="c1w"></dd><dt data-i="lHow"></dt><dd data-i="c1h"></dd><dt data-i="lNeed"></dt><dd data-i="c1n"></dd></dl></div>
+    <div class="fc"><b data-i="c2t"></b><dl><dt data-i="lWhen"></dt><dd data-i="c2w"></dd><dt data-i="lHow"></dt><dd data-i="c2h"></dd><dt data-i="lNeed"></dt><dd data-i="c2n"></dd></dl></div>
+    <div class="fc"><b data-i="c3t"></b><dl><dt data-i="lWhen"></dt><dd data-i="c3w"></dd><dt data-i="lHow"></dt><dd data-i="c3h"></dd><dt data-i="lNeed"></dt><dd data-i="c3n"></dd></dl></div>
+  </div>
+  <details>
+    <summary data-i="tipsT"></summary>
+    <ul>
+      <li data-i="tip1"></li><li data-i="tip2"></li><li data-i="tip3"></li><li data-i="tip4"></li><li data-i="tip5"></li><li data-i="tip6"></li><li data-i="tip7"></li>
+    </ul>
+  </details>
+</section>
+
+<!-- CARI -->
+<section class="card">
+  <div class="sbox">
+    <form class="add" id="addForm" autocomplete="off">
+      <input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off">
+      <button class="btn pri" id="addBtn" data-i="add"></button>
+    </form>
+    <div class="ac" id="ac" hidden></div>
+  </div>
+  <div class="err" id="addErr" hidden></div>
+  <div class="chips"><span class="hint" style="margin:0" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
+  <div class="chips" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
+  <p class="hint" data-i="addHint"></p>
+</section>
+
+<!-- PENGATURAN PERJALANAN -->
+<section class="card">
+  <div class="row">
+    <label class="f"><span data-i="trip"></span> <select id="trip"></select></label>
+    <button class="btn sm" id="tNew" data-i="tNew"></button>
+    <button class="btn sm" id="tRen" data-i="tRen"></button>
+    <button class="btn sm" id="tDel" data-i="tDel"></button>
+    <label class="f"><span data-i="start"></span> <input type="date" id="start"></label>
+    <span class="f" style="display:flex;align-items:center;gap:6px"><span data-i="length"></span>
+      <span class="stepper"><button class="btn" id="dm" aria-label="−">−</button><output id="days">1</output><button class="btn" id="dp" aria-label="+">+</button></span>
+      <span data-i="daysU"></span></span>
+    <label class="sw"><input type="checkbox" id="road"><i></i><span data-i="road"></span></label><span class="hint" id="roadSt" style="margin:0" role="status"></span>
+  </div>
+</section>
+
+<!-- ALUR LANGKAH -->
+<section class="card flow" id="flow" aria-live="polite">
+  <ol class="fsteps" id="fsteps"></ol>
+  <div class="row"><span id="fhint" style="margin-inline-end:auto"></span><button class="btn pri sm" id="fgo"></button></div>
+</section>
+
+<!-- AKSI -->
+<section class="bar" style="margin-bottom:12px">
+  <button class="btn" id="recP">✨ <span data-i="recP"></span></button>
+  <button class="btn" id="auto">⚡ <span data-i="auto"></span></button>
+  <button class="btn" id="recR">🧭 <span data-i="recR"></span></button>
+  <button class="btn" id="undo" disabled>↶ <span data-i="undo"></span></button>
+  <span style="margin-inline-start:auto"></span>
+  <button class="btn pri" id="pdf" data-i="pdf"></button>
+  <div class="menuwrap">
+    <button class="btn" id="more" aria-haspopup="true" aria-expanded="false"><span data-i="more"></span> ▾</button>
+    <div class="menu" id="menu" hidden>
+      <button id="exJson" data-i="exJson"></button>
+      <button id="imJson" data-i="imJson"></button>
+      <button id="exGpx" data-i="exGpx"></button>
+      <button id="share" data-i="share"></button>
+      <button id="reset" data-i="reset" style="color:var(--danger)"></button>
+      <p data-i="saveHint"></p>
+    </div>
+  </div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+</section>
+
+<section class="card" id="nb" hidden>
+  <div class="row"><b id="nbT" style="margin-inline-end:auto"></b><button class="btn sm" id="nbX" data-i="close"></button></div>
+  <div id="nbList"></div>
+</section>
+
+<div class="grid">
+  <div id="days-box"></div>
+  <div id="map" aria-label="Map"></div>
+</div>
+<footer data-i="footer"></footer>
+</div>
+<div id="msg" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-contour@0.1.1/dist/index.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const DAY_COLORS = ['#d6336c', '#2d6fd6', '#1c9a5b', '#e67700', '#7048e8', '#0c8599', '#c2255c', '#5c940d'];
+const colorOf = d => d ? DAY_COLORS[(d - 1) % DAY_COLORS.length] : '#8a93a3';
+const LS = 'wikitrip.v1', LS_LANG = 'wikitrip.lang', LS_GUIDE = 'wikitrip.guide';
+const BAD_TYPES = { Q5:{id:'manusia',en:'a person'}, Q4167410:{id:'halaman disambiguasi',en:'a disambiguation page'}, Q13442814:{id:'artikel ilmiah',en:'a scholarly article'}, Q4167836:{id:'kategori Wikimedia',en:'a Wikimedia category'}, Q11266439:{id:'templat Wikimedia',en:'a Wikimedia template'} };
+
+/* ---------- i18n ---------- */
+const I18N = {
+id:{
+  tagline:'Rencana perjalanan dari Wikivoyage & Wikidata', howto:'Cara pakai',
+  meT:'Portofolio Affandy Murad', metaT:'Halaman pengguna Affandy Murad di Meta-Wiki',
+  gTitle:'👋 Selamat datang! Susun liburanmu dalam 3 langkah', gSub:'Tanpa akun, tanpa biaya. Semua tersimpan otomatis di browser ini.', gotIt:'Mengerti, tutup',
+  s1t:'Cari & tambah tempat', s1d:'Ketik nama kota atau tempat wisata di kotak pencarian, lalu pilih dari saran yang muncul. Tempat masuk ke “Daftar tunggu”.',
+  s2t:'Atur per hari', s2d:'Seret tempat ke hari yang kamu mau (atau pakai menu “Pindah ke”). Klik ⚡ Susun otomatis untuk dibagi rata, atau 🧭 Optimalkan rute.',
+  s3t:'Simpan & bagikan', s3d:'Unduh PDF untuk dicetak, salin tautan untuk dikirim ke teman, atau ekspor GPX untuk aplikasi peta.',
+  tipsT:'Tips & trik lainnya',
+  tip1:'Bisa juga menempel tautan Wikivoyage (mis. en.wikivoyage.org/wiki/Jakarta) atau kode Wikidata (mis. Q3630).',
+  tip2:'⌖ pada tiap tempat menampilkan saran tempat menarik di sekitarnya; ✨ Rekomendasi tempat memberi saran dari seluruh rencana.',
+  tip3:'Klik judul hari untuk memperbesar peta ke hari itu. Klik penanda di peta untuk melompat ke tempatnya di daftar.',
+  tip4:'✎ untuk menulis catatan (jam buka, reservasi). ▲▼ untuk mengubah urutan. × untuk menghapus; tekan “Urungkan” jika salah.',
+  tip5:'Aktifkan “Rute jalan” untuk perkiraan jarak & waktu mobil (OSRM). Tanpa itu, jarak berupa garis lurus.',
+  tip6:'Buat beberapa perjalanan sekaligus lewat “Baru”. Cadangkan lewat Lainnya → Simpan JSON.',
+  addPh:'Cari kota atau tempat… mis. Bali, Borobudur, Tokyo', add:'Tambah', adding:'Mencari…',
+  mapFailT:'Peta tidak bisa ditampilkan', mapFailD:'Peta butuh WebGL dan koneksi ke CDN/tile. Buka berkas ini langsung di Chrome/Firefox/Edge (bukan di pratinjau terbatas). Daftar rencana tetap berfungsi.',
+  btn3d:'Mode 3D (miringkan peta & gedung)', btnContour:'Garis kontur ketinggian', mapLoading:'Peta masih dimuat…', contourFail:'Kontur gagal dimuat: {0}',
+  gTitle:'👋 Panduan lengkap: dari nol sampai rencana siap berangkat', gFlowT:'Alur yang disarankan — ikuti urutan ini', gFeatT:'Penjelasan tiga fitur utama',
+  f1t:'Atur perjalanan', f1d:'Beri nama lewat Baru / Ganti nama, pilih tanggal Mulai, lalu atur Lama (jumlah hari) dengan tombol − / +. Tentukan jumlah hari DULU, karena Susun otomatis membagi tempat ke jumlah hari ini.',
+  f2t:'Tambah tempat utama', f2d:'Ketik kota atau tempat wisata di kotak pencarian lalu pilih dari saran, atau pakai Mulai cepat: pilih negara → kota → pilih saran. Tempat masuk ke Daftar tunggu. Tambahkan 2–5 tempat yang pasti kamu kunjungi.',
+  f3t:'Cari ide dengan ✨ Rekomendasi tempat', f3d:'Tombol ini menampilkan atraksi populer di sekitar tempatmu. Telusuri halaman demi halaman, ubah urutan ke Terdekat bila perlu, lalu klik + Tambah pada yang menarik. Pakai ⌖ pada satu tempat untuk menjelajah area tertentu.',
+  f4t:'Bagi ke hari dengan ⚡ Susun otomatis', f4d:'Satu klik membagi semua tempat di Daftar tunggu ke hari-hari yang ada, berdasarkan kedekatan lokasi. Tempat yang sudah kamu jadwalkan sendiri tidak berubah.',
+  f5t:'Rapikan manual', f5d:'Seret tempat ke hari lain atau pakai menu Pindah ke, ▲▼ untuk urutan, ✎ untuk catatan (jam buka, reservasi), × untuk hapus. Klik judul hari untuk memperbesar peta ke hari itu.',
+  f6t:'Pangkas jarak dengan 🧭 Optimalkan rute', f6d:'Lakukan SETELAH rencana hampir final. Butuh minimal 3 tempat terjadwal. Jumlah tempat per hari dipertahankan, tetapi urutan dan pembagian harinya disusun ulang agar total jarak terpendek. Tidak puas? Tekan Urungkan.',
+  f7t:'Cek jarak, simpan, dan bagikan', f7d:'Aktifkan Rute jalan (mobil) untuk jarak dan waktu tempuh nyata (ruas tanpa jalan tampil putus-putus). Lalu Unduh PDF, Simpan JSON sebagai cadangan, Unduh GPX untuk aplikasi peta, atau Salin tautan berbagi.',
+  lWhen:'Kapan dipakai', lHow:'Cara kerja', lNeed:'Syarat & tips',
+  c1t:'✨ Rekomendasi tempat', c1w:'Saat butuh ide destinasi tambahan di sekitar rencanamu, sebelum Susun otomatis.', c1h:'Mencari atraksi dalam radius ±10 km dari tempat terjadwal (atau dari semua tempat jika belum ada yang terjadwal), menyaring yang bertema wisata, lalu menampilkannya 6 per halaman. Bisa diurutkan Terpopuler atau Terdekat.', c1n:'Butuh minimal 1 tempat. Hasil yang ditambah masuk ke Daftar tunggu, jadi lanjutkan dengan Susun otomatis. Pakai ⌖ pada satu tempat untuk saran khusus di area itu.',
+  c2t:'⚡ Susun otomatis', c2w:'Saat Daftar tunggu sudah berisi banyak tempat yang belum dijadwalkan.', c2h:'Mengurutkan isi Daftar tunggu menurut kedekatan lokasi, lalu mengisinya ke Hari 1, 2, 3… berurutan dengan jumlah yang merata per hari. Tempat yang sudah ada di suatu hari tidak dipindah.', c2n:'Atur Lama (jumlah hari) dulu. Tidak mempertimbangkan jam buka atau lama kunjungan, jadi periksa hasilnya dan rapikan manual.',
+  c3t:'🧭 Optimalkan rute', c3w:'Saat tempat sudah terbagi ke hari-hari dan kamu ingin total jarak lebih pendek.', c3h:'Menyusun ulang semua tempat terjadwal (Hari 1 sampai terakhir) menjadi satu jalur terpendek, lalu membaginya kembali dengan jumlah tempat per hari yang sama. Daftar Tunggu tidak ikut.', c3n:'Minimal 3 tempat terjadwal. Tempat bisa berpindah hari, jadi lakukan setelah pembagian hari final; catatan tetap menempel pada tempatnya. Pesan “sudah efisien” berarti tidak ada yang berubah.',
+  tip7:'Bilah langkah di atas tombol aksi menunjukkan langkah berikutnya yang disarankan; klik tombol di sampingnya untuk menjalankannya.',
+  fl:['Tambah tempat', 'Rekomendasi', 'Susun otomatis', 'Optimalkan rute', 'Simpan & bagikan'],
+  fh:['Tambah tempat dulu: cari kota atau tempat wisata di kotak pencarian (butuh minimal 3 tempat terjadwal untuk optimasi rute).', 'Cari ide tambahan di sekitar tempatmu dengan Rekomendasi tempat (opsional, tapi membantu).', 'Bagi tempat di Daftar tunggu ke hari-hari dengan Susun otomatis.', 'Hampir selesai! Optimalkan rute agar total jarak lebih pendek.', 'Rencana siap. Unduh PDF atau bagikan; aktifkan Rute jalan untuk waktu tempuh mobil.'],
+  fg:['Ke kotak pencarian', '✨ Rekomendasi tempat', '⚡ Susun otomatis', '🧭 Optimalkan rute', 'Unduh PDF'],
+  roadCalc:'Menghitung rute jalan… {0}/{1}', straight:'(garis lurus)', toastNoRoad:'Sebagian ruas tidak punya jalan mobil (mis. antarpulau); ditampilkan garis lurus putus-putus',
+  nSug:'{0} saran', sortBy:'Urutkan', sortPop:'Terpopuler', sortNear:'Terdekat', prev:'Sebelumnya', next:'Berikutnya', pgOf:'Halaman {0} dari {1}',
+  reset:'🗑 Reset semua data', confirmReset:'Hapus SEMUA perjalanan dan pengaturan di browser ini?\n\nSaran: simpan JSON dulu sebagai cadangan. Setelah reset kamu masih bisa menekan “Urungkan” sebelum menutup halaman.', toastReset:'Semua data direset',
+  quick:'Mulai cepat — pilih negara:', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf untuk melihat saran. Tempat harus punya koordinat agar tampil di peta.',
+  srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Mencari…', noRes:'Tidak ada hasil. Coba nama lain atau tempel tautan Wikivoyage.',
+  trip:'Perjalanan', tNew:'Baru', tRen:'Ganti nama', tDel:'Hapus', start:'Mulai', length:'Lama', daysU:'hari', road:'Rute jalan (mobil)',
+  auto:'Susun otomatis', recP:'Rekomendasi tempat', recR:'Optimalkan rute', undo:'Urungkan', pdf:'Unduh PDF', more:'Lainnya',
+  exJson:'💾 Simpan JSON', imJson:'📂 Muat JSON', exGpx:'📍 Unduh GPX', share:'🔗 Salin tautan berbagi', saveHint:'Data tersimpan otomatis di browser ini. Simpan JSON sebagai cadangan.',
+  close:'Tutup', footer:'Data tempat: Wikivoyage (CC BY-SA 4.0) dan Wikidata (CC0) · Peta: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Jarak garis lurus kecuali “Rute jalan” aktif (OSRM, perkiraan mobil).',
+  wl:'Daftar tunggu', wlSubE:'Tempat baru masuk ke sini dulu', wlSubN:'{0} tempat · belum dijadwalkan', dayT:'Hari {0} · {1}', dayNone:'Belum ada tempat', nP:'{0} tempat',
+  dropHint:'Seret tempat ke sini, atau pakai menu “Pindah ke”', wlDrop:'Tempat yang kamu tambah muncul di sini',
+  moveTo:'Pindah ke…', up:'Naik', dn:'Turun', nbT:'Saran tempat di sekitar', noteT:'Catatan', rm:'Hapus', notePh:'Catatan: jam buka, reservasi, dan sebagainya',
+  nextLeg:'↓ {0} ke tempat berikutnya', fromPrev:'{0} dari {1}', focus:'Klik untuk memperbesar peta ke hari ini',
+  emptyT:'Rencana masih kosong', emptyD:'Mulai dengan mencari tempat di atas, atau klik salah satu tujuan populer.',
+  toastAdded:'“{0}” masuk ke Daftar tunggu', toastUndone:'Dibatalkan', toastRm:'“{0}” dihapus', toastDelTrip:'Perjalanan dihapus',
+  toastNeed1:'Tambahkan minimal satu tempat dulu', toastNeed3:'Butuh minimal 3 tempat terjadwal untuk menyusun rute', toastEff:'Urutan rute sudah efisien',
+  toastRoute:'Rute disusun ulang: ± {0} → {1} km', toastNoWl:'Daftar tunggu kosong — tambah tempat dulu', toastAuto:'{0} tempat dibagi ke {1} hari',
+  toastRoadFail:'Rute jalan gagal dimuat; memakai garis lurus', toastLoaded:'{0} perjalanan dimuat', toastLoadFail:'Gagal memuat: {0}',
+  toastLink:'Tautan disalin', toastLinkLong:'Tautan disalin (panjang, mungkin terpotong di beberapa aplikasi)', toastBadLink:'Tautan berbagi tidak valid',
+  promptNew:'Nama perjalanan baru:', defNew:'Perjalanan baru', promptName:'Nama perjalanan:', confirmDel:'Hapus perjalanan “{0}”?', defTrip:'Perjalanan saya', imported:'Perjalanan impor',
+  confirmImport:'Tambahkan rencana “{0}” ({1} tempat) dari tautan ini?', copyPrompt:'Salin tautan ini:', undoBtn:'Urungkan',
+  nbTitleAll:'Tempat menarik di sekitar rencana ini', nbTitleOne:'Tempat menarik dekat “{0}”', finding:'Mencari destinasi menarik…', near:'Dekat {0}', noNear:'Tidak ada tempat berkoordinat yang ditemukan.', addBtn:'+ Tambah',
+  eBadLink:'Tautan tidak dikenali. Pakai tautan Wikivoyage (…wikivoyage.org/wiki/…) atau kode Wikidata.', eMissing:'Halaman “{0}” tidak ada di {1}.', eNoQ:'Kode {0} tidak ditemukan di Wikidata.',
+  eBad:'{0} adalah {1}, bukan tempat.', eNoCoord:'“{0}” tidak punya koordinat, jadi belum bisa ditaruh di peta. Pilih tempat lain atau lengkapi koordinatnya di Wikidata (P625).',
+  eDup:'“{0}” sudah ada di rencana ini.', eHttp:'Gagal menghubungi {0} (HTTP {1})', eNoTour:'Tidak ada tempat berkoordinat di berkas ini.',
+  pdfLib:'Pustaka PDF gagal dimuat. Periksa koneksi lalu muat ulang halaman.', pdfNone:'Belum ada tempat untuk dicetak', pdfMaking:'Membuat PDF…', pdfFail:'PDF gagal dibuat: {0}',
+  pdfSub:'{0}  ·  {1} hari  ·  {2} tempat', pdfRoad:'Jarak lewat jalan (mobil, perkiraan)', pdfLine:'Perkiraan jarak antartempat (garis lurus)', pdfWl:'Daftar tunggu (belum dijadwalkan)',
+  pdfH:['No','Tempat','Catatan','Ke berikutnya'], pdfFoot:'Dibuat dengan Wikitrip · data: Wikivoyage (CC BY-SA 4.0) dan Wikidata (CC0)', pdfPage:'Halaman {0} dari {1}', min:'mnt', gpxWl:'Daftar tunggu', gpxDay:'Hari {0}',
+  skipRe:/^(SMA|SMP|SD|SMK|MAN|MTs|MI|TK|Universitas|Politeknik|Institut)\b|kelurahan|kecamatan|^Halte|^Hotel|^Kota |^Kabupaten |\bdesa\b|sekolah|kabupaten|kota administrasi|stasiun radio|partai|perusahaan/i
+},
+en:{
+  tagline:'Trip planner powered by Wikivoyage & Wikidata', howto:'How to use',
+  meT:'Affandy Murad’s portfolio', metaT:'Affandy Murad’s user page on Meta-Wiki',
+  gTitle:'👋 Welcome! Plan your trip in 3 steps', gSub:'No account, no cost. Everything is saved automatically in this browser.', gotIt:'Got it, close',
+  s1t:'Search & add places', s1d:'Type a city or attraction in the search box and pick from the suggestions. Places land in your “Wishlist”.',
+  s2t:'Arrange by day', s2d:'Drag places onto the day you want (or use the “Move to” menu). Hit ⚡ Auto-plan to split them evenly, or 🧭 Optimize route.',
+  s3t:'Save & share', s3d:'Download a PDF to print, copy a link to send to friends, or export GPX for your maps app.',
+  tipsT:'More tips & tricks',
+  tip1:'You can also paste a Wikivoyage link (e.g. en.wikivoyage.org/wiki/Jakarta) or a Wikidata ID (e.g. Q3630).',
+  tip2:'⌖ on each place shows nearby attractions; ✨ Suggest places gives ideas around your whole plan.',
+  tip3:'Click a day title to zoom the map to that day. Click a map pin to jump to that place in the list.',
+  tip4:'✎ adds notes (opening hours, bookings). ▲▼ reorders. × deletes; press “Undo” if you slip.',
+  tip5:'Turn on “Road routes” for estimated driving distance & time (OSRM). Otherwise distances are straight lines.',
+  tip6:'Keep several trips with “New”. Back up via More → Save JSON.',
+  addPh:'Search a city or place… e.g. Bali, Borobudur, Tokyo', add:'Add', adding:'Searching…',
+  mapFailT:'The map could not be shown', mapFailD:'The map needs WebGL and access to the CDN/tiles. Open this file directly in Chrome/Firefox/Edge (not a restricted preview). Your plan list still works.',
+  btn3d:'3D mode (tilt map & buildings)', btnContour:'Elevation contour lines', mapLoading:'Map is still loading…', contourFail:'Contours failed to load: {0}',
+  gTitle:'👋 Full guide: from zero to a ready-to-go itinerary', gFlowT:'Recommended flow — follow this order', gFeatT:'The three key features explained',
+  f1t:'Set up the trip', f1d:'Name it with New / Rename, pick a Start date, then set Length (days) with − / +. Decide the number of days FIRST, because Auto-plan spreads places over this many days.',
+  f2t:'Add your main places', f2d:'Type a city or attraction in the search box and pick a suggestion, or use Quick start: country → city → pick a suggestion. Places land in the Wishlist. Add the 2–5 places you are sure to visit.',
+  f3t:'Find ideas with ✨ Suggest places', f3d:'This shows popular attractions around your places. Browse page by page, switch sorting to Nearest if needed, and click + Add on what looks good. Use ⌖ on one place to explore a specific area.',
+  f4t:'Split into days with ⚡ Auto-plan', f4d:'One click spreads everything in the Wishlist across your days, grouped by proximity. Places you already scheduled yourself stay where they are.',
+  f5t:'Fine-tune by hand', f5d:'Drag places to another day or use the Move to menu, ▲▼ to reorder, ✎ for notes (opening hours, bookings), × to remove. Click a day title to zoom the map to that day.',
+  f6t:'Cut distance with 🧭 Optimize route', f6d:'Do this AFTER the plan is nearly final. Needs at least 3 scheduled places. The number of places per day is kept, but their order and day assignment are reshuffled for the shortest total distance. Not happy? Press Undo.',
+  f7t:'Check distances, save and share', f7d:'Turn on Road routes (car) for real driving distance and time (legs with no road are dashed). Then Download PDF, Save JSON as a backup, Download GPX for maps apps, or Copy share link.',
+  lWhen:'When to use', lHow:'How it works', lNeed:'Requirements & tips',
+  c1t:'✨ Suggest places', c1w:'When you want extra destination ideas around your plan, before Auto-plan.', c1h:'Searches for attractions within ±10 km of your scheduled places (or of all places if none are scheduled), keeps tourism-type results, and shows them 6 per page. Sort by Most popular or Nearest.', c1n:'Needs at least 1 place. Anything you add goes to the Wishlist, so follow up with Auto-plan. Use ⌖ on one place for suggestions specific to that area.',
+  c2t:'⚡ Auto-plan', c2w:'When the Wishlist holds many places that are not scheduled yet.', c2h:'Orders the Wishlist by proximity, then fills Day 1, 2, 3… in sequence with an even count per day. Places already assigned to a day are not moved.', c2n:'Set Length (days) first. It ignores opening hours and visit duration, so review the result and adjust by hand.',
+  c3t:'🧭 Optimize route', c3w:'When places are already split across days and you want a shorter total distance.', c3h:'Reorders all scheduled places (Day 1 to last) into one shortest path, then splits them again with the same number of places per day. The Wishlist is not included.', c3n:'At least 3 scheduled places. Places may change day, so run it once your day split is final; notes stay attached to their places. “Already efficient” means nothing changed.',
+  tip7:'The step bar above the action buttons shows the suggested next step; click the button beside it to run it.',
+  fl:['Add places', 'Suggestions', 'Auto-plan', 'Optimize route', 'Save & share'],
+  fh:['Add places first: search a city or attraction in the search box (you need at least 3 scheduled places to optimize the route).', 'Find extra ideas around your places with Suggest places (optional, but helpful).', 'Split the Wishlist across your days with Auto-plan.', 'Almost done! Optimize the route to shorten the total distance.', 'Your plan is ready. Download the PDF or share it; turn on Road routes for driving times.'],
+  fg:['Go to search box', '✨ Suggest places', '⚡ Auto-plan', '🧭 Optimize route', 'Download PDF'],
+  roadCalc:'Calculating road routes… {0}/{1}', straight:'(straight line)', toastNoRoad:'Some legs have no car road (e.g. across islands); shown as dashed straight lines',
+  nSug:'{0} suggestions', sortBy:'Sort', sortPop:'Most popular', sortNear:'Nearest', prev:'Previous', next:'Next', pgOf:'Page {0} of {1}',
+  reset:'🗑 Reset all data', confirmReset:'Delete ALL trips and settings in this browser?\n\nTip: save JSON first as a backup. After resetting you can still press “Undo” before closing this page.', toastReset:'All data reset',
+  quick:'Quick start — pick a country:', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters to see suggestions. A place needs coordinates to appear on the map.',
+  srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Searching…', noRes:'No results. Try another name or paste a Wikivoyage link.',
+  trip:'Trip', tNew:'New', tRen:'Rename', tDel:'Delete', start:'Start', length:'Length', daysU:'days', road:'Road routes (car)',
+  auto:'Auto-plan', recP:'Suggest places', recR:'Optimize route', undo:'Undo', pdf:'Download PDF', more:'More',
+  exJson:'💾 Save JSON', imJson:'📂 Load JSON', exGpx:'📍 Download GPX', share:'🔗 Copy share link', saveHint:'Data is saved automatically in this browser. Save JSON as a backup.',
+  close:'Close', footer:'Place data: Wikivoyage (CC BY-SA 4.0) and Wikidata (CC0) · Map: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Distances are straight lines unless “Road routes” is on (OSRM, estimated by car).',
+  wl:'Wishlist', wlSubE:'New places land here first', wlSubN:'{0} places · not scheduled yet', dayT:'Day {0} · {1}', dayNone:'No places yet', nP:'{0} places',
+  dropHint:'Drag a place here, or use the “Move to” menu', wlDrop:'Places you add show up here',
+  moveTo:'Move to…', up:'Up', dn:'Down', nbT:'Nearby suggestions', noteT:'Note', rm:'Remove', notePh:'Note: opening hours, bookings, etc.',
+  nextLeg:'↓ {0} to next stop', fromPrev:'{0} from {1}', focus:'Click to zoom the map to this day',
+  emptyT:'Your plan is empty', emptyD:'Start by searching for a place above, or tap a popular destination.',
+  toastAdded:'“{0}” added to Wishlist', toastUndone:'Undone', toastRm:'“{0}” removed', toastDelTrip:'Trip deleted',
+  toastNeed1:'Add at least one place first', toastNeed3:'Need at least 3 scheduled places to build a route', toastEff:'Route order is already efficient',
+  toastRoute:'Route reordered: ± {0} → {1} km', toastNoWl:'Wishlist is empty — add places first', toastAuto:'{0} places spread over {1} days',
+  toastRoadFail:'Road routes failed to load; using straight lines', toastLoaded:'{0} trip(s) loaded', toastLoadFail:'Could not load: {0}',
+  toastLink:'Link copied', toastLinkLong:'Link copied (long — may be cut off in some apps)', toastBadLink:'Invalid share link',
+  promptNew:'New trip name:', defNew:'New trip', promptName:'Trip name:', confirmDel:'Delete trip “{0}”?', defTrip:'My trip', imported:'Imported trip',
+  confirmImport:'Add plan “{0}” ({1} places) from this link?', copyPrompt:'Copy this link:', undoBtn:'Undo',
+  nbTitleAll:'Attractions around this plan', nbTitleOne:'Attractions near “{0}”', finding:'Finding attractions…', near:'Near {0}', noNear:'No places with coordinates were found.', addBtn:'+ Add',
+  eBadLink:'Link not recognised. Use a Wikivoyage link (…wikivoyage.org/wiki/…) or a Wikidata ID.', eMissing:'Page “{0}” does not exist on {1}.', eNoQ:'ID {0} was not found on Wikidata.',
+  eBad:'{0} is {1}, not a place.', eNoCoord:'“{0}” has no coordinates, so it can’t be placed on the map. Pick another place or add coordinates on Wikidata (P625).',
+  eDup:'“{0}” is already in this plan.', eHttp:'Could not reach {0} (HTTP {1})', eNoTour:'No places with coordinates in this file.',
+  pdfLib:'PDF library failed to load. Check your connection and reload the page.', pdfNone:'Nothing to print yet', pdfMaking:'Creating PDF…', pdfFail:'PDF failed: {0}',
+  pdfSub:'{0}  ·  {1} days  ·  {2} places', pdfRoad:'Road distance (car, estimated)', pdfLine:'Estimated distance between places (straight line)', pdfWl:'Wishlist (not scheduled)',
+  pdfH:['No','Place','Notes','To next'], pdfFoot:'Made with Wikitrip · data: Wikivoyage (CC BY-SA 4.0) and Wikidata (CC0)', pdfPage:'Page {0} of {1}', min:'min', gpxWl:'Wishlist', gpxDay:'Day {0}',
+  skipRe:/school|university|college|district|^Hotel|company|political party|railway station|radio station/i
+}};
+/* Bahasa antarmuka: ?lang=id|en menimpa pilihan tersimpan; tanpa keduanya, bawaannya en */
+let lang = (() => {
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q === 'id' || q === 'en') return q;
+  try { const s = localStorage.getItem(LS_LANG); if (s === 'id' || s === 'en') return s; } catch {}
+  return 'en';
+})();
+function setQuery(mut, hash = location.hash) {   // ubah satu-dua parameter URL tanpa menghapus yang lain (lang, lat, lon, zoom)
+  try { const p = new URLSearchParams(location.search); mut(p); history.replaceState(null, '', '?' + p.toString() + hash); } catch {}
+}
+const tr = (k, ...a) => { const v = I18N[lang][k]; return typeof v === 'string' ? v.replace(/\{(\d)\}/g, (_, i) => a[i] ?? '') : v; };
+const loc = () => lang === 'id' ? 'id-ID' : 'en-US';
+const nf = n => n.toLocaleString(loc(), { maximumFractionDigits:1 });
+function applyI18n() {
+  document.documentElement.lang = lang; $('#lang').checked = lang === 'en';
+  document.querySelectorAll('[data-i]').forEach(e => { e.textContent = tr(e.dataset.i); });
+  document.querySelectorAll('[data-ip]').forEach(e => { e.placeholder = tr(e.dataset.ip); });
+  document.querySelectorAll('[data-it]').forEach(e => { e.title = tr(e.dataset.it); });
+  setQuery(p => p.set('lang', lang));
+}
+
+/* ---------- data ---------- */
+const todayISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
+const newTrip = name => ({ id:uid(), name, start:todayISO(), days:1, items:[] });
+let db;
+try { db = JSON.parse(localStorage.getItem(LS)); } catch { db = null; }
+if (!db || !Array.isArray(db.trips) || !db.trips.length) { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; }
+const cur = () => db.trips.find(t => t.id === db.cur) || db.trips[0];
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(db)); } catch {} };
+const undoStack = [];
+function mutate(fn) { undoStack.push(JSON.stringify(db)); if (undoStack.length > 30) undoStack.shift(); fn(); save(); render(); }
+function undo() { if (!undoStack.length) return; db = JSON.parse(undoStack.pop()); save(); render(); toast(tr('toastUndone')); }
+let toastT;
+function toast(msg, actionLabel, action) {
+  const m = $('#msg'); m.textContent = msg;
+  if (actionLabel) { const b = document.createElement('button'); b.textContent = actionLabel; b.onclick = () => { action(); m.classList.remove('on'); }; m.append(b); }
+  m.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => m.classList.remove('on'), actionLabel ? 6000 : 2800);
+}
+
+/* ---------- tanggal & jarak ---------- */
+function dayDate(t, d) { const [y, m, dd] = t.start.split('-').map(Number); return new Date(Date.UTC(y, m - 1, dd + d - 1)); }
+const fmtDate = (dt, long) => dt.toLocaleDateString(loc(), { weekday:long ? 'long' : 'short', day:'numeric', month:long ? 'long' : 'short', year:long ? 'numeric' : undefined, timeZone:'UTC' });
+function km(a, b) {
+  const R = 6371, r = x => x * Math.PI / 180, dLa = r(b.lat - a.lat), dLo = r(b.lon - a.lon);
+  const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLo / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+const dayItems = (t, d) => t.items.filter(i => i.day === d);
+/* Rute jalan: dihitung per ruas (A→B) lewat OSRM, di-cache per pasangan koordinat, jadi
+   menambah/mengurutkan tempat hanya meminta ruas yang baru dan satu ruas gagal tidak merusak yang lain. */
+const legCache = new Map(); let routing = false, routeBlock = 0;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const legKey = (a, b) => a.lat + ',' + a.lon + ';' + b.lat + ',' + b.lon;
+const legInfo = (a, b) => (db.road ? legCache.get(legKey(a, b)) : undefined);
+const legGeom = (a, b) => { const e = legInfo(a, b); return e && e.ok ? e.geom : null; };
+const allRoad = l => db.road && l.length > 1 && l.slice(0, -1).every((a, i) => { const e = legInfo(a, l[i + 1]); return e && e.ok; });
+const approx = l => allRoad(l) ? '' : '± ';
+function legs(l) { return l.slice(0, -1).map((a, i) => { const e = legInfo(a, l[i + 1]); return e && e.ok ? e.d / 1000 : km(a, l[i + 1]); }); }
+function legTxt(l, k) {
+  const a = l[k], b = l[k + 1], e = legInfo(a, b);
+  if (e && e.ok) return `${nf(e.d / 1000)} km · ${Math.max(1, Math.round(e.t / 60))} ${tr('min')}`;
+  return `± ${nf(km(a, b))} km${db.road && e && !e.ok ? ' ' + tr('straight') : ''}`;
+}
+function conns(t) {
+  const m = new Map(); let prev = null;
+  for (let d = 1; d <= t.days; d++) { const l = dayItems(t, d); if (!l.length) continue; if (prev) m.set(d, [prev, l[0]]); prev = l[l.length - 1]; }
+  return m;
+}
+function legPairs(t) {
+  const out = [], add = l => { for (let i = 0; i < l.length - 1; i++) out.push([l[i], l[i + 1]]); };
+  for (let d = 1; d <= t.days; d++) { if (conns(t).has(d)) add(conns(t).get(d)); add(dayItems(t, d)); }
+  return out;
+}
+async function fetchRoutes() {
+  if (!db.road || routing || Date.now() < routeBlock) return;
+  routing = true; let changed = false, noRoad = false, fails = 0; const st = $('#roadSt');
+  try {
+    for (;;) {
+      const all = legPairs(cur()), todo = all.filter(([a, b]) => !legCache.has(legKey(a, b)));
+      if (!todo.length || !db.road) break;
+      if (st) st.textContent = tr('roadCalc', all.length - todo.length, all.length);
+      const [a, b] = todo[0], key = legKey(a, b);
+      try {
+        const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=full&geometries=geojson&radiuses=5000;5000`);
+        const j = await r.json();
+        if (j.code === 'Ok') { const x = j.routes[0]; legCache.set(key, { ok:1, d:x.distance, t:x.duration, geom:x.geometry.coordinates }); changed = true; }
+        else if (j.code === 'NoRoute' || j.code === 'NoSegment') { legCache.set(key, { ok:0 }); changed = noRoad = true; }
+        else throw new Error(j.code || 'OSRM');
+        await sleep(120);
+      } catch (e) { if (++fails >= 3) { routeBlock = Date.now() + 20000; toast(tr('toastRoadFail')); break; } await sleep(1000 * fails); }
+    }
+  } finally { routing = false; if (st) st.textContent = ''; }
+  if (noRoad) toast(tr('toastNoRoad'));
+  if (changed) render();
+}
+
+/* ---------- Wikivoyage / Wikidata ---------- */
+async function api(host, params) {
+  const u = new URL(`https://${host}/w/api.php`);
+  for (const [k, v] of Object.entries({ format:'json', formatversion:2, origin:'*', ...params })) u.searchParams.set(k, v);
+  const r = await fetch(u); if (!r.ok) throw new Error(tr('eHttp', host, r.status));
+  return r.json();
+}
+function parseInput(v) {
+  v = v.trim(); let m;
+  if ((m = v.match(/^Q\d+$/i))) return { q:v.toUpperCase() };
+  if ((m = v.match(/wikidata\.org\/(?:wiki|entity)\/(Q\d+)/i))) return { q:m[1].toUpperCase() };
+  if ((m = v.match(/^(?:https?:\/\/)?([a-z-]+)\.(?:m\.)?wikivoyage\.org\/wiki\/([^?#]+)/i)))
+    return { host:m[1] + '.wikivoyage.org', title:decodeURIComponent(m[2]).replace(/_/g, ' ') };
+  if (/^https?:\/\//i.test(v)) throw new Error(tr('eBadLink'));
+  return v ? { host:'en.wikivoyage.org', title:v } : null;
+}
+async function resolvePlace(p) {
+  let { q, host } = p, title, lat, lon, src, inst = '';
+  if (p.title) {
+    const r = await api(host, { action:'query', prop:'coordinates|pageprops', ppprop:'wikibase_item', redirects:1, titles:p.title });
+    const pg = r.query.pages[0];
+    if (!pg || pg.missing) throw new Error(tr('eMissing', p.title, host));
+    title = pg.title; src = `https://${host}/wiki/` + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/');
+    if (pg.coordinates && pg.coordinates[0]) { lat = pg.coordinates[0].lat; lon = pg.coordinates[0].lon; }
+    q = pg.pageprops && pg.pageprops.wikibase_item;
+  }
+  if (q) {
+    const w = await api('www.wikidata.org', { action:'wbgetentities', ids:q, props:'labels|claims|sitelinks', languages:'id|en', sitefilter:'enwikivoyage' });
+    const e = w.entities && w.entities[q];
+    if (!e || e.missing !== undefined) throw new Error(tr('eNoQ', q));
+    const c = e.claims || {}, types = (c.P31 || []).map(x => x.mainsnak.datavalue && x.mainsnak.datavalue.value.id).filter(Boolean);
+    const bad = types.find(x => BAD_TYPES[x]);
+    if (bad) throw new Error(tr('eBad', q, BAD_TYPES[bad][lang]));
+    if (lat == null && c.P625 && c.P625[0].mainsnak.datavalue) { const v = c.P625[0].mainsnak.datavalue.value; lat = v.latitude; lon = v.longitude; }
+    if (!title) {
+      const lb = e.labels || {};
+      title = (lb[lang] || lb.en || lb.id || {}).value || q;
+      src = e.sitelinks && e.sitelinks.enwikivoyage ? 'https://en.wikivoyage.org/wiki/' + encodeURIComponent(e.sitelinks.enwikivoyage.title.replace(/ /g, '_')) : 'https://www.wikidata.org/wiki/' + q;
+    }
+    if (types.length) {
+      const t = await api('www.wikidata.org', { action:'wbgetentities', ids:types.slice(0, 3).join('|'), props:'labels', languages:lang + '|en' });
+      inst = types.slice(0, 2).map(x => { const l = t.entities[x] && t.entities[x].labels; const v = l && (l[lang] || l.en); return v ? v.value : ''; }).filter(Boolean).join(', ');
+    }
+  }
+  if (lat == null) throw new Error(tr('eNoCoord', title || q));
+  return { id:uid(), title, lat:+lat, lon:+lon, q:q || '', src, inst, note:'', day:0 };
+}
+let adding = false;
+async function addPlace(input) {
+  if (adding) return;
+  const err = $('#addErr'); err.hidden = true; hideAc();
+  const btn = $('#addBtn'); adding = true; btn.disabled = true; btn.textContent = tr('adding');
+  try {
+    const p = typeof input === 'string' ? parseInput(input) : input; if (!p) return;
+    const it = await resolvePlace(p);
+    const dup = cur().items.find(x => (it.q && x.q === it.q) || x.title === it.title);
+    if (dup) throw new Error(tr('eDup', it.title));
+    mutate(() => cur().items.push(it));
+    $('#addIn').value = ''; fitMap = true; render();
+    toast(tr('toastAdded', it.title));
+  } catch (e) { err.textContent = e.message || String(e); err.hidden = false; }
+  finally { adding = false; btn.disabled = false; btn.textContent = tr('add'); }
+}
+
+/* ---------- autocomplete ---------- */
+let acSeq = 0, acItems = [], acIdx = -1, acT;
+const hideAc = () => { $('#ac').hidden = true; acIdx = -1; };
+function drawAc(msg) {
+  const box = $('#ac'); box.hidden = false;
+  if (msg) { box.innerHTML = `<div class="hint" style="padding:10px 14px;margin:0">${esc(msg)}</div>`; return; }
+  box.innerHTML = acItems.map((x, i) => `<button type="button" data-ac="${i}" class="${i === acIdx ? 'on' : ''}"><span class="src">${esc(tr(x.kind === 'wv' ? 'srcWv' : 'srcWd'))}</span><b>${esc(x.title)}</b>${x.desc ? `<small>${esc(x.desc)}</small>` : ''}</button>`).join('');
+}
+async function searchAc(q) {
+  const my = ++acSeq; drawAc(tr('searching'));
+  const [wv, wd] = await Promise.allSettled([
+    api('en.wikivoyage.org', { action:'opensearch', search:q, limit:6, namespace:0 }),
+    api('www.wikidata.org', { action:'wbsearchentities', search:q, language:lang, uselang:lang, limit:6, type:'item' })
+  ]);
+  if (my !== acSeq) return;
+  const out = [], seen = new Set();
+  if (wv.status === 'fulfilled' && Array.isArray(wv.value)) (wv.value[1] || []).forEach((t, i) => { seen.add(t.toLowerCase()); out.push({ kind:'wv', title:t, desc:'', p:{ host:'en.wikivoyage.org', title:t } }); });
+  if (wd.status === 'fulfilled') (wd.value.search || []).forEach(r => { if (!seen.has((r.label || '').toLowerCase())) out.push({ kind:'wd', title:r.label || r.id, desc:r.description || '', p:{ q:r.id } }); });
+  acItems = out; acIdx = -1;
+  out.length ? drawAc() : drawAc(tr('noRes'));
+}
+const inp = $('#addIn');
+inp.addEventListener('input', () => { clearTimeout(acT); const v = inp.value.trim(); if (v.length < 2 || /^https?:|^Q\d+$/i.test(v)) { hideAc(); return; } acT = setTimeout(() => searchAc(v), 280); });
+inp.addEventListener('keydown', e => {
+  if (e.key === 'Escape') hideAc();
+  if (!$('#ac').hidden && acItems.length && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); acIdx = (acIdx + (e.key === 'ArrowDown' ? 1 : -1) + acItems.length) % acItems.length; drawAc(); }
+});
+$('#ac').addEventListener('click', e => { const b = e.target.closest('[data-ac]'); if (b) addPlace(acItems[+b.dataset.ac].p); });
+document.addEventListener('click', e => { if (!e.target.closest('.sbox')) hideAc(); if (!e.target.closest('.menuwrap')) { $('#menu').hidden = true; $('#more').setAttribute('aria-expanded', 'false'); } });
+$('#addForm').addEventListener('submit', e => {
+  e.preventDefault(); const v = inp.value.trim(); if (!v) return;
+  if (acIdx >= 0 && acItems[acIdx]) addPlace(acItems[acIdx].p);
+  else if (!/^https?:|^Q\d+$/i.test(v) && acItems.length && !$('#ac').hidden) addPlace(acItems[0].p);
+  else addPlace(v);
+});
+const COUNTRIES = [
+  { f:'🇮🇩', id:'Indonesia', en:'Indonesia', c:['Jakarta', 'Bali', 'Yogyakarta', 'Bandung', 'Surabaya', 'Lombok', 'Labuan Bajo', 'Malang', 'Medan', 'Makassar', 'Semarang'] },
+  { f:'🇲🇾', id:'Malaysia', en:'Malaysia', c:['Kuala Lumpur', 'George Town', 'Langkawi', 'Malacca City', 'Kota Kinabalu', 'Johor Bahru'] },
+  { f:'🇸🇬', id:'Singapura', en:'Singapore', c:['Singapore'] },
+  { f:'🇹🇭', id:'Thailand', en:'Thailand', c:['Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Krabi', 'Ayutthaya'] },
+  { f:'🇻🇳', id:'Vietnam', en:'Vietnam', c:['Hanoi', 'Ho Chi Minh City', 'Da Nang', 'Hoi An', 'Hue', 'Nha Trang'] },
+  { f:'🇵🇭', id:'Filipina', en:'Philippines', c:['Manila', 'Cebu City', 'Palawan', 'Boracay', 'Davao'] },
+  { f:'🇯🇵', id:'Jepang', en:'Japan', c:['Tokyo', 'Kyoto', 'Osaka', 'Nara', 'Sapporo', 'Hiroshima', 'Fukuoka', 'Nagoya'] },
+  { f:'🇰🇷', id:'Korea Selatan', en:'South Korea', c:['Seoul', 'Busan', 'Jeju', 'Gyeongju', 'Incheon'] },
+  { f:'🇨🇳', id:'Tiongkok', en:'China', c:['Beijing', 'Shanghai', 'Hong Kong', 'Chengdu', 'Xi\'an', 'Guangzhou', 'Guilin'] },
+  { f:'🇹🇼', id:'Taiwan', en:'Taiwan', c:['Taipei', 'Taichung', 'Kaohsiung', 'Tainan'] },
+  { f:'🇮🇳', id:'India', en:'India', c:['Delhi', 'Mumbai', 'Jaipur', 'Agra', 'Goa', 'Varanasi', 'Kochi'] },
+  { f:'🇦🇪', id:'Uni Emirat Arab', en:'United Arab Emirates', c:['Dubai', 'Abu Dhabi', 'Sharjah'] },
+  { f:'🇸🇦', id:'Arab Saudi', en:'Saudi Arabia', c:['Mecca', 'Medina', 'Jeddah', 'Riyadh'] },
+  { f:'🇹🇷', id:'Turki', en:'Türkiye', c:['Istanbul', 'Cappadocia', 'Antalya', 'Ankara', 'Izmir', 'Pamukkale'] },
+  { f:'🇪🇬', id:'Mesir', en:'Egypt', c:['Cairo', 'Luxor', 'Aswan', 'Hurghada', 'Alexandria'] },
+  { f:'🇲🇦', id:'Maroko', en:'Morocco', c:['Marrakech', 'Fez', 'Casablanca', 'Chefchaouen'] },
+  { f:'🇫🇷', id:'Prancis', en:'France', c:['Paris', 'Nice', 'Lyon', 'Marseille', 'Bordeaux', 'Strasbourg'] },
+  { f:'🇮🇹', id:'Italia', en:'Italy', c:['Rome', 'Venice', 'Florence', 'Milan', 'Naples', 'Amalfi'] },
+  { f:'🇪🇸', id:'Spanyol', en:'Spain', c:['Barcelona', 'Madrid', 'Seville', 'Valencia', 'Granada'] },
+  { f:'🇬🇧', id:'Inggris Raya', en:'United Kingdom', c:['London', 'Edinburgh', 'Manchester', 'Liverpool', 'Oxford'] },
+  { f:'🇩🇪', id:'Jerman', en:'Germany', c:['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne'] },
+  { f:'🇳🇱', id:'Belanda', en:'Netherlands', c:['Amsterdam', 'Rotterdam', 'Utrecht', 'The Hague'] },
+  { f:'🇨🇭', id:'Swiss', en:'Switzerland', c:['Zurich', 'Lucerne', 'Geneva', 'Interlaken', 'Zermatt'] },
+  { f:'🇦🇺', id:'Australia', en:'Australia', c:['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Cairns', 'Gold Coast'] },
+  { f:'🇳🇿', id:'Selandia Baru', en:'New Zealand', c:['Auckland', 'Queenstown', 'Wellington', 'Rotorua'] },
+  { f:'🇺🇸', id:'Amerika Serikat', en:'United States', c:['New York City', 'Los Angeles', 'San Francisco', 'Las Vegas', 'Miami', 'Honolulu', 'Washington, D.C.'] },
+  { f:'🇨🇦', id:'Kanada', en:'Canada', c:['Vancouver', 'Toronto', 'Montreal', 'Banff'] }
+];
+let pickedCountry = null;
+function drawChips() {
+  $('#chips').innerHTML = COUNTRIES.map((c, i) => `<button class="chip${i === pickedCountry ? ' on' : ''}" data-country="${i}" type="button">${c.f} ${esc(c[lang])}</button>`).join('');
+  const row = $('#cityRow'), c = COUNTRIES[pickedCountry];
+  row.hidden = !c;
+  $('#cities').innerHTML = c ? c.c.map(n => `<button class="chip" data-city="${esc(n)}" type="button">${esc(n)}</button>`).join('') : '';
+}
+$('#chips').addEventListener('click', e => {
+  const b = e.target.closest('[data-country]'); if (!b) return;
+  const i = +b.dataset.country; pickedCountry = pickedCountry === i ? null : i; drawChips();
+});
+$('#cities').addEventListener('click', e => {
+  const b = e.target.closest('[data-city]'); if (!b) return;
+  inp.value = b.dataset.city; inp.focus(); searchAc(b.dataset.city);
+});
+
+/* ---------- operasi item ---------- */
+function moveItem(id, day, beforeId) {
+  mutate(() => {
+    const t = cur(), i = t.items.findIndex(x => x.id === id); if (i < 0) return;
+    const [it] = t.items.splice(i, 1); it.day = day;
+    let at = beforeId ? t.items.findIndex(x => x.id === beforeId) : -1;
+    if (at < 0) { let last = -1; t.items.forEach((x, k) => { if (x.day === day) last = k; }); at = last + 1 || t.items.length; if (last < 0) at = t.items.length; }
+    t.items.splice(at, 0, it);
+  });
+}
+function nudge(id, dir) {
+  const t = cur(), it = t.items.find(x => x.id === id), same = t.items.filter(x => x.day === it.day), k = same.indexOf(it), o = same[k + dir];
+  if (!o) return;
+  mutate(() => { const a = t.items.indexOf(it), b = t.items.indexOf(o); [t.items[a], t.items[b]] = [t.items[b], t.items[a]]; });
+}
+function removeItem(id) {
+  const it = cur().items.find(x => x.id === id);
+  mutate(() => { cur().items = cur().items.filter(x => x.id !== id); });
+  toast(tr('toastRm', it.title), tr('undoBtn'), undo);
+}
+
+/* ---------- tampilan ---------- */
+let usedSuggest = false, lastOptSig = '';
+const schedSig = t => t.items.filter(i => i.day).map(i => i.day + ':' + i.id).join(',');
+function renderFlow() {
+  const t = cur(), n = t.items.length, wl = dayItems(t, 0).length, sched = n - wl; let a;
+  if (!n) a = 1; else if (wl) a = (!usedSuggest && n < 5) ? 2 : 3; else if (sched < 3) a = usedSuggest ? 1 : 2; else if (schedSig(t) !== lastOptSig) a = 4; else a = 5;
+  $('#fsteps').innerHTML = tr('fl').map((x, i) => { const k = i + 1, done = k < a && (k !== 2 || usedSuggest); return `<li class="${k === a ? 'act' : done ? 'done' : ''}"${k === a ? ' aria-current="step"' : ''}><span>${done ? '✓' : k}</span>${esc(x)}</li>`; }).join('');
+  $('#fhint').textContent = tr('fh')[a - 1]; const g = $('#fgo'); g.textContent = tr('fg')[a - 1]; g.dataset.a = a;
+}
+let editing = null, fitMap = true, map, markers = [], mapReady = false;
+function itemHtml(t, it, n, list) {
+  const opts = [`<option value="">${esc(tr('moveTo'))}</option>`, `<option value="0">${esc(tr('wl'))}</option>`]
+    .concat(Array.from({ length:t.days }, (_, k) => `<option value="${k + 1}">${esc(tr('dayT', k + 1, '').replace(/ · $/, ''))}</option>`)).join('');
+  const last = n === list.length;
+  return `<li class="it" draggable="true" data-id="${it.id}" style="--c:${colorOf(it.day)}">
+    <span class="no">${it.day ? n : '•'}</span>
+    <div><a class="ti" href="${esc(it.src)}" target="_blank" rel="noopener">${esc(it.title)}</a>${it.inst ? `<span class="sub">${esc(it.inst)}</span>` : ''}
+      ${editing === it.id ? `<textarea data-note="${it.id}" placeholder="${esc(tr('notePh'))}">${esc(it.note)}</textarea>` : it.note ? `<div class="nt">${esc(it.note)}</div>` : ''}</div>
+    <div class="acts"><select data-mv="${it.id}" aria-label="${esc(tr('moveTo'))}">${opts}</select>
+      <button class="ib" data-act="up" data-id="${it.id}" title="${esc(tr('up'))}" aria-label="${esc(tr('up'))}">▲</button><button class="ib" data-act="dn" data-id="${it.id}" title="${esc(tr('dn'))}" aria-label="${esc(tr('dn'))}">▼</button>
+      <button class="ib" data-act="nb" data-id="${it.id}" title="${esc(tr('nbT'))}" aria-label="${esc(tr('nbT'))}">⌖</button><button class="ib" data-act="nt" data-id="${it.id}" title="${esc(tr('noteT'))}" aria-label="${esc(tr('noteT'))}">✎</button><button class="ib x" data-act="rm" data-id="${it.id}" title="${esc(tr('rm'))}" aria-label="${esc(tr('rm'))}">×</button></div>
+    ${it.day && !last ? `<div class="dist">${esc(tr('nextLeg', legTxt(list, n - 1)))}</div>` : ''}</li>`;
+}
+function render() {
+  const t = cur();
+  $('#trip').innerHTML = db.trips.map(x => `<option value="${x.id}"${x.id === t.id ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
+  $('#start').value = t.start; $('#days').textContent = t.days; $('#dm').disabled = t.days <= 1; $('#dp').disabled = t.days >= 30;
+  $('#road').checked = !!db.road; $('#undo').disabled = !undoStack.length; $('#tDel').disabled = db.trips.length < 2;
+  const sections = [];
+  if (!t.items.length) sections.push(`<section class="card empty"><div class="big">🧳</div><h3>${esc(tr('emptyT'))}</h3><p>${esc(tr('emptyD'))}</p></section>`);
+  const mk = (d, title, sub, list) => {
+    const lg = legs(list), cn = conns(t).get(d);
+    sections.push(`<section class="day" style="--c:${colorOf(d)}"><header data-focus="${d}" title="${esc(tr('focus'))}"><h2>${esc(title)}</h2><span>${esc(sub)}${d && list.length > 1 ? ` · ${approx(list)}${nf(lg.reduce((a, b) => a + b, 0))} km` : ''}${cn ? ` · ${esc(tr('fromPrev', legTxt(cn, 0), cn[0].title))}` : ''}</span></header>
+      <ol class="lst" data-day="${d}" data-empty="${esc(d ? tr('dropHint') : tr('wlDrop'))}">${list.map((it, k) => itemHtml(t, it, k + 1, list)).join('')}</ol></section>`);
+  };
+  const bl = dayItems(t, 0); mk(0, tr('wl'), bl.length ? tr('wlSubN', bl.length) : tr('wlSubE'), bl);
+  for (let d = 1; d <= t.days; d++) { const l = dayItems(t, d); mk(d, tr('dayT', d, fmtDate(dayDate(t, d))), l.length ? tr('nP', l.length) : tr('dayNone'), l); }
+  $('#days-box').innerHTML = sections.join('');
+  document.querySelectorAll('select[data-mv]').forEach(s => { s.value = ''; });
+  const ta = document.querySelector('textarea[data-note]'); if (ta) ta.focus();
+  renderFlow(); drawMap(); fetchRoutes();
+  document.title = `${t.name} · Wikitrip`;
+}
+let is3d = false, isCt = false, demSource = null; const ctl = {};
+const layerBefore = () => (map.getLayer('conns') ? 'conns' : undefined);
+function refreshCtl() {
+  if (!ctl.b3d) return;
+  ctl.b3d.title = tr('btn3d'); ctl.b3d.setAttribute('aria-label', tr('btn3d')); ctl.b3d.setAttribute('aria-pressed', String(is3d)); ctl.b3d.classList.toggle('on', is3d);
+  ctl.bct.title = tr('btnContour'); ctl.bct.setAttribute('aria-label', tr('btnContour')); ctl.bct.setAttribute('aria-pressed', String(isCt)); ctl.bct.classList.toggle('on', isCt);
+}
+function layerCtl() {
+  const c = document.createElement('div'); c.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+  const mk = (txt, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lbtn'; b.textContent = txt; b.onclick = fn; c.append(b); return b; };
+  ctl.b3d = mk('3D', toggle3d); ctl.bct = mk('⛰', toggleContour); refreshCtl();
+  return { onAdd() { return c; }, onRemove() { c.remove(); } };
+}
+function toggle3d() {
+  if (!map || !mapReady) { toast(tr('mapLoading')); return; }
+  is3d = !is3d;
+  if (is3d) {
+    if (!map.getLayer('b3d')) {
+      if (!map.getSource('ofm')) map.addSource('ofm', { type:'vector', url:'https://tiles.openfreemap.org/planet' });
+      map.addLayer({ id:'b3d', type:'fill-extrusion', source:'ofm', 'source-layer':'building', minzoom:13, paint:{ 'fill-extrusion-color':'#d4d9e3', 'fill-extrusion-height':['coalesce', ['get', 'render_height'], 0], 'fill-extrusion-base':['coalesce', ['get', 'render_min_height'], 0], 'fill-extrusion-opacity':.85 } }, layerBefore());
+    }
+    map.setLayoutProperty('b3d', 'visibility', 'visible'); map.easeTo({ pitch:60, bearing:-20, duration:600 });
+  } else { if (map.getLayer('b3d')) map.setLayoutProperty('b3d', 'visibility', 'none'); map.easeTo({ pitch:0, bearing:0, duration:600 }); }
+  refreshCtl();
+}
+function toggleContour() {
+  if (!map || !mapReady) { toast(tr('mapLoading')); return; }
+  try {
+    if (!map.getSource('contours')) {
+      if (typeof mlcontour === 'undefined') throw new Error('maplibre-contour not loaded');
+      if (!demSource) { demSource = new mlcontour.DemSource({ url:'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png', encoding:'terrarium', maxzoom:15, worker:true }); demSource.setupMaplibre(maplibregl); }
+      map.addSource('contours', { type:'vector', attribution:'Mapzen / AWS Terrain Tiles', maxzoom:15, tiles:[demSource.contourProtocolUrl({ multiplier:1, thresholds:{ 8:[500, 2000], 9:[200, 1000], 10:[100, 500], 11:[50, 200], 12:[50, 200], 13:[20, 100], 14:[20, 100], 15:[10, 50], 16:[10, 50] }, contourLayer:'contours', elevationKey:'ele', levelKey:'level', extent:4096, buffer:1 })] });
+      map.addLayer({ id:'contour-lines', type:'line', source:'contours', 'source-layer':'contours', paint:{ 'line-color':'#a0622d', 'line-opacity':.8, 'line-width':['match', ['get', 'level'], 1, 1.1, .5] } }, layerBefore());
+      map.addLayer({ id:'contour-labels', type:'symbol', source:'contours', 'source-layer':'contours', filter:['>', ['get', 'level'], 0], layout:{ 'symbol-placement':'line', 'text-size':10, 'text-field':['concat', ['number-format', ['get', 'ele'], {}], ' m'], 'text-font':['Noto Sans Regular'] }, paint:{ 'text-color':'#6b4120', 'text-halo-color':'#fff', 'text-halo-width':1 } }, layerBefore());
+      isCt = true;
+    } else {
+      isCt = !isCt; const v = isCt ? 'visible' : 'none';
+      ['contour-lines', 'contour-labels'].forEach(id => map.getLayer(id) && map.setLayoutProperty(id, 'visibility', v));
+    }
+  } catch (e) { isCt = false; toast(tr('contourFail', e.message || e)); }
+  refreshCtl();
+}
+function syncUrl() {
+  if (!map) return;
+  try { const c = map.getCenter(); setQuery(p => { p.set('lat', c.lat.toFixed(6)); p.set('lon', c.lng.toFixed(6)); p.set('zoom', map.getZoom().toFixed(2)); }); } catch {}
+}
+let mapFailed = false;
+function mapFail(msg) {
+  if (mapFailed) return; mapFailed = true; map = null;
+  const el = $('#map'); if (el) el.innerHTML = `<div class="empty" style="padding-top:40px"><div class="big">🗺️</div><h3>${esc(tr('mapFailT'))}</h3><p>${esc(tr('mapFailD'))}</p><p class="hint">${esc(msg || '')}</p></div>`;
+}
+function drawMap() {
+  if (mapFailed) return;
+  if (typeof maplibregl === 'undefined') { mapFail('maplibre-gl failed to load (CDN blocked/offline)'); return; }
+  if (!map) {
+    try {
+      if (maplibregl.supported && !maplibregl.supported({ failIfMajorPerformanceCaveat:false })) throw new Error('WebGL is not available in this browser/preview');
+      const qp = new URLSearchParams(location.search), ql = parseFloat(qp.get('lat')), qo = parseFloat(qp.get('lon')), qz = parseFloat(qp.get('zoom')), hasView = isFinite(ql) && isFinite(qo);
+      map = new maplibregl.Map({ container:'map', style:'https://tiles.openfreemap.org/styles/positron', center:hasView ? [qo, ql] : [110, 0], zoom:hasView && isFinite(qz) ? qz : 2, maxZoom:19, pitch:0, maxPitch:85, attributionControl:false });
+      if (hasView) fitMap = false;
+      map.addControl(new maplibregl.AttributionControl({ compact:true, customAttribution:'<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">© OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }), 'bottom-left');
+      map.addControl(new maplibregl.ScaleControl({ maxWidth:110, unit:'metric' }), 'bottom-left');
+      map.addControl(new maplibregl.NavigationControl({ showCompass:false }), 'bottom-right');
+      map.addControl(new maplibregl.GeolocateControl({ positionOptions:{ enableHighAccuracy:true }, trackUserLocation:false }), 'bottom-right');
+      map.addControl(layerCtl(), 'top-right');
+      map.on('moveend', syncUrl);
+      if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => { if (map) map.resize(); }).observe($('#map'));
+      map.on('load', () => { mapReady = true; drawMap(); });
+      map.on('error', ev => { const m = ev && ev.error && ev.error.message; if (/webgl|context/i.test(m || '')) mapFail(m); else console.warn('map:', m); });
+    } catch (e) { mapFail(e.message || String(e)); return; }
+  }
+  refreshCtl();
+  markers.forEach(m => m.remove()); markers = [];
+  const t = cur(), pts = [], feats = [];
+  const addList = (l, col, link) => {
+    if (l.length < 2) return;
+    if (!db.road) { feats.push({ type:'Feature', properties:{ c:col, k:link ? 1 : 0 }, geometry:{ type:'LineString', coordinates:l.map(i => [i.lon, i.lat]) } }); return; }
+    for (let i = 0; i < l.length - 1; i++) {   // ruas jalan = garis tegas; belum dihitung / tanpa jalan = garis putus-putus
+      const g = legGeom(l[i], l[i + 1]);
+      feats.push({ type:'Feature', properties:{ c:col, k:link || !g ? 1 : 0 }, geometry:{ type:'LineString', coordinates:g || [[l[i].lon, l[i].lat], [l[i + 1].lon, l[i + 1].lat]] } });
+    }
+  };
+  for (let d = 0; d <= t.days; d++) {
+    const list = dayItems(t, d), col = colorOf(d);
+    list.forEach((it, k) => {
+      const el = document.createElement('div'); el.className = 'pin'; el.style.background = col; el.textContent = d ? k + 1 : '•';
+      const m = new maplibregl.Marker({ element:el }).setLngLat([it.lon, it.lat]).setPopup(new maplibregl.Popup({ offset:14 }).setHTML(`<b>${esc(it.title)}</b>${it.inst ? '<br>' + esc(it.inst) : ''}`)).addTo(map);
+      el.addEventListener('click', () => { const li = document.querySelector(`li[data-id="${it.id}"]`); if (li) { li.scrollIntoView({ block:'center', behavior:'smooth' }); li.classList.add('hl'); setTimeout(() => li.classList.remove('hl'), 1800); } });
+      markers.push(m); pts.push([it.lon, it.lat]);
+    });
+    if (d && list.length > 1) addList(list, col, false);
+  }
+  conns(t).forEach(c => addList(c, '#5a6b8c', true));
+  if (mapReady) {
+    const data = { type:'FeatureCollection', features:feats.filter(f => !f.properties.k) }, cdata = { type:'FeatureCollection', features:feats.filter(f => f.properties.k) };
+    if (map.getSource('conns')) map.getSource('conns').setData(cdata);
+    else { map.addSource('conns', { type:'geojson', data:cdata }); map.addLayer({ id:'conns', type:'line', source:'conns', paint:{ 'line-color':['get', 'c'], 'line-width':3, 'line-opacity':.85, 'line-dasharray':[2, 2] } }); }
+    if (map.getSource('routes')) map.getSource('routes').setData(data);
+    else { map.addSource('routes', { type:'geojson', data }); map.addLayer({ id:'routes', type:'line', source:'routes', paint:{ 'line-color':['get', 'c'], 'line-width':4, 'line-opacity':.85 } }); }
+  }
+  if (fitMap && pts.length) fitPts(pts);
+  setTimeout(() => map.resize(), 50);
+}
+function fitPts(pts) {
+  const bb = pts.reduce((b, p) => b.extend(p), new maplibregl.LngLatBounds(pts[0], pts[0]));
+  map.fitBounds(bb, { padding:50, maxZoom:14, duration:500 }); fitMap = false;
+}
+
+/* ---------- saran tempat & rute ---------- */
+let nbRes = [];
+const TOUR = /museum|park|beach|temple|mosque|church|cathedral|palace|fort|castle|monument|memorial|waterfall|mountain|volcano|lake|zoo|garden|market|square|historic|heritage|tourist|archaeolog|bridge|tower|theat|aquarium|observation|reserve|cave|island|shrine|pagoda|gate|hot spring|landmark|building|street|plaza|amusement|stupa|canal|\bport\b|harbou?r|lighthouse|cemetery|mausoleum|monastery|viewpoint|bazaar|hill|forest|national|attraction|royal|residence|ruins|\bsite\b|worship|cultural|\bhall\b|\bhouse\b|shopping|pasar|kraton|keraton|sultan|vihara|kelenteng|synagogue|gallery|sculpture|statue|fountain|mall/i;
+const chunk = (a, n) => Array.from({ length:Math.ceil(a.length / n) }, (_, i) => a.slice(i * n, i * n + n));
+async function touristQs(qs) {
+  qs = [...new Set(qs)]; const types = new Map(), lab = new Map();
+  for (const c of chunk(qs, 50)) { const r = await api('www.wikidata.org', { action:'wbgetentities', ids:c.join('|'), props:'claims' }); for (const q of c) { const e = r.entities && r.entities[q]; types.set(q, e && e.claims && e.claims.P31 ? e.claims.P31.map(x => x.mainsnak.datavalue && x.mainsnak.datavalue.value.id).filter(Boolean) : []); } }
+  for (const c of chunk([...new Set([...types.values()].flat())], 50)) { const r = await api('www.wikidata.org', { action:'wbgetentities', ids:c.join('|'), props:'labels', languages:'en' }); for (const id of c) { const e = r.entities && r.entities[id]; lab.set(id, e && e.labels && e.labels.en ? e.labels.en.value : ''); } }
+  return new Set(qs.filter(q => types.get(q).some(t => TOUR.test(lab.get(t) || ''))));
+}
+const pvSum = p => Object.values(p.pageviews || {}).reduce((x, y) => x + (y || 0), 0);
+let nbAll = [], nbPage = 1, nbSort = 'pop', nbMulti = false;
+const NB_PER = 6;
+function pageList(cur, n) {
+  if (n <= 7) return Array.from({ length:n }, (_, i) => i + 1);
+  const s = new Set([1, n, cur, cur - 1, cur + 1]); const a = [...s].filter(x => x >= 1 && x <= n).sort((x, y) => x - y), out = [];
+  a.forEach((x, i) => { if (i && x - a[i - 1] > 1) out.push(0); out.push(x); }); return out;
+}
+function drawNb() {
+  const rows = nbAll.filter(r => !r.added).sort((x, y) => nbSort === 'near' ? x.d - y.d : y.v - x.v);
+  if (!rows.length) { $('#nbList').innerHTML = `<p class="hint">${esc(tr('noNear'))}</p>`; return; }
+  const pages = Math.ceil(rows.length / NB_PER); nbPage = Math.min(Math.max(1, nbPage), pages);
+  const slice = rows.slice((nbPage - 1) * NB_PER, nbPage * NB_PER);
+  let html = `<div class="row" style="margin-bottom:4px"><span class="hint" style="margin:0;margin-inline-end:auto">${esc(tr('nSug', rows.length))}</span><label class="f">${esc(tr('sortBy'))} <select id="nbSort"><option value="pop"${nbSort === 'pop' ? ' selected' : ''}>${esc(tr('sortPop'))}</option><option value="near"${nbSort === 'near' ? ' selected' : ''}>${esc(tr('sortNear'))}</option></select></label></div>`;
+  html += slice.map(p => `<div class="sg"><div><b>${esc(p.title)}</b><small>${esc(p.inst)}${p.inst ? ' · ' : ''}± ${nf(p.d)} km${nbMulti ? ' · ' + esc(tr('near', p.an)) : ''}</small></div><button class="btn sm" data-sg="${nbAll.indexOf(p)}">${esc(tr('addBtn'))}</button></div>`).join('');
+  if (pages > 1) {
+    html += `<div class="row" style="justify-content:center;margin-top:10px;gap:4px" role="navigation" aria-label="${esc(tr('pgOf', nbPage, pages))}">` +
+      `<button class="btn sm" data-pg="${nbPage - 1}"${nbPage <= 1 ? ' disabled' : ''}>‹ ${esc(tr('prev'))}</button>` +
+      pageList(nbPage, pages).map(x => x ? `<button class="btn sm${x === nbPage ? ' pri' : ''}" data-pg="${x}"${x === nbPage ? ' aria-current="page"' : ''}>${x}</button>` : '<span class="hint" style="margin:0">…</span>').join('') +
+      `<button class="btn sm" data-pg="${nbPage + 1}"${nbPage >= pages ? ' disabled' : ''}>${esc(tr('next'))} ›</button></div>` +
+      `<p class="hint" style="text-align:center">${esc(tr('pgOf', nbPage, pages))}</p>`;
+  }
+  $('#nbList').innerHTML = html;
+}
+async function suggest(anchors, title) {
+  usedSuggest = true; renderFlow();
+  $('#nb').hidden = false; $('#nbT').textContent = title; $('#nbList').innerHTML = `<p class="hint">${esc(tr('finding'))}</p>`; $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
+  try {
+    const t = cur(), have = new Set(t.items.map(x => x.title.toLowerCase())), host = lang + '.wikipedia.org';
+    const rs = await Promise.all(anchors.map(it => api(host, { action:'query', generator:'geosearch', ggscoord:`${it.lat}|${it.lon}`, ggsradius:10000, ggslimit:50, ggsnamespace:0, prop:'coordinates|description|pageprops|pageviews', ppprop:'wikibase_item', colimit:'max' })));
+    const cand = rs.flatMap(r => (r.query ? r.query.pages : []).filter(p => p.coordinates && p.pageprops && p.pageprops.wikibase_item).sort((x, y) => pvSum(y) - pvSum(x)).slice(0, 50).map(p => p.pageprops.wikibase_item));
+    const okQ = await touristQs(cand);
+    const best = new Map(), anchorTitles = new Set(anchors.map(a => a.title.toLowerCase()));
+    anchors.forEach((an, ai) => {
+      (rs[ai].query ? rs[ai].query.pages : []).forEach(p => {
+        const k = p.title.toLowerCase();
+        if (!p.coordinates || !okQ.has((p.pageprops || {}).wikibase_item) || have.has(k) || anchorTitles.has(k)) return;
+        if (p.title.includes(',') || tr('skipRe').test(p.title + ' ' + (p.description || ''))) return;
+        const row = { title:p.title, lat:p.coordinates[0].lat, lon:p.coordinates[0].lon, inst:p.description || '', q:(p.pageprops || {}).wikibase_item || '', v:pvSum(p), d:km(an, p.coordinates[0]), an:an.title, src:`https://${host}/wiki/` + encodeURIComponent(p.title.replace(/ /g, '_')) };
+        const old = best.get(k); if (!old || row.d < old.d) best.set(k, row);
+      });
+    });
+    nbAll = [...best.values()]; nbPage = 1; nbMulti = anchors.length > 1; drawNb();
+  } catch (e) { $('#nbList').innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+const plen = a => a.slice(1).reduce((s, p, i) => s + km(a[i], p), 0);
+function bestOrder(L) {
+  let best = null, bl = Infinity;
+  for (const st of L) {
+    const rest = L.filter(x => x !== st), a = [st];
+    while (rest.length) { const last = a[a.length - 1]; rest.sort((p, q) => km(last, p) - km(last, q)); a.push(rest.shift()); }
+    for (let imp = true; imp;) { imp = false; for (let i = 0; i < a.length - 1; i++) for (let j = i + 1; j < a.length; j++) { const b = a.slice(0, i).concat(a.slice(i, j + 1).reverse(), a.slice(j + 1)); if (plen(b) + 1e-9 < plen(a)) { a.splice(0, a.length, ...b); imp = true; } } }
+    const l = plen(a); if (l < bl) { bl = l; best = a; }
+  }
+  return best;
+}
+function autoPlan() {
+  const t = cur(), wl = dayItems(t, 0); if (!wl.length) { toast(tr('toastNoWl')); return; }
+  const ordered = wl.length > 2 ? bestOrder(wl) : wl.slice(), per = Math.ceil(t.items.length / t.days), cnt = {};
+  mutate(() => {
+    for (let k = 1; k <= t.days; k++) cnt[k] = dayItems(t, k).length;
+    let d = 1; ordered.forEach(it => { while (d < t.days && cnt[d] >= per) d++; it.day = d; cnt[d]++; });
+    const fresh = new Set(ordered), res = [];
+    for (let k = 1; k <= t.days; k++) res.push(...t.items.filter(x => x.day === k && !fresh.has(x)), ...ordered.filter(x => x.day === k));
+    t.items = res;
+  });
+  toast(tr('toastAuto', ordered.length, t.days));
+}
+
+/* ---------- event ---------- */
+$('#undo').onclick = undo;
+$('#more').onclick = e => { e.stopPropagation(); const m = $('#menu'); m.hidden = !m.hidden; $('#more').setAttribute('aria-expanded', String(!m.hidden)); };
+$('#trip').onchange = e => { db.cur = e.target.value; undoStack.length = 0; save(); fitMap = true; render(); };
+$('#tNew').onclick = () => { const n = prompt(tr('promptNew'), tr('defNew')); if (n && n.trim()) mutate(() => { const t = newTrip(n.trim()); db.trips.push(t); db.cur = t.id; fitMap = true; }); };
+$('#tRen').onclick = () => { const n = prompt(tr('promptName'), cur().name); if (n && n.trim()) mutate(() => { cur().name = n.trim(); }); };
+$('#tDel').onclick = () => { if (db.trips.length < 2 || !confirm(tr('confirmDel', cur().name))) return; mutate(() => { db.trips = db.trips.filter(x => x.id !== db.cur); db.cur = db.trips[0].id; fitMap = true; }); toast(tr('toastDelTrip'), tr('undoBtn'), undo); };
+$('#road').onchange = e => { db.road = e.target.checked; routeBlock = 0; save(); render(); };
+$('#auto').onclick = autoPlan;
+$('#fgo').onclick = () => {
+  const a = +$('#fgo').dataset.a;
+  if (a === 1) { inp.focus(); inp.scrollIntoView({ block:'center', behavior:'smooth' }); }
+  else if (a === 2) $('#recP').click(); else if (a === 3) autoPlan(); else if (a === 4) $('#recR').click(); else $('#pdf').click();
+};
+$('#recP').onclick = () => {
+  const items = cur().items; if (!items.length) { toast(tr('toastNeed1')); return; }
+  const sched = items.filter(i => i.day), pool = sched.length ? sched : items;
+  suggest(pool.slice(0, 6), tr('nbTitleAll'));
+};
+$('#recR').onclick = () => {
+  const t = cur(), counts = [], seq = [];
+  for (let d = 1; d <= t.days; d++) { const l = dayItems(t, d); counts.push(l.length); seq.push(...l); }
+  if (seq.length < 3) { toast(tr('toastNeed3')); return; }
+  const o = bestOrder(seq), before = plen(seq), after = plen(o);
+  if (before - after < 0.05) { lastOptSig = schedSig(t); renderFlow(); toast(tr('toastEff')); return; }
+  mutate(() => { let k = 0; counts.forEach((c, d) => { for (let j = 0; j < c; j++) o[k++].day = d + 1; }); t.items = dayItems(t, 0).concat(o); });
+  lastOptSig = schedSig(cur()); renderFlow();
+  toast(tr('toastRoute', nf(before), nf(after)), tr('undoBtn'), undo);
+};
+$('#nbList').addEventListener('click', e => {
+  const g = e.target.closest('[data-pg]');
+  if (g) { if (g.disabled) return; nbPage = +g.dataset.pg; drawNb(); $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' }); return; }
+  const b = e.target.closest('[data-sg]'); if (!b) return; const p = nbAll[+b.dataset.sg]; if (!p || p.added) return;
+  p.added = true;
+  mutate(() => cur().items.push({ id:uid(), title:p.title, lat:p.lat, lon:p.lon, q:p.q, src:p.src, inst:p.inst, note:'', day:0 }));
+  drawNb(); toast(tr('toastAdded', p.title));
+});
+$('#nbList').addEventListener('change', e => { if (e.target.id === 'nbSort') { nbSort = e.target.value; nbPage = 1; drawNb(); } });
+$('#reset').onclick = () => {
+  $('#menu').hidden = true;
+  if (!confirm(tr('confirmReset'))) return;
+  mutate(() => { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; legCache.clear(); editing = null; fitMap = true; });
+  try { localStorage.removeItem(LS_GUIDE); } catch {}
+  $('#nb').hidden = true; nbAll = []; $('#guide').hidden = false; pickedCountry = null; drawChips();
+  toast(tr('toastReset'), tr('undoBtn'), undo);
+};
+$('#nbX').onclick = () => { $('#nb').hidden = true; };
+$('#start').onchange = e => { if (e.target.value) mutate(() => { cur().start = e.target.value; }); };
+function setDays(n) { n = Math.min(30, Math.max(1, n)); mutate(() => { const t = cur(); t.days = n; t.items.forEach(i => { if (i.day > n) i.day = 0; }); }); }
+$('#dm').onclick = () => setDays(cur().days - 1);
+$('#dp').onclick = () => setDays(cur().days + 1);
+$('#lang').onchange = e => { lang = e.target.checked ? 'en' : 'id'; try { localStorage.setItem(LS_LANG, lang); } catch {} hideAc(); applyI18n(); drawChips(); if (!$('#nb').hidden) $('#nb').hidden = true; render(); };
+$('#helpBtn').onclick = () => { const g = $('#guide'); g.hidden = !g.hidden; if (!g.hidden) g.scrollIntoView({ behavior:'smooth', block:'nearest' }); };
+$('#guideX').onclick = () => { $('#guide').hidden = true; try { localStorage.setItem(LS_GUIDE, '1'); } catch {} };
+
+const box = $('#days-box');
+box.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) {
+    const h = e.target.closest('[data-focus]');
+    if (h && map) { const d = +h.dataset.focus, pts = dayItems(cur(), d).map(i => [i.lon, i.lat]); if (pts.length) fitPts(pts); }
+    return;
+  }
+  const id = b.dataset.id, a = b.dataset.act;
+  if (a === 'up') nudge(id, -1); else if (a === 'dn') nudge(id, 1); else if (a === 'rm') removeItem(id);
+  else if (a === 'nb') { const it = cur().items.find(x => x.id === id); if (it) suggest([it], tr('nbTitleOne', it.title)); }
+  else if (a === 'nt') { editing = editing === id ? null : id; render(); }
+});
+box.addEventListener('change', e => { const s = e.target.closest('select[data-mv]'); if (s && s.value !== '') moveItem(s.dataset.mv, +s.value, null); });
+box.addEventListener('focusout', e => {
+  const ta = e.target.closest('textarea[data-note]'); if (!ta) return;
+  const it = cur().items.find(x => x.id === ta.dataset.note); editing = null;
+  if (it && it.note !== ta.value.trim()) mutate(() => { it.note = ta.value.trim(); }); else render();
+});
+let dragId = null;
+box.addEventListener('dragstart', e => { const li = e.target.closest('li.it'); if (!li) return; dragId = li.dataset.id; li.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
+box.addEventListener('dragend', () => { dragId = null; box.querySelectorAll('.drag,.over').forEach(x => x.classList.remove('drag', 'over')); });
+box.addEventListener('dragover', e => { const ol = e.target.closest('ol.lst'); if (ol && dragId) { e.preventDefault(); box.querySelectorAll('.over').forEach(x => x.classList.remove('over')); ol.classList.add('over'); } });
+box.addEventListener('drop', e => {
+  const ol = e.target.closest('ol.lst'); if (!ol || !dragId) return; e.preventDefault();
+  const after = [...ol.querySelectorAll('li.it:not(.drag)')].find(li => e.clientY < li.getBoundingClientRect().top + li.offsetHeight / 2);
+  moveItem(dragId, +ol.dataset.day, after ? after.dataset.id : null);
+});
+
+/* ---------- simpan / muat / bagikan ---------- */
+function download(name, mime, data) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type:mime })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+const fileBase = () => cur().name.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'wikitrip';
+$('#exJson').onclick = () => download(`wikitrip-${fileBase()}.json`, 'application/json', JSON.stringify({ wikitrip:1, trips:db.trips }, null, 1));
+$('#exGpx').onclick = () => {
+  const t = cur(), x = s => esc(s);
+  const w = t.items.map(i => `<wpt lat="${i.lat}" lon="${i.lon}"><name>${x(i.title)}</name>${i.note ? `<desc>${x(i.note)}</desc>` : ''}<type>${i.day ? tr('gpxDay', i.day) : tr('gpxWl')}</type></wpt>`).join('\n');
+  download(`wikitrip-${fileBase()}.gpx`, 'application/gpx+xml', `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Wikitrip" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${x(t.name)}</name></metadata>\n${w}\n</gpx>`);
+};
+$('#imJson').onclick = () => $('#file').click();
+const num = v => (v === '' || v == null ? NaN : +v);
+function normTrip(o, name) {
+  const items = (o.items || o.places || o.pois || []).map(i => ({
+    id:uid(), title:String(i.title || i.name || i.label || '').trim(), lat:num(i.lat ?? i.latitude), lon:num(i.lon ?? i.lng ?? i.longitude),
+    q:i.q || i.wikidata || '', src:i.src || i.url || '', inst:i.inst || '', note:String(i.note || i.notes || ''), day:Math.max(0, parseInt(i.day, 10) || 0)
+  })).filter(i => i.title && isFinite(i.lat) && isFinite(i.lon));
+  const days = Math.min(30, Math.max(1, o.days || Math.max(1, ...items.map(i => i.day))));
+  items.forEach(i => { i.src = i.src || (i.q ? 'https://www.wikidata.org/wiki/' + i.q : 'https://www.openstreetmap.org/?mlat=' + i.lat + '&mlon=' + i.lon); if (i.day > days) i.day = 0; });
+  return { id:uid(), name:String(o.name || name || tr('imported')), start:/^\d{4}-\d{2}-\d{2}$/.test(o.start) ? o.start : todayISO(), days, items };
+}
+$('#file').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    const list = j.wikitrip ? j.trips : [j.trip || j];
+    const trips = list.map(x => normTrip(x)).filter(t => t.items.length);
+    if (!trips.length) throw new Error(tr('eNoTour'));
+    mutate(() => { db.trips.push(...trips); db.cur = trips[0].id; fitMap = true; });
+    toast(tr('toastLoaded', trips.length));
+  } catch (err) { toast(tr('toastLoadFail', err.message)); }
+  $('#menu').hidden = true;
+};
+const b64 = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64 = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
+$('#share').onclick = async () => {
+  const t = cur(), c = { n:t.name, s:t.start, d:t.days, i:t.items.map(i => [i.title, +i.lat.toFixed(5), +i.lon.toFixed(5), i.q, i.src, i.inst, i.note, i.day]) };
+  const url = location.origin + location.pathname + '#t=' + b64(JSON.stringify(c));
+  $('#menu').hidden = true;
+  try { await navigator.clipboard.writeText(url); toast(url.length > 6000 ? tr('toastLinkLong') : tr('toastLink')); } catch { prompt(tr('copyPrompt'), url); }
+};
+function importHash() {
+  if (!location.hash.startsWith('#t=')) return;
+  try {
+    const c = JSON.parse(unb64(location.hash.slice(3)));
+    const t = normTrip({ name:c.n, start:c.s, days:c.d, items:c.i.map(a => ({ title:a[0], lat:a[1], lon:a[2], q:a[3], src:a[4], inst:a[5], note:a[6], day:a[7] })) });
+    if (confirm(tr('confirmImport', t.name, t.items.length))) { db.trips.push(t); db.cur = t.id; save(); }
+  } catch { toast(tr('toastBadLink')); }
+  setQuery(() => {}, '');   // buang #t=… dari URL, parameter lain tetap
+}
+
+/* ---------- PDF ---------- */
+const C = { brand:[45, 79, 156], ink:[12, 26, 54], muted:[82, 96, 128], line:[221, 228, 241], soft:[234, 239, 249], zebra:[246, 248, 253], white:[255, 255, 255] };
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const NONLATIN = /[^\u0000-ɏḀ-ỿ -⁯]/;
+async function loadFonts(doc) {
+  try {
+    const get = async u => { const r = await fetch(u); if (!r.ok) throw 0; const b = new Uint8Array(await r.arrayBuffer()); let s = ''; for (let i = 0; i < b.length; i += 8192) s += String.fromCharCode.apply(null, b.subarray(i, i + 8192)); return btoa(s); };
+    const [n, b] = await Promise.all([get('../wikirekap/pdf-fonts/Roboto-Regular.ttf'), get('../wikirekap/pdf-fonts/Roboto-Bold.ttf')]);
+    doc.addFileToVFS('R.ttf', n); doc.addFont('R.ttf', 'Roboto', 'normal'); doc.addFileToVFS('RB.ttf', b); doc.addFont('RB.ttf', 'Roboto', 'bold'); return 'Roboto';
+  } catch { return 'helvetica'; }
+}
+function canvasText(doc, cell, lines, bg) {
+  const k = doc.internal.scaleFactor, fontMm = cell.styles.fontSize / k, lineMm = fontMm * 1.2, px = 8;
+  const pl = cell.padding('left'), pt = cell.padding('top'), w = cell.width - pl - cell.padding('right');
+  const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(w * px)); cv.height = Math.max(1, Math.round(lines.length * lineMm * px));
+  const x = cv.getContext('2d'); x.fillStyle = `rgb(${bg.join(',')})`; x.fillRect(0, 0, cv.width, cv.height);
+  x.fillStyle = `rgb(${C.ink.join(',')})`; x.font = `${cell.styles.fontStyle === 'bold' ? '700 ' : ''}${fontMm * px}px "Noto Sans","Segoe UI","Hiragino Sans","Yu Gothic",sans-serif`; x.textBaseline = 'middle';
+  lines.forEach((l, i) => { const m = x.measureText(l).width; x.save(); x.translate(0, (i + .5) * lineMm * px); if (m > cv.width) x.scale(cv.width / m, 1); x.fillText(l, 0, 0); x.restore(); });
+  doc.addImage(cv.toDataURL('image/png'), 'PNG', cell.x + pl, cell.y + pt, w, lines.length * lineMm);
+}
+async function exportPDF() {
+  if (!window.jspdf) { toast(tr('pdfLib')); return; }
+  const t = cur(); if (!t.items.length) { toast(tr('pdfNone')); return; }
+  const btn = $('#pdf'); btn.disabled = true; btn.textContent = tr('pdfMaking');
+  try {
+    const doc = new window.jspdf.jsPDF({ unit:'mm', format:'a4' }), font = await loadFonts(doc);
+    const W = doc.internal.pageSize.width, H = doc.internal.pageSize.height, M = 14;
+    const fill = c => doc.setFillColor(...c), txt = c => doc.setTextColor(...c), fnt = (s, z) => { doc.setFont(font, s); doc.setFontSize(z); };
+    const clean = s => NONLATIN.test(s) && font === 'helvetica' ? '?' : s;
+    fill(C.brand); doc.rect(0, 0, W, 34, 'F'); txt(C.white); fnt('bold', 20); doc.text(clean(t.name), M, 16, { maxWidth:W - 2 * M });
+    fnt('normal', 10); const a = fmtDate(dayDate(t, 1), true), b = fmtDate(dayDate(t, t.days), true);
+    doc.text(tr('pdfSub', a + (t.days > 1 ? ' – ' + b : ''), t.days, t.items.length), M, 25);
+    let y = 44;
+    const total = [...Array(t.days).keys()].reduce((s, d) => s + legs(dayItems(t, d + 1)).reduce((p, q) => p + q, 0), 0);
+    fnt('normal', 9); txt(C.muted); doc.text(`${db.road ? tr('pdfRoad') : tr('pdfLine')}: ${nf(total)} km`, M, y - 4);
+    for (let d = 0; d <= t.days; d++) {
+      const list = dayItems(t, d); if (!list.length) continue;
+      const col = hex(colorOf(d)), lg = legs(list);
+      if (y > H - 50) { doc.addPage(); y = 20; }
+      fill(C.soft); doc.roundedRect(M, y, W - 2 * M, 9, 2, 2, 'F'); fill(col); doc.rect(M, y, 2.2, 9, 'F');
+      fnt('bold', 11); txt(C.ink); doc.text(clean(d ? tr('dayT', d, fmtDate(dayDate(t, d), true)) : tr('pdfWl')), M + 5, y + 6);
+      fnt('normal', 9); txt(C.muted); doc.text(d && list.length > 1 ? `${approx(list)}${nf(lg.reduce((p, q) => p + q, 0))} km` : '', W - M - 2, y + 6, { align:'right' });
+      doc.autoTable({
+        startY:y + 11, margin:{ left:M, right:M, top:20, bottom:18 }, theme:'plain',
+        head:[tr('pdfH')],
+        body:list.map((it, k) => [d ? String(k + 1) : '•', it.title + (it.inst ? '\n' + it.inst : ''), it.note || '', d && k < list.length - 1 ? legTxt(list, k) : '']),
+        styles:{ font, fontSize:9.5, textColor:C.ink, cellPadding:2.4, lineColor:C.line, lineWidth:0, valign:'top' },
+        headStyles:{ fillColor:col, textColor:C.white, fontStyle:'bold', fontSize:9 },
+        alternateRowStyles:{ fillColor:C.zebra },
+        columnStyles:{ 0:{ cellWidth:11, halign:'center' }, 1:{ cellWidth:68 }, 2:{ cellWidth:'auto' }, 3:{ cellWidth:26, textColor:C.muted } },
+        didParseCell(h) { if (font === 'Roboto' && h.section === 'body') { const s = (h.cell.raw || '') + ''; if (NONLATIN.test(s)) h.cell.nonlatin = true; } },
+        willDrawCell(h) { if (h.cell.nonlatin && h.section === 'body') { h.cell.nl = h.cell.text.slice(); h.cell.text = ['']; } },
+        didDrawCell(h) {
+          if (h.section !== 'body') return;
+          if (h.cell.nonlatin && h.cell.nl) canvasText(doc, h.cell, h.cell.nl, h.row.index % 2 ? C.zebra : C.white);
+          if (h.column.index === 1) { const it = list[h.row.index]; if (it && it.src) doc.link(h.cell.x, h.cell.y, h.cell.width, h.cell.height, { url:it.src }); }
+        }
+      });
+      y = doc.lastAutoTable.finalY + 8;
+    }
+    const n = doc.getNumberOfPages();
+    for (let p = 1; p <= n; p++) {
+      doc.setPage(p); fnt('normal', 8); txt(C.muted); doc.setDrawColor(...C.line); doc.line(M, H - 13, W - M, H - 13);
+      doc.text(tr('pdfFoot'), M, H - 8);
+      doc.text(tr('pdfPage', p, n), W - M, H - 8, { align:'right' });
+    }
+    doc.save(`wikitrip-${fileBase()}.pdf`);
+  } catch (e) { console.error(e); toast(tr('pdfFail', e.message || e)); }
+  finally { btn.disabled = false; btn.textContent = tr('pdf'); }
+}
+$('#pdf').onclick = exportPDF;
+
+window.addEventListener('error', e => { console.error(e.message, e.filename, e.lineno); if (!e.filename && /script error/i.test(e.message || '')) toast('Script error (cross-origin): a CDN script failed — check connection / WebGL'); });
+/* ---------- mulai ---------- */
+applyI18n(); drawChips(); importHash();
+try { if (!localStorage.getItem(LS_GUIDE)) $('#guide').hidden = false; } catch { $('#guide').hidden = false; }
+render();
+})();
+</script>
+</body>
+</html>
