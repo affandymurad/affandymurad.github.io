@@ -338,7 +338,7 @@ id:{
   trip:'Perjalanan', tNew:'Baru', tRen:'Ganti nama', tDel:'Hapus', start:'Mulai', length:'Lama', daysU:'hari', road:'Rute jalan (mobil)',
   auto:'Rekomendasi jadwal', recP:'Rekomendasi tempat', recR:'Rekomendasi rute', undo:'Urungkan', pdf:'Unduh PDF', more:'Lainnya',
   exJson:'💾 Simpan JSON', imJson:'📂 Muat JSON', exGpx:'📍 Unduh GPX', share:'🔗 Salin tautan berbagi', saveHint:'Data tersimpan otomatis di browser ini. Simpan JSON sebagai cadangan.',
-  close:'Tutup', footer:'Data: Wikidata (CC0) untuk tempat dan wilayah; Wikipedia (CC BY-SA 4.0) untuk saran tempat, thumbnail, dan popularitas; Wikivoyage (CC BY-SA 4.0) untuk pencarian dan tautan · Peta: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Jarak garis lurus kecuali “Rute jalan” aktif (OSRM, perkiraan mobil).',
+  close:'Tutup', footer:'Data: Wikidata (CC0, lewat QLever dan API Wikidata) untuk tempat dan wilayah; Wikipedia (CC BY-SA 4.0) untuk saran tempat, thumbnail, dan popularitas; Wikivoyage (CC BY-SA 4.0) untuk pencarian dan tautan · Peta: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Jarak garis lurus kecuali “Rute jalan” aktif (OSRM, perkiraan mobil).',
   wl:'Daftar tunggu', wlSubE:'Belum ada item', wlSubN:'{0} item', dayT:'Hari {0} · {1}', dayNone:'Belum ada tempat', nP:'{0} tempat',
   dropHint:'Seret tempat ke sini, atau pakai menu “Pindah ke”', wlDrop:'Wilayah dan tempat yang kamu tambah muncul di sini',
   moveTo:'Pindah ke…', up:'Naik', dn:'Turun', nbT:'Saran tempat di sekitar', noteT:'Catatan', rm:'Hapus', notePh:'Catatan: jam buka, reservasi, dan sebagainya',
@@ -387,7 +387,7 @@ en:{
   trip:'Trip', tNew:'New', tRen:'Rename', tDel:'Delete', start:'Start', length:'Length', daysU:'days', road:'Road routes (car)',
   auto:'Schedule suggestion', recP:'Place suggestions', recR:'Route suggestion', undo:'Undo', pdf:'Download PDF', more:'More',
   exJson:'💾 Save JSON', imJson:'📂 Load JSON', exGpx:'📍 Download GPX', share:'🔗 Copy share link', saveHint:'Data is saved automatically in this browser. Save JSON as a backup.',
-  close:'Close', footer:'Data: Wikidata (CC0) for places and regions; Wikipedia (CC BY-SA 4.0) for place suggestions, thumbnails and popularity; Wikivoyage (CC BY-SA 4.0) for search and links · Map: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Distances are straight lines unless “Road routes” is on (OSRM, estimated by car).',
+  close:'Close', footer:'Data: Wikidata (CC0, via QLever and the Wikidata API) for places and regions; Wikipedia (CC BY-SA 4.0) for place suggestions, thumbnails and popularity; Wikivoyage (CC BY-SA 4.0) for search and links · Map: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Distances are straight lines unless “Road routes” is on (OSRM, estimated by car).',
   wl:'Wishlist', wlSubE:'No items yet', wlSubN:'{0} items', dayT:'Day {0} · {1}', dayNone:'No places yet', nP:'{0} places',
   dropHint:'Drag a place here, or use the “Move to” menu', wlDrop:'Regions and places you add show up here',
   moveTo:'Move to…', up:'Up', dn:'Down', nbT:'Nearby suggestions', noteT:'Note', rm:'Remove', notePh:'Note: opening hours, bookings, etc.',
@@ -572,10 +572,88 @@ async function ensureLabels(ids) {
   }
 }
 const claimIds = (e, p) => ((e.claims || {})[p] || []).map(x => x.mainsnak.datavalue && x.mainsnak.datavalue.value && x.mainsnak.datavalue.value.id).filter(Boolean);
+/* ---------- QLever: detail entitas + rantai induk dalam beberapa kueri SPARQL (menggantikan puluhan permintaan Action API) ----------
+   Data QLever adalah salinan berkala Wikidata, jadi item yang sangat baru/belum ada di sana otomatis diambil lewat API Wikidata (lihat fetchEntities).
+   Bila QLever gagal (jaringan/waktu habis), seluruhnya memakai API dan QLever dilewati 5 menit. Hasilnya disusun menyerupai entitas Action API
+   agar sisa kode (klasifikasi, breadcrumb, badge) tidak perlu berubah. */
+const QL_URL = 'https://qlever.dev/api/wikidata';
+const QL_PFX = 'PREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX schema: <http://schema.org/>\n';
+let qlDownUntil = 0;
+async function qlSelect(q, ms = 9000) {
+  const ac = new AbortController(), tm = setTimeout(() => ac.abort(), ms);
+  try {
+    const r = await fetch(QL_URL + '?query=' + encodeURIComponent(QL_PFX + q), { headers:{ Accept:'application/sparql-results+json' }, signal:ac.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return ((await r.json()).results || {}).bindings || [];
+  } finally { clearTimeout(tm); }
+}
+const qv = b => (b && b.value) || '';
+const qid = b => qv(b).split('/').pop();
+const qSample = (...v) => v.map(x => `(SAMPLE(?${x}_) AS ?${x})`).join(' ');   // nama hasil ≠ nama variabel di badan kueri (aturan SPARQL)
+const QIDS = ids => [...new Set(ids)].filter(x => /^Q\d+$/.test(x));
+const qNorm = x => x ? (String(x).trim().startsWith('+') ? String(x).trim() : '+' + String(x).trim()) : '';
+async function qlPrefetch(qs) {
+  qs = QIDS(qs);
+  if (!qs.length || Date.now() < qlDownUntil) return {};
+  try {
+    const V = (v, ids) => `VALUES ?${v} { ${ids.map(x => 'wd:' + x).join(' ')} }`;
+    // tahap 1 (paralel): atribut tiap entitas, jenis (P31) beserta labelnya, dan rantai induk P131 sampai 5 tingkat
+    const [A, B, C] = await Promise.all([
+      qlSelect(`SELECT ?s ${qSample('lid', 'len', 'did', 'den', 'c', 'img', 'p17', 'p131', 'wv', 'wp')} WHERE { ${V('s', qs)}
+        OPTIONAL { ?s rdfs:label ?lid_ FILTER(LANG(?lid_) = "id") } OPTIONAL { ?s rdfs:label ?len_ FILTER(LANG(?len_) = "en") }
+        OPTIONAL { ?s schema:description ?did_ FILTER(LANG(?did_) = "id") } OPTIONAL { ?s schema:description ?den_ FILTER(LANG(?den_) = "en") }
+        OPTIONAL { ?s wdt:P625 ?c_ } OPTIONAL { ?s wdt:P18 ?img_ } OPTIONAL { ?s wdt:P17 ?p17_ } OPTIONAL { ?s wdt:P131 ?p131_ }
+        OPTIONAL { ?wvA schema:about ?s ; schema:isPartOf <https://en.wikivoyage.org/> ; schema:name ?wv_ }
+        OPTIONAL { ?wpA schema:about ?s ; schema:isPartOf <https://${lang}.wikipedia.org/> ; schema:name ?wp_ } } GROUP BY ?s`),
+      qlSelect(`SELECT ?s ?t ?tlid ?tlen WHERE { ${V('s', qs)} ?s wdt:P31 ?t . OPTIONAL { ?t rdfs:label ?tlid FILTER(LANG(?tlid) = "id") } OPTIONAL { ?t rdfs:label ?tlen FILTER(LANG(?tlen) = "en") } }`),
+      qlSelect(`SELECT ?s ?a1 ?a2 ?a3 ?a4 ?a5 WHERE { ${V('s', qs)} ?s wdt:P131 ?a1 .
+        OPTIONAL { ?a1 wdt:P131 ?a2 . OPTIONAL { ?a2 wdt:P131 ?a3 . OPTIONAL { ?a3 wdt:P131 ?a4 . OPTIONAL { ?a4 wdt:P131 ?a5 } } } } }`)
+    ]);
+    const att = new Map(A.map(b => [qid(b.s), b])), types = new Map();
+    const setL = (id, lid, len) => { const o = LCACHE.get(id) || { id:'', en:'' }; LCACHE.set(id, { id:lid || o.id, en:len || o.en }); };
+    B.forEach(b => { const s = qid(b.s), t = qid(b.t); if (!types.has(s)) types.set(s, []); if (!types.get(s).includes(t)) types.get(s).push(t); setL(t, qv(b.tlid), qv(b.tlen)); });
+    const chainIds = new Set(); C.forEach(b => ['a1', 'a2', 'a3', 'a4', 'a5'].forEach(k => b[k] && chainIds.add(qid(b[k]))));
+    const refIds = new Set(chainIds); att.forEach(b => { if (b.p17) refIds.add(qid(b.p17)); if (b.p131) refIds.add(qid(b.p131)); });
+    // tahap 2 (paralel): label/koordinat/induk/kode telepon semua rujukan, dan jenis para leluhur
+    const refs = QIDS([...refIds]), anc = QIDS([...chainIds]);
+    const [D1, D2] = refs.length ? await Promise.all([
+      qlSelect(`SELECT ?a ${qSample('lid', 'len', 'c', 'p', 'cc')} WHERE { ${V('a', refs)}
+        OPTIONAL { ?a rdfs:label ?lid_ FILTER(LANG(?lid_) = "id") } OPTIONAL { ?a rdfs:label ?len_ FILTER(LANG(?len_) = "en") }
+        OPTIONAL { ?a wdt:P625 ?c_ } OPTIONAL { ?a wdt:P131 ?p_ } OPTIONAL { ?a wdt:P474 ?cc_ } } GROUP BY ?a`),
+      anc.length ? qlSelect(`SELECT ?a ?t ?tlid ?tlen WHERE { ${V('a', anc)} ?a wdt:P31 ?t . OPTIONAL { ?t rdfs:label ?tlid FILTER(LANG(?tlid) = "id") } OPTIONAL { ?t rdfs:label ?tlen FILTER(LANG(?tlen) = "en") } }`) : Promise.resolve([])
+    ]) : [[], []];
+    const pt = s => { const m = /Point\(\s*(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s*\)/i.exec(s || ''); return m ? { lon:+m[1], lat:+m[2] } : null; };
+    const d1 = new Map(D1.map(b => [qid(b.a), b])), atypes = new Map();
+    D2.forEach(b => { const a = qid(b.a), t = qid(b.t); if (!atypes.has(a)) atypes.set(a, []); if (!atypes.get(a).includes(t)) atypes.get(a).push(t); setL(t, qv(b.tlid), qv(b.tlen)); });
+    d1.forEach((b, id) => { setL(id, qv(b.lid), qv(b.len)); CALLCODE.set(id, qNorm(qv(b.cc))); });
+    anc.forEach(id => { const b = d1.get(id); if (!b) return; const c = pt(qv(b.c)); ANC.set(id, { types:(atypes.get(id) || []).slice(0, 5), p131:b.p ? qid(b.p) : null, c:c ? { lat:c.lat, lon:c.lon } : null }); });
+    // entitas "semu" bergaya Action API
+    const cl = id => ({ mainsnak:{ datavalue:{ value:{ id } } } });
+    const ents = {};
+    qs.forEach(q => {
+      const a = att.get(q), t = types.get(q) || [];
+      if (!a || !(qv(a.lid) || qv(a.len) || t.length)) return;   // tak ada di indeks QLever → akan diambil lewat API
+      const e = { labels:{}, descriptions:{}, claims:{}, sitelinks:{} };
+      if (qv(a.lid)) e.labels.id = { value:qv(a.lid) }; if (qv(a.len)) e.labels.en = { value:qv(a.len) };
+      if (qv(a.did)) e.descriptions.id = { value:qv(a.did) }; if (qv(a.den)) e.descriptions.en = { value:qv(a.den) };
+      e.claims.P31 = t.map(cl);
+      if (a.p17) e.claims.P17 = [cl(qid(a.p17))];
+      if (a.p131) e.claims.P131 = [cl(qid(a.p131))];
+      const c = pt(qv(a.c)); if (c) e.claims.P625 = [{ mainsnak:{ datavalue:{ value:{ latitude:c.lat, longitude:c.lon } } } }];
+      if (a.img) { try { e.claims.P18 = [{ mainsnak:{ datavalue:{ value:decodeURIComponent(qv(a.img).split('Special:FilePath/')[1] || '') } } }]; } catch { /* nama berkas rusak: tanpa gambar */ } }
+      if (qv(a.wv)) e.sitelinks.enwikivoyage = { title:qv(a.wv) };
+      if (qv(a.wp)) e.sitelinks[lang + 'wiki'] = { title:qv(a.wp) };
+      ents[q] = e;
+      if (a.p17) { const id = qid(a.p17); if (!CALLCODE.has(id)) CALLCODE.set(id, ''); }
+    });
+    return ents;
+  } catch (e) { qlDownUntil = Date.now() + 5 * 60e3; console.warn('QLever gagal, memakai API Wikidata:', e && e.message); return {}; }
+}
 async function fetchEntities(qs, hint = new Map()) {
   qs = [...new Set(qs)].slice(0, 40); if (!qs.length) return [];
-  const ents = {};
-  for (const c of chunk(qs, 50)) { const r = await api('www.wikidata.org', { action:'wbgetentities', ids:c.join('|'), props:'labels|descriptions|claims|sitelinks', languages:lang + '|en', sitefilter:`enwikivoyage|${lang}wiki` }); Object.assign(ents, r.entities || {}); }
+  const ents = await qlPrefetch(qs);                      // utama: QLever (beberapa kueri SPARQL)
+  const miss = qs.filter(q => !ents[q]);                  // item yang belum ada di QLever, atau QLever gagal: Action API Wikidata
+  for (const c of chunk(miss, 50)) { const r = await api('www.wikidata.org', { action:'wbgetentities', ids:c.join('|'), props:'labels|descriptions|claims|sitelinks', languages:lang + '|en', sitefilter:`enwikivoyage|${lang}wiki` }); Object.assign(ents, r.entities || {}); }
   const ids = claimIds;
   const val = (e, p) => { const c = ((e.claims || {})[p] || [])[0]; return c && c.mainsnak.datavalue && c.mainsnak.datavalue.value; };
   const refs = new Set();
@@ -585,7 +663,7 @@ async function fetchEntities(qs, hint = new Map()) {
   const lab = labelOf;
   /* Rantai induk (P131 → P131 …) untuk item WILAYAH, naik sampai negara (maks. 5 tingkat). Negara (P17) tidak diambil lagi: cukup labelnya. */
   const base = new Map();   // q -> { types, kind, level, p17, p131 }
-  qs.forEach(q => { const e = ents[q]; if (!e || e.missing !== undefined) return; const types = ids(e, 'P31'), tl = types.slice(0, 3).map(enOf); base.set(q, { types, kind:kindFrom(tl), level:levelOf(types.slice(0, 5).map(enOf)), p17:ids(e, 'P17')[0], p131:ids(e, 'P131')[0] }); });
+  qs.forEach(q => { const e = ents[q]; if (!e || e.missing !== undefined) return; const types = ids(e, 'P31'), tl = types.slice(0, 5).map(enOf); base.set(q, { types, kind:kindFrom(tl), level:levelOf(types.slice(0, 5).map(enOf)), p17:ids(e, 'P17')[0], p131:ids(e, 'P131')[0] }); });
   const countries = new Set([...base.values()].map(x => x.p17).filter(Boolean));
   const anc = ANC, chain = new Map();   // anc (dipakai ulang antarpencarian): id -> { types, level, p131, c }
   let active = [...base].filter(([, x]) => x.kind === 'region' && x.p131).map(([q, x]) => ({ q, id:x.p131 }));
