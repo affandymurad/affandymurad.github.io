@@ -534,7 +534,7 @@ id:{
   toastRoadFail:'Rute jalan gagal dimuat; memakai garis lurus', toastLoaded:'{0} perjalanan dimuat', toastLoadFail:'Gagal memuat: {0}',
   toastLink:'Tautan disalin', toastLinkLong:'Tautan disalin (panjang, mungkin terpotong di beberapa aplikasi)', toastBadLink:'Tautan berbagi tidak valid',
   promptNew:'Nama perjalanan baru:', defNew:'Perjalanan baru', promptName:'Nama perjalanan:', confirmDel:'Hapus perjalanan “{0}”?', defTrip:'Perjalanan saya', imported:'Perjalanan impor',
-  confirmImport:'Tambahkan rencana “{0}” ({1} tempat) dari tautan ini?', copyPrompt:'Salin tautan ini:', undoBtn:'Urungkan',
+  toastShared:'Rencana “{0}” ({1} tempat) ditambahkan dari tautan berbagi', copyPrompt:'Salin tautan ini:', undoBtn:'Urungkan',
   nbTitleAll:'Tempat menarik di sekitar rencana ini', nbTitleOne:'Tempat menarik dekat “{0}”', finding:'Mencari destinasi menarik…', near:'Dekat {0}', noNear:'Tidak ada tempat berkoordinat yang ditemukan.', addBtn:'+ Tambah',
   eBadLink:'Tautan tidak dikenali. Pakai tautan Wikivoyage (…wikivoyage.org/wiki/…) atau kode Wikidata.', eMissing:'Halaman “{0}” tidak ada di {1}.', eNoQ:'Kode {0} tidak ditemukan di Wikidata.',
   eBad:'{0} adalah {1}, bukan tempat.', eNoCoord:'“{0}” tidak punya koordinat, jadi belum bisa ditaruh di peta. Pilih tempat lain atau lengkapi koordinatnya di Wikidata (P625).',
@@ -589,7 +589,7 @@ en:{
   toastRoadFail:'Road routes failed to load; using straight lines', toastLoaded:'{0} trip(s) loaded', toastLoadFail:'Could not load: {0}',
   toastLink:'Link copied', toastLinkLong:'Link copied (long — may be cut off in some apps)', toastBadLink:'Invalid share link',
   promptNew:'New trip name:', defNew:'New trip', promptName:'Trip name:', confirmDel:'Delete trip “{0}”?', defTrip:'My trip', imported:'Imported trip',
-  confirmImport:'Add plan “{0}” ({1} places) from this link?', copyPrompt:'Copy this link:', undoBtn:'Undo',
+  toastShared:'Plan “{0}” ({1} places) added from the share link', copyPrompt:'Copy this link:', undoBtn:'Undo',
   nbTitleAll:'Attractions around this plan', nbTitleOne:'Attractions near “{0}”', finding:'Finding attractions…', near:'Near {0}', noNear:'No places with coordinates were found.', addBtn:'+ Add',
   eBadLink:'Link not recognised. Use a Wikivoyage link (…wikivoyage.org/wiki/…) or a Wikidata ID.', eMissing:'Page “{0}” does not exist on {1}.', eNoQ:'ID {0} was not found on Wikidata.',
   eBad:'{0} is {1}, not a place.', eNoCoord:'“{0}” has no coordinates, so it can’t be placed on the map. Pick another place or add coordinates on Wikidata (P625).',
@@ -1607,13 +1607,19 @@ $('#share').onclick = async () => {
   
   try { await navigator.clipboard.writeText(url); toast(url.length > 6000 ? tr('toastLinkLong') : tr('toastLink')); } catch { prompt(tr('copyPrompt'), url); }
 };
+let sharedMsg = '', sharedStep = 0;
 function importHash() {
   if (!location.hash.startsWith('#t=')) return;
   try {
     const c = JSON.parse(unb64(location.hash.slice(3)));
     const t = normTrip({ name:c.n, start:c.s, days:c.d, items:c.i.map(a => ({ title:a[0], lat:a[1], lon:a[2], q:a[3], src:a[4], inst:a[5], note:a[6], day:a[7], kind:a[8], badge:a[9] })) });
-    if (confirm(tr('confirmImport', t.name, t.items.length))) { db.trips.push(t); db.cur = t.id; save(); }
-  } catch { toast(tr('toastBadLink')); }
+    if (!t.items.length) throw new Error('kosong');
+    // tanpa dialog bawaan peramban (sering diblokir di aplikasi/peramban tertanam): langsung ditambahkan sebagai rencana baru, dengan tombol Urungkan
+    undoStack.push(JSON.stringify(db));
+    db.trips.push(t); db.cur = t.id; fitMap = true; save();
+    sharedMsg = tr('toastShared', t.name, t.items.length);
+    sharedStep = t.items.some(i => i.day > 0) ? 3 : 1;   // rencana yang sudah berjadwal langsung dibuka di tahap Jadwal
+  } catch { sharedMsg = tr('toastBadLink'); }
   setQuery(() => {}, '');   // buang #t=… dari URL, parameter lain tetap
 }
 
@@ -1825,7 +1831,8 @@ applyI18n(); drawChips(); importHash();
 try { if (!localStorage.getItem(LS_GUIDE) && !cur().items.length) { $('#guide').hidden = false; guideAuto = true; } } catch { if (!cur().items.length) { $('#guide').hidden = false; guideAuto = true; } }
 render();
 reached = gateMax();   // pengguna lama yang datanya lengkap boleh berpindah bebas selama datanya terpenuhi; pengguna baru mulai dari tahap 1
-setStep(parseInt(new URLSearchParams(location.search).get('step'), 10) || 1, { noScroll:true, noAuto:true, force:true });
+setStep(sharedStep || parseInt(new URLSearchParams(location.search).get('step'), 10) || 1, { noScroll:true, noAuto:true, force:true });
+if (sharedMsg) setTimeout(() => toast(sharedMsg, sharedStep ? tr('undoBtn') : '', undo), 400);
 /* Item lama (tanpa jenis/thumbnail/lencana) dilengkapi sekali di latar belakang dari Wikidata */
 (async function enrichLegacy() {
   try {
