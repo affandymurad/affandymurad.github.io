@@ -298,6 +298,19 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
 .clr[hidden]{display:none}
 .clr i{width:22px;height:22px;border-radius:50%;background:var(--soft);display:grid;place-items:center;transition:background .15s,color .15s}
 .clr:hover i{background:var(--line);color:var(--ink)}
+/* panel saran: header kartu + ikon tutup 44px, urutan sebagai kontrol segmen, baris seragam */
+.sec>header h3{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.icb{flex:none;width:44px;height:44px;min-height:0;margin-inline-end:-10px;padding:0;border:0;background:none;color:var(--muted);display:grid;place-items:center;border-radius:10px}
+.icb svg{width:18px;height:18px}.icb:hover{background:var(--soft);color:var(--ink)}
+.nbtools{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin-bottom:6px}
+.nbtools .cnt{color:var(--muted);font-size:13.5px}
+.seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.seg button{min-height:38px;padding:0 14px;border:0;border-radius:9px;background:none;color:var(--muted);font-weight:600;font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){.seg button[aria-pressed="true"]{color:#0b1530}}
+#nbList .sg{padding:10px 0;align-items:center}
+#nbList .sg>.th{align-self:flex-start}
+#nbList .sg .btn{flex:none;min-height:44px;min-width:84px;justify-content:center}
 .sec:has(.sbox){overflow:visible}   /* panel hasil/pemuatan melayang di bawah kotak cari dan tidak boleh terpotong kartu */
 .sec:has(.sbox) .ac{z-index:55;scroll-margin-bottom:100px;max-height:min(430px,calc(100vh - 230px))}
 </style>
@@ -382,9 +395,9 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
       <button class="btn pri big" id="recP" data-it="recPd"><span data-i="recP"></span></button>
     </div>
   </section>
-  <section class="card" id="nb" hidden>
-    <div class="row"><b id="nbT" style="margin-inline-end:auto"></b><button class="btn sm" id="nbX" data-i="close"></button></div>
-    <div id="nbList"></div>
+  <section class="card sec" id="nb" hidden>
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg><h3 id="nbT"></h3><button type="button" class="icb" id="nbX" data-it="close" data-ia="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+    <div class="bd" id="nbList"></div>
   </section>
   <div class="card nbEmpty hint" data-i="sugEmpty"></div>
 </section>
@@ -692,8 +705,16 @@ async function fetchRoutes() {
 async function api(host, params) {
   const u = new URL(`https://${host}/w/api.php`);
   for (const [k, v] of Object.entries({ format:'json', formatversion:2, origin:'*', ...params })) u.searchParams.set(k, v);
-  const r = await fetch(u); if (!r.ok) throw new Error(tr('eHttp', host, r.status));
-  return r.json();
+  let err;   // gangguan sementara (jaringan putus, 429, 5xx) dicoba ulang sampai 3 kali; galat 4xx lain langsung dilaporkan
+  for (let n = 0; n < 3; n++) {
+    try {
+      const r = await fetch(u);
+      if (r.status === 429 || r.status >= 500) throw new Error(tr('eHttp', host, r.status));
+      if (!r.ok) { err = new Error(tr('eHttp', host, r.status)); err.fatal = true; throw err; }
+      return await r.json();
+    } catch (e) { err = e; if (e.fatal || n === 2) break; await sleep(600 * (n + 1)); }
+  }
+  throw err;
 }
 function parseInput(v) {
   v = v.trim(); let m;
@@ -758,58 +779,67 @@ const claimIds = (e, p) => ((e.claims || {})[p] || []).map(x => x.mainsnak.datav
 const QL_URL = 'https://qlever.dev/api/wikidata';
 const QL_PFX = 'PREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX schema: <http://schema.org/>\n';
 let qlDownUntil = 0;
-async function qlSelect(q, ms = 9000) {
-  const ac = new AbortController(), tm = setTimeout(() => ac.abort(), ms);
-  try {
-    const r = await fetch(QL_URL + '?query=' + encodeURIComponent(QL_PFX + q), { headers:{ Accept:'application/sparql-results+json' }, signal:ac.signal });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return ((await r.json()).results || {}).bindings || [];
-  } finally { clearTimeout(tm); }
+async function qlSelect(q, ms = 10000) {
+  for (let n = 0; ; n++) {
+    const ac = new AbortController(), tm = setTimeout(() => ac.abort(), ms);
+    try {
+      const r = await fetch(QL_URL + '?query=' + encodeURIComponent(QL_PFX + q), { headers:{ Accept:'application/sparql-results+json' }, signal:ac.signal });
+      if (r.status === 429 || r.status >= 500) throw new Error('HTTP ' + r.status);
+      if (!r.ok) { const e = new Error('HTTP ' + r.status); e.fatal = true; throw e; }
+      return ((await r.json()).results || {}).bindings || [];
+    } catch (e) { if (n >= 1 || e.fatal || e.name === 'AbortError') throw e; await sleep(700); }   // satu percobaan ulang untuk gangguan sementara
+    finally { clearTimeout(tm); }
+  }
 }
 const qv = b => (b && b.value) || '';
 const qid = b => qv(b).split('/').pop();
 const qSample = (...v) => v.map(x => `(SAMPLE(?${x}_) AS ?${x})`).join(' ');   // nama hasil ≠ nama variabel di badan kueri (aturan SPARQL)
 const QIDS = ids => [...new Set(ids)].filter(x => /^Q\d+$/.test(x));
 const qNorm = x => x ? (String(x).trim().startsWith('+') ? String(x).trim() : '+' + String(x).trim()) : '';
+const ENTQ = new Map();   // cache sesi: q -> entitas semu hasil QLever, supaya pencarian berulang tidak mengulang kueri
 async function qlPrefetch(qs) {
   qs = QIDS(qs);
-  if (!qs.length || Date.now() < qlDownUntil) return {};
+  if (!qs.length) return {};
+  const ents = {}; qs.forEach(q => { if (ENTQ.has(q)) ents[q] = ENTQ.get(q); });
+  const need = qs.filter(q => !ENTQ.has(q));
+  if (!need.length || Date.now() < qlDownUntil) return ents;
   try {
     const V = (v, ids) => `VALUES ?${v} { ${ids.map(x => 'wd:' + x).join(' ')} }`;
-    // tahap 1 (paralel): atribut tiap entitas, jenis (P31) beserta labelnya, dan rantai induk P131 sampai 5 tingkat
-    const [A, B, C] = await Promise.all([
-      qlSelect(`SELECT ?s ${qSample('lid', 'len', 'did', 'den', 'c', 'img', 'p17', 'p131', 'wv', 'wp')} WHERE { ${V('s', qs)}
+    const soft = p => p.catch(() => null);   // kueri pelengkap: bila gagal dilewati (jangan membatalkan seluruh QLever)
+    // tahap 1 (paralel): atribut & jenis (wajib); tautan situs dan himpunan leluhur P131+ (pelengkap)
+    const [A, B, C, SL] = await Promise.all([
+      qlSelect(`SELECT ?s ${qSample('lid', 'len', 'did', 'den', 'c', 'img', 'p17', 'p131')} WHERE { ${V('s', need)}
         OPTIONAL { ?s rdfs:label ?lid_ FILTER(LANG(?lid_) = "id") } OPTIONAL { ?s rdfs:label ?len_ FILTER(LANG(?len_) = "en") }
         OPTIONAL { ?s schema:description ?did_ FILTER(LANG(?did_) = "id") } OPTIONAL { ?s schema:description ?den_ FILTER(LANG(?den_) = "en") }
-        OPTIONAL { ?s wdt:P625 ?c_ } OPTIONAL { ?s wdt:P18 ?img_ } OPTIONAL { ?s wdt:P17 ?p17_ } OPTIONAL { ?s wdt:P131 ?p131_ }
+        OPTIONAL { ?s wdt:P625 ?c_ } OPTIONAL { ?s wdt:P18 ?img_ } OPTIONAL { ?s wdt:P17 ?p17_ } OPTIONAL { ?s wdt:P131 ?p131_ } } GROUP BY ?s`),
+      qlSelect(`SELECT ?s ?t ?tlid ?tlen WHERE { ${V('s', need)} ?s wdt:P31 ?t . OPTIONAL { ?t rdfs:label ?tlid FILTER(LANG(?tlid) = "id") } OPTIONAL { ?t rdfs:label ?tlen FILTER(LANG(?tlen) = "en") } }`),
+      soft(qlSelect(`SELECT DISTINCT ?s ?a WHERE { ${V('s', need)} ?s wdt:P131+ ?a }`)),
+      soft(qlSelect(`SELECT ?s ${qSample('wv', 'wp')} WHERE { ${V('s', need)}
         OPTIONAL { ?wvA schema:about ?s ; schema:isPartOf <https://en.wikivoyage.org/> ; schema:name ?wv_ }
-        OPTIONAL { ?wpA schema:about ?s ; schema:isPartOf <https://${lang}.wikipedia.org/> ; schema:name ?wp_ } } GROUP BY ?s`),
-      qlSelect(`SELECT ?s ?t ?tlid ?tlen WHERE { ${V('s', qs)} ?s wdt:P31 ?t . OPTIONAL { ?t rdfs:label ?tlid FILTER(LANG(?tlid) = "id") } OPTIONAL { ?t rdfs:label ?tlen FILTER(LANG(?tlen) = "en") } }`),
-      qlSelect(`SELECT ?s ?a1 ?a2 ?a3 ?a4 ?a5 WHERE { ${V('s', qs)} ?s wdt:P131 ?a1 .
-        OPTIONAL { ?a1 wdt:P131 ?a2 . OPTIONAL { ?a2 wdt:P131 ?a3 . OPTIONAL { ?a3 wdt:P131 ?a4 . OPTIONAL { ?a4 wdt:P131 ?a5 } } } } }`)
+        OPTIONAL { ?wpA schema:about ?s ; schema:isPartOf <https://${lang}.wikipedia.org/> ; schema:name ?wp_ } } GROUP BY ?s`))
     ]);
-    const att = new Map(A.map(b => [qid(b.s), b])), types = new Map();
+    const att = new Map(A.map(b => [qid(b.s), b])), sl = new Map((SL || []).map(b => [qid(b.s), b])), types = new Map();
     const setL = (id, lid, len) => { const o = LCACHE.get(id) || { id:'', en:'' }; LCACHE.set(id, { id:lid || o.id, en:len || o.en }); };
-    B.forEach(b => { const s = qid(b.s), t = qid(b.t); if (!types.has(s)) types.set(s, []); if (!types.get(s).includes(t)) types.get(s).push(t); setL(t, qv(b.tlid), qv(b.tlen)); });
-    const chainIds = new Set(); C.forEach(b => ['a1', 'a2', 'a3', 'a4', 'a5'].forEach(k => b[k] && chainIds.add(qid(b[k]))));
+    B.forEach(b => { const s0 = qid(b.s), t = qid(b.t); if (!types.has(s0)) types.set(s0, []); if (!types.get(s0).includes(t)) types.get(s0).push(t); setL(t, qv(b.tlid), qv(b.tlen)); });
+    const chainIds = new Set(); (C || []).forEach(b => b.a && chainIds.add(qid(b.a)));
     const refIds = new Set(chainIds); att.forEach(b => { if (b.p17) refIds.add(qid(b.p17)); if (b.p131) refIds.add(qid(b.p131)); });
-    // tahap 2 (paralel): label/koordinat/induk/kode telepon semua rujukan, dan jenis para leluhur
+    // tahap 2 (paralel): label/koordinat/induk/kode telepon semua rujukan (wajib), dan jenis para leluhur (pelengkap)
     const refs = QIDS([...refIds]), anc = QIDS([...chainIds]);
     const [D1, D2] = refs.length ? await Promise.all([
       qlSelect(`SELECT ?a ${qSample('lid', 'len', 'c', 'p', 'cc')} WHERE { ${V('a', refs)}
         OPTIONAL { ?a rdfs:label ?lid_ FILTER(LANG(?lid_) = "id") } OPTIONAL { ?a rdfs:label ?len_ FILTER(LANG(?len_) = "en") }
         OPTIONAL { ?a wdt:P625 ?c_ } OPTIONAL { ?a wdt:P131 ?p_ } OPTIONAL { ?a wdt:P474 ?cc_ } } GROUP BY ?a`),
-      anc.length ? qlSelect(`SELECT ?a ?t ?tlid ?tlen WHERE { ${V('a', anc)} ?a wdt:P31 ?t . OPTIONAL { ?t rdfs:label ?tlid FILTER(LANG(?tlid) = "id") } OPTIONAL { ?t rdfs:label ?tlen FILTER(LANG(?tlen) = "en") } }`) : Promise.resolve([])
+      anc.length ? soft(qlSelect(`SELECT ?a ?t ?tlid ?tlen WHERE { ${V('a', anc)} ?a wdt:P31 ?t . OPTIONAL { ?t rdfs:label ?tlid FILTER(LANG(?tlid) = "id") } OPTIONAL { ?t rdfs:label ?tlen FILTER(LANG(?tlen) = "en") } }`)) : Promise.resolve([])
     ]) : [[], []];
-    const pt = s => { const m = /Point\(\s*(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s*\)/i.exec(s || ''); return m ? { lon:+m[1], lat:+m[2] } : null; };
+    const pt = x => { const m = /Point\(\s*(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s*\)/i.exec(x || ''); return m ? { lon:+m[1], lat:+m[2] } : null; };
     const d1 = new Map(D1.map(b => [qid(b.a), b])), atypes = new Map();
-    D2.forEach(b => { const a = qid(b.a), t = qid(b.t); if (!atypes.has(a)) atypes.set(a, []); if (!atypes.get(a).includes(t)) atypes.get(a).push(t); setL(t, qv(b.tlid), qv(b.tlen)); });
+    (D2 || []).forEach(b => { const a = qid(b.a), t = qid(b.t); if (!atypes.has(a)) atypes.set(a, []); if (!atypes.get(a).includes(t)) atypes.get(a).push(t); setL(t, qv(b.tlid), qv(b.tlen)); });
     d1.forEach((b, id) => { setL(id, qv(b.lid), qv(b.len)); CALLCODE.set(id, qNorm(qv(b.cc))); });
-    anc.forEach(id => { const b = d1.get(id); if (!b) return; const c = pt(qv(b.c)); ANC.set(id, { types:(atypes.get(id) || []).slice(0, 5), p131:b.p ? qid(b.p) : null, c:c ? { lat:c.lat, lon:c.lon } : null }); });
+    if (D2) anc.forEach(id => { const b = d1.get(id); if (!b) return; const c = pt(qv(b.c)); ANC.set(id, { types:(atypes.get(id) || []).slice(0, 5), p131:b.p ? qid(b.p) : null, c:c ? { lat:c.lat, lon:c.lon } : null }); });   // jenis leluhur gagal: dibiarkan kosong, nanti diambil lewat API
     // entitas "semu" bergaya Action API
     const cl = id => ({ mainsnak:{ datavalue:{ value:{ id } } } });
-    const ents = {};
-    qs.forEach(q => {
+    const fresh = {};
+    need.forEach(q => {
       const a = att.get(q), t = types.get(q) || [];
       if (!a || !(qv(a.lid) || qv(a.len) || t.length)) return;   // tak ada di indeks QLever → akan diambil lewat API
       const e = { labels:{}, descriptions:{}, claims:{}, sitelinks:{} };
@@ -820,13 +850,12 @@ async function qlPrefetch(qs) {
       if (a.p131) e.claims.P131 = [cl(qid(a.p131))];
       const c = pt(qv(a.c)); if (c) e.claims.P625 = [{ mainsnak:{ datavalue:{ value:{ latitude:c.lat, longitude:c.lon } } } }];
       if (a.img) { try { e.claims.P18 = [{ mainsnak:{ datavalue:{ value:decodeURIComponent(qv(a.img).split('Special:FilePath/')[1] || '') } } }]; } catch { /* nama berkas rusak: tanpa gambar */ } }
-      if (qv(a.wv)) e.sitelinks.enwikivoyage = { title:qv(a.wv) };
-      if (qv(a.wp)) e.sitelinks[lang + 'wiki'] = { title:qv(a.wp) };
-      ents[q] = e;
+      const x = sl.get(q); if (x && qv(x.wv)) e.sitelinks.enwikivoyage = { title:qv(x.wv) }; if (x && qv(x.wp)) e.sitelinks[lang + 'wiki'] = { title:qv(x.wp) };
+      fresh[q] = e; ENTQ.set(q, e);
       if (a.p17) { const id = qid(a.p17); if (!CALLCODE.has(id)) CALLCODE.set(id, ''); }
     });
-    return ents;
-  } catch (e) { qlDownUntil = Date.now() + 5 * 60e3; console.warn('QLever gagal, memakai API Wikidata:', e && e.message); return {}; }
+    return { ...ents, ...fresh };
+  } catch (e) { qlDownUntil = Date.now() + 5 * 60e3; console.warn('QLever gagal, memakai API Wikidata:', e && e.message); return ents; }
 }
 async function fetchEntities(qs, hint = new Map()) {
   qs = [...new Set(qs)].slice(0, 40); if (!qs.length) return [];
@@ -1235,7 +1264,7 @@ function drawNb() {
   if (!rows.length) { $('#nbList').innerHTML = `<p class="hint">${esc(tr('noNear'))}</p>`; return; }
   const pages = Math.ceil(rows.length / NB_PER); nbPage = Math.min(Math.max(1, nbPage), pages);
   const slice = rows.slice((nbPage - 1) * NB_PER, nbPage * NB_PER);
-  let html = `<div class="row" style="margin-bottom:4px"><span class="hint" style="margin:0;margin-inline-end:auto">${esc(tr('nSug', rows.length))}</span><label class="f">${esc(tr('sortBy'))} <select id="nbSort"><option value="pop"${nbSort === 'pop' ? ' selected' : ''}>${esc(tr('sortPop'))}</option><option value="near"${nbSort === 'near' ? ' selected' : ''}>${esc(tr('sortNear'))}</option></select></label></div>`;
+  let html = `<div class="nbtools"><span class="cnt">${esc(tr('nSug', rows.length))}</span><span class="seg" role="group" aria-label="${esc(tr('sortBy'))}"><button type="button" data-sort="pop" aria-pressed="${nbSort === 'pop'}">${esc(tr('sortPop'))}</button><button type="button" data-sort="near" aria-pressed="${nbSort === 'near'}">${esc(tr('sortNear'))}</button></span></div>`;
   html += slice.map(p => `<div class="sg">${thumbHtml(p)}<div><b>${esc(p.title)}</b><small>${esc(p.inst)}${p.inst ? ' · ' : ''}± ${nf(p.d)} km${nbMulti ? ' · ' + esc(tr('near', p.an)) : ''}</small><div>${chipsHtml(p)}</div></div><button class="btn sm" data-sg="${nbAll.indexOf(p)}">${esc(tr('addBtn'))}</button></div>`).join('');
   if (pages > 1) {
     html += `<div class="row" style="justify-content:center;margin-top:10px;gap:4px" role="navigation" aria-label="${esc(tr('pgOf', nbPage, pages))}">` +
@@ -1259,7 +1288,7 @@ async function geoPages(host, it) {
 }
 async function suggest(anchors, title) {
   sugSeen = true; if (step !== 2) setStep(2, { noAuto:true, force:true });
-  $('#nb').hidden = false; $('#nbT').textContent = title; $('#nbList').innerHTML = `<p class="hint">${esc(tr('finding'))}</p>`; $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
+  $('#nb').hidden = false; $('#nbT').textContent = title; $('#nbList').innerHTML = '<span class="sr" role="status">' + esc(tr('finding')) + '</span>' + '<div class="sg sk-row" aria-hidden="true"><i class="a"></i><div><i class="b"></i><i class="c"></i><i class="d"></i></div><i class="e"></i></div>'.repeat(3); $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
   try {
     const t = cur(), have = new Set(t.items.map(x => x.title.toLowerCase())), haveQ = new Set(t.items.map(x => x.q).filter(Boolean)), host = lang + '.wikipedia.org';
     /* Kandidat dari Wikipedia bahasa antarmuka DITAMBAH Wikipedia Inggris (koordinatnya lebih lengkap: mis. “Masjid Istiqlal” di id.wikipedia tak berkoordinat),
@@ -1489,7 +1518,7 @@ $('#nbList').addEventListener('click', e => {
   mutate(() => cur().items.push({ id:uid(), title:p.title, lat:p.lat, lon:p.lon, q:p.q, src:p.src, inst:p.inst, note:'', day:0, kind:'place', thumb:p.thumb || '', badge:p.badge || '' }));
   drawNb(); toast(tr('toastAdded', p.title));
 });
-$('#nbList').addEventListener('change', e => { if (e.target.id === 'nbSort') { nbSort = e.target.value; nbPage = 1; drawNb(); } });
+$('#nbList').addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (b && b.dataset.sort !== nbSort) { nbSort = b.dataset.sort; nbPage = 1; drawNb(); } });
 $('#reset').onclick = () => {
   
   if (!confirm(tr('confirmReset'))) return;
