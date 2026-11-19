@@ -293,7 +293,25 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
 .sk-row .e{width:76px;height:36px;border-radius:10px}
 @keyframes shimmer{to{background-position:-200% 0}}
 .add .inw{position:relative;flex:1;min-width:0;display:flex}
-.add .inw input{width:100%;padding-inline-end:46px}
+.add .inw input{width:100%;padding-inline-end:46px;padding-inline-start:44px;min-height:48px}
+.add .inw .sico{position:absolute;inset-inline-start:15px;top:50%;width:18px;height:18px;margin-top:-9px;color:var(--muted);pointer-events:none}
+.add .btn{min-height:48px;padding-inline:22px}
+.qs .hint{font-weight:700;color:var(--ink);font-size:13px}
+#chips.open{flex-wrap:wrap!important;overflow:visible}
+.rc .hint{font-weight:700;color:var(--ink);font-size:13px}
+.chip.rec svg{vertical-align:-2px;margin-inline-end:5px;color:var(--muted)}
+.chip{min-height:34px}
+.chip:focus-visible,.add input:focus-visible,.add .btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+@media (pointer:coarse){.chip{min-height:44px;padding-inline:14px}}
+.sempty{list-style:none;margin:14px 0 0;padding:12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border:1px dashed var(--line);border-radius:12px;background:var(--soft)}
+.sempty li{display:flex;gap:10px;align-items:flex-start}
+.sempty .n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:13px}
+.sempty strong{display:block;font-size:14px}.sempty small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.sec:has(#ac:not([hidden])) .sempty{display:none}
+@media (max-width:640px){.sempty{grid-template-columns:1fr}}
+.chip.more{background:none;border-style:dashed;color:var(--brand)}
+@media (max-width:560px){.qs{flex-direction:column;align-items:stretch;gap:6px}#chips{flex-wrap:wrap!important;overflow:visible}}   /* ponsel: chip turun baris, tidak terpotong; "Lainnya" selalu terlihat */
+.add input{text-overflow:ellipsis}
 .clr{position:absolute;inset-inline-end:1px;top:50%;transform:translateY(-50%);width:44px;height:44px;min-height:0;padding:0;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer}
 .clr[hidden]{display:none}
 .clr i{width:22px;height:22px;border-radius:50%;background:var(--soft);display:grid;place-items:center;transition:background .15s,color .15s}
@@ -366,19 +384,23 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
     </div>
   </section>
   <section class="card sec">
-    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><h3 data-i="cSearch"></h3></header>
     <div class="bd">
       <div class="sbox">
         <form class="add" id="addForm" autocomplete="off">
-          <span class="inw"><input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off"><button type="button" class="clr" id="addClr" data-it="clr" data-ia="clr" hidden><i><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></button></span>
+          <span class="inw"><svg class="sico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off"><button type="button" class="clr" id="addClr" data-it="clr" data-ia="clr" hidden><i><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></button></span>
           <button class="btn pri" id="addBtn" data-i="search"></button>
         </form>
         <div class="ac" id="ac" hidden></div>
       </div>
       <div class="err" id="addErr" hidden></div>
+      <div class="chips rc" id="recentRow" hidden><span class="hint" style="margin:0" data-i="recent"></span><span id="recent" class="row" style="gap:6px"></span></div>
       <div class="chips qs"><span class="hint" style="margin:0" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
       <div class="chips" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
-      <p class="hint" data-i="addHint"></p>
+      <ol class="sempty" id="sEmpty" hidden>
+        <li><b class="n">1</b><span><strong data-i="em1t"></strong><small data-i="em1d"></small></span></li>
+        <li><b class="n">2</b><span><strong data-i="em2t"></strong><small data-i="em2d"></small></span></li>
+        <li><b class="n">3</b><span><strong data-i="em3t"></strong><small data-i="em3d"></small></span></li>
+      </ol>
     </div>
   </section>
   <div id="slot1"><div id="wl-box"></div></div>
@@ -517,7 +539,7 @@ id:{
   roadCalc:'Menghitung rute jalan… {0}/{1}', straight:'(garis lurus)', toastNoRoad:'Sebagian ruas tidak punya jalan mobil (mis. antarpulau); ditampilkan garis lurus putus-putus',
   nSug:'{0} saran', sortBy:'Urutkan', sortPop:'Terpopuler', sortNear:'Terdekat', prev:'Sebelumnya', next:'Berikutnya', pgOf:'Halaman {0} dari {1}',
   reset:'🗑 Reset semua data', confirmReset:'Hapus SEMUA perjalanan dan pengaturan di browser ini?\n\nSaran: simpan JSON dulu sebagai cadangan. Setelah reset kamu masih bisa menekan “Urungkan” sebelum menutup halaman.', toastReset:'Semua data direset',
-  quick:'Mulai cepat — pilih negara:', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
+  quick:'Destinasi populer', recent:'Terakhir dicari', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Mencari…', noRes:'Tidak ada hasil. Coba nama lain atau tempel tautan Wikivoyage.',
   trip:'Perjalanan', tNew:'Baru', tRen:'Ganti nama', tDel:'Hapus', start:'Mulai', length:'Lama', daysU:'hari', road:'Rute jalan (mobil)',
   auto:'Rekomendasi jadwal', recP:'Rekomendasi tempat', recR:'Rekomendasi rute', undo:'Urungkan', pdf:'Unduh PDF', more:'Lainnya',
@@ -572,7 +594,7 @@ en:{
   roadCalc:'Calculating road routes… {0}/{1}', straight:'(straight line)', toastNoRoad:'Some legs have no car road (e.g. across islands); shown as dashed straight lines',
   nSug:'{0} suggestions', sortBy:'Sort', sortPop:'Most popular', sortNear:'Nearest', prev:'Previous', next:'Next', pgOf:'Page {0} of {1}',
   reset:'🗑 Reset all data', confirmReset:'Delete ALL trips and settings in this browser?\n\nTip: save JSON first as a backup. After resetting you can still press “Undo” before closing this page.', toastReset:'All data reset',
-  quick:'Quick start — pick a country:', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
+  quick:'Popular destinations', recent:'Recent searches', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Searching…', noRes:'No results. Try another name or paste a Wikivoyage link.',
   trip:'Trip', tNew:'New', tRen:'Rename', tDel:'Delete', start:'Start', length:'Length', daysU:'days', road:'Road routes (car)',
   auto:'Schedule suggestion', recP:'Place suggestions', recR:'Route suggestion', undo:'Undo', pdf:'Download PDF', more:'More',
@@ -984,6 +1006,7 @@ async function searchPlaces(raw) {
     const order = [...new Set(qs)], pos = q => order.indexOf(q);
     resItems = list.sort((a, b) => pos(a.q) - pos(b.q)).slice(0, 15);
     resItems.length ? drawRes() : drawRes(tr('noRes'));
+    if (resItems.length && !/^Qd+$/i.test(v) && !/^https?:/i.test(v)) pushRecent(v);
   } catch (e) { if (my === resSeq) drawRes(e.message || String(e)); }
   finally { if (my === resSeq) { ldStop(); btn.disabled = false; btn.textContent = tr('search'); } }
 }
@@ -994,7 +1017,7 @@ function addEntity(x) {
   drawRes(); toast(tr('toastAdded', x.title));
 }
 const inp = $('#addIn'); let acT;
-inp.addEventListener('input', () => { clearTimeout(acT); const v = inp.value.trim(); if (v.length < 2) { hideAc(); return; } if (/^https?:|^Q\d+$/i.test(v)) return; acT = setTimeout(() => searchPlaces(v), 1000); });   // jeda panjang: satu pencarian memanggil beberapa API
+inp.addEventListener('input', () => { clearTimeout(acT); const v = inp.value.trim(); if (v.length < 2) { hideAc(); return; } if (/^https?:|^Q\d+$/i.test(v)) return; acT = setTimeout(() => searchPlaces(v), 700); });   // jeda panjang: satu pencarian memanggil beberapa API
 const syncClr = () => { $('#addClr').hidden = !inp.value; };
 inp.addEventListener('input', syncClr);
 $('#addClr').addEventListener('click', () => {
@@ -1046,13 +1069,30 @@ const svgIcon = d => `<svg width="15" height="15" viewBox="0 0 24 24" fill="none
 const ICON_TRASH = svgIcon('<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>');
 const ICON_BACK = svgIcon('<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v5"/>');
 const ICON_SEARCH =svgIcon('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>');
+/* pencarian terakhir (3, tersimpan di peramban) */
+const LS_RECENT = 'wikitrip.recent';
+const getRecent = () => { try { const a = JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); return Array.isArray(a) ? a.filter(x => typeof x === 'string').slice(0, 3) : []; } catch { return []; } };
+function pushRecent(v) { try { localStorage.setItem(LS_RECENT, JSON.stringify([v, ...getRecent().filter(x => x.toLowerCase() !== v.toLowerCase())].slice(0, 3))); } catch { /* penyimpanan dimatikan: dilewati */ } drawRecent(); }
+const ICON_CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+function drawRecent() {
+  const r = getRecent(); $('#recentRow').hidden = !r.length;
+  $('#recent').innerHTML = r.map(x => '<button class="chip rec" data-rec="' + esc(x) + '" type="button">' + ICON_CLOCK + esc(x) + '</button>').join('');
+}
+$('#recent').addEventListener('click', e => { const b = e.target.closest('[data-rec]'); if (b) { inp.value = b.dataset.rec; syncClr(); inp.focus(); searchPlaces(b.dataset.rec); } });
+let chipsAll = false;
+const CHIPS_TOP = 6;   // destinasi populer; sisanya di balik "Lainnya"
 function drawChips() {
-  $('#chips').innerHTML = COUNTRIES.map((c, i) => `<button class="chip${i === pickedCountry ? ' on' : ''}" data-country="${i}" type="button"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/${c.cc}.svg" alt="" width="20" height="15" loading="lazy">${esc(c[lang])}</button>`).join('');
+  drawRecent();
+  const show = chipsAll ? COUNTRIES.map((c, i) => i) : COUNTRIES.map((c, i) => i).filter(i => i < CHIPS_TOP || i === pickedCountry);
+  $('#chips').classList.toggle('open', chipsAll);
+  $('#chips').innerHTML = show.map(i => [COUNTRIES[i], i]).map(([c, i]) => `<button class="chip${i === pickedCountry ? ' on' : ''}" data-country="${i}" type="button"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/${c.cc}.svg" alt="" width="20" height="15" loading="lazy">${esc(c[lang])}</button>`).join('') +
+    `<button class="chip more" data-more type="button" aria-expanded="${chipsAll}">${esc(chipsAll ? tr('chipLess') : tr('chipMore', COUNTRIES.length - CHIPS_TOP))}</button>`;
   const row = $('#cityRow'), c = COUNTRIES[pickedCountry];
   row.hidden = !c;
   $('#cities').innerHTML = c ? c.c.map(n => `<button class="chip" data-city="${esc(n)}" type="button">${esc(n)}</button>`).join('') : '';
 }
 $('#chips').addEventListener('click', e => {
+  if (e.target.closest('[data-more]')) { chipsAll = !chipsAll; drawChips(); return; }
   const b = e.target.closest('[data-country]'); if (!b) return;
   const i = +b.dataset.country; pickedCountry = pickedCountry === i ? null : i; drawChips();
 });
@@ -1097,6 +1137,7 @@ function itemHtml(t, it, n, list) {
     ${it.day && !last ? `<div class="dist">${esc(tr('nextLeg', legTxt(list, n - 1)))}</div>` : ''}</li>`;
 }
 function render() {
+  $('#sEmpty').hidden = cur().items.length > 0;   // petunjuk 3 langkah hanya untuk rencana yang masih kosong
   const t = cur();
   $('#trip').innerHTML = db.trips.map(x => `<option value="${x.id}"${x.id === t.id ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
   $('#start').value = t.start; $('#days').textContent = t.days; $('#dm').disabled = t.days <= 1; $('#dp').disabled = t.days >= 30;
@@ -1619,7 +1660,7 @@ function importHash() {
     undoStack.push(JSON.stringify(db));
     db.trips.push(t); db.cur = t.id; fitMap = true; save();
     sharedMsg = tr('toastShared', t.name, t.items.length);
-    sharedStep = t.items.some(i => i.day > 0) ? 3 : 1;   // rencana yang sudah berjadwal langsung dibuka di tahap Jadwal
+    sharedStep = t.items.some(i => i.day > 0) ? 4 : 1;   // rencana yang sudah berjadwal langsung dibuka di tahap Rute
   } catch { sharedMsg = tr('toastBadLink'); }
   setQuery(() => {}, '');   // buang #t=… dari URL, parameter lain tetap
 }
