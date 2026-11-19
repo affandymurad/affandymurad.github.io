@@ -189,6 +189,117 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:18px}
 footer.credit{margin-top:6px;padding-bottom:6px;font-weight:600}footer.credit a{color:var(--brand);text-decoration:none}footer.credit a:hover{text-decoration:underline}
 .maplibregl-map{font:inherit}
 [hidden]{display:none!important}
+
+/* stepper: bulatan angka + label + garis penghubung (tanpa kotak). Tahap hanya bisa dibuka berurutan: tahap di depan terkunci (disabled) */
+.sn{position:sticky;top:0;z-index:50;display:flex;align-items:center;padding:6px 4px;margin:0 0 12px;background:color-mix(in srgb,var(--bg) 92%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.sn .st{display:flex;align-items:center;gap:8px;flex:0 0 auto;min-height:48px;padding:0;border:0;background:none;color:var(--muted);font-weight:600;font-size:14px;white-space:nowrap;cursor:pointer}
+.sn .st:not(:last-child){flex:1 1 0;min-width:0}
+.sn .st:not(:last-child)::after{content:"";flex:1 1 auto;min-width:12px;height:2px;margin-inline:10px;border-radius:2px;background:var(--line)}
+.sn .st.ok:not(:last-child)::after{background:var(--ok)}
+.sn .st .n{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:14px;font-weight:700;background:var(--soft);color:var(--ink);border:2px solid var(--line);transition:border-color .15s,box-shadow .15s}
+.sn .st .n svg{width:16px;height:16px}
+.sn .st.ok .n{background:var(--ok);border-color:var(--ok);color:#fff}
+.sn .st.on{color:var(--ink);font-weight:700}
+.sn .st.on:not(:last-child){flex:1 0 auto}
+.sn .st.on .n{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 20%,transparent)}
+.sn .st:not(:disabled):not(.on):hover .n{border-color:var(--brand)}
+.sn .st:disabled{cursor:not-allowed;opacity:.5}
+@media (prefers-color-scheme:dark){.sn .st.on .n,.sn .st.ok .n{color:#0b1530}}
+@media (max-width:560px){.sn .st:not(.on) .l{display:none}.sn .st:not(:last-child)::after{margin-inline:6px}}
+.navwhy{max-width:1320px;margin:0 auto 8px;padding:7px 12px;border-radius:10px;background:var(--warn-bg);color:var(--warn-ink);font-size:13px;text-align:center}
+.wrap{padding-bottom:124px}
+/* ===== REVAMP: stepper per tahap (prinsip: tablet-first, satu tugas per kartu, target sentuh ≥44px, status bukan hanya warna) ===== */
+.btn{min-height:44px}.btn.sm{min-height:40px}
+input[type=text],input[type=date],input[type=number],select,textarea{min-height:44px;font-size:16px}
+.wrap{padding-bottom:104px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.panel>.card,.panel>div>.card{margin-bottom:12px}
+.sec{padding:0;overflow:hidden}
+.sec>header{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 16px;border-bottom:1px solid var(--line)}
+.sec>header svg{width:20px;height:20px;color:var(--brand);flex:none}
+.sec>header h3{margin:0;font-size:15px;font-weight:600}
+.sec>header .meta{margin-inline-start:auto;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.sec>.bd{padding:14px 16px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.sum{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;margin-bottom:12px;color:var(--muted);font-size:13px}
+.warn{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:var(--warn-bg);color:var(--warn-ink);font-size:13.5px}
+.btn.big{min-height:56px;width:100%;font-size:16px;border-radius:12px;justify-content:center}
+.cap{margin:8px 2px 0}
+.tripbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center}
+.tripsel select{width:100%}
+@media (max-width:560px){.tripbar{grid-template-columns:repeat(3,1fr)}.tripsel{grid-column:1/-1}}
+.ctlrow{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;margin-bottom:14px}
+.ctlrow .f{gap:10px}
+.lenf{display:flex;align-items:center;gap:8px}
+.stepper .btn{min-width:44px;padding:0 12px}
+.savegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:12px}
+.nbEmpty{display:none;text-align:center;padding:26px 16px}
+#nb[hidden]+.nbEmpty{display:block}
+#act3,#act4,#slot3{display:none}
+body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{display:block}
+.day.wlsec>header .cap{margin-inline-start:0}
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.navbar .inner{max-width:1320px;margin:0 auto;display:flex;gap:8px;align-items:center}
+.navbar .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding-inline:16px;line-height:1}
+.navbar .btn svg{width:18px;height:18px;flex:none}
+.navbar #navNext{margin-inline-start:auto;flex:1 1 auto;max-width:380px}
+.why{margin:10px 2px 0;padding:9px 12px;border-radius:10px;background:var(--warn-bg);color:var(--warn-ink);font-size:13px;line-height:1.4}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.guide>h2{margin:0 0 4px}
+.gfoot{display:flex;justify-content:flex-end;margin-top:14px}
+@media (max-width:560px){.gfoot .btn{width:100%}}
+.navbar .btn.danger{color:var(--danger)}
+.navbar .btn.danger:hover:not(:disabled){background:color-mix(in srgb,var(--danger) 10%,var(--surface))}
+@media (max-width:560px){.navbar .btn .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.navbar #undo,.navbar #navReset{padding-inline:0;min-width:48px}}
+.navbar #navBack[hidden],.navbar #navNext[hidden]{display:none}
+#msg{bottom:88px}
+.gl{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))!important}
+@media (max-width:520px){header.top .brand small{display:none}.me a:first-child span{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* panduan: menonjol tetapi tidak mengganggu (tanpa modal, animasi 2 kali saja, hormati prefers-reduced-motion) */
+.guide{padding:16px 18px;border:1px solid color-mix(in srgb,var(--brand) 38%,var(--line));border-inline-start:6px solid var(--brand);background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 10%,var(--surface)),var(--surface) 65%);box-shadow:0 8px 26px color-mix(in srgb,var(--brand) 16%,transparent)}
+.ghead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.guide .ghead h2{margin:0;font-size:17px}
+.gtag{background:var(--brand);color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+@media (prefers-color-scheme:dark){.gtag{color:#0b1530}}
+.gsub{margin:6px 0 0;color:var(--muted);font-size:14px}
+.gl{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))!important;gap:10px!important;margin:14px 0 4px!important}
+.gl li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--ink)}
+.gl .n{width:28px;height:28px;font-size:14px}
+.gl .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.gl .tx b{font-size:14px}
+.gl .tx span{color:var(--muted);font-size:13px}
+.gl .tx span::first-letter{text-transform:uppercase}
+@media (max-width:560px){
+  .guide{padding:14px}
+  .gl{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .gl li{padding:8px 10px;gap:8px}
+  .gl .n{width:24px;height:24px;font-size:13px}
+  .gl .tx span{font-size:12.5px}
+  .gl li:first-child{grid-column:1/-1}
+}
+.gl li:first-child{border-color:var(--brand);animation:gl-pulse 1.6s ease-out 2}
+@keyframes gl-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+.gfoot{gap:8px;flex-wrap:wrap}
+@media (max-width:560px){.gfoot .btn{flex:1 1 100%}.gfoot #guideGo{order:-1}}
+
+/* pemuatan pencarian: dropdown langsung terbuka berisi 3 baris skeleton (bentuknya sama dengan baris hasil, jadi tidak ada lompatan tata letak) */
+.sk-row i{display:block;border-radius:8px;background:linear-gradient(90deg,var(--soft),var(--line),var(--soft));background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+.sk-row .a{width:48px;height:48px;border-radius:10px}
+.sk-row .b{height:14px;width:42%}
+.sk-row .c{height:11px;width:78%;margin-top:8px}
+.sk-row .d{height:18px;width:34%;margin-top:8px;border-radius:999px}
+.sk-row .e{width:76px;height:36px;border-radius:10px}
+@keyframes shimmer{to{background-position:-200% 0}}
+.add .inw{position:relative;flex:1;min-width:0;display:flex}
+.add .inw input{width:100%;padding-inline-end:46px}
+.clr{position:absolute;inset-inline-end:1px;top:50%;transform:translateY(-50%);width:44px;height:44px;min-height:0;padding:0;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.clr[hidden]{display:none}
+.clr i{width:22px;height:22px;border-radius:50%;background:var(--soft);display:grid;place-items:center;transition:background .15s,color .15s}
+.clr:hover i{background:var(--line);color:var(--ink)}
+.sec:has(.sbox){overflow:visible}   /* panel hasil/pemuatan melayang di bawah kotak cari dan tidak boleh terpotong kartu */
+.sec:has(.sbox) .ac{z-index:55;scroll-margin-bottom:100px;max-height:min(430px,calc(100vh - 230px))}
 </style>
 </head>
 <body>
@@ -210,90 +321,144 @@ footer.credit{margin-top:6px;padding-bottom:6px;font-weight:600}footer.credit a{
   </label>
 </header>
 
-<!-- PANDUAN -->
-<section class="card guide" id="guide" hidden>
-  <div class="row"><h2 style="margin-inline-end:auto" data-i="gTitle"></h2><button class="btn sm" id="guideX" data-i="gotIt"></button></div>
+<!-- PANDUAN SINGKAT: menonjol di kunjungan pertama, tidak memblokir halaman, hilang sendiri setelah item pertama ditambahkan -->
+<section class="card guide" id="guide" role="region" aria-labelledby="gTitleH" hidden>
+  <div class="ghead"><span class="gtag" data-i="gTag"></span><h2 id="gTitleH" data-i="gTitle"></h2></div>
+  <p class="gsub" data-i="gSub2"></p>
   <ol class="gl">
-    <li><span class="n">1</span><span data-i="g1"></span></li>
-    <li><span class="n">2</span><span data-i="g2"></span></li>
-    <li><span class="n">3</span><span data-i="g3"></span></li>
-    <li><span class="n">4</span><span data-i="g4"></span></li>
+    <li><span class="n">1</span><span class="tx"><b data-i="stCollect"></b><span data-i="g1"></span></span></li>
+    <li><span class="n">2</span><span class="tx"><b data-i="stSuggest"></b><span data-i="g2"></span></span></li>
+    <li><span class="n">3</span><span class="tx"><b data-i="stSchedule"></b><span data-i="g3"></span></span></li>
+    <li><span class="n">4</span><span class="tx"><b data-i="stRoute"></b><span data-i="g4"></span></span></li>
+    <li><span class="n">5</span><span class="tx"><b data-i="stSave"></b><span data-i="g5"></span></span></li>
   </ol>
-  <p class="gn" data-i="g5"></p>
+  <p class="gn" data-i="gNote"></p>
+  <div class="gfoot"><button class="btn" id="guideX" data-i="gotIt"></button><button class="btn pri" id="guideGo" data-i="gGo"></button></div>
 </section>
 
-<!-- CARI -->
-<section class="card">
-  <div class="sbox">
-    <form class="add" id="addForm" autocomplete="off">
-      <input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off">
-      <button class="btn pri" id="addBtn" data-i="search"></button>
-    </form>
-    <div class="ac" id="ac" hidden></div>
-  </div>
-  <div class="err" id="addErr" hidden></div>
-  <div class="chips qs"><span class="hint" style="margin:0" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
-  <div class="chips" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
-  <p class="hint" data-i="addHint"></p>
-</section>
+<!-- STEPPER: tahap bisa dibuka bebas; centang = tahap sudah terpenuhi -->
+<nav class="sn" id="sn"></nav>
 
-<!-- PENGATURAN PERJALANAN -->
-<section class="card">
-  <div class="row">
-    <label class="f"><span data-i="trip"></span> <select id="trip"></select></label>
-    <button class="btn sm" id="tNew" data-i="tNew"></button>
-    <button class="btn sm" id="tRen" data-i="tRen"></button>
-    <button class="btn sm" id="tDel" data-i="tDel"></button>
-    <label class="f"><span data-i="start"></span> <input type="date" id="start"></label>
-    <span class="f" style="display:flex;align-items:center;gap:6px"><span data-i="length"></span>
-      <span class="stepper"><button class="btn" id="dm" aria-label="−">−</button><output id="days">1</output><button class="btn" id="dp" aria-label="+">+</button></span>
-      <span data-i="daysU"></span></span>
-  </div>
-</section>
+<main id="steps">
 
-<!-- AKSI -->
-<section class="bar" style="margin-bottom:12px">
-  <button class="btn" id="undo" disabled>↶ <span data-i="undo"></span></button>
-  <span style="margin-inline-start:auto"></span>
-  <button class="btn pb2" id="recP" data-it="recPd"><span class="stp">2</span><span data-i="recP"></span></button>
-  <button class="btn" id="reset" data-i="reset" style="color:var(--danger)"></button>
-  <button class="btn pri" id="pdf" data-i="pdf"></button>
-  <div class="menuwrap">
-    <button class="btn" id="more" aria-haspopup="true" aria-expanded="false"><span data-i="more"></span> ▾</button>
-    <div class="menu" id="menu" hidden>
-      <button id="exJson" data-i="exJson"></button>
-      <button id="imJson" data-i="imJson"></button>
-      <button id="exGpx" data-i="exGpx"></button>
-      <button id="share" data-i="share"></button>
-      <p data-i="saveHint"></p>
+<!-- TAHAP 1 · KUMPULKAN -->
+<section class="panel" id="p1">
+  <section class="card sec">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3"/></svg><h3 data-i="cTrip"></h3></header>
+    <div class="bd tripbar">
+      <label class="f tripsel"><span class="sr" data-i="trip"></span><select id="trip" aria-label="Trip"></select></label>
+      <button class="btn" id="tNew" data-i="tNew"></button>
+      <button class="btn" id="tRen" data-i="tRen"></button>
+      <button class="btn" id="tDel" data-i="tDel"></button>
     </div>
-  </div>
-  <input type="file" id="file" accept=".json,application/json" hidden>
+  </section>
+  <section class="card sec">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><h3 data-i="cSearch"></h3></header>
+    <div class="bd">
+      <div class="sbox">
+        <form class="add" id="addForm" autocomplete="off">
+          <span class="inw"><input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off"><button type="button" class="clr" id="addClr" data-it="clr" data-ia="clr" hidden><i><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></button></span>
+          <button class="btn pri" id="addBtn" data-i="search"></button>
+        </form>
+        <div class="ac" id="ac" hidden></div>
+      </div>
+      <div class="err" id="addErr" hidden></div>
+      <div class="chips qs"><span class="hint" style="margin:0" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
+      <div class="chips" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
+      <p class="hint" data-i="addHint"></p>
+    </div>
+  </section>
+  <div id="slot1"><div id="wl-box"></div></div>
 </section>
 
-<div id="plan">
-    <!-- Daftar tunggu (kiri) + Tempat menarik di wilayah (kanan, muncul bila dipakai) -->
-    <div class="rowA">
-      <div id="wl-box"></div>
-      <section class="card" id="nb" hidden>
-        <div class="row"><b id="nbT" style="margin-inline-end:auto"></b><button class="btn sm" id="nbX" data-i="close"></button></div>
-        <div id="nbList"></div>
-      </section>
+<!-- TAHAP 2 · SARAN TEMPAT -->
+<section class="panel" id="p2" hidden>
+  <section class="card sec">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7L19 20l-.7-1.8-1.8-.7 1.8-.7z"/></svg><h3 data-i="cSug"></h3></header>
+    <div class="bd">
+      <p class="lead" data-i="sugIntro"></p>
+      <div class="sum" id="sugSum"></div>
+      <p class="warn" id="sugNeed" hidden data-i="sugNeed"></p>
+      <button class="btn pri big" id="recP" data-it="recPd"><span data-i="recP"></span></button>
     </div>
-    <section class="card planbar" id="planbar">
-      <div class="pstep"><button class="btn pb" id="auto"><span class="stp">3</span><span data-i="auto"></span></button><small data-i="autod"></small></div>
-      <div class="pstep"><button class="btn pb" id="recR"><span class="stp">4</span><span data-i="recR"></span></button><small data-i="recRd"></small></div>
-      <div class="pstep rd"><label class="sw"><input type="checkbox" id="road"><i></i><span data-i="road"></span></label><span class="hint" id="roadSt" role="status"></span></div>
-    </section>
-    <div class="mapdays">
-      <div id="days-box"></div>
-      <div id="map" aria-label="Map"></div>
+  </section>
+  <section class="card" id="nb" hidden>
+    <div class="row"><b id="nbT" style="margin-inline-end:auto"></b><button class="btn sm" id="nbX" data-i="close"></button></div>
+    <div id="nbList"></div>
+  </section>
+  <div class="card nbEmpty hint" data-i="sugEmpty"></div>
+</section>
+
+<!-- TAHAP 3 & 4 · JADWAL dan RUTE (peta + hari dipakai bersama) -->
+<section class="panel" id="p3" hidden>
+  <section class="card sec" id="act3">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><h3 data-i="cSched"></h3><span class="meta" id="schedSum"></span></header>
+    <div class="bd">
+      <div class="ctlrow">
+        <label class="f"><span data-i="start"></span><input type="date" id="start"></label>
+        <span class="f lenf"><span data-i="length"></span>
+          <span class="stepper"><button class="btn" id="dm" aria-label="−">−</button><output id="days">1</output><button class="btn" id="dp" aria-label="+">+</button></span>
+          <span data-i="daysU"></span></span>
+      </div>
+      <button class="btn pri big" id="auto"><span data-i="auto"></span></button>
+      <p class="why" id="whyAuto" hidden></p>
+      <p class="hint cap" data-i="autod"></p>
     </div>
-</div>
+  </section>
+  <section class="card sec" id="act4">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg><h3 data-i="cRoute"></h3></header>
+    <div class="bd">
+      <button class="btn pri big" id="recR"><span data-i="recR"></span></button>
+      <p class="why" id="whyRecR" hidden></p>
+      <p class="hint cap" data-i="recRd"></p>
+      <label class="sw" style="margin-top:10px"><input type="checkbox" id="road"><i></i><span data-i="road"></span></label><span class="hint" id="roadSt" role="status" style="display:block"></span>
+    </div>
+  </section>
+  <div id="slot3"></div>
+  <div class="mapdays">
+    <div id="days-box"></div>
+    <div id="map" aria-label="Map"></div>
+  </div>
+</section>
+
+<!-- TAHAP 5 · SIMPAN -->
+<section class="panel" id="p5" hidden>
+  <section class="card sec">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></svg><h3 data-i="cSave"></h3></header>
+    <div class="bd">
+      <p class="lead" data-i="saveHint"></p>
+      <button class="btn pri big" id="pdf" data-i="pdf"></button>
+      <p class="why" id="whyPdf" hidden></p>
+      <div class="savegrid">
+        <button class="btn" id="exJson" data-i="exJson"></button>
+        <button class="btn" id="imJson" data-i="imJson"></button>
+        <button class="btn" id="exGpx" data-i="exGpx"></button>
+        <button class="btn" id="share" data-i="share"></button>
+      </div>
+      <p class="why" id="whyExp" hidden></p>
+      <input type="file" id="file" accept=".json,application/json" hidden>
+    </div>
+  </section>
+  <section class="card sec danger">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg><h3 data-i="cDanger"></h3></header>
+    <div class="bd"><button class="btn" id="reset" data-i="reset" style="color:var(--danger)"></button></div>
+  </section>
+</section>
+
+</main>
 <footer data-i="footer"></footer>
 <footer class="credit"><span data-i="madeBy"></span> <a href="https://affandymurad.github.io/" target="_blank" rel="noopener">Affandy Murad</a> · <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" target="_blank" rel="noopener">Meta-Wiki</a></footer>
 </div>
+
+<!-- NAVIGASI TAHAP (bawah layar) -->
+<div class="navbar"><p class="navwhy" id="navWhy" role="status" hidden></p><div class="inner">
+  <button class="btn nav" id="navBack" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span class="t"></span></button>
+  <button class="btn nav" id="undo" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span class="lbl" data-i="undo"></span></button>
+  <button class="btn nav danger" id="navReset" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg><span class="lbl" data-i="resetBtn"></span></button>
+  <button class="btn pri nav" id="navNext" type="button"><span class="t"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+</div></div>
 <div id="msg" role="status"></div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/maplibre-contour@0.1.1/dist/index.min.js" crossorigin="anonymous"></script>
@@ -315,12 +480,18 @@ const BAD_TYPES = { Q5:{id:'manusia',en:'a person'}, Q4167410:{id:'halaman disam
 const I18N = {
 id:{
   gTitle:'Cara pakai singkat', gSub:'', gotIt:'Mengerti, tutup',
-  g1:'Cari wilayah atau tempat, lalu klik Tambah. Hasilnya masuk ke Daftar tunggu (1).',
-  g2:'Cek tempat yang mungkin terlewat di wilayahmu (2).',
-  g3:'Bagi tempat ke hari-hari perjalanan. Urutan wilayah menentukan jadwal (3).',
-  g4:'Urutkan rute tiap hari. Centang Rute jalan untuk jarak mobil (4).',
-  g5:'Seret item untuk merapikan. Semua tersimpan otomatis di browser ini; simpan lewat Unduh PDF atau menu Lainnya.',
+  g1:'cari wilayah atau tempat, lalu klik Tambah.',
+  g2:'lihat tempat menarik di wilayahmu yang mungkin terlewat.',
+  g3:'bagi tempat ke hari-hari perjalanan. Urutan wilayah menentukan jadwal.',
+  g4:'urutkan tiap hari. Centang Rute jalan untuk jarak mobil.',
+  g5:'unduh PDF, JSON, GPX, atau bagikan tautan.',
   tagline:'Rencana perjalanan dari Wikidata, Wikipedia & Wikivoyage', howto:'Cara pakai',
+  clr:'Hapus pencarian', ldTitle:'Mencari “{0}”…', ldSec:'dtk', ldSub1:'Mengambil data dari Wikidata, Wikipedia, dan Wikivoyage.', ldSub2:'Masih mencari. Sumber data sedang agak lambat.', ldSub3:'Masih berjalan. Sumber data sedang lambat; kamu bisa menunggu atau membatalkan.', ldCancel:'Batalkan pencarian',
+  nxt1:'Tambahkan minimal satu wilayah atau tempat untuk lanjut.', nxt2:'Tambahkan minimal satu tempat (dari saran atau pencarian) untuk lanjut.', nxt3:'Jadwalkan minimal satu tempat ke hari untuk lanjut.', stLocked:'Selesaikan tahap sebelumnya dulu', resetBtn:'Reset', whyAuto0:'Belum ada tempat. Tambahkan tempat di tahap Kumpulkan dulu.', whyAutoDone:'Semua tempat sudah terjadwal.', whyRecR:'Jadwalkan minimal 2 tempat ke hari dulu (tombol Rekomendasi jadwal).', whyPdf:'Belum ada tempat terjadwal untuk dicetak. Jadwalkan tempat ke hari dulu.', whyExp:'Belum ada item untuk disimpan. Tambahkan wilayah atau tempat dulu.', stCollect:'Kumpulkan', stSuggest:'Saran', stSchedule:'Jadwal', stRoute:'Rute', stSave:'Simpan', navBack:'Kembali', navNext:'Lanjut: {0}', stDone:'selesai',
+  cTrip:'Perjalanan', cSearch:'Cari wilayah atau tempat', cSug:'Saran tempat', cSched:'Jadwal per hari', cRoute:'Rute per hari', cSave:'Simpan & bagikan', cDanger:'Hapus data',
+  sugIntro:'Lihat tempat menarik di sekitar wilayah di Daftar tunggu, siapa tahu ada yang terlewat.', sugSum:'{0} wilayah · {1} tempat di Daftar tunggu',
+  sugNeed:'Belum ada wilayah di Daftar tunggu. Kembali ke tahap Kumpulkan dan tambahkan minimal satu wilayah.', sugEmpty:'Saran tempat akan tampil di sini.', schedSum:'{0}/{1} tempat terjadwal',
+  gNote:'Semua tersimpan otomatis di browser ini. Tahap bisa dibuka bebas lewat bilah di atas.', gTag:'Mulai di sini', gSub2:'Ikuti 5 tahap di bilah atas, dimulai dari mencari wilayah atau tempat tujuanmu.', gGo:'Mulai mencari',
   meT:'Portofolio Affandy Murad', metaT:'Halaman pengguna Affandy Murad di Meta-Wiki', madeBy:'Tools ini dibuat oleh',
   addPh:'Cari wilayah atau tempat… mis. Bali, Borobudur, Stasiun Gambir', add:'Tambah', search:'Cari', adding:'Mencari…',
   pdfMapT:'Peta perjalanan', approxLoc:'lokasi perkiraan (titik wilayah induk)', toWl:'Pindahkan ke Daftar tunggu', kRegion:'Wilayah', kPlace:'Tempat', added:'✓ Ditambahkan', noCoord:'Tanpa koordinat', regOrder:'Urutan wilayah menentukan urutan Rekomendasi jadwal. Seret untuk mengubahnya.',
@@ -364,12 +535,18 @@ id:{
 },
 en:{
   gTitle:'Quick guide', gSub:'', gotIt:'Got it, close',
-  g1:'Search a region or place, then click Add. It lands in the Wishlist (1).',
-  g2:'Check for places you may have missed in your regions (2).',
-  g3:'Spread places over your trip days. The order of regions drives the schedule (3).',
-  g4:'Order each day’s route. Tick Road routes for driving distance (4).',
-  g5:'Drag items to fine-tune. Everything is saved automatically in this browser; save via Download PDF or the More menu.',
+  g1:'search a region or place, then click Add.',
+  g2:'see attractions around your regions you may have missed.',
+  g3:'spread places over your trip days. The order of regions drives the schedule.',
+  g4:'order each day. Tick Road routes for driving distance.',
+  g5:'download PDF, JSON, GPX, or share a link.',
   tagline:'Trip planner powered by Wikidata, Wikipedia & Wikivoyage', howto:'How to use',
+  clr:'Clear search', ldTitle:'Searching “{0}”…', ldSec:'s', ldSub1:'Fetching data from Wikidata, Wikipedia, and Wikivoyage.', ldSub2:'Still searching. The data sources are a bit slow right now.', ldSub3:'Still running. The data sources are slow; you can wait or cancel.', ldCancel:'Cancel search',
+  nxt1:'Add at least one region or place to continue.', nxt2:'Add at least one place (from suggestions or search) to continue.', nxt3:'Schedule at least one place onto a day to continue.', stLocked:'Finish the previous step first', resetBtn:'Reset', whyAuto0:'No places yet. Add places in the Collect step first.', whyAutoDone:'All places are already scheduled.', whyRecR:'Schedule at least 2 places onto days first (Schedule suggestion).', whyPdf:'No scheduled places to print yet. Schedule places onto days first.', whyExp:'Nothing to save yet. Add a region or place first.', stCollect:'Collect', stSuggest:'Suggest', stSchedule:'Schedule', stRoute:'Route', stSave:'Save', navBack:'Back', navNext:'Next: {0}', stDone:'done',
+  cTrip:'Trip', cSearch:'Search regions or places', cSug:'Place suggestions', cSched:'Schedule by day', cRoute:'Route by day', cSave:'Save & share', cDanger:'Delete data',
+  sugIntro:'See attractions around the regions in your Wishlist, in case you missed something.', sugSum:'{0} regions · {1} places in the Wishlist',
+  sugNeed:'No regions in the Wishlist yet. Go back to Collect and add at least one region.', sugEmpty:'Place suggestions will show up here.', schedSum:'{0}/{1} places scheduled',
+  gNote:'Everything is saved automatically in this browser. Open any step freely from the bar above.', gTag:'Start here', gSub2:'Follow the 5 steps in the bar above, starting with a search for your destination.', gGo:'Start searching',
   meT:'Affandy Murad’s portfolio', metaT:'Affandy Murad’s user page on Meta-Wiki', madeBy:'This tool was created by',
   addPh:'Search a region or place… e.g. Bali, Borobudur, Gambir station', add:'Add', search:'Search', adding:'Searching…',
   pdfMapT:'Trip map', approxLoc:'approximate location (parent region point)', toWl:'Move back to Wishlist', kRegion:'Region', kPlace:'Place', added:'✓ Added', noCoord:'No coordinates', regOrder:'The order of regions sets the order of the Schedule suggestion. Drag to change it.',
@@ -429,6 +606,7 @@ function applyI18n() {
   document.querySelectorAll('[data-i]').forEach(e => { e.textContent = tr(e.dataset.i); });
   document.querySelectorAll('[data-ip]').forEach(e => { e.placeholder = tr(e.dataset.ip); });
   document.querySelectorAll('[data-it]').forEach(e => { e.title = tr(e.dataset.it); });
+  document.querySelectorAll('[data-ia]').forEach(e => e.setAttribute('aria-label', tr(e.dataset.ia)));
   setQuery(p => p.set('lang', lang));
 }
 
@@ -440,8 +618,9 @@ try { db = JSON.parse(localStorage.getItem(LS)); } catch { db = null; }
 if (!db || !Array.isArray(db.trips) || !db.trips.length) { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; }
 const cur = () => db.trips.find(t => t.id === db.cur) || db.trips[0];
 const save = () => { try { localStorage.setItem(LS, JSON.stringify(db)); } catch {} };
+let step = 1, reached = 1, sugSeen = false, sugAuto = false, routeDone = false, guideAuto = false;   // reached = tahap terjauh yang sudah ditempuh   // tahap aktif + penanda tahap yang sudah ditempuh
 const undoStack = [];
-function mutate(fn) { undoStack.push(JSON.stringify(db)); if (undoStack.length > 30) undoStack.shift(); fn(); save(); render(); }
+function mutate(fn) { routeDone = false; undoStack.push(JSON.stringify(db)); if (undoStack.length > 30) undoStack.shift(); fn(); save(); render(); }
 function undo() { if (!undoStack.length) return; db = JSON.parse(undoStack.pop()); save(); render(); toast(tr('toastUndone')); }
 let toastT;
 function toast(msg, actionLabel, action) {
@@ -725,6 +904,7 @@ const hideAc = () => { $('#ac').hidden = true; };
 const isAdded = x => cur().items.some(i => (x.q && i.q === x.q) || i.title === x.title);
 function drawRes(msg) {
   const box = $('#ac'); box.hidden = false;
+  requestAnimationFrame(() => box.scrollIntoView({ block:'nearest', behavior:'smooth' }));   // seluruh panel terlihat, tidak tertutup bilah bawah
   if (msg) { box.innerHTML = `<div class="hint" style="padding:10px 14px;margin:0">${esc(msg)}</div>`; return; }
   box.innerHTML = resItems.map((x, i) => {
     const has = x.lat != null && isFinite(x.lat), done = isAdded(x);
@@ -732,9 +912,17 @@ function drawRes(msg) {
       `<button type="button" class="btn sm${done ? '' : ' pri'}" data-rs="${i}"${done || !has ? ' disabled' : ''}>${esc(done ? tr('added') : has ? tr('addBtn') : tr('noCoord'))}</button></div>`;
   }).join('');
 }
+/* Pemuatan: panel kerangka + penghitung detik + pesan yang berubah bila lama + tombol batal */
+function ldStart(v) {
+  const box = $('#ac'); box.hidden = false; box.setAttribute('aria-busy', 'true');
+  box.innerHTML = '<span class="sr" role="status">' + esc(tr('ldTitle', v)) + '</span>' +
+    '<div class="rs sk-row" aria-hidden="true"><i class="a"></i><div><i class="b"></i><i class="c"></i><i class="d"></i></div><i class="e"></i></div>'.repeat(3);
+  requestAnimationFrame(() => box.scrollIntoView({ block:'nearest', behavior:'smooth' }));
+}
+function ldStop() { $('#ac').removeAttribute('aria-busy'); }
 async function searchPlaces(raw) {
   const v = raw.trim(); if (!v) return;
-  const my = ++resSeq, btn = $('#addBtn'); $('#addErr').hidden = true; drawRes(tr('searching'));
+  const my = ++resSeq, btn = $('#addBtn'); $('#addErr').hidden = true; ldStart(v); syncClr();
   btn.disabled = true; btn.textContent = tr('adding');
   try {
     let qs = []; const hint = new Map();   // hint: q -> koordinat dari Wikipedia (cadangan bila Wikidata tak punya)
@@ -768,7 +956,7 @@ async function searchPlaces(raw) {
     resItems = list.sort((a, b) => pos(a.q) - pos(b.q)).slice(0, 15);
     resItems.length ? drawRes() : drawRes(tr('noRes'));
   } catch (e) { if (my === resSeq) drawRes(e.message || String(e)); }
-  finally { if (my === resSeq) { btn.disabled = false; btn.textContent = tr('search'); } }
+  finally { if (my === resSeq) { ldStop(); btn.disabled = false; btn.textContent = tr('search'); } }
 }
 function addEntity(x) {
   if (isAdded(x)) return;
@@ -778,9 +966,22 @@ function addEntity(x) {
 }
 const inp = $('#addIn'); let acT;
 inp.addEventListener('input', () => { clearTimeout(acT); const v = inp.value.trim(); if (v.length < 2) { hideAc(); return; } if (/^https?:|^Q\d+$/i.test(v)) return; acT = setTimeout(() => searchPlaces(v), 1000); });   // jeda panjang: satu pencarian memanggil beberapa API
-inp.addEventListener('keydown', e => { if (e.key === 'Escape') hideAc(); });
-$('#ac').addEventListener('click', e => { const b = e.target.closest('[data-rs]'); if (b && !b.disabled) addEntity(resItems[+b.dataset.rs]); });
-document.addEventListener('click', e => { if (!e.target.closest('.sbox')) hideAc(); if (!e.target.closest('.menuwrap')) { $('#menu').hidden = true; $('#more').setAttribute('aria-expanded', 'false'); } });
+const syncClr = () => { $('#addClr').hidden = !inp.value; };
+inp.addEventListener('input', syncClr);
+$('#addClr').addEventListener('click', () => {
+  resSeq++; ldStop(); resItems = [];                       // pencarian yang masih berjalan dibatalkan; hasil yang datang belakangan diabaikan
+  const b = $('#addBtn'); b.disabled = false; b.textContent = tr('search');
+  inp.value = ''; $('#addErr').hidden = true; hideAc(); syncClr(); inp.focus();
+});
+inp.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if ($('#ac').getAttribute('aria-busy')) { resSeq++; ldStop(); const b = $('#addBtn'); b.disabled = false; b.textContent = tr('search'); }   // batalkan pencarian yang sedang berjalan
+  hideAc();
+});
+$('#ac').addEventListener('click', e => {
+  const b = e.target.closest('[data-rs]'); if (b && !b.disabled) addEntity(resItems[+b.dataset.rs]);
+});
+document.addEventListener('click', e => { if (!e.target.closest('.sbox') && !e.target.closest('#cities')) hideAc(); });   // chip kota memulai pencarian sendiri: klik itu tidak boleh menutup panel yang baru dibuka
 $('#addForm').addEventListener('submit', e => { e.preventDefault(); clearTimeout(acT); searchPlaces(inp.value); });
 const COUNTRIES = [
   { cc:'id', id:'Indonesia', en:'Indonesia', c:['Jakarta', 'Bali', 'Yogyakarta', 'Bandung', 'Surabaya', 'Lombok', 'Labuan Bajo', 'Malang', 'Medan', 'Makassar', 'Semarang'] },
@@ -875,7 +1076,7 @@ function render() {
   if (!t.items.length) wlHtml.push(`<section class="card empty"><div class="big">🧳</div><h3>${esc(tr('emptyT'))}</h3><p>${esc(tr('emptyD'))}</p></section>`);
   const mk = (d, title, sub, list) => {
     const lg = legs(list), cn = conns(t).get(d), out = d ? dayHtml : wlHtml;
-    out.push(`<section class="day${d ? '' : ' wlsec'}" style="--c:${colorOf(d)}"><header ${d ? `data-focus="${d}" title="${esc(tr('focus'))}"` : ''}>${d ? '' : '<span class="stp">1</span>'}<h2>${esc(title)}</h2><span>${esc(sub)}${d && list.length > 1 ? ` · ${approx(list)}${nf(lg.reduce((a, b) => a + b, 0))} km` : ''}${cn ? ` · ${esc(tr('fromPrev', legTxt(cn, 0), cn[0].title))}` : ''}</span>${d ? '' : `<span class="cap">${esc(tr('wlCap'))}</span>`}</header>
+    out.push(`<section class="day${d ? '' : ' wlsec'}" style="--c:${colorOf(d)}"><header ${d ? `data-focus="${d}" title="${esc(tr('focus'))}"` : ''}><h2>${esc(title)}</h2><span>${esc(sub)}${d && list.length > 1 ? ` · ${approx(list)}${nf(lg.reduce((a, b) => a + b, 0))} km` : ''}${cn ? ` · ${esc(tr('fromPrev', legTxt(cn, 0), cn[0].title))}` : ''}</span>${d ? '' : `<span class="cap">${esc(tr('wlCap'))}</span>`}</header>
       <ol class="lst" data-day="${d}" data-empty="${esc(d ? tr('dropHint') : tr('wlDrop'))}">${list.map((it, k) => itemHtml(t, it, k + 1, list)).join('')}</ol></section>`);
   };
   const bl = dayItems(t, 0); mk(0, tr('wl'), bl.length ? tr('wlSubN', bl.length) : tr('wlSubE'), bl);
@@ -884,6 +1085,10 @@ function render() {
   document.querySelectorAll('select[data-mv]').forEach(s => { s.value = ''; });
   fitWl(); drawMap(); fetchRoutes();
   document.title = `${t.name} · Wikitamasya`;
+  renderStepper(); renderNav(); renderSugSummary(); renderSchedSum(); renderGuards();
+  if (step > gateMax()) setStep(gateMax(), { force:true, noScroll:true, noAuto:true });   // data berkurang: kembali ke tahap yang masih sah
+  else reached = Math.max(step, Math.min(reached, gateMax()));
+  if (guideAuto && cur().items.length) { guideAuto = false; $('#guide').hidden = true; try { localStorage.setItem(LS_GUIDE, '1'); } catch {} }   // item pertama sudah ada: panduan tak perlu lagi
 }
 /* Daftar tunggu: tingginya pas untuk WL_SHOW item; lebih dari itu bisa digulir di dalam daftar */
 const WL_SHOW = 7;
@@ -951,6 +1156,7 @@ function drawMap() {
   if (mapFailed) return;
   if (typeof maplibregl === 'undefined') { mapFail('maplibre-gl failed to load (CDN blocked/offline)'); return; }
   if (!map) {
+    if (!$('#map').offsetParent) return;   // tahap lain sedang aktif: peta dibuat saat tahap Jadwal/Rute dibuka
     try {
       if (maplibregl.supported && !maplibregl.supported({ failIfMajorPerformanceCaveat:false })) throw new Error('WebGL is not available in this browser/preview');
       const qp = new URLSearchParams(location.search), ql = parseFloat(qp.get('lat')), qo = parseFloat(qp.get('lon')), qz = parseFloat(qp.get('zoom')), hasView = isFinite(ql) && isFinite(qo);
@@ -998,7 +1204,7 @@ function drawMap() {
     if (map.getSource('routes')) map.getSource('routes').setData(data);
     else { map.addSource('routes', { type:'geojson', data }); map.addLayer({ id:'routes', type:'line', source:'routes', paint:{ 'line-color':['get', 'c'], 'line-width':4, 'line-opacity':.85 } }); }
   }
-  if (fitMap && pts.length) fitPts(pts);
+  if (fitMap && pts.length && $('#map').offsetParent) fitPts(pts);
   setTimeout(() => map.resize(), 50);
 }
 function fitPts(pts) {
@@ -1052,6 +1258,7 @@ async function geoPages(host, it) {
   return [...byId.values()];
 }
 async function suggest(anchors, title) {
+  sugSeen = true; if (step !== 2) setStep(2, { noAuto:true, force:true });
   $('#nb').hidden = false; $('#nbT').textContent = title; $('#nbList').innerHTML = `<p class="hint">${esc(tr('finding'))}</p>`; $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
   try {
     const t = cur(), have = new Set(t.items.map(x => x.title.toLowerCase())), haveQ = new Set(t.items.map(x => x.q).filter(Boolean)), host = lang + '.wikipedia.org';
@@ -1186,14 +1393,83 @@ async function routePlan() {
   } finally { routing4 = false; btn.disabled = false; }
   const changed = out.flat().some((x, i) => x !== days.flat()[i]);
   const before = roadDays ? rBefore : total(days), after = roadDays ? rAfter : total(out);
-  if (!changed || (!roadDays && before - after < 0.05)) { toast(tr('toastEff')); return; }
+  if (!changed || (!roadDays && before - after < 0.05)) { routeDone = true; renderStepper(); toast(tr('toastEff')); return; }
   mutate(() => { t.items = dayItems(t, 0).concat(out.flat()); });
+  routeDone = true; renderStepper();
   toast(tr(roadDays ? 'toastRouteRoad' : 'toastRoute', nf(before), nf(after)), tr('undoBtn'), undo);
 }
 
+/* ---------- stepper: lima tahap, dibuka bebas; satu tugas per tahap ---------- */
+const STEPS = ['stCollect', 'stSuggest', 'stSchedule', 'stRoute', 'stSave'];
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+/* Gerbang data: tahap terjauh yang BOLEH dibuka menurut isi rencana (1 = kosong, 2 = ada item, 3 = ada tempat, 5 = ada tempat terjadwal) */
+function gateMax() {
+  const t = cur(), pl = t.items.filter(i => kindOf(i) !== 'region');
+  return !t.items.length ? 1 : !pl.length ? 2 : !pl.some(i => i.day > 0) ? 3 : 5;
+}
+const canGo = n => n <= step || (n <= gateMax() && n <= reached);   // mundur selalu boleh; maju hanya ke tahap yang sudah ditempuh dan datanya terpenuhi
+function renderStepper() {
+  const t = cur(), places = t.items.filter(i => kindOf(i) !== 'region'), sched = places.filter(i => i.day > 0);
+  const done = [t.items.length > 0, sugSeen, places.length > 0 && sched.length === places.length, routeDone && sched.length > 1, false];
+  $('#sn').setAttribute('aria-label', tr('stCollect') + ' → ' + tr('stSave'));
+  $('#sn').innerHTML = STEPS.map((k, i) => { const n = i + 1, on = step === n, off = !on && !canGo(n);
+    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] ? ' ok' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
+      ' title="' + esc(off ? tr('stLocked') : tr(k) + (done[i] ? ' · ' + tr('stDone') : '')) + '">' +
+      '<span class="n">' + (done[i] && !on ? CHECK : n) + '</span><span class="l">' + esc(tr(k)) + '</span></button>'; }).join('');
+}
+function renderNav() {
+  const can = step < 5 && step + 1 <= gateMax();
+  $('#navBack').hidden = step === 1; $('#navNext').hidden = step === 5; $('#navNext').disabled = !can;
+  const why = step === 5 || can ? '' : tr(step === 1 ? 'nxt1' : step === 2 ? 'nxt2' : 'nxt3');
+  $('#navWhy').textContent = why; $('#navWhy').hidden = !why;
+  $('#navBack').querySelector('.t').textContent = tr('navBack');
+  if (step < 5) $('#navNext').querySelector('.t').textContent = tr('navNext', tr(STEPS[step]));
+}
+function renderSugSummary() {
+  const t = cur(), regs = t.items.filter(i => kindOf(i) === 'region');
+  $('#sugSum').innerHTML = esc(tr('sugSum', regs.length, t.items.length - regs.length)) + ' ' + regs.map(r => '<span class="bdg k-region">' + esc(r.title) + '</span>').join('');
+  $('#sugNeed').hidden = regs.length > 0; $('#recP').disabled = !regs.length;
+}
+/* Tombol dinonaktifkan bila datanya belum ada, dengan alasan yang terlihat (di layar sentuh tombol nonaktif tidak bisa "ditanya") */
+function renderGuards() {
+  const t = cur(), places = t.items.filter(i => kindOf(i) !== 'region'), wlPlaces = places.filter(i => !i.day), sched = places.filter(i => i.day > 0);
+  const g = (btn, why, msg) => { $(btn).disabled = !!msg; const w = $(why); w.textContent = msg || ''; w.hidden = !msg; };
+  g('#auto', '#whyAuto', !places.length ? tr('whyAuto0') : !wlPlaces.length ? tr('whyAutoDone') : '');
+  g('#recR', '#whyRecR', sched.length < 2 ? tr('whyRecR') : '');
+  g('#pdf', '#whyPdf', !sched.length ? tr('whyPdf') : '');
+  const none = !t.items.length;
+  ['#exJson', '#exGpx', '#share'].forEach(id => { $(id).disabled = none; });
+  $('#whyExp').textContent = none ? tr('whyExp') : ''; $('#whyExp').hidden = !none;
+  const nothing = none && db.trips.length < 2; $('#reset').disabled = nothing; $('#navReset').disabled = nothing;   // tak ada yang bisa direset
+}
+function renderSchedSum() {
+  const places = cur().items.filter(i => kindOf(i) !== 'region');
+  $('#schedSum').textContent = tr('schedSum', places.filter(i => i.day > 0).length, places.length);
+}
+function setStep(n, o = {}) {
+  n = Math.min(5, Math.max(1, n | 0 || 1));
+  const max = gateMax();
+  if (!o.force && n > step && !(n <= max && (n === step + 1 || n <= reached))) return;   // maju hanya berurutan dan bila datanya ada
+  step = Math.min(n, max); reached = Math.max(step, Math.min(reached, max));
+  document.body.dataset.step = String(step);
+  $('#p1').hidden = step !== 1; $('#p2').hidden = step !== 2; $('#p3').hidden = step !== 3 && step !== 4; $('#p5').hidden = step !== 5;
+  const wl = $('#wl-box'), slot = step === 3 ? $('#slot3') : step === 1 ? $('#slot1') : null;   // satu Daftar tunggu yang berpindah tempat
+  if (slot && wl.parentElement !== slot) slot.appendChild(wl);
+  renderStepper(); renderNav(); renderSugSummary(); renderSchedSum(); fitWl();
+  if (step === 3 || step === 4) {   // panel baru tampil: ukur ulang peta, lalu pas-kan ke semua pin setelah tata letak stabil
+    requestAnimationFrame(() => { if (map) map.resize(); drawMap(); });
+    setTimeout(() => { if (map && (step === 3 || step === 4)) { map.resize(); fitMap = true; drawMap(); } }, 350);
+  }
+  setQuery(p => p.set('step', String(step)));
+  if (step === 2 && !o.noAuto && !sugAuto && !$('#recP').disabled && !nbAll.length) { sugAuto = true; $('#recP').click(); }   // sekali: langsung cari saran saat tahap dibuka
+  if (!o.noScroll) { const y = $('#steps').getBoundingClientRect().top + scrollY - 70; window.scrollTo({ top:Math.max(0, y), behavior:'smooth' }); }
+}
+$('#sn').addEventListener('click', e => { const b = e.target.closest('[data-st]'); if (b) setStep(+b.dataset.st); });
+$('#navBack').onclick = () => setStep(step - 1);
+$('#navNext').onclick = () => { if (step < 5 && step + 1 <= gateMax()) setStep(step + 1); };
+
 /* ---------- event ---------- */
 $('#undo').onclick = undo;
-$('#more').onclick = e => { e.stopPropagation(); const m = $('#menu'); m.hidden = !m.hidden; $('#more').setAttribute('aria-expanded', String(!m.hidden)); };
 $('#trip').onchange = e => { db.cur = e.target.value; undoStack.length = 0; save(); fitMap = true; render(); };
 $('#tNew').onclick = () => { const n = prompt(tr('promptNew'), tr('defNew')); if (n && n.trim()) mutate(() => { const t = newTrip(n.trim()); db.trips.push(t); db.cur = t.id; fitMap = true; }); };
 $('#tRen').onclick = () => { const n = prompt(tr('promptName'), cur().name); if (n && n.trim()) mutate(() => { cur().name = n.trim(); }); };
@@ -1215,13 +1491,15 @@ $('#nbList').addEventListener('click', e => {
 });
 $('#nbList').addEventListener('change', e => { if (e.target.id === 'nbSort') { nbSort = e.target.value; nbPage = 1; drawNb(); } });
 $('#reset').onclick = () => {
-  $('#menu').hidden = true;
+  
   if (!confirm(tr('confirmReset'))) return;
   mutate(() => { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; legCache.clear(); fitMap = true; });
   try { localStorage.removeItem(LS_GUIDE); } catch {}
   $('#nb').hidden = true; nbAll = []; $('#guide').hidden = false; pickedCountry = null; drawChips();
+  sugSeen = sugAuto = routeDone = false; setStep(1, { force:true });
   toast(tr('toastReset'), tr('undoBtn'), undo);
 };
+$('#navReset').onclick = $('#reset').onclick;   // dari tahap mana pun
 $('#nbX').onclick = () => { $('#nb').hidden = true; };
 $('#start').onchange = e => { if (e.target.value) mutate(() => { cur().start = e.target.value; }); };
 function setDays(n) { n = Math.min(30, Math.max(1, n)); mutate(() => { const t = cur(); t.days = n; t.items.forEach(i => { if (i.day > n) i.day = 0; }); }); }
@@ -1229,9 +1507,13 @@ $('#dm').onclick = () => setDays(cur().days - 1);
 $('#dp').onclick = () => setDays(cur().days + 1);
 $('#lang').onchange = e => { lang = e.target.checked ? 'en' : 'id'; try { localStorage.setItem(LS_LANG, lang); } catch {} hideAc(); applyI18n(); drawChips(); if (!$('#nb').hidden) $('#nb').hidden = true; render(); };
 $('#helpBtn').onclick = () => { const g = $('#guide'); g.hidden = !g.hidden; if (!g.hidden) g.scrollIntoView({ behavior:'smooth', block:'nearest' }); };
+$('#guideGo').onclick = () => {   // CTA: tutup panduan, ke tahap 1, fokus ke kotak pencarian
+  $('#guide').hidden = true; guideAuto = false; try { localStorage.setItem(LS_GUIDE, '1'); } catch {}
+  setStep(1, { noScroll:true }); $('#addIn').scrollIntoView({ block:'center', behavior:'smooth' }); setTimeout(() => $('#addIn').focus({ preventScroll:true }), 450);
+};
 $('#guideX').onclick = () => { $('#guide').hidden = true; try { localStorage.setItem(LS_GUIDE, '1'); } catch {} };
 
-const box = $('#plan');   // Daftar tunggu + strip tombol + hari-hari (semua item bisa diseret)
+const box = $('#steps');   // Daftar tunggu + strip tombol + hari-hari (semua item bisa diseret)
 box.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) {
@@ -1286,14 +1568,14 @@ $('#file').onchange = async e => {
     mutate(() => { db.trips.push(...trips); db.cur = trips[0].id; fitMap = true; });
     toast(tr('toastLoaded', trips.length));
   } catch (err) { toast(tr('toastLoadFail', err.message)); }
-  $('#menu').hidden = true;
+  
 };
 const b64 = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64 = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
 $('#share').onclick = async () => {
   const t = cur(), c = { n:t.name, s:t.start, d:t.days, i:t.items.map(i => [i.title, +i.lat.toFixed(5), +i.lon.toFixed(5), i.q, i.src, i.inst, i.note, i.day, kindOf(i), i.badge || '']) };
   const url = location.origin + location.pathname + '#t=' + b64(JSON.stringify(c));
-  $('#menu').hidden = true;
+  
   try { await navigator.clipboard.writeText(url); toast(url.length > 6000 ? tr('toastLinkLong') : tr('toastLink')); } catch { prompt(tr('copyPrompt'), url); }
 };
 function importHash() {
@@ -1511,8 +1793,10 @@ $('#pdf').onclick = exportPDF;
 window.addEventListener('error', e => { console.error(e.message, e.filename, e.lineno); if (!e.filename && /script error/i.test(e.message || '')) toast('Script error (cross-origin): a CDN script failed — check connection / WebGL'); });
 /* ---------- mulai ---------- */
 applyI18n(); drawChips(); importHash();
-try { if (!localStorage.getItem(LS_GUIDE)) $('#guide').hidden = false; } catch { $('#guide').hidden = false; }
+try { if (!localStorage.getItem(LS_GUIDE) && !cur().items.length) { $('#guide').hidden = false; guideAuto = true; } } catch { if (!cur().items.length) { $('#guide').hidden = false; guideAuto = true; } }
 render();
+reached = gateMax();   // pengguna lama yang datanya lengkap boleh berpindah bebas selama datanya terpenuhi; pengguna baru mulai dari tahap 1
+setStep(parseInt(new URLSearchParams(location.search).get('step'), 10) || 1, { noScroll:true, noAuto:true, force:true });
 /* Item lama (tanpa jenis/thumbnail/lencana) dilengkapi sekali di latar belakang dari Wikidata */
 (async function enrichLegacy() {
   try {
