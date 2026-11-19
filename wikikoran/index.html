@@ -570,7 +570,7 @@ const LANGS = {
     host:'it.wikipedia.org', locale:'it-IT', html:'it', feed:false,
     title:'Il Giornale di Wikipedia', tagline:'Letture quotidiane dall\'enciclopedia libera',
     edition:'Edizione italiana', vol:'Anno', no:'N.',
-    labels:{tfa:'Voce in vetrina', potd:'Immagine del giorno', dyk:'Lo sapevi che…', otd:'Accadde oggi', news:'Attualità', mostread:'Più letti', featured:'In evidenza oggi'},
+    labels:{tfa:'Vetrina', potd:'Immagine del giorno', dyk:'Lo sapevi che…', otd:'Ricorrenze', news:'Attualità', mostread:'Più letti', featured:'In evidenza oggi'},
     pdf:{making:'Creazione del PDF…', fail:'Impossibile creare il PDF: ', empty:'Nessun dato per questa sezione.', partial:'Queste sezioni non erano disponibili durante la creazione del PDF: {list}.', report:'rapporto generato automaticamente', page:'Pagina {p} di {n}', sources:'Fonte dei dati: Wikipedia (CC BY-SA 4.0) e Wikimedia Pageviews. I numeri sono visualizzazioni di pagina nella data indicata.'},
     ui:{today:'Oggi', date:'Data', noDate:'Non disponibile per il {date}.', read:'Leggi ad alta voce', stop:'Stop', reading:'Lettura…', speechName:'italiano', noSupport:'Questo browser non supporta la lettura ad alta voce.', noVoice:'Nessuna voce in {lang} trovata su questo dispositivo; uso la voce predefinita.', noText:'Nessun testo da leggere.', notReady:'Questa sezione è ancora in caricamento.', noStart:'Nessun audio. Controlla le voci di sintesi vocale del dispositivo.', readFail:'Lettura non riuscita: ', num:'Numero', pdf:'Scarica PDF', dark:'Modalità scura', darkTip:'Passa tra chiaro e scuro (predefinito: il browser)', na:'Questa sezione non è disponibile in questa edizione.', src:'Fonte', qid:'Q-ID di Wikidata', qidTip:'Mostra il Q-ID di Wikidata accanto a ogni link', lic:'Contenuti da Wikipedia con licenza CC BY-SA 4.0. Ogni scheda rimanda alla pagina di origine.'},
     main:'Pagina principale',
@@ -580,17 +580,17 @@ const LANGS = {
     host:'pt.wikipedia.org', locale:'pt-BR', html:'pt', feed:false,
     title:'O Jornal da Wikipédia', tagline:'Leituras diárias da enciclopédia livre',
     edition:'Edição em português', vol:'Vol.', no:'N.º',
-    labels:{tfa:'Artigo em destaque', potd:'Imagem do dia', dyk:'Sabia que…', otd:'Neste dia', news:'Eventos atuais', mostread:'Mais lidos', featured:'Destaques de hoje'},
+    labels:{tfa:'Artigo em destaque', potd:'Imagem do dia', dyk:'Sabia que…', otd:'Na história', news:'Eventos atuais', mostread:'Mais lidos', featured:'Destaques de hoje'},
     pdf:{making:'Criando o PDF…', fail:'Não foi possível criar o PDF: ', empty:'Sem dados para esta seção.', partial:'Estas seções não estavam disponíveis ao criar o PDF: {list}.', report:'relatório gerado automaticamente', page:'Página {p} de {n}', sources:'Fonte dos dados: Wikipédia (CC BY-SA 4.0) e Wikimedia Pageviews. Os números são visualizações de página na data indicada.'},
     ui:{today:'Hoje', date:'Data', noDate:'Indisponível para {date}.', read:'Ler em voz alta', stop:'Parar', reading:'Lendo…', speechName:'português', noSupport:'Este navegador não oferece leitura em voz alta.', noVoice:'Nenhuma voz em {lang} encontrada neste dispositivo; usando a voz padrão.', noText:'Nenhum texto para ler.', notReady:'Esta seção ainda está carregando.', noStart:'Nenhum som. Verifique as vozes de síntese de fala do dispositivo.', readFail:'Falha na leitura: ', num:'Número', pdf:'Baixar PDF', dark:'Modo escuro', darkTip:'Alternar entre claro e escuro (padrão: o navegador)', na:'Esta seção não está disponível nesta edição.', src:'Fonte', qid:'Q-ID do Wikidata', qidTip:'Mostrar o Q-ID do Wikidata ao lado de cada link', lic:'Conteúdo da Wikipédia sob a licença CC BY-SA 4.0. Cada cartão leva à página de origem.'},
     main:'Wikipédia:Página principal',
     sel:{tfa:H(/^Artigo em destaque/), potd:H(/^Imagem do dia/), dyk:H(/^Sabia que/), otd:H(/na história/), news:H(/^Eventos atuais/)}
   },
   pl: {
-    host:'pl.wikipedia.org', locale:'pl-PL', html:'pl', feed:false,
+    host:'pl.wikipedia.org', locale:'pl-PL', html:'pl', cc:true, feed:false,
     title:'Gazeta Wikipedii', tagline:'Codzienna lektura z wolnej encyklopedii',
     edition:'Wydanie polskie', vol:'Rocznik', no:'Nr',
-    labels:{tfa:'Artykuł na medal', potd:'Ilustracja dnia', dyk:'Czy wiesz…', otd:'W tym dniu', news:'Wiadomości', mostread:'Najczęściej czytane', featured:'Wyróżnione dziś'},
+    labels:{tfa:'Artykuł na Medal', potd:'Ilustracja na Medal', dyk:'Czy wiesz…', otd:'Rocznice', news:'Wydarzenia', mostread:'Najczęściej czytane', featured:'Wyróżnione dziś'},
     pdf:{making:'Tworzenie PDF…', fail:'Nie udało się utworzyć PDF: ', empty:'Brak danych dla tej sekcji.', partial:'Te sekcje były niedostępne podczas tworzenia PDF: {list}.', report:'raport wygenerowany automatycznie', page:'Strona {p} z {n}', sources:'Źródło danych: Wikipedia (CC BY-SA 4.0) i Wikimedia Pageviews. Liczby to odsłony stron w podanym dniu.'},
     ui:{today:'Dziś', date:'Data', noDate:'Niedostępne dla {date}.', read:'Czytaj na głos', stop:'Stop', reading:'Czytanie…', speechName:'polski', noSupport:'Ta przeglądarka nie obsługuje czytania na głos.', noVoice:'Nie znaleziono głosu „{lang}” na tym urządzeniu; używam głosu domyślnego.', noText:'Brak tekstu do przeczytania.', notReady:'Ta sekcja jest jeszcze wczytywana.', noStart:'Brak dźwięku. Sprawdź głosy syntezatora mowy w urządzeniu.', readFail:'Nie udało się odczytać: ', num:'Numer', pdf:'Pobierz PDF', dark:'Tryb ciemny', darkTip:'Przełącz jasny/ciemny (domyślnie: przeglądarka)', na:'Ta sekcja jest niedostępna w tym wydaniu.', src:'Źródło', qid:'Identyfikatory Q Wikidanych', qidTip:'Pokaż identyfikator Q Wikidanych obok każdego linku', lic:'Treści z Wikipedii na licencji CC BY-SA 4.0. Każda karta prowadzi do strony źródłowej.'},
     main:'Wikipedia:Strona główna',
@@ -600,17 +600,17 @@ const LANGS = {
     host:'tr.wikipedia.org', locale:'tr-TR', html:'tr', feed:false,
     title:'Vikipedi Gazetesi', tagline:'Özgür ansiklopediden günlük okumalar',
     edition:'Türkçe baskı', vol:'Cilt', no:'Sayı',
-    labels:{tfa:'Seçkin madde', potd:'Günün resmi', dyk:'Biliyor muydunuz?', otd:'Bu gün', news:'Güncel olaylar', mostread:'En çok okunanlar', featured:'Bugünün seçkileri'},
+    labels:{tfa:'Haftanın seçkin maddesi', potd:'Günün seçkin resmi', dyk:'Biliyor muydunuz?', otd:'Tarihte bugün', news:'Güncel olaylar', mostread:'En çok okunanlar', featured:'Bugünün seçkileri'},
     pdf:{making:'PDF hazırlanıyor…', fail:'PDF oluşturulamadı: ', empty:'Bu bölüm için veri yok.', partial:'PDF hazırlanırken şu bölümler kullanılamıyordu: {list}.', report:'otomatik oluşturulan rapor', page:'Sayfa {p} / {n}', sources:'Veri kaynağı: Vikipedi (CC BY-SA 4.0) ve Wikimedia Pageviews. Sayılar belirtilen tarihteki sayfa görüntülenmeleridir.'},
     ui:{today:'Bugün', date:'Tarih', noDate:'{date} için mevcut değil.', read:'Sesli oku', stop:'Durdur', reading:'Okunuyor…', speechName:'Türkçe', noSupport:'Bu tarayıcı sesli okumayı desteklemiyor.', noVoice:'Bu cihazda {lang} sesi bulunamadı; varsayılan ses kullanılıyor.', noText:'Okunacak metin yok.', notReady:'Bu bölüm hâlâ yükleniyor.', noStart:'Ses duyulmadı. Cihazınızın konuşma sentezi seslerini kontrol edin.', readFail:'Okunamadı: ', num:'Numara', pdf:'PDF indir', dark:'Koyu mod', darkTip:'Açık/koyu görünüm arasında geç (varsayılan: tarayıcınız)', na:'Bu bölüm bu baskıda mevcut değil.', src:'Kaynak', qid:'Wikidata Q-ID\'leri', qidTip:'Her bağlantının yanında Wikidata Q-ID’sini göster', lic:'İçerik, CC BY-SA 4.0 lisansıyla Vikipedi’den alınmıştır. Her kart kaynak sayfasına bağlanır.'},
     main:'Anasayfa',
-    sel:{tfa:'#mp-tfa', potd:'#mf-tfp', dyk:'#mf-dyk', otd:'#mp-bm', news:'#mp-itn'}
+    sel:{tfa:'#mp-tfa', potd:'#mp-dyk', dyk:'#mp-bm', otd:'#mp-itn', news:null}
   },
   uk: {
-    host:'uk.wikipedia.org', locale:'uk-UA', html:'uk', feed:false,
+    host:'uk.wikipedia.org', locale:'uk-UA', html:'uk', cc:true, feed:false,
     title:'Вікіпедія-газета', tagline:'Щоденне читання з вільної енциклопедії',
     edition:'Українське видання', vol:'Т.', no:'№',
-    labels:{tfa:'Вибрана стаття', potd:'Вибране зображення', dyk:'Цікавинки', otd:'Цього дня', news:'Поточні події', mostread:'Найчитаніше', featured:'Вибране сьогодні'},
+    labels:{tfa:'Вибрана стаття', potd:'Вибране зображення', dyk:'Цікавинки', otd:'Цього дня в історії', news:'Поточні події', mostread:'Найчитаніше', featured:'Вибране сьогодні'},
     pdf:{making:'Створення PDF…', fail:'Не вдалося створити PDF: ', empty:'Немає даних для цього розділу.', partial:'Ці розділи були недоступні під час створення PDF: {list}.', report:'автоматично створений звіт', page:'Сторінка {p} з {n}', sources:'Джерело даних: Вікіпедія (CC BY-SA 4.0) і Wikimedia Pageviews. Числа — перегляди сторінок за вказану дату.'},
     ui:{today:'Сьогодні', date:'Дата', noDate:'Недоступно за {date}.', read:'Озвучити', stop:'Стоп', reading:'Читання…', speechName:'українська', noSupport:'Цей браузер не підтримує озвучування.', noVoice:'Голос «{lang}» не знайдено на пристрої; використано голос за замовчуванням.', noText:'Немає тексту для читання.', notReady:'Цей розділ ще завантажується.', noStart:'Звуку не чути. Перевірте голоси синтезу мовлення на пристрої.', readFail:'Не вдалося прочитати: ', num:'Номер', pdf:'Завантажити PDF', dark:'Темний режим', darkTip:'Перемкнути світлу/темну тему (за замовчуванням — браузер)', na:'Цього розділу немає в цьому виданні.', src:'Джерело', qid:'Q-ID Вікіданих', qidTip:'Показувати Q-ID Вікіданих біля кожного посилання', lic:'Матеріали з Вікіпедії за ліцензією CC BY-SA 4.0. Кожна картка веде на сторінку-джерело.'},
     main:'Головна сторінка',
@@ -620,7 +620,7 @@ const LANGS = {
     host:'sv.wikipedia.org', locale:'sv-SE', html:'sv', feed:false,
     title:'Wikipedia-tidningen', tagline:'Daglig läsning från det fria uppslagsverket',
     edition:'Svensk utgåva', vol:'Årg.', no:'Nr',
-    labels:{tfa:'Utvald artikel', potd:'Utvald bild', dyk:'Visste du att…', otd:'Dagens datum', news:'Aktuellt', mostread:'Mest lästa', featured:'Dagens urval'},
+    labels:{tfa:'Utmärkt artikel', potd:'Utvald bild', dyk:'Visste du att…', otd:'Dagens datum', news:'Aktuellt', mostread:'Mest lästa', featured:'Dagens urval'},
     pdf:{making:'Skapar PDF…', fail:'PDF:en kunde inte skapas: ', empty:'Inga data för det här avsnittet.', partial:'De här avsnitten var inte tillgängliga när PDF:en skapades: {list}.', report:'automatiskt skapad rapport', page:'Sida {p} av {n}', sources:'Datakälla: Wikipedia (CC BY-SA 4.0) och Wikimedia Pageviews. Siffrorna är sidvisningar det angivna datumet.'},
     ui:{today:'Idag', date:'Datum', noDate:'Inte tillgängligt för {date}.', read:'Läs upp', stop:'Stopp', reading:'Läser…', speechName:'svenska', noSupport:'Webbläsaren stöder inte uppläsning.', noVoice:'Ingen röst för {lang} hittades på enheten; standardrösten används.', noText:'Ingen text att läsa.', notReady:'Det här avsnittet laddas fortfarande.', noStart:'Inget ljud hördes. Kontrollera enhetens talsyntesröster.', readFail:'Uppläsningen misslyckades: ', num:'Nummer', pdf:'Ladda ner PDF', dark:'Mörkt läge', darkTip:'Växla mellan ljust och mörkt (standard: webbläsaren)', na:'Det här avsnittet finns inte i den här utgåvan.', src:'Källa', qid:'Wikidata Q-ID', qidTip:'Visa Wikidatas Q-ID bredvid varje länk', lic:'Innehåll från Wikipedia under licensen CC BY-SA 4.0. Varje kort länkar till källsidan.'},
     main:'Portal:Huvudsida',
@@ -640,7 +640,7 @@ const LANGS = {
     host:'fa.wikipedia.org', locale:'fa-IR', html:'fa', dir:'rtl', raster:true, feed:false,
     title:'روزنامهٔ ویکی‌پدیا', tagline:'مطالعهٔ روزانه از دانشنامهٔ آزاد',
     edition:'نسخهٔ فارسی', vol:'سال', no:'شمارهٔ',
-    labels:{tfa:'مقالهٔ برگزیده', potd:'تصویر برگزیده', dyk:'آیا می‌دانستید؟', otd:'در چنین روزی', news:'خبر', mostread:'پربازدیدترین‌ها', featured:'برگزیدهٔ امروز'},
+    labels:{tfa:'مقالهٔ برگزیده', potd:'نگارهٔ برگزیدهٔ امروز', dyk:'آیا می‌دانستید؟', otd:'یادبودها', news:'از میان خبرها', mostread:'پربازدیدترین‌ها', featured:'برگزیدهٔ امروز'},
     pdf:{making:'در حال ساخت PDF…', fail:'ساخت PDF ناموفق بود: ', empty:'برای این بخش داده‌ای نیست.', partial:'این بخش‌ها هنگام ساخت PDF در دسترس نبودند: {list}.', report:'گزارش خودکار', page:'صفحهٔ {p} از {n}', sources:'منبع داده: ویکی‌پدیا (CC BY-SA 4.0) و Wikimedia Pageviews. اعداد، بازدید صفحه در تاریخ نشان‌داده‌شده است.'},
     ui:{today:'امروز', date:'تاریخ', noDate:'برای {date} در دسترس نیست.', read:'خواندن با صدای بلند', stop:'توقف', reading:'در حال خواندن…', speechName:'فارسی', noSupport:'این مرورگر خواندن با صدای بلند را پشتیبانی نمی‌کند.', noVoice:'صدای «{lang}» در این دستگاه پیدا نشد؛ صدای پیش‌فرض استفاده می‌شود.', noText:'متنی برای خواندن نیست.', notReady:'این بخش هنوز در حال بارگذاری است.', noStart:'صدایی پخش نشد. صداهای تبدیل متن به گفتار دستگاه را بررسی کنید.', readFail:'خواندن ناموفق بود: ', num:'شماره', pdf:'بارگیری PDF', dark:'حالت تاریک', darkTip:'تغییر میان روشن و تاریک (پیش‌فرض: مرورگر)', na:'این بخش در این نسخه موجود نیست.', src:'منبع', qid:'شناسهٔ Q ویکی‌داده', qidTip:'نمایش شناسهٔ Q ویکی‌داده کنار هر پیوند', lic:'محتوا از ویکی‌پدیا با مجوز CC BY-SA 4.0 است. هر کارت به صفحهٔ منبع پیوند دارد.'},
     main:'صفحهٔ اصلی',
@@ -657,7 +657,7 @@ const LANGS = {
     sel:{tfa:'#mp-tfa', potd:null, dyk:'#mp-tiesitko', otd:'#mp-paiva', news:'#mp-itn'}
   },
   hu: {
-    host:'hu.wikipedia.org', locale:'hu-HU', html:'hu', feed:false,
+    host:'hu.wikipedia.org', locale:'hu-HU', html:'hu', cc:true, feed:false,
     title:'Wikipédia Újság', tagline:'Napi olvasmányok a szabad enciklopédiából',
     edition:'Magyar kiadás', vol:'Évf.', no:'Szám',
     labels:{tfa:'Kiemelt cikk', potd:'A nap képe', dyk:'Tudtad-e?', otd:'Ezen a napon', news:'Aktuális', mostread:'Legolvasottabb', featured:'Mai kiemeltek'},
@@ -680,7 +680,7 @@ const LANGS = {
     host:'bn.wikipedia.org', locale:'bn-BD', html:'bn', raster:true, feed:false,
     title:'উইকিপিডিয়া সংবাদপত্র', tagline:'মুক্ত বিশ্বকোষ থেকে প্রতিদিনের পাঠ',
     edition:'বাংলা সংস্করণ', vol:'বর্ষ', no:'সংখ্যা',
-    labels:{tfa:'নির্বাচিত নিবন্ধ', potd:'নির্বাচিত ছবি', dyk:'আপনি কি জানেন?', otd:'এই দিনে', news:'সাম্প্রতিক ঘটনা', mostread:'সর্বাধিক পঠিত', featured:'আজকের নির্বাচিত'},
+    labels:{tfa:'নির্বাচিত নিবন্ধ', potd:'আজকের নির্বাচিত ছবি', dyk:'আপনি জানেন কি...', otd:'এই দিনে', news:'সাম্প্রতিক ঘটনা', mostread:'সর্বাধিক পঠিত', featured:'আজকের নির্বাচিত'},
     pdf:{making:'PDF তৈরি হচ্ছে…', fail:'PDF তৈরি করা যায়নি: ', empty:'এই অংশের জন্য কোনো তথ্য নেই।', partial:'PDF তৈরির সময় এই অংশগুলো পাওয়া যায়নি: {list}।', report:'স্বয়ংক্রিয়ভাবে তৈরি প্রতিবেদন', page:'পৃষ্ঠা {p} / {n}', sources:'তথ্যসূত্র: উইকিপিডিয়া (CC BY-SA 4.0) ও Wikimedia Pageviews। সংখ্যাগুলো উল্লিখিত তারিখের পৃষ্ঠা-দর্শন।'},
     ui:{today:'আজ', date:'তারিখ', noDate:'{date} তারিখের জন্য পাওয়া যাচ্ছে না।', read:'জোরে পড়ুন', stop:'থামান', reading:'পড়া হচ্ছে…', speechName:'বাংলা', noSupport:'এই ব্রাউজার জোরে পড়া সমর্থন করে না।', noVoice:'এই ডিভাইসে {lang} কণ্ঠ পাওয়া যায়নি; ডিফল্ট কণ্ঠ ব্যবহার হচ্ছে।', noText:'পড়ার মতো কোনো লেখা নেই।', notReady:'এই অংশ এখনো লোড হচ্ছে।', noStart:'কোনো শব্দ শোনা যায়নি। ডিভাইসের টেক্সট-টু-স্পিচ কণ্ঠ পরীক্ষা করুন।', readFail:'পড়া যায়নি: ', num:'নম্বর', pdf:'PDF ডাউনলোড', dark:'ডার্ক মোড', darkTip:'হালকা/গাঢ় থিম বদলান (ডিফল্ট: আপনার ব্রাউজার)', na:'এই সংস্করণে এই অংশ নেই।', src:'সূত্র', qid:'উইকিউপাত্ত Q-ID', qidTip:'প্রতিটি লিংকের পাশে উইকিউপাত্ত Q-ID দেখান', lic:'বিষয়বস্তু উইকিপিডিয়া থেকে, CC BY-SA 4.0 লাইসেন্সে। প্রতিটি কার্ড উৎস পাতায় যায়।'},
     main:'প্রধান পাতা',
@@ -1000,6 +1000,7 @@ async function fromMain(L,key){
   if(!el) throw new Error('section not found');
   let html = EXTRACT[(L.ext && L.ext[key]) || key](el);
   if(!html) throw new Error('empty');
+  if(key === 'potd' && L.cc) html = html.replace(/<figcaption[\s\S]*?<\/figcaption>/,'');   // takarir Halaman Utama tak andal: pakai Commons
   if(key === 'potd' && !/<figcaption/.test(html)){   // Halaman Utama tanpa takarir: ambil deskripsi gambar dari Commons
     const file = commonsFileOf(html);
     if(file){
