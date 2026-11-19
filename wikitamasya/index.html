@@ -539,7 +539,7 @@ id:{
   roadCalc:'Menghitung rute jalan… {0}/{1}', straight:'(garis lurus)', toastNoRoad:'Sebagian ruas tidak punya jalan mobil (mis. antarpulau); ditampilkan garis lurus putus-putus',
   nSug:'{0} saran', sortBy:'Urutkan', sortPop:'Terpopuler', sortNear:'Terdekat', prev:'Sebelumnya', next:'Berikutnya', pgOf:'Halaman {0} dari {1}',
   reset:'🗑 Reset semua data', confirmReset:'Hapus SEMUA perjalanan dan pengaturan di browser ini?\n\nSaran: simpan JSON dulu sebagai cadangan. Setelah reset kamu masih bisa menekan “Urungkan” sebelum menutup halaman.', toastReset:'Semua data direset',
-  quick:'Destinasi populer', recent:'Terakhir dicari', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
+  quick:'Destinasi populer', recent:'Terakhir dicari', recClear:'Hapus', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Mencari…', noRes:'Tidak ada hasil. Coba nama lain atau tempel tautan Wikivoyage.',
   trip:'Perjalanan', tNew:'Baru', tRen:'Ganti nama', tDel:'Hapus', start:'Mulai', length:'Lama', daysU:'hari', road:'Rute jalan (mobil)',
   auto:'Rekomendasi jadwal', recP:'Rekomendasi tempat', recR:'Rekomendasi rute', undo:'Urungkan', pdf:'Unduh PDF', more:'Lainnya',
@@ -594,7 +594,7 @@ en:{
   roadCalc:'Calculating road routes… {0}/{1}', straight:'(straight line)', toastNoRoad:'Some legs have no car road (e.g. across islands); shown as dashed straight lines',
   nSug:'{0} suggestions', sortBy:'Sort', sortPop:'Most popular', sortNear:'Nearest', prev:'Previous', next:'Next', pgOf:'Page {0} of {1}',
   reset:'🗑 Reset all data', confirmReset:'Delete ALL trips and settings in this browser?\n\nTip: save JSON first as a backup. After resetting you can still press “Undo” before closing this page.', toastReset:'All data reset',
-  quick:'Popular destinations', recent:'Recent searches', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
+  quick:'Popular destinations', recent:'Recent searches', recClear:'Clear', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Searching…', noRes:'No results. Try another name or paste a Wikivoyage link.',
   trip:'Trip', tNew:'New', tRen:'Rename', tDel:'Delete', start:'Start', length:'Length', daysU:'days', road:'Road routes (car)',
   auto:'Schedule suggestion', recP:'Place suggestions', recR:'Route suggestion', undo:'Undo', pdf:'Download PDF', more:'More',
@@ -1076,9 +1076,10 @@ function pushRecent(v) { try { localStorage.setItem(LS_RECENT, JSON.stringify([v
 const ICON_CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 function drawRecent() {
   const r = getRecent(); $('#recentRow').hidden = !r.length;
-  $('#recent').innerHTML = r.map(x => '<button class="chip rec" data-rec="' + esc(x) + '" type="button">' + ICON_CLOCK + esc(x) + '</button>').join('');
+  $('#recent').innerHTML = r.map(x => '<button class="chip rec" data-rec="' + esc(x) + '" type="button">' + ICON_CLOCK + esc(x) + '</button>').join('') +
+    '<button class="chip more" data-recclr type="button" aria-label="' + esc(tr('recClear')) + '">' + esc(tr('recClear')) + '</button>';
 }
-$('#recent').addEventListener('click', e => { const b = e.target.closest('[data-rec]'); if (b) { inp.value = b.dataset.rec; syncClr(); inp.focus(); searchPlaces(b.dataset.rec); } });
+$('#recent').addEventListener('click', e => { if (e.target.closest('[data-recclr]')) { try { localStorage.removeItem(LS_RECENT); } catch { /* dilewati */ } drawRecent(); return; } const b = e.target.closest('[data-rec]'); if (b) { inp.value = b.dataset.rec; syncClr(); inp.focus(); searchPlaces(b.dataset.rec); } });
 let chipsAll = false;
 const CHIPS_TOP = 6;   // destinasi populer; sisanya di balik "Lainnya"
 function drawChips() {
