@@ -537,6 +537,7 @@ dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
       <div class="fld"><label for="manName"><span data-i="manName"></span> <span class="req">*</span></label><input type="text" id="manName" data-ip="manNamePh" maxlength="120" autocomplete="off"><div class="e" id="en" hidden></div></div>
       <div class="fld"><label for="manDesc"><span data-i="manDesc"></span> <span class="req">*</span></label><textarea id="manDesc" data-ip="manDescPh" maxlength="400"></textarea><div class="e" id="ed" hidden></div></div>
       <div class="fld"><label for="manCoord"><span data-i="manCoord"></span> <span class="req">*</span></label><input type="text" id="manCoord" data-ip="manCoordPh" inputmode="decimal" autocomplete="off"><div class="help" data-i="manCoordHelp"></div><div class="e" id="ec" hidden></div></div>
+      <div class="fld"><label for="manLink" data-i="manLink"></label><input type="url" id="manLink" data-ip="manLinkPh" inputmode="url" autocomplete="off"><div class="help" data-i="manLinkHelp"></div><div class="e" id="el" hidden></div></div>
       <div class="fld"><label for="manReg"><span data-i="manReg"></span> <span class="req">*</span></label>
         <div class="mrg" id="manChosen" hidden><span id="manChosenT" style="flex:1;min-width:0"></span><button type="button" class="btn sm" id="manChange" data-i="manChange"></button></div>
         <div class="row" id="manRegRow" style="gap:8px;flex-wrap:nowrap"><input type="text" id="manReg" data-ip="manRegPh" autocomplete="off" style="flex:1"><button type="button" class="btn" id="manFind" data-i="manFind"></button></div><div class="help" data-i="manRegHelp"></div><div class="mrs" id="manRes" hidden></div><div class="e" id="er" hidden></div></div>
@@ -576,6 +577,7 @@ id:{
   addPh:'Cari wilayah atau tempat… mis. Bali, Borobudur, Stasiun Gambir', add:'Tambah', search:'Cari', adding:'Mencari…',
   manBtn:'+ Tempat manual', edT:'Ubah tempat', manTE:'Ubah tempat manual', manSaveE:'Simpan', manSaved:'“{0}” diperbarui', manFind:'Cari', manT:'Tambah tempat manual', manCancel:'Batal', manSave:'Tambahkan', manPhoto:'Foto (opsional)', manUpload:'Unggah dari perangkat', manRemove:'Hapus foto', manUrlPh:'atau tempel URL foto: https://…/foto.jpg', manUrlA:'URL foto',
   manName:'Nama tempat', manNamePh:'mis. Pantai Pandawa Tersembunyi', manDesc:'Deskripsi', manDescPh:'mis. Pantai sepi berpasir putih dengan tebing kapur, cocok untuk sunrise. Parkir gratis.',
+  manLink:'Tautan (opsional)', manLinkPh:'https://contoh.com/pantai-pandawa', manLinkHelp:'Judul tempat akan menuju tautan ini (juga di PDF). Kosong = peta OpenStreetMap.', manELink:'Tautan harus diawali http:// atau https://.',
   manCoord:'Koordinat (lat, lon)', manCoordPh:'-8.8456, 115.1860', manCoordHelp:'Salin dari Google Maps/OpenStreetMap, format “lat, lon”, mis. -8.8456, 115.1860.',
   manReg:'Wilayah', manRegPh:'Cari wilayah di Wikidata, mis. Badung', manRegHelp:'Pilih satu wilayah (desa, kota/kabupaten, provinsi, atau negara). Jarak dihitung dari titik wilayah ini.', manChange:'Ganti',
   manEReq:'Wajib diisi.', manECoord:'Format koordinat salah. Pakai “lat, lon” (lat −90…90, lon −180…180), mis. -8.8456, 115.1860.', manEReg:'Pilih satu wilayah dari hasil pencarian.', manNoReg:'Wilayah tidak ditemukan. Coba nama lain.', manSrch:'Mencari wilayah…',
@@ -637,6 +639,7 @@ en:{
   addPh:'Search a region or place… e.g. Bali, Borobudur, Gambir station', add:'Add', search:'Search', adding:'Searching…',
   manBtn:'+ Custom place', edT:'Edit place', manTE:'Edit custom place', manSaveE:'Save', manSaved:'“{0}” updated', manFind:'Search', manT:'Add a custom place', manCancel:'Cancel', manSave:'Add place', manPhoto:'Photo (optional)', manUpload:'Upload from device', manRemove:'Remove photo', manUrlPh:'or paste a photo URL: https://…/photo.jpg', manUrlA:'Photo URL',
   manName:'Place name', manNamePh:'e.g. Secret Pandawa Beach', manDesc:'Description', manDescPh:'e.g. Quiet white-sand beach with limestone cliffs, great for sunrise. Free parking.',
+  manLink:'Link (optional)', manLinkPh:'https://example.com/pandawa-beach', manLinkHelp:'The place title links here (also in the PDF). Empty = OpenStreetMap.', manELink:'The link must start with http:// or https://.',
   manCoord:'Coordinates (lat, lon)', manCoordPh:'-8.8456, 115.1860', manCoordHelp:'Copy from Google Maps/OpenStreetMap, format “lat, lon”, e.g. -8.8456, 115.1860.',
   manReg:'Region', manRegPh:'Search a region on Wikidata, e.g. Badung', manRegHelp:'Pick one region (village, city/regency, province or country). Distance is measured from this region’s point.', manChange:'Change',
   manEReq:'Required.', manECoord:'Invalid coordinates. Use “lat, lon” (lat −90…90, lon −180…180), e.g. -8.8456, 115.1860.', manEReg:'Pick one region from the search results.', manNoReg:'Region not found. Try another name.', manSrch:'Searching regions…',
@@ -1884,7 +1887,7 @@ async function exportPDF() {
       let ty = y + 11;                                          // peta hari ini (bila ada) di bawah judul hari, lalu tabelnya
       if (sh) { doc.addImage(sh.data, 'JPEG', M, ty, W - 2 * M, mh); ty += mh + 4; }
       const regs = list.filter(x => kindOf(x) === 'region');   // wilayah di Daftar tunggu diberi angka sesuai urutannya
-      const meta = it => [tr(kindOf(it) === 'region' ? 'kRegion' : 'kPlace'), it.badge, it.inst].filter(Boolean).join(' · ');
+      const meta = it => [tr(kindOf(it) === 'region' ? 'kRegion' : 'kPlace'), it.badge, it.man && it.dkm != null ? tr('kmFrom', nf(it.dkm), it.from) : '', it.inst].filter(Boolean).join(' · ');
       try {
       doc.autoTable({
         startY:ty, margin:{ left:M, right:M, top:20, bottom:18 }, theme:'plain', rowPageBreak:'avoid',
@@ -1954,7 +1957,7 @@ function manOpen(id) {
   manReset(); man.editId = id || null; const it = id && cur().items.find(x => x.id === id);
   $('#manT').textContent = tr(it ? 'manTE' : 'manT'); $('#manSubmit').textContent = tr(it ? 'manSaveE' : 'manSave');
   if (it) {
-    $('#manName').value = it.title; $('#manDesc').value = it.inst; $('#manCoord').value = it.lat + ', ' + it.lon;
+    $('#manName').value = it.title; $('#manDesc').value = it.inst; $('#manCoord').value = it.lat + ', ' + it.lon; $('#manLink').value = /openstreetmap\.org\/\?mlat/.test(it.src) ? '' : it.src;
     man.thumb = it.thumb || ''; if (man.thumb && !/^data:/.test(man.thumb)) $('#manUrl').value = man.thumb; manPhoto();
     man.region = { title:it.from || '', badge:(it.badge || '').split(' › ').slice(1).join(' › '), lat:isFinite(it.rlat) ? it.rlat : null, lon:isFinite(it.rlon) ? it.rlon : null, kind:'region' }; manRegionUi();
   }
@@ -2017,12 +2020,13 @@ $('#manForm').addEventListener('submit', e => {
   chk(!!name, $('#manName'), 'en', tr('manEReq'));
   chk(!!desc, $('#manDesc'), 'ed', tr('manEReq'));
   chk(!!co, $('#manCoord'), 'ec', $('#manCoord').value.trim() ? tr('manECoord') : tr('manEReq'));
+  const lnk = $('#manLink').value.trim(); chk(!lnk || /^https?:\/\/[^\s]+\.[^\s]+$/i.test(lnk), $('#manLink'), 'el', tr('manELink'));
   chk(!!r && r.lat != null, $('#manReg'), 'er', tr('manEReg'));
   if (r && r.lat == null) { man.region = null; manRegionUi(); }
   if (name && cur().items.some(i => i.id !== man.editId && i.title.toLowerCase() === name.toLowerCase())) { chk(false, $('#manName'), 'en', tr('manDup', name)); }
   if (bad.length) { (bad[0].hidden ? $('#manChange') : bad[0]).focus(); return; }
   const d = km({ lat:r.lat, lon:r.lon }, co);
-  const item = { id:uid(), title:name, lat:co.lat, lon:co.lon, q:'', src:`https://www.openstreetmap.org/?mlat=${co.lat}&mlon=${co.lon}#map=16/${co.lat}/${co.lon}`, inst:desc, note:'', day:0, kind:'place', thumb:man.thumb || '', badge:[r.title, r.badge].filter(Boolean).join(' › '), man:1, dkm:d, from:r.title, rlat:r.lat, rlon:r.lon };
+  const item = { id:uid(), title:name, lat:co.lat, lon:co.lon, q:'', src:lnk || `https://www.openstreetmap.org/?mlat=${co.lat}&mlon=${co.lon}#map=16/${co.lat}/${co.lon}`, inst:desc, note:'', day:0, kind:'place', thumb:man.thumb || '', badge:[r.title, r.badge].filter(Boolean).join(' › '), man:1, dkm:d, from:r.title, rlat:r.lat, rlon:r.lon };
   fitMap = true;
   if (man.editId) { const old = cur().items.find(x => x.id === man.editId); mutate(() => Object.assign(old, item, { id:old.id, day:old.day, note:old.note })); manDlg.close(); toast(tr('manSaved', name)); return; }
   mutate(() => cur().items.push(item)); manDlg.close(); toast(tr('manAdded', name));
