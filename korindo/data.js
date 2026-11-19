@@ -22,12 +22,13 @@ window.KORINDO_DATA = [
     dept: "LEGAL",
     floor: "7",
     people: [
-      { name: "JONATAN", ext: "227" },
+      { name: "HANIF", ext: "227" },
       { name: "MASRI", ext: "247" },
       { name: "NITA", ext: "245" },
       { name: "PANDU", ext: "248" },
       { name: "RISTON", ext: "258" },
-      { name: "HAFIDZ", ext: "259" }
+      { name: "HAFIDZ", ext: "259" },
+      { name: "KOSONG", ext: "220" }
     ]
   },
   {
@@ -59,7 +60,7 @@ window.KORINDO_DATA = [
     floor: "8",
     people: [
       { name: "HENNY / OKKY", ext: "270" },
-      { name: "NANANG / FADLY", ext: "292" },
+      { name: "FADLY", ext: "292" },
       { name: "HUSEIN", ext: "299" },
       { name: "AHMAD", ext: "296" },
       { name: "KOSONG", ext: "264" },
@@ -75,12 +76,12 @@ window.KORINDO_DATA = [
       { name: "TAUFIK / IMAN", ext: "272" },
       { name: "HENDRO / HALIMAH", ext: "289" },
       { name: "OKTA", ext: "291" },
-      { name: "IKO", ext: "268" },
       { name: "RUDI", ext: "277" },
+      { name: "IKO", ext: "268" },
       { name: "RETNO / AGUS", ext: "269" },
       { name: "AUFI", ext: "393" },
       { name: "AYU", ext: "290" },
-      { name: "DANY / JHONA", ext: "284" },
+      { name: "JHONA", ext: "284" },
       { name: "KOSONG", ext: "420" },
       { name: "PUTRI", ext: "419" },
       { name: "NANDAR", ext: "282" }
@@ -90,7 +91,12 @@ window.KORINDO_DATA = [
     dept: "HEAVY INDUSTRY (KHI)",
     floor: "9",
     people: [
-      { name: "ROBBY", ext: "940" }
+      { name: "ROBBY", ext: "940" },
+      { name: "NELLY", ext: "927" },
+      { name: "RIA", ext: "937" },
+      { name: "ADE CRANE", ext: "927" },
+      { name: "ADJIE", ext: "928" },
+      { name: "ALISSA", ext: "320" }
     ]
   },
   {
@@ -98,13 +104,13 @@ window.KORINDO_DATA = [
     floor: "9",
     people: [
       { name: "RIDHA", ext: "925" },
-      { name: "RIDHA / NELLY", ext: "925" },
       { name: "SUHENDRA / JOKO", ext: "926" },
       { name: "SARAS / INDAH", ext: "" },
-      { name: "ASTA / LIA / DITA", ext: "938" },
+      { name: "ASTA / DITA", ext: "938" },
       { name: "R. MEETING KK", ext: "957" },
-      { name: "KOSONG", ext: "935" },
-      { name: "JOHAN", ext: "435" }
+      { name: "LIA", ext: "935" },
+      { name: "JOHAN", ext: "435" },
+      { name: "WILSON", ext: "436" }
     ]
   },
   {
@@ -216,7 +222,7 @@ window.KORINDO_DATA = [
       { name: "ELVIRA", ext: "589" },
       { name: "CICILIA", ext: "550" },
       { name: "SISCA", ext: "533" },
-      { name: "INTAN / NATASYA", ext: "432" },
+      { name: "INTAN", ext: "432" },
       { name: "YULLY", ext: "518" },
       { name: "JEANE / NITIKAH", ext: "536" },
       { name: "VANNY / STEFFI", ext: "519" },
@@ -235,7 +241,7 @@ window.KORINDO_DATA = [
       { name: "R. MEETING BESAR", ext: "548" },
       { name: "R. MEETING SEDANG", ext: "508" },
       { name: "R. MEETING KECIL", ext: "556" },
-      { name: "SABRINA / TALINE", ext: "568" },
+      { name: "SABRINA / APRO", ext: "568" },
       { name: "DIKA", ext: "541" }
     ]
   },
@@ -445,8 +451,8 @@ window.KORINDO_DATA = [
       { name: "WINDRA", ext: "" },
       { name: "LINA", ext: "309" },
       { name: "RISTI / NAOMI", ext: "310" },
-      { name: "PAUL", ext: "914" },
-      { name: "KOSONG", ext: "433" },
+      { name: "NOVI", ext: "914" },
+      { name: "ANJALY", ext: "433" },
       { name: "CATHERINE", ext: "434" },
       { name: "RIZKY", ext: "936" },
       { name: "ARIS", ext: "314" }
