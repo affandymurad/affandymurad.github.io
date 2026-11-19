@@ -196,7 +196,7 @@ footer.credit{margin-top:6px;padding-bottom:6px;font-weight:600}footer.credit a{
 .sn .st{display:flex;align-items:center;gap:8px;flex:0 0 auto;min-height:48px;padding:0;border:0;background:none;color:var(--muted);font-weight:600;font-size:14px;white-space:nowrap;cursor:pointer}
 .sn .st:not(:last-child){flex:1 1 0;min-width:0}
 .sn .st:not(:last-child)::after{content:"";flex:1 1 auto;min-width:12px;height:2px;margin-inline:10px;border-radius:2px;background:var(--line)}
-.sn .st.ok:not(:last-child)::after{background:var(--ok)}
+.sn .st.ln:not(:last-child)::after{background:var(--ok)}
 .sn .st .n{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:14px;font-weight:700;background:var(--soft);color:var(--ink);border:2px solid var(--line);transition:border-color .15s,box-shadow .15s}
 .sn .st .n svg{width:16px;height:16px}
 .sn .st.ok .n{background:var(--ok);border-color:var(--ok);color:#fff}
@@ -710,7 +710,7 @@ try { db = JSON.parse(localStorage.getItem(LS)); } catch { db = null; }
 if (!db || !Array.isArray(db.trips) || !db.trips.length) { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; }
 const cur = () => db.trips.find(t => t.id === db.cur) || db.trips[0];
 const save = () => { try { localStorage.setItem(LS, JSON.stringify(db)); } catch {} };
-let step = 1, reached = 1, sugSeen = false, sugAuto = false, routeDone = false, guideAuto = false;   // reached = tahap terjauh yang sudah ditempuh   // tahap aktif + penanda tahap yang sudah ditempuh
+let step = 1, reached = 1, seen = 1, sugSeen = false, sugAuto = false, routeDone = false, guideAuto = false;   // reached = tahap terjauh yang sudah ditempuh   // tahap aktif + penanda tahap yang sudah ditempuh
 const undoStack = [];
 function mutate(fn) { routeDone = false; undoStack.push(JSON.stringify(db)); if (undoStack.length > 30) undoStack.shift(); fn(); save(); render(); }
 function undo() { if (!undoStack.length) return; db = JSON.parse(undoStack.pop()); save(); render(); toast(tr('toastUndone')); }
@@ -1539,11 +1539,11 @@ function gateMax() {
 const canGo = n => n <= step || (n <= gateMax() && n <= reached);   // mundur selalu boleh; maju hanya ke tahap yang sudah ditempuh dan datanya terpenuhi
 function renderStepper() {
   const t = cur(), places = t.items.filter(i => kindOf(i) !== 'region'), sched = places.filter(i => i.day > 0);
-  const prog = Math.max(step, reached);   // tahap Saran yang dilewati (mis. rencana dari tautan berbagi) tetap dianggap selesai bila tahap sesudahnya sudah ditempuh
+  const prog = seen;   // tahap terjauh yang benar-benar dibuka (bukan sekadar boleh dibuka)   // tahap Saran yang dilewati (mis. rencana dari tautan berbagi) tetap dianggap selesai bila tahap sesudahnya sudah ditempuh
   const done = [t.items.length > 0, sugSeen || prog > 2, places.length > 0 && sched.length === places.length, (routeDone && sched.length > 1) || prog > 4, false];
   $('#sn').setAttribute('aria-label', tr('stCollect') + ' → ' + tr('stSave'));
   $('#sn').innerHTML = STEPS.map((k, i) => { const n = i + 1, on = step === n, off = !on && !canGo(n);
-    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] && !on ? ' ok' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
+    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] && !on ? ' ok' : '') + (done[i] && (done[i + 1] || step === i + 2) ? ' ln' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
       ' title="' + esc(off ? tr('stLocked') : tr(k) + (done[i] ? ' · ' + tr('stDone') : '')) + '">' +
       '<span class="n">' + (done[i] && !on ? CHECK : n) + '</span><span class="l">' + esc(tr(k)) + '</span></button>'; }).join('');
 }
@@ -1580,7 +1580,7 @@ function setStep(n, o = {}) {
   n = Math.min(5, Math.max(1, n | 0 || 1));
   const max = gateMax();
   if (!o.force && n > step && !(n <= max && (n === step + 1 || n <= reached))) return;   // maju hanya berurutan dan bila datanya ada
-  step = Math.min(n, max); reached = Math.max(step, Math.min(reached, max));
+  step = Math.min(n, max); reached = Math.max(step, Math.min(reached, max)); seen = Math.max(seen, step);
   document.body.dataset.step = String(step);
   $('#p1').hidden = step !== 1; $('#p2').hidden = step !== 2; $('#p3').hidden = step !== 3 && step !== 4; $('#p5').hidden = step !== 5;
   const wl = $('#wl-box'), slot = step === 3 ? $('#slot3') : step === 1 ? $('#slot1') : null;   // satu Daftar tunggu yang berpindah tempat
@@ -1626,7 +1626,7 @@ $('#reset').onclick = () => {
   mutate(() => { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; legCache.clear(); fitMap = true; });
   try { localStorage.removeItem(LS_GUIDE); } catch {}
   $('#nb').hidden = true; nbAll = []; $('#guide').hidden = false; pickedCountry = null; drawChips();
-  sugSeen = sugAuto = routeDone = false; setStep(1, { force:true });
+  sugSeen = sugAuto = routeDone = false; seen = 1; setStep(1, { force:true });
   toast(tr('toastReset'), tr('undoBtn'), undo);
 };
 $('#navReset').onclick = $('#reset').onclick;   // dari tahap mana pun
