@@ -101,7 +101,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .bdg{display:inline-flex;align-items:center;gap:4px;margin:4px 5px 0 0;padding:1px 9px;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:var(--muted);font-size:11.5px;font-weight:600;line-height:1.6;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .chip .flag{vertical-align:-3px;margin-inline-end:6px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
-.bdg.bc{display:inline-flex;flex-wrap:wrap;gap:0 5px;white-space:normal;text-overflow:clip}
+.bdg.bc{display:inline-flex;flex-wrap:wrap;gap:0 5px;white-space:normal;text-overflow:clip;border-radius:14px}
 .bdg.bc i{font-style:normal;opacity:.55}
 .bdg.k-region{color:var(--brand);background:color-mix(in srgb,var(--brand-2) 12%,var(--surface));border-color:color-mix(in srgb,var(--brand-2) 35%,transparent)}
 .bdg.k-place{color:var(--accent);background:color-mix(in srgb,var(--accent) 11%,var(--surface));border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -179,6 +179,7 @@ li.it textarea{width:100%;margin-top:4px;min-height:60px;resize:vertical}
 @media (max-width:480px){.planbar{grid-template-columns:1fr}}
 .acts{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .acts select{padding:4px 6px;font-size:12.5px;max-width:112px}
+@media (max-width:560px){li.it{grid-template-columns:28px 48px minmax(0,1fr)}li.it .acts{grid-column:2/-1;justify-content:flex-start;margin-top:6px}li.it .acts select{max-width:none;flex:1 1 130px}}   /* ponsel: tombol aksi turun ke baris sendiri, judul tidak tergencet */
 .ib{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:30px;height:30px;cursor:pointer;display:grid;place-items:center;font-size:13px;line-height:1}
 .ib:hover{background:var(--soft)}.ib.x:hover{color:var(--danger)}
 .pin{width:26px;height:26px;border-radius:50%;color:#fff;font:700 12px/22px Arial;text-align:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
@@ -331,6 +332,27 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
 #nbList .sg .btn{flex:none;min-height:44px;min-width:84px;justify-content:center}
 .sec:has(.sbox){overflow:visible}   /* panel hasil/pemuatan melayang di bawah kotak cari dan tidak boleh terpotong kartu */
 .sec:has(.sbox) .ac{z-index:55;scroll-margin-bottom:100px;max-height:min(430px,calc(100vh - 230px))}
+
+/* modal tempat manual */
+dialog.mdl{border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);padding:0;width:min(580px,calc(100vw - 24px));max-height:calc(100vh - 24px);box-shadow:0 24px 70px rgba(8,15,32,.35)}
+dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
+.mdl form{display:flex;flex-direction:column;max-height:calc(100vh - 26px)}
+.mdl .mh{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}.mdl .mh h3{margin:0;font-size:17px;flex:1}
+.mdl .mb{padding:14px 18px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.mdl .mf{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.fld>label,.fld>.fl{display:block;font-weight:700;font-size:13.5px;margin-bottom:5px}.fld .req{color:var(--danger)}
+.fld input[type=text],.fld textarea{width:100%}.fld textarea{min-height:76px;resize:vertical}
+.fld .help{color:var(--muted);font-size:12.5px;margin-top:4px}
+.fld .e{color:var(--danger);font-size:12.5px;margin-top:4px;font-weight:600}
+.fld [aria-invalid=true]{border-color:var(--danger)}
+.ph-row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.mph{position:relative;width:96px;height:96px;border-radius:14px;background:var(--soft);border:1px dashed var(--line);display:grid;place-items:center;font-size:28px;overflow:hidden;flex:none}
+.mph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph-col{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px}
+.mrs{margin-top:6px;border:1px solid var(--line);border-radius:12px;max-height:230px;overflow:auto}
+.mrs button.rg{display:block;width:100%;text-align:start;background:none;border:0;border-top:1px solid var(--line);padding:8px 12px;cursor:pointer}.mrs button.rg:first-child{border-top:0}
+.mrs button.rg:hover{background:var(--soft)}.mrs small{display:block;color:var(--muted)}
+.mrg{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
 </style>
 </head>
 <body>
@@ -395,6 +417,7 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
       <div class="err" id="addErr" hidden></div>
       <div class="chips rc" id="recentRow" hidden><span class="hint" style="margin:0" data-i="recent"></span><span id="recent" class="row" style="gap:6px"></span></div>
       <div class="chips qs"><span class="hint" style="margin:0" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
+      <div class="chips"><button type="button" class="btn sm" id="manBtn" data-i="manBtn"></button></div>
       <div class="chips" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
       <ol class="sempty" id="sEmpty" hidden>
         <li><b class="n">1</b><span><strong data-i="em1t"></strong><small data-i="em1d"></small></span></li>
@@ -499,6 +522,28 @@ body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{d
 <script src="https://cdn.jsdelivr.net/npm/maplibre-contour@0.1.1/dist/index.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+<dialog class="mdl" id="manDlg" aria-labelledby="manT">
+  <form id="manForm" novalidate>
+    <div class="mh"><h3 id="manT" data-i="manT"></h3><button type="button" class="btn ghost" id="manX" data-i="manCancel"></button></div>
+    <div class="mb">
+      <div class="fld"><span class="fl" data-i="manPhoto"></span>
+        <div class="ph-row"><div class="mph" id="manPh" aria-hidden="true">📍</div>
+          <div class="ph-col">
+            <div class="row" style="gap:8px"><button type="button" class="btn sm" id="manUp" data-i="manUpload"></button><button type="button" class="btn sm" id="manDelPh" data-i="manRemove" hidden></button></div>
+            <input type="file" id="manFile" accept="image/*" hidden>
+            <input type="text" id="manUrl" inputmode="url" data-ip="manUrlPh" data-ia="manUrlA" autocomplete="off">
+          </div></div>
+        <div class="e" id="eph" hidden></div></div>
+      <div class="fld"><label for="manName"><span data-i="manName"></span> <span class="req">*</span></label><input type="text" id="manName" data-ip="manNamePh" maxlength="120" autocomplete="off"><div class="e" id="en" hidden></div></div>
+      <div class="fld"><label for="manDesc"><span data-i="manDesc"></span> <span class="req">*</span></label><textarea id="manDesc" data-ip="manDescPh" maxlength="400"></textarea><div class="e" id="ed" hidden></div></div>
+      <div class="fld"><label for="manCoord"><span data-i="manCoord"></span> <span class="req">*</span></label><input type="text" id="manCoord" data-ip="manCoordPh" inputmode="decimal" autocomplete="off"><div class="help" data-i="manCoordHelp"></div><div class="e" id="ec" hidden></div></div>
+      <div class="fld"><label for="manReg"><span data-i="manReg"></span> <span class="req">*</span></label>
+        <div class="mrg" id="manChosen" hidden><span id="manChosenT" style="flex:1;min-width:0"></span><button type="button" class="btn sm" id="manChange" data-i="manChange"></button></div>
+        <div class="row" id="manRegRow" style="gap:8px;flex-wrap:nowrap"><input type="text" id="manReg" data-ip="manRegPh" autocomplete="off" style="flex:1"><button type="button" class="btn" id="manFind" data-i="manFind"></button></div><div class="help" data-i="manRegHelp"></div><div class="mrs" id="manRes" hidden></div><div class="e" id="er" hidden></div></div>
+    </div>
+    <div class="mf"><button type="button" class="btn" id="manCancel" data-i="manCancel"></button><button type="submit" class="btn pri" id="manSubmit" data-i="manSave"></button></div>
+  </form>
+</dialog>
 <script>
 (function(){
 'use strict';
@@ -529,6 +574,12 @@ id:{
   gNote:'Semua tersimpan otomatis di browser ini. Tahap bisa dibuka bebas lewat bilah di atas.', gTag:'Mulai di sini', gSub2:'Ikuti 5 tahap di bilah atas, dimulai dari mencari wilayah atau tempat tujuanmu.', gGo:'Mulai mencari',
   meT:'Portofolio Affandy Murad', metaT:'Halaman pengguna Affandy Murad di Meta-Wiki', madeBy:'Tools ini dibuat oleh',
   addPh:'Cari wilayah atau tempat… mis. Bali, Borobudur, Stasiun Gambir', add:'Tambah', search:'Cari', adding:'Mencari…',
+  manBtn:'+ Tempat manual', edT:'Ubah tempat', manTE:'Ubah tempat manual', manSaveE:'Simpan', manSaved:'“{0}” diperbarui', manFind:'Cari', manT:'Tambah tempat manual', manCancel:'Batal', manSave:'Tambahkan', manPhoto:'Foto (opsional)', manUpload:'Unggah dari perangkat', manRemove:'Hapus foto', manUrlPh:'atau tempel URL foto: https://…/foto.jpg', manUrlA:'URL foto',
+  manName:'Nama tempat', manNamePh:'mis. Pantai Pandawa Tersembunyi', manDesc:'Deskripsi', manDescPh:'mis. Pantai sepi berpasir putih dengan tebing kapur, cocok untuk sunrise. Parkir gratis.',
+  manCoord:'Koordinat (lat, lon)', manCoordPh:'-8.8456, 115.1860', manCoordHelp:'Salin dari Google Maps/OpenStreetMap, format “lat, lon”, mis. -8.8456, 115.1860.',
+  manReg:'Wilayah', manRegPh:'Cari wilayah di Wikidata, mis. Badung', manRegHelp:'Pilih satu wilayah (desa, kota/kabupaten, provinsi, atau negara). Jarak dihitung dari titik wilayah ini.', manChange:'Ganti',
+  manEReq:'Wajib diisi.', manECoord:'Format koordinat salah. Pakai “lat, lon” (lat −90…90, lon −180…180), mis. -8.8456, 115.1860.', manEReg:'Pilih satu wilayah dari hasil pencarian.', manNoReg:'Wilayah tidak ditemukan. Coba nama lain.', manSrch:'Mencari wilayah…',
+  manEPhoto:'Foto tidak bisa dimuat. Periksa berkas atau URL-nya.', manEType:'Pilih berkas gambar (JPG, PNG, WebP).', manDup:'“{0}” sudah ada di rencana ini.', manAdded:'“{0}” ditambahkan', kmFrom:'{0} km dari titik {1}',
   pdfMapT:'Peta perjalanan', approxLoc:'lokasi perkiraan (titik wilayah induk)', toWl:'Pindahkan ke Daftar tunggu', kRegion:'Wilayah', kPlace:'Tempat', added:'✓ Ditambahkan', noCoord:'Tanpa koordinat', regOrder:'Urutan wilayah menentukan urutan Rekomendasi jadwal. Seret untuk mengubahnya.',
   recPd:'Cek tempat yang mungkin terlewat di wilayahmu', autod:'Bagi semua tempat ke hari-hari perjalanan', recRd:'Urutkan tempat tiap hari agar rute lebih singkat', wlCap:'Kumpulkan wilayah & tempat yang ingin dikunjungi',
   toastRegionDay:'Wilayah tidak bisa dijadwalkan ke hari. Tambahkan tempat di wilayah itu, lalu jadwalkan tempatnya.',
@@ -584,6 +635,12 @@ en:{
   gNote:'Everything is saved automatically in this browser. Open any step freely from the bar above.', gTag:'Start here', gSub2:'Follow the 5 steps in the bar above, starting with a search for your destination.', gGo:'Start searching',
   meT:'Affandy Murad’s portfolio', metaT:'Affandy Murad’s user page on Meta-Wiki', madeBy:'This tool was created by',
   addPh:'Search a region or place… e.g. Bali, Borobudur, Gambir station', add:'Add', search:'Search', adding:'Searching…',
+  manBtn:'+ Custom place', edT:'Edit place', manTE:'Edit custom place', manSaveE:'Save', manSaved:'“{0}” updated', manFind:'Search', manT:'Add a custom place', manCancel:'Cancel', manSave:'Add place', manPhoto:'Photo (optional)', manUpload:'Upload from device', manRemove:'Remove photo', manUrlPh:'or paste a photo URL: https://…/photo.jpg', manUrlA:'Photo URL',
+  manName:'Place name', manNamePh:'e.g. Secret Pandawa Beach', manDesc:'Description', manDescPh:'e.g. Quiet white-sand beach with limestone cliffs, great for sunrise. Free parking.',
+  manCoord:'Coordinates (lat, lon)', manCoordPh:'-8.8456, 115.1860', manCoordHelp:'Copy from Google Maps/OpenStreetMap, format “lat, lon”, e.g. -8.8456, 115.1860.',
+  manReg:'Region', manRegPh:'Search a region on Wikidata, e.g. Badung', manRegHelp:'Pick one region (village, city/regency, province or country). Distance is measured from this region’s point.', manChange:'Change',
+  manEReq:'Required.', manECoord:'Invalid coordinates. Use “lat, lon” (lat −90…90, lon −180…180), e.g. -8.8456, 115.1860.', manEReg:'Pick one region from the search results.', manNoReg:'Region not found. Try another name.', manSrch:'Searching regions…',
+  manEPhoto:'The photo could not be loaded. Check the file or URL.', manEType:'Choose an image file (JPG, PNG, WebP).', manDup:'“{0}” is already in this plan.', manAdded:'“{0}” added', kmFrom:'{0} km from {1}',
   pdfMapT:'Trip map', approxLoc:'approximate location (parent region point)', toWl:'Move back to Wishlist', kRegion:'Region', kPlace:'Place', added:'✓ Added', noCoord:'No coordinates', regOrder:'The order of regions sets the order of the Schedule suggestion. Drag to change it.',
   recPd:'Check for places you may have missed in your regions', autod:'Spread all places over your trip days', recRd:'Order each day’s places for a shorter route', wlCap:'Collect the regions & places you want to visit',
   toastRegionDay:'Regions can’t be scheduled on a day. Add places in that region, then schedule the places.',
@@ -763,7 +820,7 @@ const commonsThumb = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/'
 const wpUrl = (l, title) => `https://${l}.wikipedia.org/wiki/` + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/');
 const thumbHtml = x => `<span class="th" aria-hidden="true">${kindOf(x) === 'region' ? '🏙' : '📍'}${x.thumb ? `<img src="${esc(x.thumb)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>`;
 const crumbHtml = b => b.split(' › ').map(n => `<span>${esc(n)}</span>`).join('<i aria-hidden="true">›</i>');
-const chipsHtml = x => `<span class="bdg k-${kindOf(x)}">${esc(tr(kindOf(x) === 'region' ? 'kRegion' : 'kPlace'))}</span>${x.badge ? (kindOf(x) === 'region' ? `<span class="bdg bc" title="${esc(x.badge)}">🌐 ${crumbHtml(x.badge)}</span>` : `<span class="bdg" title="${esc(x.badge)}">📍 ${esc(x.badge)}</span>`) : ''}`;
+const chipsHtml = x => `<span class="bdg k-${kindOf(x)}">${esc(tr(kindOf(x) === 'region' ? 'kRegion' : 'kPlace'))}</span>${x.badge ? (kindOf(x) === 'region' ? `<span class="bdg bc" title="${esc(x.badge)}">🌐 ${crumbHtml(x.badge)}</span>` : x.man ? `<span class="bdg bc" title="${esc(x.badge)}">📍 ${crumbHtml(x.badge)}</span>` : `<span class="bdg" title="${esc(x.badge)}">📍 ${esc(x.badge)}</span>`) : ''}${x.man && x.dkm != null ? `<span class="bdg">📏 ${esc(tr('kmFrom', nf(x.dkm), x.from))}</span>` : ''}`;
 /* Tingkat administratif (dari label jenis berbahasa Inggris): 1 desa/kelurahan/kecamatan, 2 kabupaten/kota, 3 provinsi, 4 negara; 0 = tak dikenali */
 const LV_SUB = /\b(village|hamlet|town|subdistrict|ward|neighbou?rhood|suburb|locality|kelurahan|kecamatan|desa|dusun|kampung|settlement|quarter)\b|district of Indonesia/i;
 const LV_COUNTRY = /\b(sovereign state|country|nation|island country|unitary state|city-state)\b/i;
@@ -1067,6 +1124,7 @@ const COUNTRIES = [
 let pickedCountry = null;
 const svgIcon = d => `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px">${d}</svg>`;
 const ICON_TRASH = svgIcon('<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>');
+const ICON_EDIT = svgIcon('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>');
 const ICON_BACK = svgIcon('<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v5"/>');
 const ICON_SEARCH =svgIcon('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>');
 /* pencarian terakhir (3, tersimpan di peramban) */
@@ -1134,7 +1192,7 @@ function itemHtml(t, it, n, list) {
     <div><a class="ti" href="${esc(it.src)}" target="_blank" rel="noopener" draggable="false">${esc(it.title)}</a>${it.inst ? `<span class="sub">${esc(it.inst)}</span>` : ''}
       <div>${chipsHtml(it)}</div>${it.note ? `<div class="nt">${esc(it.note)}</div>` : ''}</div>
     <div class="acts">${region ? '' : `<select data-mv="${it.id}" aria-label="${esc(tr('moveTo'))}">${opts}</select>`}${it.day ? `<button class="ib" data-act="wl" data-id="${it.id}" title="${esc(tr('toWl'))}" aria-label="${esc(tr('toWl'))}">${ICON_BACK}</button>` : ''}
-      ${region ? `<button class="ib" data-act="nb" data-id="${it.id}" title="${esc(tr('nbT'))}" aria-label="${esc(tr('nbT'))}">${ICON_SEARCH}</button>` : ''}<button class="ib x" data-act="rm" data-id="${it.id}" title="${esc(tr('rm'))}" aria-label="${esc(tr('rm'))}">${ICON_TRASH}</button></div>
+      ${region ? `<button class="ib" data-act="nb" data-id="${it.id}" title="${esc(tr('nbT'))}" aria-label="${esc(tr('nbT'))}">${ICON_SEARCH}</button>` : ''}${it.man ? `<button class="ib" data-act="ed" data-id="${it.id}" title="${esc(tr('edT'))}" aria-label="${esc(tr('edT'))}">${ICON_EDIT}</button>` : ''}<button class="ib x" data-act="rm" data-id="${it.id}" title="${esc(tr('rm'))}" aria-label="${esc(tr('rm'))}">${ICON_TRASH}</button></div>
     ${it.day && !last ? `<div class="dist">${esc(tr('nextLeg', legTxt(list, n - 1)))}</div>` : ''}</li>`;
 }
 function render() {
@@ -1596,6 +1654,7 @@ box.addEventListener('click', e => {
   const id = b.dataset.id, a = b.dataset.act;
   if (a === 'rm') removeItem(id);
   else if (a === 'wl') moveItem(id, 0, null);
+  else if (a === 'ed') manOpen(id);
   else if (a === 'nb') { const it = cur().items.find(x => x.id === id); if (it && kindOf(it) === 'region') suggest([it], tr('nbTitleOne', it.title)); }   // ⌖ hanya untuk wilayah
 });
 box.addEventListener('change', e => { const s = e.target.closest('select[data-mv]'); if (s && s.value !== '') moveItem(s.dataset.mv, +s.value, null); });
@@ -1624,7 +1683,8 @@ function normTrip(o, name) {
   const items = (o.items || o.places || o.pois || []).map(i => ({
     id:uid(), title:String(i.title || i.name || i.label || '').trim(), lat:num(i.lat ?? i.latitude), lon:num(i.lon ?? i.lng ?? i.longitude),
     q:i.q || i.wikidata || '', src:i.src || i.url || '', inst:i.inst || '', note:String(i.note || i.notes || ''), day:Math.max(0, parseInt(i.day, 10) || 0),
-    kind:i.kind === 'region' ? 'region' : i.kind === 'place' ? 'place' : '', thumb:String(i.thumb || ''), badge:String(i.badge || '')
+    kind:i.kind === 'region' ? 'region' : i.kind === 'place' ? 'place' : '', thumb:String(i.thumb || ''), badge:String(i.badge || ''),
+    man:i.man ? 1 : 0, dkm:i.man && isFinite(+i.dkm) && i.dkm !== null ? +i.dkm : null, from:String(i.from || ''), rlat:i.rlat != null && isFinite(+i.rlat) ? +i.rlat : null, rlon:i.rlon != null && isFinite(+i.rlon) ? +i.rlon : null
   })).filter(i => i.title && isFinite(i.lat) && isFinite(i.lon));
   const days = Math.min(30, Math.max(1, o.days || Math.max(1, ...items.map(i => i.day))));
   items.forEach(i => { i.src = i.src || (i.q ? 'https://www.wikidata.org/wiki/' + i.q : 'https://www.openstreetmap.org/?mlat=' + i.lat + '&mlon=' + i.lon); if (i.day > days) i.day = 0; if (i.kind === 'region') i.day = 0; });
@@ -1645,7 +1705,7 @@ $('#file').onchange = async e => {
 const b64 = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64 = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
 $('#share').onclick = async () => {
-  const t = cur(), c = { n:t.name, s:t.start, d:t.days, i:t.items.map(i => [i.title, +i.lat.toFixed(5), +i.lon.toFixed(5), i.q, i.src, i.inst, i.note, i.day, kindOf(i), i.badge || '']) };
+  const t = cur(), c = { n:t.name, s:t.start, d:t.days, i:t.items.map(i => [i.title, +i.lat.toFixed(5), +i.lon.toFixed(5), i.q, i.src, i.inst, i.note, i.day, kindOf(i), i.badge || '', i.man ? [i.dkm, i.from, /^https?:/.test(i.thumb) ? i.thumb : '', i.rlat, i.rlon] : 0]) };
   const url = location.origin + location.pathname + '#t=' + b64(JSON.stringify(c));
   
   try { await navigator.clipboard.writeText(url); toast(url.length > 6000 ? tr('toastLinkLong') : tr('toastLink')); } catch { prompt(tr('copyPrompt'), url); }
@@ -1655,7 +1715,7 @@ function importHash() {
   if (!location.hash.startsWith('#t=')) return;
   try {
     const c = JSON.parse(unb64(location.hash.slice(3)));
-    const t = normTrip({ name:c.n, start:c.s, days:c.d, items:c.i.map(a => ({ title:a[0], lat:a[1], lon:a[2], q:a[3], src:a[4], inst:a[5], note:a[6], day:a[7], kind:a[8], badge:a[9] })) });
+    const t = normTrip({ name:c.n, start:c.s, days:c.d, items:c.i.map(a => ({ title:a[0], lat:a[1], lon:a[2], q:a[3], src:a[4], inst:a[5], note:a[6], day:a[7], kind:a[8], badge:a[9], man:a[10] ? 1 : 0, dkm:a[10] ? a[10][0] : null, from:a[10] ? a[10][1] : '', thumb:a[10] ? a[10][2] : '', rlat:a[10] ? a[10][3] : null, rlon:a[10] ? a[10][4] : null })) });
     if (!t.items.length) throw new Error('kosong');
     // tanpa dialog bawaan peramban (sering diblokir di aplikasi/peramban tertanam): langsung ditambahkan sebagai rencana baru, dengan tombol Urungkan
     undoStack.push(JSON.stringify(db));
@@ -1870,6 +1930,103 @@ $('#pdf').onclick = exportPDF;
 
 window.addEventListener('error', e => { console.error(e.message, e.filename, e.lineno); if (!e.filename && /script error/i.test(e.message || '')) toast('Script error (cross-origin): a CDN script failed — check connection / WebGL'); });
 /* ---------- mulai ---------- */
+
+/* ---------- tempat manual (modal) ---------- */
+const manDlg = $('#manDlg'), man = { thumb:'', region:null, editId:null };
+const manErr = (id, msg) => { const e = $('#' + id); e.hidden = !msg; e.textContent = msg || ''; };
+const manBad = (el, bad) => el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+function parseCoord(v) {
+  const m = v.trim().match(/^([+-]?\d{1,3}(?:\.\d+)?)\s*[,;\s]\s*([+-]?\d{1,3}(?:\.\d+)?)$/); if (!m) return null;
+  const lat = +m[1], lon = +m[2]; return Math.abs(lat) <= 90 && Math.abs(lon) <= 180 ? { lat, lon } : null;
+}
+function manPhoto() {
+  const box = $('#manPh'); box.innerHTML = man.thumb ? `<img src="${esc(man.thumb)}" alt="">` : '📍'; $('#manDelPh').hidden = !man.thumb;
+}
+function manReset() {
+  man.thumb = ''; man.region = null; manDlg.querySelectorAll('input[type=text],textarea').forEach(e => { e.value = ''; manBad(e, false); });
+  ['eph', 'en', 'ed', 'ec', 'er'].forEach(i => manErr(i)); $('#manFile').value = ''; $('#manRes').hidden = true; manPhoto(); manRegionUi();
+}
+function manRegionUi() {
+  const r = man.region; $('#manChosen').hidden = !r; $('#manRegRow').hidden = !!r;
+  if (r) $('#manChosenT').innerHTML = `<b>${esc(r.title)}</b><div>${chipsHtml(r)}</div>`;
+}
+function manOpen(id) {
+  manReset(); man.editId = id || null; const it = id && cur().items.find(x => x.id === id);
+  $('#manT').textContent = tr(it ? 'manTE' : 'manT'); $('#manSubmit').textContent = tr(it ? 'manSaveE' : 'manSave');
+  if (it) {
+    $('#manName').value = it.title; $('#manDesc').value = it.inst; $('#manCoord').value = it.lat + ', ' + it.lon;
+    man.thumb = it.thumb || ''; if (man.thumb && !/^data:/.test(man.thumb)) $('#manUrl').value = man.thumb; manPhoto();
+    man.region = { title:it.from || '', badge:(it.badge || '').split(' › ').slice(1).join(' › '), lat:isFinite(it.rlat) ? it.rlat : null, lon:isFinite(it.rlon) ? it.rlon : null, kind:'region' }; manRegionUi();
+  }
+  manDlg.showModal(); $('#manName').focus();
+}
+$('#manBtn').onclick = () => manOpen(null);
+$('#manX').onclick = $('#manCancel').onclick = () => manDlg.close();
+manDlg.addEventListener('close', () => { manSeq++; $('#manFind').disabled = false; });
+manDlg.addEventListener('click', e => { if (e.target === manDlg) manDlg.close(); });
+$('#manUp').onclick = () => $('#manFile').click();
+$('#manDelPh').onclick = () => { man.thumb = ''; $('#manFile').value = ''; $('#manUrl').value = ''; manErr('eph'); manPhoto(); };
+$('#manFile').onchange = e => {
+  const f = e.target.files[0]; if (!f) return; manErr('eph');
+  if (!/^image\//.test(f.type)) { manErr('eph', tr('manEType')); e.target.value = ''; return; }
+  const img = new Image(), u = URL.createObjectURL(f);
+  img.onload = () => {
+    const S = 192, c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d'), m = Math.min(img.width, img.height);
+    x.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, S, S); URL.revokeObjectURL(u);
+    man.thumb = c.toDataURL('image/jpeg', .82); $('#manUrl').value = ''; manPhoto();
+  };
+  img.onerror = () => { URL.revokeObjectURL(u); manErr('eph', tr('manEPhoto')); };
+  img.src = u;
+};
+$('#manUrl').addEventListener('change', e => {
+  const v = e.target.value.trim(); manErr('eph'); if (!v) { if (!man.thumb || !/^data:/.test(man.thumb)) { man.thumb = ''; manPhoto(); } return; }
+  if (!/^https?:\/\/\S+$/i.test(v)) { manErr('eph', tr('manEPhoto')); return; }
+  const img = new Image(); img.onload = () => { man.thumb = v; $('#manFile').value = ''; manPhoto(); }; img.onerror = () => manErr('eph', tr('manEPhoto')); img.src = v;
+});
+let manSeq = 0, manT;
+$('#manReg').addEventListener('input', () => {
+  clearTimeout(manT); const v = $('#manReg').value.trim(); manErr('er'); manBad($('#manReg'), false);
+  if (v.length < 2) { $('#manRes').hidden = true; manSeq++; return; }
+  manT = setTimeout(() => manSearch(v), 450);
+});
+async function manSearch(v) {
+  const my = ++manSeq, box = $('#manRes'), fb = $('#manFind'); box.hidden = false; fb.disabled = true;
+  box.innerHTML = `<span class="sr" role="status">${esc(tr('manSrch'))}</span>` + '<div class="rs sk-row" aria-hidden="true"><i class="a"></i><div><i class="b"></i><i class="c"></i><i class="d"></i></div><i class="e"></i></div>'.repeat(3);
+  try {
+    const other = lang === 'id' ? 'en' : 'id', core = v.replace(/^(kecamatan|kelurahan|desa|kabupaten|kota|subdistrict|district|village|regency|city of|city)\s+/i, '').trim();
+    const wdq = (q, l) => api('www.wikidata.org', { action:'wbsearchentities', search:q, language:l, uselang:lang, limit:10, type:'item' });
+    const rs = await Promise.allSettled([wdq(v, lang), wdq(v, other), core && core !== v ? wdq(core, lang) : Promise.resolve({})]);
+    const qs = []; for (let k = 0; k < 10; k++) rs.forEach(r => { const x = r.status === 'fulfilled' && (r.value.search || [])[k]; if (x) qs.push(x.id); });
+    const list = (await fetchEntities([...new Set(qs)])).filter(x => x.kind === 'region' && x.lat != null && isFinite(x.lat));
+    if (my !== manSeq) return;
+    const pos = q => qs.indexOf(q); list.sort((a, b) => pos(a.q) - pos(b.q)); man.found = list.slice(0, 8);
+    box.innerHTML = man.found.length ? man.found.map((x, i) => `<button type="button" class="rg" data-rg="${i}"><b>${esc(x.title)}</b>${(x.desc || x.inst) ? `<small>${esc(x.desc || x.inst)}</small>` : ''}<div>${chipsHtml(x)}</div></button>`).join('') : `<div class="hint" style="padding:10px 12px;margin:0">${esc(tr('manNoReg'))}</div>`;
+  } catch (e) { if (my === manSeq) box.innerHTML = `<div class="hint" style="padding:10px 12px;margin:0">${esc(e.message || String(e))}</div>`; }
+  finally { if (my === manSeq) fb.disabled = false; }
+}
+$('#manRes').addEventListener('click', e => { const b = e.target.closest('[data-rg]'); if (!b) return; man.region = man.found[+b.dataset.rg]; $('#manRes').hidden = true; manErr('er'); manRegionUi(); });
+$('#manChange').onclick = () => { man.region = null; manRegionUi(); $('#manReg').value = ''; $('#manReg').focus(); };
+const manGo = () => { const v = $('#manReg').value.trim(); clearTimeout(manT); if (v.length < 2) { manErr('er', tr('manEReq')); manBad($('#manReg'), true); return; } manErr('er'); manBad($('#manReg'), false); manSearch(v); };
+$('#manFind').onclick = manGo;
+manDlg.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'manReg') { e.preventDefault(); manGo(); } });
+$('#manForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('#manName').value.trim(), desc = $('#manDesc').value.trim(), co = parseCoord($('#manCoord').value), r = man.region;
+  let bad = [];
+  const chk = (ok, el, eid, msg) => { manBad(el, !ok); manErr(eid, ok ? '' : msg); if (!ok) bad.push(el); };
+  chk(!!name, $('#manName'), 'en', tr('manEReq'));
+  chk(!!desc, $('#manDesc'), 'ed', tr('manEReq'));
+  chk(!!co, $('#manCoord'), 'ec', $('#manCoord').value.trim() ? tr('manECoord') : tr('manEReq'));
+  chk(!!r && r.lat != null, $('#manReg'), 'er', tr('manEReg'));
+  if (r && r.lat == null) { man.region = null; manRegionUi(); }
+  if (name && cur().items.some(i => i.id !== man.editId && i.title.toLowerCase() === name.toLowerCase())) { chk(false, $('#manName'), 'en', tr('manDup', name)); }
+  if (bad.length) { (bad[0].hidden ? $('#manChange') : bad[0]).focus(); return; }
+  const d = km({ lat:r.lat, lon:r.lon }, co);
+  const item = { id:uid(), title:name, lat:co.lat, lon:co.lon, q:'', src:`https://www.openstreetmap.org/?mlat=${co.lat}&mlon=${co.lon}#map=16/${co.lat}/${co.lon}`, inst:desc, note:'', day:0, kind:'place', thumb:man.thumb || '', badge:[r.title, r.badge].filter(Boolean).join(' › '), man:1, dkm:d, from:r.title, rlat:r.lat, rlon:r.lon };
+  fitMap = true;
+  if (man.editId) { const old = cur().items.find(x => x.id === man.editId); mutate(() => Object.assign(old, item, { id:old.id, day:old.day, note:old.note })); manDlg.close(); toast(tr('manSaved', name)); return; }
+  mutate(() => cur().items.push(item)); manDlg.close(); toast(tr('manAdded', name));
+});
 applyI18n(); drawChips(); importHash();
 try { if (!localStorage.getItem(LS_GUIDE) && !cur().items.length) { $('#guide').hidden = false; guideAuto = true; } } catch { if (!cur().items.length) { $('#guide').hidden = false; guideAuto = true; } }
 render();
