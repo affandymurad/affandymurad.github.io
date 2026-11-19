@@ -1439,10 +1439,11 @@ function gateMax() {
 const canGo = n => n <= step || (n <= gateMax() && n <= reached);   // mundur selalu boleh; maju hanya ke tahap yang sudah ditempuh dan datanya terpenuhi
 function renderStepper() {
   const t = cur(), places = t.items.filter(i => kindOf(i) !== 'region'), sched = places.filter(i => i.day > 0);
-  const done = [t.items.length > 0, sugSeen, places.length > 0 && sched.length === places.length, routeDone && sched.length > 1, false];
+  const prog = Math.max(step, reached);   // tahap Saran yang dilewati (mis. rencana dari tautan berbagi) tetap dianggap selesai bila tahap sesudahnya sudah ditempuh
+  const done = [t.items.length > 0, sugSeen || prog > 2, places.length > 0 && sched.length === places.length, routeDone && sched.length > 1, false];
   $('#sn').setAttribute('aria-label', tr('stCollect') + ' → ' + tr('stSave'));
   $('#sn').innerHTML = STEPS.map((k, i) => { const n = i + 1, on = step === n, off = !on && !canGo(n);
-    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] ? ' ok' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
+    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] && !on ? ' ok' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
       ' title="' + esc(off ? tr('stLocked') : tr(k) + (done[i] ? ' · ' + tr('stDone') : '')) + '">' +
       '<span class="n">' + (done[i] && !on ? CHECK : n) + '</span><span class="l">' + esc(tr(k)) + '</span></button>'; }).join('');
 }
