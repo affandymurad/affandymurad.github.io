@@ -34,6 +34,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}.btn.pri:hover{filter:brightness(1.08)}
 @media (prefers-color-scheme:dark){.btn.pri{color:#0b1530}}
 .btn.sm{padding:5px 10px;font-size:13px}
+.wlk{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-top:12px;flex-wrap:wrap}.wlk img{border-radius:12px;flex:none}.wlk .wlx{flex:1 1 220px;min-width:0}.wlk h3{margin:2px 0 4px;font-size:15px}.wlk p{margin:0;font-size:13px;color:var(--muted,#666);line-height:1.5}.wlk .wlb{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted,#666)}.wlk .btn{text-decoration:none;color:inherit;display:inline-flex;align-items:center}
 .btn.ghost{border-color:transparent;background:transparent;color:var(--muted);padding:6px 10px;font-size:13.5px}
 .btn.ghost:hover{background:var(--soft);color:var(--ink)}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
@@ -445,6 +446,11 @@ dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
     <div class="bd" id="nbList"></div>
   </section>
   <div class="card nbEmpty hint" data-i="sugEmpty"></div>
+  <aside class="card wlk" aria-labelledby="wlT">
+    <img src="../wikilokal/wikilokal.png" width="48" height="48" alt="" loading="lazy">
+    <div class="wlx"><span class="wlb" data-i="wlTag"></span><h3 id="wlT" data-i="wlT"></h3><p data-i="wlD"></p></div>
+    <a class="btn" href="https://wikilokal.netlify.app" target="_blank" rel="noopener" data-i="wlGo"></a>
+  </aside>
 </section>
 
 <!-- TAHAP 3 & 4 · JADWAL dan RUTE (peta + hari dipakai bersama) -->
@@ -600,7 +606,7 @@ id:{
   close:'Tutup', footer:'Data: Wikidata (CC0, lewat QLever dan API Wikidata) untuk tempat dan wilayah; Wikipedia (CC BY-SA 4.0) untuk saran tempat, thumbnail, dan popularitas; Wikivoyage (CC BY-SA 4.0) untuk pencarian dan tautan · Peta: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Jarak garis lurus kecuali “Rute jalan” aktif (OSRM, perkiraan mobil).',
   wl:'Daftar tunggu', wlSubE:'Belum ada item', wlSubN:'{0} item', dayT:'Hari {0} · {1}', dayNone:'Belum ada tempat', nP:'{0} tempat',
   dropHint:'Seret tempat ke sini, atau pakai menu “Pindah ke”', wlDrop:'Wilayah dan tempat yang kamu tambah muncul di sini',
-  moveTo:'Pindah ke…', up:'Naik', dn:'Turun', nbT:'Saran tempat di sekitar', noteT:'Catatan', rm:'Hapus', notePh:'Catatan: jam buka, reservasi, dan sebagainya',
+  moveTo:'Pindah ke…', up:'Naik', dn:'Turun', nbT:'Saran tempat di sekitar', wlTag:'Dari Wikilokal', wlT:'Masih ingin mengenal wilayah ini lebih dalam?', wlD:'Wikilokal menampilkan artikel Wikipedia, foto Commons, dan panduan Wikivoyage di sekitar lokasi Anda. Siapa tahu ada permata tersembunyi tak jauh dari rencana Anda.', wlGo:'Coba Wikilokal ↗', noteT:'Catatan', rm:'Hapus', notePh:'Catatan: jam buka, reservasi, dan sebagainya',
   nextLeg:'↓ {0} ke tempat berikutnya', fromPrev:'{0} dari {1}', focus:'Klik untuk memperbesar peta ke hari ini',
   emptyT:'Rencana masih kosong', emptyD:'Mulai dengan mencari tempat di atas, atau klik salah satu tujuan populer.',
   toastAdded:'“{0}” masuk ke Daftar tunggu', toastUndone:'Dibatalkan', toastRm:'“{0}” dihapus', toastDelTrip:'Perjalanan dihapus',
@@ -662,7 +668,7 @@ en:{
   close:'Close', footer:'Data: Wikidata (CC0, via QLever and the Wikidata API) for places and regions; Wikipedia (CC BY-SA 4.0) for place suggestions, thumbnails and popularity; Wikivoyage (CC BY-SA 4.0) for search and links · Map: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Distances are straight lines unless “Road routes” is on (OSRM, estimated by car).',
   wl:'Wishlist', wlSubE:'No items yet', wlSubN:'{0} items', dayT:'Day {0} · {1}', dayNone:'No places yet', nP:'{0} places',
   dropHint:'Drag a place here, or use the “Move to” menu', wlDrop:'Regions and places you add show up here',
-  moveTo:'Move to…', up:'Up', dn:'Down', nbT:'Nearby suggestions', noteT:'Note', rm:'Remove', notePh:'Note: opening hours, bookings, etc.',
+  moveTo:'Move to…', up:'Up', dn:'Down', nbT:'Nearby suggestions', wlTag:'From Wikilokal', wlT:'Want to know this area a little better?', wlD:'Wikilokal shows Wikipedia articles, Commons photos and Wikivoyage guides around your location. You may find a hidden gem not far from your plan.', wlGo:'Try Wikilokal ↗', noteT:'Note', rm:'Remove', notePh:'Note: opening hours, bookings, etc.',
   nextLeg:'↓ {0} to next stop', fromPrev:'{0} from {1}', focus:'Click to zoom the map to this day',
   emptyT:'Your plan is empty', emptyD:'Start by searching for a place above, or tap a popular destination.',
   toastAdded:'“{0}” added to Wishlist', toastUndone:'Undone', toastRm:'“{0}” removed', toastDelTrip:'Trip deleted',
