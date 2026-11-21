@@ -425,9 +425,39 @@ li.it .ib:hover{background:var(--soft)}
 @media (max-width:640px){
   .add .inw{flex:1 1 100%}
   .add #addBtn{flex:1 1 100%;order:2}
-  .add #sugBtn,.add #manBtn{flex:1 1 calc(50% - 5px);order:3;justify-content:center;padding-inline:10px}
+  .add #sugBtn,.add #manBtn{flex:1 1 calc(50% - 5px);min-width:0;white-space:normal;order:3;justify-content:center;padding-inline:8px;font-size:14px;line-height:1.2}
   .card.empty{padding:48px 22px 52px}
 }
+
+/* ===== BENTUK ALA WIKILOKAL (warna Wikitamasya tetap) ===== */
+body{font-family:"Noto Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{padding-bottom:128px}
+/* header: judul lugas + chip pil kecil */
+header.top{gap:8px 8px}
+.brand h1{font-size:20px;font-weight:700;letter-spacing:-.005em}
+.me a,#helpBtn.btn.ghost{height:28px;min-height:28px;line-height:1;padding:0 12px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.me{gap:6px}.me a+a{padding-inline:12px}.me a+a::before{display:none}
+.me a:hover,#helpBtn.btn.ghost:hover{background:var(--soft);color:var(--ink)}
+.lang .track{height:28px;width:76px}.lang .knob{height:20px;width:36px}
+/* kartu: sudut 16, ikon bagian dalam ubin 36px */
+.sec>header{gap:12px}
+.sec>header svg{width:36px;height:36px;padding:8px;border-radius:12px;background:var(--soft);color:var(--brand)}
+.sec>header h3{font-size:15px}
+.btn.pri{border-radius:12px;font-weight:700}
+.btn.sm,.chip{border-radius:999px}
+.btn.ghost{border-radius:999px}
+li.it .th,li.it .no{border-radius:12px}
+li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
+.day>header{border-radius:0}
+.stp{border-radius:999px}
+/* bilah navigasi bawah: kapsul melayang */
+.navbar{background:transparent;border-top:0;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0 12px calc(12px + env(safe-area-inset-bottom));pointer-events:none}
+.navbar>*{pointer-events:auto}
+.navbar .inner{max-width:640px;padding:6px;gap:6px;border-radius:999px;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 30px rgba(8,15,32,.28)}
+.navbar .btn{border-radius:999px;min-height:46px}
+.navbar #navNext{border-radius:999px;max-width:none}
+.navwhy{max-width:none;margin:0 0 14px;padding:10px 14px;border-radius:12px;background:var(--soft);border:1px dashed var(--line);color:var(--muted);font-size:13px;text-align:start;display:flex;gap:8px;align-items:flex-start}.navwhy[hidden]{display:none}.navwhy::before{content:'ⓘ';color:var(--brand);font-weight:700}
+@media (max-width:640px){.sec>header{flex-wrap:wrap;gap:2px 10px;padding:10px 14px}.sec>header h3{flex:1 1 0;min-width:0;white-space:normal}.sec>header .meta{flex-basis:100%;margin-inline-start:46px;margin-top:-4px;padding-bottom:4px}.navbar{padding-inline:10px}.navbar .inner{padding:5px}.me a{padding:0 10px}}
 </style>
 </head>
 <body>
@@ -466,6 +496,7 @@ li.it .ib:hover{background:var(--soft)}
 
 <!-- STEPPER: tahap bisa dibuka bebas; centang = tahap sudah terpenuhi -->
 <nav class="sn" id="sn"></nav>
+<p class="navwhy" id="navWhy" role="status" hidden></p>
 
 <main id="steps">
 
@@ -588,7 +619,7 @@ li.it .ib:hover{background:var(--soft)}
 </div>
 
 <!-- NAVIGASI TAHAP (bawah layar) -->
-<div class="navbar"><p class="navwhy" id="navWhy" role="status" hidden></p><div class="inner">
+<div class="navbar"><div class="inner">
   <button class="btn nav" id="navBack" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span class="t"></span></button>
   <button class="btn nav" id="undo" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span class="lbl" data-i="undo"></span></button>
   <button class="btn nav danger" id="navReset" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg><span class="lbl" data-i="resetBtn"></span></button>
