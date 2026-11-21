@@ -601,7 +601,6 @@ li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
         <button class="btn" id="exJson" data-i="exJson"></button>
         <button class="btn" id="imJson" data-i="imJson"></button>
         <button class="btn" id="exGpx" data-i="exGpx"></button>
-        <button class="btn" id="share" data-i="share"></button>
       </div>
       <p class="why" id="whyExp" hidden></p>
       <input type="file" id="file" accept=".json,application/json" hidden>
@@ -1711,7 +1710,7 @@ function renderGuards() {
   g('#recR', '#whyRecR', sched.length < 2 ? tr('whyRecR') : '');
   g('#pdf', '#whyPdf', !sched.length ? tr('whyPdf') : '');
   const none = !t.items.length;
-  ['#exJson', '#exGpx', '#share'].forEach(id => { $(id).disabled = none; });
+  ['#exJson', '#exGpx'].forEach(id => { $(id).disabled = none; });
   $('#whyExp').textContent = none ? tr('whyExp') : ''; $('#whyExp').hidden = !none;
   const nothing = none && db.trips.length < 2; $('#reset').disabled = nothing; $('#navReset').disabled = nothing;   // tak ada yang bisa direset
 }
@@ -1847,12 +1846,6 @@ $('#file').onchange = async e => {
 };
 const b64 = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64 = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
-$('#share').onclick = async () => {
-  const t = cur(), c = { n:t.name, s:t.start, d:t.days, i:t.items.map(i => [i.title, +i.lat.toFixed(5), +i.lon.toFixed(5), i.q, i.src, i.inst, i.note, i.day, kindOf(i), i.badge || '', i.man ? [i.dkm, i.from, /^https?:/.test(i.thumb) ? i.thumb : '', i.rlat, i.rlon] : 0]) };
-  const url = location.origin + location.pathname + '#t=' + b64(JSON.stringify(c));
-  
-  try { await navigator.clipboard.writeText(url); toast(url.length > 6000 ? tr('toastLinkLong') : tr('toastLink')); } catch { prompt(tr('copyPrompt'), url); }
-};
 let sharedMsg = '', sharedStep = 0;
 function importHash() {
   if (!location.hash.startsWith('#t=')) return;
