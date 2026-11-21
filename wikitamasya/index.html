@@ -27,7 +27,7 @@ header.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:1
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
 .row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 label.f{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;font-weight:600}
-input[type=text],input[type=date],input[type=number],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+input[type=text],input[type=url],input[type=date],input[type=number],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
 input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand-2);outline-offset:1px}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;white-space:nowrap}
 .btn:hover{background:var(--soft)}
@@ -139,7 +139,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
   .mapdays #days-box{grid-template-columns:minmax(0,1fr)}
 }
 .lbtn{font:700 12px/29px Arial,sans-serif;color:#333}.lbtn.on{background:#2d4f9c!important;color:#fff}.lbtn+.lbtn{border-top:1px solid #ddd}
-.empty{text-align:center;padding:26px 14px}.empty .big{font-size:38px}.empty h3{margin:6px 0 4px}.empty p{margin:0;color:var(--muted)}
+.empty{text-align:center;padding:48px 20px 52px}.empty .big{font-size:44px;line-height:1;margin-bottom:12px}.empty h3{margin:0 0 8px;font-size:18px}.empty p{margin:0 auto;max-width:44ch;color:var(--muted);line-height:1.6}
 .day{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow)}
 .day>header{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:10px 14px;border-inline-start:5px solid var(--c,#8a93a3);background:var(--soft);cursor:pointer}
 .day h2{margin:0;font-size:15px}.day header span{color:var(--muted);font-size:13px}
@@ -210,9 +210,12 @@ footer.credit{margin-top:6px;padding-bottom:6px;font-weight:600}footer.credit a{
 @media (max-width:560px){.sn .st:not(.on) .l{display:none}.sn .st:not(:last-child)::after{margin-inline:6px}}
 .navwhy{max-width:1320px;margin:0 auto 8px;padding:7px 12px;border-radius:10px;background:var(--warn-bg);color:var(--warn-ink);font-size:13px;text-align:center}
 .wrap{padding-bottom:124px}
+#sugDlg #chips{flex-wrap:wrap!important;overflow:visible;padding:0}#sugDlg .fld{display:block}#sugDlg .fl{display:block;margin-bottom:8px}#sugDlg #cities{display:flex;flex-wrap:wrap}.bdg.lk{text-decoration:none;color:var(--brand);border:1px solid var(--line);background:transparent}.bdg.lk:hover{background:var(--soft)}
+.add{flex-wrap:wrap}.add .btn{display:inline-flex;align-items:center;gap:6px;min-height:48px}
+@media (max-width:640px){.add .inw{flex:1 1 100%}.add .btn{flex:1 1 0;justify-content:center;padding-inline:8px}}
 /* ===== REVAMP: stepper per tahap (prinsip: tablet-first, satu tugas per kartu, target sentuh ≥44px, status bukan hanya warna) ===== */
 .btn{min-height:44px}.btn.sm{min-height:40px}
-input[type=text],input[type=date],input[type=number],select,textarea{min-height:44px;font-size:16px}
+input[type=text],input[type=url],input[type=date],input[type=number],select,textarea{min-height:44px;font-size:16px}
 .wrap{padding-bottom:104px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .panel>.card,.panel>div>.card{margin-bottom:12px}
@@ -342,7 +345,7 @@ dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
 .mdl .mb{padding:14px 18px;overflow:auto;display:flex;flex-direction:column;gap:14px}
 .mdl .mf{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
 .fld>label,.fld>.fl{display:block;font-weight:700;font-size:13.5px;margin-bottom:5px}.fld .req{color:var(--danger)}
-.fld input[type=text],.fld textarea{width:100%}.fld textarea{min-height:76px;resize:vertical}
+.fld input[type=text],.fld input[type=url],.fld textarea{width:100%}.fld textarea{min-height:76px;resize:vertical}
 .fld .help{color:var(--muted);font-size:12.5px;margin-top:4px}
 .fld .e{color:var(--danger);font-size:12.5px;margin-top:4px;font-weight:600}
 .fld [aria-invalid=true]{border-color:var(--danger)}
@@ -354,6 +357,77 @@ dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
 .mrs button.rg{display:block;width:100%;text-align:start;background:none;border:0;border-top:1px solid var(--line);padding:8px 12px;cursor:pointer}.mrs button.rg:first-child{border-top:0}
 .mrs button.rg:hover{background:var(--soft)}.mrs small{display:block;color:var(--muted)}
 .mrg{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+
+/* ===== REVAMP: lebih lega, bersih, dan fokus (warna & fungsi tetap) ===== */
+:root{--radius:16px}
+.wrap{max-width:1120px;padding:0 20px 120px}
+header.top{padding:16px 0 12px}
+.brand small{max-width:34ch}
+.card{padding:18px 20px;margin-bottom:16px;box-shadow:none}
+.sec{padding:0}
+.sec>header{min-height:52px;padding:0 20px;border-bottom:0}
+.sec>header h3{font-size:14px;font-weight:700;letter-spacing:.01em}
+.sec>.bd{padding:4px 20px 20px}
+/* panduan: satu baris, bukan kartu besar (tahap sudah terlihat di bilah atas) */
+.guide{padding:14px 18px;border-inline-start:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;background:var(--soft)}
+.guide .gl,.guide .gn{display:none}
+.guide .ghead{display:flex;align-items:center;gap:10px;flex:1 1 220px}
+.guide .gsub{margin:0;flex:1 1 100%;order:3;color:var(--muted);font-size:13.5px}
+.guide .gfoot{margin:0;gap:8px;order:2}
+/* tahap: bilah ringkas */
+.sn{padding:8px 2px;margin-bottom:16px}
+.sn .st{font-size:13.5px}
+/* tripbar: satu baris tenang tanpa judul */
+.sec:has(.tripbar)>header{display:none}
+.sec:has(.tripbar){background:transparent;border:0;margin-bottom:8px}
+.sec:has(.tripbar)>.bd{padding:0}
+.tripbar{grid-template-columns:minmax(0,1fr) auto auto auto;gap:4px}
+.tripbar select{font-weight:700;font-size:16px;border-color:transparent;background:transparent;padding-inline:4px}
+.tripbar select:hover,.tripbar select:focus{background:var(--surface);border-color:var(--line)}
+.tripbar .btn{border-color:transparent;background:transparent;color:var(--muted);font-size:13.5px;padding:6px 10px}
+.tripbar .btn:hover{background:var(--soft);color:var(--ink)}
+/* pencarian: tenang, kolom besar */
+.sec:has(.sbox)>.bd{padding:20px}
+.sempty{display:none!important}
+.chips{margin-top:12px}
+/* daftar: baris lapang, pemisah tipis, aksi sekunder dibuat tenang */
+.day{border-radius:var(--radius);box-shadow:none}
+.day>header{padding:12px 16px;border-inline-start-width:4px}
+li.it{padding:14px 10px;border-radius:0;border-top:1px solid var(--line);gap:2px 12px;cursor:default}
+li.it:first-child{border-top:0}
+li.it:nth-child(even){background:transparent}
+li.it a.ti{font-weight:700;font-size:15px}
+li.it .sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+li.it .acts{opacity:.9}
+li.it .acts select{border-color:transparent;background:var(--soft);border-radius:999px;padding:5px 10px}
+li.it .ib{border-color:transparent;background:transparent}
+li.it .ib:hover{background:var(--soft)}
+/* bilah bawah */
+.navbar{border-top:1px solid var(--line)}
+.navbar .btn.nav:not(.pri){border-color:transparent;background:transparent;color:var(--muted)}
+.navbar #navNext{border-radius:12px}
+.btn{border-radius:12px}
+.btn.big{min-height:52px;font-size:16px}
+@media (max-width:640px){
+  .wrap{padding:0 14px 120px}
+  .brand small,.me a+a{display:none}
+  .navbar .btn.nav:not(.pri) .t{display:none}.navbar .btn.nav:not(.pri){padding-inline:12px;min-width:48px}
+  .card{padding:14px 14px;margin-bottom:12px}
+  .sec>.bd{padding:2px 14px 16px}.sec:has(.sbox)>.bd{padding:14px}
+  .guide .gfoot{flex:1 1 100%;justify-content:stretch}.guide .gfoot .btn{flex:1}
+  .sn .st:not(.on) .l{display:none}
+  .tripbar{display:flex;flex-wrap:wrap;gap:2px}.tripbar .tripsel{flex:1 1 100%}.tripbar .btn{padding:4px 8px;min-height:36px}.tripbar select{width:100%}
+}
+
+/* tata letak pencarian & kartu kosong (menimpa aturan lama di atas) */
+.add{gap:10px}
+.card.empty{padding:56px 24px 60px}.card.empty .big{font-size:48px;margin-bottom:16px}.card.empty h3{font-size:19px;margin-bottom:10px}.card.empty p{max-width:36ch;line-height:1.65}
+@media (max-width:640px){
+  .add .inw{flex:1 1 100%}
+  .add #addBtn{flex:1 1 100%;order:2}
+  .add #sugBtn,.add #manBtn{flex:1 1 calc(50% - 5px);order:3;justify-content:center;padding-inline:10px}
+  .card.empty{padding:48px 22px 52px}
+}
 </style>
 </head>
 <body>
@@ -412,14 +486,13 @@ dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
         <form class="add" id="addForm" autocomplete="off">
           <span class="inw"><svg class="sico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off"><button type="button" class="clr" id="addClr" data-it="clr" data-ia="clr" hidden><i><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></button></span>
           <button class="btn pri" id="addBtn" data-i="search"></button>
+          <button type="button" class="btn" id="sugBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg><span data-i="sugBtn"></span></button>
+          <button type="button" class="btn" id="manBtn" data-i="manBtn"></button>
         </form>
         <div class="ac" id="ac" hidden></div>
       </div>
       <div class="err" id="addErr" hidden></div>
       <div class="chips rc" id="recentRow" hidden><span class="hint" style="margin:0" data-i="recent"></span><span id="recent" class="row" style="gap:6px"></span></div>
-      <div class="chips qs"><span class="hint" style="margin:0" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
-      <div class="chips"><button type="button" class="btn sm" id="manBtn" data-i="manBtn"></button></div>
-      <div class="chips" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
       <ol class="sempty" id="sEmpty" hidden>
         <li><b class="n">1</b><span><strong data-i="em1t"></strong><small data-i="em1d"></small></span></li>
         <li><b class="n">2</b><span><strong data-i="em2t"></strong><small data-i="em2d"></small></span></li>
@@ -528,6 +601,14 @@ dialog.mdl::backdrop{background:rgba(8,15,32,.55)}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-contour@0.1.1/dist/index.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+<dialog class="mdl" id="sugDlg" aria-labelledby="sugT">
+  <div class="mh"><h3 id="sugT" data-i="sugT"></h3><button type="button" class="btn ghost" id="sugX" data-i="manCancel"></button></div>
+  <div class="mb">
+    <div class="fld"><span class="fl" data-i="quick"></span><span id="chips" class="row" style="gap:6px"></span></div>
+    <div class="fld" id="cityRow" hidden><span class="hint" style="margin:0" data-i="pickCity"></span><span id="cities" class="row" style="gap:6px"></span></div>
+  </div>
+</dialog>
+
 <dialog class="mdl" id="manDlg" aria-labelledby="manT">
   <form id="manForm" novalidate>
     <div class="mh"><h3 id="manT" data-i="manT"></h3><button type="button" class="btn ghost" id="manX" data-i="manCancel"></button></div>
@@ -598,7 +679,7 @@ id:{
   roadCalc:'Menghitung rute jalan… {0}/{1}', straight:'(garis lurus)', toastNoRoad:'Sebagian ruas tidak punya jalan mobil (mis. antarpulau); ditampilkan garis lurus putus-putus',
   nSug:'{0} saran', sortBy:'Urutkan', sortPop:'Terpopuler', sortNear:'Terdekat', prev:'Sebelumnya', next:'Berikutnya', pgOf:'Halaman {0} dari {1}',
   reset:'🗑 Reset semua data', confirmReset:'Hapus SEMUA perjalanan dan pengaturan di browser ini?\n\nSaran: simpan JSON dulu sebagai cadangan. Setelah reset kamu masih bisa menekan “Urungkan” sebelum menutup halaman.', toastReset:'Semua data direset',
-  quick:'Destinasi populer', recent:'Terakhir dicari', recClear:'Hapus', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
+  sugBtn:'Saran', sugT:'Cari dari saran', wvB:'Jelajahi di Wikivoyage (EN)', wpB:'Baca di Wikipedia (EN)', quick:'Destinasi populer', recent:'Terakhir dicari', recClear:'Hapus', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Mencari…', noRes:'Tidak ada hasil. Coba nama lain atau tempel tautan Wikivoyage.',
   trip:'Perjalanan', tNew:'Baru', tRen:'Ganti nama', tDel:'Hapus', start:'Mulai', length:'Lama', daysU:'hari', road:'Rute jalan (mobil)',
   auto:'Rekomendasi jadwal', recP:'Rekomendasi tempat', recR:'Rekomendasi rute', undo:'Urungkan', pdf:'Unduh PDF', more:'Lainnya',
@@ -660,7 +741,7 @@ en:{
   roadCalc:'Calculating road routes… {0}/{1}', straight:'(straight line)', toastNoRoad:'Some legs have no car road (e.g. across islands); shown as dashed straight lines',
   nSug:'{0} suggestions', sortBy:'Sort', sortPop:'Most popular', sortNear:'Nearest', prev:'Previous', next:'Next', pgOf:'Page {0} of {1}',
   reset:'🗑 Reset all data', confirmReset:'Delete ALL trips and settings in this browser?\n\nTip: save JSON first as a backup. After resetting you can still press “Undo” before closing this page.', toastReset:'All data reset',
-  quick:'Popular destinations', recent:'Recent searches', recClear:'Clear', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
+  sugBtn:'Suggest', sugT:'Search from suggestions', wvB:'Explore on Wikivoyage (EN)', wpB:'Read on Wikipedia (EN)', quick:'Popular destinations', recent:'Recent searches', recClear:'Clear', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Searching…', noRes:'No results. Try another name or paste a Wikivoyage link.',
   trip:'Trip', tNew:'New', tRen:'Rename', tDel:'Delete', start:'Start', length:'Length', daysU:'days', road:'Road routes (car)',
   auto:'Schedule suggestion', recP:'Place suggestions', recR:'Route suggestion', undo:'Undo', pdf:'Download PDF', more:'More',
@@ -829,7 +910,28 @@ const commonsThumb = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/'
 const wpUrl = (l, title) => `https://${l}.wikipedia.org/wiki/` + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/');
 const thumbHtml = x => `<span class="th" aria-hidden="true">${kindOf(x) === 'region' ? '🏙' : '📍'}${x.thumb ? `<img src="${esc(x.thumb)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>`;
 const crumbHtml = b => b.split(' › ').map(n => `<span>${esc(n)}</span>`).join('<i aria-hidden="true">›</i>');
-const chipsHtml = x => `<span class="bdg k-${kindOf(x)}">${esc(tr(kindOf(x) === 'region' ? 'kRegion' : 'kPlace'))}</span>${x.badge ? (kindOf(x) === 'region' ? `<span class="bdg bc" title="${esc(x.badge)}">🌐 ${crumbHtml(x.badge)}</span>` : x.man ? `<span class="bdg bc" title="${esc(x.badge)}">📍 ${crumbHtml(x.badge)}</span>` : `<span class="bdg" title="${esc(x.badge)}">📍 ${esc(x.badge)}</span>`) : ''}${x.man && x.dkm != null ? `<span class="bdg">📏 ${esc(tr('kmFrom', nf(x.dkm), x.from))}</span>` : ''}`;
+const SITES = new Map(), SITES_ASKED = new Set();   // Q → { wv, wp } judul halaman Inggris (Wikivoyage/Wikipedia) bila ada
+const WDI = '<svg width="14" height="10" viewBox="0 0 14 10" aria-hidden="true" style="vertical-align:-1px"><path d="M0 0h1.4v10H0zM2.4 0h.8v10h-.8zM4.2 0h1.6v10H4.2zM6.8 0h.8v10h-.8zM8.4 0h1.4v10H8.4zM10.8 0h.8v10h-.8zM12.4 0H14v10h-1.6z" fill="currentColor"/></svg>';
+const wikiUrl = (host, title) => `https://${host}/wiki/` + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/').replace(/%3A/g, ':');
+function linkBadges(x) {
+  if (!x.q) return '';
+  const a = (href, cls, txt) => `<a class="bdg lk" href="${esc(href)}" target="_blank" rel="noopener" draggable="false">${txt}</a>`, st = SITES.get(x.q) || {};
+  return (kindOf(x) === 'region' ? (st.wv ? a(wikiUrl('en.wikivoyage.org', st.wv), '', `🧭 ${esc(tr('wvB'))}`) : '') + (st.wp ? a(wikiUrl('en.wikipedia.org', st.wp), '', `📖 ${esc(tr('wpB'))}`) : '') : '')
+    + a('https://www.wikidata.org/wiki/' + x.q, '', `${WDI} ${esc(x.q)}`);
+}
+async function ensureSites() {
+  const qs = [...new Set(cur().items.filter(i => i.q && kindOf(i) === 'region' && !SITES_ASKED.has(i.q)).map(i => i.q))];
+  if (!qs.length) return;
+  qs.forEach(q => SITES_ASKED.add(q));
+  try {
+    for (let k = 0; k < qs.length; k += 40) {
+      const ids = qs.slice(k, k + 40), j = await (await fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=sitelinks&sitefilter=enwikivoyage|enwiki&ids=' + ids.join('|'))).json();
+      ids.forEach(q => { const sl = (j.entities && j.entities[q] && j.entities[q].sitelinks) || {}; SITES.set(q, { wv:(sl.enwikivoyage || {}).title || '', wp:(sl.enwiki || {}).title || '' }); });
+    }
+    render();
+  } catch { qs.forEach(q => SITES_ASKED.delete(q)); }
+}
+const chipsHtml = (x, lk) => `<span class="bdg k-${kindOf(x)}">${esc(tr(kindOf(x) === 'region' ? 'kRegion' : 'kPlace'))}</span>${x.badge ? (kindOf(x) === 'region' ? `<span class="bdg bc" title="${esc(x.badge)}">🌐 ${crumbHtml(x.badge)}</span>` : x.man ? `<span class="bdg bc" title="${esc(x.badge)}">📍 ${crumbHtml(x.badge)}</span>` : `<span class="bdg" title="${esc(x.badge)}">📍 ${esc(x.badge)}</span>`) : ''}${x.man && x.dkm != null ? `<span class="bdg">📏 ${esc(tr('kmFrom', nf(x.dkm), x.from))}</span>` : ''}${lk ? linkBadges(x) : ''}`;
 /* Tingkat administratif (dari label jenis berbahasa Inggris): 1 desa/kelurahan/kecamatan, 2 kabupaten/kota, 3 provinsi, 4 negara; 0 = tak dikenali */
 const LV_SUB = /\b(village|hamlet|town|subdistrict|ward|neighbou?rhood|suburb|locality|kelurahan|kecamatan|desa|dusun|kampung|settlement|quarter)\b|district of Indonesia/i;
 const LV_COUNTRY = /\b(sovereign state|country|nation|island country|unitary state|city-state)\b/i;
@@ -1099,7 +1201,7 @@ inp.addEventListener('keydown', e => {
 $('#ac').addEventListener('click', e => {
   const b = e.target.closest('[data-rs]'); if (b && !b.disabled) addEntity(resItems[+b.dataset.rs]);
 });
-document.addEventListener('click', e => { if (!e.target.closest('.sbox') && !e.target.closest('#cities')) hideAc(); });   // chip kota memulai pencarian sendiri: klik itu tidak boleh menutup panel yang baru dibuka
+document.addEventListener('click', e => { if (!e.target.closest('.sbox') && !e.target.closest('#cities') && !e.target.closest('#recent')) hideAc(); });   // chip kota memulai pencarian sendiri: klik itu tidak boleh menutup panel yang baru dibuka
 $('#addForm').addEventListener('submit', e => { e.preventDefault(); clearTimeout(acT); searchPlaces(inp.value); });
 const COUNTRIES = [
   { cc:'id', id:'Indonesia', en:'Indonesia', c:['Jakarta', 'Bali', 'Yogyakarta', 'Bandung', 'Surabaya', 'Lombok', 'Labuan Bajo', 'Malang', 'Medan', 'Makassar', 'Semarang'] },
@@ -1166,7 +1268,7 @@ $('#chips').addEventListener('click', e => {
 });
 $('#cities').addEventListener('click', e => {
   const b = e.target.closest('[data-city]'); if (!b) return;
-  inp.value = b.dataset.city; inp.focus(); searchPlaces(b.dataset.city);
+  sugDlg.close(); inp.value = b.dataset.city; inp.focus(); searchPlaces(b.dataset.city);
 });
 
 /* ---------- operasi item ---------- */
@@ -1199,7 +1301,7 @@ function itemHtml(t, it, n, list) {
     <span class="no${region ? ' reg' : ''}"${region ? ` title="${esc(tr('regOrder'))}"` : ''}>${it.day ? n : region ? rn : '•'}</span>
     ${thumbHtml(it)}
     <div><a class="ti" href="${esc(it.src)}" target="_blank" rel="noopener" draggable="false">${esc(it.title)}</a>${it.inst ? `<span class="sub">${esc(it.inst)}</span>` : ''}
-      <div>${chipsHtml(it)}</div>${it.note ? `<div class="nt">${esc(it.note)}</div>` : ''}</div>
+      <div>${chipsHtml(it, 1)}</div>${it.note ? `<div class="nt">${esc(it.note)}</div>` : ''}</div>
     <div class="acts">${region ? '' : `<select data-mv="${it.id}" aria-label="${esc(tr('moveTo'))}">${opts}</select>`}${it.day ? `<button class="ib" data-act="wl" data-id="${it.id}" title="${esc(tr('toWl'))}" aria-label="${esc(tr('toWl'))}">${ICON_BACK}</button>` : ''}
       ${region ? `<button class="ib" data-act="nb" data-id="${it.id}" title="${esc(tr('nbT'))}" aria-label="${esc(tr('nbT'))}">${ICON_SEARCH}</button>` : ''}${it.man ? `<button class="ib" data-act="ed" data-id="${it.id}" title="${esc(tr('edT'))}" aria-label="${esc(tr('edT'))}">${ICON_EDIT}</button>` : ''}<button class="ib x" data-act="rm" data-id="${it.id}" title="${esc(tr('rm'))}" aria-label="${esc(tr('rm'))}">${ICON_TRASH}</button></div>
     ${it.day && !last ? `<div class="dist">${esc(tr('nextLeg', legTxt(list, n - 1)))}</div>` : ''}</li>`;
@@ -1227,6 +1329,7 @@ function render() {
   if (step > gateMax()) setStep(gateMax(), { force:true, noScroll:true, noAuto:true });   // data berkurang: kembali ke tahap yang masih sah
   else reached = Math.max(step, Math.min(reached, gateMax()));
   if (guideAuto && cur().items.length) { guideAuto = false; $('#guide').hidden = true; try { localStorage.setItem(LS_GUIDE, '1'); } catch {} }   // item pertama sudah ada: panduan tak perlu lagi
+  ensureSites();
 }
 /* Daftar tunggu: tingginya pas untuk WL_SHOW item; lebih dari itu bisa digulir di dalam daftar */
 const WL_SHOW = 7;
@@ -1941,6 +2044,8 @@ window.addEventListener('error', e => { console.error(e.message, e.filename, e.l
 /* ---------- mulai ---------- */
 
 /* ---------- tempat manual (modal) ---------- */
+const sugDlg = $('#sugDlg');
+$('#sugBtn').onclick = () => sugDlg.showModal(); $('#sugX').onclick = () => sugDlg.close(); sugDlg.addEventListener('click', e => { if (e.target === sugDlg) sugDlg.close(); });
 const manDlg = $('#manDlg'), man = { thumb:'', region:null, editId:null };
 const manErr = (id, msg) => { const e = $('#' + id); e.hidden = !msg; e.textContent = msg || ''; };
 const manBad = (el, bad) => el.setAttribute('aria-invalid', bad ? 'true' : 'false');
