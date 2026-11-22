@@ -701,7 +701,7 @@ id:{
   roadCalc:'Menghitung rute jalan… {0}/{1}', straight:'(garis lurus)', toastNoRoad:'Sebagian ruas tidak punya jalan mobil (mis. antarpulau); ditampilkan garis lurus putus-putus',
   nSug:'{0} saran', nbFind:'Cari di hasil…', nbNoMatch:'Tidak ada hasil untuk “{0}”.', sortBy:'Urutkan', sortPop:'Terpopuler', sortNear:'Terdekat', prev:'Sebelumnya', next:'Berikutnya', pgOf:'Halaman {0} dari {1}',
   reset:'🗑 Reset semua data', confirmReset:'Hapus SEMUA perjalanan dan pengaturan di browser ini?\n\nSaran: simpan JSON dulu sebagai cadangan. Setelah reset kamu masih bisa menekan “Urungkan” sebelum menutup halaman.', toastReset:'Semua data direset',
-  sugBtn:'Saran', sugT:'Cari dari saran', wvB:'Jelajahi di Wikivoyage (EN)', wpB:'Baca di Wikipedia (EN)', quick:'Destinasi populer', recent:'Terakhir dicari', recClear:'Hapus', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
+  sugBtn:'Saran', sugT:'Cari dari saran', wvB:'Jelajahi di Wikivoyage (EN)', wpL:'Baca di Wikipedia (ID)', cmB:'Foto di Commons', wpB:'Baca di Wikipedia (EN)', quick:'Destinasi populer', recent:'Terakhir dicari', recClear:'Hapus', em1t:'Cari', em1d:'Ketik nama wilayah atau tempat; hasil muncul otomatis.', em2t:'Tambah', em2d:'Tekan Tambah pada hasil untuk memasukkannya ke Daftar tunggu.', em3t:'Lihat di peta', em3d:'Wilayah dan tempat yang punya koordinat tampil di peta.', chipMore:'Lainnya +{0}', chipLess:'Ringkas', pickCity:'Pilih kota untuk dicari:', addHint:'Ketik minimal 2 huruf lalu tekan Cari. Klik Tambah pada hasil untuk memasukkannya ke Daftar tunggu. Wilayah dan tempat harus punya koordinat agar tampil di peta.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Mencari…', noRes:'Tidak ada hasil. Coba nama lain atau tempel tautan Wikivoyage.',
   trip:'Perjalanan', tNew:'Baru', tRen:'Ganti nama', tDel:'Hapus', start:'Mulai', length:'Lama', daysU:'hari', road:'Rute jalan (mobil)',
   auto:'Rekomendasi jadwal', recP:'Rekomendasi tempat', recR:'Rekomendasi rute', undo:'Urungkan', pdf:'Unduh PDF', more:'Lainnya',
@@ -764,7 +764,7 @@ en:{
   roadCalc:'Calculating road routes… {0}/{1}', straight:'(straight line)', toastNoRoad:'Some legs have no car road (e.g. across islands); shown as dashed straight lines',
   nSug:'{0} suggestions', nbFind:'Search in results…', nbNoMatch:'No results for “{0}”.', sortBy:'Sort', sortPop:'Most popular', sortNear:'Nearest', prev:'Previous', next:'Next', pgOf:'Page {0} of {1}',
   reset:'🗑 Reset all data', confirmReset:'Delete ALL trips and settings in this browser?\n\nTip: save JSON first as a backup. After resetting you can still press “Undo” before closing this page.', toastReset:'All data reset',
-  sugBtn:'Suggest', sugT:'Search from suggestions', wvB:'Explore on Wikivoyage (EN)', wpB:'Read on Wikipedia (EN)', quick:'Popular destinations', recent:'Recent searches', recClear:'Clear', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
+  sugBtn:'Suggest', sugT:'Search from suggestions', wvB:'Explore on Wikivoyage (EN)', wpL:'Read on Wikipedia', cmB:'Photos on Commons', wpB:'Read on Wikipedia (EN)', quick:'Popular destinations', recent:'Recent searches', recClear:'Clear', em1t:'Search', em1d:'Type a region or place name; results appear as you type.', em2t:'Add', em2d:'Press Add on a result to put it in the Wishlist.', em3t:'See the map', em3d:'Regions and places with coordinates show up on the map.', chipMore:'More +{0}', chipLess:'Less', pickCity:'Pick a city to search:', addHint:'Type at least 2 letters and press Search. Click Add on a result to put it in the Wishlist. Regions and places need coordinates to appear on the map.',
   srcWv:'Wikivoyage', srcWd:'Wikidata', searching:'Searching…', noRes:'No results. Try another name or paste a Wikivoyage link.',
   trip:'Trip', tNew:'New', tRen:'Rename', tDel:'Delete', start:'Start', length:'Length', daysU:'days', road:'Road routes (car)',
   auto:'Schedule suggestion', recP:'Place suggestions', recR:'Route suggestion', undo:'Undo', pdf:'Download PDF', more:'More',
@@ -940,17 +940,18 @@ const wikiUrl = (host, title) => `https://${host}/wiki/` + encodeURIComponent(ti
 function linkBadges(x) {
   if (!x.q) return '';
   const a = (href, cls, txt) => `<a class="bdg lk" href="${esc(href)}" target="_blank" rel="noopener" draggable="false">${txt}</a>`, st = SITES.get(x.q) || {};
-  return (kindOf(x) === 'region' ? (st.wv ? a(wikiUrl('en.wikivoyage.org', st.wv), '', `🧭 ${esc(tr('wvB'))}`) : '') + (st.wp ? a(wikiUrl('en.wikipedia.org', st.wp), '', `📖 ${esc(tr('wpB'))}`) : '') : '')
+  const wp = lang !== 'en' && st.wpl ? a(wikiUrl(lang + '.wikipedia.org', st.wpl), '', `📖 ${esc(tr('wpL'))}`) : st.wp ? a(wikiUrl('en.wikipedia.org', st.wp), '', `📖 ${esc(tr('wpB'))}`) : '';
+  return (st.wv ? a(wikiUrl('en.wikivoyage.org', st.wv), '', `🧭 ${esc(tr('wvB'))}`) : '') + wp + (st.cm ? a(wikiUrl('commons.wikimedia.org', st.cm), '', `🖼️ ${esc(tr('cmB'))}`) : '')
     + a('https://www.wikidata.org/wiki/' + x.q, '', `${WDI} ${esc(x.q)}`);
 }
 async function ensureSites() {
-  const qs = [...new Set(cur().items.filter(i => i.q && kindOf(i) === 'region' && !SITES_ASKED.has(i.q)).map(i => i.q))];
+  const qs = [...new Set(cur().items.filter(i => i.q && !SITES_ASKED.has(i.q)).map(i => i.q))];
   if (!qs.length) return;
   qs.forEach(q => SITES_ASKED.add(q));
   try {
     for (let k = 0; k < qs.length; k += 40) {
-      const ids = qs.slice(k, k + 40), j = await (await fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=sitelinks&sitefilter=enwikivoyage|enwiki&ids=' + ids.join('|'))).json();
-      ids.forEach(q => { const sl = (j.entities && j.entities[q] && j.entities[q].sitelinks) || {}; SITES.set(q, { wv:(sl.enwikivoyage || {}).title || '', wp:(sl.enwiki || {}).title || '' }); });
+      const ids = qs.slice(k, k + 40), j = await (await fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=sitelinks&sitefilter=enwikivoyage|enwiki|' + lang + 'wiki|commonswiki&ids=' + ids.join('|'))).json();
+      ids.forEach(q => { const sl = (j.entities && j.entities[q] && j.entities[q].sitelinks) || {}; SITES.set(q, { wv:(sl.enwikivoyage || {}).title || '', wp:(sl.enwiki || {}).title || '', wpl:(sl[lang + 'wiki'] || {}).title || '', cm:(sl.commonswiki || {}).title || '' }); });
     }
     render();
   } catch { qs.forEach(q => SITES_ASKED.delete(q)); }
@@ -1860,7 +1861,7 @@ $('#start').onchange = e => { if (e.target.value) mutate(() => { cur().start = e
 function setDays(n) { n = Math.min(30, Math.max(1, n)); mutate(() => { const t = cur(); t.days = n; t.items.forEach(i => { if (i.day > n) i.day = 0; }); }); }
 $('#dm').onclick = () => setDays(cur().days - 1);
 $('#dp').onclick = () => setDays(cur().days + 1);
-$('#lang').onchange = e => { lang = e.target.checked ? 'en' : 'id'; try { localStorage.setItem(LS_LANG, lang); } catch {} hideAc(); applyI18n(); drawChips(); nbSeq++; nbAll = []; nbSel = ''; nbIdle = true; render(); };
+$('#lang').onchange = e => { lang = e.target.checked ? 'en' : 'id'; SITES.clear(); SITES_ASKED.clear(); try { localStorage.setItem(LS_LANG, lang); } catch {} hideAc(); applyI18n(); drawChips(); nbSeq++; nbAll = []; nbSel = ''; nbIdle = true; render(); };
 
 const box = $('#steps');   // Daftar tunggu + strip tombol + hari-hari (semua item bisa diseret)
 box.addEventListener('click', e => {
