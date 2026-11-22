@@ -157,6 +157,17 @@ li.it.drag{opacity:.4}li.it.hl{outline:2px solid var(--brand-2)}
 .sub{display:block;color:var(--muted);font-size:12.5px}
 .nt{font-size:13.5px;white-space:pre-wrap;margin-top:3px;background:color-mix(in srgb,var(--brand-2) 8%,transparent);border-radius:8px;padding:4px 8px}
 li.it textarea{width:100%;margin-top:4px;min-height:60px;resize:vertical}
+body[data-step="1"] .day.wlsec select[data-mv]{display:none}
+li.it textarea.ntin::placeholder{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+li.it textarea.ntin{min-height:36px;height:36px;box-sizing:border-box;display:block;margin-top:6px;padding:6px 10px;font-size:13.5px;line-height:1.4;resize:none;overflow:hidden;background:color-mix(in srgb,var(--brand-2) 6%,transparent)}
+.collect{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}
+.collect>#nb{margin:0}
+#nbPick{margin-bottom:12px}#nbPick:empty{display:none}
+#nb{display:flex;flex-direction:column}#nb>.bd{flex:1;display:flex;flex-direction:column}#nbList{flex:1;display:flex;flex-direction:column}#nbList>.nbph{margin:auto 0;width:100%}
+.collect{align-items:stretch}#wl-box{flex:1}#wl-box>.day.wlsec{flex:1;margin:0;display:flex;flex-direction:column}#wl-box>.day.wlsec>ol.lst{flex:1}
+#slot1,#wl-box{display:flex;flex-direction:column}#wl-box>.card.empty{flex:1;display:flex;flex-direction:column;justify-content:center;margin:0}
+.collect .card.empty{padding:36px 20px}.nbph{display:grid;justify-items:center;gap:6px;padding:22px 8px;text-align:center;color:var(--muted)}.nbph p{margin:0}#nbPick .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}@media (prefers-color-scheme:dark){#nbPick .chip.on{color:#0b1530}}
+@media (min-width:960px){.collect:has(#nb:not([hidden])){grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}.collect>#slot1{grid-column:1;grid-row:1}.collect>#nb{grid-column:2;grid-row:1;position:sticky;top:84px}}
 .dist{grid-column:3/-1;color:var(--muted);font-size:12.5px;padding-top:2px}
 /* nomor langkah + strip tombol 2–3–4 */
 .stp{width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:inline-grid;place-items:center;font-weight:700;font-size:13px;flex:none}
@@ -241,7 +252,7 @@ input[type=text],input[type=url],input[type=date],input[type=number],select,text
 .nbEmpty{display:none;text-align:center;padding:26px 16px}
 #nb[hidden]+.nbEmpty{display:block}
 #act3,#act4,#slot3{display:none}
-body[data-step="3"] #act3,body[data-step="4"] #act4,body[data-step="3"] #slot3{display:block}
+body[data-step="2"] #act3,body[data-step="3"] #act4,body[data-step="2"] #slot3{display:block}
 .day.wlsec>header .cap{margin-inline-start:0}
 .navbar{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
 .navbar .inner{max-width:1320px;margin:0 auto;display:flex;gap:8px;align-items:center}
@@ -433,7 +444,7 @@ li.it .ib:hover{background:var(--soft)}
 body{font-family:"Noto Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 .wrap{padding-bottom:128px}
 /* header: judul lugas + chip pil kecil */
-header.top{gap:8px 8px}
+header.top{gap:8px 8px;flex-wrap:nowrap;justify-content:space-between}.brand{min-width:0;flex:1 1 auto}.brand>div{min-width:0}.brand small{max-width:none;font-size:12.5px;line-height:1.35}.me{flex:none}@media (max-width:640px){.brand small{display:none}header.top{flex-wrap:wrap}.brand{flex:1 1 100%}.me{flex:1 1 100%;justify-content:space-between}}
 .brand h1{font-size:20px;font-weight:700;letter-spacing:-.005em}
 .me a,#helpBtn.btn.ghost{height:28px;min-height:28px;line-height:1;padding:0 12px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
 .me{gap:6px}.me a+a{padding-inline:12px}.me a+a::before{display:none}
@@ -472,7 +483,6 @@ li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
     <a href="https://affandymurad.github.io/" target="_blank" rel="noopener" data-it="meT" aria-label="Affandy Murad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Affandy Murad</a>
     <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" target="_blank" rel="noopener" data-it="metaT" aria-label="Meta-Wiki"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>Meta</a>
   </div>
-  <button class="btn ghost" id="helpBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-inline-end:5px"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17h.01"/></svg><span data-i="howto"></span></button>
   <label class="lang" title="Bahasa / Language">
     <input type="checkbox" id="lang" role="switch" aria-label="Bahasa / Language">
     <span class="track"><span class="a">ID</span><span class="b">EN</span><i class="knob"></i></span>
@@ -480,19 +490,6 @@ li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
 </header>
 
 <!-- PANDUAN SINGKAT: menonjol di kunjungan pertama, tidak memblokir halaman, hilang sendiri setelah item pertama ditambahkan -->
-<section class="card guide" id="guide" role="region" aria-labelledby="gTitleH" hidden>
-  <div class="ghead"><span class="gtag" data-i="gTag"></span><h2 id="gTitleH" data-i="gTitle"></h2></div>
-  <p class="gsub" data-i="gSub2"></p>
-  <ol class="gl">
-    <li><span class="n">1</span><span class="tx"><b data-i="stCollect"></b><span data-i="g1"></span></span></li>
-    <li><span class="n">2</span><span class="tx"><b data-i="stSuggest"></b><span data-i="g2"></span></span></li>
-    <li><span class="n">3</span><span class="tx"><b data-i="stSchedule"></b><span data-i="g3"></span></span></li>
-    <li><span class="n">4</span><span class="tx"><b data-i="stRoute"></b><span data-i="g4"></span></span></li>
-    <li><span class="n">5</span><span class="tx"><b data-i="stSave"></b><span data-i="g5"></span></span></li>
-  </ol>
-  <p class="gn" data-i="gNote"></p>
-  <div class="gfoot"><button class="btn" id="guideX" data-i="gotIt"></button><button class="btn pri" id="guideGo" data-i="gGo"></button></div>
-</section>
 
 <!-- STEPPER: tahap bisa dibuka bebas; centang = tahap sudah terpenuhi -->
 <nav class="sn" id="sn"></nav>
@@ -517,7 +514,7 @@ li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
         <form class="add" id="addForm" autocomplete="off">
           <span class="inw"><svg class="sico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="addIn" data-ip="addPh" aria-label="Search" aria-autocomplete="list" autocomplete="off"><button type="button" class="clr" id="addClr" data-it="clr" data-ia="clr" hidden><i><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></button></span>
           <button class="btn pri" id="addBtn" data-i="search"></button>
-          <button type="button" class="btn" id="sugBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg><span data-i="sugBtn"></span></button>
+          <button type="button" class="btn" id="sugBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span data-i="sugBtn"></span></button>
           <button type="button" class="btn" id="manBtn" data-i="manBtn"></button>
         </form>
         <div class="ac" id="ac" hidden></div>
@@ -531,7 +528,13 @@ li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
       </ol>
     </div>
   </section>
-  <div id="slot1"><div id="wl-box"></div></div>
+  <div class="collect">
+    <section class="card sec" id="nb">
+      <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><h3 id="nbT"></h3></header>
+      <div class="bd"><div class="nbpick" id="nbPick"></div><div id="nbList"></div></div>
+    </section>
+    <div id="slot1"><div id="wl-box"></div></div>
+  </div>
   <aside class="card wlk" aria-labelledby="wlT">
     <img src="../wikilokal/wikilokal.png" width="48" height="48" alt="" loading="lazy">
     <div class="wlx"><span class="wlb" data-i="wlTag"></span><h3 id="wlT" data-i="wlT"></h3><p data-i="wlD"></p></div>
@@ -539,25 +542,7 @@ li.it:hover{background:color-mix(in srgb,var(--brand) 6%,transparent)}
   </aside>
 </section>
 
-<!-- TAHAP 2 · SARAN TEMPAT -->
-<section class="panel" id="p2" hidden>
-  <section class="card sec">
-    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7L19 20l-.7-1.8-1.8-.7 1.8-.7z"/></svg><h3 data-i="cSug"></h3></header>
-    <div class="bd">
-      <p class="lead" data-i="sugIntro"></p>
-      <div class="sum" id="sugSum"></div>
-      <p class="warn" id="sugNeed" hidden data-i="sugNeed"></p>
-      <button class="btn pri big" id="recP" data-it="recPd"><span data-i="recP"></span></button>
-    </div>
-  </section>
-  <section class="card sec" id="nb" hidden>
-    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg><h3 id="nbT"></h3><button type="button" class="icb" id="nbX" data-it="close" data-ia="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
-    <div class="bd" id="nbList"></div>
-  </section>
-  <div class="card nbEmpty hint" data-i="sugEmpty"></div>
-</section>
-
-<!-- TAHAP 3 & 4 · JADWAL dan RUTE (peta + hari dipakai bersama) -->
+<!-- TAHAP 2 & 3 · JADWAL dan RUTE (peta + hari dipakai bersama) -->
 <section class="panel" id="p3" hidden>
   <section class="card sec" id="act3">
     <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><h3 data-i="cSched"></h3><span class="meta" id="schedSum"></span></header>
@@ -678,18 +663,18 @@ const BAD_TYPES = { Q5:{id:'manusia',en:'a person'}, Q4167410:{id:'halaman disam
 const I18N = {
 id:{
   gTitle:'Cara pakai singkat', gSub:'', gotIt:'Mengerti, tutup',
-  g1:'cari wilayah atau tempat, lalu klik Tambah.',
+  g1:'cari wilayah atau tempat, klik Tambah, lalu isi deskripsinya. Saran tempat di sekitar wilayah muncul di sebelahnya.',
   g2:'lihat tempat menarik di wilayahmu yang mungkin terlewat.',
   g3:'bagi tempat ke hari-hari perjalanan. Urutan wilayah menentukan jadwal.',
   g4:'urutkan tiap hari. Centang Rute jalan untuk jarak mobil.',
   g5:'unduh PDF, JSON, GPX, atau bagikan tautan.',
   tagline:'Rencana perjalanan dari Wikidata, Wikipedia & Wikivoyage', howto:'Cara pakai',
   clr:'Hapus pencarian', ldTitle:'Mencari “{0}”…', ldSec:'dtk', ldSub1:'Mengambil data dari Wikidata, Wikipedia, dan Wikivoyage.', ldSub2:'Masih mencari. Sumber data sedang agak lambat.', ldSub3:'Masih berjalan. Sumber data sedang lambat; kamu bisa menunggu atau membatalkan.', ldCancel:'Batalkan pencarian',
-  nxt1:'Tambahkan minimal satu wilayah atau tempat untuk lanjut.', nxt2:'Tambahkan minimal satu tempat (dari saran atau pencarian) untuk lanjut.', nxt3:'Jadwalkan minimal satu tempat ke hari untuk lanjut.', stLocked:'Selesaikan tahap sebelumnya dulu', resetBtn:'Reset', whyAuto0:'Belum ada tempat. Tambahkan tempat di tahap Kumpulkan dulu.', whyAutoDone:'Semua tempat sudah terjadwal.', whyRecR:'Jadwalkan minimal 2 tempat ke hari dulu (tombol Rekomendasi jadwal).', whyPdf:'Belum ada tempat terjadwal untuk dicetak. Jadwalkan tempat ke hari dulu.', whyExp:'Belum ada item untuk disimpan. Tambahkan wilayah atau tempat dulu.', stCollect:'Kumpulkan', stSuggest:'Saran', stSchedule:'Jadwal', stRoute:'Rute', stSave:'Simpan', navBack:'Kembali', navNext:'Lanjut: {0}', stDone:'selesai',
+  nxt1:'Tambahkan minimal dua tempat (dari saran atau pencarian) untuk lanjut.', nxt2:'Tambahkan minimal satu tempat (dari saran atau pencarian) untuk lanjut.', nxt3:'Jadwalkan minimal satu tempat ke hari untuk lanjut.', stLocked:'Selesaikan tahap sebelumnya dulu', resetBtn:'Reset', whyAuto0:'Belum ada tempat. Tambahkan tempat di tahap Kumpulkan dulu.', whyAutoDone:'Semua tempat sudah terjadwal.', whyRecR:'Jadwalkan minimal 2 tempat ke hari dulu (tombol Rekomendasi jadwal).', nxtRoute:'Tahap Rute butuh minimal 2 tempat yang sudah dijadwalkan (sekarang {0}). Kamu tetap bisa lanjut ke Simpan.', whyPdf:'Belum ada tempat terjadwal untuk dicetak. Jadwalkan tempat ke hari dulu.', whyExp:'Belum ada item untuk disimpan. Tambahkan wilayah atau tempat dulu.', stCollect:'Kumpulkan', stSuggest:'Saran', stSchedule:'Jadwal', stRoute:'Rute', stSave:'Simpan', navBack:'Kembali', navNext:'Lanjut: {0}', stDone:'selesai',
   cTrip:'Perjalanan', cSearch:'Cari wilayah atau tempat', cSug:'Saran tempat', cSched:'Jadwal per hari', cRoute:'Rute per hari', cSave:'Simpan & bagikan', cDanger:'Hapus data',
   sugIntro:'Lihat tempat menarik di sekitar wilayah di Daftar tunggu, siapa tahu ada yang terlewat.', sugSum:'{0} wilayah · {1} tempat di Daftar tunggu',
   sugNeed:'Belum ada wilayah di Daftar tunggu. Kembali ke tahap Kumpulkan dan tambahkan minimal satu wilayah.', sugEmpty:'Saran tempat akan tampil di sini.', schedSum:'{0}/{1} tempat terjadwal',
-  gNote:'Semua tersimpan otomatis di browser ini. Tahap bisa dibuka bebas lewat bilah di atas.', gTag:'Mulai di sini', gSub2:'Ikuti 5 tahap di bilah atas, dimulai dari mencari wilayah atau tempat tujuanmu.', gGo:'Mulai mencari',
+  gNote:'Semua tersimpan otomatis di browser ini. Tahap bisa dibuka bebas lewat bilah di atas.', gTag:'Mulai di sini', gSub2:'Ikuti 4 tahap di bilah atas, dimulai dari mencari wilayah atau tempat tujuanmu.', gGo:'Mulai mencari',
   meT:'Portofolio Affandy Murad', metaT:'Halaman pengguna Affandy Murad di Meta-Wiki', madeBy:'Tools ini dibuat oleh',
   addPh:'Cari wilayah atau tempat… mis. Bali, Borobudur, Stasiun Gambir', add:'Tambah', search:'Cari', adding:'Mencari…',
   manBtn:'+ Tempat manual', edT:'Ubah tempat', manTE:'Ubah tempat manual', manSaveE:'Simpan', manSaved:'“{0}” diperbarui', manFind:'Cari', manT:'Tambah tempat manual', manCancel:'Batal', manSave:'Tambahkan', manPhoto:'Foto (opsional)', manUpload:'Unggah dari perangkat', manRemove:'Hapus foto', manUrlPh:'atau tempel URL foto: https://…/foto.jpg', manUrlA:'URL foto',
@@ -700,7 +685,7 @@ id:{
   manEReq:'Wajib diisi.', manECoord:'Format koordinat salah. Pakai “lat, lon” (lat −90…90, lon −180…180), mis. -8.8456, 115.1860.', manEReg:'Pilih satu wilayah dari hasil pencarian.', manNoReg:'Wilayah tidak ditemukan. Coba nama lain.', manSrch:'Mencari wilayah…',
   manEPhoto:'Foto tidak bisa dimuat. Periksa berkas atau URL-nya.', manEType:'Pilih berkas gambar (JPG, PNG, WebP).', manDup:'“{0}” sudah ada di rencana ini.', manAdded:'“{0}” ditambahkan', kmFrom:'{0} km dari titik {1}',
   pdfMapT:'Peta perjalanan', approxLoc:'lokasi perkiraan (titik wilayah induk)', toWl:'Pindahkan ke Daftar tunggu', kRegion:'Wilayah', kPlace:'Tempat', added:'✓ Ditambahkan', noCoord:'Tanpa koordinat', regOrder:'Urutan wilayah menentukan urutan Rekomendasi jadwal. Seret untuk mengubahnya.',
-  recPd:'Cek tempat yang mungkin terlewat di wilayahmu', autod:'Bagi semua tempat ke hari-hari perjalanan', recRd:'Urutkan tempat tiap hari agar rute lebih singkat', wlCap:'Kumpulkan wilayah & tempat yang ingin dikunjungi',
+  recPd:'Cek tempat yang mungkin terlewat di wilayahmu', autod:'Bagi semua tempat ke hari-hari perjalanan', recRd:'Urutkan tempat tiap hari agar rute lebih singkat', wlCap:'Kumpulkan wilayah & tempat yang ingin dikunjungi. Wilayah hanya penanda area; minimal dua tempat diperlukan untuk lanjut ke jadwal.',
   toastRegionDay:'Wilayah tidak bisa dijadwalkan ke hari. Tambahkan tempat di wilayah itu, lalu jadwalkan tempatnya.',
   toastNeedRegion:'Tambahkan minimal satu wilayah ke Daftar tunggu dulu', toastNoPlace:'Tidak ada tempat di Daftar tunggu — hanya wilayah yang tidak bisa dijadwalkan', toastNeedSched:'Jadwalkan minimal 2 tempat ke hari dulu (③ Rekomendasi jadwal)',
   nbTitleRegion:'Tempat menarik di wilayah-wilayahmu',
@@ -717,9 +702,9 @@ id:{
   close:'Tutup', footer:'Data: Wikidata (CC0, lewat QLever dan API Wikidata) untuk tempat dan wilayah; Wikipedia (CC BY-SA 4.0) untuk saran tempat, thumbnail, dan popularitas; Wikivoyage (CC BY-SA 4.0) untuk pencarian dan tautan · Peta: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Jarak garis lurus kecuali “Rute jalan” aktif (OSRM, perkiraan mobil).',
   wl:'Daftar tunggu', wlSubE:'Belum ada item', wlSubN:'{0} item', dayT:'Hari {0} · {1}', dayNone:'Belum ada tempat', nP:'{0} tempat',
   dropHint:'Seret tempat ke sini, atau pakai menu “Pindah ke”', wlDrop:'Wilayah dan tempat yang kamu tambah muncul di sini',
-  moveTo:'Pindah ke…', up:'Naik', dn:'Turun', nbT:'Saran tempat di sekitar', wlTag:'Dari Wikilokal', wlT:'Masih ingin mengenal wilayah ini lebih dalam?', wlD:'Wikilokal menampilkan artikel Wikipedia, foto Commons, dan panduan Wikivoyage di sekitar lokasi Anda. Siapa tahu ada permata tersembunyi tak jauh dari rencana Anda.', wlGo:'Coba Wikilokal ↗', noteT:'Catatan', rm:'Hapus', notePh:'Catatan: jam buka, reservasi, dan sebagainya',
+  moveTo:'Pindah ke…', up:'Naik', dn:'Turun', nbT:'Saran tempat di sekitar', wlTag:'Dari Wikilokal', wlT:'Masih ingin mengenal wilayah ini lebih dalam?', wlD:'Wikilokal menampilkan artikel Wikipedia, foto Commons, dan panduan Wikivoyage di sekitar lokasi Anda. Siapa tahu ada permata tersembunyi tak jauh dari rencana Anda.', wlGo:'Coba Wikilokal ↗', noteT:'Catatan', rm:'Hapus', notePh:'Tambah deskripsi…',
   nextLeg:'↓ {0} ke tempat berikutnya', fromPrev:'{0} dari {1}', focus:'Klik untuk memperbesar peta ke hari ini',
-  emptyT:'Rencana masih kosong', emptyD:'Mulai dengan mencari tempat di atas, atau klik salah satu tujuan populer.',
+  emptyT:'Daftar tunggu masih kosong', emptyD:'Mulai dengan mencari tempat di atas, atau klik salah satu tujuan populer.',
   toastAdded:'“{0}” masuk ke Daftar tunggu', toastUndone:'Dibatalkan', toastRm:'“{0}” dihapus', toastDelTrip:'Perjalanan dihapus',
   toastNeed1:'Tambahkan minimal satu tempat dulu', toastEff:'Urutan rute sudah efisien',
   toastRoute:'Rute disusun ulang: ± {0} → {1} km', toastRouteRoad:'Rute disusun ulang menurut jarak jalan mobil: {0} → {1} km', toastNoWl:'Daftar tunggu kosong — tambah tempat dulu', toastAuto:'{0} tempat dibagi ke {1} hari',
@@ -727,6 +712,7 @@ id:{
   toastLink:'Tautan disalin', toastLinkLong:'Tautan disalin (panjang, mungkin terpotong di beberapa aplikasi)', toastBadLink:'Tautan berbagi tidak valid',
   promptNew:'Nama perjalanan baru:', defNew:'Perjalanan baru', promptName:'Nama perjalanan:', confirmDel:'Hapus perjalanan “{0}”?', defTrip:'Perjalanan saya', imported:'Perjalanan impor',
   toastShared:'Rencana “{0}” ({1} tempat) ditambahkan dari tautan berbagi', copyPrompt:'Salin tautan ini:', undoBtn:'Urungkan',
+  nbPickHint:'Cari ide tempat menarik di wilayah mana? (disarankan satu per satu)', nbAll:'Semua wilayah ({0}) · lebih lama', nbIdle:'Sebaiknya cari per wilayah. Mencari di banyak wilayah sekaligus membuat pemuatan lebih lama.', nbNoReg:'Tambahkan wilayah ke Daftar tunggu dulu untuk mendapat saran tempat.',
   nbTitleAll:'Tempat menarik di sekitar rencana ini', nbTitleOne:'Tempat menarik dekat “{0}”', finding:'Mencari destinasi menarik…', near:'Dekat {0}', noNear:'Tidak ada tempat berkoordinat yang ditemukan.', addBtn:'+ Tambah',
   eBadLink:'Tautan tidak dikenali. Pakai tautan Wikivoyage (…wikivoyage.org/wiki/…) atau kode Wikidata.', eMissing:'Halaman “{0}” tidak ada di {1}.', eNoQ:'Kode {0} tidak ditemukan di Wikidata.',
   eBad:'{0} adalah {1}, bukan tempat.', eNoCoord:'“{0}” tidak punya koordinat, jadi belum bisa ditaruh di peta. Pilih tempat lain atau lengkapi koordinatnya di Wikidata (P625).',
@@ -740,18 +726,18 @@ id:{
 },
 en:{
   gTitle:'Quick guide', gSub:'', gotIt:'Got it, close',
-  g1:'search a region or place, then click Add.',
+  g1:'search a region or place, click Add, then write its description. Nearby attractions appear beside it.',
   g2:'see attractions around your regions you may have missed.',
   g3:'spread places over your trip days. The order of regions drives the schedule.',
   g4:'order each day. Tick Road routes for driving distance.',
   g5:'download PDF, JSON, GPX, or share a link.',
   tagline:'Trip planner powered by Wikidata, Wikipedia & Wikivoyage', howto:'How to use',
   clr:'Clear search', ldTitle:'Searching “{0}”…', ldSec:'s', ldSub1:'Fetching data from Wikidata, Wikipedia, and Wikivoyage.', ldSub2:'Still searching. The data sources are a bit slow right now.', ldSub3:'Still running. The data sources are slow; you can wait or cancel.', ldCancel:'Cancel search',
-  nxt1:'Add at least one region or place to continue.', nxt2:'Add at least one place (from suggestions or search) to continue.', nxt3:'Schedule at least one place onto a day to continue.', stLocked:'Finish the previous step first', resetBtn:'Reset', whyAuto0:'No places yet. Add places in the Collect step first.', whyAutoDone:'All places are already scheduled.', whyRecR:'Schedule at least 2 places onto days first (Schedule suggestion).', whyPdf:'No scheduled places to print yet. Schedule places onto days first.', whyExp:'Nothing to save yet. Add a region or place first.', stCollect:'Collect', stSuggest:'Suggest', stSchedule:'Schedule', stRoute:'Route', stSave:'Save', navBack:'Back', navNext:'Next: {0}', stDone:'done',
+  nxt1:'Add at least two places (from suggestions or search) to continue.', nxt2:'Add at least one place (from suggestions or search) to continue.', nxt3:'Schedule at least one place onto a day to continue.', stLocked:'Finish the previous step first', resetBtn:'Reset', whyAuto0:'No places yet. Add places in the Collect step first.', whyAutoDone:'All places are already scheduled.', whyRecR:'Schedule at least 2 places onto days first (Schedule suggestion).', nxtRoute:'The Route step needs at least 2 scheduled places (now {0}). You can still continue to Save.', whyPdf:'No scheduled places to print yet. Schedule places onto days first.', whyExp:'Nothing to save yet. Add a region or place first.', stCollect:'Collect', stSuggest:'Suggest', stSchedule:'Schedule', stRoute:'Route', stSave:'Save', navBack:'Back', navNext:'Next: {0}', stDone:'done',
   cTrip:'Trip', cSearch:'Search regions or places', cSug:'Place suggestions', cSched:'Schedule by day', cRoute:'Route by day', cSave:'Save & share', cDanger:'Delete data',
   sugIntro:'See attractions around the regions in your Wishlist, in case you missed something.', sugSum:'{0} regions · {1} places in the Wishlist',
   sugNeed:'No regions in the Wishlist yet. Go back to Collect and add at least one region.', sugEmpty:'Place suggestions will show up here.', schedSum:'{0}/{1} places scheduled',
-  gNote:'Everything is saved automatically in this browser. Open any step freely from the bar above.', gTag:'Start here', gSub2:'Follow the 5 steps in the bar above, starting with a search for your destination.', gGo:'Start searching',
+  gNote:'Everything is saved automatically in this browser. Open any step freely from the bar above.', gTag:'Start here', gSub2:'Follow the 4 steps in the bar above, starting with a search for your destination.', gGo:'Start searching',
   meT:'Affandy Murad’s portfolio', metaT:'Affandy Murad’s user page on Meta-Wiki', madeBy:'This tool was created by',
   addPh:'Search a region or place… e.g. Bali, Borobudur, Gambir station', add:'Add', search:'Search', adding:'Searching…',
   manBtn:'+ Custom place', edT:'Edit place', manTE:'Edit custom place', manSaveE:'Save', manSaved:'“{0}” updated', manFind:'Search', manT:'Add a custom place', manCancel:'Cancel', manSave:'Add place', manPhoto:'Photo (optional)', manUpload:'Upload from device', manRemove:'Remove photo', manUrlPh:'or paste a photo URL: https://…/photo.jpg', manUrlA:'Photo URL',
@@ -762,7 +748,7 @@ en:{
   manEReq:'Required.', manECoord:'Invalid coordinates. Use “lat, lon” (lat −90…90, lon −180…180), e.g. -8.8456, 115.1860.', manEReg:'Pick one region from the search results.', manNoReg:'Region not found. Try another name.', manSrch:'Searching regions…',
   manEPhoto:'The photo could not be loaded. Check the file or URL.', manEType:'Choose an image file (JPG, PNG, WebP).', manDup:'“{0}” is already in this plan.', manAdded:'“{0}” added', kmFrom:'{0} km from {1}',
   pdfMapT:'Trip map', approxLoc:'approximate location (parent region point)', toWl:'Move back to Wishlist', kRegion:'Region', kPlace:'Place', added:'✓ Added', noCoord:'No coordinates', regOrder:'The order of regions sets the order of the Schedule suggestion. Drag to change it.',
-  recPd:'Check for places you may have missed in your regions', autod:'Spread all places over your trip days', recRd:'Order each day’s places for a shorter route', wlCap:'Collect the regions & places you want to visit',
+  recPd:'Check for places you may have missed in your regions', autod:'Spread all places over your trip days', recRd:'Order each day’s places for a shorter route', wlCap:'Collect the regions & places you want to visit. Regions only mark an area; add at least two places to continue to the schedule.',
   toastRegionDay:'Regions can’t be scheduled on a day. Add places in that region, then schedule the places.',
   toastNeedRegion:'Add at least one region to the Wishlist first', toastNoPlace:'No places in the Wishlist — regions can’t be scheduled', toastNeedSched:'Schedule at least 2 places on days first (③ Schedule suggestion)',
   nbTitleRegion:'Attractions in your regions',
@@ -779,9 +765,9 @@ en:{
   close:'Close', footer:'Data: Wikidata (CC0, via QLever and the Wikidata API) for places and regions; Wikipedia (CC BY-SA 4.0) for place suggestions, thumbnails and popularity; Wikivoyage (CC BY-SA 4.0) for search and links · Map: OpenFreeMap, © OpenMapTiles, OpenStreetMap contributors · Distances are straight lines unless “Road routes” is on (OSRM, estimated by car).',
   wl:'Wishlist', wlSubE:'No items yet', wlSubN:'{0} items', dayT:'Day {0} · {1}', dayNone:'No places yet', nP:'{0} places',
   dropHint:'Drag a place here, or use the “Move to” menu', wlDrop:'Regions and places you add show up here',
-  moveTo:'Move to…', up:'Up', dn:'Down', nbT:'Nearby suggestions', wlTag:'From Wikilokal', wlT:'Want to know this area a little better?', wlD:'Wikilokal shows Wikipedia articles, Commons photos and Wikivoyage guides around your location. You may find a hidden gem not far from your plan.', wlGo:'Try Wikilokal ↗', noteT:'Note', rm:'Remove', notePh:'Note: opening hours, bookings, etc.',
+  moveTo:'Move to…', up:'Up', dn:'Down', nbT:'Nearby suggestions', wlTag:'From Wikilokal', wlT:'Want to know this area a little better?', wlD:'Wikilokal shows Wikipedia articles, Commons photos and Wikivoyage guides around your location. You may find a hidden gem not far from your plan.', wlGo:'Try Wikilokal ↗', noteT:'Note', rm:'Remove', notePh:'Add a description…',
   nextLeg:'↓ {0} to next stop', fromPrev:'{0} from {1}', focus:'Click to zoom the map to this day',
-  emptyT:'Your plan is empty', emptyD:'Start by searching for a place above, or tap a popular destination.',
+  emptyT:'Your wishlist is empty', emptyD:'Start by searching for a place above, or tap a popular destination.',
   toastAdded:'“{0}” added to Wishlist', toastUndone:'Undone', toastRm:'“{0}” removed', toastDelTrip:'Trip deleted',
   toastNeed1:'Add at least one place first', toastEff:'Route order is already efficient',
   toastRoute:'Route reordered: ± {0} → {1} km', toastRouteRoad:'Route reordered by driving distance: {0} → {1} km', toastNoWl:'Wishlist is empty — add places first', toastAuto:'{0} places spread over {1} days',
@@ -789,6 +775,7 @@ en:{
   toastLink:'Link copied', toastLinkLong:'Link copied (long — may be cut off in some apps)', toastBadLink:'Invalid share link',
   promptNew:'New trip name:', defNew:'New trip', promptName:'Trip name:', confirmDel:'Delete trip “{0}”?', defTrip:'My trip', imported:'Imported trip',
   toastShared:'Plan “{0}” ({1} places) added from the share link', copyPrompt:'Copy this link:', undoBtn:'Undo',
+  nbPickHint:'Where should we look for ideas? (one region at a time is best)', nbAll:'All regions ({0}) · slower', nbIdle:'Search one region at a time. Searching many regions at once takes much longer to load.', nbNoReg:'Add a region to the Wishlist first to get place suggestions.',
   nbTitleAll:'Attractions around this plan', nbTitleOne:'Attractions near “{0}”', finding:'Finding attractions…', near:'Near {0}', noNear:'No places with coordinates were found.', addBtn:'+ Add',
   eBadLink:'Link not recognised. Use a Wikivoyage link (…wikivoyage.org/wiki/…) or a Wikidata ID.', eMissing:'Page “{0}” does not exist on {1}.', eNoQ:'ID {0} was not found on Wikidata.',
   eBad:'{0} is {1}, not a place.', eNoCoord:'“{0}” has no coordinates, so it can’t be placed on the map. Pick another place or add coordinates on Wikidata (P625).',
@@ -830,7 +817,7 @@ try { db = JSON.parse(localStorage.getItem(LS)); } catch { db = null; }
 if (!db || !Array.isArray(db.trips) || !db.trips.length) { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; }
 const cur = () => db.trips.find(t => t.id === db.cur) || db.trips[0];
 const save = () => { try { localStorage.setItem(LS, JSON.stringify(db)); } catch {} };
-let step = 1, reached = 1, seen = 1, sugSeen = false, sugAuto = false, routeDone = false, guideAuto = false;   // reached = tahap terjauh yang sudah ditempuh   // tahap aktif + penanda tahap yang sudah ditempuh
+let step = 1, reached = 1, seen = 1, routeDone = false, nbSeq = 0;   // reached = tahap terjauh yang sudah ditempuh   // tahap aktif + penanda tahap yang sudah ditempuh
 const undoStack = [];
 function mutate(fn) { routeDone = false; undoStack.push(JSON.stringify(db)); if (undoStack.length > 30) undoStack.shift(); fn(); save(); render(); }
 function undo() { if (!undoStack.length) return; db = JSON.parse(undoStack.pop()); save(); render(); toast(tr('toastUndone')); }
@@ -1215,7 +1202,7 @@ function addEntity(x) {
   drawRes(); toast(tr('toastAdded', x.title));
 }
 const inp = $('#addIn'); let acT;
-inp.addEventListener('input', () => { clearTimeout(acT); const v = inp.value.trim(); if (v.length < 2) { hideAc(); return; } if (/^https?:|^Q\d+$/i.test(v)) return; acT = setTimeout(() => searchPlaces(v), 700); });   // jeda panjang: satu pencarian memanggil beberapa API
+inp.addEventListener('input', () => { clearTimeout(acT); resSeq++; const v = inp.value.trim(); if (v.length < 2) { ldStop(); hideAc(); const b = $('#addBtn'); b.disabled = false; b.textContent = tr('search'); return; } if (/^https?:|^Q\d+$/i.test(v)) return; acT = setTimeout(() => searchPlaces(v), 700); });   // jeda panjang: satu pencarian memanggil beberapa API
 const syncClr = () => { $('#addClr').hidden = !inp.value; };
 inp.addEventListener('input', syncClr);
 $('#addClr').addEventListener('click', () => {
@@ -1267,7 +1254,7 @@ const svgIcon = d => `<svg width="15" height="15" viewBox="0 0 24 24" fill="none
 const ICON_TRASH = svgIcon('<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>');
 const ICON_EDIT = svgIcon('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>');
 const ICON_BACK = svgIcon('<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v5"/>');
-const ICON_SEARCH =svgIcon('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>');
+const ICON_PIN = svgIcon('<path d="M12 5v14M5 12h14"/>');
 /* pencarian terakhir (3, tersimpan di peramban) */
 const LS_RECENT = 'wikitrip.recent';
 const getRecent = () => { try { const a = JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); return Array.isArray(a) ? a.filter(x => typeof x === 'string').slice(0, 3) : []; } catch { return []; } };
@@ -1331,9 +1318,9 @@ function itemHtml(t, it, n, list) {
     <span class="no${region ? ' reg' : ''}"${region ? ` title="${esc(tr('regOrder'))}"` : ''}>${it.day ? n : region ? rn : '•'}</span>
     ${thumbHtml(it)}
     <div><a class="ti" href="${esc(it.src)}" target="_blank" rel="noopener" draggable="false">${esc(it.title)}</a>${it.inst ? `<span class="sub">${esc(it.inst)}</span>` : ''}
-      <div>${chipsHtml(it, 1)}</div>${it.note ? `<div class="nt">${esc(it.note)}</div>` : ''}</div>
+      <div>${chipsHtml(it, 1)}</div><textarea class="ntin" rows="1" data-note="${it.id}" draggable="false" maxlength="600" placeholder="${esc(tr('notePh'))}" aria-label="${esc(tr('notePh'))}">${esc(it.note || '')}</textarea></div>
     <div class="acts">${region ? '' : `<select data-mv="${it.id}" aria-label="${esc(tr('moveTo'))}">${opts}</select>`}${it.day ? `<button class="ib" data-act="wl" data-id="${it.id}" title="${esc(tr('toWl'))}" aria-label="${esc(tr('toWl'))}">${ICON_BACK}</button>` : ''}
-      ${region ? `<button class="ib" data-act="nb" data-id="${it.id}" title="${esc(tr('nbT'))}" aria-label="${esc(tr('nbT'))}">${ICON_SEARCH}</button>` : ''}${it.man ? `<button class="ib" data-act="ed" data-id="${it.id}" title="${esc(tr('edT'))}" aria-label="${esc(tr('edT'))}">${ICON_EDIT}</button>` : ''}<button class="ib x" data-act="rm" data-id="${it.id}" title="${esc(tr('rm'))}" aria-label="${esc(tr('rm'))}">${ICON_TRASH}</button></div>
+      ${region ? `<button class="ib" data-act="nb" data-id="${it.id}" title="${esc(tr('nbT'))}" aria-label="${esc(tr('nbT'))}">${ICON_PIN}</button>` : ''}${it.man ? `<button class="ib" data-act="ed" data-id="${it.id}" title="${esc(tr('edT'))}" aria-label="${esc(tr('edT'))}">${ICON_EDIT}</button>` : ''}<button class="ib x" data-act="rm" data-id="${it.id}" title="${esc(tr('rm'))}" aria-label="${esc(tr('rm'))}">${ICON_TRASH}</button></div>
     ${it.day && !last ? `<div class="dist">${esc(tr('nextLeg', legTxt(list, n - 1)))}</div>` : ''}</li>`;
 }
 function render() {
@@ -1343,7 +1330,6 @@ function render() {
   $('#start').value = t.start; $('#days').textContent = t.days; $('#dm').disabled = t.days <= 1; $('#dp').disabled = t.days >= 30;
   $('#road').checked = !!db.road; $('#undo').disabled = !undoStack.length; $('#tDel').disabled = db.trips.length < 2;
   const wlHtml = [], dayHtml = [];
-  if (!t.items.length) wlHtml.push(`<section class="card empty"><div class="big">🧳</div><h3>${esc(tr('emptyT'))}</h3><p>${esc(tr('emptyD'))}</p></section>`);
   const mk = (d, title, sub, list) => {
     const lg = legs(list), cn = conns(t).get(d), out = d ? dayHtml : wlHtml;
     out.push(`<section class="day${d ? '' : ' wlsec'}" style="--c:${colorOf(d)}"><header ${d ? `data-focus="${d}" title="${esc(tr('focus'))}"` : ''}><h2>${esc(title)}</h2><span>${esc(sub)}${d && list.length > 1 ? ` · ${approx(list)}${nf(lg.reduce((a, b) => a + b, 0))} km` : ''}${cn ? ` · ${esc(tr('fromPrev', legTxt(cn, 0), cn[0].title))}` : ''}</span>${d ? '' : `<span class="cap">${esc(tr('wlCap'))}</span>`}</header>
@@ -1353,12 +1339,13 @@ function render() {
   for (let d = 1; d <= t.days; d++) { const l = dayItems(t, d); mk(d, tr('dayT', d, fmtDate(dayDate(t, d))), l.length ? tr('nP', l.length) : tr('dayNone'), l); }
   $('#wl-box').innerHTML = wlHtml.join(''); $('#days-box').innerHTML = dayHtml.join('');
   document.querySelectorAll('select[data-mv]').forEach(s => { s.value = ''; });
-  fitWl(); drawMap(); fetchRoutes();
+  if (nbSel !== 'all' && !regionsOf().some(r => r.id === nbSel)) nbSel = '';
+  if (nbIdle) drawIdle(); else drawPick();
+  document.querySelectorAll('textarea.ntin').forEach(grow); fitWl(); drawMap(); fetchRoutes();
   document.title = `${t.name} · Wikitamasya`;
-  renderStepper(); renderNav(); renderSugSummary(); renderSchedSum(); renderGuards();
-  if (step > gateMax()) setStep(gateMax(), { force:true, noScroll:true, noAuto:true });   // data berkurang: kembali ke tahap yang masih sah
+  renderStepper(); renderNav(); renderSchedSum(); renderGuards();
+  if (step > gateMax() || (step === 3 && schedN() < 2)) setStep(step === 3 ? 2 : gateMax(), { force:true, noScroll:true, noAuto:true });   // data berkurang: kembali ke tahap yang masih sah
   else reached = Math.max(step, Math.min(reached, gateMax()));
-  if (guideAuto && cur().items.length) { guideAuto = false; $('#guide').hidden = true; try { localStorage.setItem(LS_GUIDE, '1'); } catch {} }   // item pertama sudah ada: panduan tak perlu lagi
   ensureSites();
 }
 /* Daftar tunggu: tingginya pas untuk WL_SHOW item; lebih dari itu bisa digulir di dalam daftar */
@@ -1528,9 +1515,31 @@ async function geoPages(host, it) {
   }
   return [...byId.values()];
 }
+let nbSel = '', nbIdle = true;
+const regionsOf = () => cur().items.filter(i => kindOf(i) === 'region');
+function drawPick() {
+  const regs = regionsOf(), box = $('#nbPick');
+  if (!regs.length) { box.innerHTML = ''; return; }
+  box.innerHTML = `<p class="hint" style="margin:0 0 8px">${esc(tr('nbPickHint'))}</p><div class="row" style="gap:6px;flex-wrap:wrap">` +
+    regs.map(r => `<button type="button" class="chip${nbSel === r.id ? ' on' : ''}" data-nbr="${r.id}" aria-pressed="${nbSel === r.id}">${esc(r.title)}</button>`).join('') +
+    (regs.length > 1 ? `<button type="button" class="chip${nbSel === 'all' ? ' on' : ''}" data-nbr="all" aria-pressed="${nbSel === 'all'}">${esc(tr('nbAll', regs.length))}</button>` : '') + '</div>';
+}
+function openNb(id) {   // hanya membuka bagian saran; pencarian baru jalan setelah pengguna memilih wilayah
+  nbSeq++; nbAll = []; nbSel = id || ''; nbIdle = true; drawIdle(); if (id) $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
+}
+function drawIdle() {   // keadaan awal: bagian selalu tampil, isinya petunjuk
+  $('#nbT').textContent = tr('nbT'); drawPick();
+  $('#nbList').innerHTML = `<div class="nbph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><p class="hint">${esc(tr('nbIdle'))}</p></div>`;
+}
+$('#nbPick').addEventListener('click', e => {
+  const b = e.target.closest('[data-nbr]'); if (!b) return; const regs = regionsOf(), id = b.dataset.nbr;
+  const pick = id === 'all' ? regs.slice(0, 6) : regs.filter(r => r.id === id); if (!pick.length) return;
+  nbSel = id; drawPick(); suggest(pick, id === 'all' ? tr('nbTitleRegion') : tr('nbTitleOne', pick[0].title));
+});
 async function suggest(anchors, title) {
-  sugSeen = true; if (step !== 2) setStep(2, { noAuto:true, force:true });
-  $('#nb').hidden = false; $('#nbT').textContent = title; $('#nbList').innerHTML = '<span class="sr" role="status">' + esc(tr('finding')) + '</span>' + '<div class="sg sk-row" aria-hidden="true"><i class="a"></i><div><i class="b"></i><i class="c"></i><i class="d"></i></div><i class="e"></i></div>'.repeat(3); $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
+  nbIdle = false; const my = ++nbSeq;   // hasil dari permintaan sebelumnya diabaikan
+  if (step !== 1) setStep(1, { noAuto:true, force:true, noScroll:true });
+  $('#nbT').textContent = title; $('#nbList').innerHTML = '<span class="sr" role="status">' + esc(tr('finding')) + '</span>' + '<div class="sg sk-row" aria-hidden="true"><i class="a"></i><div><i class="b"></i><i class="c"></i><i class="d"></i></div><i class="e"></i></div>'.repeat(3); $('#nb').scrollIntoView({ block:'nearest', behavior:'smooth' });
   try {
     const t = cur(), have = new Set(t.items.map(x => x.title.toLowerCase())), haveQ = new Set(t.items.map(x => x.q).filter(Boolean)), host = lang + '.wikipedia.org';
     /* Kandidat dari Wikipedia bahasa antarmuka DITAMBAH Wikipedia Inggris (koordinatnya lebih lengkap: mis. “Masjid Istiqlal” di id.wikipedia tak berkoordinat),
@@ -1544,8 +1553,11 @@ async function suggest(anchors, title) {
       return prim.concat(en.filter(p => { const q = (p.pageprops || {}).wikibase_item; return q && !seen.has(q); }));
     })));
     const cand = pagesOf.flatMap(ps => ps.filter(p => p.coordinates && p.pageprops && p.pageprops.wikibase_item).sort((x, y) => pvSum(y) - pvSum(x)).slice(0, 80).map(p => p.pageprops.wikibase_item));
+    if (my !== nbSeq) return;
     const okQ = await touristQs(cand);
-    await ensureLabels([...okQ]);   // judul bahasa antarmuka untuk hasil yang berasal dari Wikipedia Inggris
+    if (my !== nbSeq) return;
+    await ensureLabels([...okQ]);
+    if (my !== nbSeq) return;   // judul bahasa antarmuka untuk hasil yang berasal dari Wikipedia Inggris
     const best = new Map(), anchorTitles = new Set(anchors.map(a => a.title.toLowerCase()));
     anchors.forEach((an, ai) => {
       pagesOf[ai].forEach(p => {
@@ -1556,8 +1568,9 @@ async function suggest(anchors, title) {
         const old = best.get(k); if (!old || row.d < old.d) best.set(k, row);
       });
     });
+    if (my !== nbSeq) return;
     nbAll = [...best.values()]; nbPage = 1; nbMulti = anchors.length > 1; drawNb();
-  } catch (e) { $('#nbList').innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+  } catch (e) { if (my === nbSeq) $('#nbList').innerHTML = `<div class="err">${esc(e.message)}</div>`; }
 }
 const plen = a => a.slice(1).reduce((s, p, i) => s + km(a[i], p), 0);
 function bestOrder(L) {
@@ -1670,37 +1683,34 @@ async function routePlan() {
   toast(tr(roadDays ? 'toastRouteRoad' : 'toastRoute', nf(before), nf(after)), tr('undoBtn'), undo);
 }
 
-/* ---------- stepper: lima tahap, dibuka bebas; satu tugas per tahap ---------- */
-const STEPS = ['stCollect', 'stSuggest', 'stSchedule', 'stRoute', 'stSave'];
+/* ---------- stepper: empat tahap, dibuka bebas; satu tugas per tahap ---------- */
+const STEPS = ['stCollect', 'stSchedule', 'stRoute', 'stSave'], LAST = STEPS.length;
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
-/* Gerbang data: tahap terjauh yang BOLEH dibuka menurut isi rencana (1 = kosong, 2 = ada item, 3 = ada tempat, 5 = ada tempat terjadwal) */
+/* Gerbang data: tahap terjauh yang BOLEH dibuka menurut isi rencana (1 = kurang dari 2 tempat, 2 = ada 2+ tempat, 4 = ada tempat terjadwal) */
 function gateMax() {
   const t = cur(), pl = t.items.filter(i => kindOf(i) !== 'region');
-  return !t.items.length ? 1 : !pl.length ? 2 : !pl.some(i => i.day > 0) ? 3 : 5;
+  return pl.length < 2 ? 1 : !pl.some(i => i.day > 0) ? 2 : LAST;
 }
-const canGo = n => n <= step || (n <= gateMax() && n <= reached);   // mundur selalu boleh; maju hanya ke tahap yang sudah ditempuh dan datanya terpenuhi
+const schedN = () => cur().items.filter(i => kindOf(i) !== 'region' && i.day > 0).length;
+const nextOf = () => (step + 1 === 3 && schedN() < 2 ? 4 : step + 1);   // Rute butuh minimal 2 tempat terjadwal; bila kurang, lanjut langsung ke Simpan
+const canGo = n => (n !== 3 || schedN() >= 2) && (n <= step || (n <= gateMax() && n <= reached));   // mundur selalu boleh; maju hanya ke tahap yang sudah ditempuh dan datanya terpenuhi
 function renderStepper() {
   const t = cur(), places = t.items.filter(i => kindOf(i) !== 'region'), sched = places.filter(i => i.day > 0);
-  const prog = seen;   // tahap terjauh yang benar-benar dibuka (bukan sekadar boleh dibuka)   // tahap Saran yang dilewati (mis. rencana dari tautan berbagi) tetap dianggap selesai bila tahap sesudahnya sudah ditempuh
-  const done = [t.items.length > 0, sugSeen || prog > 2, places.length > 0 && sched.length === places.length, (routeDone && sched.length > 1) || prog > 4, false];
+  const prog = seen;   // tahap terjauh yang benar-benar dibuka (bukan sekadar boleh dibuka)
+  const done = [places.length > 1, places.length > 1 && sched.length === places.length, (routeDone && sched.length > 1) || prog > 3, false];
   $('#sn').setAttribute('aria-label', tr('stCollect') + ' → ' + tr('stSave'));
   $('#sn').innerHTML = STEPS.map((k, i) => { const n = i + 1, on = step === n, off = !on && !canGo(n);
-    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] && !on ? ' ok' : '') + (done[i] && (done[i + 1] || step === i + 2) ? ' ln' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
+    return '<button type="button" class="st' + (on ? ' on' : '') + (done[i] && !on ? ' ok' : '') + (done[i] && (done[i + 1] || step > i + 1) ? ' ln' : '') + '" data-st="' + n + '"' + (on ? ' aria-current="step"' : '') + (off ? ' disabled aria-disabled="true"' : '') +
       ' title="' + esc(off ? tr('stLocked') : tr(k) + (done[i] ? ' · ' + tr('stDone') : '')) + '">' +
       '<span class="n">' + (done[i] && !on ? CHECK : n) + '</span><span class="l">' + esc(tr(k)) + '</span></button>'; }).join('');
 }
 function renderNav() {
-  const can = step < 5 && step + 1 <= gateMax();
-  $('#navBack').hidden = step === 1; $('#navNext').hidden = step === 5; $('#navNext').disabled = !can;
-  const why = step === 5 || can ? '' : tr(step === 1 ? 'nxt1' : step === 2 ? 'nxt2' : 'nxt3');
+  const can = step < LAST && nextOf() <= gateMax();
+  $('#navBack').hidden = step === 1; $('#navNext').hidden = step === LAST; $('#navNext').disabled = !can;
+  const why = step === LAST ? '' : !can ? tr(step === 1 ? 'nxt1' : 'nxt3') : step === 2 && schedN() < 2 ? tr('nxtRoute', schedN()) : '';
   $('#navWhy').textContent = why; $('#navWhy').hidden = !why;
   $('#navBack').querySelector('.t').textContent = tr('navBack');
-  if (step < 5) $('#navNext').querySelector('.t').textContent = tr('navNext', tr(STEPS[step]));
-}
-function renderSugSummary() {
-  const t = cur(), regs = t.items.filter(i => kindOf(i) === 'region');
-  $('#sugSum').innerHTML = esc(tr('sugSum', regs.length, t.items.length - regs.length)) + ' ' + regs.map(r => '<span class="bdg k-region">' + esc(r.title) + '</span>').join('');
-  $('#sugNeed').hidden = regs.length > 0; $('#recP').disabled = !regs.length;
+  if (step < LAST) $('#navNext').querySelector('.t').textContent = tr('navNext', tr(STEPS[nextOf() - 1]));
 }
 /* Tombol dinonaktifkan bila datanya belum ada, dengan alasan yang terlihat (di layar sentuh tombol nonaktif tidak bisa "ditanya") */
 function renderGuards() {
@@ -1719,26 +1729,26 @@ function renderSchedSum() {
   $('#schedSum').textContent = tr('schedSum', places.filter(i => i.day > 0).length, places.length);
 }
 function setStep(n, o = {}) {
-  n = Math.min(5, Math.max(1, n | 0 || 1));
+  n = Math.min(LAST, Math.max(1, n | 0 || 1));
   const max = gateMax();
+  if (!o.force && n === 3 && schedN() < 2) { toast(tr('nxtRoute', schedN())); return; }
   if (!o.force && n > step && !(n <= max && (n === step + 1 || n <= reached))) return;   // maju hanya berurutan dan bila datanya ada
   step = Math.min(n, max); reached = Math.max(step, Math.min(reached, max)); seen = Math.max(seen, step);
   document.body.dataset.step = String(step);
-  $('#p1').hidden = step !== 1; $('#p2').hidden = step !== 2; $('#p3').hidden = step !== 3 && step !== 4; $('#p5').hidden = step !== 5;
-  const wl = $('#wl-box'), slot = step === 3 ? $('#slot3') : step === 1 ? $('#slot1') : null;   // satu Daftar tunggu yang berpindah tempat
+  $('#p1').hidden = step !== 1; $('#p3').hidden = step !== 2 && step !== 3; $('#p5').hidden = step !== LAST;
+  const wl = $('#wl-box'), slot = step === 2 ? $('#slot3') : step === 1 ? $('#slot1') : null;   // satu Daftar tunggu yang berpindah tempat
   if (slot && wl.parentElement !== slot) slot.appendChild(wl);
-  renderStepper(); renderNav(); renderSugSummary(); renderSchedSum(); fitWl();
-  if (step === 3 || step === 4) {   // panel baru tampil: ukur ulang peta, lalu pas-kan ke semua pin setelah tata letak stabil
+  renderStepper(); renderNav(); renderSchedSum(); fitWl();
+  if (step === 2 || step === 3) {   // panel baru tampil: ukur ulang peta, lalu pas-kan ke semua pin setelah tata letak stabil
     requestAnimationFrame(() => { if (map) map.resize(); drawMap(); });
-    setTimeout(() => { if (map && (step === 3 || step === 4)) { map.resize(); fitMap = true; drawMap(); } }, 350);
+    setTimeout(() => { if (map && (step === 2 || step === 3)) { map.resize(); fitMap = true; drawMap(); } }, 350);
   }
   setQuery(p => p.set('step', String(step)));
-  if (step === 2 && !o.noAuto && !sugAuto && !$('#recP').disabled && !nbAll.length) { sugAuto = true; $('#recP').click(); }   // sekali: langsung cari saran saat tahap dibuka
   if (!o.noScroll) { const y = $('#steps').getBoundingClientRect().top + scrollY - 70; window.scrollTo({ top:Math.max(0, y), behavior:'smooth' }); }
 }
 $('#sn').addEventListener('click', e => { const b = e.target.closest('[data-st]'); if (b) setStep(+b.dataset.st); });
-$('#navBack').onclick = () => setStep(step - 1);
-$('#navNext').onclick = () => { if (step < 5 && step + 1 <= gateMax()) setStep(step + 1); };
+$('#navBack').onclick = () => setStep(step === 4 && schedN() < 2 ? 2 : step - 1);
+$('#navNext').onclick = () => { if (step < LAST && nextOf() <= gateMax()) setStep(nextOf(), { force:true }); };
 
 /* ---------- event ---------- */
 $('#undo').onclick = undo;
@@ -1748,10 +1758,6 @@ $('#tRen').onclick = () => { const n = prompt(tr('promptName'), cur().name); if 
 $('#tDel').onclick = () => { if (db.trips.length < 2 || !confirm(tr('confirmDel', cur().name))) return; mutate(() => { db.trips = db.trips.filter(x => x.id !== db.cur); db.cur = db.trips[0].id; fitMap = true; }); toast(tr('toastDelTrip'), tr('undoBtn'), undo); };
 $('#road').onchange = e => { db.road = e.target.checked; routeBlock = 0; save(); render(); };
 $('#auto').onclick = autoPlan;
-$('#recP').onclick = () => {   // ② tempat menarik di sekitar wilayah-wilayah di Daftar tunggu
-  const regions = cur().items.filter(i => kindOf(i) === 'region'); if (!regions.length) { toast(tr('toastNeedRegion')); return; }
-  suggest(regions.slice(0, 6), regions.length === 1 ? tr('nbTitleOne', regions[0].title) : tr('nbTitleRegion'));
-};
 $('#recR').onclick = routePlan;
 $('#nbList').addEventListener('click', e => {
   const g = e.target.closest('[data-pg]');
@@ -1766,24 +1772,16 @@ $('#reset').onclick = () => {
   
   if (!confirm(tr('confirmReset'))) return;
   mutate(() => { const t = newTrip(tr('defTrip')); db = { cur:t.id, trips:[t] }; legCache.clear(); fitMap = true; });
-  try { localStorage.removeItem(LS_GUIDE); } catch {}
-  $('#nb').hidden = true; nbAll = []; $('#guide').hidden = false; pickedCountry = null; drawChips();
-  sugSeen = sugAuto = routeDone = false; seen = 1; setStep(1, { force:true });
+  nbSeq++; nbAll = []; nbSel = ''; nbIdle = true; pickedCountry = null; drawChips();
+  nbSeq++; routeDone = false; seen = 1; setStep(1, { force:true });
   toast(tr('toastReset'), tr('undoBtn'), undo);
 };
 $('#navReset').onclick = $('#reset').onclick;   // dari tahap mana pun
-$('#nbX').onclick = () => { $('#nb').hidden = true; };
 $('#start').onchange = e => { if (e.target.value) mutate(() => { cur().start = e.target.value; }); };
 function setDays(n) { n = Math.min(30, Math.max(1, n)); mutate(() => { const t = cur(); t.days = n; t.items.forEach(i => { if (i.day > n) i.day = 0; }); }); }
 $('#dm').onclick = () => setDays(cur().days - 1);
 $('#dp').onclick = () => setDays(cur().days + 1);
-$('#lang').onchange = e => { lang = e.target.checked ? 'en' : 'id'; try { localStorage.setItem(LS_LANG, lang); } catch {} hideAc(); applyI18n(); drawChips(); if (!$('#nb').hidden) $('#nb').hidden = true; render(); };
-$('#helpBtn').onclick = () => { const g = $('#guide'); g.hidden = !g.hidden; if (!g.hidden) g.scrollIntoView({ behavior:'smooth', block:'nearest' }); };
-$('#guideGo').onclick = () => {   // CTA: tutup panduan, ke tahap 1, fokus ke kotak pencarian
-  $('#guide').hidden = true; guideAuto = false; try { localStorage.setItem(LS_GUIDE, '1'); } catch {}
-  setStep(1, { noScroll:true }); $('#addIn').scrollIntoView({ block:'center', behavior:'smooth' }); setTimeout(() => $('#addIn').focus({ preventScroll:true }), 450);
-};
-$('#guideX').onclick = () => { $('#guide').hidden = true; try { localStorage.setItem(LS_GUIDE, '1'); } catch {} };
+$('#lang').onchange = e => { lang = e.target.checked ? 'en' : 'id'; try { localStorage.setItem(LS_LANG, lang); } catch {} hideAc(); applyI18n(); drawChips(); nbSeq++; nbAll = []; nbSel = ''; nbIdle = true; render(); };
 
 const box = $('#steps');   // Daftar tunggu + strip tombol + hari-hari (semua item bisa diseret)
 box.addEventListener('click', e => {
@@ -1797,8 +1795,15 @@ box.addEventListener('click', e => {
   if (a === 'rm') removeItem(id);
   else if (a === 'wl') moveItem(id, 0, null);
   else if (a === 'ed') manOpen(id);
-  else if (a === 'nb') { const it = cur().items.find(x => x.id === id); if (it && kindOf(it) === 'region') suggest([it], tr('nbTitleOne', it.title)); }   // ⌖ hanya untuk wilayah
+  else if (a === 'nb') { const it = cur().items.find(x => x.id === id); if (it && kindOf(it) === 'region') openNb(it.id); }   // ⌖ hanya untuk wilayah
 });
+const grow = t => { t.style.height = 'auto'; t.style.height = Math.max(36, t.scrollHeight + 2) + 'px'; };
+let noteT; box.addEventListener('input', e => {   // deskripsi diedit langsung di daftar: simpan tanpa render ulang agar fokus tidak hilang
+  const t = e.target.closest('textarea[data-note]'); if (!t) return; grow(t);
+  const it = cur().items.find(x => x.id === t.dataset.note); if (!it) return;
+  it.note = t.value; clearTimeout(noteT); noteT = setTimeout(save, 300);
+});
+box.addEventListener('keydown', e => { if (e.target.matches('textarea[data-note]') && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.target.blur(); } });
 box.addEventListener('change', e => { const s = e.target.closest('select[data-mv]'); if (s && s.value !== '') moveItem(s.dataset.mv, +s.value, null); });
 let dragId = null;
 box.addEventListener('dragstart', e => { const li = e.target.closest('li.it'); if (!li) return; dragId = li.dataset.id; li.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
@@ -1857,7 +1862,7 @@ function importHash() {
     undoStack.push(JSON.stringify(db));
     db.trips.push(t); db.cur = t.id; fitMap = true; save();
     sharedMsg = tr('toastShared', t.name, t.items.length);
-    sharedStep = t.items.some(i => i.day > 0) ? 4 : 1;   // rencana yang sudah berjadwal langsung dibuka di tahap Rute
+    sharedStep = t.items.filter(i => i.day > 0).length > 1 ? 3 : t.items.some(i => i.day > 0) ? 2 : 1;   // rencana yang sudah berjadwal langsung dibuka di tahap Rute
   } catch { sharedMsg = tr('toastBadLink'); }
   setQuery(() => {}, '');   // buang #t=… dari URL, parameter lain tetap
 }
@@ -2167,7 +2172,6 @@ $('#manForm').addEventListener('submit', e => {
   mutate(() => cur().items.push(item)); manDlg.close(); toast(tr('manAdded', name));
 });
 applyI18n(); drawChips(); importHash();
-try { if (!localStorage.getItem(LS_GUIDE) && !cur().items.length) { $('#guide').hidden = false; guideAuto = true; } } catch { if (!cur().items.length) { $('#guide').hidden = false; guideAuto = true; } }
 render();
 reached = gateMax();   // pengguna lama yang datanya lengkap boleh berpindah bebas selama datanya terpenuhi; pengguna baru mulai dari tahap 1
 setStep(sharedStep || parseInt(new URLSearchParams(location.search).get('step'), 10) || 1, { noScroll:true, noAuto:true, force:true });
