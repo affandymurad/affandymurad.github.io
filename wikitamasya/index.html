@@ -1547,11 +1547,12 @@ const catSvg = id => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none
 async function qlNearby(an, cat, km0 = 10) {
   const dLa = km0 / 111, dLo = km0 / (111 * Math.max(0.2, Math.cos(an.lat * Math.PI / 180)));
   const rows = await qlSelect(`PREFIX geof: <http://www.opengis.net/def/function/geosparql/>\nPREFIX wikibase: <http://wikiba.se/ontology#>
-    SELECT ?item (SAMPLE(?c_) AS ?c) (MAX(?sl_) AS ?sl) ${qSample('lt', 'et', 'ld', 'ed', 'img', 'wl', 'we')} WHERE {
+    SELECT ?item (SAMPLE(?c_) AS ?c) (MAX(?sl_) AS ?sl) ${qSample('lt', 'et', 'ot', 'ld', 'ed', 'img', 'wl', 'we')} WHERE {
       VALUES ?cls { ${cat.qs.map(x => 'wd:' + x).join(' ')} } ?item wdt:P31/wdt:P279* ?cls . ?item wdt:P625 ?c_ .
       FILTER(geof:latitude(?c_) > ${an.lat - dLa} && geof:latitude(?c_) < ${an.lat + dLa} && geof:longitude(?c_) > ${an.lon - dLo} && geof:longitude(?c_) < ${an.lon + dLo})
       ?item wikibase:sitelinks ?sl_ .
       OPTIONAL { ?item rdfs:label ?lt_ FILTER(LANG(?lt_) = "${lang}") } OPTIONAL { ?item rdfs:label ?et_ FILTER(LANG(?et_) = "en") }
+      OPTIONAL { ?item rdfs:label ?ot_ FILTER(LANG(?ot_) IN ("mul", "id")) }
       OPTIONAL { ?item schema:description ?ld_ FILTER(LANG(?ld_) = "${lang}") } OPTIONAL { ?item schema:description ?ed_ FILTER(LANG(?ed_) = "en") }
       OPTIONAL { ?item wdt:P18 ?img_ }
       OPTIONAL { ?wlA schema:about ?item ; schema:isPartOf <https://${lang}.wikipedia.org/> ; schema:name ?wl_ }
@@ -1559,7 +1560,7 @@ async function qlNearby(an, cat, km0 = 10) {
     } GROUP BY ?item ORDER BY DESC(?sl) LIMIT 150`, 15000);
   const out = [];
   rows.forEach(b => {
-    const m = /Point\(\s*(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s*\)/i.exec(qv(b.c)), title = qv(b.lt) || qv(b.et), id = qid(b.item); if (!m || !title || title === id) return;
+    const m = /Point\(\s*(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s*\)/i.exec(qv(b.c)), title = qv(b.lt) || qv(b.et) || qv(b.ot), id = qid(b.item); if (!m || !title || title === id) return;
     const pos = { lat:+m[2], lon:+m[1] }, d = km(an, pos); if (d > km0) return;
     const wp = qv(b.wl) ? [lang, qv(b.wl)] : qv(b.we) ? ['en', qv(b.we)] : null;
     out.push({ q:id, title, inst:qv(b.ld) || qv(b.ed), lat:pos.lat, lon:pos.lon, d, v:+qv(b.sl) || 0, kind:'place',
