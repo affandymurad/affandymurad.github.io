@@ -292,6 +292,35 @@
         @keyframes pop { from { opacity: 0; transform: scale(.95) translateY(8px); } to { opacity: 1; transform: none; } }
         @keyframes shimmer { to { transform: translateX(100%); } }
 
+
+        /* ===== revamp: lebih jelas, lebih mudah dipakai ===== */
+        .hero { padding: 36px 0 20px; }
+        h1 { font-size: clamp(28px, 4vw, 42px); margin: 14px 0 12px; }
+        .lead { font-size: 17px; }
+        .chips { margin-top: 16px; }
+        .form-section, .card, .progress-container { padding: 28px; }
+        /* pilihan proyek: berkelompok, yang jarang dipakai dilipat */
+        .wb-title { grid-column: 1 / -1; margin-top: 8px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+        .wb-title:first-child { margin-top: 0; }
+        .wiki-buttons-container.global-on .wb-title { display: none; }
+        .wiki-button.wb-more { display: none; }
+        .wiki-buttons-container.show-more .wiki-button.wb-more, .wiki-button.wb-more.selected { display: flex; }
+        .wiki-buttons-container.global-on .wiki-button.wb-more { display: none; }
+        .wb-toggle { grid-column: 1 / -1; justify-self: start; border: 1px dashed color-mix(in srgb, var(--brand-2) 50%, var(--line)); background: transparent; color: var(--brand-text); border-radius: 999px; padding: 8px 16px; font: 600 13.5px inherit; cursor: pointer; }
+        .wb-toggle:hover { background: var(--soft); }
+        .wiki-buttons-container.global-on .wb-toggle { display: none; }
+        #project { margin-bottom: 4px; }
+        /* ringkasan pengaturan sebelum menekan Analisis */
+        .setup-sum { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 0 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--soft) 60%, var(--surface)); font-size: 13.5px; color: var(--muted); }
+        .setup-sum b { color: var(--ink); font-weight: 700; }
+        .setup-sum .ss-title { font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: .06em; }
+        .setup-sum .miss { color: var(--warn); font-weight: 600; }
+        .setup-sum span.item::before { content: "•"; margin-inline-end: 8px; color: var(--brand-2); }
+        .hint { margin: 22px 0 14px; }
+        @media (pointer: coarse) {
+            .preset, .icon-btn, .pager button, .pager select, .wb-toggle { min-height: 44px; }
+            .check-row { padding-block: 16px; }
+        }
         @media (max-width: 768px) {
             .form-section, .card { padding: 20px; border-radius: 20px; }
             .field-info { margin-left: 0; }
@@ -375,6 +404,7 @@
             <div class="form-group">
                 <label for="project" data-i18n="project">Proyek Wikimedia</label>
                 <div class="field-info" data-i18n="projectInfo">Klik salah satu proyek di bawah. Untuk Wikipedia dan sejenisnya, kamu akan diminta memilih kode bahasa (mis. id, en).</div>
+                <span class="sub-label" data-i18n="currentChoice">Pilihan saat ini</span>
                 <input type="text" id="project" data-i18n-placeholder="projectPlaceholder"
                     placeholder="id.wikipedia.org (Klik proyek wikimedia di bawah)" readonly>
 
@@ -385,7 +415,7 @@
                         <img class="favicon-placeholder" alt="Global" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a6fd0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M2.5 12h19M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5z'/%3E%3C/svg%3E">
                         <span class="label">Global</span>
                     </div>
-                    <!-- Projects with language codes -->
+                    <div class="wb-title" data-i18n="wbLang">Proyek per bahasa (kamu akan memilih kode bahasa)</div>
                     <div class="wiki-button" data-project="wikipedia" data-needs-lang="true"
                         data-domain-base="wikipedia.org" title="Wikipedia">
                         <img class="favicon-placeholder" alt="Wikipedia">
@@ -432,7 +462,7 @@
                         <span class="label">Wikimedia</span>
                     </div>
 
-                    <!-- Global projects -->
+                    <div class="wb-title" data-i18n="wbGlobal">Proyek global (tanpa kode bahasa)</div>
                     <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
                         <img class="favicon-placeholder" alt="Wikispecies">
                         <span class="label">Wikispecies</span>
@@ -445,11 +475,11 @@
                         <img class="favicon-placeholder" alt="Wikidata">
                         <span class="label">Wikidata</span>
                     </div>
-                    <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+                    <div class="wiki-button wb-more" data-domain="www.wikifunctions.org" title="Wikifunctions">
                         <img class="favicon-placeholder" alt="Wikifunctions">
                         <span class="label">Wikifunctions</span>
                     </div>
-                    <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+                    <div class="wiki-button wb-more" data-domain="incubator.wikimedia.org" title="Incubator">
                         <img class="favicon-placeholder" alt="Incubator">
                         <span class="label">Incubator</span>
                     </div>
@@ -461,26 +491,27 @@
                         <img class="favicon-placeholder" alt="MediaWiki">
                         <span class="label">MediaWiki</span>
                     </div>
-                    <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+                    <div class="wiki-button wb-more" data-domain="wikitech.wikimedia.org" title="Wikitech">
                         <img class="favicon-placeholder" alt="Wikitech">
                         <span class="label">Wikitech</span>
                     </div>
-                    <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
+                    <div class="wiki-button wb-more" data-domain="wikimania.wikimedia.org" title="Wikimania">
                         <img class="favicon-placeholder" alt="Wikimania">
                         <span class="label">Wikimania</span>
                     </div>
-                    <div class="wiki-button" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
+                    <div class="wiki-button wb-more" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
                         <img class="favicon-placeholder" alt="Abstract Wikipedia">
                         <span class="label">Abstract Wikipedia</span>
                     </div>
-                    <div class="wiki-button" data-domain="wikisource.org" title="Wikisource (multibahasa)">
+                    <div class="wiki-button wb-more" data-domain="wikisource.org" title="Wikisource (multibahasa)">
                         <img class="favicon-placeholder" alt="Wikisource (multibahasa)">
                         <span class="label">Wikisource Multi</span>
                     </div>
-                    <div class="wiki-button" data-domain="test.wikipedia.org" title="Test Wikipedia">
+                    <div class="wiki-button wb-more" data-domain="test.wikipedia.org" title="Test Wikipedia">
                         <img class="favicon-placeholder" alt="Test Wikipedia">
                         <span class="label">Test Wikipedia</span>
                     </div>
+                    <button type="button" class="wb-toggle" id="wbToggle" aria-expanded="false" data-i18n="wbMore">Tampilkan proyek lainnya</button>
                 </div>
 
                 <!-- Language Modal -->
@@ -547,6 +578,8 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v.01M12 11v5" /></svg>
                 <span data-i18n="warning">Analyzing multiple usernames will take more time and API requests</span>
             </div>
+
+            <div class="setup-sum" id="setupSum" role="status" aria-live="polite"></div>
 
             <button class="btn-primary" id="analyzeBtn">
                 <span data-i18n="analyze">Analyze Impact</span>
@@ -747,6 +780,8 @@
                 chipFileUsage: 'Penggunaan file (Commons)',
                 chipExport: 'Ekspor PDF & JSON',
                 formEyebrow: 'Mulai analisis',
+                currentChoice: 'Pilihan saat ini', wbLang: 'Proyek per bahasa (kamu akan memilih kode bahasa)', wbGlobal: 'Proyek global (tanpa kode bahasa)', wbMore: 'Tampilkan proyek lainnya', wbLess: 'Sembunyikan proyek lainnya',
+                sumTitle: 'Yang akan dianalisis', sumUsers: '{n} username', sumNone: 'belum diisi', sumNoProj: 'belum dipilih',
                 formTitle: 'Empat langkah singkat',
                 formLead: 'Isi sesuai urutan. Semua pengaturan hanya dipakai di browser ini.',
                 projectInfo: 'Klik salah satu proyek di bawah. Untuk Wikipedia dan sejenisnya, kamu akan diminta memilih kode bahasa (mis. id, en). Pilih Global untuk mencari di semua proyek sekaligus.',
@@ -891,6 +926,8 @@
                 chipFileUsage: 'File usage (Commons)',
                 chipExport: 'PDF & JSON export',
                 formEyebrow: 'Start analysing',
+                currentChoice: 'Current choice', wbLang: 'Language projects (you will pick a language code)', wbGlobal: 'Global projects (no language code)', wbMore: 'Show more projects', wbLess: 'Hide more projects',
+                sumTitle: 'What will be analysed', sumUsers: '{n} username(s)', sumNone: 'not entered yet', sumNoProj: 'not chosen yet',
                 formTitle: 'Four quick steps',
                 formLead: 'Fill them in order. Settings are only used in this browser.',
                 projectInfo: 'Click a project below. For Wikipedia and similar projects you will be asked for a language code (e.g. id, en). Choose Global to search every project at once.',
@@ -3549,6 +3586,34 @@
             updatePvEraNote();
             ['change', 'input'].forEach(ev => document.getElementById('dateFrom').addEventListener(ev, updatePvEraNote));
             document.getElementById('cancelBtn').addEventListener('click', () => abortController?.abort());
+
+            // lipat/buka proyek yang jarang dipakai
+            const wbT = document.getElementById('wbToggle'), wbC = document.getElementById('wikiButtons');
+            wbT.addEventListener('click', () => {
+                const on = wbC.classList.toggle('show-more');
+                wbT.setAttribute('aria-expanded', String(on));
+                wbT.setAttribute('data-i18n', on ? 'wbLess' : 'wbMore');
+                wbT.textContent = translations[currentLang]?.[on ? 'wbLess' : 'wbMore'] || wbT.textContent;
+            });
+
+            // ringkasan: apa yang akan dianalisis, dan apa yang masih kurang
+            function updateSetupSummary() {
+                const tr = translations[currentLang] || {};
+                const pending = document.getElementById('usernameInput').value.trim();
+                const n = usernameChips.length + (pending ? 1 : 0);
+                const proj = document.getElementById('project').value.trim();
+                const from = document.getElementById('dateFrom').value, to = document.getElementById('dateTo').value;
+                const el = document.getElementById('setupSum');
+                const mk = (txt, miss) => '<span class="item' + (miss ? ' miss' : '') + '">' + (miss ? escapeHtml(txt) : '<b>' + escapeHtml(txt) + '</b>') + '</span>';
+                el.innerHTML = '<span class="ss-title">' + escapeHtml(tr.sumTitle || '') + '</span>' +
+                    (n ? mk((tr.sumUsers || '{n}').replace('{n}', n)) : mk((tr.username || 'Username') + ': ' + (tr.sumNone || ''), true)) +
+                    (proj ? mk(proj) : mk((tr.project || 'Project') + ': ' + (tr.sumNoProj || ''), true)) +
+                    (from || to ? mk((from || '…') + ' → ' + (to || '…')) : '');
+            }
+            ['click', 'input', 'change', 'keydown', 'focusout'].forEach(ev =>
+                document.addEventListener(ev, () => setTimeout(updateSetupSummary, 0)));
+            updateSetupSummary();
+            document.getElementById('langBtn').addEventListener('click', () => setTimeout(updateSetupSummary, 0));
 
             // Setiap perubahan input memperbarui URL (ditunda satu tick agar state sudah berubah)
             ['click', 'input', 'change', 'keydown', 'focusout'].forEach(ev =>

@@ -1,2 +1,8 @@
 .DS_Store
 .claude/
+
+# skill desain (ui-ux-pro-max) dan alat pemasangnya, hanya untuk lokal
+.claude/skills/
+node_modules/
+package.json
+package-lock.json

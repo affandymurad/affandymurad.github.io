@@ -260,6 +260,41 @@
     .pv{padding:0;}
     .pv-media,.pv-media img,.pv-media video{max-height:220px;}
   }
+
+  /* ===== revamp: lebih jelas, lebih mudah dipakai ===== */
+  .hero{padding:32px 0 18px;}
+  h1{font-size:clamp(28px,4vw,40px);margin:12px 0 10px;}
+  .lead{font-size:17px;}
+  .card{counter-reset:s;border-radius:22px;padding:26px;}
+  /* langkah bernomor */
+  .card > .field > label:first-child,.card > .field > .lbl:first-child{display:flex;align-items:center;gap:10px;font-size:16px;margin-bottom:6px;counter-increment:s;}
+  .card > .field > label:first-child::before,.card > .field > .lbl:first-child::before{content:counter(s);flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;font-size:12.5px;font-weight:800;box-shadow:0 0 0 4px color-mix(in srgb,var(--brand-2) 18%,transparent);}
+  .card > .field{margin-top:26px;}
+  .card > .field:first-child{margin-top:0;}
+  .card > .field > .hint{margin-left:36px;}
+  .cur-lbl{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:0 0 4px;}
+  .seg-btn{min-height:38px;}
+  .seg-btn.active{box-shadow:0 4px 10px rgba(0,119,182,.28);}
+  /* pilihan proyek berkelompok */
+  .wb-title{grid-column:1 / -1;margin-top:8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .wb-title:first-child{margin-top:0;}
+  .wiki-button.wb-more{display:none;}
+  .wiki-buttons.show-more .wiki-button.wb-more,.wiki-button.wb-more.selected{display:flex;}
+  .wb-toggle{grid-column:1 / -1;justify-self:start;border:1px dashed color-mix(in srgb,var(--brand) 50%,var(--line));background:transparent;color:var(--brand-text);border-radius:999px;padding:8px 16px;font:600 13.5px inherit;}
+  .wb-toggle:hover{background:var(--soft);}
+  .wiki-button:focus-visible,.wb-toggle:focus-visible,.seg-btn:focus-visible,.primary:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+  /* ringkasan sebelum menekan tombol */
+  .setup-sum{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:24px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--soft) 60%,var(--surface));font-size:13.5px;color:var(--muted);}
+  .setup-sum b{color:var(--ink);font-weight:700;}
+  .setup-sum .ss-title{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.06em;}
+  .setup-sum .item::before{content:"•";margin-inline-end:8px;color:var(--brand-2);}
+  .primary{margin-top:12px;padding:14px 22px;font-size:16px;}
+  /* hasil */
+  .results-head .count{padding:2px 10px;border-radius:999px;background:var(--soft);font-weight:600;}
+  .results-head .pdf-btn{margin-left:auto;}
+  .tools-row{padding:10px 0;border-block:1px solid var(--line);}
+  @media (pointer:coarse){.seg-btn,.pdf-btn,.view-switch button,.page-btn,.wb-toggle,select{min-height:44px;}.page-btn{min-width:44px;}}
+  @media (max-width:640px){.card > .field > .hint{margin-left:0;}.card{padding:18px;}}
   @media (max-width:380px){.wiki-button .label{font-size:11px;}}
   footer{padding:10px 0 48px;color:var(--muted);font-size:13px;}
 </style>
@@ -294,7 +329,8 @@
   <section class="card">
     <div class="field">
       <label for="projInput" data-i18n="projectLabel">Proyek Wikimedia</label>
-      <p class="hint" style="margin:0 0 8px" data-i18n="projectHint">Kolom ini tidak bisa diketik. Untuk mengganti proyek, klik salah satu ikon proyek di bawahnya. Untuk Wikipedia, Wiktionary, Wikibooks, dan sejenisnya, Anda akan diminta memasukkan kode bahasa (mis. id, en, fr). Commons, Wikidata, dan proyek global lain langsung terpilih.</p>
+      <p class="hint" style="margin:0 0 10px" data-i18n="projectHint">Kolom ini tidak bisa diketik. Untuk mengganti proyek, klik salah satu ikon proyek di bawahnya. Untuk Wikipedia, Wiktionary, Wikibooks, dan sejenisnya, Anda akan diminta memasukkan kode bahasa (mis. id, en, fr). Commons, Wikidata, dan proyek global lain langsung terpilih.</p>
+      <span class="cur-lbl" data-i18n="currentChoice">Pilihan saat ini</span>
       <input type="text" id="projInput" readonly value="id.wikipedia.org" autocomplete="off">
       <div class="wiki-buttons" id="wikiButtons"></div>
     </div>
@@ -347,6 +383,7 @@
       <p class="hint" data-i18n="limitHint">Makin banyak, makin lama memuat gambar dan data pelengkap. Peringkat di bawah 100 kurang akurat untuk periode panjang.</p>
     </div>
 
+    <div class="setup-sum" id="setupSum" role="status" aria-live="polite"></div>
     <button class="primary" id="goBtn" type="button" data-i18n="go">Tampilkan peringkat</button>
     <button class="ghost" id="cancelBtn" type="button" style="display:none" data-i18n="cancel">Batal</button>
   </section>
@@ -447,7 +484,8 @@ const T = {
     modeLabel:'Peringkat', modeTrending:'Trending', modeLatest:'Terbaru',
     hintTrending:'Artikel paling banyak dibaca (pageview) pada periode yang dipilih.',
     hintLatest:'Halaman yang paling baru dibuat pada periode yang dipilih.',
-    projectLabel:'Proyek Wikimedia', projectHint:'Kolom ini tidak bisa diketik. Untuk mengganti proyek, klik salah satu ikon proyek di bawahnya. Untuk Wikipedia, Wiktionary, Wikibooks, dan sejenisnya, Anda akan diminta memasukkan kode bahasa (mis. id, en, fr). Commons, Wikidata, dan proyek global lain langsung terpilih.', periodLabel:'Periode',
+    currentChoice:'Pilihan saat ini', wbLang:'Proyek per bahasa (memilih kode bahasa)', wbGlobal:'Proyek global (tanpa kode bahasa)', wbMore:'Tampilkan proyek lainnya', wbLess:'Sembunyikan proyek lainnya', sumTitle:'Yang akan ditampilkan', sumTop:(n) => n + ' teratas',
+    projectLabel:'Proyek Wikimedia', projectHint:'Pilih satu proyek di bawah. Wikipedia, Wiktionary, dan sejenisnya meminta kode bahasa (mis. id, en, fr); Commons, Wikidata, dan proyek global lain langsung terpilih.', periodLabel:'Periode',
     presetToday:'Hari ini', presetMonth:'Bulan ini', preset7:'7 hari', preset30:'30 hari', preset90:'90 hari', presetYear:'Tahun ini', presetAll:'Semua waktu',
     periodTrending:'Data pageview harian tersedia sejak Oktober 2015; "Semua waktu" berarti sejak saat itu. Tanggal dalam UTC. Untuk "Hari ini" dan "Bulan ini", Trending berhenti di hari terakhir yang datanya sudah terbit (biasanya kemarin). Periode panjang memuat lebih banyak data dan butuh waktu lebih lama.',
     periodLatest:'Terbaru memakai perubahan terbaru (sekitar 30 hari terakhir). Periode lebih panjang memakai log pembuatan halaman, yang bisa tidak lengkap untuk data lama.',
@@ -493,7 +531,8 @@ const T = {
     modeLabel:'Ranking', modeTrending:'Trending', modeLatest:'Latest',
     hintTrending:'Most-read articles (pageviews) in the selected period.',
     hintLatest:'Most recently created pages in the selected period.',
-    projectLabel:'Wikimedia project', projectHint:'This field cannot be typed into. To change the project, click one of the project icons below it. For Wikipedia, Wiktionary, Wikibooks and similar, you will be asked for a language code (e.g. id, en, fr). Commons, Wikidata and other global projects are selected right away.', periodLabel:'Period',
+    currentChoice:'Current choice', wbLang:'Language projects (pick a language code)', wbGlobal:'Global projects (no language code)', wbMore:'Show more projects', wbLess:'Hide more projects', sumTitle:'What will be shown', sumTop:(n) => 'Top ' + n,
+    projectLabel:'Wikimedia project', projectHint:'Pick a project below. Wikipedia, Wiktionary and similar ask for a language code (e.g. id, en, fr); Commons, Wikidata and other global projects are selected right away.', periodLabel:'Period',
     presetToday:'Today', presetMonth:'This month', preset7:'7 days', preset30:'30 days', preset90:'90 days', presetYear:'This year', presetAll:'All time',
     periodTrending:'Daily pageview data is available since October 2015; "All time" means since then. Dates are UTC. For "Today" and "This month", Trending stops at the latest published day (usually yesterday). Longer periods load more data and take longer.',
     periodLatest:'Latest uses recent changes (roughly the last 30 days). Longer periods use the page creation log, which can be incomplete for older data.',
@@ -671,8 +710,18 @@ function addProjBtn(label, favHost, data){
   b.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } });
   btnBox.appendChild(b);
 }
+const wbTitle = key => { const d = document.createElement('div'); d.className = 'wb-title'; d.dataset.i18n = key; d.textContent = (T[uiLang] || T.id)[key] || ''; btnBox.appendChild(d); };
+wbTitle('wbLang');
 PROJECTS.forEach(([k, label, base]) => addProjBtn(label, 'en.' + base, { base }));
-GLOBALS.forEach(([label, domain]) => addProjBtn(label, domain, { domain }));
+wbTitle('wbGlobal');
+const WB_RARE = new Set(['Wikifunctions', 'Incubator', 'Abstract Wikipedia', 'Wikisource Multi']);   // jarang dipakai: dilipat
+GLOBALS.forEach(([label, domain]) => { addProjBtn(label, domain, { domain }); if (WB_RARE.has(label)) btnBox.lastChild.classList.add('wb-more'); });
+const wbBtn = document.createElement('button'); wbBtn.type = 'button'; wbBtn.className = 'wb-toggle'; wbBtn.setAttribute('aria-expanded', 'false'); wbBtn.dataset.i18n = 'wbMore'; wbBtn.textContent = (T[uiLang] || T.id).wbMore;
+wbBtn.addEventListener('click', () => {
+  const on = btnBox.classList.toggle('show-more');
+  wbBtn.setAttribute('aria-expanded', String(on)); wbBtn.dataset.i18n = on ? 'wbLess' : 'wbMore'; wbBtn.textContent = t(on ? 'wbLess' : 'wbMore');
+});
+btnBox.appendChild(wbBtn);
 function markProj(){
   const v = projInput.value;
   if(v !== lastHost){
@@ -1760,7 +1809,18 @@ $('goBtn').addEventListener('click', async () => {
 });
 
 const autoRun = readUrl();
-applyTexts();
+function updateSetupSummary(){
+  const el = $('setupSum'); if(!el) return;
+  const nsKey = { 0:'nsMain', 4:'nsProject', 6:'nsFile', 14:'nsCategory' }[nsId];
+  const from = $('dateFrom').value, to = $('dateTo').value;
+  const parts = [t(mode === 'trending' ? 'modeTrending' : 'modeLatest'), nsKey ? t(nsKey) : ('ns ' + nsId), (from || to) ? ((from || '…') + ' → ' + (to || '…')) : '', t('sumTop', limitN)].filter(Boolean);
+  el.innerHTML = '';
+  const ttl = document.createElement('span'); ttl.className = 'ss-title'; ttl.textContent = t('sumTitle'); el.appendChild(ttl);
+  const pj = document.createElement('span'); pj.className = 'item'; const b = document.createElement('b'); b.textContent = projInput.value || '–'; pj.appendChild(b); el.appendChild(pj);
+  parts.forEach(p => { const i = document.createElement('span'); i.className = 'item'; i.textContent = p; el.appendChild(i); });
+}
+['click', 'input', 'change', 'keydown'].forEach(ev => document.addEventListener(ev, () => setTimeout(updateSetupSummary, 0)));
+applyTexts(); updateSetupSummary();
 uiReady = true;
 syncUrl();
 if(autoRun) $('goBtn').click();

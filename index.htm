@@ -23,7 +23,7 @@
     <script src="js/b.min.js" defer></script>
 </head>
 
-<body>
+<body class="home">
     <!-- Fixed Header -->
     <header>
         <div class="header-content">
@@ -82,19 +82,24 @@
                     Jakarta, Indonesia
                 </div>
                 <div class="quick-stats">
+                    <div class="hero-cta">
+                        <a href="https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing" id="resume-link" class="cta-primary" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-file-pdf"></i> <span data-key="ctaResume">View resume</span>
+                        </a>
+                        <a href="mailto:affandymurad@gmail.com" class="cta-secondary">
+                            <i class="fas fa-envelope"></i> <span data-key="ctaContact">Contact me</span>
+                        </a>
+                    </div>
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank">
+                        <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-linkedin"></i> LinkedIn
                         </a>
-                        <a href="https://github.com/affandymurad" class="social-link" target="_blank">
+                        <a href="https://github.com/affandymurad" class="social-link" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-github"></i> GitHub
                         </a>
-                        <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" class="social-link" target="_blank" rel="noopener">
+                        <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" class="social-link" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-wikipedia-w"></i> Wikimedia
                         </a>
-                            <a href="https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing" id="resume-link" class="social-link" target="_blank">
-                                <i class="fas fa-file-pdf"></i> Resume
-                            </a>
                     </div>
                 </div>
             </div>
@@ -118,6 +123,7 @@
         <!-- Portfolio Section -->
         <section class="section" id="portfolio">
             <h2 data-key="portfolio"><i class="fas fa-laptop-code"></i>Portfolio</h2>
+            <p class="section-lead" data-key="portfolioLead">Apps and tools I built. Open a link to try it.</p>
             <div class="portfolio-grid">
                 <div class="portfolio-item">
                     <h3 data-key="portfolio1Title">Public Holiday Calendar</h3>
@@ -134,6 +140,18 @@
                         <a href="2026/sg" class="portfolio-link">
                             <img src="2026/flag/singapore.svg" alt="SG" width="20" height="20" loading="lazy" decoding="async">
                             2026
+                        </a>
+                        <a href="2027" class="portfolio-link">
+                            <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
+                            2027
+                        </a>
+                        <a href="2027/my" class="portfolio-link">
+                            <img src="2026/flag/malaysia.svg" alt="MY" width="20" height="20" loading="lazy" decoding="async">
+                            2027
+                        </a>
+                        <a href="2027/sg" class="portfolio-link">
+                            <img src="2026/flag/singapore.svg" alt="SG" width="20" height="20" loading="lazy" decoding="async">
+                            2027
                         </a>
                     </div>
                 </div>
@@ -189,6 +207,7 @@
         <!-- Experience Section -->
         <section class="section" id="experience">
             <h2 data-key="experience"><i class="fas fa-briefcase"></i>Experience</h2>
+            <p class="section-lead" data-key="experienceLead">Most recent first.</p>
             <div class="experience-grid">
                 <div class="experience-card">
                     <div class="experience-header">
@@ -359,10 +378,11 @@
         <!-- Contact Section -->
         <section class="section" id="contact">
             <h2 data-key="contact"><i class="fas fa-address-card"></i>Contact</h2>
-            <div class="contact-grid">
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <a href="mailto:affandymurad@gmail.com">affandymurad@gmail.com</a>
+            <div class="contact-card">
+                <p class="contact-lead" data-key="contactLead">Open to new opportunities and collaborations. Email is the fastest way to reach me.</p>
+                <div class="contact-actions">
+                    <a class="cta-primary" href="mailto:affandymurad@gmail.com"><i class="fas fa-envelope"></i> <span>affandymurad@gmail.com</span></a>
+                    <a class="cta-secondary" href="https://www.linkedin.com/in/affandy-murad/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i> LinkedIn</a>
                 </div>
             </div>
         </section>
@@ -381,10 +401,17 @@
         <div id="wcb" class="carbonbadge wcb-d"></div>
     </footer>
 
+    <a href="#" class="to-top" id="to-top" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></a>
+
     <script>
         const translations = {
             EN: {
                 statusBadge: "Available for opportunities",
+                ctaResume: "View resume",
+                ctaContact: "Contact me",
+                portfolioLead: "Apps and tools I built. Open a link to try it.",
+                experienceLead: "Most recent first.",
+                contactLead: "Open to new opportunities and collaborations. Email is the fastest way to reach me.",
                 factNow: "Now",
                 factFocus: "Focus",
                 factFocusVal: "Mobile apps, cloud & AI",
@@ -430,6 +457,11 @@
             },
             ID: {
                 statusBadge: "Tersedia untuk peluang kerja",
+                ctaResume: "Lihat resume",
+                ctaContact: "Hubungi saya",
+                portfolioLead: "Aplikasi dan alat yang saya buat. Buka tautannya untuk mencobanya.",
+                experienceLead: "Dari yang terbaru.",
+                contactLead: "Terbuka untuk peluang dan kolaborasi baru. Email adalah cara tercepat menghubungi saya.",
                 factNow: "Saat ini",
                 factFocus: "Fokus",
                 factFocusVal: "Aplikasi mobile, cloud & AI",
@@ -502,6 +534,7 @@
                 resumeLink.href = t.resumeUrl;
             }
 
+            document.documentElement.lang = lang === 'ID' ? 'id' : 'en';
             document.querySelectorAll('#lang-switch, #mobile-lang-switch').forEach(btn => btn.setAttribute('aria-checked', String(lang === 'EN')));
         }
 
@@ -614,6 +647,31 @@
                     }
                 }
             });
+
+            // Menu menandai bagian yang sedang dibaca
+            const navLinks = [...document.querySelectorAll('.desktop-nav a, .menu-item')];
+            const spySecs = ['portfolio', 'experience', 'education', 'skills', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver(entries => {
+                    entries.forEach(en => {
+                        if (!en.isIntersecting) return;
+                        navLinks.forEach(a => {
+                            if (a.getAttribute('href') === '#' + en.target.id) a.setAttribute('aria-current', 'true');
+                            else a.removeAttribute('aria-current');
+                        });
+                    });
+                }, { rootMargin: '-35% 0px -60% 0px' });
+                spySecs.forEach(sec => io.observe(sec));
+            }
+
+            // Tombol kembali ke atas
+            const toTop = document.getElementById('to-top');
+            if (toTop) {
+                const syncTop = () => { toTop.hidden = window.scrollY < 700; };
+                window.addEventListener('scroll', syncTop, { passive: true });
+                syncTop();
+                toTop.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+            }
 
             // Watch for system theme changes
             window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {

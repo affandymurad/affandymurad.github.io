@@ -393,6 +393,35 @@
     .yr-scope .project-badge{font-size:.8em;padding:4px 8px;border-radius:12px;}
     .yr-scope .attribution{font-size:.4em;}
   }
+
+  /* ===== revamp: lebih jelas, lebih mudah dipakai ===== */
+  .hero{padding:32px 0 18px;}
+  h1{font-size:clamp(28px,4vw,40px);}
+  /* mode = bilah tab sama lebar, yang aktif jelas */
+  .mode-switch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:5px;border:1px solid var(--line);border-radius:16px;background:var(--soft);margin-bottom:22px;}
+  .mode-btn{justify-content:center;min-height:44px;padding:6px 10px;border:0;border-radius:12px;background:transparent;text-align:center;line-height:1.2;}
+  .mode-btn:hover{background:color-mix(in srgb,var(--surface) 70%,transparent);}
+  .mode-btn.active{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(0,119,182,.3);}
+  .mode-btn:focus-visible,.wb-toggle:focus-visible,.wiki-button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+  .where{margin:8px 0 0;font-size:13px;color:var(--muted);}
+  .where:empty{display:none;}
+  #queryForm[style*="none"] ~ .where{display:none;}
+  /* formulir kontribusi: bernomor, proyek berkelompok */
+  #contribForm{counter-reset:s;}
+  #contribForm .contrib-grid,#contribForm .contrib-field{position:relative;margin-bottom:26px;}
+  #contribForm .contrib-field > label:first-child{display:flex;align-items:center;gap:10px;font-size:16px;margin-bottom:4px;counter-increment:s;}
+  #contribForm .contrib-field > label:first-child::before{content:counter(s);flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;font-size:12.5px;font-weight:800;box-shadow:0 0 0 4px color-mix(in srgb,var(--brand-2) 18%,transparent);}
+  #contribForm .contrib-field > .field-hint{margin-left:36px;}
+  .wb-title{grid-column:1 / -1;margin-top:8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .wb-title:first-of-type{margin-top:0;}
+  .wiki-button.wb-more{display:none;}
+  .wiki-buttons-container.show-more .wiki-button.wb-more,.wiki-button.wb-more.selected{display:flex;}
+  .contrib-field.yr-global-on .wiki-buttons-container.show-more .wiki-button.wb-more,.contrib-field.yr-global-on .wb-title,.contrib-field.yr-global-on .wb-toggle{display:none;}
+  .wb-toggle{grid-column:1 / -1;justify-self:start;border:1px dashed color-mix(in srgb,var(--brand) 50%,var(--line));background:transparent;color:var(--brand-text);border-radius:999px;padding:8px 16px;font:600 13.5px inherit;cursor:pointer;}
+  .wb-toggle:hover{background:var(--soft);}
+  .results-head .count{padding:2px 10px;border-radius:999px;background:var(--soft);font-weight:600;}
+  @media (pointer:coarse){.chip,.btn-outline,.btn-primary,.palette-opt,.wb-toggle{min-height:44px;}}
+  @media (max-width:720px){.mode-switch{grid-template-columns:1fr 1fr;}#contribForm .contrib-field > .field-hint{margin-left:0;}}
 </style>
 </head>
 <body>
@@ -446,6 +475,8 @@
   </form>
   <p class="hint" id="hintText">Kode bahasa mengikuti subdomain Wikipedia (id, en, ja, fr, de, dst). Prefiks namespace kategori (mis. "Kategori:", "Category:") tidak perlu diketik.</p>
 
+  <p class="where" id="whereText" aria-live="polite"></p>
+
   <form class="user-query-form" id="userQueryForm" style="display:none;">
     <div>
       <label for="userUsernameInput" data-i18n="userUsernameLabel">Nama pengguna</label>
@@ -481,6 +512,7 @@
           <img class="favicon-placeholder" alt="Global" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230077b6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M2.5 12h19M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5z'/%3E%3C/svg%3E">
           <span class="label">Global</span>
         </div>
+        <div class="wb-title" data-i18n="wbLang">Proyek per bahasa (memilih kode bahasa)</div>
         <div class="wiki-button" data-project="wikipedia" data-needs-lang="true" data-domain-base="wikipedia.org" title="Wikipedia">
           <img class="favicon-placeholder" alt="Wikipedia">
           <span class="label">Wikipedia</span>
@@ -514,6 +546,7 @@
           <span class="label">Wikivoyage</span>
         </div>
 
+        <div class="wb-title" data-i18n="wbGlobal">Proyek global (tanpa kode bahasa)</div>
         <div class="wiki-button" data-domain="species.wikimedia.org" title="Wikispecies">
           <img class="favicon-placeholder" alt="Wikispecies">
           <span class="label">Wikispecies</span>
@@ -526,11 +559,11 @@
           <img class="favicon-placeholder" alt="Wikidata">
           <span class="label">Wikidata</span>
         </div>
-        <div class="wiki-button" data-domain="www.wikifunctions.org" title="Wikifunctions">
+        <div class="wiki-button wb-more" data-domain="www.wikifunctions.org" title="Wikifunctions">
           <img class="favicon-placeholder" alt="Wikifunctions">
           <span class="label">Wikifunctions</span>
         </div>
-        <div class="wiki-button" data-domain="incubator.wikimedia.org" title="Incubator">
+        <div class="wiki-button wb-more" data-domain="incubator.wikimedia.org" title="Incubator">
           <img class="favicon-placeholder" alt="Incubator">
           <span class="label">Incubator</span>
         </div>
@@ -542,30 +575,31 @@
           <img class="favicon-placeholder" alt="MediaWiki">
           <span class="label">MediaWiki</span>
         </div>
-        <div class="wiki-button" data-domain="wikitech.wikimedia.org" title="Wikitech">
+        <div class="wiki-button wb-more" data-domain="wikitech.wikimedia.org" title="Wikitech">
           <img class="favicon-placeholder" alt="Wikitech">
           <span class="label">Wikitech</span>
         </div>
-        <div class="wiki-button" data-domain="wikimania.wikimedia.org" title="Wikimania">
+        <div class="wiki-button wb-more" data-domain="wikimania.wikimedia.org" title="Wikimania">
           <img class="favicon-placeholder" alt="Wikimania">
           <span class="label">Wikimania</span>
         </div>
-        <div class="wiki-button" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
+        <div class="wiki-button wb-more" data-domain="abstract.wikipedia.org" title="Abstract Wikipedia">
           <img class="favicon-placeholder" alt="Abstract Wikipedia">
           <span class="label">Abstract Wikipedia</span>
         </div>
-        <div class="wiki-button" data-domain="wikisource.org" title="Wikisource (multibahasa)">
+        <div class="wiki-button wb-more" data-domain="wikisource.org" title="Wikisource (multibahasa)">
           <img class="favicon-placeholder" alt="Wikisource (multibahasa)">
           <span class="label">Wikisource Multi</span>
         </div>
-        <div class="wiki-button" data-domain="test.wikipedia.org" title="Test Wikipedia">
+        <div class="wiki-button wb-more" data-domain="test.wikipedia.org" title="Test Wikipedia">
           <img class="favicon-placeholder" alt="Test Wikipedia">
           <span class="label">Test Wikipedia</span>
         </div>
-        <div class="wiki-button" data-project="wikimedia" data-needs-lang="true" data-domain-base="wikimedia.org" data-favicon="id.wikimedia.org" title="Wikimedia Chapter">
+        <div class="wiki-button wb-more" data-project="wikimedia" data-needs-lang="true" data-domain-base="wikimedia.org" data-favicon="id.wikimedia.org" title="Wikimedia Chapter">
           <img class="favicon-placeholder" alt="Wikimedia Chapter">
           <span class="label">Chapter</span>
         </div>
+        <button type="button" class="wb-toggle" id="yrWbToggle" aria-expanded="false" data-i18n="wbMore">Tampilkan proyek lainnya</button>
       </div>
     </div>
 
@@ -884,7 +918,8 @@
       backHome: 'Kembali ke Affandy Murad',
       modeCategory: 'Cari Kategori',
       modeArticle: 'Cari Artikel',
-      modeUser: 'Cari Detail Pengguna dan Acaranya',
+      modeUser: 'Detail Pengguna',
+      wbLang: 'Proyek per bahasa (memilih kode bahasa)', wbGlobal: 'Proyek global (tanpa kode bahasa)', wbMore: 'Tampilkan proyek lainnya', wbLess: 'Sembunyikan proyek lainnya', searchingIn: 'Mencari di',
       langFieldLabel: 'Bahasa',
       catLabelCategory: 'Nama kategori',
       catPlaceholderCategory: 'Misal: Ibu kota negara',
@@ -1076,7 +1111,8 @@
       backHome: 'Back to Affandy Murad',
       modeCategory: 'Search Category',
       modeArticle: 'Search Article',
-      modeUser: 'Search User Details and Events',
+      modeUser: 'User Details',
+      wbLang: 'Language projects (pick a language code)', wbGlobal: 'Global projects (no language code)', wbMore: 'Show more projects', wbLess: 'Hide more projects', searchingIn: 'Searching on',
       langFieldLabel: 'Language',
       catLabelCategory: 'Category name',
       catPlaceholderCategory: 'e.g.: Capital cities',
@@ -3036,6 +3072,23 @@
 
   modeButtons.forEach(btn => {
     btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+
+  // "Mencari di id.wikipedia.org": kode bahasa langsung terlihat artinya
+  const whereEl = document.getElementById('whereText'), langIn = document.getElementById('langInput');
+  function updateWhere(){
+    const c = (langIn.value || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+    whereEl.textContent = c ? t('searchingIn') + ' ' + c + '.wikipedia.org' : '';
+  }
+  langIn.addEventListener('input', updateWhere);
+  document.getElementById('langBtn').addEventListener('click', () => setTimeout(updateWhere, 0));
+  updateWhere();
+
+  // proyek yang jarang dipakai dilipat pada formulir Kontribusi
+  const yrBox = document.getElementById('yrWikiButtons'), yrTog = document.getElementById('yrWbToggle');
+  yrTog.addEventListener('click', () => {
+    const on = yrBox.classList.toggle('show-more');
+    yrTog.setAttribute('aria-expanded', String(on)); yrTog.setAttribute('data-i18n', on ? 'wbLess' : 'wbMore'); yrTog.textContent = t(on ? 'wbLess' : 'wbMore');
   });
 
   form.addEventListener('submit', (e) => {
