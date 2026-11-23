@@ -1,687 +1,1896 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affandy Murad - Resume & Portfolio</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' fill='%235B8FF9' rx='10' ry='10'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='50' fill='%23FFFFFF' text-anchor='middle'>AM</text></svg>"
-        type="image/svg+xml">
-    <!-- Preload critical font weights to avoid late font-display swap -->
-    <link rel="preload" href="fonts/plus-jakarta-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="fonts/plus-jakarta-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Affandy Murad — App Crafter & IT Supervisor</title>
+    <meta name="description" content="Portfolio and resume of Affandy Murad — Mobile Developer (iOS/Android), Cloud & AI Practitioner, and IT Supervisor based in Jakarta.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230066FF'/><text x='50' y='66' font-family='-apple-system,BlinkMacSystemFont,sans-serif' font-weight='700' font-size='44' fill='%23FFFFFF' text-anchor='middle'>AM</text></svg>" type="image/svg+xml">
+    <style>
+        /* ==========================================================================
+           1. DESIGN TOKENS (Apple HIG & Figma Semantic System)
+           ========================================================================== */
+        :root {
+            --bg-canvas: #F8F9FA;
+            --bg-surface: #FFFFFF;
+            --bg-subtle: #F1F3F5;
+            --bg-glass: rgba(255, 255, 255, 0.96);
+            --bg-glass-scrolled: rgba(255, 255, 255, 0.98);
 
-    <!-- Critical CSS: render-blocking on purpose -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/fonts.css">
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #6B7280;
 
-    <!-- Font Awesome icons: not needed for first paint, load without blocking render -->
-    <link rel="preload" href="css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/all.min.css"></noscript>
+            --border-hairline: rgba(17, 24, 39, 0.08);
+            --border-strong: rgba(17, 24, 39, 0.16);
 
-    <script src="js/b.min.js" defer></script>
+            --accent: #0066FF;
+            --accent-hover: #0052CC;
+            --accent-soft: rgba(0, 102, 255, 0.08);
+            --accent-text: #0066FF;
+
+            --status-green: #10B981;
+            --status-bg: rgba(16, 185, 129, 0.1);
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+            --shadow-float: 0 10px 28px -6px rgba(0, 0, 0, 0.12), 0 2px 8px -2px rgba(0, 0, 0, 0.05);
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-pill: 9999px;
+
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+            --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+            --container-max: 1024px;
+            --header-height: 54px;
+        }
+
+        [data-theme="dark"] {
+            --bg-canvas: #0B0D10;
+            --bg-surface: #14171C;
+            --bg-subtle: #1C2026;
+            --bg-glass: rgba(20, 23, 28, 0.95);
+            --bg-glass-scrolled: rgba(20, 23, 28, 0.98);
+
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --text-tertiary: #6B7280;
+
+            --border-hairline: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.16);
+
+            --accent: #3B82F6;
+            --accent-hover: #60A5FA;
+            --accent-soft: rgba(59, 130, 246, 0.14);
+            --accent-text: #60A5FA;
+
+            --status-green: #34D399;
+            --status-bg: rgba(52, 211, 153, 0.12);
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+            --shadow-float: 0 14px 34px -6px rgba(0, 0, 0, 0.65);
+        }
+
+        /* ==========================================================================
+           2. RESET & BASE TYPOGRAPHY
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(var(--header-height) + 32px);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color 0.25s ease, color 0.25s ease;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ==========================================================================
+           3. REFINED STICKY GLASS NAVIGATION
+           ========================================================================== */
+        .nav-wrapper {
+            position: sticky;
+            top: calc(12px + env(safe-area-inset-top));
+            margin-top: calc(12px + env(safe-area-inset-top));
+            z-index: 100;
+            padding: 0 16px;
+            pointer-events: none;
+            transition: top 0.25s var(--ease-spring);
+        }
+
+        .navbar {
+            pointer-events: auto;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            height: var(--header-height);
+            padding: 0 8px 0 16px;
+            background: var(--bg-glass);
+            backdrop-filter: saturate(180%) blur(28px);
+            -webkit-backdrop-filter: saturate(180%) blur(28px);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .navbar.scrolled {
+            background: var(--bg-glass-scrolled);
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-float);
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 0.925rem;
+            letter-spacing: -0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: 0;
+            padding: 6px 4px;
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .nav-links a {
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: var(--bg-subtle);
+        }
+
+        .nav-links a[aria-current="true"] {
+            color: var(--accent-text);
+            background: var(--accent-soft);
+            font-weight: 600;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        /* Segmented Control (iOS/Figma Style) */
+        .segmented-btn {
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-subtle);
+            padding: 3px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-hairline);
+            height: 36px;
+        }
+
+        .segmented-option {
+            padding: 0 9px;
+            height: 28px;
+            border-radius: var(--radius-pill);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s var(--ease-spring);
+        }
+
+        .segmented-option.active {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--border-strong);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.94);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* Mobile Drawer */
+        .mobile-drawer {
+            position: fixed;
+            top: calc(var(--header-height) + 20px + env(safe-area-inset-top));
+            left: 16px;
+            right: 16px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-float);
+            padding: 10px;
+            z-index: 99;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            transform-origin: top center;
+            animation: drawerIn 0.2s var(--ease-spring);
+        }
+
+        .mobile-drawer.open {
+            display: flex;
+        }
+
+        @keyframes drawerIn {
+            from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .mobile-drawer a {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-drawer a:hover,
+        .mobile-drawer a[aria-current="true"] {
+            background: var(--accent-soft);
+            color: var(--accent-text);
+        }
+
+        /* ==========================================================================
+           4. BENTO HERO SECTION (Properly cleared below sticky header)
+           ========================================================================== */
+        main.container {
+            padding-top: 28px;
+        }
+
+        .hero-bento {
+            display: grid;
+            grid-template-columns: 1.65fr 1fr;
+            gap: 16px;
+            margin-bottom: 64px;
+        }
+
+        .bento-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hero-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .avatar-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--bg-surface);
+            box-shadow: 0 0 0 1px var(--border-strong);
+            background: var(--bg-subtle);
+            flex-shrink: 0;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--radius-pill);
+            background: var(--status-bg);
+            color: var(--status-green);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--status-green);
+            box-shadow: 0 0 0 3px var(--status-bg);
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .hero-tagline {
+            font-size: 1.02rem;
+            color: var(--text-secondary);
+            max-width: 54ch;
+            line-height: 1.6;
+        }
+
+        .hero-tagline strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            padding-top: 4px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 20px;
+            border-radius: var(--radius-md);
+            background: var(--accent);
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-primary:active,
+        .btn-secondary:active,
+        .social-pill:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 18px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            color: var(--text-primary);
+            border: 1px solid var(--border-hairline);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-strong);
+            background: var(--bg-surface);
+        }
+
+        .hero-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .fact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .fact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-hairline);
+        }
+
+        .fact-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .fact-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+        }
+
+        .fact-value {
+            font-size: 0.925rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .fact-sub {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .social-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .social-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-subtle);
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .social-pill:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hairline);
+            background: var(--bg-surface);
+        }
+
+        /* ==========================================================================
+           5. SECTION HEADERS & LAYOUT
+           ========================================================================== */
+        .section {
+            margin-bottom: 72px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-eyebrow {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-text);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, 3vw, 1.85rem);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Filter Tabs (Polymorphic Controls) */
+        .filter-group {
+            display: inline-flex;
+            background: var(--bg-subtle);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-hairline);
+            gap: 2px;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s var(--ease-spring);
+        }
+
+        .filter-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ==========================================================================
+           6. POLYMORPHIC PORTFOLIO GRID
+           ========================================================================== */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .project-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            transition: transform 0.25s var(--ease-spring), border-color 0.2s ease, box-shadow 0.25s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-card[hidden] {
+            display: none;
+        }
+
+        .project-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .project-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--accent-soft);
+            color: var(--accent-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .project-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            background: var(--bg-subtle);
+            color: var(--text-secondary);
+        }
+
+        .project-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            margin-bottom: 6px;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .link-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.15s ease;
+        }
+
+        .link-chip:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #FFFFFF;
+        }
+
+        .link-chip img {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+
+        /* ==========================================================================
+           7. EDITORIAL EXPERIENCE TIMELINE
+           ========================================================================== */
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .timeline-row {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+            padding: 28px 32px;
+            border-bottom: 1px solid var(--border-hairline);
+            transition: background-color 0.15s ease;
+        }
+
+        .timeline-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Zebra: tint every even row subtly */
+        .timeline-row:nth-child(even) {
+            background: color-mix(in srgb, var(--bg-subtle) 55%, var(--bg-surface));
+        }
+
+        .timeline-row:hover,
+        .timeline-row:nth-child(even):hover {
+            background: color-mix(in srgb, var(--bg-subtle) 100%, transparent);
+        }
+
+        .timeline-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .timeline-period {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .timeline-location {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        .timeline-location img {
+            width: 16px;
+            height: 16px;
+        }
+
+        .timeline-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .role-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .company-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-hairline);
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .company-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .role-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.25;
+        }
+
+        .company-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-text);
+        }
+
+        .role-desc {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-top: 4px;
+        }
+
+        /* ==========================================================================
+           8. SKILLS, EDUCATION & ACHIEVEMENTS BENTO
+           ========================================================================== */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .skill-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .skill-card h3 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+            margin-bottom: 14px;
+        }
+
+        .chip-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .chip-cloud li {
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .dual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 16px;
+        }
+
+        .award-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .award-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .award-icon {
+            color: var(--accent-text);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ==========================================================================
+           9. CONTACT CTA & FOOTER
+           ========================================================================== */
+        .contact-banner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .contact-copy h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .contact-copy p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 48ch;
+        }
+
+        .contact-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-hairline);
+            padding: 32px 0 48px;
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-meta a {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-strong);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: all 0.2s var(--ease-spring);
+            z-index: 90;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--accent);
+            color: #FFFFFF;
+            border-color: var(--accent);
+        }
+
+        /* ==========================================================================
+           10. RESPONSIVE BREAKPOINTS
+           ========================================================================== */
+        @media (max-width: 860px) {
+            .hero-bento {
+                grid-template-columns: 1fr;
+            }
+            .dual-grid {
+                grid-template-columns: 1fr;
+            }
+            .timeline-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .bento-card {
+                padding: 24px;
+            }
+            .contact-banner {
+                padding: 28px 24px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .navbar {
+                padding: 0 6px 0 12px;
+            }
+            .brand {
+                font-size: 0.86rem;
+                gap: 6px;
+            }
+            .segmented-option {
+                padding: 0 7px;
+                font-size: 0.7rem;
+            }
+            .nav-controls {
+                gap: 4px;
+            }
+            .icon-btn {
+                width: 34px;
+                height: 34px;
+            }
+        }
+    </style>
 </head>
+<body>
 
-<body class="home">
-    <!-- Fixed Header -->
-    <header>
-        <div class="header-content">
-            <a href="#" class="brand">Affandy Murad</a>
-            <nav class="desktop-nav" aria-label="Sections">
-                <a href="#portfolio" data-key="portfolio">Portfolio</a>
-                <a href="#experience" data-key="experience">Experience</a>
-                <a href="#education" data-key="education">Education</a>
-                <a href="#skills" data-key="skills">Skills</a>
-                <a href="#contact" data-key="contact">Contact</a>
+    <!-- Floating Glass Navigation -->
+    <div class="nav-wrapper">
+        <header class="navbar" id="navbar">
+            <a href="#" class="brand">
+                <span class="brand-dot" aria-hidden="true"></span>
+                <span class="brand-text">Affandy Murad</span>
+            </a>
+
+            <nav class="nav-links" aria-label="Primary Navigation">
+                <a href="#portfolio" data-i18n="navPortfolio">Portfolio</a>
+                <a href="#experience" data-i18n="navExperience">Experience</a>
+                <a href="#skills" data-i18n="navSkills">Skills</a>
+                <a href="#education" data-i18n="navEducation">Education</a>
+                <a href="#contact" data-i18n="navContact">Contact</a>
             </nav>
-            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="desktop-controls">
-                <button class="lang-switch" type="button" id="theme-toggle" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode"><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
-                <button class="lang-switch" type="button" id="lang-switch" role="switch" aria-checked="false" aria-label="Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
+
+            <div class="nav-controls">
+                <!-- Segmented Language Switch -->
+                <div class="segmented-btn" role="group" aria-label="Language Switcher">
+                    <button type="button" class="segmented-option" data-lang-btn="ID">ID</button>
+                    <button type="button" class="segmented-option active" data-lang-btn="EN">EN</button>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+                    <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                    <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+
+                <!-- Mobile Hamburger -->
+                <button type="button" class="icon-btn mobile-menu-btn" id="mobile-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Open menu">
+                    <svg id="icon-menu" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                    <svg id="icon-close" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:none"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
             </div>
-        </div>
-    </header>
+        </header>
+    </div>
 
-    <!-- Mobile Menu -->
-    <!-- Mobile Menu -->
-    <nav class="mobile-menu" id="mobile-menu">
-        <!-- Language & Theme Controls di dalam menu -->
-        <div class="mobile-controls-inner">
-            <button class="lang-switch" type="button" id="mobile-theme-toggle" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode"><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
-            <button class="lang-switch" type="button" id="mobile-lang-switch" role="switch" aria-checked="false" aria-label="Language: ID | EN"><i></i><span>ID</span><span>EN</span></button>
-        </div>
-
-        <div class="menu-items" id="menu-items">
-            <a href="#portfolio" class="menu-item" data-key="portfolio">Portfolio</a>
-            <a href="#experience" class="menu-item" data-key="experience">Experience</a>
-            <a href="#education" class="menu-item" data-key="education">Education</a>
-            <a href="#skills" class="menu-item" data-key="skills">Skills</a>
-            <a href="#contact" class="menu-item" data-key="contact">Contact</a>
-        </div>
+    <!-- Mobile Navigation Drawer -->
+    <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile Navigation">
+        <a href="#portfolio" data-i18n="navPortfolio">Portfolio</a>
+        <a href="#experience" data-i18n="navExperience">Experience</a>
+        <a href="#skills" data-i18n="navSkills">Skills</a>
+        <a href="#education" data-i18n="navEducation">Education</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
     </nav>
+
     <main class="container">
-        <!-- Profile Section (replaces old header content) -->
-        <section class="profile-section">
-            <div class="profile-media-container">
-                <img src="images/profile.jpeg" alt="Affandy Murad Profile" class="profile-image" width="120" height="120" fetchpriority="high" decoding="async">
-                <div class="status-badge" data-key="statusBadge">
-                    <div class="status-indicator"></div>
-                    Available for opportunities
+        <!-- Bento Hero Section -->
+        <section class="hero-bento" aria-label="Introduction">
+            <div class="bento-card hero-main">
+                <div class="hero-top">
+                    <div class="avatar-group">
+                        <img src="images/profile.jpeg" alt="Affandy Murad" class="avatar" width="68" height="68" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230066FF%22/><text x=%2250%22 y=%2264%22 font-family=%22sans-serif%22 font-weight=%22700%22 font-size=%2240%22 fill=%22white%22 text-anchor=%22middle%22>AM</text></svg>'">
+                        <div class="status-pill">
+                            <span class="status-dot" aria-hidden="true"></span>
+                            <span data-i18n="statusBadge">Available for opportunities</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-copy">
+                    <h1>Affandy Murad</h1>
+                    <p class="hero-tagline" data-i18n="heroBio">
+                        <strong>The App Crafter.</strong> Building native iOS &amp; Android experiences, enterprise digital workflows, and AI-powered tools from Jakarta, Indonesia.
+                    </p>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing" id="resume-link" class="btn-primary" target="_blank" rel="noopener noreferrer">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        <span data-i18n="ctaResume">View Resume</span>
+                    </a>
+                    <a href="#contact" class="btn-secondary">
+                        <span data-i18n="ctaContact">Get in touch</span>
+                    </a>
                 </div>
             </div>
 
-            <div class="profile-details-container">
-                <h1>Affandy Murad</h1>
-                <p class="subtitle">The App Crafter <i class="fab fa-android"></i>&nbsp;<i
-                        class="fab fa-apple"></i>&nbsp;<i class="fab fa-react"></i></p>
-                <div class="location-info">
-                    <i class="fas fa-map-marker-alt"></i>
-                    Jakarta, Indonesia
-                </div>
-                <div class="quick-stats">
-                    <div class="hero-cta">
-                        <a href="https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing" id="resume-link" class="cta-primary" target="_blank" rel="noopener noreferrer">
-                            <i class="fas fa-file-pdf"></i> <span data-key="ctaResume">View resume</span>
-                        </a>
-                        <a href="mailto:affandymurad@gmail.com" class="cta-secondary">
-                            <i class="fas fa-envelope"></i> <span data-key="ctaContact">Contact me</span>
-                        </a>
+            <aside class="bento-card hero-side" aria-label="Quick Facts">
+                <div class="fact-list">
+                    <div class="fact-item">
+                        <span class="fact-label" data-i18n="factNowLabel">Current Role</span>
+                        <span class="fact-value">IT Supervisor</span>
+                        <span class="fact-sub">Korindo Group · Jakarta</span>
                     </div>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/in/affandy-murad/" class="social-link" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="https://github.com/affandymurad" class="social-link" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                        <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" class="social-link" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-wikipedia-w"></i> Wikimedia
-                        </a>
+                    <div class="fact-item">
+                        <span class="fact-label" data-i18n="factFocusLabel">Core Focus</span>
+                        <span class="fact-value" data-i18n="factFocusVal">Mobile Apps, Cloud &amp; AI</span>
+                        <span class="fact-sub">Swift · Kotlin · Azure AI</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label" data-i18n="factEduLabel">Education</span>
+                        <span class="fact-value">Universitas Gunadarma</span>
+                        <span class="fact-sub">S.Kom · GPA 3.89 (Cum Laude)</span>
                     </div>
                 </div>
-            </div>
 
-            <dl class="profile-facts">
-                <div>
-                    <dt data-key="factNow">Now</dt>
-                    <dd>IT Supervisor, Korindo Group</dd>
+                <div class="social-row">
+                    <a href="https://www.linkedin.com/in/affandy-murad/" class="social-pill" target="_blank" rel="noopener noreferrer">
+                        LinkedIn ↗
+                    </a>
+                    <a href="https://github.com/affandymurad" class="social-pill" target="_blank" rel="noopener noreferrer">
+                        GitHub ↗
+                    </a>
+                    <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" class="social-pill" target="_blank" rel="noopener noreferrer">
+                        Wikimedia ↗
+                    </a>
                 </div>
-                <div>
-                    <dt data-key="factFocus">Focus</dt>
-                    <dd data-key="factFocusVal">Mobile apps, cloud &amp; AI</dd>
-                </div>
-                <div>
-                    <dt data-key="education">Education</dt>
-                    <dd>Universitas Gunadarma, S.Kom (Cum Laude)</dd>
-                </div>
-            </dl>
+            </aside>
         </section>
 
         <!-- Portfolio Section -->
         <section class="section" id="portfolio">
-            <h2 data-key="portfolio"><i class="fas fa-laptop-code"></i>Portfolio</h2>
-            <p class="section-lead" data-key="portfolioLead">Apps and tools I built. Open a link to try it.</p>
-            <div class="portfolio-grid">
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio1Title">Public Holiday Calendar</h3>
-                    <p data-key="portfolio1Desc">Public Holiday Calendar for Indonesia, Malaysia, and Singapore</p>
-                    <div class="portfolio-links">
-                        <a href="2026" class="portfolio-link">
-                            <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                            2026
-                        </a>
-                        <a href="2026/my" class="portfolio-link">
-                            <img src="2026/flag/malaysia.svg" alt="MY" width="20" height="20" loading="lazy" decoding="async">
-                            2026
-                        </a>
-                        <a href="2026/sg" class="portfolio-link">
-                            <img src="2026/flag/singapore.svg" alt="SG" width="20" height="20" loading="lazy" decoding="async">
-                            2026
-                        </a>
-                        <a href="2027" class="portfolio-link">
-                            <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                            2027
-                        </a>
-                        <a href="2027/my" class="portfolio-link">
-                            <img src="2026/flag/malaysia.svg" alt="MY" width="20" height="20" loading="lazy" decoding="async">
-                            2027
-                        </a>
-                        <a href="2027/sg" class="portfolio-link">
-                            <img src="2026/flag/singapore.svg" alt="SG" width="20" height="20" loading="lazy" decoding="async">
-                            2027
-                        </a>
-                    </div>
+            <div class="section-header">
+                <div>
+                    <span class="section-eyebrow">01 / Selected Works</span>
+                    <h2 class="section-title" data-i18n="portfolioTitle">Portfolio</h2>
+                    <p class="section-desc" data-i18n="portfolioLead">Products, civic tools, and AI experiments crafted for real-world utility.</p>
                 </div>
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio2Title">Kurs Saldo</h3>
-                    <p data-key="portfolio2Desc">Latest Indonesian Economic News & Exchange Rates</p>
-                    <div class="portfolio-links">
-                        <a href="https://kurs-saldo.netlify.app" class="portfolio-link">Web</a>
-                    </div>
+
+                <div class="filter-group" role="tablist" aria-label="Filter projects">
+                    <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">All (7)</button>
+                    <button type="button" class="filter-btn" data-filter="ai" data-i18n="filterAI">AI &amp; Tools</button>
+                    <button type="button" class="filter-btn" data-filter="civic" data-i18n="filterCivic">Civic &amp; Culture</button>
                 </div>
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio3Title">Wikilokal</h3>
-                    <p data-key="portfolio3Desc">Explore Wikimedia Project (Wikipedia, Wikidata, Wikivoyage, Wiktionary,
-                        OSM) within a 3 km radius of your location</p>
-                    <div class="portfolio-links">
-                        <a href="wikilokal/" class="portfolio-link">Web</a>
+            </div>
+
+            <div class="portfolio-grid" id="portfolio-grid">
+                <!-- 1. Public Holiday Calendar -->
+                <article class="project-card" data-category="civic">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
+                            <span class="project-tag">Civic Utility</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p1Title">Public Holiday Calendar</h3>
+                        <p class="project-desc" data-i18n="p1Desc">Interactive public holiday calendar and observance tracker for Indonesia, Malaysia, and Singapore.</p>
                     </div>
-                </div>
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio4Title">Kalender Rowot Sasak</h3>
-                    <p data-key="portfolio4Desc">Traditional Sasak calendar based on Wariga knowledge, covering seasons,
-                        dating cycles, wuku, and day-character interpretation.</p>
-                    <div class="portfolio-links">
-                        <a href="2020/rowot/" class="portfolio-link">2020</a>
-                        <a href="2026/rowot/" class="portfolio-link">2026</a>
+                    <div class="project-links">
+                        <a href="2026" class="link-chip"><img src="2026/flag/indonesia.svg" alt="" width="16" height="16"> ID 2026</a>
+                        <a href="2026/my" class="link-chip"><img src="2026/flag/malaysia.svg" alt="" width="16" height="16"> MY 2026</a>
+                        <a href="2026/sg" class="link-chip"><img src="2026/flag/singapore.svg" alt="" width="16" height="16"> SG 2026</a>
+                        <a href="2027" class="link-chip"><img src="2026/flag/indonesia.svg" alt="" width="16" height="16"> ID 2027</a>
+                        <a href="2027/my" class="link-chip"><img src="2026/flag/malaysia.svg" alt="" width="16" height="16"> MY 2027</a>
+                        <a href="2027/sg" class="link-chip"><img src="2026/flag/singapore.svg" alt="" width="16" height="16"> SG 2027</a>
                     </div>
-                </div>
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio5Title">Retrokarir</h3>
-                    <p data-key="portfolio5Desc">Retrokarir analyzes your CV in depth using AI and Indonesian competency
-                        standards.</p>
-                    <div class="portfolio-links">
-                        <a href="https://retrokarir.netlify.app/" class="portfolio-link">Web</a>
+                </article>
+
+                <!-- 2. Retrokarir -->
+                <article class="project-card" data-category="ai">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12 2.1 9.1"/><path d="m12 12 3.9 7.8"/></svg>
+                            </div>
+                            <span class="project-tag">AI Career Tech</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p5Title">Retrokarir</h3>
+                        <p class="project-desc" data-i18n="p5Desc">In-depth AI CV analyzer and career gap advisor aligned with Indonesian competency standards (SKKNI).</p>
                     </div>
-                </div>
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio6Title">Pariwara</h3>
-                    <p data-key="portfolio6Desc">AI-powered advertising strategy assistant for Indonesian creative economy SMEs.</p>
-                    <div class="portfolio-links">
-                        <a href="https://pariwara.netlify.app" class="portfolio-link">Web</a>
+                    <div class="project-links">
+                        <a href="https://retrokarir.netlify.app/" class="link-chip" target="_blank" rel="noopener noreferrer">Launch App ↗</a>
                     </div>
-                </div>
-                <div class="portfolio-item">
-                    <h3 data-key="portfolio7Title">Kongkow</h3>
-                    <p data-key="portfolio7Desc">AI-powered local tourism radar that turns mood, location, and budget into contextual destination recommendations.</p>
-                    <div class="portfolio-links">
-                        <a href="https://kongkow.netlify.app" class="portfolio-link">Web</a>
+                </article>
+
+                <!-- 3. Wikilokal -->
+                <article class="project-card" data-category="civic">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <span class="project-tag">Open Knowledge</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p3Title">Wikilokal</h3>
+                        <p class="project-desc" data-i18n="p3Desc">Location-based explorer surfacing nearby Wikipedia, Wikidata, Wikivoyage, Wiktionary, and OpenStreetMap entries within 3 km.</p>
                     </div>
-                </div>
+                    <div class="project-links">
+                        <a href="wikilokal/" class="link-chip">Open Web ↗</a>
+                    </div>
+                </article>
+
+                <!-- 4. Pariwara -->
+                <article class="project-card" data-category="ai">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+                            </div>
+                            <span class="project-tag">AI Marketing</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p6Title">Pariwara</h3>
+                        <p class="project-desc" data-i18n="p6Desc">AI-powered advertising strategy and campaign advisor tailored for Indonesian creative economy MSMEs.</p>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://pariwara.netlify.app" class="link-chip" target="_blank" rel="noopener noreferrer">Launch App ↗</a>
+                    </div>
+                </article>
+
+                <!-- 5. Kongkow -->
+                <article class="project-card" data-category="ai">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                            </div>
+                            <span class="project-tag">AI Tourism</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p7Title">Kongkow</h3>
+                        <p class="project-desc" data-i18n="p7Desc">Contextual local tourism radar transforming mood, location, and budget into curated destination ideas.</p>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://kongkow.netlify.app" class="link-chip" target="_blank" rel="noopener noreferrer">Launch App ↗</a>
+                    </div>
+                </article>
+
+                <!-- 6. Kurs Saldo -->
+                <article class="project-card" data-category="ai">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                            <span class="project-tag">Finance &amp; Data</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p2Title">Kurs Saldo</h3>
+                        <p class="project-desc" data-i18n="p2Desc">Real-time Indonesian Rupiah exchange rate aggregator paired with curated daily economic headlines.</p>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://kurs-saldo.netlify.app" class="link-chip" target="_blank" rel="noopener noreferrer">Launch App ↗</a>
+                    </div>
+                </article>
+
+                <!-- 7. Kalender Rowot Sasak -->
+                <article class="project-card" data-category="civic">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg>
+                            </div>
+                            <span class="project-tag">Cultural Heritage</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p4Title">Kalender Rowot Sasak</h3>
+                        <p class="project-desc" data-i18n="p4Desc">Digital preservation of traditional Sasak Wariga astronomy covering seasons, wuku cycles, and day-character interpretation.</p>
+                    </div>
+                    <div class="project-links">
+                        <a href="2020/rowot/" class="link-chip">2020 Edition</a>
+                        <a href="2026/rowot/" class="link-chip">2026 Edition</a>
+                    </div>
+                </article>
             </div>
         </section>
 
         <!-- Experience Section -->
         <section class="section" id="experience">
-            <h2 data-key="experience"><i class="fas fa-briefcase"></i>Experience</h2>
-            <p class="section-lead" data-key="experienceLead">Most recent first.</p>
-            <div class="experience-grid">
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="country-badge">
-                            <span class="country-badge__content">
-                                <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                                Indonesia
-                            </span>
-                        </div>
-                        <div class="company-logo">
-                            <img src="images/company/logo_korindo.svg" alt="Korindo" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <span class="company-name">Korindo Group</span>
-                    <div class="position">IT Supervisor</div>
-                    <div class="duration" data-key="korindoDuration">July 2023 – Present</div>
-                    <div class="description" data-key="korindo">Overseeing development and maintenance of internal software; leading development of Payroll, Electronic Document Signer, e-Meterai integration, and internal mobile apps across the multi-industry conglomerate.</div>
-                </div>
-
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="country-badge">
-                            <span class="country-badge__content">
-                                <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                                Indonesia
-                            </span>
-                        </div>
-                        <div class="company-logo">
-                            <img src="images/company/logo_hitachi.svg" alt="HCS" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <span class="company-name">PT Hitachi Channel Solutions Indonesia</span>
-                    <div class="position">Terminal & Solution Support Senior Executive</div>
-                    <div class="duration">September 2022 – June 2023</div>
-                    <div class="description" data-key="hitachi">Handled Hitachi POS solutions and EDC machine integration for retail & F&B clients; troubleshot Sunmi/PAX Android EDC machines and managed payment gateway integrations (Atome, QRIS/CIMB Niaga) per ISO 8583 standard.</div>
-                </div>
-
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="country-badge">
-                            <span class="country-badge__content">
-                                <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                                Indonesia
-                            </span>
-                        </div>
-                        <div class="company-logo">
-                            <img src="images/company/logo_otten.svg" alt="Otten" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <span class="company-name">PT Otten Coffee Indonesia</span>
-                    <div class="position">Mobile Developer – iOS</div>
-                    <div class="duration">November 2020 – September 2022</div>
-                    <div class="description" data-key="otten">Developed and maintained the native iOS app for one of Indonesia's largest coffee marketplaces using Swift and VIPER architecture; managed App Store releases and performance optimization.</div>
-                </div>
-
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="country-badge">
-                            <span class="country-badge__content">
-                                <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                                Indonesia
-                            </span>
-                        </div>
-                        <div class="company-logo">
-                            <img src="images/company/logo_dti.svg" alt="HCS" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <span class="company-name">PT Docotel Teknologi</span>
-                    <div class="position">Mobile Developer</div>
-                    <div class="duration">December 2017 – November 2020</div>
-                    <div class="description" data-key="docotel">Developed iOS & Android apps for strategic government clients: Ministry of Law & Human Rights (DJKI & BPHN), Brimob Polri (SIAB app), and Ministry of Environment & Forestry (Gakkum app).</div>
-                </div>
-
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="country-badge">
-                            <span class="country-badge__content">
-                                <img src="2026/flag/malaysia.svg" alt="MY" width="20" height="20" loading="lazy" decoding="async">
-                                Malaysia
-                            </span>
-                        </div>
-                        <div class="company-logo">
-                            <img src="images/company/logo_hitachi.svg" alt="eBWorx" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <span class="company-name">Hitachi eBworx Sdn. Bhd.</span>
-                    <div class="position">Associate Mobile Engineer</div>
-                    <div class="duration">November 2016 – October 2017</div>
-                    <div class="description" data-key="hitachiMY">Developed mobile banking app for RHB Bank Malaysia – Cambodia Branch; provided technical support for Maybank mobile banking; received Employment Pass as Foreign Knowledge Worker (MDEC).</div>
-                </div>
-
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="country-badge">
-                            <span class="country-badge__content">
-                                <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                                Indonesia
-                            </span>
-                        </div>
-                        <div class="company-logo">
-                            <img src="images/company/logo_bank_jakarta.svg" alt="eBWorx" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <span class="company-name">PT Bank DKI</span>
-                    <div class="position" data-key="bankjakartaPosition">Customer Service Assistant</div>
-                    <div class="duration">October 2015 – October 2016</div>
-                    <div class="description" data-key="bankjakarta">Front-line customer service at Matraman Branch; handled account opening, financial transactions, and banking product consultations; completed official Graphonomy training from LPPI.</div>
+            <div class="section-header">
+                <div>
+                    <span class="section-eyebrow">02 / Career Track</span>
+                    <h2 class="section-title" data-i18n="expTitle">Experience</h2>
+                    <p class="section-desc" data-i18n="expLead">Over 10 years shipping mobile apps, enterprise systems, and payment integrations.</p>
                 </div>
             </div>
-        </section>
 
-        <!-- Education Section -->
-        <section class="section" id="education">
-            <h2 data-key="education"><i class="fas fa-graduation-cap"></i>Education</h2>
-            <div class="experience-card">
-                <div class="experience-header">
-                    <div class="country-badge">
-                        <span class="country-badge__content">
-                            <img src="2026/flag/indonesia.svg" alt="ID" width="20" height="20" loading="lazy" decoding="async">
-                            Indonesia
-                        </span>
+            <div class="timeline-list">
+                <!-- Korindo -->
+                <article class="timeline-row">
+                    <div class="timeline-meta">
+                        <span class="timeline-period" data-i18n="korindoDate">Jul 2023 – Present</span>
+                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
                     </div>
-                    <div class="company-logo">
-                        <img src="images/company/logo_ug.svg" alt="Gunadarma" class="company-icon" width="36" height="36" loading="lazy" decoding="async">
+                    <div class="timeline-content">
+                        <div class="role-header">
+                            <div class="company-badge"><img src="images/company/logo_korindo.svg" alt="Korindo" onerror="this.style.display='none'"></div>
+                            <div>
+                                <h3 class="role-title">IT Supervisor</h3>
+                                <div class="company-title">Korindo Group</div>
+                            </div>
+                        </div>
+                        <p class="role-desc" data-i18n="korindoDesc">Overseeing internal software architecture and maintenance; spearheading Payroll systems, Electronic Document Signer, e-Meterai integration, and internal mobile apps across a multi-industry conglomerate.</p>
                     </div>
-                </div>
-                <span class="company-name">Universitas Gunadarma</span>
-                <div class="position" data-key="educationDegree">Bachelor of Computer Systems (S.Kom)</div>
-                <div class="duration">2011 – 2015 | GPA: 3.89/4.00 – Cum Laude</div>
-                <div class="description" data-key="gunadarma">Faculty of Computer Science and Information Technology. Thesis: Simulation of Flood Detector via Wi-Fi based on Arduino Mega 2560 and pcDuino with Ultrasonic Sensor and Camera.</div>
+                </article>
+
+                <!-- Hitachi Channel Solutions -->
+                <article class="timeline-row">
+                    <div class="timeline-meta">
+                        <span class="timeline-period">Sep 2022 – Jun 2023</span>
+                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="role-header">
+                            <div class="company-badge"><img src="images/company/logo_hitachi.svg" alt="Hitachi" onerror="this.style.display='none'"></div>
+                            <div>
+                                <h3 class="role-title">Terminal &amp; Solution Support Senior Executive</h3>
+                                <div class="company-title">PT Hitachi Channel Solutions Indonesia</div>
+                            </div>
+                        </div>
+                        <p class="role-desc" data-i18n="hitachiDesc">Managed Hitachi POS solutions and EDC terminal integrations for retail &amp; F&amp;B enterprises; resolved Sunmi/PAX Android EDC issues and led ISO 8583 payment gateway integrations (Atome, QRIS/CIMB Niaga).</p>
+                    </div>
+                </article>
+
+                <!-- Otten Coffee -->
+                <article class="timeline-row">
+                    <div class="timeline-meta">
+                        <span class="timeline-period">Nov 2020 – Sep 2022</span>
+                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Indonesia</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="role-header">
+                            <div class="company-badge"><img src="images/company/logo_otten.svg" alt="Otten Coffee" onerror="this.style.display='none'"></div>
+                            <div>
+                                <h3 class="role-title">Mobile Developer – iOS</h3>
+                                <div class="company-title">PT Otten Coffee Indonesia</div>
+                            </div>
+                        </div>
+                        <p class="role-desc" data-i18n="ottenDesc">Engineered and maintained the flagship native iOS app for Indonesia's leading specialty coffee marketplace using Swift and VIPER clean architecture; owned App Store releases and runtime optimization.</p>
+                    </div>
+                </article>
+
+                <!-- Docotel -->
+                <article class="timeline-row">
+                    <div class="timeline-meta">
+                        <span class="timeline-period">Dec 2017 – Nov 2020</span>
+                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="role-header">
+                            <div class="company-badge"><img src="images/company/logo_dti.svg" alt="Docotel" onerror="this.style.display='none'"></div>
+                            <div>
+                                <h3 class="role-title">Mobile Developer</h3>
+                                <div class="company-title">PT Docotel Teknologi</div>
+                            </div>
+                        </div>
+                        <p class="role-desc" data-i18n="docotelDesc">Delivered mission-critical iOS &amp; Android apps for strategic government institutions: Ministry of Law &amp; Human Rights (DJKI &amp; BPHN), Brimob Polri (SIAB), and Ministry of Environment &amp; Forestry (Gakkum).</p>
+                    </div>
+                </article>
+
+                <!-- Hitachi eBworx -->
+                <article class="timeline-row">
+                    <div class="timeline-meta">
+                        <span class="timeline-period">Nov 2016 – Oct 2017</span>
+                        <span class="timeline-location"><img src="2026/flag/malaysia.svg" alt=""> Petaling Jaya, Malaysia</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="role-header">
+                            <div class="company-badge"><img src="images/company/logo_hitachi.svg" alt="Hitachi eBworx" onerror="this.style.display='none'"></div>
+                            <div>
+                                <h3 class="role-title">Associate Mobile Engineer</h3>
+                                <div class="company-title">Hitachi eBworx Sdn. Bhd.</div>
+                            </div>
+                        </div>
+                        <p class="role-desc" data-i18n="hitachiMYDesc">Developed mobile banking solutions for RHB Bank Malaysia (Cambodia Branch) and supported Maybank mobile banking systems; awarded Foreign Knowledge Worker Employment Pass (MDEC).</p>
+                    </div>
+                </article>
+
+                <!-- Bank DKI -->
+                <article class="timeline-row">
+                    <div class="timeline-meta">
+                        <span class="timeline-period">Oct 2015 – Oct 2016</span>
+                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="role-header">
+                            <div class="company-badge"><img src="images/company/logo_bank_jakarta.svg" alt="Bank DKI" onerror="this.style.display='none'"></div>
+                            <div>
+                                <h3 class="role-title" data-i18n="bankRole">Customer Service Assistant</h3>
+                                <div class="company-title">PT Bank DKI</div>
+                            </div>
+                        </div>
+                        <p class="role-desc" data-i18n="bankDesc">Front-line banking operations at Matraman Branch covering account onboarding, financial transactions, and product advisory; certified in Graphonomy by LPPI.</p>
+                    </div>
+                </article>
             </div>
         </section>
 
         <!-- Skills Section -->
         <section class="section" id="skills">
-            <h2 data-key="skills"><i class="fas fa-tools"></i>Skills</h2>
+            <div class="section-header">
+                <div>
+                    <span class="section-eyebrow">03 / Capabilities</span>
+                    <h2 class="section-title" data-i18n="skillsTitle">Skills &amp; Stack</h2>
+                </div>
+            </div>
+
             <div class="skills-grid">
-                <div class="skill-category">
-                    <h3 data-key="skillCat1">Mobile Development</h3>
-                    <ul class="chips"><li>Swift (iOS)</li><li>Kotlin (Android)</li><li>VIPER Architecture</li><li>App Store & Google Play deployment</li></ul>
+                <div class="skill-card">
+                    <h3 data-i18n="skill1">Mobile Engineering</h3>
+                    <ul class="chip-cloud">
+                        <li>Swift (iOS)</li>
+                        <li>Kotlin (Android)</li>
+                        <li>Jetpack Compose</li>
+                        <li>VIPER Architecture</li>
+                        <li>App Store &amp; Google Play</li>
+                    </ul>
                 </div>
-                <div class="skill-category">
-                    <h3 data-key="skillCat2">Programming & Web</h3>
-                    <ul class="chips"><li>Python</li><li>JavaScript</li><li>SQL</li><li>HTML/CSS</li><li>REST API integration</li></ul>
+
+                <div class="skill-card">
+                    <h3 data-i18n="skill2">Web &amp; Backend</h3>
+                    <ul class="chip-cloud">
+                        <li>JavaScript (ES6+)</li>
+                        <li>Python</li>
+                        <li>SQL</li>
+                        <li>HTML5 / Modern CSS</li>
+                        <li>REST API &amp; ISO 8583</li>
+                    </ul>
                 </div>
-                <div class="skill-category">
-                    <h3 data-key="skillCat3">Cloud & AI</h3>
-                    <ul class="chips"><li>Microsoft Azure AI Engineer Associate</li><li>Azure OpenAI</li><li>Cybersecurity</li><li>Business Intelligence</li></ul>
+
+                <div class="skill-card">
+                    <h3 data-i18n="skill3">Cloud &amp; Artificial Intelligence</h3>
+                    <ul class="chip-cloud">
+                        <li>Azure AI Engineer Associate</li>
+                        <li>Azure OpenAI</li>
+                        <li>Gemini API</li>
+                        <li>Cybersecurity</li>
+                        <li>Business Intelligence</li>
+                    </ul>
                 </div>
-                <div class="skill-category">
-                    <h3 data-key="skillCat4">Management & Design</h3>
-                    <ul class="chips"><li>Project Management (Agile/Waterfall)</li><li>SDLC</li><li>UX Design (Figma)</li><li>Technical Documentation</li></ul>
+
+                <div class="skill-card">
+                    <h3 data-i18n="skill4">Leadership &amp; Product Design</h3>
+                    <ul class="chip-cloud">
+                        <li>Agile / Waterfall PM</li>
+                        <li>SDLC Governance</li>
+                        <li>UI/UX Design (Figma)</li>
+                        <li>Technical Documentation</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Achievements Section -->
-        <section class="section">
-            <h2 data-key="achievements"><i class="fas fa-trophy"></i>Achievements</h2>
-            <div class="simple-list">
-                <div class="simple-item" data-key="achieve3">2nd Place – Capture The Flag (CTF) Docotel Group 2018 – Score 460/560</div>
-                <div class="simple-item" data-key="achieve5">Sole iOS Developer – eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi</div>
-                <div class="simple-item" data-key="achieve6">Google Student Ambassador 2013–2014 – representing Gunadarma University (1 of 136 GSAs across Southeast Asia)</div>
-                <div class="simple-item" data-key="achieve7">Microsoft Certified: Azure AI Engineer Associate (Jul 2025)</div>
+        <!-- Education & Achievements Dual Bento -->
+        <section class="section" id="education">
+            <div class="section-header">
+                <div>
+                    <span class="section-eyebrow">04 / Credentials</span>
+                    <h2 class="section-title" data-i18n="eduAchTitle">Education &amp; Recognition</h2>
+                </div>
+            </div>
+
+            <div class="dual-grid">
+                <div class="bento-card">
+                    <div class="role-header" style="margin-bottom: 16px;">
+                        <div class="company-badge"><img src="images/company/logo_ug.svg" alt="Gunadarma" onerror="this.style.display='none'"></div>
+                        <div>
+                            <h3 class="role-title">Universitas Gunadarma</h3>
+                            <div class="company-title" data-i18n="eduDegree">Bachelor of Computer Systems (S.Kom)</div>
+                        </div>
+                    </div>
+                    <p class="timeline-period" style="margin-bottom: 12px;">2011 – 2015 · GPA 3.89 / 4.00 (Cum Laude)</p>
+                    <p class="role-desc" data-i18n="eduThesis">
+                        Faculty of Computer Science and Information Technology. Thesis: Simulation of Wi-Fi Flood Detector based on Arduino Mega 2560 and pcDuino with Ultrasonic Sensor and Camera.
+                    </p>
+                </div>
+
+                <div class="bento-card">
+                    <h3 class="fact-label" style="margin-bottom: 14px;" data-i18n="achHeading">Key Milestones &amp; Certifications</h3>
+                    <div class="award-list">
+                        <div class="award-item">
+                            <span class="award-icon" aria-hidden="true">✦</span>
+                            <span data-i18n="ach1">Microsoft Certified: Azure AI Engineer Associate (Jul 2025)</span>
+                        </div>
+                        <div class="award-item">
+                            <span class="award-icon" aria-hidden="true">✦</span>
+                            <span data-i18n="ach2">Sole iOS Developer — eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi</span>
+                        </div>
+                        <div class="award-item">
+                            <span class="award-icon" aria-hidden="true">✦</span>
+                            <span data-i18n="ach3">2nd Place — Capture The Flag (CTF) Docotel Group 2018 (Score 460/560)</span>
+                        </div>
+                        <div class="award-item">
+                            <span class="award-icon" aria-hidden="true">✦</span>
+                            <span data-i18n="ach4">Google Student Ambassador 2013–2014 — Representing Gunadarma University (1 of 136 in SEA)</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Contact Section -->
         <section class="section" id="contact">
-            <h2 data-key="contact"><i class="fas fa-address-card"></i>Contact</h2>
-            <div class="contact-card">
-                <p class="contact-lead" data-key="contactLead">Open to new opportunities and collaborations. Email is the fastest way to reach me.</p>
-                <div class="contact-actions">
-                    <a class="cta-primary" href="mailto:affandymurad@gmail.com"><i class="fas fa-envelope"></i> <span>affandymurad@gmail.com</span></a>
-                    <a class="cta-secondary" href="https://www.linkedin.com/in/affandy-murad/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <div class="contact-banner">
+                <div class="contact-copy">
+                    <h2 data-i18n="contactTitle">Let’s build something meaningful.</h2>
+                    <p data-i18n="contactLead">Open to leadership roles, mobile engineering consultations, and AI product collaborations.</p>
+                </div>
+
+                <div class="contact-buttons">
+                    <a href="mailto:affandymurad@gmail.com" class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span>affandymurad@gmail.com</span>
+                    </a>
+                    <button type="button" class="btn-secondary" id="copy-email" data-email="affandymurad@gmail.com">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span id="copy-label" data-i18n="copyBtn">Copy email</span>
+                    </button>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer>
-        <div class="cc-icons">
-            <i class="fab fa-creative-commons"></i>
-            <i class="fab fa-creative-commons-by"></i>
-            <i class="fab fa-creative-commons-sa"></i>
+        <div class="container footer-inner">
+            <div class="footer-meta">
+                <span>© 2026 Affandy Murad</span>
+                <span>·</span>
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/deed" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>
+            </div>
+            <div id="wcb" class="carbonbadge"></div>
         </div>
-        <a href="https://creativecommons.org/licenses/by-sa/4.0/deed" target="_blank" rel="noopener noreferrer"
-            class="icon-label">CC-BY-SA 4.0</a>
-        <span>@ 2026 Affandy Murad</span>
-        <div id="wcb" class="carbonbadge wcb-d"></div>
     </footer>
 
-    <a href="#" class="to-top" id="to-top" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></a>
+    <button type="button" class="back-to-top" id="back-to-top" aria-label="Back to top">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
+
+    <script src="js/b.min.js" defer></script>
 
     <script>
-        const translations = {
+        /* ==========================================================================
+           BILINGUAL CONTENT DICTIONARY (EN / ID)
+           ========================================================================== */
+        const i18n = {
             EN: {
+                navPortfolio: "Portfolio",
+                navExperience: "Experience",
+                navSkills: "Skills",
+                navEducation: "Education",
+                navContact: "Contact",
                 statusBadge: "Available for opportunities",
-                ctaResume: "View resume",
-                ctaContact: "Contact me",
-                portfolioLead: "Apps and tools I built. Open a link to try it.",
-                experienceLead: "Most recent first.",
-                contactLead: "Open to new opportunities and collaborations. Email is the fastest way to reach me.",
-                factNow: "Now",
-                factFocus: "Focus",
-                factFocusVal: "Mobile apps, cloud & AI",
-                experience: "Experience",
-                education: "Education",
-                skills: "Skills",
-                portfolio: "Portfolio",
-                achievements: "Achievements",
-                contact: "Contact",
-                korindoDuration: "July 2023 – Present",
-                korindo: "Overseeing development and maintenance of internal software; leading development of Payroll, Electronic Document Signer, e-Meterai integration, and internal mobile apps across the multi-industry conglomerate.",
-                hitachi: "Handled Hitachi POS solutions and EDC machine integration for retail & F&B clients; troubleshot Sunmi/PAX Android EDC machines and managed payment gateway integrations (Atome, QRIS/CIMB Niaga) per ISO 8583 standard.",
-                docotel: "Developed iOS & Android apps for strategic government clients: Ministry of Law & Human Rights (DJKI & BPHN), Brimob Polri (SIAB app), and Ministry of Environment & Forestry (Gakkum app).",
-                otten: "Developed and maintained the native iOS app for one of Indonesia's largest coffee marketplaces using Swift and VIPER architecture; managed App Store releases and performance optimization.",
-                hitachiMY: "Developed mobile banking app for RHB Bank Malaysia – Cambodia Branch; provided technical support for Maybank mobile banking; received Employment Pass as Foreign Knowledge Worker (MDEC).",
-                bankjakartaPosition: "Customer Service Assistant",
-                bankjakarta: "Front-line customer service at Matraman Branch; handled account opening, financial transactions, and banking product consultations; completed official Graphonomy training from LPPI.",
-                educationDegree: "Bachelor of Computer Systems (S.Kom)",
-                gunadarma: "Faculty of Computer Science and Information Technology. Thesis: Simulation of Flood Detector via Wi-Fi based on Arduino Mega 2560 and pcDuino with Ultrasonic Sensor and Camera.",
-                portfolio1Title: "Public Holiday Calendar",
-                portfolio1Desc: "Public Holiday Calendar for Indonesia, Malaysia, and Singapore",
-                portfolio2Title: "Kurs Saldo",
-                portfolio2Desc: "Latest Indonesian Economic News & Exchange Rates",
-                portfolio3Title: "Wikilokal",
-                portfolio3Desc: "Explore Wikimedia Project (Wikipedia, Wikidata, Wikivoyage, Wiktionary, OSM) within a 3 km radius of your location",
-                portfolio4Title: "Rowot Sasak Calendar",
-                portfolio4Desc: "Traditional Sasak calendar based on Wariga knowledge, covering seasons, dating cycles, wuku, and day-character interpretation.",
-                portfolio5Title: "Retrokarir",
-                portfolio5Desc: "Retrokarir analyzes your CV in depth using AI and Indonesian competency standards.",
-                portfolio6Title: "Pariwara",
-                portfolio6Desc: "AI-powered advertising strategy assistant for Indonesian creative economy SMEs.",
-                portfolio7Title: "Kongkow",
-                portfolio7Desc: "AI-powered local tourism radar that turns mood, location, and budget into contextual destination recommendations.",
-                skillCat1: "Mobile Development",
-                skillCat2: "Programming & Web",
-                skillCat3: "Cloud & AI",
-                skillCat4: "Management & Design",
-                achieve3: "2nd Place – Capture The Flag (CTF) Docotel Group 2018 – Score 460/560",
-                achieve5: "Sole iOS Developer – eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi",
-                achieve6: "Google Student Ambassador 2013–2014 – representing Gunadarma University (1 of 136 GSAs across Southeast Asia)",
-                achieve7: "Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
-                resumeUrl: "https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing",
+                heroBio: "<strong>The App Crafter.</strong> Building native iOS & Android experiences, enterprise digital workflows, and AI-powered tools from Jakarta, Indonesia.",
+                ctaResume: "View Resume",
+                ctaContact: "Get in touch",
+                factNowLabel: "Current Role",
+                factFocusLabel: "Core Focus",
+                factFocusVal: "Mobile Apps, Cloud & AI",
+                factEduLabel: "Education",
+                portfolioTitle: "Portfolio",
+                portfolioLead: "Products, civic tools, and AI experiments crafted for real-world utility.",
+                filterAll: "All (7)",
+                filterAI: "AI & Tools",
+                filterCivic: "Civic & Culture",
+                p1Title: "Public Holiday Calendar",
+                p1Desc: "Interactive public holiday calendar and observance tracker for Indonesia, Malaysia, and Singapore.",
+                p2Title: "Kurs Saldo",
+                p2Desc: "Real-time Indonesian Rupiah exchange rate aggregator paired with curated daily economic headlines.",
+                p3Title: "Wikilokal",
+                p3Desc: "Location-based explorer surfacing nearby Wikipedia, Wikidata, Wikivoyage, Wiktionary, and OpenStreetMap entries within 3 km.",
+                p4Title: "Rowot Sasak Calendar",
+                p4Desc: "Digital preservation of traditional Sasak Wariga astronomy covering seasons, wuku cycles, and day-character interpretation.",
+                p5Title: "Retrokarir",
+                p5Desc: "In-depth AI CV analyzer and career gap advisor aligned with Indonesian competency standards (SKKNI).",
+                p6Title: "Pariwara",
+                p6Desc: "AI-powered advertising strategy and campaign advisor tailored for Indonesian creative economy MSMEs.",
+                p7Title: "Kongkow",
+                p7Desc: "Contextual local tourism radar transforming mood, location, and budget into curated destination ideas.",
+                expTitle: "Experience",
+                expLead: "Over 10 years shipping mobile apps, enterprise systems, and payment integrations.",
+                korindoDate: "Jul 2023 – Present",
+                korindoDesc: "Overseeing internal software architecture and maintenance; spearheading Payroll systems, Electronic Document Signer, e-Meterai integration, and internal mobile apps across a multi-industry conglomerate.",
+                hitachiDesc: "Managed Hitachi POS solutions and EDC terminal integrations for retail & F&B enterprises; resolved Sunmi/PAX Android EDC issues and led ISO 8583 payment gateway integrations (Atome, QRIS/CIMB Niaga).",
+                ottenDesc: "Engineered and maintained the flagship native iOS app for Indonesia's leading specialty coffee marketplace using Swift and VIPER clean architecture; owned App Store releases and runtime optimization.",
+                docotelDesc: "Delivered mission-critical iOS & Android apps for strategic government institutions: Ministry of Law & Human Rights (DJKI & BPHN), Brimob Polri (SIAB), and Ministry of Environment & Forestry (Gakkum).",
+                hitachiMYDesc: "Developed mobile banking solutions for RHB Bank Malaysia (Cambodia Branch) and supported Maybank mobile banking systems; awarded Foreign Knowledge Worker Employment Pass (MDEC).",
+                bankRole: "Customer Service Assistant",
+                bankDesc: "Front-line banking operations at Matraman Branch covering account onboarding, financial transactions, and product advisory; certified in Graphonomy by LPPI.",
+                skillsTitle: "Skills & Stack",
+                skill1: "Mobile Engineering",
+                skill2: "Web & Backend",
+                skill3: "Cloud & Artificial Intelligence",
+                skill4: "Leadership & Product Design",
+                eduAchTitle: "Education & Recognition",
+                eduDegree: "Bachelor of Computer Systems (S.Kom)",
+                eduThesis: "Faculty of Computer Science and Information Technology. Thesis: Simulation of Wi-Fi Flood Detector based on Arduino Mega 2560 and pcDuino with Ultrasonic Sensor and Camera.",
+                achHeading: "Key Milestones & Certifications",
+                ach1: "Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
+                ach2: "Sole iOS Developer — eHAC Indonesia app (Ministry of Health RI), precursor to PeduliLindungi",
+                ach3: "2nd Place — Capture The Flag (CTF) Docotel Group 2018 (Score 460/560)",
+                ach4: "Google Student Ambassador 2013–2014 — Representing Gunadarma University (1 of 136 in SEA)",
+                contactTitle: "Let’s build something meaningful.",
+                contactLead: "Open to leadership roles, mobile engineering consultations, and AI product collaborations.",
+                copyBtn: "Copy email",
+                copiedBtn: "Copied!",
+                resumeUrl: "https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing"
             },
             ID: {
+                navPortfolio: "Portofolio",
+                navExperience: "Pengalaman",
+                navSkills: "Keahlian",
+                navEducation: "Pendidikan",
+                navContact: "Kontak",
                 statusBadge: "Tersedia untuk peluang kerja",
-                ctaResume: "Lihat resume",
+                heroBio: "<strong>The App Crafter.</strong> Merancang aplikasi native iOS & Android, sistem digital perusahaan, dan perangkat berbasis AI dari Jakarta, Indonesia.",
+                ctaResume: "Lihat Resume",
                 ctaContact: "Hubungi saya",
-                portfolioLead: "Aplikasi dan alat yang saya buat. Buka tautannya untuk mencobanya.",
-                experienceLead: "Dari yang terbaru.",
-                contactLead: "Terbuka untuk peluang dan kolaborasi baru. Email adalah cara tercepat menghubungi saya.",
-                factNow: "Saat ini",
-                factFocus: "Fokus",
-                factFocusVal: "Aplikasi mobile, cloud & AI",
-                experience: "Pengalaman",
-                education: "Pendidikan",
-                skills: "Keahlian",
-                portfolio: "Portofolio",
-                achievements: "Pencapaian",
-                contact: "Kontak",
-                korindoDuration: "Juli 2023 – Sekarang",
-                korindo: "Mengawasi pengembangan dan pemeliharaan perangkat lunak internal; memimpin pengembangan sistem Payroll, Penandatangan Dokumen Elektronik, integrasi e-Meterai, dan aplikasi mobile internal konglomerat multi-industri.",
-                hitachi: "Menangani solusi POS Hitachi dan integrasi mesin EDC untuk klien retail & F&B; melakukan troubleshooting EDC Android Sunmi/PAX dan integrasi payment gateway (Atome, QRIS/CIMB Niaga) sesuai standar ISO 8583.",
-                docotel: "Mengembangkan aplikasi iOS & Android untuk klien pemerintah strategis: Kemenkumham RI (DJKI & BPHN), Brimob Polri (aplikasi SIAB), dan KLHK (aplikasi Gakkum).",
-                otten: "Mengembangkan dan memelihara aplikasi iOS native untuk salah satu marketplace kopi terbesar di Indonesia menggunakan Swift dan arsitektur VIPER; mengelola rilis App Store dan optimasi performa.",
-                hitachiMY: "Mengembangkan aplikasi mobile banking untuk RHB Bank Malaysia – Cabang Cambodia; memberikan dukungan teknis untuk aplikasi mobile banking Maybank; menerima Employment Pass sebagai Foreign Knowledge Worker (MDEC).",
-                bankjakartaPosition: "Asisten Pelayanan Nasabah",
-                bankjakarta: "Layanan nasabah garda depan di Cabang Matraman; menangani pembukaan rekening, transaksi keuangan, dan konsultasi produk perbankan; mengikuti pelatihan resmi Grafonomi dari LPPI.",
-                educationDegree: "Sarjana Sistem Komputer (S.Kom)",
-                gunadarma: "Fakultas Ilmu Komputer dan Teknologi Informasi. Skripsi: Simulasi Pendeteksi Banjir Via WiFi Berbasis Arduino Mega 2560 dan PCDuino dengan Sensor Ultrasonik dan Kamera.",
-                portfolio1Title: "Kalender Hari Libur Nasional",
-                portfolio1Desc: "Kalender Hari Libur Nasional untuk Indonesia, Malaysia, dan Singapura",
-                portfolio2Title: "Kurs Saldo",
-                portfolio2Desc: "Berita Ekonomi & Kurs Terkini Indonesia",
-                portfolio3Title: "Wikilokal",
-                portfolio3Desc: "Jelajahi Proyek Wikimedia (Wikipedia, Wikidata, Wikivoyage, Wiktionary, OSM) dalam radius 3 km dari lokasi Anda",
-                portfolio4Title: "Kalender Rowot Sasak",
-                portfolio4Desc: "Kalender tradisional Sasak berbasis pengetahuan Wariga yang memuat mangsa, penanggalan, wuku, dan tafsir watak hari.",
-                portfolio5Title: "Retrokarir",
-                portfolio5Desc: "Retrokarir menganalisis CV Anda secara mendalam menggunakan AI dan standar kompetensi Indonesia",
-                portfolio6Title: "Pariwara",
-                portfolio6Desc: "Asisten strategi iklan bertenaga AI untuk pelaku ekonomi kreatif dan UMKM Indonesia.",
-                portfolio7Title: "Kongkow",
-                portfolio7Desc: "Radar wisata lokal bertenaga AI yang mengubah mood, lokasi, dan budget menjadi rekomendasi destinasi kontekstual.",
-                skillCat1: "Pengembangan Mobile",
-                skillCat2: "Pemrograman & Web",
-                skillCat3: "Cloud & AI",
-                skillCat4: "Manajemen & Desain",
-                achieve3: "Juara II – Capture The Flag (CTF) Docotel Group 2018 – Skor 460/560",
-                achieve5: "Satu-satunya Programmer iOS – Aplikasi eHAC Indonesia (Kemenkes RI), cikal bakal PeduliLindungi",
-                achieve6: "Google Student Ambassador 2013–2014 – mewakili Universitas Gunadarma (1 dari 136 GSA se-Asia Tenggara)",
-                achieve7: "Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
-                resumeUrl: "https://drive.google.com/file/d/14ON9yg4b2eQgFL3NP8GB1b1e9resbDUi/view?usp=sharing",
+                factNowLabel: "Peran Saat Ini",
+                factFocusLabel: "Fokus Utama",
+                factFocusVal: "Aplikasi Mobile, Cloud & AI",
+                factEduLabel: "Pendidikan",
+                portfolioTitle: "Portofolio",
+                portfolioLead: "Produk digital, perangkat publik, dan eksperimen AI yang dirancang untuk kegunaan nyata.",
+                filterAll: "Semua (7)",
+                filterAI: "AI & Perangkat",
+                filterCivic: "Publik & Budaya",
+                p1Title: "Kalender Hari Libur Nasional",
+                p1Desc: "Kalender hari libur nasional dan hari besar interaktif untuk Indonesia, Malaysia, dan Singapura.",
+                p2Title: "Kurs Saldo",
+                p2Desc: "Agregator nilai tukar Rupiah real-time yang dipadukan dengan berita ekonomi harian terkurasi.",
+                p3Title: "Wikilokal",
+                p3Desc: "Penjelajah berbasis lokasi untuk menemukan artikel Wikipedia, Wikidata, Wikivoyage, Wiktionary, dan OpenStreetMap dalam radius 3 km.",
+                p4Title: "Kalender Rowot Sasak",
+                p4Desc: "Pelestarian digital astronomi tradisional Wariga Sasak yang mencakup mangsa, siklus wuku, dan tafsir watak hari.",
+                p5Title: "Retrokarir",
+                p5Desc: "Penganalisis CV berbasis AI mendalam dan penasihat celah karier yang selaras dengan standar kompetensi Indonesia (SKKNI).",
+                p6Title: "Pariwara",
+                p6Desc: "Asisten strategi periklanan dan kampanye bertenaga AI yang dirancang khusus untuk UMKM ekonomi kreatif Indonesia.",
+                p7Title: "Kongkow",
+                p7Desc: "Radar wisata lokal kontekstual yang mengubah suasana hati, lokasi, dan anggaran menjadi rekomendasi destinasi terkurasi.",
+                expTitle: "Pengalaman",
+                expLead: "Lebih dari 10 tahun mengembangkan aplikasi mobile, sistem enterprise, dan integrasi pembayaran.",
+                korindoDate: "Jul 2023 – Sekarang",
+                korindoDesc: "Mengawasi arsitektur dan pemeliharaan perangkat lunak internal; memimpin pengembangan sistem Payroll, Penandatangan Dokumen Elektronik, integrasi e-Meterai, dan aplikasi mobile internal konglomerat multi-industri.",
+                hitachiDesc: "Mengelola solusi POS Hitachi dan integrasi terminal EDC untuk klien ritel & F&B; menangani troubleshooting EDC Android Sunmi/PAX serta integrasi payment gateway ISO 8583 (Atome, QRIS/CIMB Niaga).",
+                ottenDesc: "Merancang dan memelihara aplikasi iOS native utama untuk marketplace kopi spesialti terbesar di Indonesia menggunakan Swift dan arsitektur VIPER; mengelola rilis App Store dan optimasi performa.",
+                docotelDesc: "Mengembangkan aplikasi iOS & Android strategis untuk instansi pemerintah: Kemenkumham RI (DJKI & BPHN), Brimob Polri (SIAB), dan Kementerian LHK (Gakkum).",
+                hitachiMYDesc: "Mengembangkan aplikasi mobile banking untuk RHB Bank Malaysia (Cabang Kamboja) dan mendukung sistem mobile banking Maybank; menerima Employment Pass sebagai Foreign Knowledge Worker (MDEC).",
+                bankRole: "Asisten Pelayanan Nasabah",
+                bankDesc: "Operasional layanan nasabah garda depan di Cabang Matraman meliputi pembukaan rekening, transaksi keuangan, dan konsultasi produk; tersertifikasi Grafonomi dari LPPI.",
+                skillsTitle: "Keahlian & Teknologi",
+                skill1: "Pengembangan Mobile",
+                skill2: "Web & Backend",
+                skill3: "Cloud & Kecerdasan Buatan",
+                skill4: "Kepemimpinan & Desain Produk",
+                eduAchTitle: "Pendidikan & Pencapaian",
+                eduDegree: "Sarjana Sistem Komputer (S.Kom)",
+                eduThesis: "Fakultas Ilmu Komputer dan Teknologi Informasi. Skripsi: Simulasi Pendeteksi Banjir Via Wi-Fi Berbasis Arduino Mega 2560 dan pcDuino dengan Sensor Ultrasonik dan Kamera.",
+                achHeading: "Pencapaian & Sertifikasi Utama",
+                ach1: "Microsoft Certified: Azure AI Engineer Associate (Jul 2025)",
+                ach2: "Satu-satunya Programmer iOS — Aplikasi eHAC Indonesia (Kemenkes RI), cikal bakal PeduliLindungi",
+                ach3: "Juara II — Capture The Flag (CTF) Docotel Group 2018 (Skor 460/560)",
+                ach4: "Google Student Ambassador 2013–2014 — Mewakili Universitas Gunadarma (1 dari 136 GSA se-Asia Tenggara)",
+                contactTitle: "Mari bangun sesuatu yang bermakna.",
+                contactLead: "Terbuka untuk peran kepemimpinan IT, konsultasi pengembangan mobile, dan kolaborasi produk AI.",
+                copyBtn: "Salin email",
+                copiedBtn: "Tersalin!",
+                resumeUrl: "https://drive.google.com/file/d/14ON9yg4b2eQgFL3NP8GB1b1e9resbDUi/view?usp=sharing"
             }
         };
 
-        let currentLang = 'EN';
-        let currentTheme = 'system';
-
-        function updatePageLanguage(lang) {
-            const t = translations[lang];
-            if (!t) return; // Validasi objek translations ada
-
-            document.querySelectorAll('[data-key]').forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (t[key]) {
-                    if (el.tagName === 'H2') {
-                        const icon = el.querySelector('i');
-                        if (icon) { // Validasi icon element ada
-                            el.innerHTML = `<i class="${icon.className}"></i>${t[key]}`;
-                        }
-                    } else {
-                        el.textContent = t[key];
-                    }
-                }
-            });
-
-            // Tambahkan ini:
-            const resumeLink = document.getElementById('resume-link');
-            if (resumeLink && t.resumeUrl) {
-                resumeLink.href = t.resumeUrl;
-            }
-
-            document.documentElement.lang = lang === 'ID' ? 'id' : 'en';
-            document.querySelectorAll('#lang-switch, #mobile-lang-switch').forEach(btn => btn.setAttribute('aria-checked', String(lang === 'EN')));
-        }
-
-        function applyTheme(theme) {
-            const body = document.body;
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-            body.classList.remove('dark-mode');
-
-            if (theme === 'dark') {
-                body.classList.add('dark-mode');
-            } else if (theme === 'system' && prefersDark) {
-                body.classList.add('dark-mode');
-            }
-
-            currentTheme = theme;
-            updateCarbonBadge();
-        }
-
-        function updateCarbonBadge() {
-            const body = document.body;
-            const carbonBadge = document.getElementById("wcb");
-
-            if (carbonBadge) {
-                if (body.classList.contains("dark-mode")) {
-                    carbonBadge.classList.add("wcb-d");
-                } else {
-                    carbonBadge.classList.remove("wcb-d");
-                }
-            }
-        }
-
-        function updateThemeUI() {
-            const dark = document.body.classList.contains('dark-mode');
-            ['theme-toggle', 'mobile-theme-toggle'].forEach(id => { const btn = document.getElementById(id); if (btn) btn.setAttribute('aria-checked', String(dark)); });
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
-            // Initialize theme
-            const storedTheme = localStorage.getItem('theme') || 'system';
-            applyTheme(storedTheme);
-            updateThemeUI(storedTheme);
+            const html = document.documentElement;
+            let currentLang = localStorage.getItem("language") || "EN";
 
-            // Initialize language
-            const storedLang = localStorage.getItem('language') || 'EN';
-            currentLang = storedLang;
-            updatePageLanguage(currentLang);
+            /* 1. SCROLL-AWARE STICKY HEADER */
+            const navbar = document.getElementById("navbar");
+            const backToTop = document.getElementById("back-to-top");
 
-            // Dark mode: tombol bulan/matahari (desktop dan mobile)
-            ['theme-toggle', 'mobile-theme-toggle'].forEach(id => {
-                document.getElementById(id).addEventListener('click', () => {
-                    const next = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
-                    localStorage.setItem('theme', next);
-                    applyTheme(next);
-                    updateThemeUI();
-                });
+            function handleScroll() {
+                const y = window.scrollY;
+                navbar.classList.toggle("scrolled", y > 20);
+                backToTop.classList.toggle("visible", y > 500);
+            }
+            window.addEventListener("scroll", handleScroll, { passive: true });
+            handleScroll();
+
+            /* 2. THEME MANAGEMENT */
+            const themeBtn = document.getElementById("theme-toggle");
+            const iconSun = document.getElementById("icon-sun");
+            const iconMoon = document.getElementById("icon-moon");
+            const wcb = document.getElementById("wcb");
+
+            function applyTheme(theme) {
+                html.setAttribute("data-theme", theme);
+                const isDark = theme === "dark";
+                iconSun.style.display = isDark ? "block" : "none";
+                iconMoon.style.display = isDark ? "none" : "block";
+                if (wcb) wcb.classList.toggle("wcb-d", isDark);
+            }
+
+            const savedTheme = localStorage.getItem("theme") ||
+                (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+            applyTheme(savedTheme);
+
+            themeBtn.addEventListener("click", () => {
+                const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                localStorage.setItem("theme", next);
+                applyTheme(next);
             });
 
-            // Bahasa: switch geser ID | EN (desktop dan mobile)
-            document.querySelectorAll('#lang-switch, #mobile-lang-switch').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    currentLang = currentLang === 'EN' ? 'ID' : 'EN';
-                    localStorage.setItem('language', currentLang);
-                    updatePageLanguage(currentLang);
-                });
-            });
+            /* 3. LANGUAGE SWITCHER */
+            const langBtns = document.querySelectorAll("[data-lang-btn]");
+            const resumeLink = document.getElementById("resume-link");
 
-            // Mobile menu toggle
-            const menuToggle = document.getElementById("menu-toggle");
-            const mobileMenu = document.getElementById("mobile-menu");
-            const menuItems = document.getElementById("menu-items");
+            function applyLanguage(lang) {
+                const dict = i18n[lang];
+                if (!dict) return;
+                currentLang = lang;
+                html.lang = lang.toLowerCase();
 
-            if (menuToggle && mobileMenu) {
-                menuToggle.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    const isOpen = mobileMenu.style.display === 'block';
-                    mobileMenu.style.display = isOpen ? 'none' : 'block';
-                    const icon = menuToggle.querySelector("i");
-                    icon.className = isOpen ? "fas fa-bars" : "fas fa-times";
-                });
-
-                // Close menu when clicking menu items
-                menuItems.querySelectorAll('.menu-item').forEach(item => {
-                    item.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const targetId = item.getAttribute('href').substring(1);
-                        const targetSection = document.getElementById(targetId);
-
-                        if (targetSection) {
-                            targetSection.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-
-                            mobileMenu.style.display = 'none';
-                            menuToggle.querySelector("i").className = "fas fa-bars";
+                document.querySelectorAll("[data-i18n]").forEach(el => {
+                    const key = el.getAttribute("data-i18n");
+                    if (dict[key]) {
+                        if (key === "heroBio") {
+                            el.innerHTML = dict[key];
+                        } else {
+                            el.textContent = dict[key];
                         }
-                    });
+                    }
+                });
+
+                if (resumeLink && dict.resumeUrl) {
+                    resumeLink.href = dict.resumeUrl;
+                }
+
+                langBtns.forEach(btn => {
+                    btn.classList.toggle("active", btn.getAttribute("data-lang-btn") === lang);
                 });
             }
 
-            // Close all dropdowns when clicking outside
-            document.addEventListener('click', (e) => {
-                const isMobileMenuClick = e.target.closest('.mobile-menu') || e.target.closest('#menu-toggle');
+            applyLanguage(currentLang);
 
-                if (!isMobileMenuClick && mobileMenu) {
-                    mobileMenu.style.display = 'none';
-                    if (menuToggle) {
-                        menuToggle.querySelector("i").className = "fas fa-bars";
+            langBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const selected = btn.getAttribute("data-lang-btn");
+                    localStorage.setItem("language", selected);
+                    applyLanguage(selected);
+                });
+            });
+
+            /* 4. POLYMORPHIC PORTFOLIO FILTER */
+            const filterBtns = document.querySelectorAll(".filter-btn");
+            const projectCards = document.querySelectorAll(".project-card");
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const filter = btn.getAttribute("data-filter");
+                    filterBtns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+
+                    projectCards.forEach(card => {
+                        const cat = card.getAttribute("data-category");
+                        card.hidden = !(filter === "all" || cat === filter);
+                    });
+                });
+            });
+
+            /* 5. ONE-CLICK COPY EMAIL */
+            const copyBtn = document.getElementById("copy-email");
+            const copyLabel = document.getElementById("copy-label");
+            if (copyBtn) {
+                copyBtn.addEventListener("click", async () => {
+                    const email = copyBtn.getAttribute("data-email");
+                    try {
+                        await navigator.clipboard.writeText(email);
+                        copyLabel.textContent = i18n[currentLang].copiedBtn;
+                        setTimeout(() => {
+                            copyLabel.textContent = i18n[currentLang].copyBtn;
+                        }, 2000);
+                    } catch (_) {
+                        window.location.href = `mailto:${email}`;
                     }
+                });
+            }
+
+            /* 6. MOBILE DRAWER & ESCAPE KEY */
+            const mobileToggle = document.getElementById("mobile-toggle");
+            const mobileDrawer = document.getElementById("mobile-drawer");
+            const iconMenu = document.getElementById("icon-menu");
+            const iconClose = document.getElementById("icon-close");
+
+            function syncDrawerIcons(isOpen) {
+                iconMenu.style.display = isOpen ? "none" : "block";
+                iconClose.style.display = isOpen ? "block" : "none";
+                mobileToggle.setAttribute("aria-expanded", String(isOpen));
+            }
+
+            function closeDrawer() {
+                mobileDrawer.classList.remove("open");
+                syncDrawerIcons(false);
+            }
+
+            mobileToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const isOpen = mobileDrawer.classList.toggle("open");
+                syncDrawerIcons(isOpen);
+            });
+
+            mobileDrawer.querySelectorAll("a").forEach(link => {
+                link.addEventListener("click", closeDrawer);
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!e.target.closest("#mobile-drawer") && !e.target.closest("#mobile-toggle")) {
+                    closeDrawer();
                 }
             });
 
-            // Menu menandai bagian yang sedang dibaca
-            const navLinks = [...document.querySelectorAll('.desktop-nav a, .menu-item')];
-            const spySecs = ['portfolio', 'experience', 'education', 'skills', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
-            if ('IntersectionObserver' in window) {
-                const io = new IntersectionObserver(entries => {
-                    entries.forEach(en => {
-                        if (!en.isIntersecting) return;
-                        navLinks.forEach(a => {
-                            if (a.getAttribute('href') === '#' + en.target.id) a.setAttribute('aria-current', 'true');
-                            else a.removeAttribute('aria-current');
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") closeDrawer();
+            });
+
+            /* 7. ACTIVE SECTION SCROLL SPY */
+            const sections = document.querySelectorAll("main section[id]");
+            const navItems = document.querySelectorAll(".nav-links a, .mobile-drawer a");
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute("id");
+                        navItems.forEach(a => {
+                            if (a.getAttribute("href") === `#${id}`) {
+                                a.setAttribute("aria-current", "true");
+                            } else {
+                                a.removeAttribute("aria-current");
+                            }
                         });
-                    });
-                }, { rootMargin: '-35% 0px -60% 0px' });
-                spySecs.forEach(sec => io.observe(sec));
-            }
+                    }
+                });
+            }, { rootMargin: "-30% 0px -60% 0px" });
 
-            // Tombol kembali ke atas
-            const toTop = document.getElementById('to-top');
-            if (toTop) {
-                const syncTop = () => { toTop.hidden = window.scrollY < 700; };
-                window.addEventListener('scroll', syncTop, { passive: true });
-                syncTop();
-                toTop.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-            }
+            sections.forEach(sec => observer.observe(sec));
 
-            // Watch for system theme changes
-            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-                if (currentTheme === 'system') {
-                    applyTheme('system');
-                    updateThemeUI();
-                }
+            backToTop.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
             });
         });
     </script>
 </body>
-
 </html>
