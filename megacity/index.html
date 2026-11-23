@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User:Affandy Murad/Megacity - Wikivoyage</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #202122;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Lato, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .mw-page-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      border-left: 1px solid #eaecf0;
+      border-right: 1px solid #eaecf0;
+      padding: 20px 28px 40px;
+    }
+
+    .mw-first-heading {
+      font-family: "Linux Libertine", "Georgia", "Times", serif;
+      font-size: 1.8em;
+      font-weight: normal;
+      margin: 0 0 4px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #a2a9b1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .mw-subtitle {
+      font-size: 12.5px;
+      color: #54595d;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .wiki-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eaf3ff;
+      border: 1px solid #a3c1f7;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-size: 12px;
+      color: #2a4b8d;
+    }
+
+    .wiki-switcher select {
+      border: 1px solid #3366cc;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12px;
+      background: #fff;
+      color: #202122;
+      font-weight: 600;
+    }
+
+    /* Installation section */
+    .mw-install { margin-top: 28px; }
+    .mw-install h2 {
+      font-family: "Linux Libertine", "Georgia", "Times", serif;
+      font-weight: normal;
+      font-size: 1.5em;
+      margin: 0 0 10px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #a2a9b1;
+    }
+    .mw-install h3 { font-size: 1.05em; margin: 18px 0 6px; }
+    .mw-install p, .mw-install li { font-size: 14px; }
+    .mw-install li { margin-bottom: 8px; }
+    .mw-install code {
+      background: #eaecf0; border-radius: 3px; padding: 1px 5px; font-size: 12.5px;
+    }
+    .mw-install pre {
+      position: relative;
+      margin: 8px 0;
+      padding: 10px 70px 10px 12px;
+      background: #f8f9fa;
+      border: 1px solid #eaecf0;
+      border-radius: 6px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .mw-install .copy {
+      position: absolute; top: 6px; right: 6px;
+      border: 1px solid #a2a9b1; border-radius: 4px; background: #fff;
+      font-size: 11px; padding: 2px 8px; cursor: pointer;
+    }
+    .mw-install .copy:hover { border-color: #3366cc; color: #3366cc; }
+    .mw-install .note {
+      background: #fff7ea; border: 1px solid #f3d29a; border-radius: 6px;
+      padding: 8px 12px; font-size: 13px; margin: 10px 0;
+    }
+    .mw-install-tabs { display: inline-flex; gap: 0; margin-bottom: 10px; }
+    .mw-install-tabs button {
+      border: 1px solid #a2a9b1; background: #f8f9fa; padding: 4px 14px;
+      font-size: 13px; font-weight: 600; cursor: pointer; color: #54595d;
+    }
+    .mw-install-tabs button:first-child { border-radius: 4px 0 0 4px; }
+    .mw-install-tabs button:last-child { border-radius: 0 4px 4px 0; border-left: 0; }
+    .mw-install-tabs button.on { background: #3366cc; border-color: #3366cc; color: #fff; }
+
+
+    /* Wikilokal reference card */
+    .wl-card {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      margin-top: 16px; padding: 14px 18px;
+      background: #f8f9fa; border: 1px solid #eaecf0; border-radius: 12px;
+    }
+    .wl-card .wl-icon {
+      width: 48px; height: 48px; border-radius: 50%; flex: none;
+      display: grid; place-items: center; font-size: 26px;
+      background: #eaf3ff; border: 1px solid #a3c1f7;
+    }
+    .wl-card .wl-body { flex: 1; min-width: 220px; }
+    .wl-card .wl-tag { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #54595d; }
+    .wl-card .wl-title { font-size: 16px; font-weight: 700; margin: 2px 0; }
+    .wl-card .wl-desc { font-size: 13.5px; color: #54595d; }
+    .wl-card .wl-btn {
+      display: inline-block; padding: 8px 14px; border: 1px solid #a2a9b1; border-radius: 8px;
+      background: #fff; color: #202122; font-weight: 700; font-size: 14px; text-decoration: none; white-space: nowrap;
+    }
+    .wl-card .wl-btn:hover { border-color: #3366cc; color: #3366cc; }
+
+    @media (max-width: 768px) {
+      .mw-page-container { padding: 12px; }
+      .mw-first-heading { font-size: 1.4rem; word-break: break-word; }
+      .mw-first-heading .wiki-switcher { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; max-width: 100%; }
+      .mw-first-heading .wiki-switcher select { max-width: 100%; }
+      img, table, pre { max-width: 100%; }
+      body { overflow-x: hidden; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mw-page-container">
+    <h1 class="mw-first-heading">
+      <span>User:Affandy Murad/Megacity</span>
+      <div class="wiki-switcher" title="Demo only. On a real wiki the edition is detected from the address (id.wikivoyage.org, en.wikivoyage.org, ...).">
+        <span>Wiki data source:</span>
+        <select id="sim-wiki-domain" title="Choose a Wikivoyage language edition">
+          <option value="en.wikivoyage.org" selected>en.wikivoyage.org (English – most complete)</option>
+          <option value="id.wikivoyage.org">id.wikivoyage.org (Indonesian, English fallback)</option>
+        </select>
+      </div>
+    </h1>
+    <div class="mw-subtitle">
+      <span>From Wikivoyage — the free worldwide travel guide (default radius: <strong>10 km</strong>)</span>
+    </div>
+
+    <div class="mw-parser-output" style="max-width: 1200px; margin: 0 auto;">
+      <div style="background: #f8f9fa; border: 1px solid #eaecf0; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px;">
+        <h2 style="margin: 0 0 6px; border-bottom: none; font-size: 1.25em;">Explore Destinations &amp; Attractions on Wikivoyage</h2>
+        <p style="margin: 0; font-size: 13.5px; color: #202122;">
+          Pick one of the 85 largest cities in the world from the list below, or type any city or place name, to explore sights, restaurants, accommodation and tourist information within <strong>10 km</strong>.
+          On a non-English Wikivoyage (for example <em>id.wikivoyage.org</em>), articles that do not exist yet are filled in from the English Wikivoyage.
+        </p>
+      </div>
+
+      <div id="megacity-root" style="min-height: 620px; border: 1px solid #c8ccd1; border-radius: 8px; background: #ffffff; overflow: hidden;">
+        <div style="padding: 40px; text-align: center; color: #54595d;">
+          <p><strong>Loading Megacity...</strong></p>
+        </div>
+      </div>
+
+
+      <!-- Wikilokal -->
+      <div class="wl-card">
+        <div class="wl-icon" aria-hidden="true">🧭</div>
+        <div class="wl-body">
+          <div class="wl-tag">From Wikilokal</div>
+          <div class="wl-title">Want to know this area a little better?</div>
+          <div class="wl-desc">Wikilokal shows Wikipedia articles, Commons photos and Wikivoyage guides around your location. You may find a hidden gem not far from your plan.</div>
+        </div>
+        <a class="wl-btn" href="https://wikilokal.web.app" target="_blank" rel="noopener">Try Wikilokal ↗</a>
+      </div>
+
+      <!-- ============================ Installation ============================ -->
+      <div class="mw-install" id="installation">
+        <h2>Installation</h2>
+        <div class="mw-install-tabs" role="tablist">
+          <button type="button" data-lang="id" class="on" role="tab">Bahasa Indonesia</button>
+          <button type="button" data-lang="en" role="tab">English</button>
+        </div>
+
+        <!-- Bahasa Indonesia -->
+        <div data-lang-block="id">
+          <h3>Daftar megacity</h3>
+          <p>Daftar 85 kota terbesar dan urutan peringkatnya mengikuti artikel Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Angka populasi adalah perkiraan area perkotaan dan dapat berbeda dari artikel tersebut setelah diperbarui.</p>
+          <h3>Rencana perjalanan disimpan lokal</h3>
+          <p>Daftar <em>Trip Planner</em> disimpan di browser Anda (<code>localStorage</code>), terpisah untuk setiap browser dan setiap alamat wiki. Daftar ini tidak tersinkron antarperangkat dan hilang bila data situs browser dihapus. Gunakan selalu halaman <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> untuk melihat dan mengurutkan rencana Anda.</p>
+          <p>Jika Anda hanya ingin <strong>menambah lokasi ke rencana</strong> dari artikel Wikivoyage biasa, pasang skrip terpisah <code>Megacity-AddToPlan.js</code> (simpan di <code>User:Affandy Murad/Megacity-AddToPlan.js</code>), lalu tambahkan baris ini ke <code>common.js</code> Anda di <em>en.wikivoyage.org</em>:</p>
+          <pre><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Skrip menambahkan tombol <strong>+ Plan</strong> di samping setiap item (See, Do, Eat, Sleep, ...) pada artikel; klik lagi untuk menghapus. Tempat yang ditambahkan muncul di halaman Megacity di atas. Pasang di <em>en.wikivoyage.org</em> karena penyimpanannya terpisah per alamat wiki.</p>
+          <h3>Kredit</h3>
+          <p>Alat ini terinspirasi oleh <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> karya <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Terima kasih banyak atas idenya dan karya beliau untuk komunitas Wikivoyage. Untuk menjelajahi sekitar rencana Anda, lihat juga <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Di luar wiki:</strong> simpan <code>Megacity.js</code> di folder yang sama dengan halaman HTML Anda lalu tambahkan <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> dan <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Di luar wiki, edisi data dipilih lewat atribut <code>data-wiki-host="id.wikivoyage.org"</code> pada div tersebut (default: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <!-- English -->
+        <div data-lang-block="en" hidden>
+          <h3>The megacity list</h3>
+          <p>The list of the 85 largest cities and their ranking follows the Wikipedia article <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Populations are urban-area estimates and may differ from that article once it is updated.</p>
+          <h3>The trip plan is stored locally</h3>
+          <p>The <em>Trip Planner</em> list is stored in your browser (<code>localStorage</code>), separately for each browser and each wiki address. It is not synced between devices and disappears if the browser's site data is cleared. Always use <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> to view and sort your plan.</p>
+          <p>If you only want to <strong>add places to the plan</strong> from ordinary Wikivoyage articles, install the separate script <code>Megacity-AddToPlan.js</code> (save it as <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) and add this line to your <code>common.js</code> on <em>en.wikivoyage.org</em>:</p>
+          <pre><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>It adds a <strong>+ Plan</strong> button next to every listing (See, Do, Eat, Sleep, ...) in articles; click again to remove it. Places you add show up on the Megacity page above. Install it on <em>en.wikivoyage.org</em> because storage is separate for each wiki address.</p>
+          <h3>Credits</h3>
+          <p>This tool was inspired by <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> by <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Many thanks for the idea and for the work contributed to the Wikivoyage community. To explore the area around your plan, see also <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Outside a wiki:</strong> keep <code>Megacity.js</code> next to your HTML page and add <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> and <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Outside a wiki the data edition is chosen with the attribute <code>data-wiki-host="id.wikivoyage.org"</code> on that div (default: <em>en.wikivoyage.org</em>).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Installation section: language tabs + copy buttons
+    (function () {
+      var tabs = document.querySelectorAll('.mw-install-tabs button');
+      var blocks = document.querySelectorAll('[data-lang-block]');
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          var lang = t.getAttribute('data-lang');
+          tabs.forEach(function (x) { x.classList.toggle('on', x === t); });
+          blocks.forEach(function (b) { b.hidden = b.getAttribute('data-lang-block') !== lang; });
+        });
+      });
+      document.querySelectorAll('.mw-install .copy').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var text = btn.parentNode.querySelector('.snippet').textContent;
+          var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); };
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+          else done();
+        });
+      });
+    })();
+  </script>
+
+  <!-- Megacity.js (inlined so this page works as a single file; identical to the separate Megacity.js) -->
+  <script>
+/**
+ * Megacity.js
+ * ---------------------------------------------------------------------------
+ * Explore sights, restaurants, hotels, embassies and tourist information within
+ * 2 / 5 / 10 km of the 85 largest cities in the world (or any place you search),
+ * on a MapLibre GL map (same map as the Wikitamasya trip planner: OpenFreeMap
+ * "Positron" style, scale bar, geolocation).
+ *
+ * Wiki language handling
+ *   - The data comes from the Wikivoyage edition the script runs on
+ *     (e.g. id.wikivoyage.org).
+ *   - Articles that do not exist there (yet) are filled in from the English
+ *     Wikivoyage (en.wikivoyage.org). This is decided per article, so a city
+ *     that is only partly covered in Indonesian still shows everything.
+ *
+ * Usage
+ *   The script does nothing unless the page contains
+ *       <div id="megacity-root"></div>
+ *   Load it with, for example (in your common.js):
+ *       mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity.js&action=raw&ctype=text/javascript');
+ *
+ * Inspired by ListingBrowser by Andree.sk (https://en.wikivoyage.org/wiki/User:Andree.sk; https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser). Thank you!
+ * City list: https://en.wikipedia.org/wiki/List_of_largest_cities
+ *
+ * Content from Wikivoyage is licensed CC BY-SA 4.0.
+ * Map: OpenFreeMap, © OpenMapTiles, data © OpenStreetMap contributors.
+ */
+(function (window, document) {
+  'use strict';
+
+  if (window.__megacityLoaded) return; // already loaded
+  window.__megacityLoaded = true;
+
+  var ROOT_ID = 'megacity-root';
+
+  var CONFIG = {
+    DEFAULT_RADIUS_KM: 10,
+    MAX_API_RADIUS_M: 10000,
+    MAX_ARTICLES_PARSED: 12,
+    WORLD_VIEW: { lat: 20.0, lng: 15.0, zoom: 2 },
+    STORAGE_KEY: 'wv_listing_browser_trip_plan_v2',
+    FALLBACK_HOST: 'en.wikivoyage.org',
+    MAPLIBRE_VERSION: '5.24.1',
+    STYLE_URL: 'https://tiles.openfreemap.org/styles/positron',
+    DEM_TILES: 'https://tiles.mapterhorn.com/{z}/{x}/{y}.webp', // Terrarium-encoded, CORS-enabled, 512px tiles up to z12
+    DEM_MAXZOOM: 12,
+    ROUTING: 'https://routing.openstreetmap.de/', // OSRM with foot / bike / car profiles (CORS-enabled, fair use)
+    CONTOUR_JS: ['https://unpkg.com/maplibre-contour@0.1.0/dist/index.min.js', 'https://cdn.jsdelivr.net/npm/maplibre-contour@0.1.0/dist/index.min.js'],
+  };
+
+  var CSS = [
+    "/* Megacity app */",
+    "#wv-lb-app {",
+    "  display: flex;",
+    "  flex-direction: column;",
+    "  height: 690px;",
+    "  color: #202122;",
+    "}",
+    ".wv-lb-topbar {",
+    "  display: flex;",
+    "  flex-wrap: wrap;",
+    "  gap: 10px;",
+    "  align-items: center;",
+    "  padding: 12px 16px;",
+    "  background: #f8f9fa;",
+    "  border-bottom: 1px solid #c8ccd1;",
+    "}",
+    ".wv-lb-search-box {",
+    "  display: flex;",
+    "  flex: 1;",
+    "  min-width: 260px;",
+    "  gap: 6px;",
+    "}",
+    ".wv-lb-input-wrap {",
+    "  position: relative;",
+    "  flex: 1;",
+    "  display: flex;",
+    "  align-items: center;",
+    "}",
+    ".wv-lb-input {",
+    "  width: 100%;",
+    "  padding: 8px 32px 8px 12px;",
+    "  border: 1px solid #a2a9b1;",
+    "  border-radius: 4px;",
+    "  font-size: 14px;",
+    "}",
+    ".wv-lb-input:focus {",
+    "  outline: none;",
+    "  border-color: #3366cc;",
+    "  box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.2);",
+    "}",
+    ".wv-lb-clear-btn {",
+    "  position: absolute;",
+    "  right: 8px;",
+    "  width: 20px;",
+    "  height: 20px;",
+    "  border: none;",
+    "  border-radius: 50%;",
+    "  background: #eaecf0;",
+    "  color: #54595d;",
+    "  font-size: 14px;",
+    "  line-height: 1;",
+    "  cursor: pointer;",
+    "  display: none;",
+    "  align-items: center;",
+    "  justify-content: center;",
+    "  padding: 0;",
+    "}",
+    ".wv-lb-clear-btn:hover {",
+    "  background: #c8ccd1;",
+    "  color: #202122;",
+    "}",
+    ".wv-lb-btn {",
+    "  padding: 8px 14px;",
+    "  border: 1px solid #a2a9b1;",
+    "  border-radius: 4px;",
+    "  background: #f8f9fa;",
+    "  color: #202122;",
+    "  font-weight: 600;",
+    "  font-size: 13px;",
+    "  cursor: pointer;",
+    "  white-space: nowrap;",
+    "  transition: background 0.15s, border-color 0.15s;",
+    "}",
+    ".wv-lb-btn:hover {",
+    "  background: #ffffff;",
+    "  border-color: #72777d;",
+    "}",
+    ".wv-lb-btn:disabled {",
+    "  opacity: 0.5;",
+    "  cursor: not-allowed;",
+    "}",
+    ".wv-lb-btn-primary {",
+    "  background: #3366cc;",
+    "  border-color: #3366cc;",
+    "  color: #ffffff;",
+    "}",
+    ".wv-lb-btn-primary:hover {",
+    "  background: #2a4b8d;",
+    "  border-color: #2a4b8d;",
+    "}",
+    ".wv-lb-btn-accent {",
+    "  background: #d97706;",
+    "  border-color: #d97706;",
+    "  color: #ffffff;",
+    "}",
+    ".wv-lb-btn-accent:hover:not(:disabled) {",
+    "  background: #b45f04;",
+    "  border-color: #b45f04;",
+    "}",
+    ".wv-lb-controls {",
+    "  display: flex;",
+    "  align-items: center;",
+    "  gap: 8px;",
+    "  font-size: 13px;",
+    "}",
+    ".wv-lb-select {",
+    "  padding: 7px 10px;",
+    "  border: 1px solid #a2a9b1;",
+    "  border-radius: 4px;",
+    "  background: #fff;",
+    "  font-size: 13px;",
+    "}",
+    ".wv-lb-body {",
+    "  display: flex;",
+    "  flex: 1;",
+    "  overflow: hidden;",
+    "  position: relative;",
+    "}",
+    ".wv-lb-sidebar {",
+    "  width: 430px;",
+    "  max-width: 100%;",
+    "  display: flex;",
+    "  flex-direction: column;",
+    "  border-right: 1px solid #c8ccd1;",
+    "  background: #ffffff;",
+    "  z-index: 2;",
+    "}",
+    ".wv-lb-tabs {",
+    "  display: flex;",
+    "  border-bottom: 1px solid #c8ccd1;",
+    "  background: #f8f9fa;",
+    "}",
+    ".wv-lb-tab {",
+    "  flex: 1;",
+    "  padding: 10px;",
+    "  text-align: center;",
+    "  font-size: 13px;",
+    "  font-weight: 600;",
+    "  cursor: pointer;",
+    "  border-bottom: 2px solid transparent;",
+    "  color: #54595d;",
+    "}",
+    ".wv-lb-tab.active {",
+    "  color: #3366cc;",
+    "  border-bottom-color: #3366cc;",
+    "  background: #ffffff;",
+    "}",
+    ".wv-lb-filterbar {",
+    "  padding: 10px 12px 0;",
+    "}",
+    ".wv-lb-filter-input {",
+    "  width: 100%;",
+    "  padding: 7px 10px;",
+    "  border: 1px solid #a2a9b1;",
+    "  border-radius: 4px;",
+    "  font-size: 13px;",
+    "}",
+    ".wv-lb-filter-input:focus {",
+    "  outline: none;",
+    "  border-color: #3366cc;",
+    "  box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.2);",
+    "}",
+    ".wv-lb-filters {",
+    "  display: flex;",
+    "  gap: 6px;",
+    "  overflow-x: auto;",
+    "  padding: 10px 12px;",
+    "  border-bottom: 1px solid #eaecf0;",
+    "}",
+    ".wv-lb-chip {",
+    "  padding: 4px 10px;",
+    "  border-radius: 14px;",
+    "  border: 1px solid #c8ccd1;",
+    "  background: #f8f9fa;",
+    "  cursor: pointer;",
+    "  font-size: 12px;",
+    "  color: #202122;",
+    "  white-space: nowrap;",
+    "}",
+    ".wv-lb-chip:hover {",
+    "  background: #eaf3ff;",
+    "  border-color: #3366cc;",
+    "  color: #3366cc;",
+    "}",
+    ".wv-lb-chip.active {",
+    "  background: #3366cc;",
+    "  border-color: #3366cc;",
+    "  color: #ffffff;",
+    "  font-weight: 600;",
+    "}",
+    ".wv-lb-list {",
+    "  flex: 1;",
+    "  overflow-y: auto;",
+    "  padding: 12px;",
+    "  display: flex;",
+    "  flex-direction: column;",
+    "  gap: 10px;",
+    "}",
+    ".wv-lb-planner-bar {",
+    "  display: flex;",
+    "  align-items: center;",
+    "  justify-content: space-between;",
+    "  gap: 8px;",
+    "  flex-wrap: wrap;",
+    "  padding: 10px 12px;",
+    "  background: #fff7ea;",
+    "  border-bottom: 1px solid #f3d29a;",
+    "  font-size: 13px;",
+    "  position: sticky;",
+    "  top: 0;",
+    "  z-index: 4;",
+    "  flex-shrink: 0;",
+    "}",
+    ".wv-lb-status, .wv-lb-tabs, .wv-lb-filters { flex-shrink: 0; }",
+    ".wv-lb-filterbar {",
+    "  position: sticky;",
+    "  top: 0;",
+    "  z-index: 4;",
+    "  flex-shrink: 0;",
+    "  background: #ffffff;",
+    "  padding-bottom: 2px;",
+    "}",
+    ".wv-lb-topbar { position: sticky; top: 0; z-index: 600; }",
+    ".wv-lb-card {",
+    "  border: 1px solid #eaecf0;",
+    "  border-radius: 6px;",
+    "  padding: 12px;",
+    "  background: #fff;",
+    "  transition: box-shadow 0.15s, border-color 0.15s;",
+    "}",
+    ".wv-lb-card:hover {",
+    "  border-color: #3366cc;",
+    "  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);",
+    "}",
+    ".wv-lb-card-header {",
+    "  display: flex;",
+    "  justify-content: space-between;",
+    "  align-items: flex-start;",
+    "  gap: 8px;",
+    "  margin-bottom: 4px;",
+    "}",
+    ".wv-lb-card-title {",
+    "  font-weight: 700;",
+    "  font-size: 14px;",
+    "  color: #202122;",
+    "  margin: 0;",
+    "}",
+    ".wv-lb-badge {",
+    "  font-size: 11px;",
+    "  padding: 2px 8px;",
+    "  border-radius: 10px;",
+    "  color: #fff;",
+    "  font-weight: 600;",
+    "  white-space: nowrap;",
+    "}",
+    ".wv-lb-order-badge {",
+    "  display: inline-flex;",
+    "  align-items: center;",
+    "  justify-content: center;",
+    "  width: 20px;",
+    "  height: 20px;",
+    "  border-radius: 50%;",
+    "  background: #d97706;",
+    "  color: #fff;",
+    "  font-size: 11px;",
+    "  font-weight: 700;",
+    "  margin-right: 6px;",
+    "  flex-shrink: 0;",
+    "}",
+    ".wv-lb-card-meta {",
+    "  font-size: 12px;",
+    "  color: #54595d;",
+    "  margin-bottom: 6px;",
+    "}",
+    ".wv-lb-card-details {",
+    "  font-size: 12px;",
+    "  color: #202122;",
+    "  margin-bottom: 6px;",
+    "  line-height: 1.5;",
+    "}",
+    ".wv-lb-card-details a { color: #3366cc; }",
+    ".wv-lb-card-desc {",
+    "  font-size: 13px;",
+    "  color: #202122;",
+    "  line-height: 1.4;",
+    "  margin-bottom: 8px;",
+    "  display: -webkit-box;",
+    "  -webkit-line-clamp: 3;",
+    "  -webkit-box-orient: vertical;",
+    "  overflow: hidden;",
+    "}",
+    ".wv-lb-card-actions {",
+    "  display: flex;",
+    "  gap: 8px;",
+    "  flex-wrap: wrap;",
+    "}",
+    ".wv-lb-card-btn {",
+    "  font-size: 12px;",
+    "  padding: 4px 10px;",
+    "  border-radius: 4px;",
+    "  border: 1px solid #c8ccd1;",
+    "  background: #f8f9fa;",
+    "  cursor: pointer;",
+    "  text-decoration: none;",
+    "  color: #202122;",
+    "}",
+    ".wv-lb-card-btn:hover {",
+    "  background: #eaf3ff;",
+    "  border-color: #3366cc;",
+    "  color: #3366cc;",
+    "}",
+    ".wv-lb-card-btn.saved {",
+    "  background: #dff2eb;",
+    "  border-color: #14866d;",
+    "  color: #14866d;",
+    "  font-weight: 600;",
+    "}",
+    ".wv-lb-city-card {",
+    "  display: flex;",
+    "  justify-content: space-between;",
+    "  align-items: center;",
+    "  padding: 10px 12px;",
+    "  border: 1px solid #eaecf0;",
+    "  border-radius: 6px;",
+    "  background: #ffffff;",
+    "  cursor: pointer;",
+    "  transition: all 0.15s;",
+    "}",
+    ".wv-lb-city-card:hover {",
+    "  border-color: #3366cc;",
+    "  background: #f4f8ff;",
+    "}",
+    ".wv-lb-layers {",
+    "  position: absolute; top: 10px; right: 10px; z-index: 5; display: flex; flex-direction: column; gap: 4px; align-items: flex-end;",
+    "}",
+    ".wv-lb-layers button {",
+    "  padding: 4px 9px; font-size: 12px; border: 1px solid #a2a9b1; border-radius: 4px; background: rgba(255,255,255,0.95); color: #202122; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.15);",
+    "}",
+    ".wv-lb-layers button.on { background: #3366cc; border-color: #3366cc; color: #fff; }",
+    ".wv-lb-layers .wv-lb-lstat { font-size: 11px; background: rgba(255,255,255,0.92); border-radius: 4px; padding: 2px 6px; color: #54595d; max-width: 200px; text-align: right; }",
+    ".wv-lb-map-wrap {",
+    "  flex: 1;",
+    "  position: relative;",
+    "}",
+    "#wv-lb-map {",
+    "  width: 100%;",
+    "  height: 100%;",
+    "  z-index: 1;",
+    "}",
+    ".wv-lb-map-legend {",
+    "  position: absolute;",
+    "  top: 10px;",
+    "  left: 10px;",
+    "  max-width: calc(100% - 70px);",
+    "  z-index: 5;",
+    "  background: rgba(255, 255, 255, 0.94);",
+    "  border: 1px solid #c8ccd1;",
+    "  border-radius: 6px;",
+    "  padding: 8px 12px;",
+    "  font-size: 12px;",
+    "  box-shadow: 0 2px 6px rgba(0,0,0,0.12);",
+    "}",
+    ".wv-lb-status {",
+    "  padding: 8px 12px;",
+    "  font-size: 12px;",
+    "  background: #eaf3ff;",
+    "  color: #2a4b8d;",
+    "  border-bottom: 1px solid #c8ccd1;",
+    "  display: flex;",
+    "  align-items: center;",
+    "  gap: 8px;",
+    "}",
+    ".wv-lb-spinner {",
+    "  width: 13px;",
+    "  height: 13px;",
+    "  border: 2px solid #a3c1f7;",
+    "  border-top-color: #3366cc;",
+    "  border-radius: 50%;",
+    "  animation: wvSpin 0.8s linear infinite;",
+    "  flex-shrink: 0;",
+    "}",
+    "@keyframes wvSpin {",
+    "  to { transform: rotate(360deg); }",
+    "}",
+    "",
+    "@media (max-width: 768px) {",
+    "  .mw-page-container { padding: 12px; }",
+    "  #wv-lb-app { height: auto; }",
+    "  .wv-lb-body { flex-direction: column-reverse; }",
+    "  .wv-lb-sidebar { width: 100%; height: 440px; border-right: none; border-top: 1px solid #c8ccd1; }",
+    "  .wv-lb-map-wrap { height: 320px; }",
+    "}",
+    "",
+    "/* Map pins + layer buttons: same look as index.html */",
+    ".wv-lb-pin {",
+    "  width: 26px; height: 26px; border-radius: 50%; color: #fff;",
+    "  font: 700 12px/22px Arial, sans-serif; text-align: center;",
+    "  border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.45); cursor: pointer;",
+    "}",
+    ".wv-lb-pin.ic { font-size: 13px; }",
+    "#wv-lb-map .maplibregl-map, .maplibregl-map { font: inherit; }",
+    "#wv-listing-browser-root, #wv-listing-browser-root * { box-sizing: border-box; }",
+    "",
+    "/* Filter box: clear (x) + item count on the right */",
+    ".wv-lb-filter-wrap { position: relative; display: flex; align-items: center; }",
+    ".wv-lb-filter-wrap .wv-lb-filter-input { padding-right: 104px; }",
+    ".wv-lb-filter-wrap .wv-lb-clear-btn { right: 62px; }",
+    ".wv-lb-filter-count {",
+    "  position: absolute; right: 10px; min-width: 44px; text-align: right;",
+    "  font-size: 12px; font-weight: 600; color: #54595d; white-space: nowrap; pointer-events: none;",
+    "}",
+    ".wv-lb-bar-btns { display: inline-flex; gap: 6px; flex-wrap: wrap; }",
+    "",
+    "/* Arrow that shrinks the left list */",
+    ".wv-lb-collapse {",
+    "  position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 6;",
+    "  width: 22px; height: 54px; padding: 0; border: 1px solid #a2a9b1; border-left: 0;",
+    "  border-radius: 0 8px 8px 0; background: #fff; color: #3366cc; font-size: 22px; line-height: 1;",
+    "  cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.25);",
+    "}",
+    ".wv-lb-collapse:hover { background: #eaf3ff; }",
+    ".wv-lb-collapsed .wv-lb-sidebar { display: none; }",
+    "@media (max-width: 768px) {",
+    "  .wv-lb-collapse { top: auto; bottom: 40px; transform: none; }",
+    "}",
+    "",
+    "/* Manual stops + drag to reorder */",
+    ".wv-lb-addpanel { display: none; padding: 10px 12px; background: #f6f1ff; border-bottom: 1px solid #d9cdf3; font-size: 13px; }",
+    ".wv-lb-addpanel.open { display: block; }",
+    ".wv-lb-addpanel label { display: block; font-weight: 600; margin: 0 0 3px; font-size: 12px; }",
+    ".wv-lb-addpanel, .wv-lb-addpanel * { box-sizing: border-box; }",
+    ".wv-lb-addpanel input { width: 100%; max-width: 100%; padding: 6px 8px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 13px; }",
+    ".wv-lb-addpanel .row { margin-bottom: 8px; }",
+    ".wv-lb-addpanel .hint { font-size: 11px; color: #54595d; margin-top: 2px; }",
+    ".wv-lb-addpanel .err { color: #d33; font-size: 12px; min-height: 16px; margin-bottom: 4px; }",
+    ".wv-lb-addpanel .btns { display: flex; gap: 6px; flex-wrap: wrap; }",
+    ".wv-lb-drag { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; color: #72777d; font-size: 18px; line-height: 1; padding: 2px 8px 2px 0; }",
+    ".wv-lb-drag:active { cursor: grabbing; }",
+    ".wv-lb-dragging { opacity: 0.45; }",
+    ".wv-lb-drop-before { box-shadow: 0 -3px 0 #3366cc; }",
+    ".wv-lb-drop-after { box-shadow: 0 3px 0 #3366cc; }",
+    "",
+    "/* Small screens */",
+    "@media (max-width: 768px) {",
+    "  .wv-lb-topbar { padding: 10px; gap: 8px; }",
+    "  .wv-lb-topbar > * { min-width: 0; max-width: 100%; }",
+    "  .wv-lb-search-box { flex: 1 1 100%; min-width: 0; }",
+    "  .wv-lb-search-box input, .wv-lb-search-box select { min-width: 0; max-width: 100%; }",
+    "  .wv-lb-sidebar { height: 380px; }",
+    "  .wv-lb-sidebar { flex: none; }",
+    "  .wv-lb-map-wrap { flex: none; height: 400px; min-height: 400px; }",
+    "  .wv-lb-map-legend { max-width: calc(100% - 20px); font-size: 11px; padding: 6px 9px; }",
+    "  .wv-lb-layers { top: auto; bottom: 64px; left: 30px; right: 52px; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; align-items: flex-end; gap: 4px; }",
+    "  .wv-lb-layers button { padding: 5px 8px; font-size: 11px; }",
+    "  .wv-lb-layers .wv-lb-lstat { order: -1; flex: 1 0 100%; max-width: none; text-align: left; }",
+    "  .wv-lb-collapse { top: auto; bottom: 64px; left: 10px; width: 30px; height: 30px; border: 1px solid #a2a9b1; border-radius: 6px; transform: none; font-size: 20px; }",
+    "  .wv-lb-collapse .wv-lb-arr { display: inline-block; transform: rotate(-90deg); }",
+    "  .wv-lb-layers { left: 46px; }",
+    "  .wv-lb-collapsed .wv-lb-map-wrap { height: 62vh; min-height: 360px; }",
+    "  .maplibregl-popup-content { max-width: 240px; }",
+    "}",
+    "@media (max-width: 420px) {",
+    "  .wv-lb-bar-btns { width: 100%; }",
+    "  .wv-lb-bar-btns > * { flex: 1 1 auto; }",
+    "  .wv-lb-map-wrap { height: 360px; min-height: 360px; }",
+    "}"
+  ].join('\n');
+
+  // The 85 largest cities in the world (> 5 million people; based on Wikipedia: List of largest cities, UN 2025)
+  var LARGEST_CITIES = [
+    { rank: 1, name: 'Jakarta', country: 'Indonesia', pop: '41.9 million', lat: -6.2088, lng: 106.8456 },
+    { rank: 2, name: 'Dhaka', country: 'Bangladesh', pop: '36.6 million', lat: 23.8103, lng: 90.4125 },
+    { rank: 3, name: 'Tokyo', country: 'Japan', pop: '33.4 million', lat: 35.6762, lng: 139.6503 },
+    { rank: 4, name: 'Delhi', country: 'India', pop: '30.2 million', lat: 28.6139, lng: 77.2090 },
+    { rank: 5, name: 'Shanghai', country: 'China', pop: '29.6 million', lat: 31.2304, lng: 121.4737 },
+    { rank: 6, name: 'Guangzhou', country: 'China', pop: '27.6 million', lat: 23.1291, lng: 113.2644 },
+    { rank: 7, name: 'Cairo', country: 'Egypt', pop: '25.6 million', lat: 30.0444, lng: 31.2357 },
+    { rank: 8, name: 'Manila', country: 'Philippines', pop: '24.7 million', lat: 14.5995, lng: 120.9842 },
+    { rank: 9, name: 'Kolkata', country: 'India', pop: '22.5 million', lat: 22.5726, lng: 88.3639 },
+    { rank: 10, name: 'Seoul', country: 'South Korea', pop: '22.5 million', lat: 37.5665, lng: 126.9780 },
+    { rank: 11, name: 'Karachi', country: 'Pakistan', pop: '21.4 million', lat: 24.8607, lng: 67.0011 },
+    { rank: 12, name: 'Mumbai', country: 'India', pop: '20.2 million', lat: 19.0760, lng: 72.8777 },
+    { rank: 13, name: 'São Paulo', country: 'Brazil', pop: '18.9 million', lat: -23.5505, lng: -46.6333 },
+    { rank: 14, name: 'Bangkok', country: 'Thailand', pop: '18.2 million', lat: 13.7563, lng: 100.5018 },
+    { rank: 15, name: 'Mexico City', country: 'Mexico', pop: '17.7 million', lat: 19.4326, lng: -99.1332 },
+    { rank: 16, name: 'Beijing', country: 'China', pop: '17.0 million', lat: 39.9042, lng: 116.4074 },
+    { rank: 17, name: 'Lahore', country: 'Pakistan', pop: '15.2 million', lat: 31.5204, lng: 74.3587 },
+    { rank: 18, name: 'Istanbul', country: 'Turkey', pop: '15.0 million', lat: 41.0082, lng: 28.9784 },
+    { rank: 19, name: 'Moscow', country: 'Russia', pop: '14.5 million', lat: 55.7558, lng: 37.6173 },
+    { rank: 20, name: 'Ho Chi Minh City', country: 'Vietnam', pop: '14.1 million', lat: 10.8231, lng: 106.6297 },
+    { rank: 21, name: 'Buenos Aires', country: 'Argentina', pop: '14.0 million', lat: -34.6037, lng: -58.3816 },
+    { rank: 22, name: 'New York City', country: 'United States', pop: '13.9 million', lat: 40.7128, lng: -74.0060 },
+    { rank: 23, name: 'Shenzhen', country: 'China', pop: '13.9 million', lat: 22.5431, lng: 114.0579 },
+    { rank: 24, name: 'Bengaluru', country: 'India', pop: '13.2 million', lat: 12.9716, lng: 77.5946 },
+    { rank: 25, name: 'Osaka', country: 'Japan', pop: '13.0 million', lat: 34.6937, lng: 135.5023 },
+    { rank: 26, name: 'Lagos', country: 'Nigeria', pop: '12.8 million', lat: 6.5244, lng: 3.3792 },
+    { rank: 27, name: 'Los Angeles', country: 'United States', pop: '12.7 million', lat: 34.0522, lng: -118.2437 },
+    { rank: 28, name: 'Chennai', country: 'India', pop: '11.2 million', lat: 13.0827, lng: 80.2707 },
+    { rank: 29, name: 'Kinshasa', country: 'DR Congo', pop: '10.9 million', lat: -4.4419, lng: 15.2663 },
+    { rank: 30, name: 'Bogotá', country: 'Colombia', pop: '10.6 million', lat: 4.7110, lng: -74.0721 },
+    { rank: 31, name: 'Lima', country: 'Peru', pop: '10.6 million', lat: -12.0464, lng: -77.0428 },
+    { rank: 32, name: 'London', country: 'United Kingdom', pop: '10.4 million', lat: 51.5072, lng: -0.1276 },
+    { rank: 33, name: 'Rio de Janeiro', country: 'Brazil', pop: '9.5 million', lat: -22.9068, lng: -43.1729 },
+    { rank: 34, name: 'Paris', country: 'France', pop: '9.4 million', lat: 48.8566, lng: 2.3522 },
+    { rank: 35, name: 'Hyderabad', country: 'India', pop: '9.2 million', lat: 17.3850, lng: 78.4867 },
+    { rank: 36, name: 'Tehran', country: 'Iran', pop: '9.2 million', lat: 35.6892, lng: 51.3890 },
+    { rank: 37, name: 'Taipei', country: 'Taiwan', pop: '9.1 million', lat: 25.0330, lng: 121.5654 },
+    { rank: 38, name: 'Luanda', country: 'Angola', pop: '9.1 million', lat: -8.8390, lng: 13.2894 },
+    { rank: 39, name: 'Bandung', country: 'Indonesia', pop: '8.9 million', lat: -6.9175, lng: 107.6191 },
+    { rank: 40, name: 'Chicago', country: 'United States', pop: '8.9 million', lat: 41.8781, lng: -87.6298 },
+    { rank: 41, name: 'Chengdu', country: 'China', pop: '8.8 million', lat: 30.5728, lng: 104.0668 },
+    { rank: 42, name: 'Kuala Lumpur', country: 'Malaysia', pop: '8.4 million', lat: 3.1390, lng: 101.6869 },
+    { rank: 43, name: 'Dar es Salaam', country: 'Tanzania', pop: '7.8 million', lat: -6.7924, lng: 39.2083 },
+    { rank: 44, name: 'Suzhou', country: 'China', pop: '7.7 million', lat: 31.2989, lng: 120.5853 },
+    { rank: 45, name: 'Ahmedabad', country: 'India', pop: '7.6 million', lat: 23.0225, lng: 72.5714 },
+    { rank: 46, name: 'Chongqing', country: 'China', pop: '7.5 million', lat: 29.5630, lng: 106.5516 },
+    { rank: 47, name: 'Xi\'an', country: 'China', pop: '7.4 million', lat: 34.3416, lng: 108.9398 },
+    { rank: 48, name: 'Hong Kong', country: 'Hong Kong', pop: '7.4 million', lat: 22.3193, lng: 114.1694 },
+    { rank: 49, name: 'Dongguan', country: 'China', pop: '7.4 million', lat: 23.0207, lng: 113.7518 },
+    { rank: 50, name: 'Foshan', country: 'China', pop: '7.2 million', lat: 23.0215, lng: 113.1214 },
+    { rank: 51, name: 'Wuhan', country: 'China', pop: '7.2 million', lat: 30.5928, lng: 114.3055 },
+    { rank: 52, name: 'Baghdad', country: 'Iraq', pop: '7.1 million', lat: 33.3152, lng: 44.3661 },
+    { rank: 53, name: 'Hangzhou', country: 'China', pop: '7.0 million', lat: 30.2741, lng: 120.1551 },
+    { rank: 54, name: 'Riyadh', country: 'Saudi Arabia', pop: '6.9 million', lat: 24.7136, lng: 46.6753 },
+    { rank: 55, name: 'Surat', country: 'India', pop: '6.9 million', lat: 21.1702, lng: 72.8311 },
+    { rank: 56, name: 'Surabaya', country: 'Indonesia', pop: '6.8 million', lat: -7.2575, lng: 112.7521 },
+    { rank: 57, name: 'Pune', country: 'India', pop: '6.8 million', lat: 18.5204, lng: 73.8567 },
+    { rank: 58, name: 'Khartoum', country: 'Sudan', pop: '6.8 million', lat: 15.5007, lng: 32.5599 },
+    { rank: 59, name: 'Nanjing', country: 'China', pop: '6.8 million', lat: 32.0603, lng: 118.7969 },
+    { rank: 60, name: 'Santiago', country: 'Chile', pop: '6.7 million', lat: -33.4489, lng: -70.6693 },
+    { rank: 61, name: 'Shenyang', country: 'China', pop: '6.6 million', lat: 41.8057, lng: 123.4315 },
+    { rank: 62, name: 'Tianjin', country: 'China', pop: '6.6 million', lat: 39.3434, lng: 117.3616 },
+    { rank: 63, name: 'Johannesburg', country: 'South Africa', pop: '6.4 million', lat: -26.2041, lng: 28.0473 },
+    { rank: 64, name: 'Madrid', country: 'Spain', pop: '6.3 million', lat: 40.4168, lng: -3.7038 },
+    { rank: 65, name: 'Singapore', country: 'Singapore', pop: '6.1 million', lat: 1.3521, lng: 103.8198 },
+    { rank: 66, name: 'Toronto', country: 'Canada', pop: '6.1 million', lat: 43.6532, lng: -79.3832 },
+    { rank: 67, name: 'Dallas', country: 'United States', pop: '6.0 million', lat: 32.7767, lng: -96.7970 },
+    { rank: 68, name: 'Houston', country: 'United States', pop: '6.0 million', lat: 29.7604, lng: -95.3698 },
+    { rank: 69, name: 'Abidjan', country: 'Ivory Coast', pop: '5.9 million', lat: 5.3600, lng: -4.0083 },
+    { rank: 70, name: 'Alexandria', country: 'Egypt', pop: '5.8 million', lat: 31.2001, lng: 29.9187 },
+    { rank: 71, name: 'Yangon', country: 'Myanmar', pop: '5.8 million', lat: 16.8409, lng: 96.1735 },
+    { rank: 72, name: 'Zhengzhou', country: 'China', pop: '5.7 million', lat: 34.7466, lng: 113.6253 },
+    { rank: 73, name: 'Qingdao', country: 'China', pop: '5.7 million', lat: 36.0671, lng: 120.3826 },
+    { rank: 74, name: 'Miami', country: 'United States', pop: '5.6 million', lat: 25.7617, lng: -80.1918 },
+    { rank: 75, name: 'Saint Petersburg', country: 'Russia', pop: '5.6 million', lat: 59.9343, lng: 30.3351 },
+    { rank: 76, name: 'Nairobi', country: 'Kenya', pop: '5.5 million', lat: -1.2921, lng: 36.8219 },
+    { rank: 77, name: 'Barcelona', country: 'Spain', pop: '5.4 million', lat: 41.3874, lng: 2.1686 },
+    { rank: 78, name: 'Washington, D.C.', country: 'United States', pop: '5.4 million', lat: 38.9072, lng: -77.0369 },
+    { rank: 79, name: 'Belo Horizonte', country: 'Brazil', pop: '5.3 million', lat: -19.9167, lng: -43.9345 },
+    { rank: 80, name: 'Guadalajara', country: 'Mexico', pop: '5.3 million', lat: 20.6597, lng: -103.3496 },
+    { rank: 81, name: 'Ankara', country: 'Turkey', pop: '5.2 million', lat: 39.9334, lng: 32.8597 },
+    { rank: 82, name: 'Atlanta', country: 'United States', pop: '5.2 million', lat: 33.7490, lng: -84.3880 },
+    { rank: 83, name: 'Amman', country: 'Jordan', pop: '5.1 million', lat: 31.9454, lng: 35.9284 },
+    { rank: 84, name: 'Monterrey', country: 'Mexico', pop: '5.1 million', lat: 25.6866, lng: -100.3161 },
+    { rank: 85, name: 'Philadelphia', country: 'United States', pop: '5.0 million', lat: 39.9526, lng: -75.1652 }
+  ];
+
+  // Country names, used to normalise embassy listings that only give a country name (e.g. in Jakarta)
+  var COUNTRY_NAMES = [
+    'Afghanistan', 'Algeria', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan',
+    'Bahrain', 'Bangladesh', 'Belarus', 'Belgium', 'Bosnia and Herzegovina', 'Brazil', 'Brunei', 'Bulgaria',
+    'Cambodia', 'Canada', 'Chile', 'China', 'Colombia', 'Costa Rica', 'Croatia', 'Cuba', 'Czech Republic', 'Czechia',
+    'Denmark', 'East Timor', 'Timor-Leste', 'Ecuador', 'Egypt', 'Ethiopia',
+    'Fiji', 'Finland', 'France', 'Georgia', 'Germany', 'Greece',
+    'Holy See', 'Vatican', 'Hungary', 'India', 'Iran', 'Iraq', 'Ireland', 'Italy',
+    'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kuwait', 'Laos', 'Lebanon', 'Libya',
+    'Malaysia', 'Mexico', 'Mongolia', 'Morocco', 'Mozambique', 'Myanmar',
+    'Netherlands', 'New Zealand', 'Nigeria', 'North Korea', 'Norway',
+    'Oman', 'Pakistan', 'Palestine', 'Panama', 'Papua New Guinea', 'Peru', 'Philippines', 'Poland', 'Portugal',
+    'Qatar', 'Romania', 'Russia', 'Saudi Arabia', 'Serbia', 'Singapore', 'Slovakia', 'Solomon Islands',
+    'Somalia', 'South Africa', 'South Korea', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland', 'Syria',
+    'Taiwan', 'Thailand', 'Tunisia', 'Turkey', 'Türkiye',
+    'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan',
+    'Venezuela', 'Vietnam', 'Yemen', 'Zimbabwe'
+  ];
+
+  var COUNTRY_LOOKUP = {};
+  COUNTRY_NAMES.forEach(function (c) {
+    COUNTRY_LOOKUP[c.toLowerCase()] = c;
+  });
+
+  var CATEGORIES = {
+    all: { label: 'All', color: '#3366cc', icon: '🌐' },
+    see: { label: 'See', color: '#2a4b8d', icon: '🏛️' },
+    do: { label: 'Do', color: '#14866d', icon: '🎯' },
+    buy: { label: 'Buy', color: '#a61e4d', icon: '🛍️' },
+    eat: { label: 'Eat', color: '#d33', icon: '🍽️' },
+    drink: { label: 'Drink', color: '#ac6600', icon: '☕' },
+    sleep: { label: 'Sleep', color: '#6b4ba1', icon: '🛏️' },
+    go: { label: 'Transport', color: '#54595d', icon: '🚉' },
+    info: { label: 'Tourist info', color: '#0b7285', icon: 'ℹ️' },
+    embassy: { label: 'Embassies', color: '#3b4252', icon: '🏤' },
+    article: { label: 'City guides', color: '#00af89', icon: '📖' }
+  };
+
+  var TEMPLATE_NAMES = 'see|do|buy|eat|drink|sleep|go|listing';
+  var INFO_HEADING_RE = /tourism information|tourist information|tourist office|visitor information|visitor cent|tourist cent|informasi wisata|pusat informasi/i;
+  var INFO_NAME_RE = /tourism information|tourist information|tourist office|tourist cent|visitor information|visitor cent|information cent|information service|information kiosk|information booth|informasi wisata|pusat informasi/i;
+
+  var state = {
+    map: null,
+    markers: [],
+    geo: {},
+    mapReady: false,
+    center: null, // null in default mode (list of the largest cities)
+    radiusKm: CONFIG.DEFAULT_RADIUS_KM,
+    activeCategory: 'all',
+    filterText: '',
+    items: [],
+    tripPlan: loadTripPlan(),
+    activeTab: 'explore',
+    searchToken: 0,
+    primaryHost: CONFIG.FALLBACK_HOST,
+    fallbackCount: 0,
+    notes: []
+  };
+
+  function loadTripPlan() {
+    try {
+      return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveTripPlan() {
+    try {
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state.tripPlan, function (k, v) { return (k.charAt(0) === '_' || k === 'areaPending') ? undefined : v; }));
+    } catch (e) {}
+    updatePlannerBadge();
+  }
+
+  /* ------------------------------------------------------------------
+   * Small helpers (no dependency on the MediaWiki `mw` object, so the same
+   * file runs on a wiki and in a plain HTML page)
+   * ------------------------------------------------------------------ */
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function getDistanceKm(lat1, lon1, lat2, lon2) {
+    var R = 6371;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function formatKm(km) {
+    return km < 10 ? km.toFixed(1) : Math.round(km).toString();
+  }
+
+  /* ------------------------------------------------------------------
+   * Wikivoyage hosts: primary edition + English fallback
+   * ------------------------------------------------------------------ */
+
+  var HOST_RE = /^([a-z][a-z-]*)(?:\.m)?\.wikivoyage\.org$/i;
+
+  // The edition to read first. Order: demo selector (#sim-wiki-domain) > data-wiki-host on the root div >
+  // the wiki the script is running on > English.
+  function getPrimaryHost() {
+    var sel = document.getElementById('sim-wiki-domain');
+    var m;
+    if (sel && sel.value && (m = HOST_RE.exec(sel.value))) return m[1].toLowerCase() + '.wikivoyage.org';
+    var root = document.getElementById(ROOT_ID);
+    var attr = root && root.getAttribute('data-wiki-host');
+    if (attr && (m = HOST_RE.exec(attr))) return m[1].toLowerCase() + '.wikivoyage.org';
+    if ((m = HOST_RE.exec(window.location.hostname))) return m[1].toLowerCase() + '.wikivoyage.org';
+    return CONFIG.FALLBACK_HOST;
+  }
+
+  function getHosts() {
+    var primary = getPrimaryHost();
+    return primary === CONFIG.FALLBACK_HOST ? [primary] : [primary, CONFIG.FALLBACK_HOST];
+  }
+
+  function hostLang(host) {
+    return String(host).split('.')[0];
+  }
+
+  function languageName(code) {
+    try {
+      if (window.Intl && Intl.DisplayNames) return new Intl.DisplayNames(['en'], { type: 'language' }).of(code) || code;
+    } catch (e) {}
+    return code;
+  }
+
+  function articleUrl(host, title) {
+    return 'https://' + host + '/wiki/' + encodeURIComponent(String(title).replace(/ /g, '_'));
+  }
+
+  function apiGet(host, params) {
+    var url = new URL('https://' + host + '/w/api.php');
+    var all = Object.assign({ origin: '*' }, params);
+    Object.keys(all).forEach(function (key) {
+      url.searchParams.append(key, all[key]);
+    });
+    return fetch(url.toString()).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' (' + host + ')');
+      return res.json();
+    });
+  }
+
+  /* ------------------------------------------------------------------
+   * Wikitext parsing helpers
+   * ------------------------------------------------------------------ */
+
+  // Remove wiki markup from a text fragment
+  function cleanWikiText(s) {
+    if (!s) return '';
+    var prev;
+    s = String(s).replace(/<ref[^>]*\/>/gi, '').replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi, '');
+    // strip (nested) templates from the inside out
+    do {
+      prev = s;
+      s = s.replace(/\{\{[^{}]*\}\}/g, '');
+    } while (s !== prev);
+    return s
+      .replace(/\[\[(?:File|Image|Category):[^\]]*\]\]/gi, '')
+      .replace(/\[\[([^\]|]+\|)?([^\]]+)\]\]/g, '$2')
+      .replace(/\[(https?:\/\/[^\s\]]+)\s+([^\]]+)\]/g, '$2')
+      .replace(/\[https?:\/\/[^\s\]]+\]/g, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/'{2,}/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // Split a template body on top-level pipes (ignores pipes inside {{ }} and [[ ]])
+  function splitTopLevelPipes(body) {
+    var parts = [];
+    var cur = '';
+    var curly = 0;
+    var square = 0;
+    for (var i = 0; i < body.length; i++) {
+      var two = body.substr(i, 2);
+      if (two === '{{') { curly++; cur += two; i++; continue; }
+      if (two === '}}') { curly = Math.max(0, curly - 1); cur += two; i++; continue; }
+      if (two === '[[') { square++; cur += two; i++; continue; }
+      if (two === ']]') { square = Math.max(0, square - 1); cur += two; i++; continue; }
+      var ch = body.charAt(i);
+      if (ch === '|' && curly === 0 && square === 0) {
+        parts.push(cur);
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    parts.push(cur);
+    return parts;
+  }
+
+  // Find listing templates with proper brace balancing (nested templates such as {{phone}} are handled)
+  function findListingTemplates(wikitext) {
+    var found = [];
+    var startRe = new RegExp('\\{\\{\\s*(' + TEMPLATE_NAMES + ')\\s*\\|', 'gi');
+    var m;
+    while ((m = startRe.exec(wikitext)) !== null) {
+      var bodyStart = m.index + m[0].length;
+      var depth = 1;
+      var j = bodyStart;
+      while (j < wikitext.length && depth > 0) {
+        var two = wikitext.substr(j, 2);
+        if (two === '{{') { depth++; j += 2; }
+        else if (two === '}}') { depth--; j += 2; }
+        else { j++; }
+      }
+      if (depth !== 0) break;
+      found.push({
+        type: m[1].toLowerCase(),
+        index: m.index,
+        body: wikitext.slice(bodyStart, j - 2)
+      });
+      startRe.lastIndex = j;
+    }
+    return found;
+  }
+
+  function collectHeadings(wikitext) {
+    var headings = [];
+    var re = /^(={2,5})\s*(.+?)\s*\1\s*$/gm;
+    var m;
+    while ((m = re.exec(wikitext)) !== null) {
+      headings.push({ index: m.index, title: cleanWikiText(m[2]) });
+    }
+    return headings;
+  }
+
+  function headingAt(headings, pos) {
+    var current = '';
+    for (var i = 0; i < headings.length; i++) {
+      if (headings[i].index <= pos) current = headings[i].title;
+      else break;
+    }
+    return current;
+  }
+
+  function parseCoord(v) {
+    if (v === undefined || v === null || String(v).trim() === '') return NaN;
+    return parseFloat(String(v).replace(',', '.'));
+  }
+
+  // Normalise embassy names when the listing only gives a country name (especially in Jakarta)
+  function normalizeEmbassyIfNeeded(cleanName, pageTitle, rawType, address, description, heading) {
+    var lowerName = cleanName.trim().toLowerCase();
+    var isJakartaContext = /jakarta/i.test(pageTitle) || /jakarta/i.test(address);
+    var hasEmbassyContext = /embass|consulate|kedutaan|konsulat|diplomatic|kuningan|menteng|thamrin|sudirman|gatot subroto/i.test(
+      address + ' ' + description + ' ' + pageTitle + ' ' + heading
+    );
+
+    if (COUNTRY_LOOKUP[lowerName] && (isJakartaContext || rawType === 'listing' || hasEmbassyContext) && !INFO_HEADING_RE.test(heading)) {
+      return { name: 'Embassy of ' + COUNTRY_LOOKUP[lowerName], isEmbassy: true };
+    }
+
+    if (/^embassy of /i.test(cleanName) || /^high commission of /i.test(cleanName) || /^kedutaan besar /i.test(cleanName)) {
+      return { name: cleanName, isEmbassy: true };
+    }
+
+    return { name: cleanName, isEmbassy: false };
+  }
+
+  function pickCategory(rawType, params, name, heading, isEmbassy) {
+    if (isEmbassy) return 'embassy';
+    if (INFO_HEADING_RE.test(heading) || INFO_NAME_RE.test(name)) return 'info';
+    if (rawType !== 'listing' && CATEGORIES[rawType]) return rawType;
+    var t = (params.type || '').toLowerCase().trim();
+    if (t === 'info' || t === 'tourist information' || t === 'tourism information') return 'info';
+    if (CATEGORIES[t] && t !== 'all' && t !== 'article' && t !== 'embassy') return t;
+    return 'see';
+  }
+
+  function parseListingsFromWikitext(host, pageTitle, wikitext, pageCoord, maxRadiusKm, centerLat, centerLng) {
+    var results = [];
+    var headings = collectHeadings(wikitext);
+    var templates = findListingTemplates(wikitext);
+    var seen = {};
+
+    templates.forEach(function (tpl, tIdx) {
+      var params = {};
+      splitTopLevelPipes(tpl.body).forEach(function (part) {
+        var eqIdx = part.indexOf('=');
+        if (eqIdx > -1) {
+          var k = part.slice(0, eqIdx).trim().toLowerCase();
+          var v = part.slice(eqIdx + 1).trim();
+          if (k) params[k] = v;
+        }
+      });
+
+      var rawName = cleanWikiText(params.name || params.alt || '');
+      if (!rawName) return;
+
+      var heading = headingAt(headings, tpl.index);
+      var address = cleanWikiText(params.address || '');
+      var desc = cleanWikiText(params.content || params.description || '');
+
+      var lat = parseCoord(params.lat);
+      var lng = parseCoord(params.long || params.lon || params.lng);
+      var approx = false;
+
+      if (isNaN(lat) || isNaN(lng)) {
+        // Listing has no coordinates: fall back to the article's own coordinates
+        if (!pageCoord) return;
+        lat = pageCoord.lat;
+        lng = pageCoord.lng;
+        approx = true;
+      }
+
+      var dist = getDistanceKm(centerLat, centerLng, lat, lng);
+      if (!approx && dist > maxRadiusKm) return;
+
+      var norm = normalizeEmbassyIfNeeded(rawName, pageTitle, tpl.type, address, desc, heading);
+      var cat = pickCategory(tpl.type, params, norm.name, heading, norm.isEmbassy);
+
+      var dedupeKey = pageTitle + '|' + norm.name.toLowerCase() + '|' + (approx ? 'a' : lat.toFixed(4) + ',' + lng.toFixed(4));
+      if (seen[dedupeKey]) return;
+      seen[dedupeKey] = true;
+
+      var url = (params.url || '').trim();
+      if (!/^https?:\/\//i.test(url)) url = '';
+
+      results.push({
+        id: host + '::' + pageTitle + '::' + norm.name + '::' + (approx ? 'approx' : lat.toFixed(4)) + '::' + tIdx,
+        name: norm.name,
+        rawName: rawName,
+        category: cat,
+        host: host,
+        article: pageTitle,
+        section: heading,
+        lat: lat,
+        lng: lng,
+        approx: approx,
+        distanceKm: dist,
+        address: address,
+        phone: cleanWikiText(params.phone || ''),
+        hours: cleanWikiText(params.hours || ''),
+        url: url,
+        description: desc
+      });
+    });
+    return results;
+  }
+
+  /* ------------------------------------------------------------------
+   * Data fetching (one Wikivoyage edition at a time, then merged)
+   * ------------------------------------------------------------------ */
+
+  function emptyResult() {
+    return { items: [], titleMap: {}, hasLabel: false };
+  }
+
+  /**
+   * Read the nearby articles and listings from ONE Wikivoyage edition.
+   * opts.includeLabel     force-include the article named like the searched city (default true)
+   * opts.counterpartLang  (fallback pass) ask each article for its interlanguage link in this language
+   * opts.skipTitles       (fallback pass) lower-cased titles already covered by the primary edition;
+   *                       an article whose counterpart is in this map is skipped
+   */
+  function fetchHostListings(host, lat, lng, radiusKm, label, opts) {
+    opts = opts || {};
+    var radiusMeters = Math.min(Math.round(radiusKm * 1000), CONFIG.MAX_API_RADIUS_M);
+    var labelLc = String(label).toLowerCase();
+    var extraProp = opts.counterpartLang ? '|langlinks' : '';
+    var extraParams = opts.counterpartLang ? { lllang: opts.counterpartLang, lllimit: 'max' } : {};
+
+    function counterpartCovered(p) {
+      if (!opts.skipTitles || !p.langlinks) return false;
+      return p.langlinks.some(function (ll) {
+        var t = String(ll['*'] || ll.title || '').toLowerCase();
+        return !!opts.skipTitles[t];
+      });
+    }
+
+    return apiGet(host, Object.assign({
+      action: 'query',
+      generator: 'geosearch',
+      ggscoord: lat + '|' + lng,
+      ggsradius: radiusMeters,
+      ggslimit: 20,
+      ggsnamespace: 0,
+      prop: 'coordinates|extracts' + extraProp,
+      exintro: 1,
+      explaintext: 1,
+      exsentences: 2,
+      exlimit: 'max',
+      format: 'json'
+    }, extraParams)).then(function (data) {
+      var pages = (data.query && data.query.pages) ? Object.values(data.query.pages) : [];
+
+      // Make sure the article that matches the searched city is always included
+      var hasLabel = pages.some(function (p) {
+        return p.title && p.title.toLowerCase() === labelLc;
+      });
+
+      var labelPromise = (hasLabel || opts.includeLabel === false) ? Promise.resolve(null) : apiGet(host, Object.assign({
+        action: 'query',
+        titles: label,
+        redirects: 1,
+        prop: 'coordinates|extracts' + extraProp,
+        exintro: 1,
+        explaintext: 1,
+        exsentences: 2,
+        format: 'json'
+      }, extraParams)).then(function (d) {
+        var arr = (d.query && d.query.pages) ? Object.values(d.query.pages) : [];
+        return (arr[0] && arr[0].coordinates && arr[0].coordinates[0]) ? arr[0] : null;
+      }).catch(function () { return null; });
+
+      return labelPromise.then(function (labelPage) {
+        if (labelPage) {
+          pages.push(labelPage);
+          hasLabel = true;
+        }
+
+        var collected = [];
+        var pageCoords = {};
+        var titleMap = {};
+        var entries = [];
+
+        pages.forEach(function (p) {
+          if (!p.coordinates || !p.coordinates[0]) return;
+          titleMap[p.title.toLowerCase()] = true;
+          if (counterpartCovered(p)) return; // the primary edition already has this article
+
+          var pLat = p.coordinates[0].lat;
+          var pLng = p.coordinates[0].lon;
+          var dist = getDistanceKm(lat, lng, pLat, pLng);
+          pageCoords[p.title] = { lat: pLat, lng: pLng };
+          var isLabel = p.title.toLowerCase() === labelLc;
+          entries.push({ title: p.title, dist: dist, isLabel: isLabel });
+          if (dist <= radiusKm || isLabel) {
+            collected.push({
+              id: host + '::article::' + p.title,
+              name: p.title,
+              category: 'article',
+              host: host,
+              article: p.title,
+              section: '',
+              lat: pLat,
+              lng: pLng,
+              approx: false,
+              distanceKm: dist,
+              address: 'Wikivoyage destination article',
+              phone: '',
+              hours: '',
+              url: '',
+              description: p.extract || 'Complete travel guide for ' + p.title + '.'
+            });
+          }
+        });
+
+        // The city article first, then the nearest articles
+        entries.sort(function (a, b) {
+          if (a.isLabel !== b.isLabel) return a.isLabel ? -1 : 1;
+          return a.dist - b.dist;
+        });
+        var topTitles = entries.slice(0, CONFIG.MAX_ARTICLES_PARSED).map(function (e) { return e.title; });
+        var done = { items: collected, titleMap: titleMap, hasLabel: hasLabel };
+        if (!topTitles.length) return done;
+
+        return apiGet(host, {
+          action: 'query',
+          titles: topTitles.join('|'),
+          prop: 'revisions',
+          rvprop: 'content',
+          rvslots: 'main',
+          format: 'json'
+        }).then(function (revData) {
+          var revPages = (revData.query && revData.query.pages) ? Object.values(revData.query.pages) : [];
+          revPages.forEach(function (rp) {
+            if (rp.revisions && rp.revisions[0]) {
+              var slot = rp.revisions[0].slots ? rp.revisions[0].slots.main : rp.revisions[0];
+              var wikitext = slot['*'] || slot.content || '';
+              var pois = parseListingsFromWikitext(host, rp.title, wikitext, pageCoords[rp.title], radiusKm, lat, lng);
+              collected = collected.concat(pois);
+            }
+          });
+          done.items = collected;
+          return done;
+        });
+      });
+    });
+  }
+
+  /**
+   * Primary edition first; whatever it lacks is filled in from the English Wikivoyage.
+   * Resolves to { items, fallbackCount, notes }.
+   */
+  function fetchNearbyListings(lat, lng, radiusKm, label) {
+    var hosts = getHosts();
+    var primary = hosts[0];
+    setStatus('Searching Wikivoyage articles and listings within ' + radiusKm + ' km...', true);
+
+    var primaryError = null;
+    return fetchHostListings(primary, lat, lng, radiusKm, label, { includeLabel: true })
+      .catch(function (err) { primaryError = err; return emptyResult(); })
+      .then(function (pr) {
+        if (hosts.length === 1) {
+          if (primaryError) throw primaryError;
+          pr.items.sort(function (a, b) { return a.distanceKm - b.distanceKm; });
+          return { items: pr.items, fallbackCount: 0, notes: [] };
+        }
+
+        if (!primaryError) setStatus('Looking for articles that are missing on ' + primary + ' in the English Wikivoyage...', true);
+        return fetchHostListings(CONFIG.FALLBACK_HOST, lat, lng, radiusKm, label, {
+          includeLabel: !pr.hasLabel,
+          counterpartLang: hostLang(primary),
+          skipTitles: pr.titleMap
+        }).catch(function (err) {
+          if (primaryError) throw primaryError; // both editions failed
+          return emptyResult();
+        }).then(function (fr) {
+          var notes = [];
+          if (primaryError) notes.push(primary + ' could not be read (' + primaryError.message + ').');
+          var items = pr.items.concat(fr.items);
+          items.sort(function (a, b) { return a.distanceKm - b.distanceKm; });
+          return { items: items, fallbackCount: fr.items.length, notes: notes };
+        });
+      });
+  }
+
+  function searchLocation(queryText) {
+    var trimmed = queryText.trim();
+    if (!trimmed) return Promise.resolve(null);
+
+    var coordMatch = trimmed.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+    if (coordMatch) {
+      return Promise.resolve({
+        lat: parseFloat(coordMatch[1]),
+        lng: parseFloat(coordMatch[2]),
+        label: 'Coordinates (' + coordMatch[1] + ', ' + coordMatch[2] + ')'
+      });
+    }
+
+    setStatus('Looking up coordinates for "' + trimmed + '"...', true);
+    var hosts = getHosts();
+
+    function nominatim() {
+      var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(trimmed);
+      return fetch(nomUrl)
+        .then(function (r) { return r.json(); })
+        .then(function (nomRes) {
+          if (nomRes && nomRes.length) {
+            return {
+              lat: parseFloat(nomRes[0].lat),
+              lng: parseFloat(nomRes[0].lon),
+              label: nomRes[0].display_name.split(',').slice(0, 2).join(',')
+            };
+          }
+          return null;
+        });
+    }
+
+    // Try the primary edition, then the English one, then OpenStreetMap
+    function tryHost(i) {
+      if (i >= hosts.length) return nominatim();
+      return apiGet(hosts[i], {
+        action: 'query',
+        generator: 'search',
+        gsrsearch: trimmed,
+        gsrlimit: 1,
+        gsrnamespace: 0,
+        prop: 'coordinates',
+        format: 'json'
+      }).then(function (data) {
+        var pages = (data.query && data.query.pages) ? Object.values(data.query.pages) : [];
+        if (pages.length && pages[0].coordinates && pages[0].coordinates[0]) {
+          return { lat: pages[0].coordinates[0].lat, lng: pages[0].coordinates[0].lon, label: pages[0].title };
+        }
+        return null;
+      }, function () { return null; }).then(function (loc) {
+        return loc || tryHost(i + 1);
+      });
+    }
+
+    return tryHost(0);
+  }
+
+  /* ------------------------------------------------------------------
+   * UI helpers
+   * ------------------------------------------------------------------ */
+
+  function setStatus(msg, isLoading) {
+    var el = document.getElementById('wv-lb-status');
+    if (!el) return;
+    el.innerHTML = (isLoading ? '<span class="wv-lb-spinner"></span>' : '') + '<span>' + esc(msg) + '</span>';
+  }
+
+  function updatePlannerBadge() {
+    var badge = document.getElementById('wv-lb-planner-count');
+    if (badge) badge.textContent = state.tripPlan.length;
+  }
+
+  function updateClearButtonVisibility() {
+    var inputEl = document.getElementById('wv-lb-search-input');
+    var clearBtn = document.getElementById('wv-lb-clear-btn');
+    if (!inputEl || !clearBtn) return;
+    clearBtn.style.display = inputEl.value.length > 0 ? 'flex' : 'none';
+  }
+
+  function toggleTripItem(item) {
+    var idx = state.tripPlan.findIndex(function (x) { return x.id === item.id; });
+    if (idx > -1) {
+      state.tripPlan.splice(idx, 1);
+    } else {
+      var cleanCopy = Object.assign({}, item);
+      delete cleanCopy._marker;
+      delete cleanCopy._tripMarker;
+      state.tripPlan.push(cleanCopy);
+    }
+    saveTripPlan();
+    renderCurrentView();
+  }
+
+  function isSaved(id) {
+    return state.tripPlan.some(function (x) { return x.id === id; });
+  }
+
+  // Plans saved by older versions have no `host`; those were always English
+  function itemHost(item) {
+    return item.host || CONFIG.FALLBACK_HOST;
+  }
+
+  function itemUrl(item) {
+    return articleUrl(itemHost(item), item.article);
+  }
+
+  // " • from the English Wikivoyage" when an item does not come from the edition that is being browsed
+  function editionTag(item) {
+    var h = itemHost(item);
+    if (h === state.primaryHost) return '';
+    return ' • ' + languageName(hostLang(h)) + ' Wikivoyage (fallback)';
+  }
+
+  function buildDetailsHtml(item) {
+    var bits = [];
+    if (item.address && item.category !== 'article') bits.push('📌 ' + esc(item.address));
+    if (item.phone) {
+      var tel = item.phone.replace(/[^\d+]/g, '');
+      bits.push('☏ ' + (tel ? '<a href="tel:' + esc(tel) + '">' + esc(item.phone) + '</a>' : esc(item.phone)));
+    }
+    if (item.hours) bits.push('🕒 ' + esc(item.hours));
+    if (item.url) bits.push('🔗 <a href="' + esc(item.url) + '" target="_blank" rel="noopener">Official website</a>');
+    return bits.length ? '<div class="wv-lb-card-details">' + bits.join('<br>') + '</div>' : '';
+  }
+
+  function exploreStatus(filteredCount) {
+    var total = state.items.length;
+    var s = (filteredCount === undefined || filteredCount === total
+      ? 'Showing ' + total + ' places'
+      : 'Showing ' + filteredCount + ' of ' + total + ' places') +
+      ' around ' + state.center.label + ' (' + state.radiusKm + ' km radius).';
+    if (state.fallbackCount) {
+      var hosts = getHosts();
+      s += ' ' + state.fallbackCount + ' come from the English Wikivoyage because ' + languageName(hostLang(hosts[0])) + ' articles are missing.';
+    }
+    if (state.notes.length) s += ' ' + state.notes.join(' ');
+    return s;
+  }
+
+  /* ------------------------------------------------------------------
+   * Route optimisation (nearest neighbour + 2-opt, open path, start fixed)
+   * ------------------------------------------------------------------ */
+
+  function buildDistanceMatrix(items) {
+    return items.map(function (a) {
+      return items.map(function (b) {
+        return getDistanceKm(a.lat, a.lng, b.lat, b.lng);
+      });
+    });
+  }
+
+  function pathLength(order, D) {
+    var total = 0;
+    for (var i = 0; i < order.length - 1; i++) total += D[order[i]][order[i + 1]];
+    return total;
+  }
+
+  function computeOptimizedOrder(items) {
+    var n = items.length;
+    var D = buildDistanceMatrix(items);
+
+    // Nearest-neighbour starting from the first saved stop
+    var visited = new Array(n).fill(false);
+    var order = [0];
+    visited[0] = true;
+    for (var step = 1; step < n; step++) {
+      var last = order[order.length - 1];
+      var best = -1;
+      var bestD = Infinity;
+      for (var j = 0; j < n; j++) {
+        if (!visited[j] && D[last][j] < bestD) {
+          bestD = D[last][j];
+          best = j;
+        }
+      }
+      order.push(best);
+      visited[best] = true;
+    }
+
+    // 2-opt improvement (first stop stays fixed)
+    var improved = true;
+    var guard = 0;
+    while (improved && guard < 200) {
+      improved = false;
+      guard++;
+      for (var i = 1; i < n - 1; i++) {
+        for (var k = i + 1; k < n; k++) {
+          var candidate = order.slice(0, i)
+            .concat(order.slice(i, k + 1).reverse())
+            .concat(order.slice(k + 1));
+          if (pathLength(candidate, D) < pathLength(order, D) - 1e-9) {
+            order = candidate;
+            improved = true;
+          }
+        }
+      }
+    }
+    return order;
+  }
+
+  function currentPlanLength() {
+    if (state.tripPlan.length < 2) return 0;
+    var D = buildDistanceMatrix(state.tripPlan);
+    var order = state.tripPlan.map(function (_, i) { return i; });
+    return pathLength(order, D);
+  }
+
+  function optimizeTripOrder() {
+    if (state.tripPlan.length < 3) return;
+    var before = currentPlanLength();
+    var order = computeOptimizedOrder(state.tripPlan);
+    var reordered = order.map(function (i) { return state.tripPlan[i]; });
+    state.tripPlan = reordered;
+    saveTripPlan();
+    var after = currentPlanLength();
+    renderCurrentView();
+    var saved = before - after;
+    setStatus(
+      saved > 0.05
+        ? 'Route optimised: ' + formatKm(before) + ' km → ' + formatKm(after) + ' km (saved ' + formatKm(saved) + ' km). The first stop was kept as the starting point.'
+        : 'Your route is already efficient (' + formatKm(after) + ' km in total).',
+      false
+    );
+  }
+
+  /* ------------------------------------------------------------------
+   * Map (MapLibre GL — same setup as the Wikitamasya trip planner)
+   * ------------------------------------------------------------------ */
+
+  var EMPTY_FC = { type: 'FeatureCollection', features: [] };
+
+  // Used when the OpenFreeMap style cannot be fetched, e.g. on Wikimedia wikis whose Content-Security-Policy
+  // only allows Wikimedia hosts.
+  var FALLBACK_STYLE = {
+    version: 8,
+    sources: {
+      wm: {
+        type: 'raster', tileSize: 256, maxzoom: 18,
+        tiles: ['https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'],
+        attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · <a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use" target="_blank" rel="noopener">Wikimedia Maps</a>'
+      }
+    },
+    layers: [{ id: 'wm', type: 'raster', source: 'wm' }]
+  };
+
+  function pickStyle() {
+    return fetch(CONFIG.STYLE_URL).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return { style: CONFIG.STYLE_URL, basic: false };
+    }).catch(function () {
+      return { style: FALLBACK_STYLE, basic: true };
+    });
+  }
+  var mapFailed = false;
+
+  function setGeo(id, data) {
+    state.geo[id] = data;
+    if (state.map && state.mapReady && state.map.getSource(id)) {
+      state.map.getSource(id).setData(data);
+    }
+  }
+
+  // Polygon approximating a circle of `km` radius around a point
+  function circleFeature(lat, lng, km) {
+    var pts = [];
+    var d = km / 6371;
+    var lat1 = lat * Math.PI / 180;
+    var lng1 = lng * Math.PI / 180;
+    for (var i = 0; i <= 64; i++) {
+      var brg = 2 * Math.PI * i / 64;
+      var la = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brg));
+      var lo = lng1 + Math.atan2(Math.sin(brg) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(la));
+      pts.push([lo * 180 / Math.PI, la * 180 / Math.PI]);
+    }
+    return { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [pts] } };
+  }
+
+  // Smoothly move the map. `zoom` uses the familiar web-map scale (city ≈ 13, street ≈ 15).
+  function viewTo(lat, lng, zoom) {
+    if (!state.map) return;
+    state.map.easeTo({ center: [lng, lat], zoom: Math.max(0, zoom - 1), duration: 600 });
+  }
+
+  // Fit the whole search circle in the map
+  function fitRadius(lat, lng, km) {
+    if (!state.map) return;
+    var dLat = km / 111.32;
+    var dLng = km / (111.32 * Math.max(0.01, Math.cos(lat * Math.PI / 180)));
+    state.map.fitBounds([[lng - dLng, lat - dLat], [lng + dLng, lat + dLat]], { padding: 20, maxZoom: 15, duration: 600 });
+  }
+
+  function openMarkerPopup(marker) {
+    if (marker && marker.getPopup() && !marker.getPopup().isOpen()) marker.togglePopup();
+  }
+
+  function mapReadyForMarkers() {
+    return !!(state.map && window.maplibregl);
+  }
+
+  function clearAllMapLayers() {
+    state.markers.forEach(function (m) { m.remove(); });
+    state.markers = [];
+    setGeo('radius', EMPTY_FC);
+    setGeo('route', EMPTY_FC);
+    setGeo('roadroute', EMPTY_FC);
+    layerState.routeTok = (layerState.routeTok || 0) + 1;
+    layerStatus('');
+  }
+
+  function makePin(text, background, extraClass, dashed) {
+    var el = document.createElement('div');
+    el.className = 'wv-lb-pin' + (extraClass ? ' ' + extraClass : '');
+    el.style.background = background;
+    if (dashed) el.style.borderStyle = 'dashed';
+    el.textContent = text;
+    return el;
+  }
+
+  function addMapMarker(el, lat, lng, popupHtml) {
+    var popup = new window.maplibregl.Popup({ offset: 14, maxWidth: '280px' }).setHTML(popupHtml);
+    var marker = new window.maplibregl.Marker({ element: el })
+      .setLngLat([lng, lat])
+      .setPopup(popup)
+      .addTo(state.map);
+    state.markers.push(marker);
+    return marker;
+  }
+
+  function mapFail(msg) {
+    if (mapFailed) return;
+    mapFailed = true;
+    state.map = null;
+    var el = document.getElementById('wv-lb-map');
+    if (el) {
+      el.innerHTML = '<div style="padding:40px 24px;text-align:center;color:#54595d;font-size:13px;">' +
+        '<div style="font-size:44px;line-height:1;margin-bottom:12px;">🗺️</div>' +
+        '<h3 style="margin:0 0 8px;font-size:18px;color:#202122;">The map could not be shown</h3>' +
+        '<p style="margin:0 auto;max-width:44ch;">The map needs WebGL and access to the CDN/tiles. Open this page directly in Chrome/Firefox/Edge (not a restricted preview). The lists and the trip planner still work.</p>' +
+        '<p style="margin:8px 0 0;font-size:12px;">' + esc(msg || '') + '</p></div>';
+    }
+  }
+
+  function initMap() {
+    if (typeof window.maplibregl === 'undefined') { mapFail('maplibre-gl failed to load (CDN blocked/offline)'); return Promise.resolve(); }
+    return pickStyle().then(function (pick) { createMap(pick.style, pick.basic); });
+  }
+
+  function createMap(style, basic) {
+    var maplibregl = window.maplibregl;
+    try {
+      if (maplibregl.supported && !maplibregl.supported({ failIfMajorPerformanceCaveat: false })) throw new Error('WebGL is not available in this browser/preview');
+      var map = new maplibregl.Map({
+        container: 'wv-lb-map',
+        style: style,
+        center: [CONFIG.WORLD_VIEW.lng, CONFIG.WORLD_VIEW.lat],
+        zoom: CONFIG.WORLD_VIEW.zoom - 1,
+        maxZoom: basic ? 18 : 19,
+        pitch: 0,
+        maxPitch: 0,
+        attributionControl: false
+      });
+      state.map = map;
+      state.mapStyle = style;
+      state.mapBasic = basic;
+      map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: basic ? '' : '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">© OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }), 'bottom-left');
+      map.addControl(new maplibregl.ScaleControl({ maxWidth: 110, unit: 'metric' }), 'bottom-left');
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+      map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false }), 'bottom-right');
+      if (typeof ResizeObserver !== 'undefined') new ResizeObserver(function () { if (state.map) state.map.resize(); }).observe(document.getElementById('wv-lb-map'));
+
+      map.on('load', function () {
+        map.addSource('radius', { type: 'geojson', data: state.geo.radius || EMPTY_FC });
+        map.addLayer({ id: 'radius-fill', type: 'fill', source: 'radius', paint: { 'fill-color': '#3366cc', 'fill-opacity': 0.07 } });
+        map.addLayer({ id: 'radius-line', type: 'line', source: 'radius', paint: { 'line-color': '#3366cc', 'line-width': 1.5 } });
+        map.addSource('route', { type: 'geojson', data: state.geo.route || EMPTY_FC });
+        map.addLayer({
+          id: 'route-line', type: 'line', source: 'route',
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: { 'line-color': '#d97706', 'line-width': 3, 'line-opacity': 0.85, 'line-dasharray': [2, 2] }
+        });
+        state.mapReady = true;
+        initExtraLayers(map);
+        map.resize();
+      });
+      map.on('error', function (ev) {
+        var m = ev && ev.error && ev.error.message;
+        if (/webgl|context/i.test(m || '')) mapFail(m); else if (window.console) console.warn('map:', m);
+      });
+    } catch (e) {
+      mapFail(e.message || String(e));
+    }
+  }
+
+
+  /* ------------------------------------------------------------------
+   * Extra map layers: 3D terrain, contour lines, walking route
+   * ------------------------------------------------------------------ */
+  var layerState = { terrain: false, demProto: false, contour: false, buildings: false, walk: false, demReady: false, contourReady: false, trailTimer: null, trailReq: 0 };
+
+  function layerStatus(t) {
+    var el = document.getElementById('wv-lb-lstat');
+    if (el) { el.textContent = t || ''; el.style.display = t ? '' : 'none'; }
+  }
+
+  function firstSymbolLayer(map) {
+    var ls = (map.getStyle() || {}).layers || [];
+    for (var i = 0; i < ls.length; i++) if (ls[i].type === 'symbol') return ls[i].id;
+    return undefined;
+  }
+
+  function initExtraLayers(map) {
+    try {
+      // MapLibre decodes every raster tile as 'image/png', which Safari rejects for WebP data (InvalidStateError on
+      // createImageBitmap). This protocol fetches the WebP tile, decodes it with its real type and hands MapLibre a PNG.
+      if (!layerState.demProto) {
+        window.maplibregl.addProtocol('mhdem', function (params, ac) {
+          var u = CONFIG.DEM_TILES.replace('{z}/{x}/{y}', params.url.replace('mhdem://', ''));
+          return fetch(u, { signal: ac && ac.signal }).then(function (r) { if (!r.ok) throw new Error('DEM HTTP ' + r.status); return r.blob(); })
+            .then(function (b) { return createImageBitmap(b); })
+            .then(function (bmp) {
+              var c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height;
+              c.getContext('2d').drawImage(bmp, 0, 0);
+              return new Promise(function (res, rej) { c.toBlob(function (png) { png ? png.arrayBuffer().then(res, rej) : rej(new Error('toBlob failed')); }, 'image/png'); });
+            }).then(function (buf) { return { data: buf }; });
+        });
+        layerState.demProto = true;
+      }
+      var demDef = { type: 'raster-dem', tiles: ['mhdem://{z}/{x}/{y}'], encoding: 'terrarium', tileSize: 512, maxzoom: CONFIG.DEM_MAXZOOM };
+      map.addSource('dem', Object.assign({ attribution: '<a href="https://mapterhorn.com/attribution" target="_blank" rel="noopener">© Mapterhorn</a>' }, demDef));
+      map.addSource('dem-terrain', demDef); // separate source for 3D terrain (avoids the hillshade/terrain warning)
+      map.addLayer({ id: 'hillshade', type: 'hillshade', source: 'dem', layout: { visibility: 'none' }, paint: { 'hillshade-exaggeration': 0.45, 'hillshade-shadow-color': '#44403c' } }, firstSymbolLayer(map));
+      layerState.demReady = true;
+      map.addSource('roadroute', { type: 'geojson', data: state.geo.roadroute || EMPTY_FC });
+      map.addLayer({ id: 'roadroute-casing', type: 'line', source: 'roadroute', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fff', 'line-width': 7, 'line-opacity': 0.9 } }, 'route-line');
+      map.addLayer({ id: 'roadroute-line', type: 'line', source: 'roadroute', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#d97706', 'line-width': 4 } }, 'route-line');
+      if (!state.mapBasic && map.getSource('openmaptiles')) {
+        map.addLayer({ id: 'buildings-3d', type: 'fill-extrusion', source: 'openmaptiles', 'source-layer': 'building', minzoom: 13,
+          layout: { visibility: 'none' },
+          paint: { 'fill-extrusion-color': '#d8d2c8', 'fill-extrusion-opacity': 0.85,
+            'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 6], 'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0] } }, 'route-line');
+      }
+    } catch (e) { if (window.console) console.warn('extra layers:', e); }
+  }
+
+  function toggleTerrain(on) {
+    var map = state.map;
+    if (!map || !layerState.demReady) return false;
+    layerState.terrain = on;
+    map.setLayoutProperty('hillshade', 'visibility', on ? 'visible' : 'none');
+    if (on) map.setMaxPitch(80);
+    if (on) { map.setTerrain({ source: 'dem-terrain', exaggeration: 1.4 }); map.easeTo({ pitch: 60, duration: 800 }); }
+    else { map.setTerrain(null); if (!layerState.buildings) { map.setMaxPitch(0); map.easeTo({ pitch: 0, bearing: 0, duration: 600 }); } }
+    return true;
+  }
+
+  function ensureContour() {
+    if (layerState.contourReady) return Promise.resolve(true);
+    var map = state.map;
+    function build() {
+      var ml = window.mlcontour;
+      if (!ml || !ml.DemSource) return false;
+      var dem = new ml.DemSource({ url: CONFIG.DEM_TILES, encoding: 'terrarium', maxzoom: CONFIG.DEM_MAXZOOM, worker: true, cacheSize: 100 });
+      // maplibre-contour 0.1.0's setupMaplibre() registers callback-style handlers, which MapLibre 5 no longer accepts;
+      // register the promise-style (V4) handler directly.
+      if (typeof dem.contourProtocolV4 === 'function') window.maplibregl.addProtocol(dem.contourProtocolId, dem.contourProtocolV4);
+      else dem.setupMaplibre(window.maplibregl);
+      map.addSource('contours', {
+        type: 'vector', maxzoom: 14,
+        tiles: [dem.contourProtocolUrl({ thresholds: { 9: [200, 1000], 10: [100, 500], 11: [50, 200], 12: [20, 100], 13: [10, 50], 14: [5, 25] }, elevationKey: 'ele', levelKey: 'level', contourLayer: 'contours' })]
+      });
+      map.addLayer({ id: 'contour-lines', type: 'line', source: 'contours', 'source-layer': 'contours', layout: { visibility: 'none' },
+        paint: { 'line-color': '#8d6e4a', 'line-opacity': 0.6, 'line-width': ['match', ['get', 'level'], 1, 1.1, 0.5] } }, 'route-line');
+      if (!state.mapBasic) {
+        map.addLayer({ id: 'contour-labels', type: 'symbol', source: 'contours', 'source-layer': 'contours', filter: ['>', ['get', 'level'], 0],
+          layout: { 'symbol-placement': 'line', 'text-size': 10, 'text-field': ['concat', ['number-format', ['get', 'ele'], {}], ' m'], 'text-font': ['Noto Sans Regular'], visibility: 'none' },
+          paint: { 'text-halo-color': '#fff', 'text-halo-width': 1.2, 'text-color': '#6b4f2a' } });
+      }
+      layerState.contourReady = true;
+      return true;
+    }
+    if (window.mlcontour) return Promise.resolve(build());
+    var i = 0;
+    return (function next() {
+      if (i >= CONFIG.CONTOUR_JS.length) return Promise.resolve(false);
+      return loadScript(CONFIG.CONTOUR_JS[i++]).then(function () { return build() || next(); }, next);
+    })();
+  }
+
+  function toggleContour(on) {
+    layerState.contour = on;
+    var map = state.map;
+    if (!map) return Promise.resolve(false);
+    if (!on) {
+      ['contour-lines', 'contour-labels'].forEach(function (id) { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'none'); });
+      return Promise.resolve(true);
+    }
+    layerStatus('Loading contours…');
+    return ensureContour().then(function (ok) {
+      layerStatus(ok ? '' : 'Contours unavailable (CDN blocked)');
+      if (ok && layerState.contour) ['contour-lines', 'contour-labels'].forEach(function (id) { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'visible'); });
+      return ok;
+    });
+  }
+
+  /* Route the trip plan along real roads/paths (OSRM). Legs that cannot be routed stay as dashed straight lines. */
+  var ROUTE_MODES = { foot: { path: 'routed-foot', label: '🚶 Walk' } };
+  var legCache = {};
+
+  function fmtDur(sec) { var m = Math.round(sec / 60); return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60) + ' min' : m + ' min'; }
+
+  function routeLegs(coords) {
+    var token = layerState.routeTok = (layerState.routeTok || 0) + 1;
+    state.planCoords = coords;
+    var mode = 'foot', base = CONFIG.ROUTING + ROUTE_MODES[mode].path + '/route/v1/driving/';
+    setGeo('roadroute', EMPTY_FC);
+    setGeo('route', coords.length > 1 ? { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } } : EMPTY_FC);
+    if (coords.length < 2 || !layerState.walk) { layerStatus(''); return; }
+    layerStatus('Finding walking route…');
+    var legs = [];
+    for (var i = 0; i < coords.length - 1 && i < 30; i++) legs.push([coords[i], coords[i + 1]]);
+    Promise.all(legs.map(function (l) {
+      var key = mode + '|' + l[0].join(',') + '|' + l[1].join(',');
+      if (legCache[key]) return legCache[key];
+      return (legCache[key] = fetch(base + l[0][0] + ',' + l[0][1] + ';' + l[1][0] + ',' + l[1][1] + '?overview=full&geometries=geojson')
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (d) {
+          var rt = d.code === 'Ok' && d.routes && d.routes[0];
+          // a start/end point snapped more than 500 m away from the road network counts as "not connected"
+          var far = rt && (d.waypoints || []).some(function (w) { return w.distance > 500; });
+          return rt && !far ? { ok: true, geom: rt.geometry, dist: rt.distance, dur: rt.duration } : { ok: false };
+        })
+        .catch(function () { delete legCache[key]; return { ok: false }; }));
+    })).then(function (res) {
+      if (token !== layerState.routeTok) return;
+      var roads = [], gaps = [], dist = 0, dur = 0;
+      res.forEach(function (r, i) {
+        if (r.ok) { roads.push({ type: 'Feature', properties: {}, geometry: r.geom }); dist += r.dist; dur += r.dur; }
+        else gaps.push([legs[i][0], legs[i][1]]);
+      });
+      for (var j = 30; j < coords.length - 1; j++) gaps.push([coords[j], coords[j + 1]]);
+      setGeo('roadroute', { type: 'FeatureCollection', features: roads });
+      setGeo('route', gaps.length ? { type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: gaps } } : EMPTY_FC);
+      layerStatus(roads.length ? (dist / 1000).toFixed(1) + ' km · ' + fmtDur(dur) + (gaps.length ? ' · ' + gaps.length + ' leg(s) dashed (no road link)' : '') : 'No road route found, dashed straight lines shown');
+    });
+  }
+
+  // Button "Walk": off = dashed straight lines between the stops (default), on = route along walkable roads/paths.
+  function toggleWalk(on) {
+    layerState.walk = on;
+    if (state.planCoords && state.activeTab === 'planner') routeLegs(state.planCoords);
+    else layerStatus(on ? 'Add 2+ places to the Trip Planner to see the walking route' : '');
+    return true;
+  }
+
+  function toggleBuildings(on) {
+    var map = state.map;
+    if (!map || !map.getLayer('buildings-3d')) { layerStatus('3D buildings need the OpenFreeMap style'); return false; }
+    layerState.buildings = on;
+    map.setLayoutProperty('buildings-3d', 'visibility', on ? 'visible' : 'none');
+    if (on) {
+      if (map.getZoom() + 1 < 15) map.easeTo({ zoom: 15, pitch: Math.max(map.getPitch(), 55), duration: 800 });
+      else map.easeTo({ pitch: Math.max(map.getPitch(), 55), duration: 600 });
+      map.setMaxPitch(80);
+    } else if (!layerState.terrain) { map.setMaxPitch(0); map.easeTo({ pitch: 0, bearing: 0, duration: 500 }); }
+    return true;
+  }
+
+  function wireLayerControls() {
+    var box = document.getElementById('wv-lb-layers');
+    if (!box) return;
+    var fns = { terrain: toggleTerrain, buildings: toggleBuildings, contour: toggleContour, walk: toggleWalk };
+    box.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('button[data-layer]');
+      if (!b) return;
+      if (!state.map || !state.mapReady) { layerStatus('Map is still loading'); return; }
+      var key = b.getAttribute('data-layer'), on = !b.classList.contains('on');
+      Promise.resolve(fns[key](on)).then(function (ok) {
+        if (ok === false) { layerState[key] = false; b.classList.remove('on'); return; }
+        b.classList.toggle('on', on);
+      });
+    });
+  }
+
+  function renderExploreMarkers(filteredItems) {
+    if (!mapReadyForMarkers()) return;
+    clearAllMapLayers();
+
+    if (!state.center) {
+      // Default mode: show pins for the 85 largest cities
+      LARGEST_CITIES.forEach(function (city) {
+        var el = makePin(city.rank, '#2d4f9c');
+        el.title = city.name;
+        el.addEventListener('click', function () { selectCity(city); });
+
+        addMapMarker(el, city.lat, city.lng,
+          '<div style="font-family:sans-serif;">' +
+          '<strong>#' + city.rank + ' ' + esc(city.name) + '</strong> (' + esc(city.country) + ')<br>' +
+          '<span style="font-size:12px;color:#54595d;">Population: ~' + esc(city.pop) + '</span>' +
+          '</div>');
+      });
+      updateMapLegend('default');
+      return;
+    }
+
+    // Search radius circle
+    setGeo('radius', circleFeature(state.center.lat, state.center.lng, state.radiusKm));
+
+    filteredItems.forEach(function (item) {
+      var catInfo = CATEGORIES[item.category] || CATEGORIES.see;
+      var el = makePin(catInfo.icon, catInfo.color, 'ic', item.approx);
+      el.title = item.name;
+
+      var url = itemUrl(item);
+      var popupHtml = [
+        '<div style="min-width:210px;font-family:sans-serif;">',
+        '<div style="font-size:11px;font-weight:700;color:' + catInfo.color + ';text-transform:uppercase;">' + catInfo.icon + ' ' + catInfo.label + '</div>',
+        '<div style="font-weight:700;font-size:14px;margin:2px 0;">' + esc(item.name) + '</div>',
+        '<div style="font-size:12px;color:#54595d;margin-bottom:6px;">' + item.distanceKm.toFixed(1) + ' km • <a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(item.article) + '</a>' + esc(editionTag(item)) + '</div>',
+        item.approx ? '<div style="font-size:11px;color:#9a5b00;margin-bottom:6px;">≈ Approximate location (this listing has no coordinates, so the article\'s centre is used)</div>' : '',
+        item.phone ? '<div style="font-size:12px;margin-bottom:4px;">☏ ' + esc(item.phone) + '</div>' : '',
+        item.description ? '<div style="font-size:12px;margin-bottom:8px;line-height:1.35;">' + esc(item.description.slice(0, 140)) + (item.description.length > 140 ? '...' : '') + '</div>' : '',
+        '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;padding:4px 9px;background:#3366cc;color:#fff;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;">Open article ↗</a>',
+        '</div>'
+      ].join('');
+
+      item._marker = addMapMarker(el, item.lat, item.lng, popupHtml);
+    });
+
+    updateMapLegend('explore');
+  }
+
+  function renderTripPlannerMap() {
+    if (!mapReadyForMarkers()) return;
+    clearAllMapLayers();
+    updateMapLegend('planner');
+
+    if (!state.tripPlan.length) {
+      return;
+    }
+
+    var coords = [];
+
+    state.tripPlan.forEach(function (item, index) {
+      var stepNumber = index + 1;
+      coords.push([item.lng, item.lat]);
+
+      var el = makePin(stepNumber, '#d97706');
+      el.title = item.name;
+
+      var url = item.custom ? '' : itemUrl(item);
+      var popupHtml =
+        '<div style="min-width:200px;font-family:sans-serif;">' +
+          '<div style="font-size:11px;font-weight:700;color:#d97706;">🎒 STOP #' + stepNumber + (item.custom ? ' · 📌 CUSTOM' : '') + '</div>' +
+          '<div style="font-weight:700;font-size:14px;margin:2px 0;">' + esc(item.name) + '</div>' +
+          (item.custom
+            ? '<div style="font-size:12px;color:#54595d;">' + (item.area ? esc(item.area) + '<br>' : '') + item.lat.toFixed(5) + ', ' + item.lng.toFixed(5) + '</div>'
+            : '<div style="font-size:12px;color:#54595d;margin-bottom:6px;">Guide: <a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(item.article) + '</a></div>' +
+              '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;padding:4px 9px;background:#d97706;color:#fff;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;">Open article ↗</a>') +
+        '</div>';
+
+      item._tripMarker = addMapMarker(el, item.lat, item.lng, popupHtml);
+    });
+
+    routeLegs(coords);
+
+    if (coords.length === 1) {
+      viewTo(state.tripPlan[0].lat, state.tripPlan[0].lng, 14);
+    } else {
+      var bounds = new window.maplibregl.LngLatBounds(coords[0], coords[0]);
+      coords.forEach(function (c) { bounds.extend(c); });
+      state.map.fitBounds(bounds, { padding: 55, maxZoom: 14, duration: 600 });
+    }
+  }
+
+  function updateMapLegend(mode) {
+    var legendEl = document.getElementById('wv-lb-map-legend');
+    if (!legendEl) return;
+
+    if (mode === 'planner') {
+      legendEl.innerHTML =
+        '<strong>Map legend (Trip Planner):</strong><br>' +
+        '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#d97706;margin-right:6px;vertical-align:middle;"></span>Numbered orange pin = visiting order &amp; route';
+    } else if (mode === 'explore') {
+      legendEl.innerHTML =
+        '<strong>Map legend (Search Results):</strong><br>' +
+        '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#3366cc;margin-right:6px;vertical-align:middle;"></span>Category icon = location • Circle = ' + state.radiusKm + ' km radius • Dashed border = approximate';
+    } else {
+      legendEl.innerHTML =
+        '<strong>Map legend (Largest Cities):</strong><br>' +
+        '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2d4f9c;margin-right:6px;vertical-align:middle;"></span>Numbered blue pin = rank among the 85 largest cities';
+    }
+  }
+
+  /* ------------------------------------------------------------------
+   * Views
+   * ------------------------------------------------------------------ */
+
+  function selectCity(city) {
+    var inputEl = document.getElementById('wv-lb-search-input');
+    if (inputEl) {
+      inputEl.value = city.name;
+      updateClearButtonVisibility();
+    }
+    executeSearchAt(city.lat, city.lng, city.name);
+  }
+
+  function resetFilterField() {
+    state.filterText = '';
+    var f = document.getElementById('wv-lb-filter-input');
+    if (f) f.value = '';
+    updateFilterClear();
+  }
+
+  function updateFilterClear() {
+    var f = document.getElementById('wv-lb-filter-input');
+    var x = document.getElementById('wv-lb-filter-clear');
+    if (f && x) x.style.display = f.value.length ? 'flex' : 'none';
+  }
+
+  // "shown / total" at the right edge of the filter box
+  function updateFilterCount(shown, total) {
+    var el = document.getElementById('wv-lb-filter-count');
+    if (!el) return;
+    el.textContent = shown === total ? String(total) : shown + ' / ' + total;
+    el.title = shown + ' of ' + total + ' places shown';
+  }
+
+  function resetToDefaultState() {
+    var inputEl = document.getElementById('wv-lb-search-input');
+    if (inputEl) {
+      inputEl.value = '';
+      updateClearButtonVisibility();
+    }
+    state.searchToken++;
+    if (userMarker) { userMarker.remove(); userMarker = null; }
+    state.center = null;
+    state.items = [];
+    state.fallbackCount = 0;
+    state.notes = [];
+    state.activeCategory = 'all';
+    resetFilterField();
+
+    var filtersEl = document.getElementById('wv-lb-filters');
+    if (filtersEl) {
+      filtersEl.querySelectorAll('.wv-lb-chip').forEach(function (c, idx) {
+        c.classList.toggle('active', idx === 0);
+      });
+    }
+
+    if (state.map) {
+      viewTo(CONFIG.WORLD_VIEW.lat, CONFIG.WORLD_VIEW.lng, CONFIG.WORLD_VIEW.zoom);
+    }
+
+    setStatus('Showing the 85 largest cities in the world. Click a city to explore places within ' + state.radiusKm + ' km.', false);
+    renderCurrentView();
+  }
+
+  // Sticky bar above the stop list: stop count, total distance and the sort button
+
+  /* ------------------------------------------------------------------
+   * Manual stops, area lookup and drag-to-reorder
+   * ------------------------------------------------------------------ */
+
+  // "-6.17, 106.82", "-6.17 106.82", "6.17S 106.82E" ... → { lat, lng } or null
+  function parseLatLng(text) {
+    var t = String(text || '').trim().replace(/[°;]/g, ' ').replace(/\s+/g, ' ');
+    var m = t.match(/^(-?\d+(?:[.,]\d+)?)\s*([NSns])?\s*[, ]\s*(-?\d+(?:[.,]\d+)?)\s*([EWew])?$/);
+    if (!m) return null;
+    var lat = parseFloat(m[1].replace(',', '.')), lng = parseFloat(m[3].replace(',', '.'));
+    if (m[2] && /s/i.test(m[2])) lat = -Math.abs(lat);
+    if (m[4] && /w/i.test(m[4])) lng = -Math.abs(lng);
+    if (!isFinite(lat) || !isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+    return { lat: lat, lng: lng };
+  }
+
+  // Area name from coordinates (OpenStreetMap Nominatim reverse geocoding), e.g. "Gambir, Jakarta, Indonesia"
+  function reverseArea(lat, lng) {
+    var lang = (state.primaryHost || CONFIG.FALLBACK_HOST).split('.')[0] || 'en';
+    return fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=14&addressdetails=1&accept-language=' + encodeURIComponent(lang) + '&lat=' + lat + '&lon=' + lng)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        var a = d.address || {};
+        var local = a.suburb || a.neighbourhood || a.city_district || a.quarter || a.village || a.hamlet || a.town;
+        var city = a.city || a.town || a.municipality || a.county || a.state_district;
+        var parts = [local, city, a.state, a.country].filter(function (v, i, arr) { return v && arr.indexOf(v) === i; }).slice(0, 3);
+        return parts.join(', ') || String(d.display_name || '').split(',').slice(0, 3).join(',').trim();
+      });
+  }
+
+  function addManualStop(name, pos) {
+    var item = {
+      id: 'custom-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      custom: true, category: 'custom', name: name, article: '', lat: pos.lat, lng: pos.lng, area: '', areaPending: true
+    };
+    state.tripPlan.push(item);
+    saveTripPlan();
+    renderCurrentView();
+    viewTo(item.lat, item.lng, 15);
+    reverseArea(item.lat, item.lng).then(function (area) { item.area = area || ''; }, function () { item.area = ''; })
+      .then(function () {
+        delete item.areaPending;
+        if (state.tripPlan.indexOf(item) < 0) return;
+        saveTripPlan();
+        if (state.activeTab === 'planner') renderCurrentView();
+      });
+  }
+
+  function setAddPanelOpen(open) {
+    state.addOpen = !!open;
+    var p = document.getElementById('wv-lb-addpanel');
+    if (!p) return;
+    p.classList.toggle('open', state.addOpen && state.activeTab === 'planner');
+    if (state.addOpen && state.activeTab === 'planner') setTimeout(function () { var i = document.getElementById('wv-lb-add-name'); if (i) i.focus(); }, 0);
+  }
+
+  function wireAddPanel() {
+    var p = document.getElementById('wv-lb-addpanel');
+    if (!p) return;
+    var nameEl = document.getElementById('wv-lb-add-name'), coordEl = document.getElementById('wv-lb-add-coord'), errEl = document.getElementById('wv-lb-add-err');
+    p.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var name = nameEl.value.trim(), pos = parseLatLng(coordEl.value);
+      if (!name) { errEl.textContent = 'Please enter a place name.'; nameEl.focus(); return; }
+      if (!pos) { errEl.textContent = 'Enter coordinates as "latitude, longitude", e.g. -6.1754, 106.8272.'; coordEl.focus(); return; }
+      errEl.textContent = '';
+      addManualStop(name, pos);
+      nameEl.value = ''; coordEl.value = '';
+      nameEl.focus(); // keep the panel open so several stops can be added quickly
+    });
+    document.getElementById('wv-lb-add-cancel').addEventListener('click', function () { errEl.textContent = ''; setAddPanelOpen(false); });
+    document.getElementById('wv-lb-add-center').addEventListener('click', function (ev) {
+      ev.preventDefault();
+      if (!state.map) return;
+      var c = state.map.getCenter();
+      coordEl.value = c.lat.toFixed(5) + ', ' + c.lng.toFixed(5);
+    });
+  }
+
+  // Pointer-based drag (works with mouse and touch) on the ⠿ handle of a planner card
+  function enablePlanDrag(listEl, card, handle, idx) {
+    handle.addEventListener('pointerdown', function (ev) {
+      if (ev.button > 0) return;
+      ev.preventDefault();
+      try { handle.setPointerCapture(ev.pointerId); } catch (e) {}
+      var cards = [].slice.call(listEl.querySelectorAll('.wv-lb-card[data-plan-idx]'));
+      var others = cards.filter(function (c) { return c !== card; });
+      var target = idx;
+      card.classList.add('wv-lb-dragging');
+      function mark() {
+        cards.forEach(function (c) { c.classList.remove('wv-lb-drop-before', 'wv-lb-drop-after'); });
+        if (target < others.length) others[target].classList.add('wv-lb-drop-before');
+        else if (others.length) others[others.length - 1].classList.add('wv-lb-drop-after');
+      }
+      function move(e) {
+        var y = e.clientY, lr = listEl.getBoundingClientRect();
+        if (y < lr.top + 36) listEl.scrollTop -= 14; else if (y > lr.bottom - 36) listEl.scrollTop += 14;
+        var n = 0;
+        others.forEach(function (c) { var r = c.getBoundingClientRect(); if (y > r.top + r.height / 2) n++; });
+        target = n;
+        mark();
+      }
+      function up() {
+        handle.removeEventListener('pointermove', move);
+        handle.removeEventListener('pointerup', up);
+        handle.removeEventListener('pointercancel', up);
+        cards.forEach(function (c) { c.classList.remove('wv-lb-dragging', 'wv-lb-drop-before', 'wv-lb-drop-after'); });
+        if (target !== idx) {
+          var it = state.tripPlan.splice(idx, 1)[0];
+          state.tripPlan.splice(target, 0, it);
+          saveTripPlan();
+          renderCurrentView();
+        }
+      }
+      handle.addEventListener('pointermove', move);
+      handle.addEventListener('pointerup', up);
+      handle.addEventListener('pointercancel', up);
+    });
+  }
+
+  function renderPlannerBar() {
+    var bar = document.getElementById('wv-lb-plannerbar');
+    if (!bar) return;
+    bar.style.display = 'flex';
+    var has = state.tripPlan.length > 0;
+    bar.innerHTML =
+      '<span>' + (has ? '🧭 <strong>' + state.tripPlan.length + '</strong> stops • ~<strong>' + formatKm(currentPlanLength()) + ' km</strong> straight-line route' : '🧭 No stops yet') + '</span>' +
+      '<span class="wv-lb-bar-btns">' +
+        (has ? '<button type="button" class="wv-lb-btn wv-lb-btn-accent" id="wv-lb-optimize-btn" title="Reorder stops to shorten the total route (the first stop stays as the starting point)"' +
+          (state.tripPlan.length < 3 ? ' disabled' : '') + '>⚡ Sort stops efficiently</button>' +
+        '<button type="button" class="wv-lb-btn" id="wv-lb-pdf-btn" title="Save the trip plan as a PDF (map + table)">📄 PDF</button>' : '') +
+        '<button type="button" class="wv-lb-btn" id="wv-lb-addmanual-btn" title="Add a stop by typing its name and coordinates">➕ Add manually</button>' +
+        (has ? '<button type="button" class="wv-lb-btn" id="wv-lb-reset-btn" title="Remove all stops from the plan">↺ Reset</button>' : '') +
+      '</span>';
+    bar.querySelector('#wv-lb-addmanual-btn').addEventListener('click', function () { setAddPanelOpen(!state.addOpen); });
+    if (!has) return;
+    bar.querySelector('#wv-lb-optimize-btn').addEventListener('click', optimizeTripOrder);
+    var pdfBtn = bar.querySelector('#wv-lb-pdf-btn');
+    pdfBtn.addEventListener('click', function () { exportPdf(pdfBtn); });
+    var resetBtn = bar.querySelector('#wv-lb-reset-btn');
+    var resetTimer = null;
+    resetBtn.addEventListener('click', function () {
+      if (!resetTimer) { // first click: ask for confirmation (no browser dialog)
+        resetBtn.textContent = 'Click again to clear all';
+        resetBtn.style.borderColor = '#d33';
+        resetBtn.style.color = '#d33';
+        resetTimer = setTimeout(function () { resetTimer = null; resetBtn.textContent = '↺ Reset'; resetBtn.style.borderColor = ''; resetBtn.style.color = ''; }, 3000);
+        return;
+      }
+      clearTimeout(resetTimer);
+      state.tripPlan = [];
+      saveTripPlan();
+      renderCurrentView();
+      setStatus('Trip Planner cleared.', false);
+    });
+  }
+
+  function setExploreControlsVisible(visible) {
+    var filtersEl = document.getElementById('wv-lb-filters');
+    var filterBar = document.getElementById('wv-lb-filterbar');
+    var plannerBar = document.getElementById('wv-lb-plannerbar');
+    if (plannerBar) plannerBar.style.display = 'none';
+    var addPanel = document.getElementById('wv-lb-addpanel');
+    if (addPanel) addPanel.classList.remove('open');
+    if (filtersEl) filtersEl.style.display = visible ? 'flex' : 'none';
+    if (filterBar) filterBar.style.display = visible ? 'block' : 'none';
+  }
+
+  function itemMatchesFilter(item, q) {
+    if (!q) return true;
+    var catLabel = (CATEGORIES[item.category] || {}).label || '';
+    var hay = [item.name, item.description, item.address, item.article, item.section, item.phone, catLabel]
+      .join(' ').toLowerCase();
+    return q.toLowerCase().split(/\s+/).filter(Boolean).every(function (w) {
+      return hay.indexOf(w) > -1;
+    });
+  }
+
+  function renderCurrentView() {
+    var listEl = document.getElementById('wv-lb-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    // 1. TRIP PLANNER TAB
+    if (state.activeTab === 'planner') {
+      setExploreControlsVisible(false);
+      renderPlannerBar();
+      var addP = document.getElementById('wv-lb-addpanel');
+      if (addP) addP.classList.toggle('open', !!state.addOpen);
+      renderTripPlannerMap();
+
+      if (!state.tripPlan.length) {
+        listEl.innerHTML =
+          '<div style="padding:28px 16px;text-align:center;color:#54595d;font-size:13px;">' +
+          'Your Trip Planner is empty.<br>Search for a city and click <strong>"+ Add to plan"</strong> on the places you want to visit, or use <strong>"➕ Add manually"</strong> to type a place name and coordinates.' +
+          '</div>';
+        return;
+      }
+
+      state.tripPlan.forEach(function (item, idx) {
+        var catInfo = item.custom ? { icon: '📌', label: 'Custom', color: '#7b3fe4' } : (CATEGORIES[item.category] || CATEGORIES.see);
+        var url = item.custom ? '' : itemUrl(item);
+        var card = document.createElement('div');
+        card.className = 'wv-lb-card';
+        card.setAttribute('data-plan-idx', idx);
+
+        var metaHtml = item.custom
+          ? (item.area ? esc(item.area) : (item.areaPending ? '<em>Finding area…</em>' : 'Area unknown')) + ' • ' + item.lat.toFixed(5) + ', ' + item.lng.toFixed(5)
+          : 'Guide: ' + esc(item.article) + esc(editionTag(item)) + (item.approx ? ' • ≈ approximate location' : '');
+
+        card.innerHTML =
+          '<div class="wv-lb-card-header">' +
+            '<h4 class="wv-lb-card-title" style="display:flex;align-items:center;">' +
+              '<span class="wv-lb-drag" title="Drag to reorder" aria-label="Drag to reorder stop #' + (idx + 1) + '">⠿</span>' +
+              '<span class="wv-lb-order-badge">' + (idx + 1) + '</span>' +
+              '<span>' + esc(item.name) + '</span>' +
+            '</h4>' +
+            '<span class="wv-lb-badge" style="background:' + catInfo.color + ';">' + catInfo.icon + ' ' + catInfo.label + '</span>' +
+          '</div>' +
+          '<div class="wv-lb-card-meta">' + metaHtml + '</div>' +
+          (item.custom ? '' : buildDetailsHtml(item)) +
+          (!item.custom && item.description ? '<div class="wv-lb-card-desc">' + esc(item.description) + '</div>' : '') +
+          '<div class="wv-lb-card-actions">' +
+            '<button type="button" class="wv-lb-card-btn btn-zoom">📍 Focus stop #' + (idx + 1) + '</button>' +
+            '<button type="button" class="wv-lb-card-btn saved btn-remove">✕ Remove</button>' +
+            (item.custom ? '' : '<a class="wv-lb-card-btn" href="' + esc(url) + '" target="_blank" rel="noopener">Read guide ↗</a>') +
+          '</div>';
+
+        card.querySelector('.btn-zoom').addEventListener('click', function () {
+          if (state.map) {
+            viewTo(item.lat, item.lng, 15);
+            openMarkerPopup(item._tripMarker);
+          }
+        });
+
+        card.querySelector('.btn-remove').addEventListener('click', function () {
+          toggleTripItem(item);
+        });
+
+        enablePlanDrag(listEl, card, card.querySelector('.wv-lb-drag'), idx);
+        listEl.appendChild(card);
+      });
+      return;
+    }
+
+    // 2. SEARCH RESULTS TAB — DEFAULT MODE (85 LARGEST CITIES)
+    if (!state.center) {
+      setExploreControlsVisible(false);
+      renderExploreMarkers([]);
+
+      LARGEST_CITIES.forEach(function (city) {
+        var cityRow = document.createElement('div');
+        cityRow.className = 'wv-lb-city-card';
+        cityRow.innerHTML =
+          '<div>' +
+            '<div style="font-weight:700;font-size:14px;color:#202122;">#' + city.rank + ' ' + esc(city.name) + ' <span style="font-weight:400;color:#54595d;">(' + esc(city.country) + ')</span></div>' +
+            '<div style="font-size:12px;color:#54595d;">Population (UN 2025): ~' + esc(city.pop) + '</div>' +
+          '</div>' +
+          '<span style="font-size:12px;color:#3366cc;font-weight:600;">Explore →</span>';
+
+        cityRow.addEventListener('click', function () {
+          selectCity(city);
+        });
+        listEl.appendChild(cityRow);
+      });
+      return;
+    }
+
+    // 3. SEARCH RESULTS TAB — PLACES AROUND THE SELECTED CITY
+    setExploreControlsVisible(true);
+
+    var filteredItems = state.items.filter(function (item) {
+      return (state.activeCategory === 'all' || item.category === state.activeCategory) &&
+        itemMatchesFilter(item, state.filterText);
+    });
+
+    renderExploreMarkers(filteredItems);
+    updateFilterCount(filteredItems.length, state.items.length);
+
+    if (state.items.length) setStatus(exploreStatus(filteredItems.length), false);
+
+    if (!filteredItems.length) {
+      listEl.innerHTML =
+        '<div style="padding:28px 16px;text-align:center;color:#54595d;font-size:13px;">' +
+        'No places match your filters within ' + state.radiusKm + ' km. Try a different keyword, choose the "All" category, or search another city.' +
+        '</div>';
+      return;
+    }
+
+    filteredItems.forEach(function (item) {
+      var catInfo = CATEGORIES[item.category] || CATEGORIES.see;
+      var saved = isSaved(item.id);
+      var url = itemUrl(item);
+
+      var card = document.createElement('div');
+      card.className = 'wv-lb-card';
+
+      var metaText = item.distanceKm.toFixed(1) + ' km • Guide: ' + item.article;
+      if (item.section && item.category !== 'article') metaText += ' › ' + item.section;
+      metaText += editionTag(item);
+      if (item.approx) metaText += ' • ≈ approximate location';
+
+      card.innerHTML =
+        '<div class="wv-lb-card-header">' +
+          '<h4 class="wv-lb-card-title">' + esc(item.name) + '</h4>' +
+          '<span class="wv-lb-badge" style="background:' + catInfo.color + ';">' + catInfo.icon + ' ' + catInfo.label + '</span>' +
+        '</div>' +
+        '<div class="wv-lb-card-meta">' + esc(metaText) + '</div>' +
+        buildDetailsHtml(item) +
+        (item.description ? '<div class="wv-lb-card-desc">' + esc(item.description) + '</div>' : '') +
+        '<div class="wv-lb-card-actions">' +
+          '<button type="button" class="wv-lb-card-btn btn-zoom">📍 Show on map</button>' +
+          '<button type="button" class="wv-lb-card-btn btn-save ' + (saved ? 'saved' : '') + '">' + (saved ? '✓ Added' : '+ Add to plan') + '</button>' +
+          '<a class="wv-lb-card-btn" href="' + esc(url) + '" target="_blank" rel="noopener">Read guide ↗</a>' +
+        '</div>';
+
+      card.querySelector('.btn-zoom').addEventListener('click', function () {
+        if (state.map) {
+          viewTo(item.lat, item.lng, 15);
+          openMarkerPopup(item._marker);
+        }
+      });
+
+      card.querySelector('.btn-save').addEventListener('click', function () {
+        toggleTripItem(item);
+      });
+
+      listEl.appendChild(card);
+    });
+  }
+
+  function executeSearchAt(lat, lng, label) {
+    state.activeTab = 'explore';
+    document.querySelectorAll('#' + ROOT_ID + ' .wv-lb-tab').forEach(function (t) {
+      t.classList.toggle('active', t.getAttribute('data-tab') === 'explore');
+    });
+
+    resetFilterField();
+    state.activeCategory = 'all';
+    var chips = document.querySelectorAll('#wv-lb-filters .wv-lb-chip');
+    chips.forEach(function (c, idx) { c.classList.toggle('active', idx === 0); });
+
+    setSidebarCollapsed(false);
+    state.primaryHost = getHosts()[0];
+    state.center = { lat: lat, lng: lng, label: label };
+    state.items = [];
+    state.fallbackCount = 0;
+    state.notes = [];
+    fitRadius(lat, lng, state.radiusKm);
+    renderCurrentView();
+
+    var token = ++state.searchToken;
+    fetchNearbyListings(lat, lng, state.radiusKm, label)
+      .then(function (res) {
+        if (token !== state.searchToken) return; // a newer search has started
+        state.items = res.items;
+        state.fallbackCount = res.fallbackCount;
+        state.notes = res.notes;
+        setStatus(res.items.length ? exploreStatus() : 'No Wikivoyage places found within ' + state.radiusKm + ' km of ' + label + '. Try a bigger radius or search a nearby city.', false);
+        if (state.activeTab === 'explore') renderCurrentView();
+      })
+      .catch(function (err) {
+        if (token !== state.searchToken) return;
+        setStatus('Failed to load data from the Wikimedia API (' + err.message + ').', false);
+      });
+  }
+
+  /* "Near me": browser geolocation with a clear message for every failure */
+  var userMarker = null;
+
+  function showUserMarker(lat, lng) {
+    if (!state.map || !window.maplibregl) return;
+    if (userMarker) userMarker.remove();
+    var el = document.createElement('div');
+    el.style.cssText = 'width:16px;height:16px;border-radius:50%;background:#1a73e8;border:3px solid #fff;box-shadow:0 0 0 2px rgba(26,115,232,.35),0 1px 4px rgba(0,0,0,.45);';
+    el.title = 'Your location';
+    userMarker = new window.maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(state.map);
+  }
+
+  function geoErrorMessage(err) {
+    if (err && err.code === 1) {
+      return 'Location permission was denied. Allow location access for this site in your browser settings, then try again.';
+    }
+    if (err && err.code === 3) return 'Detecting your location timed out. Try again, or search for your city by name.';
+    if (!window.isSecureContext) return 'Your browser only shares its location on secure (https) pages. Search for your city by name instead.';
+    return 'Your location could not be determined (' + ((err && err.message) || 'unknown error') + '). Try again, or search for your city by name.';
+  }
+
+  function locateMe(btn, inputEl) {
+    if (!navigator.geolocation) {
+      setStatus('Your browser does not support geolocation.', false);
+      return;
+    }
+    if (!window.isSecureContext) {
+      setStatus(geoErrorMessage(null), false);
+      return;
+    }
+    btn.disabled = true;
+    setStatus('Detecting your device location... (allow the permission prompt if your browser asks)', true);
+
+    function done() { btn.disabled = false; }
+    function ok(pos) {
+      done();
+      var lat = pos.coords.latitude, lng = pos.coords.longitude;
+      inputEl.value = 'My Location';
+      updateClearButtonVisibility();
+      showUserMarker(lat, lng);
+      executeSearchAt(lat, lng, 'My Location');
+    }
+    // Quick network/Wi-Fi fix first (works indoors and on desktops); GPS-accurate fix as a second attempt
+    navigator.geolocation.getCurrentPosition(ok, function (err1) {
+      if (err1 && err1.code === 1) { done(); setStatus(geoErrorMessage(err1), false); return; }
+      navigator.geolocation.getCurrentPosition(ok, function (err2) {
+        done();
+        setStatus(geoErrorMessage(err2), false);
+      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 });
+  }
+
+  // Shrink the left list to just an arrow so the map gets the whole width
+  function setSidebarCollapsed(collapsed) {
+    var app = document.getElementById('wv-lb-app');
+    var btn = document.getElementById('wv-lb-collapse');
+    if (!app || !btn) return;
+    app.classList.toggle('wv-lb-collapsed', collapsed);
+    btn.innerHTML = '<span class="wv-lb-arr">' + (collapsed ? '›' : '‹') + '</span>';
+    btn.title = collapsed ? 'Show the list' : 'Hide the list';
+    btn.setAttribute('aria-label', btn.title);
+    btn.setAttribute('aria-expanded', String(!collapsed));
+    if (state.map) setTimeout(function () { state.map.resize(); }, 50);
+  }
+
+  function buildUI(root) {
+    root.innerHTML =
+      '<div id="wv-lb-app">' +
+        '<div class="wv-lb-topbar">' +
+          '<form class="wv-lb-search-box" id="wv-lb-search-form">' +
+            '<div class="wv-lb-input-wrap">' +
+              '<input type="text" class="wv-lb-input" id="wv-lb-search-input" value="" placeholder="Search a city, attraction or coordinates (leave empty for the largest cities)...">' +
+              '<button type="button" class="wv-lb-clear-btn" id="wv-lb-clear-btn" title="Clear search &amp; return to the list of largest cities">×</button>' +
+            '</div>' +
+            '<button type="submit" class="wv-lb-btn wv-lb-btn-primary">Search</button>' +
+            '<button type="button" class="wv-lb-btn" id="wv-lb-geo-btn" title="Use your device\'s GPS location">🎯 Near me</button>' +
+          '</form>' +
+          '<div class="wv-lb-controls">' +
+            '<label for="wv-lb-radius"><strong>Radius:</strong></label>' +
+            '<select id="wv-lb-radius" class="wv-lb-select">' +
+              '<option value="2">2 km</option>' +
+              '<option value="5">5 km</option>' +
+              '<option value="10" selected>10 km (default)</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+        '<div class="wv-lb-body">' +
+          '<div class="wv-lb-sidebar">' +
+            '<div class="wv-lb-tabs">' +
+              '<div class="wv-lb-tab active" data-tab="explore">🔍 Search Results</div>' +
+              '<div class="wv-lb-tab" data-tab="planner">🎒 Trip Planner (<span id="wv-lb-planner-count">' + state.tripPlan.length + '</span>)</div>' +
+            '</div>' +
+            '<div id="wv-lb-status" class="wv-lb-status">Preparing the map...</div>' +
+            '<div class="wv-lb-planner-bar" id="wv-lb-plannerbar" style="display:none;"></div>' +
+            '<form class="wv-lb-addpanel" id="wv-lb-addpanel" autocomplete="off" novalidate>' +
+              '<div class="row"><label for="wv-lb-add-name">Place name</label><input type="text" id="wv-lb-add-name" maxlength="120" placeholder="e.g. Warung Bu Tini"></div>' +
+              '<div class="row"><label for="wv-lb-add-coord">Coordinates</label><input type="text" id="wv-lb-add-coord" inputmode="decimal" placeholder="-6.1754, 106.8272">' +
+                '<div class="hint">Latitude, longitude in decimal degrees (e.g. copied from a map). <a href="#" id="wv-lb-add-center">Use the map centre</a></div></div>' +
+              '<div class="err" id="wv-lb-add-err" role="alert"></div>' +
+              '<div class="btns"><button type="submit" class="wv-lb-btn wv-lb-btn-accent">➕ Add stop</button><button type="button" class="wv-lb-btn" id="wv-lb-add-cancel">Cancel</button></div>' +
+            '</form>' +
+            '<div class="wv-lb-filterbar" id="wv-lb-filterbar" style="display:none;">' +
+              '<div class="wv-lb-filter-wrap">' +
+                '<input type="text" class="wv-lb-filter-input" id="wv-lb-filter-input" placeholder="Filter results by name, description, address..." autocomplete="off">' +
+                '<button type="button" class="wv-lb-clear-btn" id="wv-lb-filter-clear" title="Clear filter">×</button>' +
+                '<span class="wv-lb-filter-count" id="wv-lb-filter-count" title="Number of places"></span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="wv-lb-filters" id="wv-lb-filters" style="display:none;"></div>' +
+            '<div class="wv-lb-list" id="wv-lb-list"></div>' +
+          '</div>' +
+          '<div class="wv-lb-map-wrap">' +
+            '<div id="wv-lb-map"></div>' +
+            '<button type="button" class="wv-lb-collapse" id="wv-lb-collapse" title="Hide the list" aria-label="Hide the list" aria-expanded="true"><span class="wv-lb-arr">‹</span></button>' +
+            '<div class="wv-lb-map-legend" id="wv-lb-map-legend"></div>' +
+            '<div class="wv-lb-layers" id="wv-lb-layers">' +
+              '<button type="button" data-layer="walk" title="Show the Trip Planner route along walkable roads and paths. Off: dashed straight lines between stops. Legs without a road link stay dashed.">🚶 Walk</button>' +
+              '<button type="button" data-layer="terrain" title="3D terrain + hillshade (drag with right mouse / two fingers to tilt)">⛰️ 3D</button>' +
+              '<button type="button" data-layer="contour" title="Contour lines">〰️ Contour</button>' +
+              '<button type="button" data-layer="buildings" title="3D buildings (zoom in to a city)">🏢 Buildings 3D</button>' +
+              '<div class="wv-lb-lstat" id="wv-lb-lstat" style="display:none;"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    var inputEl = document.getElementById('wv-lb-search-input');
+    var clearBtn = document.getElementById('wv-lb-clear-btn');
+    var filtersEl = document.getElementById('wv-lb-filters');
+    var filterInput = document.getElementById('wv-lb-filter-input');
+
+    Object.keys(CATEGORIES).forEach(function (key) {
+      var cat = CATEGORIES[key];
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'wv-lb-chip' + (key === state.activeCategory ? ' active' : '');
+      chip.textContent = cat.icon + ' ' + cat.label;
+      chip.addEventListener('click', function () {
+        state.activeCategory = key;
+        filtersEl.querySelectorAll('.wv-lb-chip').forEach(function (c) { c.classList.remove('active'); });
+        chip.classList.add('active');
+        renderCurrentView();
+      });
+      filtersEl.appendChild(chip);
+    });
+
+    filterInput.addEventListener('input', function () {
+      state.filterText = filterInput.value.trim();
+      updateFilterClear();
+      renderCurrentView();
+    });
+
+    document.getElementById('wv-lb-filter-clear').addEventListener('click', function () {
+      resetFilterField();
+      renderCurrentView();
+      filterInput.focus();
+    });
+
+    inputEl.addEventListener('input', function () {
+      updateClearButtonVisibility();
+      if (!inputEl.value.trim() && state.center) {
+        resetToDefaultState();
+      }
+    });
+
+    clearBtn.addEventListener('click', function () {
+      resetToDefaultState();
+      inputEl.focus();
+    });
+
+    document.getElementById('wv-lb-search-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var q = inputEl.value.trim();
+      if (!q) {
+        resetToDefaultState();
+        return;
+      }
+      if (q === 'My Location' && state.center && state.center.label === 'My Location') {
+        executeSearchAt(state.center.lat, state.center.lng, 'My Location');
+        return;
+      }
+      searchLocation(q).then(function (loc) {
+        if (loc) {
+          executeSearchAt(loc.lat, loc.lng, loc.label);
+        } else {
+          setStatus('Location "' + q + '" was not found. Try a more general city name.', false);
+        }
+      }).catch(function (err) {
+        setStatus('Search failed (' + err.message + ').', false);
+      });
+    });
+
+    document.getElementById('wv-lb-geo-btn').addEventListener('click', function () {
+      locateMe(document.getElementById('wv-lb-geo-btn'), inputEl);
+    });
+
+    document.getElementById('wv-lb-radius').addEventListener('change', function (e) {
+      state.radiusKm = parseInt(e.target.value, 10) || CONFIG.DEFAULT_RADIUS_KM;
+      if (state.center) {
+        executeSearchAt(state.center.lat, state.center.lng, state.center.label);
+      } else {
+        setStatus('Showing the 85 largest cities in the world. Click a city to explore places within ' + state.radiusKm + ' km.', false);
+      }
+    });
+
+    var tabs = root.querySelectorAll('.wv-lb-tab');
+    tabs.forEach(function (tabEl) {
+      tabEl.addEventListener('click', function () {
+        var tab = tabEl.getAttribute('data-tab');
+        state.activeTab = tab;
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tabEl.classList.add('active');
+        if (tab === 'planner') {
+          setStatus('Your Trip Planner. Add places from the search results, then sort them into an efficient route.', false);
+        } else if (state.center) {
+          setStatus(exploreStatus(), false);
+        } else {
+          setStatus('Showing the 85 largest cities in the world. Click a city to explore places within ' + state.radiusKm + ' km.', false);
+        }
+        renderCurrentView();
+      });
+    });
+
+    document.getElementById('wv-lb-collapse').addEventListener('click', function () {
+      setSidebarCollapsed(!document.getElementById('wv-lb-app').classList.contains('wv-lb-collapsed'));
+    });
+
+    // Demo page only: changing the wiki edition re-runs the current search
+    var sim = document.getElementById('sim-wiki-domain');
+    if (sim) {
+      sim.addEventListener('change', function () {
+        state.primaryHost = getHosts()[0];
+        if (state.center) executeSearchAt(state.center.lat, state.center.lng, state.center.label);
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------
+   * PDF export of the Trip Planner (jsPDF + autoTable, loaded on first use)
+   * ------------------------------------------------------------------ */
+
+  var PDF_C = { brand: [45, 79, 156], ink: [12, 26, 54], muted: [82, 96, 128], line: [221, 228, 241], soft: [234, 239, 249], zebra: [246, 248, 253], white: [255, 255, 255] };
+  var NONLATIN = /[^\u0000-ɏḀ-ỿ -⁯]/;
+  var PDF_MAP_W = 1100, PDF_MAP_H = 440;
+
+  function ensurePdfLib() {
+    var has = function () { return !!(window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API && window.jspdf.jsPDF.API.autoTable); };
+    if (has()) return Promise.resolve();
+    return firstLoadable([
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    ], function () { return !!(window.jspdf && window.jspdf.jsPDF); }).then(function (ok) {
+      if (!ok) throw new Error('PDF library failed to load. Check your connection and try again.');
+      return firstLoadable([
+        'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js',
+        'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js'
+      ], has);
+    }).then(function (ok) {
+      if (!ok) throw new Error('PDF table library failed to load. Check your connection and try again.');
+    });
+  }
+
+  // Text with characters the built-in PDF font cannot draw (Chinese, Arabic, ...) is drawn as an image
+  function canvasText(doc, cell, lines, bg) {
+    var k = doc.internal.scaleFactor, fontMm = cell.styles.fontSize / k, lineMm = fontMm * 1.2, px = 8;
+    var pl = cell.padding('left'), pt = cell.padding('top'), w = cell.width - pl - cell.padding('right');
+    var cv = document.createElement('canvas');
+    cv.width = Math.max(1, Math.round(w * px));
+    cv.height = Math.max(1, Math.round(lines.length * lineMm * px));
+    var x = cv.getContext('2d');
+    x.fillStyle = 'rgb(' + bg.join(',') + ')';
+    x.fillRect(0, 0, cv.width, cv.height);
+    x.fillStyle = 'rgb(' + PDF_C.ink.join(',') + ')';
+    x.font = (cell.styles.fontStyle === 'bold' ? '700 ' : '') + (fontMm * px) + 'px "Noto Sans","Segoe UI","Hiragino Sans","Yu Gothic",sans-serif';
+    x.textBaseline = 'middle';
+    lines.forEach(function (l, i) {
+      var m = x.measureText(l).width;
+      x.save();
+      x.translate(0, (i + 0.5) * lineMm * px);
+      if (m > cv.width) x.scale(cv.width / m, 1);
+      x.fillText(l, 0, 0);
+      x.restore();
+    });
+    doc.addImage(cv.toDataURL('image/png'), 'PNG', cell.x + pl, cell.y + pt, w, lines.length * lineMm);
+  }
+
+  function waitOnce(m, ev, ms) {
+    return new Promise(function (resolve) {
+      var done = false;
+      var f = function () { if (!done) { done = true; resolve(); } };
+      m.once(ev, f);
+      setTimeout(f, ms);
+    });
+  }
+
+  // The on-screen map cannot be photographed (its pins are HTML), so a second, off-screen map of a fixed size is
+  // fitted to the stops and the route and numbered pins are drawn on top of it.
+  async function pdfMapShot(plan) {
+    if (!window.maplibregl || !plan.length) return null;
+    var maplibregl = window.maplibregl;
+    var el = document.createElement('div');
+    el.style.cssText = 'position:fixed;left:-20000px;top:0;width:' + PDF_MAP_W + 'px;height:' + PDF_MAP_H + 'px;pointer-events:none';
+    document.body.appendChild(el);
+    var m = null;
+    try {
+      m = new maplibregl.Map({ container: el, style: state.mapStyle || CONFIG.STYLE_URL, center: [0, 0], zoom: 2, interactive: false, attributionControl: false, pixelRatio: 1.5, fadeDuration: 0, canvasContextAttributes: { preserveDrawingBuffer: true } });
+      await new Promise(function (res, rej) { m.once('load', res); setTimeout(function () { rej(new Error('PDF map: timeout')); }, 15000); });
+      var pts = plan.map(function (p) { return [p.lng, p.lat]; });
+      var bb = pts.reduce(function (b, p) { return b.extend(p); }, new maplibregl.LngLatBounds(pts[0], pts[0]));
+      m.fitBounds(bb, { padding: 70, maxZoom: 15, animate: false });
+      await waitOnce(m, 'idle', 9000);
+      var src = m.getCanvas(), cv = document.createElement('canvas');
+      cv.width = src.width; cv.height = src.height;
+      var cx = cv.getContext('2d'), k = src.width / PDF_MAP_W;
+      cx.fillStyle = '#eef1f6'; cx.fillRect(0, 0, cv.width, cv.height);
+      var drawn = new Promise(function (res) {
+        var done = false;
+        var fin = function () { if (!done) { done = true; res(); } };
+        m.once('render', function () { try { cx.drawImage(src, 0, 0); } catch (e) {} fin(); });
+        setTimeout(fin, 5000);
+      });
+      m.triggerRepaint();
+      await drawn;
+      var P = function (ll) { var p = m.project(ll); return [p.x * k, p.y * k]; };
+      cx.lineJoin = 'round'; cx.lineCap = 'round';
+      if (pts.length > 1) {
+        var path = function () { cx.beginPath(); pts.forEach(function (c, i) { var q = P(c); if (i) cx.lineTo(q[0], q[1]); else cx.moveTo(q[0], q[1]); }); cx.stroke(); };
+        cx.strokeStyle = '#fff'; cx.globalAlpha = 0.9; cx.lineWidth = 8 * k; cx.setLineDash([12 * k, 10 * k]); path();
+        cx.strokeStyle = '#d97706'; cx.lineWidth = 5 * k; path();
+        cx.setLineDash([]); cx.globalAlpha = 1;
+      }
+      plan.forEach(function (p, i) {
+        var q = P([p.lng, p.lat]), r = 13 * k;
+        cx.beginPath(); cx.arc(q[0], q[1], r, 0, 7); cx.fillStyle = '#d97706'; cx.fill();
+        cx.lineWidth = 2.5 * k; cx.strokeStyle = '#fff'; cx.stroke();
+        cx.fillStyle = '#fff'; cx.font = '700 ' + (r * 1.05) + 'px Arial,sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+        cx.fillText(String(i + 1), q[0], q[1] + k);
+      });
+      var at = state.mapBasic ? '© OpenStreetMap contributors · Wikimedia Maps' : '© OpenStreetMap contributors · OpenFreeMap © OpenMapTiles';
+      cx.font = (11 * k) + 'px Arial,sans-serif'; cx.textAlign = 'right'; cx.textBaseline = 'alphabetic';
+      var tw = cx.measureText(at).width;
+      cx.fillStyle = 'rgba(255,255,255,.8)'; cx.fillRect(cv.width - tw - 14 * k, cv.height - 18 * k, tw + 14 * k, 18 * k);
+      cx.fillStyle = '#334'; cx.fillText(at, cv.width - 7 * k, cv.height - 5 * k);
+      return { data: cv.toDataURL('image/jpeg', 0.84), w: cv.width, h: cv.height };
+    } finally {
+      try { if (m) m.remove(); } catch (e) {}
+      el.remove();
+    }
+  }
+
+  async function buildPdf() {
+    var plan = state.tripPlan.slice();
+    var C = PDF_C;
+    var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+    var W = doc.internal.pageSize.width, H = doc.internal.pageSize.height, M = 14;
+    var fill = function (c) { doc.setFillColor.apply(doc, c); };
+    var txt = function (c) { doc.setTextColor.apply(doc, c); };
+    var fnt = function (s, z) { doc.setFont('helvetica', s); doc.setFontSize(z); };
+    var today = new Date().toISOString().slice(0, 10);
+
+    fill(C.brand); doc.rect(0, 0, W, 34, 'F');
+    txt(C.white); fnt('bold', 20); doc.text('Megacity trip plan', M, 16);
+    fnt('normal', 10);
+    doc.text(plan.length + ' stops  ·  ~' + formatKm(currentPlanLength()) + ' km straight-line route  ·  ' + today, M, 25);
+    var y = 44;
+
+    var shot = null;
+    try { shot = await pdfMapShot(plan); } catch (e) { if (window.console) console.warn('PDF map skipped:', e); }
+    if (shot) {
+      var w = W - 2 * M, h = w * shot.h / shot.w;
+      fnt('bold', 11); txt(C.ink); doc.text('Trip map', M, y + 2);
+      doc.addImage(shot.data, 'JPEG', M, y + 5, w, h);
+      y += h + 12;
+    }
+
+    var body = plan.map(function (it, k) {
+      var cat = it.custom ? { label: 'Custom' } : (CATEGORIES[it.category] || CATEGORIES.see);
+      var meta = it.custom ? ['Custom', it.area, it.lat.toFixed(5) + ', ' + it.lng.toFixed(5)].filter(Boolean).join(' · ') : [cat.label, it.section, it.article].filter(Boolean).join(' · ');
+      var details = [it.address && it.category !== 'article' ? it.address : '', it.phone, it.hours, it.description ? it.description.slice(0, 220) + (it.description.length > 220 ? '…' : '') : ''].filter(Boolean).join('\n');
+      var next = k < plan.length - 1 ? formatKm(getDistanceKm(it.lat, it.lng, plan[k + 1].lat, plan[k + 1].lng)) + ' km' : '';
+      return [String(k + 1), it.name + '\n' + meta, details, next];
+    });
+
+    doc.autoTable({
+      startY: y, margin: { left: M, right: M, top: 20, bottom: 18 }, theme: 'plain', rowPageBreak: 'avoid',
+      head: [['No', 'Place', 'Details', 'To next']],
+      body: body,
+      styles: { font: 'helvetica', fontSize: 9.5, textColor: C.ink, cellPadding: 2.4, lineColor: C.line, lineWidth: 0, valign: 'top' },
+      headStyles: { fillColor: C.brand, textColor: C.white, fontStyle: 'bold', fontSize: 9 },
+      alternateRowStyles: { fillColor: C.zebra },
+      columnStyles: { 0: { cellWidth: 10, halign: 'center' }, 1: { cellWidth: 62 }, 2: { cellWidth: 'auto' }, 3: { cellWidth: 22, textColor: C.muted } },
+      didParseCell: function (h) {
+        if (h.section === 'body' && NONLATIN.test(String(h.cell.raw || ''))) h.cell.nonlatin = true;
+      },
+      willDrawCell: function (h) {
+        if (h.cell.nonlatin && h.section === 'body') { h.cell.nl = h.cell.text.slice(); h.cell.text = ['']; }
+      },
+      didDrawCell: function (h) {
+        if (h.section !== 'body') return;
+        if (h.cell.nonlatin && h.cell.nl) canvasText(doc, h.cell, h.cell.nl, h.row.index % 2 ? C.zebra : C.white);
+        if (h.column.index === 1) {
+          var it = plan[h.row.index];
+          if (it && !it.custom) doc.link(h.cell.x, h.cell.y, h.cell.width, h.cell.height, { url: itemUrl(it) });
+        }
+      }
+    });
+
+    var n = doc.getNumberOfPages();
+    for (var p = 1; p <= n; p++) {
+      doc.setPage(p);
+      fnt('normal', 8); txt(C.muted); doc.setDrawColor.apply(doc, C.line); doc.line(M, H - 13, W - M, H - 13);
+      doc.text('Made with Megacity · data: Wikivoyage (CC BY-SA 4.0)', M, H - 9);
+      doc.text('Page ' + p + ' of ' + n, W - M, H - 9, { align: 'right' });
+      fnt('normal', 7.6);
+      var cxp = M;
+      [['Megacity', 'https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity'], [' · ', null], ['Affandy Murad', 'https://meta.wikimedia.org/wiki/User:Affandy_Murad']].forEach(function (part) {
+        var w0 = doc.getTextWidth(part[0]);
+        txt(part[1] ? C.brand : C.muted);
+        doc.text(part[0], cxp, H - 4.6);
+        if (part[1]) doc.link(cxp, H - 8, w0, 4.2, { url: part[1] });
+        cxp += w0;
+      });
+    }
+    doc.save('megacity-trip-plan-' + today + '.pdf');
+  }
+
+  function exportPdf(btn) {
+    if (!state.tripPlan.length) { setStatus('Add places to the Trip Planner first.', false); return; }
+    var label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Making PDF…';
+    setStatus('Making the PDF (map and table)...', true);
+    ensurePdfLib().then(buildPdf).then(function () {
+      setStatus('PDF saved.', false);
+    }).catch(function (e) {
+      if (window.console) console.error(e);
+      setStatus('PDF failed: ' + (e && e.message ? e.message : e), false);
+    }).then(function () {
+      btn.disabled = false;
+      btn.textContent = label;
+    });
+  }
+
+  /* ------------------------------------------------------------------
+   * Loading MapLibre GL from a CDN, with a fallback CDN
+   * ------------------------------------------------------------------ */
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.crossOrigin = 'anonymous';
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function ensureCss(href, marker) {
+    if (document.querySelector('link[data-megacity="' + marker + '"], link[href*="' + marker + '"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = href;
+    l.setAttribute('data-megacity', marker);
+    document.head.appendChild(l);
+  }
+
+  function firstLoadable(urls, isLoaded) {
+    return urls.reduce(function (chain, url) {
+      return chain.then(function (ok) {
+        if (ok) return true;
+        return loadScript(url).then(function () { return isLoaded(); }).catch(function () { return false; });
+      });
+    }, Promise.resolve(false));
+  }
+
+  function ensureMapLibre() {
+    var v = CONFIG.MAPLIBRE_VERSION;
+    var cssUrl = 'https://cdn.jsdelivr.net/npm/maplibre-gl@' + v + '/dist/maplibre-gl.css';
+    var hasLib = function () { return !!(window.maplibregl && typeof window.maplibregl.Map === 'function'); };
+    ensureCss(cssUrl, 'maplibre-gl'); // needed even when the script is already on the page
+    if (hasLib()) return Promise.resolve(true);
+    return firstLoadable([
+      'https://cdn.jsdelivr.net/npm/maplibre-gl@' + v + '/dist/maplibre-gl.js',
+      'https://unpkg.com/maplibre-gl@' + v + '/dist/maplibre-gl.js'
+    ], hasLib);
+  }
+
+  /* ------------------------------------------------------------------
+   * Start
+   * ------------------------------------------------------------------ */
+
+  function injectStyles() {
+    if (document.getElementById('megacity-styles')) return;
+    var st = document.createElement('style');
+    st.id = 'megacity-styles';
+    st.textContent = CSS;
+    document.head.appendChild(st);
+  }
+
+  function init() {
+    var root = document.getElementById(ROOT_ID);
+    if (!root || root.querySelector('#wv-lb-app')) return; // not a Megacity page, or already built
+    try {
+      injectStyles();
+      state.primaryHost = getHosts()[0];
+      buildUI(root);
+      wireLayerControls();
+      wireAddPanel();
+    } catch (e) {
+      root.innerHTML = '<div style="padding:24px;color:#d33;">Megacity could not start: ' + esc(e && e.message || e) + '</div>';
+      if (window.console) console.error('[Megacity]', e);
+      return;
+    }
+
+    // Start in default mode (list of the largest cities) right away; the map joins in when its library has loaded
+    resetToDefaultState();
+    ensureMapLibre().then(function (ok) {
+      return ok ? initMap() : mapFail('maplibre-gl failed to load (CDN blocked/offline)');
+    }).then(function () {
+      renderCurrentView(); // draw the pins now that the map exists
+    });
+  }
+
+  if (window.console) console.info('[Megacity] script loaded');
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  if (window.mw && mw.hook) mw.hook('wikipage.content').add(init); // wiki page (re)rendered, e.g. live preview
+})(window, document);
+  </script>
+</body>
+</html>
