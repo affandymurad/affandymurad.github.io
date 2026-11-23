@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Kalender Indonesia 2027</title>
+    <meta name="description" content="Kalender Indonesia 2027 lengkap dengan hari libur nasional dan cuti bersama berdasarkan SKB Tiga Menteri.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="../icon.svg" type="image/svg+xml">
+    <style>
+        :root {
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --ink: #1b2233;
+            --muted: #6b7489;
+            --line: #e5e8f0;
+            --soft: #f0f2f8;
+            --brand: #3b5bdb;
+            --brand-ink: #ffffff;
+            --nas: #e03131;
+            --nas-bg: #ffe3e3;
+            --nas-ink: #a61e1e;
+            --cuti: #7048e8;
+            --cuti-bg: #e5dbff;
+            --cuti-ink: #5f3dc4;
+            --sat: #4c6ef5;
+            --today: #12b886;
+            --shadow: 0 1px 2px rgba(20, 30, 60, .05), 0 6px 20px rgba(20, 30, 60, .06);
+            --radius: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0d1220;
+                --card: #161d2f;
+                --ink: #eef1f8;
+                --muted: #98a2bb;
+                --line: #263049;
+                --soft: #1d263b;
+                --brand: #748ffc;
+                --brand-ink: #0d1220;
+                --nas: #ff6b6b;
+                --nas-bg: #4a1e26;
+                --nas-ink: #ffa8a8;
+                --cuti: #b197fc;
+                --cuti-bg: #3b2a66;
+                --cuti-ink: #d0bfff;
+                --sat: #91a7ff;
+                --today: #38d9a9;
+                --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0d1220;
+            --card: #161d2f;
+            --ink: #eef1f8;
+            --muted: #98a2bb;
+            --line: #263049;
+            --soft: #1d263b;
+            --brand: #748ffc;
+            --brand-ink: #0d1220;
+            --nas: #ff6b6b;
+            --nas-bg: #4a1e26;
+            --nas-ink: #ffa8a8;
+            --cuti: #b197fc;
+            --cuti-bg: #3b2a66;
+            --cuti-ink: #d0bfff;
+            --sat: #91a7ff;
+            --today: #38d9a9;
+            --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 84px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.45;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            border: 0;
+            background: none;
+        }
+
+        a {
+            color: var(--brand);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--brand);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        .wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding: 28px 0 8px;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1.1fr 1fr;
+            align-items: stretch;
+        }
+
+        .eyebrow {
+            font-size: .78rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 9vw, 5.5rem);
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -.04em;
+            margin: 6px 0 10px;
+            background: linear-gradient(120deg, var(--brand), var(--nas));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .lead {
+            color: var(--muted);
+            max-width: 52ch;
+            font-size: .95rem;
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 10px 14px;
+            min-width: 104px;
+            flex: 1 1 104px;
+        }
+
+        .stat b {
+            display: block;
+            font-size: 1.6rem;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        .stat span {
+            font-size: .76rem;
+            color: var(--muted);
+        }
+
+        .stat.nas b {
+            color: var(--nas);
+        }
+
+        .stat.cuti b {
+            color: var(--cuti);
+        }
+
+        .next {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .next::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 6px;
+            background: var(--nas);
+        }
+
+        .next.cuti::before {
+            background: var(--cuti);
+        }
+
+        .next small {
+            color: var(--muted);
+            font-weight: 600;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        .next h2 {
+            font-size: 1.35rem;
+            line-height: 1.25;
+        }
+
+        .next p {
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .count {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .count b {
+            font-size: 3rem;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .count span {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ---------- Toolbar ---------- */
+        .toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            margin-top: 16px;
+        }
+
+        .toolbar .wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .seg {
+            display: inline-flex;
+            background: var(--soft);
+            border-radius: 12px;
+            padding: 3px;
+            flex: none;
+        }
+
+        .seg button {
+            padding: 7px 14px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: .88rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .seg button[aria-pressed="true"] {
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+        }
+
+        .chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            flex: 1;
+            scrollbar-width: none;
+            padding: 2px;
+            scroll-snap-type: x proximity;
+        }
+
+        .chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            flex: none;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--muted);
+            border: 1px solid transparent;
+            scroll-snap-align: center;
+            position: relative;
+        }
+
+        .chip:hover {
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        .chip[aria-current="true"] {
+            background: var(--brand);
+            color: var(--brand-ink);
+        }
+
+        .chip.now:not([aria-current="true"]) {
+            border-color: var(--today);
+            color: var(--today);
+        }
+
+        .tool-btn {
+            flex: none;
+            height: 38px;
+            min-width: 38px;
+            padding: 0 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+            font-size: .86rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tool-btn:hover {
+            background: var(--line);
+        }
+
+        .tool-btn[hidden] {
+            display: none;
+        }
+
+        /* ---------- Legend ---------- */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            padding: 16px 0 4px;
+            font-size: .84rem;
+            color: var(--muted);
+        }
+
+        .legend i {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 5px;
+            vertical-align: -2px;
+            margin-right: 6px;
+        }
+
+        .lg-nas {
+            background: var(--nas);
+        }
+
+        .lg-cuti {
+            background: var(--cuti);
+        }
+
+        .lg-today {
+            background: transparent;
+            box-shadow: inset 0 0 0 2px var(--today);
+        }
+
+        .lg-sat {
+            background: var(--sat);
+            opacity: .45;
+        }
+
+        /* ---------- Month cards ---------- */
+        .grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+            padding: 12px 0 8px;
+        }
+
+        .month {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 14px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .m-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px 10px;
+            gap: 8px;
+        }
+
+        .m-head h3 {
+            font-size: 1.12rem;
+            font-weight: 700;
+        }
+
+        .m-head h3 small {
+            color: var(--muted);
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+        .m-badges {
+            display: flex;
+            gap: 5px;
+            font-size: .72rem;
+            font-weight: 700;
+        }
+
+        .m-badges span {
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        .b-nas {
+            background: var(--nas-bg);
+            color: var(--nas-ink);
+        }
+
+        .b-cuti {
+            background: var(--cuti-bg);
+            color: var(--cuti-ink);
+        }
+
+        .dow,
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+
+        .dow span {
+            text-align: center;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 4px 0 6px;
+        }
+
+        .dow span:first-child {
+            color: var(--nas);
+        }
+
+        .d {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .92rem;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            transition: background .15s, transform .12s;
+            min-width: 0;
+        }
+
+        button.d:hover {
+            background: var(--soft);
+            transform: scale(1.06);
+        }
+
+        .d.out {
+            color: var(--muted);
+            opacity: .38;
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        .d.sun {
+            color: var(--nas);
+        }
+
+        .d.sat {
+            color: var(--sat);
+        }
+
+        .d.nas {
+            background: var(--nas);
+            color: #fff;
+        }
+
+        .d.cuti {
+            background: var(--cuti);
+            color: #fff;
+        }
+
+        button.d.nas:hover {
+            background: var(--nas);
+            filter: brightness(1.1);
+        }
+
+        button.d.cuti:hover {
+            background: var(--cuti);
+            filter: brightness(1.1);
+        }
+
+        .d.both::after {
+            content: "";
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .d.today {
+            box-shadow: 0 0 0 2.5px var(--today);
+        }
+
+        .d.today:not(.nas):not(.cuti) {
+            background: color-mix(in srgb, var(--today) 16%, transparent);
+            color: var(--today);
+            font-weight: 800;
+        }
+
+        .d .lbl {
+            display: none;
+        }
+
+        .m-list {
+            list-style: none;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--line);
+            display: grid;
+            gap: 6px;
+            align-content: start;
+            font-size: .84rem;
+            flex: 1;
+        }
+
+        .m-list li {
+            display: grid;
+            grid-template-columns: 54px 1fr;
+            gap: 8px;
+            align-items: start;
+        }
+
+        .m-list .dt {
+            font-weight: 700;
+            font-size: .78rem;
+            padding: 1px 0;
+            text-align: center;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .m-list .none {
+            display: block;
+            color: var(--muted);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .m-list .none::before {
+            content: none;
+        }
+
+        .m-list .dt.n {
+            background: var(--nas-bg);
+            color: var(--nas-ink);
+        }
+
+        .m-list .dt.c {
+            background: var(--cuti-bg);
+            color: var(--cuti-ink);
+        }
+
+        /* ---------- Month (large) view ---------- */
+        .grid.single {
+            grid-template-columns: 1fr;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .single .month {
+            padding: 18px;
+        }
+
+        .single .m-head h3 {
+            font-size: 1.6rem;
+        }
+
+        .single .m-head h3 small {
+            font-size: 1rem;
+        }
+
+        .single .m-head {
+            padding-bottom: 14px;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 6px;
+        }
+
+        .arrow {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .arrow:hover:not(:disabled) {
+            background: var(--line);
+        }
+
+        .arrow:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .single .dow,
+        .single .days {
+            gap: 6px;
+        }
+
+        .single .d {
+            aspect-ratio: auto;
+            min-height: 96px;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-direction: column;
+            padding: 8px 9px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            border: 1px solid var(--line);
+            background: var(--card);
+            gap: 4px;
+            text-align: left;
+        }
+
+        .single .d.out {
+            border-color: transparent;
+            background: transparent;
+            opacity: .35;
+        }
+
+        .single .d.nas {
+            background: var(--nas-bg);
+            border-color: transparent;
+            color: var(--nas-ink);
+        }
+
+        .single .d.cuti {
+            background: var(--cuti-bg);
+            border-color: transparent;
+            color: var(--cuti-ink);
+        }
+
+        .single .d.both::after {
+            background: var(--cuti);
+        }
+
+        .single .d.sat:not(.nas):not(.cuti) {
+            color: var(--sat);
+        }
+
+        .single .d .lbl {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: .72rem;
+            font-weight: 600;
+            line-height: 1.25;
+            color: inherit;
+        }
+
+        .single .d.today {
+            box-shadow: 0 0 0 2.5px var(--today);
+        }
+
+        .single .d.today:not(.nas):not(.cuti) {
+            background: color-mix(in srgb, var(--today) 12%, var(--card));
+        }
+
+        .single button.d:hover {
+            transform: none;
+            border-color: var(--brand);
+        }
+
+        /* ---------- Sections ---------- */
+        section.block {
+            margin-top: 36px;
+        }
+
+        section.block h2 {
+            font-size: 1.35rem;
+            margin-bottom: 4px;
+        }
+
+        section.block>p {
+            color: var(--muted);
+            font-size: .9rem;
+            margin-bottom: 14px;
+        }
+
+        .long {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+        }
+
+        .long button {
+            text-align: left;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            display: grid;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .long button:hover {
+            border-color: var(--brand);
+        }
+
+        .long b {
+            font-size: 1.5rem;
+            line-height: 1;
+            letter-spacing: -.02em;
+        }
+
+        .long b small {
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-left: 4px;
+        }
+
+        .long .rng {
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .long .why {
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tools button {
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            font-weight: 600;
+            font-size: .84rem;
+            color: var(--muted);
+        }
+
+        .tools button[aria-pressed="true"] {
+            background: var(--ink);
+            color: var(--bg);
+            border-color: var(--ink);
+        }
+
+        .table {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 150px 1fr auto;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .row:last-child {
+            border-bottom: 0;
+        }
+
+        .row:hover {
+            background: var(--soft);
+        }
+
+        .row .when b {
+            display: block;
+            font-size: .95rem;
+        }
+
+        .row .when span {
+            font-size: .78rem;
+            color: var(--muted);
+        }
+
+        .row .what {
+            font-weight: 600;
+        }
+
+        .tag {
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .tag.n {
+            background: var(--nas-bg);
+            color: var(--nas-ink);
+        }
+
+        .tag.c {
+            background: var(--cuti-bg);
+            color: var(--cuti-ink);
+        }
+
+        .row.past .what,
+        .row.past .when {
+            opacity: .5;
+        }
+
+        .note {
+            margin: 36px 0 28px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: var(--soft);
+            font-size: .85rem;
+            color: var(--muted);
+            display: grid;
+            gap: 6px;
+        }
+
+        footer .f-left {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+        }
+
+        footer .f-left img {
+            vertical-align: -3px;
+        }
+
+        footer {
+            padding: 4px 0 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            font-size: .88rem;
+            justify-content: space-between;
+            color: var(--muted);
+        }
+
+        /* ---------- Dialog ---------- */
+        dialog {
+            border: 0;
+            border-radius: 20px;
+            padding: 0;
+            width: min(440px, calc(100vw - 24px));
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            margin: auto;
+        }
+
+        dialog::backdrop {
+            background: rgba(10, 14, 28, .55);
+            backdrop-filter: blur(3px);
+        }
+
+        .dlg {
+            padding: 22px 22px 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .dlg .big {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .dlg .num {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: var(--soft);
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            font-weight: 800;
+            flex: none;
+        }
+
+        .dlg .num.n {
+            background: var(--nas);
+            color: #fff;
+        }
+
+        .dlg .num.c {
+            background: var(--cuti);
+            color: #fff;
+        }
+
+        .dlg h3 {
+            font-size: 1.15rem;
+            line-height: 1.25;
+        }
+
+        .dlg .sub {
+            color: var(--muted);
+            font-size: .86rem;
+        }
+
+        .dlg ul {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .dlg li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+            font-size: .94rem;
+        }
+
+        .dlg li .tag {
+            margin-top: 2px;
+        }
+
+        .dlg .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            font-size: .8rem;
+            color: var(--muted);
+        }
+
+        .dlg .acts {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .dlg .acts button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+        }
+
+        .dlg .acts button:hover:not(:disabled) {
+            background: var(--line);
+        }
+
+        .dlg .acts button:disabled {
+            opacity: .35;
+        }
+
+        .dlg .acts .primary {
+            background: var(--brand);
+            color: var(--brand-ink);
+        }
+
+        .dlg .acts .primary:hover {
+            background: var(--brand) !important;
+            filter: brightness(1.08);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 860px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .toolbar .wrap {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .chips {
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .tool-btn.grow {
+                margin-left: auto;
+            }
+
+            .single .d {
+                min-height: 54px;
+                align-items: center;
+                justify-content: center;
+                padding: 4px;
+                font-size: .95rem;
+            }
+
+            .single .d .lbl {
+                display: none;
+            }
+
+            .single .d.nas::after,
+            .single .d.cuti::after {
+                content: "";
+                position: absolute;
+                bottom: 5px;
+                left: 50%;
+                width: 5px;
+                height: 5px;
+                margin-left: -2.5px;
+                border-radius: 50%;
+                background: currentColor;
+                top: auto;
+                right: auto;
+            }
+
+            .single .dow,
+            .single .days {
+                gap: 4px;
+            }
+
+            .row {
+                grid-template-columns: 1fr auto;
+            }
+
+            .row .when {
+                grid-column: 1 / -1;
+                display: flex;
+                gap: 8px;
+                align-items: baseline;
+            }
+
+            .row .when b {
+                display: inline;
+            }
+        }
+
+        details.daftar {
+            margin-top: 28px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        details.daftar summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 16px 18px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            user-select: none;
+        }
+
+        details.daftar summary::-webkit-details-marker { display: none; }
+
+        details.daftar summary::after {
+            content: "▾";
+            color: var(--muted);
+            transition: transform .2s;
+        }
+
+        details.daftar[open] summary::after { transform: rotate(180deg); }
+        details.daftar summary:hover { background: var(--soft); }
+
+        details.daftar summary em {
+            font-style: normal;
+            font-size: .78rem;
+            font-weight: 700;
+            background: var(--soft);
+            color: var(--muted);
+            padding: 2px 10px;
+            border-radius: 999px;
+            margin-left: 6px;
+        }
+
+        details.daftar .table {
+            border: 0;
+            border-top: 1px solid var(--line);
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media print {
+
+            .toolbar,
+            .hero .next,
+            .tools,
+            .nav-arrows,
+            dialog,
+            footer a[href="../"] {
+                display: none !important;
+            }
+
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            .month,
+            .table {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+
+            .grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px;
+            }
+
+            .d.nas,
+            .d.cuti {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            section.block {
+                break-before: page;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header class="hero">
+            <div>
+                <div class="eyebrow">Kalender Nasional Indonesia</div>
+                <h1>2027</h1>
+                <p class="lead">Seluruh 365 tanggal beserta hari libur nasional dan cuti bersama menurut
+                    <a href="https://www.kemenkopmk.go.id/sites/default/files/pengumuman/2026-09/SKB%20Libur%20Nasional%20dan%20Cuti%20Bersama%20Tahun%202027.pdf"
+                        target="_blank" rel="noopener">SKB Tiga Menteri</a> (No. 1205/2026, 3/2026, 2/2026; ditetapkan 15 September 2026).
+                    Ketuk tanggal mana pun untuk melihat detailnya.</p>
+                <div class="stats" id="stats"></div>
+            </div>
+            <aside class="next" id="next" aria-live="polite"></aside>
+        </header>
+    </div>
+
+    <nav class="toolbar" aria-label="Navigasi kalender">
+        <div class="wrap">
+            <div class="seg" role="group" aria-label="Tampilan">
+                <button type="button" id="vYear" aria-pressed="true">Setahun</button>
+                <button type="button" id="vMonth" aria-pressed="false">Per bulan</button>
+            </div>
+            <div class="chips" id="chips"></div>
+            <button type="button" class="tool-btn grow" id="todayBtn" hidden>📍 Hari ini</button>
+            <button type="button" class="tool-btn" id="pdfBtn" title="Simpan kalender sebagai berkas PDF">⬇️ <span>PDF</span></button>
+            <button type="button" class="tool-btn" id="themeBtn" aria-label="Ganti tema">💻</button>
+        </div>
+    </nav>
+
+    <main class="wrap">
+        <div class="legend" aria-hidden="true">
+            <span><i class="lg-nas"></i>Libur nasional</span>
+            <span><i class="lg-cuti"></i>Cuti bersama</span>
+            <span><i class="lg-sat"></i>Sabtu</span>
+            <span><i class="lg-today"></i>Hari ini</span>
+            <span style="color:var(--nas)">Minggu</span>
+        </div>
+
+        <div class="grid" id="cal"></div>
+
+        <details class="daftar" id="daftar">
+            <summary><span>Daftar libur &amp; cuti bersama <em id="daftarCount"></em></span></summary>
+            <div class="table" id="table"></div>
+        </details>
+
+        <section class="block" id="panjang">
+            <h2>Libur panjang 2027</h2>
+            <p>Rentang tiga hari berturut-turut atau lebih yang bebas kerja (akhir pekan, libur nasional, dan cuti bersama).</p>
+            <div class="long" id="long"></div>
+        </section>
+
+        <div class="note">
+            <span><strong>Catatan:</strong> sesuai Diktum KEDUA SKB, tanggal 1 Ramadan 1448 H, Idul Fitri 1448 H, dan Idul Adha 1448 H
+                ditetapkan lebih lanjut dengan Keputusan Menteri Agama, sehingga dapat bergeser dari yang tertera.</span>
+            <span>Pelaksanaan cuti bersama bagi ASN mengikuti peraturan perundang-undangan, dan bagi swasta diatur oleh pimpinan masing-masing;
+                cuti bersama mengurangi hak cuti tahunan.</span>
+        </div>
+
+        <footer>
+            <span class="f-left">
+                <a href="../">🏠 Kembali ke Affandy Murad</a>
+                <a href="my"><img src="../2026/flag/malaysia.svg" alt="" width="16" height="16"> Malaysia</a>
+                <a href="sg"><img src="../2026/flag/singapore.svg" alt="" width="16" height="16"> Singapura</a>
+            </span>
+            <span>Sumber: Kemenko PMK, Kemenag, Kemnaker, dan KemenPAN-RB (SKB Tiga Menteri)</span>
+        </footer>
+    </main>
+
+    <dialog id="dlg" aria-label="Detail tanggal"></dialog>
+
+    <!-- Library PDF (sama dengan Wikirekap) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        'use strict';
+        const YEAR = 2027;
+        const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const DAY_S = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+        // [tanggal, jenis (n = libur nasional, c = cuti bersama), nama lengkap, nama singkat]
+        const RAW = [
+            ['2027-01-01', 'n', 'Tahun Baru 2027 Masehi', 'Tahun Baru'],
+            ['2027-01-05', 'n', 'Isra Mikraj Nabi Muhammad S.A.W. 1448 Hijriah', 'Isra Mikraj'],
+            ['2027-02-05', 'c', 'Cuti Bersama Tahun Baru Imlek 2578 Kongzili', 'Cuti Imlek'],
+            ['2027-02-06', 'n', 'Tahun Baru Imlek 2578 Kongzili', 'Imlek'],
+            ['2027-03-08', 'n', 'Hari Suci Nyepi (Tahun Baru Saka 1949)', 'Nyepi'],
+            ['2027-03-09', 'c', 'Cuti Bersama Idul Fitri 1448 Hijriah', 'Cuti Idul Fitri'],
+            ['2027-03-10', 'n', 'Idul Fitri 1448 Hijriah (hari pertama)', 'Idul Fitri'],
+            ['2027-03-11', 'n', 'Idul Fitri 1448 Hijriah (hari kedua)', 'Idul Fitri'],
+            ['2027-03-12', 'c', 'Cuti Bersama Idul Fitri 1448 Hijriah', 'Cuti Idul Fitri'],
+            ['2027-03-15', 'c', 'Cuti Bersama Idul Fitri 1448 Hijriah', 'Cuti Idul Fitri'],
+            ['2027-03-25', 'c', 'Cuti Bersama Wafat Yesus Kristus', 'Cuti Jumat Agung'],
+            ['2027-03-26', 'n', 'Wafat Yesus Kristus', 'Jumat Agung'],
+            ['2027-03-28', 'n', 'Kebangkitan Yesus Kristus (Paskah)', 'Paskah'],
+            ['2027-05-01', 'n', 'Hari Buruh Internasional', 'Hari Buruh'],
+            ['2027-05-06', 'n', 'Kenaikan Yesus Kristus', 'Kenaikan Yesus'],
+            ['2027-05-17', 'n', 'Idul Adha 1448 Hijriah', 'Idul Adha'],
+            ['2027-05-18', 'c', 'Cuti Bersama Idul Adha 1448 Hijriah', 'Cuti Idul Adha'],
+            ['2027-05-19', 'c', 'Cuti Bersama Hari Raya Waisak 2571 BE', 'Cuti Waisak'],
+            ['2027-05-20', 'n', 'Hari Raya Waisak 2571 BE', 'Waisak'],
+            ['2027-06-01', 'n', 'Hari Lahir Pancasila', 'Hari Pancasila'],
+            ['2027-06-06', 'n', '1 Muharam Tahun Baru Islam 1449 Hijriah', 'Tahun Baru Islam'],
+            ['2027-08-15', 'n', 'Maulid Nabi Muhammad S.A.W.', 'Maulid Nabi'],
+            ['2027-08-17', 'n', 'Proklamasi Kemerdekaan', 'HUT RI'],
+            ['2027-12-24', 'c', 'Cuti Bersama Kelahiran Yesus Kristus', 'Cuti Natal'],
+            ['2027-12-25', 'n', 'Kelahiran Yesus Kristus (Natal)', 'Natal'],
+            ['2027-12-26', 'n', 'Isra Mikraj Nabi Muhammad S.A.W. 1449 Hijriah', 'Isra Mikraj']
+        ];
+        const kindLabel = h => h.t === 'c' ? 'Cuti bersama' : 'Libur nasional';
+
+        const $ = (s, r = document) => r.querySelector(s);
+        const pad = n => String(n).padStart(2, '0');
+        const key = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
+        const keyOf = dt => key(dt.getFullYear(), dt.getMonth(), dt.getDate());
+        const parse = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+        const dayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
+        const fmtLong = dt => `${DAYS[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+        const fmtShort = dt => `${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}`;
+        const isoWeek = dt => {
+            const d = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+            const n = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - n);
+            return Math.ceil(((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
+        };
+        const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+        // peta tanggal -> daftar entri
+        const H = {};
+        RAW.forEach(([k, t, name, short]) => (H[k] ||= []).push({ k, t, name, short }));
+        const isOff = dt => dt.getDay() === 0 || dt.getDay() === 6 || !!H[keyOf(dt)];
+
+        const store = {
+            get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+            set(k, v) { try { localStorage.setItem(k, v); } catch { } }
+        };
+
+        const now = new Date();
+        const todayKey = keyOf(now);
+        const inYear = now.getFullYear() === YEAR;
+        const todayMonth = inYear ? now.getMonth() : -1;
+
+        let view = store.get('kal2027-view') || (matchMedia('(max-width: 640px)').matches ? 'month' : 'year');
+        let cur = todayMonth >= 0 ? todayMonth : 0;
+
+        /* ---------- Hero: statistik & hari libur berikutnya ---------- */
+        function getStats() {
+            // SKB menghitung Idul Fitri 10–11 Maret sebagai satu butir libur nasional
+            const nas = RAW.filter(r => r[1] === 'n' && r[0] !== '2027-03-11').length;
+            const cuti = RAW.filter(r => r[1] === 'c').length;
+            const workdayOff = RAW.filter(r => { const g = parse(r[0]).getDay(); return g !== 0 && g !== 6; }).length;
+            return [
+                { cls: 'nas', n: nas, label: 'Libur nasional' },
+                { cls: 'cuti', n: cuti, label: 'Cuti bersama' },
+                { cls: '', n: workdayOff, label: 'Hari kerja yang libur' },
+                { cls: '', n: RAW.length - workdayOff, label: 'Libur jatuh di akhir pekan' }
+            ];
+        }
+
+        function renderHero() {
+            $('#stats').innerHTML = getStats().map(s => `<div class="stat ${s.cls}"><b>${s.n}</b><span>${s.label}</span></div>`).join('');
+
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const nxt = RAW.find(r => dayDiff(ref, parse(r[0])) >= 0);
+            const box = $('#next');
+            if (!nxt) {
+                box.className = 'next';
+                box.innerHTML = `<small>Status</small><h2>Seluruh hari libur 2027 telah berlalu</h2><p>Terima kasih sudah memakai kalender ini.</p>`;
+                return;
+            }
+            const dt = parse(nxt[0]);
+            const diff = dayDiff(ref, dt);
+            const before = ref.getFullYear() < YEAR;
+            box.className = 'next' + (nxt[1] === 'c' ? ' cuti' : '');
+            box.innerHTML = `
+                <small>${before ? 'Libur pertama tahun 2027' : 'Libur berikutnya'}</small>
+                <h2>${esc(nxt[2])}</h2>
+                <p>${fmtLong(dt)}</p>
+                <div class="count"><b>${diff === 0 ? 'Hari ini' : diff}</b><span>${diff === 0 ? '🎉' : 'hari lagi'}</span></div>`;
+        }
+
+        /* ---------- Kartu bulan ---------- */
+        function monthCard(m, big) {
+            const first = new Date(YEAR, m, 1).getDay();
+            const dim = new Date(YEAR, m + 1, 0).getDate();
+            const prevDim = new Date(YEAR, m, 0).getDate();
+            let cells = '';
+            for (let i = 0; i < 42; i++) {
+                const n = i - first + 1;
+                if (n < 1 || n > dim) {
+                    const o = n < 1 ? prevDim + n : n - dim;
+                    cells += `<span class="d out" aria-hidden="true">${o}</span>`;
+                    continue;
+                }
+                const k = key(YEAR, m, n);
+                const dow = (first + n - 1) % 7;
+                const hs = H[k] || [];
+                const nasional = hs.some(h => h.t === 'n');
+                const cb = hs.some(h => h.t === 'c');
+                const cls = ['d', dow === 0 ? 'sun' : dow === 6 ? 'sat' : '', nasional ? 'nas' : cb ? 'cuti' : '',
+                    nasional && cb ? 'both' : '', k === todayKey ? 'today' : ''].filter(Boolean).join(' ');
+                const label = `${DAYS[dow]}, ${n} ${MONTHS[m]} ${YEAR}` + (hs.length ? ': ' + hs.map(h => h.name).join('; ') : '') + (k === todayKey ? ' (hari ini)' : '');
+                const lbl = hs.length ? `<span class="lbl">${esc(hs[0].short)}</span>` : '';
+                cells += `<button type="button" class="${cls}" data-k="${k}" aria-label="${esc(label)}"${hs.length ? ` title="${esc(hs.map(h => h.name).join(' • '))}"` : ''}>${n}${lbl}</button>`;
+            }
+            const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+            const cN = mh.filter(r => r[1] === 'n').length, cC = mh.filter(r => r[1] === 'c').length;
+            const list = mh.length ? mh.map(r => {
+                const dt = parse(r[0]);
+                return `<li><span class="dt ${r[1]}">${DAY_S[dt.getDay()]}, ${dt.getDate()}</span><span>${esc(r[2])}</span></li>`;
+            }).join('') : `<li class="none">Tidak ada hari libur</li>`;
+            const arrows = big ? `<div class="nav-arrows">
+                    <button type="button" class="arrow" data-nav="-1" aria-label="Bulan sebelumnya" ${m === 0 ? 'disabled' : ''}>‹</button>
+                    <button type="button" class="arrow" data-nav="1" aria-label="Bulan berikutnya" ${m === 11 ? 'disabled' : ''}>›</button>
+                </div>` : `<div class="m-badges">${cN ? `<span class="b-nas" title="Libur nasional">${cN}</span>` : ''}${cC ? `<span class="b-cuti" title="Cuti bersama">${cC}</span>` : ''}</div>`;
+            const el = document.createElement('article');
+            el.className = 'month';
+            el.id = 'bln-' + m;
+            el.innerHTML = `
+                <div class="m-head"><h3>${MONTHS[m]}<small>${YEAR}</small></h3>${arrows}</div>
+                <div class="dow" aria-hidden="true">${DAY_S.map(d => `<span>${d}</span>`).join('')}</div>
+                <div class="days">${cells}</div>
+                <ul class="m-list">${list}</ul>`;
+            return el;
+        }
+
+        function renderCal() {
+            const grid = $('#cal');
+            grid.innerHTML = '';
+            grid.classList.toggle('single', view === 'month');
+            if (view === 'month') grid.appendChild(monthCard(cur, true));
+            else for (let m = 0; m < 12; m++) grid.appendChild(monthCard(m, false));
+            $('#vYear').setAttribute('aria-pressed', view === 'year');
+            $('#vMonth').setAttribute('aria-pressed', view === 'month');
+            document.querySelectorAll('.chip').forEach((c, i) => {
+                if (view === 'month' && i === cur) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current');
+            });
+        }
+
+        function renderChips() {
+            $('#chips').innerHTML = MONTHS.map((n, i) =>
+                `<button type="button" class="chip${i === todayMonth ? ' now' : ''}" data-m="${i}">${MON_S[i]}</button>`).join('');
+        }
+
+        function go(m, scroll) {
+            cur = Math.max(0, Math.min(11, m));
+            if (view === 'month') {
+                renderCal();
+                if (scroll) $('#cal').scrollIntoView({ block: 'start' });
+            } else {
+                $('#bln-' + cur).scrollIntoView({ block: 'start' });
+            }
+            const chip = document.querySelector(`.chip[data-m="${cur}"]`);
+            if (chip) chip.scrollIntoView({ inline: 'center', block: 'nearest' });
+        }
+
+        function setView(v) {
+            view = v; store.set('kal2027-view', v);
+            renderCal();
+            if (v === 'year') requestAnimationFrame(() => { if (cur !== 0 || todayMonth >= 0) $('#bln-' + cur)?.scrollIntoView({ block: 'start' }); });
+        }
+
+        /* ---------- Libur panjang ---------- */
+        function getLongWeekends() {
+            const runs = [];
+            let run = [];
+            const flush = () => { if (run.length >= 3 && run.some(d => H[keyOf(d)])) runs.push(run); run = []; };
+            for (let dt = new Date(YEAR, 0, 1); dt.getFullYear() === YEAR; dt = new Date(YEAR, dt.getMonth(), dt.getDate() + 1)) {
+                if (isOff(dt)) run.push(dt); else flush();
+            }
+            flush();
+            return runs.map(r => {
+                const a = r[0], b = r[r.length - 1];
+                const names = [...new Set(r.flatMap(d => (H[keyOf(d)] || []).map(h => h.short.replace(/^Cuti /, ''))))];
+                const rng = a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}` : `${a.getDate()} ${MON_S[a.getMonth()]} – ${b.getDate()} ${MON_S[b.getMonth()]}`;
+                return { k: keyOf(a), n: r.length, rng, span: `${DAY_S[a.getDay()]} – ${DAY_S[b.getDay()]}`, names: names.join(', ') };
+            });
+        }
+
+        function renderLong() {
+            $('#long').innerHTML = getLongWeekends().map(r =>
+                `<button type="button" data-k="${r.k}" data-go="1"><b>${r.n}<small>hari berturut-turut</small></b>
+                    <span class="rng">${r.rng}</span><span class="why">${r.span} · ${esc(r.names)}</span></button>`).join('');
+        }
+
+        /* ---------- Daftar (collapsible) ---------- */
+        function renderTable() {
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            $('#table').innerHTML = RAW.map(r => {
+                const dt = parse(r[0]);
+                const past = dayDiff(ref, dt) < 0;
+                const h = { t: r[1] };
+                return `<button type="button" class="row${past ? ' past' : ''}" data-k="${r[0]}" data-go="1">
+                    <span class="when"><b>${dt.getDate()} ${MONTHS[dt.getMonth()]}</b><span>${DAYS[dt.getDay()]}</span></span>
+                    <span class="what">${esc(r[2])}</span>
+                    <span class="tag ${r[1]}">${kindLabel(h)}</span></button>`;
+            }).join('');
+            const s = getStats();
+            $('#daftarCount').textContent = `${s[0].n} libur nasional + ${s[1].n} cuti bersama`;
+        }
+
+        /* ---------- Dialog detail ---------- */
+        const dlg = $('#dlg');
+        let dlgKey = null;
+        function openDay(k) {
+            dlgKey = k;
+            const dt = parse(k), hs = H[k] || [];
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const diff = dayDiff(ref, dt);
+            const rel = diff === 0 ? 'Hari ini' : diff > 0 ? `${diff} hari lagi` : `${-diff} hari yang lalu`;
+            const doy = dayDiff(new Date(YEAR, 0, 1), dt) + 1;
+            const kind = hs.some(h => h.t === 'n') ? 'n' : hs.length ? 'c' : '';
+            const status = hs.length ? '' : dt.getDay() === 0 ? 'Hari Minggu' : dt.getDay() === 6 ? 'Hari Sabtu' : 'Hari kerja biasa';
+            const list = hs.map(h => `<li><span class="tag ${h.t}">${kindLabel(h)}</span><span>${esc(h.name)}</span></li>`).join('');
+            const idx = RAW.findIndex(r => r[0] >= k);
+            dlg.innerHTML = `<div class="dlg">
+                <div class="big"><div class="num ${kind}">${dt.getDate()}</div>
+                    <div><h3>${fmtLong(dt)}</h3><div class="sub">${hs.length ? (dt.getDay() === 0 || dt.getDay() === 6 ? 'Bertepatan dengan akhir pekan' : 'Hari kerja yang libur') : status}</div></div></div>
+                ${list ? `<ul>${list}</ul>` : ''}
+                <div class="meta"><span>📆 Hari ke-${doy} dari 365</span><span>🗓️ Minggu ke-${isoWeek(dt)}</span><span>⏱️ ${rel}</span></div>
+                <div class="acts">
+                    <button type="button" data-d="-1" ${k === key(YEAR, 0, 1) ? 'disabled' : ''}>‹ Sebelumnya</button>
+                    <button type="button" class="primary" data-close>Tutup</button>
+                    <button type="button" data-d="1" ${k === key(YEAR, 11, 31) ? 'disabled' : ''}>Berikutnya ›</button>
+                </div></div>`;
+            if (!dlg.open) dlg.showModal();
+        }
+        dlg.addEventListener('click', e => {
+            if (e.target === dlg || e.target.closest('[data-close]')) return dlg.close();
+            const b = e.target.closest('[data-d]');
+            if (b) { const dt = parse(dlgKey); dt.setDate(dt.getDate() + Number(b.dataset.d)); openDay(keyOf(dt)); }
+        });
+        dlg.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') { const b = dlg.querySelector('[data-d="-1"]:not(:disabled)'); b && b.click(); }
+            if (e.key === 'ArrowRight') { const b = dlg.querySelector('[data-d="1"]:not(:disabled)'); b && b.click(); }
+        });
+
+        /* ---------- Tema ---------- */
+        const THEMES = ['system', 'light', 'dark'], ICON = { system: '💻', light: '☀️', dark: '🌙' };
+        let theme = store.get('kal-theme');
+        if (!THEMES.includes(theme)) theme = 'system';
+        function applyTheme() {
+            if (theme === 'system') document.documentElement.removeAttribute('data-theme');
+            else document.documentElement.dataset.theme = theme;
+            const b = $('#themeBtn');
+            b.textContent = ICON[theme];
+            b.title = 'Tema: ' + { system: 'ikuti sistem', light: 'terang', dark: 'gelap' }[theme];
+        }
+
+        /* ---------- Ekspor PDF (jsPDF, seperti Wikirekap) ---------- */
+        const PC = {
+            brand: [59, 91, 219], brand2: [86, 116, 232], ink: [27, 34, 51], muted: [107, 116, 137], line: [225, 229, 238],
+            soft: [240, 242, 248], white: [255, 255, 255], faint: [196, 202, 214],
+            nas: [224, 49, 49], nasBg: [255, 227, 227], nasInk: [166, 30, 30],
+            cuti: [112, 72, 232], cutiBg: [229, 219, 255], cutiInk: [95, 61, 196], sat: [76, 110, 245]
+        };
+        const PDF_FONT_FILES = { normal: 'pdf-fonts/Roboto-Regular.ttf', bold: 'pdf-fonts/Roboto-Bold.ttf' };
+        let pdfFontsPromise = null;
+
+        function b64(buf) {
+            const bytes = new Uint8Array(buf);
+            let bin = '';
+            for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+            return btoa(bin);
+        }
+        function loadPdfFonts() {
+            if (!pdfFontsPromise) {
+                pdfFontsPromise = Promise.all(Object.values(PDF_FONT_FILES).map(async url => {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Font ${url}: ${res.status}`);
+                    return b64(await res.arrayBuffer());
+                })).then(([normal, bold]) => ({ normal, bold })).catch(e => { pdfFontsPromise = null; throw e; });
+            }
+            return pdfFontsPromise;
+        }
+        async function registerPdfFonts(doc) {
+            try {
+                const f = await loadPdfFonts();
+                doc.addFileToVFS('Roboto-Regular.ttf', f.normal); doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+                doc.addFileToVFS('Roboto-Bold.ttf', f.bold); doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+                return 'Roboto';
+            } catch (e) {
+                console.warn('Font PDF gagal dimuat, memakai font bawaan:', e);
+                return 'helvetica';
+            }
+        }
+
+        async function exportPDF() {
+            if (!window.jspdf) { alert('Library PDF belum termuat. Periksa koneksi internet lalu coba lagi.'); return; }
+            const btn = $('#pdfBtn');
+            btn.disabled = true;
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                const F = await registerPdfFonts(doc);
+                const W = doc.internal.pageSize.width, Hh = doc.internal.pageSize.height, M = 10;
+                const col = (kind, rgb) => doc[kind === 'fill' ? 'setFillColor' : kind === 'draw' ? 'setDrawColor' : 'setTextColor'](rgb[0], rgb[1], rgb[2]);
+                const font = (style, size) => { doc.setFont(F, style); doc.setFontSize(size); };
+                const base = (y, h, s) => y + h / 2 + s * 0.127; // baseline agar teks rata tengah vertikal
+                const pill = (x, y, w, h, bg, ink, txt, size) => {
+                    col('fill', bg); doc.roundedRect(x, y, w, h, h / 2.4, h / 2.4, 'F');
+                    font('bold', size); col('text', ink); doc.text(txt, x + w / 2, base(y, h, size), { align: 'center' });
+                };
+
+                /* ===== Halaman 1: kalender setahun ===== */
+                col('fill', PC.brand); doc.rect(0, 0, W, 30, 'F');
+                font('bold', 9); col('text', [214, 224, 255]); doc.text('KALENDER NASIONAL INDONESIA', M, 9.5);
+                font('bold', 30); col('text', PC.white); doc.text(String(YEAR), M, 24.5);
+                const stats = getStats(), sw = 36, sg = 3;
+                stats.forEach((s, i) => {
+                    const x = W - M - (stats.length - i) * sw - (stats.length - i - 1) * sg;
+                    col('fill', PC.brand2); doc.roundedRect(x, 5.5, sw, 19, 2.5, 2.5, 'F');
+                    font('bold', 15); col('text', PC.white); doc.text(String(s.n), x + 3.5, 14.2);
+                    font('normal', 6.6); col('text', [226, 233, 255]);
+                    doc.text(doc.splitTextToSize(s.label, sw - 6), x + 3.5, 18.3);
+                });
+
+                // legenda
+                let lx = M;
+                const legend = [[PC.nas, 'Libur nasional'], [PC.cuti, 'Cuti bersama'], [PC.sat, 'Sabtu'], [PC.nas, 'Minggu (angka merah)']];
+                legend.forEach(([c, label], i) => {
+                    if (i < 2) { col('fill', c); doc.roundedRect(lx, 33.6, 3.6, 3.6, 1, 1, 'F'); }
+                    else { font('bold', 8); col('text', c); doc.text('1', lx + 1.8, 36.6, { align: 'center' }); }
+                    font('normal', 7.8); col('text', PC.muted); doc.text(label, lx + 5.2, 36.5);
+                    lx += 5.2 + doc.getTextWidth(label) + 7;
+                });
+
+                // 12 kartu bulan
+                const gap = 4, cols = 4, top = 40, bottom = Hh - 12;
+                const cw = (W - 2 * M - gap * (cols - 1)) / cols;
+                const ch = (bottom - top - gap * 2) / 3;
+                for (let m = 0; m < 12; m++) {
+                    const x = M + (m % cols) * (cw + gap), y = top + Math.floor(m / cols) * (ch + gap);
+                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25);
+                    doc.roundedRect(x, y, cw, ch, 2.5, 2.5, 'FD');
+                    font('bold', 10); col('text', PC.ink); doc.text(MONTHS[m], x + 4, y + 7);
+                    const nw = doc.getTextWidth(MONTHS[m]);
+                    font('normal', 7.5); col('text', PC.muted); doc.text(String(YEAR), x + 4 + nw + 1.6, y + 7);
+                    const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+                    const cN = mh.filter(r => r[1] === 'n').length, cC = mh.filter(r => r[1] === 'c').length;
+                    let bx = x + cw - 4;
+                    if (cC) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.cutiBg, PC.cutiInk, String(cC), 6.5); bx -= 1.5; }
+                    if (cN) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.nasBg, PC.nasInk, String(cN), 6.5); }
+
+                    const gx = x + 2.5, cell = (cw - 5) / 7, y0 = y + 14, rh = (ch - 14 - 2) / 6;
+                    DAY_S.forEach((d, i) => {
+                        font('bold', 5.8); col('text', i === 0 ? PC.nas : PC.muted);
+                        doc.text(d.toUpperCase(), gx + cell * i + cell / 2, y + 12, { align: 'center' });
+                    });
+                    const first = new Date(YEAR, m, 1).getDay(), dim = new Date(YEAR, m + 1, 0).getDate(), prevDim = new Date(YEAR, m, 0).getDate();
+                    for (let i = 0; i < 42; i++) {
+                        const n = i - first + 1, cx = gx + (i % 7) * cell, cy = y0 + Math.floor(i / 7) * rh;
+                        const out = n < 1 || n > dim;
+                        const label = out ? (n < 1 ? prevDim + n : n - dim) : n;
+                        const dow = i % 7;
+                        const hs = out ? [] : (H[key(YEAR, m, n)] || []);
+                        const nas = hs.some(h => h.t === 'n'), cb = !nas && hs.length > 0;
+                        if (nas || cb) { col('fill', nas ? PC.nas : PC.cuti); doc.roundedRect(cx + 0.5, cy + 0.4, cell - 1, rh - 0.8, 1.4, 1.4, 'F'); }
+                        font(out ? 'normal' : 'bold', 7.4);
+                        col('text', nas || cb ? PC.white : out ? PC.faint : dow === 0 ? PC.nas : dow === 6 ? PC.sat : PC.ink);
+                        doc.text(String(label), cx + cell / 2, base(cy, rh, 7.4), { align: 'center' });
+                    }
+                }
+
+                /* ===== Halaman 2: daftar libur, libur panjang, catatan ===== */
+                doc.addPage();
+                col('fill', PC.brand); doc.rect(0, 0, W, 16, 'F');
+                font('bold', 13); col('text', PC.white); doc.text(`Kalender Indonesia ${YEAR}`, M, 10.4);
+                font('normal', 9); col('text', [214, 224, 255]); doc.text('Daftar libur nasional dan cuti bersama', W - M, 10.2, { align: 'right' });
+
+                // kiri: daftar libur & cuti bersama (warna sesuai kategori)
+                const lw = 168, rx = M + lw + 9, rw = W - M - rx;
+                font('bold', 11); col('text', PC.ink); doc.text('Daftar libur & cuti bersama', M, 25);
+                const rowH = 6.5, ty = 29;
+                RAW.forEach((r, i) => {
+                    const y = ty + i * rowH, dt = parse(r[0]), isN = r[1] === 'n';
+                    if (i % 2 === 0) { col('fill', PC.soft); doc.rect(M, y, lw, rowH, 'F'); }
+                                        font('bold', 8.6); col('text', PC.ink); doc.text(`${dt.getDate()} ${MONTHS[dt.getMonth()]}`, M + 3, base(y, rowH, 8.6));
+                    font('normal', 8); col('text', PC.muted); doc.text(DAYS[dt.getDay()], M + 30, base(y, rowH, 8));
+                    font('normal', 8.6); col('text', PC.ink); doc.text(r[2], M + 50, base(y, rowH, 8.6));
+                    const label = kindLabel({ t: r[1] });
+                    font('bold', 6.4);
+                    const pw = Math.max(24, doc.getTextWidth(label) + 6);
+                    const px = M + lw - pw - 2, py = y + 1.1, ph = rowH - 2.2;
+                    col('fill', isN ? PC.nasBg : PC.cutiBg); doc.roundedRect(px, py, pw, ph, ph / 2.4, ph / 2.4, 'F');
+                    col('text', isN ? PC.nasInk : PC.cutiInk);
+                    doc.text(label, px + pw / 2, base(py, ph, 6.4), { align: 'center' });
+                });
+
+                // kanan: libur panjang + catatan
+                let ry = 25;
+                font('bold', 11); col('text', PC.ink); doc.text(`Libur panjang ${YEAR}`, rx, ry);
+                font('normal', 7.4); col('text', PC.muted);
+                const intro = doc.splitTextToSize('Tiga hari berturut-turut atau lebih yang bebas kerja (akhir pekan, libur nasional, dan cuti bersama).', rw);
+                doc.text(intro, rx, ry + 5); ry += 5 + intro.length * 3.2 + 2;
+                getLongWeekends().forEach(r => {
+                    const why = doc.splitTextToSize(`${r.span} · ${r.names}`, rw - 26);
+                    const h = Math.max(11, 7.2 + why.length * 3.3);
+                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25); doc.roundedRect(rx, ry, rw, h, 2, 2, 'FD');
+                    font('bold', 15); col('text', PC.brand); doc.text(String(r.n), rx + 4, ry + h / 2 + 2);
+                    font('normal', 6.4); col('text', PC.muted); doc.text('hari', rx + 13.5, ry + h / 2 + 1.9);
+                    font('bold', 8.6); col('text', PC.ink); doc.text(r.rng, rx + 24, ry + 5);
+                    font('normal', 7.4); col('text', PC.muted); doc.text(why, rx + 24, ry + 8.8);
+                    ry += h + 2.4;
+                });
+                ry += 4;
+                font('bold', 11); col('text', PC.ink); doc.text('Catatan', rx, ry); ry += 3.5;
+                const notes = [...document.querySelectorAll('.note span')].map(s => s.textContent.replace(/\s+/g, ' ').replace(/^Catatan:\s*/, '').trim());
+                font('normal', 7.4);
+                const noteLines = notes.map(t => doc.splitTextToSize(t, rw - 8));
+                const nh = noteLines.reduce((a, l) => a + l.length * 3.3 + 2.4, 0) + 4;
+                col('fill', PC.soft); doc.roundedRect(rx, ry, rw, nh, 2.5, 2.5, 'F');
+                col('text', PC.muted);
+                let ny = ry + 6;
+                noteLines.forEach(l => { doc.text(l, rx + 4, ny); ny += l.length * 3.3 + 2.4; });
+
+                /* ===== Footer & halaman ===== */
+                const total = doc.getNumberOfPages();
+                for (let p = 1; p <= total; p++) {
+                    doc.setPage(p);
+                    col('draw', PC.line); doc.setLineWidth(0.25); doc.line(M, Hh - 9.5, W - M, Hh - 9.5);
+                    font('normal', 7); col('text', PC.muted);
+                    doc.text(`Kalender Indonesia ${YEAR} - affandymurad.github.io/2027`, M, Hh - 5.5);
+                    doc.text(`Halaman ${p} dari ${total}`, W - M, Hh - 5.5, { align: 'right' });
+                }
+                doc.setProperties({ title: `Kalender Indonesia ${YEAR}`, subject: 'Hari libur nasional dan cuti bersama berdasarkan SKB Tiga Menteri' });
+                doc.save(`kalender-indonesia-${YEAR}.pdf`);
+            } catch (e) {
+                console.error(e);
+                alert('Gagal membuat PDF: ' + e.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        $('#pdfBtn').onclick = exportPDF;
+
+        /* ---------- Event ---------- */
+        document.addEventListener('click', e => {
+            const t = e.target;
+            const dayBtn = t.closest('[data-k]');
+            if (dayBtn) {
+                if (dayBtn.dataset.go) {
+                    const m = parse(dayBtn.dataset.k).getMonth();
+                    if (dlg.open) dlg.close();
+                    cur = m;
+                    if (view === 'month') renderCal();
+                    $('#cal').scrollIntoView({ block: 'start' });
+                    if (view === 'year') $('#bln-' + m).scrollIntoView({ block: 'start' });
+                }
+                return openDay(dayBtn.dataset.k);
+            }
+            const chip = t.closest('.chip');
+            if (chip) return go(Number(chip.dataset.m), true);
+            const nav = t.closest('[data-nav]');
+            if (nav) return go(cur + Number(nav.dataset.nav), false);
+        });
+        $('#vYear').onclick = () => setView('year');
+        $('#vMonth').onclick = () => setView('month');
+        $('#themeBtn').onclick = () => { theme = THEMES[(THEMES.indexOf(theme) + 1) % 3]; store.set('kal-theme', theme); applyTheme(); };
+        if (inYear) {
+            const tb = $('#todayBtn');
+            tb.hidden = false;
+            tb.onclick = () => { go(todayMonth, true); openDay(todayKey); };
+        }
+
+        // keyboard: ← → pindah bulan pada tampilan per bulan
+        document.addEventListener('keydown', e => {
+            if (dlg.open || view !== 'month' || e.target.closest('input,select,textarea')) return;
+            if (e.key === 'ArrowLeft' && cur > 0) go(cur - 1, false);
+            if (e.key === 'ArrowRight' && cur < 11) go(cur + 1, false);
+        });
+
+        // swipe: geser kiri/kanan pada tampilan per bulan
+        let sx = 0, sy = 0;
+        $('#cal').addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        $('#cal').addEventListener('touchend', e => {
+            if (view !== 'month') return;
+            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1), false);
+        }, { passive: true });
+
+        // tandai bulan yang sedang terlihat pada tampilan setahun
+        const io = new IntersectionObserver(es => {
+            if (view !== 'year') return;
+            es.forEach(en => {
+                if (en.isIntersecting) {
+                    const i = Number(en.target.id.slice(4));
+                    document.querySelectorAll('.chip').forEach(c => Number(c.dataset.m) === i ? c.setAttribute('aria-current', 'true') : c.removeAttribute('aria-current'));
+                }
+            });
+        }, { rootMargin: '-35% 0px -55% 0px' });
+        const observeMonths = () => document.querySelectorAll('.month').forEach(el => io.observe(el));
+        new MutationObserver(observeMonths).observe($('#cal'), { childList: true });
+
+        applyTheme(); renderHero(); renderChips(); renderCal(); renderLong(); renderTable();
+        if (view === 'year' && todayMonth >= 0) setTimeout(() => $('#bln-' + todayMonth).scrollIntoView({ block: 'start' }), 60);
+    </script>
+</body>
+
+</html>

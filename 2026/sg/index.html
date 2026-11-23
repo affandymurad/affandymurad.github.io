@@ -1,718 +1,1740 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Singapore Public Holidays for 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Singapore Calendar 2026</title>
+    <meta name="description" content="Singapore Calendar 2026 with all 11 gazetted public holidays and 3 replacement holidays, as announced by the Ministry of Manpower.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="../../icon.svg" type="image/svg+xml">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --ink: #1b2233;
+            --muted: #6b7489;
+            --line: #e5e8f0;
+            --soft: #f0f2f8;
+            --brand: #3b5bdb;
+            --brand-ink: #ffffff;
+            --nas: #e03131;
+            --nas-bg: #ffe3e3;
+            --nas-ink: #a61e1e;
+            --cuti: #7048e8;
+            --cuti-bg: #e5dbff;
+            --cuti-ink: #5f3dc4;
+            --sat: #4c6ef5;
+            --today: #12b886;
+            --shadow: 0 1px 2px rgba(20, 30, 60, .05), 0 6px 20px rgba(20, 30, 60, .06);
+            --radius: 16px;
         }
 
-        :root {
-            --bg-body: #f8f9fa;
-            --bg-card: white;
-            --text-primary: #2d3748;
-            --text-secondary: #718096;
-            --border-color: #e2e8f0;
-            --sunday: #e53e3e;
-            --holiday: #feb2b2;
-            --cuti: #fed7d7;
-            --today-bg: #c6f6d5;
-            --today-text: #2f855a;
-            --header-bg: #4a5568;
-            --header-text: white;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            --hover-bg: #f7fafc;
-            --info-bg: #f8fafc;
-            --info-border: #d1e4ff;
-            --datetime-bg: #f9fafb;
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0d1220;
+                --card: #161d2f;
+                --ink: #eef1f8;
+                --muted: #98a2bb;
+                --line: #263049;
+                --soft: #1d263b;
+                --brand: #748ffc;
+                --brand-ink: #0d1220;
+                --nas: #ff6b6b;
+                --nas-bg: #4a1e26;
+                --nas-ink: #ffa8a8;
+                --cuti: #b197fc;
+                --cuti-bg: #3b2a66;
+                --cuti-ink: #d0bfff;
+                --sat: #91a7ff;
+                --today: #38d9a9;
+                --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+            }
         }
 
         :root[data-theme="dark"] {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border-color: #334155;
-            --hover-bg: #334155;
-            --info-bg: #1e293b;
-            --info-border: #334155;
-            --datetime-bg: #1e293b;
+            --bg: #0d1220;
+            --card: #161d2f;
+            --ink: #eef1f8;
+            --muted: #98a2bb;
+            --line: #263049;
+            --soft: #1d263b;
+            --brand: #748ffc;
+            --brand-ink: #0d1220;
+            --nas: #ff6b6b;
+            --nas-bg: #4a1e26;
+            --nas-ink: #ffa8a8;
+            --cuti: #b197fc;
+            --cuti-bg: #3b2a66;
+            --cuti-ink: #d0bfff;
+            --sat: #91a7ff;
+            --today: #38d9a9;
+            --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 84px;
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--bg-body);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text-primary);
-            transition: background-color 0.3s;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.45;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        body.dark-theme {
-            color: var(--text-primary);
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            border: 0;
+            background: none;
         }
 
-        .container {
-            max-width: 1400px;
+        a {
+            color: var(--brand);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--brand);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        .wrap {
+            max-width: 1280px;
             margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding: 28px 0 8px;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1.1fr 1fr;
+            align-items: stretch;
+        }
+
+        .eyebrow {
+            font-size: .78rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
         }
 
         h1 {
-            text-align: center;
-            margin-bottom: 24px;
-            font-size: 2.2em;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: clamp(3rem, 9vw, 5.5rem);
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -.04em;
+            margin: 6px 0 10px;
+            background: linear-gradient(120deg, var(--brand), var(--nas));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .info {
-            background: var(--info-bg);
-            border: 1px solid var(--info-border);
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-            margin-bottom: 24px;
-            color: var(--text-primary);
-            font-size: 0.95em;
+        .lead {
+            color: var(--muted);
+            max-width: 52ch;
+            font-size: .95rem;
         }
 
-        .info a {
-            color: #3b82f6;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        body.dark-theme .info a {
-            color: #93c5fd;
-        }
-
-        .datetime-container {
+        .stats {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--datetime-bg);
-            padding: 16px 24px;
-            border-radius: 12px;
-            margin-bottom: 24px;
             flex-wrap: wrap;
-            gap: 20px;
-            color: var(--text-primary);
-            font-weight: 600;
-            border: 1px solid var(--border-color);
-        }
-
-        .control-buttons {
-            display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
+            margin-top: 18px;
         }
 
-        .control-btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 10px 14px;
+            min-width: 104px;
+            flex: 1 1 104px;
+        }
+
+        .stat b {
+            display: block;
+            font-size: 1.6rem;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        .stat span {
+            font-size: .76rem;
+            color: var(--muted);
+        }
+
+        .stat.nas b {
+            color: var(--nas);
+        }
+
+        .stat.cuti b {
+            color: var(--cuti);
+        }
+
+        .next {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .next::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 6px;
+            background: var(--nas);
+        }
+
+        .next.cuti::before {
+            background: var(--cuti);
+        }
+
+        .next small {
+            color: var(--muted);
             font-weight: 600;
-            cursor: pointer;
-            color: white;
-            transition: opacity 0.2s;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        .next h2 {
+            font-size: 1.35rem;
+            line-height: 1.25;
+        }
+
+        .next p {
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .count {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .count b {
+            font-size: 3rem;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .count span {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ---------- Toolbar ---------- */
+        .toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            margin-top: 16px;
+        }
+
+        .toolbar .wrap {
             display: flex;
             align-items: center;
+            gap: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .seg {
+            display: inline-flex;
+            background: var(--soft);
+            border-radius: 12px;
+            padding: 3px;
+            flex: none;
+        }
+
+        .seg button {
+            padding: 7px 14px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: .88rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .seg button[aria-pressed="true"] {
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+        }
+
+        .chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            flex: 1;
+            scrollbar-width: none;
+            padding: 2px;
+            scroll-snap-type: x proximity;
+        }
+
+        .chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            flex: none;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--muted);
+            border: 1px solid transparent;
+            scroll-snap-align: center;
+            position: relative;
+        }
+
+        .chip:hover {
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        .chip[aria-current="true"] {
+            background: var(--brand);
+            color: var(--brand-ink);
+        }
+
+        .chip.now:not([aria-current="true"]) {
+            border-color: var(--today);
+            color: var(--today);
+        }
+
+        .tool-btn {
+            flex: none;
+            height: 38px;
+            min-width: 38px;
+            padding: 0 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+            font-size: .86rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             gap: 6px;
         }
 
-        .back-home-btn {
-            background: #4a5568;
+        .tool-btn:hover {
+            background: var(--line);
         }
 
-        .scroll-today-btn {
-            background: #38a169;
+        .tool-btn[hidden] {
+            display: none;
         }
 
-        .country-btn {
-            background: #4a5568;
+        /* ---------- Legend ---------- */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            padding: 16px 0 4px;
+            font-size: .84rem;
+            color: var(--muted);
         }
 
-        .control-btn:hover {
-            opacity: 0.9;
+        .legend i {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 5px;
+            vertical-align: -2px;
+            margin-right: 6px;
         }
 
-        .theme-select {
-            padding: 10px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-size: 0.9em;
-            font-weight: 600;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            min-width: 140px;
+        .lg-nas {
+            background: var(--nas);
         }
 
-        body.dark-theme .theme-select {
-            background: var(--bg-body);
-            border-color: var(--border-color);
+        .lg-cuti {
+            background: var(--cuti);
         }
 
-        .calendar-grid {
+        .lg-today {
+            background: transparent;
+            box-shadow: inset 0 0 0 2px var(--today);
+        }
+
+        .lg-sat {
+            background: var(--sat);
+            opacity: .45;
+        }
+
+        /* ---------- Month cards ---------- */
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+            padding: 12px 0 8px;
         }
 
         .month {
-            background: var(--bg-card);
-            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            /* TIDAK ADA overflow: hidden → tooltip tidak terpotong */
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .month:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .month-header {
-            background: var(--header-bg);
-            color: var(--header-text);
-            padding: 16px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.3em;
-        }
-
-        .legend {
+            padding: 14px 12px 12px;
             display: flex;
-            justify-content: center;
-            gap: 16px;
-            padding: 12px;
-            flex-wrap: wrap;
-            font-size: 0.85em;
-            border-bottom: 1px solid var(--border-color);
+            flex-direction: column;
+            min-width: 0;
         }
 
-        .legend-item {
+        .m-head {
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: space-between;
+            padding: 0 6px 10px;
+            gap: 8px;
+        }
+
+        .m-head h3 {
+            font-size: 1.12rem;
+            font-weight: 700;
+        }
+
+        .m-head h3 small {
+            color: var(--muted);
             font-weight: 500;
+            margin-left: 4px;
         }
 
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
+        .m-badges {
+            display: flex;
+            gap: 5px;
+            font-size: .72rem;
+            font-weight: 700;
         }
 
-        .legend-holiday {
-            background: var(--holiday);
+        .m-badges span {
+            padding: 2px 8px;
+            border-radius: 999px;
         }
 
-        .legend-cuti {
-            background: var(--cuti);
+        .b-nas {
+            background: var(--nas-bg);
+            color: var(--nas-ink);
         }
 
-        .legend-sunday {
-            background: var(--sunday);
+        .b-cuti {
+            background: var(--cuti-bg);
+            color: var(--cuti-ink);
         }
 
-        .legend-today {
-            background: var(--today-bg);
-        }
-
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            background: var(--hover-bg);
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.85em;
-            padding: 10px 0;
-        }
-
-        .weekday {
-            text-align: center;
-        }
-
+        .dow,
         .days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: var(--border-color);
+            gap: 3px;
         }
 
-        .day {
-            background: var(--bg-card);
-            padding: 12px 8px;
+        .dow span {
             text-align: center;
-            min-height: 42px;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 4px 0 6px;
+        }
+
+        .dow span:first-child {
+            color: var(--nas);
+        }
+
+        .d {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9em;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.2s;
-        }
-
-        .day:hover {
-            background: var(--hover-bg);
-        }
-
-        .day.other-month {
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
-
-        .day.sunday {
-            color: var(--sunday);
+            font-size: .92rem;
             font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            transition: background .15s, transform .12s;
+            min-width: 0;
         }
 
-        .day.holiday {
-            background: var(--holiday);
-            color: #9b2c2c;
-            font-weight: 600;
-            border-radius: 6px;
-            margin: 2px;
+        button.d:hover {
+            background: var(--soft);
+            transform: scale(1.06);
         }
 
-        .day.cuti-bersama {
-            background: var(--cuti);
-            color: #9b2c2c;
-            font-weight: 600;
-            border-radius: 6px;
-            margin: 2px;
-        }
-
-        .day.today {
-            background: var(--today-bg);
-            color: var(--today-text);
-            font-weight: 700;
-            border-radius: 6px;
-            margin: 2px;
-            box-shadow: 0 0 0 2px #48bb78;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 2px #48bb78;
-            }
-
-            50% {
-                box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.3);
-            }
-        }
-
-        .tooltip {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a202c;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8em;
-            max-width: 220px;
-            text-align: center;
-            z-index: 10000;
+        .d.out {
+            color: var(--muted);
+            opacity: .38;
+            font-weight: 500;
             pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            margin-bottom: 8px;
-            white-space: normal;
-            line-height: 1.3;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .tooltip::after {
-            content: '';
+        .d.sun {
+            color: var(--nas);
+        }
+
+        .d.sat {
+            color: var(--sat);
+        }
+
+        .d.nas {
+            background: var(--nas);
+            color: #fff;
+        }
+
+        .d.cuti {
+            background: var(--cuti);
+            color: #fff;
+        }
+
+        button.d.nas:hover {
+            background: var(--nas);
+            filter: brightness(1.1);
+        }
+
+        button.d.cuti:hover {
+            background: var(--cuti);
+            filter: brightness(1.1);
+        }
+
+        .d.both::after {
+            content: "";
             position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 5px solid transparent;
-            border-top-color: #1a202c;
+            right: 4px;
+            top: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
         }
 
-        .day:hover .tooltip {
-            opacity: 1;
+        .d.today {
+            box-shadow: 0 0 0 2.5px var(--today);
         }
 
-        .month-holidays {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.85em;
+        .d.today:not(.nas):not(.cuti) {
+            background: color-mix(in srgb, var(--today) 16%, transparent);
+            color: var(--today);
+            font-weight: 800;
         }
 
-        .month-holidays h4 {
-            margin-bottom: 10px;
-            color: var(--text-secondary);
-            font-weight: 600;
+        .d .lbl {
+            display: none;
         }
 
-        .holiday-list {
+        .m-list {
             list-style: none;
-        }
-
-        .holiday-item {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .holiday-date {
-            font-weight: 600;
-            color: var(--sunday);
-            min-width: 30px;
-        }
-
-        .cuti-date {
-            font-weight: 600;
-            color: #dd6b20;
-            min-width: 30px;
-        }
-
-        .holiday-name {
-            color: var(--text-primary);
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--line);
+            display: grid;
+            gap: 6px;
+            align-content: start;
+            font-size: .84rem;
             flex: 1;
         }
 
-        .no-holidays {
-            color: var(--text-secondary);
-            font-style: italic;
-            text-align: center;
-            padding: 10px 0;
+        .m-list li {
+            display: grid;
+            grid-template-columns: 54px 1fr;
+            gap: 8px;
+            align-items: start;
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
+        .m-list .dt {
+            font-weight: 700;
+            font-size: .78rem;
+            padding: 1px 0;
+            text-align: center;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .m-list .none {
+            display: block;
+            color: var(--muted);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .m-list .none::before {
+            content: none;
+        }
+
+        .m-list .dt.n {
+            background: var(--nas-bg);
+            color: var(--nas-ink);
+        }
+
+        .m-list .dt.c {
+            background: var(--cuti-bg);
+            color: var(--cuti-ink);
+        }
+
+        /* ---------- Month (large) view ---------- */
+        .grid.single {
+            grid-template-columns: 1fr;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .single .month {
+            padding: 18px;
+        }
+
+        .single .m-head h3 {
+            font-size: 1.6rem;
+        }
+
+        .single .m-head h3 small {
+            font-size: 1rem;
+        }
+
+        .single .m-head {
+            padding-bottom: 14px;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 6px;
+        }
+
+        .arrow {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .arrow:hover:not(:disabled) {
+            background: var(--line);
+        }
+
+        .arrow:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .single .dow,
+        .single .days {
+            gap: 6px;
+        }
+
+        .single .d {
+            aspect-ratio: auto;
+            min-height: 96px;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-direction: column;
+            padding: 8px 9px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            border: 1px solid var(--line);
+            background: var(--card);
+            gap: 4px;
+            text-align: left;
+        }
+
+        .single .d.out {
+            border-color: transparent;
+            background: transparent;
+            opacity: .35;
+        }
+
+        .single .d.nas {
+            background: var(--nas-bg);
+            border-color: transparent;
+            color: var(--nas-ink);
+        }
+
+        .single .d.cuti {
+            background: var(--cuti-bg);
+            border-color: transparent;
+            color: var(--cuti-ink);
+        }
+
+        .single .d.both::after {
+            background: var(--cuti);
+        }
+
+        .single .d.sat:not(.nas):not(.cuti) {
+            color: var(--sat);
+        }
+
+        .single .d .lbl {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: .72rem;
+            font-weight: 600;
+            line-height: 1.25;
+            color: inherit;
+        }
+
+        .single .d.today {
+            box-shadow: 0 0 0 2.5px var(--today);
+        }
+
+        .single .d.today:not(.nas):not(.cuti) {
+            background: color-mix(in srgb, var(--today) 12%, var(--card));
+        }
+
+        .single button.d:hover {
+            transform: none;
+            border-color: var(--brand);
+        }
+
+        /* ---------- Sections ---------- */
+        section.block {
+            margin-top: 36px;
+        }
+
+        section.block h2 {
+            font-size: 1.35rem;
+            margin-bottom: 4px;
+        }
+
+        section.block>p {
+            color: var(--muted);
+            font-size: .9rem;
+            margin-bottom: 14px;
+        }
+
+        .long {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+        }
+
+        .long button {
+            text-align: left;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            display: grid;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .long button:hover {
+            border-color: var(--brand);
+        }
+
+        .long b {
+            font-size: 1.5rem;
+            line-height: 1;
+            letter-spacing: -.02em;
+        }
+
+        .long b small {
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-left: 4px;
+        }
+
+        .long .rng {
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .long .why {
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .hol {
+            margin-top: 28px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .hol summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: var(--radius);
+        }
+
+        .hol summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .hol summary::before {
+            content: "▸";
+            color: var(--muted);
+            transition: transform .15s;
+        }
+
+        .hol[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .hol summary small {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .hol-list {
+            display: grid;
+            border-top: 1px solid var(--line);
+        }
+
+        .hol-list button {
+            display: grid;
+            grid-template-columns: 110px 1fr auto;
+            gap: 12px;
+            align-items: center;
+            text-align: left;
+            padding: 11px 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .hol-list button:last-child {
+            border-bottom: 0;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .hol-list button:hover {
+            background: var(--soft);
+        }
+
+        .hol-list .when {
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .hol-list .what {
+            font-weight: 600;
+        }
+
+        .hol-list .past {
+            opacity: .5;
+        }
+
+        @media (max-width: 640px) {
+            .hol-list button {
+                grid-template-columns: 1fr auto;
             }
 
-            .calendar-grid {
+            .hol-list .when {
+                grid-column: 1 / -1;
+                color: var(--muted);
+                font-size: .8rem;
+            }
+        }
+
+        @media print {
+            .hol summary::before {
+                display: none;
+            }
+        }
+
+        .tag {
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .tag.n {
+            background: var(--nas-bg);
+            color: var(--nas-ink);
+        }
+
+        .tag.c {
+            background: var(--cuti-bg);
+            color: var(--cuti-ink);
+        }
+
+        .note {
+            margin: 36px 0 28px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: var(--soft);
+            font-size: .85rem;
+            color: var(--muted);
+            display: grid;
+            gap: 6px;
+        }
+
+        footer {
+            padding: 4px 0 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            font-size: .88rem;
+            justify-content: space-between;
+            color: var(--muted);
+        }
+
+        .ctry {
+            display: flex;
+            gap: 16px;
+        }
+
+        .ctry img {
+            vertical-align: -3px;
+            margin-right: 4px;
+        }
+
+        /* ---------- Dialog ---------- */
+        dialog {
+            border: 0;
+            border-radius: 20px;
+            padding: 0;
+            width: min(440px, calc(100vw - 24px));
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            margin: auto;
+        }
+
+        dialog::backdrop {
+            background: rgba(10, 14, 28, .55);
+            backdrop-filter: blur(3px);
+        }
+
+        .dlg {
+            padding: 22px 22px 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .dlg .big {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .dlg .num {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: var(--soft);
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            font-weight: 800;
+            flex: none;
+        }
+
+        .dlg .num.n {
+            background: var(--nas);
+            color: #fff;
+        }
+
+        .dlg .num.c {
+            background: var(--cuti);
+            color: #fff;
+        }
+
+        .dlg h3 {
+            font-size: 1.15rem;
+            line-height: 1.25;
+        }
+
+        .dlg .sub {
+            color: var(--muted);
+            font-size: .86rem;
+        }
+
+        .dlg ul {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .dlg li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+            font-size: .94rem;
+        }
+
+        .dlg li .tag {
+            margin-top: 2px;
+        }
+
+        .dlg .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            font-size: .8rem;
+            color: var(--muted);
+        }
+
+        .dlg .acts {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .dlg .acts button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+        }
+
+        .dlg .acts button:hover:not(:disabled) {
+            background: var(--line);
+        }
+
+        .dlg .acts button:disabled {
+            opacity: .35;
+        }
+
+        .dlg .acts .primary {
+            background: var(--brand);
+            color: var(--brand-ink);
+        }
+
+        .dlg .acts .primary:hover {
+            background: var(--brand) !important;
+            filter: brightness(1.08);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 860px) {
+            .hero {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .datetime-container {
-                flex-direction: column;
-                text-align: center;
+        @media (max-width: 640px) {
+            .toolbar .wrap {
+                flex-wrap: wrap;
+                gap: 8px;
             }
 
-            .control-buttons {
-                width: 100%;
-                flex-direction: column;
+            .chips {
+                order: 3;
+                flex-basis: 100%;
             }
 
-            .control-btn,
-            .theme-select {
-                width: 100%;
+            .tool-btn.grow {
+                margin-left: auto;
+            }
+
+            .single .d {
+                min-height: 54px;
+                align-items: center;
                 justify-content: center;
+                padding: 4px;
+                font-size: .95rem;
+            }
+
+            .single .d .lbl {
+                display: none;
+            }
+
+            .single .d.nas::after,
+            .single .d.cuti::after {
+                content: "";
+                position: absolute;
+                bottom: 5px;
+                left: 50%;
+                width: 5px;
+                height: 5px;
+                margin-left: -2.5px;
+                border-radius: 50%;
+                background: currentColor;
+                top: auto;
+                right: auto;
+            }
+
+            .single .dow,
+            .single .days {
+                gap: 4px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media print {
+
+            .toolbar,
+            .hero .next,
+            .nav-arrows,
+            dialog,
+            footer a {
+                display: none !important;
+            }
+
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            .month {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+
+            .grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px;
+            }
+
+            .d.nas,
+            .d.cuti {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            section.block {
+                break-before: page;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Singapore Public Holidays for 2026</h1>
-        <div class="info">
-            <strong>11 public holidays</strong> and <strong>3 replacement holidays</strong> according to <a
-                href="https://www.mom.gov.sg/newsroom/press-releases/2025/0616-public-holidays-for-2026"
-                target="_blank">MOM official release</a>
-        </div>
-
-        <div class="datetime-container">
-            <div id="currentDateTime"></div>
-            <div class="control-buttons">
-                <button class="control-btn back-home-btn" id="backHomeBtn">
-                    🏠 Back to Affandy Murad
-                </button>
-                <button class="control-btn scroll-today-btn" id="scrollTodayBtn">
-                    📅 Scroll to Today
-                </button>
-                <select class="theme-select" id="themeSelect">
-                    <option value="system">💻 System</option>
-                    <option value="light">☀️ Light</option>
-                    <option value="dark">🌙 Dark</option>
-                </select>
-                <button class="control-btn country-btn" onclick="window.location.href='..'">
-                    <img src="../flag/indonesia.svg" alt="ID" style="width:20px;height:20px;">
-                    Indonesia
-                </button>
-                <button class="control-btn country-btn" onclick="window.location.href='../my'">
-                    <img src="../flag/malaysia.svg" alt="MY" style="width:20px;height:20px;">
-                    Malaysia
-                </button>
+    <div class="wrap">
+        <header class="hero">
+            <div>
+                <div class="eyebrow">Singapore Calendar</div>
+                <h1>2026</h1>
+                <p class="lead">All 365 days of 2026 with the 11 gazetted public holidays and 3 replacement holidays announced by the
+                    <a href="https://www.mom.gov.sg/newsroom/press-releases/2025/0616-public-holidays-for-2026"
+                        target="_blank" rel="noopener">Ministry of Manpower</a> (official release).
+                    Tap any date to see its details.</p>
+                <div class="stats" id="stats"></div>
             </div>
-        </div>
-
-        <div class="calendar-grid" id="calendar"></div>
+            <aside class="next" id="next" aria-live="polite"></aside>
+        </header>
     </div>
 
+    <nav class="toolbar" aria-label="Calendar navigation">
+        <div class="wrap">
+            <div class="seg" role="group" aria-label="View">
+                <button type="button" id="vYear" aria-pressed="true">Year</button>
+                <button type="button" id="vMonth" aria-pressed="false">Month</button>
+            </div>
+            <div class="chips" id="chips"></div>
+            <button type="button" class="tool-btn grow" id="todayBtn" hidden>📍 Today</button>
+            <button type="button" class="tool-btn" id="pdfBtn" title="Save the calendar as a PDF file">⬇️ <span>PDF</span></button>
+            <button type="button" class="tool-btn" id="themeBtn" aria-label="Change theme">💻</button>
+        </div>
+    </nav>
+
+    <main class="wrap">
+        <div class="legend" aria-hidden="true">
+            <span><i class="lg-nas"></i>Public holiday</span>
+            <span><i class="lg-cuti"></i>Replacement holiday</span>
+            <span><i class="lg-sat"></i>Saturday</span>
+            <span><i class="lg-today"></i>Today</span>
+            <span style="color:var(--nas)">Sunday</span>
+        </div>
+
+        <div class="grid" id="cal"></div>
+
+        <details class="hol" id="holidays">
+            <summary><span>Public holidays 2026</span><small id="holCount"></small></summary>
+            <div class="hol-list" id="holList"></div>
+        </details>
+
+        <section class="block" id="long-weekends">
+            <h2>Long weekends 2026</h2>
+            <p>Stretches of three or more consecutive days off (weekends and public holidays).</p>
+            <div class="long" id="long"></div>
+        </section>
+
+        <div class="note">
+            <span><strong>Note:</strong> Vesak Day (Sunday 31 May), National Day (Sunday 9 August) and Deepavali (Sunday 8 November) fall on Sundays,
+                so the following Mondays (1 June, 10 August and 9 November) are replacement public holidays. Hari Raya Puasa (21 March) falls on a Saturday.</span>
+            <span>Employees covered by the Employment Act are entitled to 11 paid public holidays. Those required to work on a public holiday
+                are entitled to an extra day's salary at the basic rate of pay, in addition to their gross rate of pay for that day.
+                Employers and employees may mutually agree to substitute a public holiday for another working day.</span>
+        </div>
+
+        <footer>
+            <a href="../../">🏠 Back to Affandy Murad</a>
+            <span class="ctry">
+                <a href=".."><img src="../flag/indonesia.svg" alt="" width="16" height="16"> Indonesia</a>
+                <a href="../my"><img src="../flag/malaysia.svg" alt="" width="16" height="16"> Malaysia</a>
+            </span>
+            <span>Source: Ministry of Manpower, Singapore</span>
+        </footer>
+    </main>
+
+    <dialog id="dlg" aria-label="Date details"></dialog>
+
+    <!-- PDF library (same as Wikirekap) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
-        // --- DATA SINGAPURA 2026 (berdasarkan sumber resmi MOM) ---
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        'use strict';
+        const YEAR = 2026;
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const DAY_S = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-        const holidays = {
-            "2026-01-01": ["New Year's Day"],
-            "2026-02-17": ["Chinese New Year (Day 1)"],
-            "2026-02-18": ["Chinese New Year (Day 2)"],
-            "2026-03-21": ["Hari Raya Puasa"],
-            "2026-04-03": ["Good Friday"],
-            "2026-05-01": ["Labour Day"],
-            "2026-05-27": ["Hari Raya Haji"],
-            "2026-05-31": ["Vesak Day"],
-            "2026-08-09": ["National Day"],
-            "2026-11-08": ["Deepavali"],
-            "2026-12-25": ["Christmas Day"]
+        // [date, type (n = public holiday, c = replacement holiday), full name, short name]
+        const RAW = [
+            ['2026-01-01', 'n', "New Year's Day", "New Year's Day"],
+            ['2026-02-17', 'n', 'Chinese New Year (first day)', 'Chinese New Year'],
+            ['2026-02-18', 'n', 'Chinese New Year (second day)', 'Chinese New Year'],
+            ['2026-03-21', 'n', 'Hari Raya Puasa', 'Hari Raya Puasa'],
+            ['2026-04-03', 'n', 'Good Friday', 'Good Friday'],
+            ['2026-05-01', 'n', 'Labour Day', 'Labour Day'],
+            ['2026-05-27', 'n', 'Hari Raya Haji', 'Hari Raya Haji'],
+            ['2026-05-31', 'n', 'Vesak Day', 'Vesak Day'],
+            ['2026-06-01', 'c', 'Replacement holiday: Vesak Day', 'Vesak (replacement)'],
+            ['2026-08-09', 'n', 'National Day', 'National Day'],
+            ['2026-08-10', 'c', 'Replacement holiday: National Day', 'National Day (replacement)'],
+            ['2026-11-08', 'n', 'Deepavali', 'Deepavali'],
+            ['2026-11-09', 'c', 'Replacement holiday: Deepavali', 'Deepavali (replacement)'],
+            ['2026-12-25', 'n', 'Christmas Day', 'Christmas Day']
+        ];
+
+        const $ = (s, r = document) => r.querySelector(s);
+        const pad = n => String(n).padStart(2, '0');
+        const key = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
+        const keyOf = dt => key(dt.getFullYear(), dt.getMonth(), dt.getDate());
+        const parse = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+        const dayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
+        const fmtLong = dt => `${DAYS[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+        const isoWeek = dt => {
+            const d = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+            const n = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - n);
+            return Math.ceil(((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
+        };
+        const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+        // date -> list of entries
+        const H = {};
+        RAW.forEach(([k, t, name, short]) => (H[k] ||= []).push({ k, t, name, short }));
+        const isOff = dt => dt.getDay() === 0 || dt.getDay() === 6 || !!H[keyOf(dt)];
+
+        const store = {
+            get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+            set(k, v) { try { localStorage.setItem(k, v); } catch { } }
         };
 
-        const cutiBersama = {
-            "2026-06-01": ["Replacement Holiday: Vesak Day"],
-            "2026-08-10": ["Replacement Holiday: National Day"],
-            "2026-11-09": ["Replacement Holiday: Deepavali"]
-        };
+        const now = new Date();
+        const todayKey = keyOf(now);
+        const inYear = now.getFullYear() === YEAR;
+        const todayMonth = inYear ? now.getMonth() : -1;
 
-        // --- UTILS ---
-        const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
-        const getFirstDayOfMonth = (y, m) => new Date(y, m, 1).getDay();
-        const formatDate = (y, m, d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        let view = store.get('kal2026sg-view') || (matchMedia('(max-width: 640px)').matches ? 'month' : 'year');
+        let cur = todayMonth >= 0 ? todayMonth : 0;
 
-        // --- CALENDAR RENDER ---
-        function createMonth(year, month) {
-            const monthDiv = document.createElement('div');
-            monthDiv.className = 'month';
-            monthDiv.innerHTML = `
-                <div class="month-header">${months[month]} ${year}</div>
-                <div class="legend">
-                    <div class="legend-item"><div class="legend-color legend-holiday"></div><span>Public Holiday</span></div>
-                    <div class="legend-item"><div class="legend-color legend-cuti"></div><span>Replacement Holiday</span></div>
-                    <div class="legend-item"><div class="legend-color legend-sunday"></div><span>Sunday</span></div>
-                    <div class="legend-item"><div class="legend-color legend-today"></div><span>Today</span></div>
-                </div>
-                <div class="weekdays">${weekdays.map(w => `<div class="weekday">${w}</div>`).join('')}</div>
-                <div class="days"></div>
-            `;
-
-            const daysDiv = monthDiv.querySelector('.days');
-            const daysInMonth = getDaysInMonth(year, month);
-            const firstDay = getFirstDayOfMonth(year, month);
-            const daysInPrevMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
-
-            for (let i = firstDay - 1; i >= 0; i--) {
-                const d = document.createElement('div');
-                d.className = 'day other-month';
-                d.textContent = daysInPrevMonth - i;
-                daysDiv.appendChild(d);
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const d = document.createElement('div');
-                d.className = 'day';
-                d.textContent = day;
-
-                const today = new Date();
-                const isToday = year === today.getFullYear() && month === today.getMonth() && day === today.getDate();
-                if (isToday) {
-                    d.classList.add('today');
-                    d.id = 'today-date';
-                    const t = document.createElement('div');
-                    t.className = 'tooltip';
-                    t.textContent = 'Today';
-                    d.appendChild(t);
-                }
-
-                const ds = formatDate(year, month, day);
-                const dow = new Date(year, month, day).getDay();
-                if (dow === 0) d.classList.add('sunday');
-
-                if (holidays[ds]) d.classList.add('holiday');
-                if (cutiBersama[ds]) d.classList.add('cuti-bersama');
-
-                if (holidays[ds] || cutiBersama[ds]) {
-                    const t = document.createElement('div');
-                    t.className = 'tooltip';
-                    let text = '';
-                    if (holidays[ds]) text += holidays[ds].join('<br>');
-                    if (cutiBersama[ds]) text += (text ? '<br><br>' : '') + cutiBersama[ds].join('<br>');
-                    t.innerHTML = text;
-                    d.appendChild(t);
-                }
-
-                daysDiv.appendChild(d);
-            }
-
-            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-            const remaining = totalCells - (firstDay + daysInMonth);
-            for (let i = 1; i <= remaining; i++) {
-                const d = document.createElement('div');
-                d.className = 'day other-month';
-                d.textContent = i;
-                daysDiv.appendChild(d);
-            }
-
-            monthDiv.appendChild(createMonthHolidaysList(year, month));
-            return monthDiv;
+        /* ---------- Hero: stats & next holiday ---------- */
+        function getStats() {
+            const nas = RAW.filter(r => r[1] === 'n').length;
+            const lieu = RAW.filter(r => r[1] === 'c').length;
+            const weekday = RAW.filter(r => { const g = parse(r[0]).getDay(); return g !== 0 && g !== 6; }).length;
+            return [
+                { cls: 'nas', n: nas, label: 'Public holidays' },
+                { cls: 'cuti', n: lieu, label: 'Replacement holidays' },
+                { cls: '', n: weekday, label: 'Weekday holidays' },
+                { cls: '', n: RAW.length - weekday, label: 'On weekends' }
+            ];
         }
 
-        function createMonthHolidaysList(year, month) {
-            const div = document.createElement('div');
-            div.className = 'month-holidays';
-            const title = document.createElement('h4');
-            title.textContent = 'Public & Replacement Holiday Info';
-            div.appendChild(title);
+        function renderHero() {
+            $('#stats').innerHTML = getStats().map(s => `<div class="stat ${s.cls}"><b>${s.n}</b><span>${s.label}</span></div>`).join('');
 
-            const list = document.createElement('ul');
-            list.className = 'holiday-list';
-            let has = false;
-
-            const addHoliday = (dateStr, names, isCuti = false) => {
-                const d = new Date(dateStr);
-                if (d.getFullYear() === year && d.getMonth() === month) {
-                    (Array.isArray(names) ? names : [names]).forEach(name => {
-                        const li = document.createElement('li');
-                        li.className = 'holiday-item';
-                        const span = document.createElement('span');
-                        span.className = isCuti ? 'cuti-date' : 'holiday-date';
-                        span.textContent = d.getDate();
-                        const nameSpan = document.createElement('span');
-                        nameSpan.className = 'holiday-name';
-                        nameSpan.textContent = name;
-                        li.appendChild(span);
-                        li.appendChild(nameSpan);
-                        list.appendChild(li);
-                        has = true;
-                    });
-                }
-            };
-
-            Object.entries(holidays).forEach(([d, n]) => addHoliday(d, n, false));
-            Object.entries(cutiBersama).forEach(([d, n]) => addHoliday(d, n, true));
-
-            if (has) {
-                const items = Array.from(list.children);
-                items.sort((a, b) => {
-                    const aD = parseInt(a.querySelector('.holiday-date, .cuti-date').textContent);
-                    const bD = parseInt(b.querySelector('.holiday-date, .cuti-date').textContent);
-                    return aD - bD;
-                });
-                list.innerHTML = '';
-                items.forEach(i => list.appendChild(i));
-                div.appendChild(list);
-            } else {
-                const no = document.createElement('div');
-                no.className = 'no-holidays';
-                no.textContent = 'There are no public or replacement holidays';
-                div.appendChild(no);
-            }
-
-            return div;
-        }
-
-        function createCalendar() {
-            const cal = document.getElementById('calendar');
-            cal.innerHTML = '';
-            for (let m = 0; m < 12; m++) {
-                cal.appendChild(createMonth(2026, m));
-            }
-        }
-
-        // --- DATE & TIME ---
-        function updateDateTime() {
-            const now = new Date();
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const monthsFull = months;
-            const dayName = days[now.getDay()];
-            const date = now.getDate();
-            const monthName = monthsFull[now.getMonth()];
-            const year = now.getFullYear();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            const offset = -now.getTimezoneOffset();
-            const gmt = (offset >= 0 ? '+' : '-') + Math.abs(Math.floor(offset / 60)).toString().padStart(2, '0');
-            document.getElementById('currentDateTime').textContent =
-                `${dayName}, ${date} ${monthName} ${year} ${h}:${m}:${s} (GMT ${gmt})`;
-        }
-
-        // --- SCROLL TO TODAY ---
-        function setupScrollToday() {
-            const btn = document.getElementById('scrollTodayBtn');
-            if (new Date().getFullYear() !== 2026) {
-                btn.style.display = 'none';
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const nxt = RAW.find(r => dayDiff(ref, parse(r[0])) >= 0);
+            const box = $('#next');
+            if (!nxt) {
+                box.className = 'next';
+                box.innerHTML = `<small>Status</small><h2>All 2026 holidays have passed</h2><p>Thank you for using this calendar.</p>`;
                 return;
             }
-            btn.addEventListener('click', () => {
-                const el = document.getElementById('today-date');
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    el.style.transform = 'scale(1.2)';
-                    setTimeout(() => el.style.transform = 'scale(1)', 300);
+            const dt = parse(nxt[0]);
+            const diff = dayDiff(ref, dt);
+            const before = ref.getFullYear() < YEAR;
+            box.className = 'next' + (nxt[1] === 'c' ? ' cuti' : '');
+            box.innerHTML = `
+                <small>${before ? 'First holiday of 2026' : 'Next holiday'}</small>
+                <h2>${esc(nxt[2])}</h2>
+                <p>${fmtLong(dt)}</p>
+                <div class="count"><b>${diff === 0 ? 'Today' : diff}</b><span>${diff === 0 ? '🎉' : (diff === 1 ? 'day to go' : 'days to go')}</span></div>`;
+        }
+
+        /* ---------- Month cards ---------- */
+        function monthCard(m, big) {
+            const first = new Date(YEAR, m, 1).getDay();
+            const dim = new Date(YEAR, m + 1, 0).getDate();
+            const prevDim = new Date(YEAR, m, 0).getDate();
+            let cells = '';
+            for (let i = 0; i < 42; i++) {
+                const n = i - first + 1;
+                if (n < 1 || n > dim) {
+                    const o = n < 1 ? prevDim + n : n - dim;
+                    cells += `<span class="d out" aria-hidden="true">${o}</span>`;
+                    continue;
                 }
-            });
-        }
-
-        // --- THEME ---
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            document.body.classList.toggle('dark-theme', theme === 'dark');
-        }
-
-        function initTheme() {
-            const saved = localStorage.getItem('calendarTheme') || 'system';
-            const select = document.getElementById('themeSelect');
-            select.value = saved;
-
-            if (saved === 'system') {
-                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                applyTheme(isDark ? 'dark' : 'light');
-            } else {
-                applyTheme(saved);
+                const k = key(YEAR, m, n);
+                const dow = (first + n - 1) % 7;
+                const hs = H[k] || [];
+                const nasional = hs.some(h => h.t === 'n');
+                const cb = hs.some(h => h.t === 'c');
+                const cls = ['d', dow === 0 ? 'sun' : dow === 6 ? 'sat' : '', nasional ? 'nas' : cb ? 'cuti' : '',
+                    nasional && cb ? 'both' : '', k === todayKey ? 'today' : ''].filter(Boolean).join(' ');
+                const label = `${DAYS[dow]}, ${n} ${MONTHS[m]} ${YEAR}` + (hs.length ? ': ' + hs.map(h => h.name).join('; ') : '') + (k === todayKey ? ' (today)' : '');
+                const lbl = hs.length ? `<span class="lbl">${esc(hs[0].short)}</span>` : '';
+                cells += `<button type="button" class="${cls}" data-k="${k}" aria-label="${esc(label)}"${hs.length ? ` title="${esc(hs.map(h => h.name).join(' • '))}"` : ''}>${n}${lbl}</button>`;
             }
+            const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+            const cN = mh.filter(r => r[1] === 'n').length, cC = mh.filter(r => r[1] === 'c').length;
+            const list = mh.length ? mh.map(r => {
+                const dt = parse(r[0]);
+                return `<li><span class="dt ${r[1]}">${DAY_S[dt.getDay()]}, ${dt.getDate()}</span><span>${esc(r[2])}</span></li>`;
+            }).join('') : `<li class="none">No public holidays</li>`;
+            const arrows = big ? `<div class="nav-arrows">
+                    <button type="button" class="arrow" data-nav="-1" aria-label="Previous month" ${m === 0 ? 'disabled' : ''}>‹</button>
+                    <button type="button" class="arrow" data-nav="1" aria-label="Next month" ${m === 11 ? 'disabled' : ''}>›</button>
+                </div>` : `<div class="m-badges">${cN ? `<span class="b-nas" title="Public holidays">${cN}</span>` : ''}${cC ? `<span class="b-cuti" title="Replacement holiday">${cC}</span>` : ''}</div>`;
+            const el = document.createElement('article');
+            el.className = 'month';
+            el.id = 'bln-' + m;
+            el.innerHTML = `
+                <div class="m-head"><h3>${MONTHS[m]}<small>${YEAR}</small></h3>${arrows}</div>
+                <div class="dow" aria-hidden="true">${DAY_S.map(d => `<span>${d}</span>`).join('')}</div>
+                <div class="days">${cells}</div>
+                <ul class="m-list">${list}</ul>`;
+            return el;
+        }
 
-            select.addEventListener('change', (e) => {
-                const val = e.target.value;
-                localStorage.setItem('calendarTheme', val);
-                if (val === 'system') {
-                    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    applyTheme(isDark ? 'dark' : 'light');
-                } else {
-                    applyTheme(val);
-                }
-            });
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (select.value === 'system') {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
+        function renderCal() {
+            const grid = $('#cal');
+            grid.innerHTML = '';
+            grid.classList.toggle('single', view === 'month');
+            if (view === 'month') grid.appendChild(monthCard(cur, true));
+            else for (let m = 0; m < 12; m++) grid.appendChild(monthCard(m, false));
+            $('#vYear').setAttribute('aria-pressed', view === 'year');
+            $('#vMonth').setAttribute('aria-pressed', view === 'month');
+            document.querySelectorAll('.chip').forEach((c, i) => {
+                if (view === 'month' && i === cur) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current');
             });
         }
 
-        // --- NAVIGATION ---
-        document.getElementById('backHomeBtn').addEventListener('click', () => {
-            window.location.href = '../../';
+        function renderChips() {
+            $('#chips').innerHTML = MONTHS.map((n, i) =>
+                `<button type="button" class="chip${i === todayMonth ? ' now' : ''}" data-m="${i}">${MON_S[i]}</button>`).join('');
+        }
+
+        function go(m, scroll) {
+            cur = Math.max(0, Math.min(11, m));
+            if (view === 'month') {
+                renderCal();
+                if (scroll) $('#cal').scrollIntoView({ block: 'start' });
+            } else {
+                $('#bln-' + cur).scrollIntoView({ block: 'start' });
+            }
+            const chip = document.querySelector(`.chip[data-m="${cur}"]`);
+            if (chip) chip.scrollIntoView({ inline: 'center', block: 'nearest' });
+        }
+
+        function setView(v) {
+            view = v; store.set('kal2026sg-view', v);
+            renderCal();
+            if (v === 'year') requestAnimationFrame(() => { if (cur !== 0 || todayMonth >= 0) $('#bln-' + cur)?.scrollIntoView({ block: 'start' }); });
+        }
+
+        /* ---------- Long weekends ---------- */
+        function getLongWeekends() {
+            const runs = [];
+            let run = [];
+            const flush = () => { if (run.length >= 3 && run.some(d => H[keyOf(d)])) runs.push(run); run = []; };
+            for (let dt = new Date(YEAR, 0, 1); dt.getFullYear() === YEAR; dt = new Date(YEAR, dt.getMonth(), dt.getDate() + 1)) {
+                if (isOff(dt)) run.push(dt); else flush();
+            }
+            flush();
+            return runs.map(r => {
+                const a = r[0], b = r[r.length - 1];
+                const names = [...new Set(r.flatMap(d => (H[keyOf(d)] || []).map(h => h.short.replace(/ \(replacement\)$/, ''))))];
+                const rng = a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}` : `${a.getDate()} ${MON_S[a.getMonth()]} – ${b.getDate()} ${MON_S[b.getMonth()]}`;
+                return { k: keyOf(a), n: r.length, rng, span: `${DAY_S[a.getDay()]} – ${DAY_S[b.getDay()]}`, names: names.join(', ') };
+            });
+        }
+
+        function renderLong() {
+            $('#long').innerHTML = getLongWeekends().map(r =>
+                `<button type="button" data-k="${r.k}" data-go="1"><b>${r.n}<small>days in a row</small></b>
+                    <span class="rng">${r.rng}</span><span class="why">${r.span} · ${esc(r.names)}</span></button>`).join('');
+        }
+
+        /* ---------- Holiday list (collapsible) ---------- */
+        function renderHolList() {
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const s = getStats();
+            $('#holCount').textContent = `${s[0].n} public holidays + ${s[1].n} replacement`;
+            $('#holList').innerHTML = RAW.map(r => {
+                const dt = parse(r[0]);
+                const past = dayDiff(ref, dt) < 0;
+                return `<button type="button" data-k="${r[0]}" class="${past ? 'past' : ''}">
+                    <span class="when">${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}</span>
+                    <span class="what">${esc(r[2])}</span>
+                    <span class="tag ${r[1]}">${r[1] === 'n' ? 'Public holiday' : 'Replacement'}</span></button>`;
+            }).join('');
+        }
+
+        /* ---------- Detail dialog ---------- */
+        const dlg = $('#dlg');
+        let dlgKey = null;
+        function openDay(k) {
+            dlgKey = k;
+            const dt = parse(k), hs = H[k] || [];
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const diff = dayDiff(ref, dt);
+            const rel = diff === 0 ? 'Today' : diff > 0 ? `in ${plural(diff, 'day')}` : `${plural(-diff, 'day')} ago`;
+            const doy = dayDiff(new Date(YEAR, 0, 1), dt) + 1;
+            const kind = hs.some(h => h.t === 'n') ? 'n' : hs.length ? 'c' : '';
+            const weekend = dt.getDay() === 0 || dt.getDay() === 6;
+            const status = hs.length ? '' : dt.getDay() === 0 ? 'Sunday' : dt.getDay() === 6 ? 'Saturday' : 'Regular working day';
+            const list = hs.map(h => `<li><span class="tag ${h.t}">${h.t === 'n' ? 'Public holiday' : 'Replacement'}</span><span>${esc(h.name)}</span></li>`).join('');
+            dlg.innerHTML = `<div class="dlg">
+                <div class="big"><div class="num ${kind}">${dt.getDate()}</div>
+                    <div><h3>${fmtLong(dt)}</h3><div class="sub">${hs.length ? (weekend ? 'Falls on a weekend' : 'Weekday holiday') : status}</div></div></div>
+                ${list ? `<ul>${list}</ul>` : ''}
+                <div class="meta"><span>📆 Day ${doy} of 365</span><span>🗓️ Week ${isoWeek(dt)}</span><span>⏱️ ${rel}</span></div>
+                <div class="acts">
+                    <button type="button" data-d="-1" ${k === key(YEAR, 0, 1) ? 'disabled' : ''}>‹ Previous</button>
+                    <button type="button" class="primary" data-close>Close</button>
+                    <button type="button" data-d="1" ${k === key(YEAR, 11, 31) ? 'disabled' : ''}>Next ›</button>
+                </div></div>`;
+            if (!dlg.open) dlg.showModal();
+        }
+        dlg.addEventListener('click', e => {
+            if (e.target === dlg || e.target.closest('[data-close]')) return dlg.close();
+            const b = e.target.closest('[data-d]');
+            if (b) { const dt = parse(dlgKey); dt.setDate(dt.getDate() + Number(b.dataset.d)); openDay(keyOf(dt)); }
+        });
+        dlg.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') { const b = dlg.querySelector('[data-d="-1"]:not(:disabled)'); b && b.click(); }
+            if (e.key === 'ArrowRight') { const b = dlg.querySelector('[data-d="1"]:not(:disabled)'); b && b.click(); }
         });
 
-        // --- INIT ---
-        createCalendar();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        setupScrollToday();
-        initTheme();
+        /* ---------- Theme ---------- */
+        const THEMES = ['system', 'light', 'dark'], ICON = { system: '💻', light: '☀️', dark: '🌙' };
+        let theme = store.get('kal-theme');
+        if (!THEMES.includes(theme)) theme = 'system';
+        function applyTheme() {
+            if (theme === 'system') document.documentElement.removeAttribute('data-theme');
+            else document.documentElement.dataset.theme = theme;
+            const b = $('#themeBtn');
+            b.textContent = ICON[theme];
+            b.title = 'Theme: ' + { system: 'follow system', light: 'light', dark: 'dark' }[theme];
+        }
+
+        /* ---------- PDF export (jsPDF, like Wikirekap) ---------- */
+        const PC = {
+            brand: [59, 91, 219], brand2: [86, 116, 232], ink: [27, 34, 51], muted: [107, 116, 137], line: [225, 229, 238],
+            soft: [240, 242, 248], white: [255, 255, 255], faint: [196, 202, 214],
+            nas: [224, 49, 49], nasBg: [255, 227, 227], nasInk: [166, 30, 30],
+            cuti: [112, 72, 232], cutiBg: [229, 219, 255], cutiInk: [95, 61, 196], sat: [76, 110, 245]
+        };
+        const PDF_FONT_FILES = { normal: 'pdf-fonts/Roboto-Regular.ttf', bold: 'pdf-fonts/Roboto-Bold.ttf' };
+        let pdfFontsPromise = null;
+
+        function b64(buf) {
+            const bytes = new Uint8Array(buf);
+            let bin = '';
+            for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+            return btoa(bin);
+        }
+        function loadPdfFonts() {
+            if (!pdfFontsPromise) {
+                pdfFontsPromise = Promise.all(Object.values(PDF_FONT_FILES).map(async url => {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Font ${url}: ${res.status}`);
+                    return b64(await res.arrayBuffer());
+                })).then(([normal, bold]) => ({ normal, bold })).catch(e => { pdfFontsPromise = null; throw e; });
+            }
+            return pdfFontsPromise;
+        }
+        async function registerPdfFonts(doc) {
+            try {
+                const f = await loadPdfFonts();
+                doc.addFileToVFS('Roboto-Regular.ttf', f.normal); doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+                doc.addFileToVFS('Roboto-Bold.ttf', f.bold); doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+                return 'Roboto';
+            } catch (e) {
+                console.warn('PDF font failed to load, using built-in font:', e);
+                return 'helvetica';
+            }
+        }
+
+        async function exportPDF() {
+            if (!window.jspdf) { alert('The PDF library has not loaded. Check your internet connection and try again.'); return; }
+            const btn = $('#pdfBtn');
+            btn.disabled = true;
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                const F = await registerPdfFonts(doc);
+                const W = doc.internal.pageSize.width, Hh = doc.internal.pageSize.height, M = 10;
+                const col = (kind, rgb) => doc[kind === 'fill' ? 'setFillColor' : kind === 'draw' ? 'setDrawColor' : 'setTextColor'](rgb[0], rgb[1], rgb[2]);
+                const font = (style, size) => { doc.setFont(F, style); doc.setFontSize(size); };
+                const base = (y, h, s) => y + h / 2 + s * 0.127; // baseline so text is vertically centred
+                const pill = (x, y, w, h, bg, ink, txt, size) => {
+                    col('fill', bg); doc.roundedRect(x, y, w, h, h / 2.4, h / 2.4, 'F');
+                    font('bold', size); col('text', ink); doc.text(txt, x + w / 2, base(y, h, size), { align: 'center' });
+                };
+
+                /* ===== Page 1: full-year calendar ===== */
+                col('fill', PC.brand); doc.rect(0, 0, W, 30, 'F');
+                font('bold', 9); col('text', [214, 224, 255]); doc.text('SINGAPORE CALENDAR', M, 9.5);
+                font('bold', 30); col('text', PC.white); doc.text(String(YEAR), M, 24.5);
+                const stats = getStats(), sw = 36, sg = 3;
+                stats.forEach((s, i) => {
+                    const x = W - M - (stats.length - i) * sw - (stats.length - i - 1) * sg;
+                    col('fill', PC.brand2); doc.roundedRect(x, 5.5, sw, 19, 2.5, 2.5, 'F');
+                    font('bold', 15); col('text', PC.white); doc.text(String(s.n), x + 3.5, 14.2);
+                    font('normal', 6.6); col('text', [226, 233, 255]);
+                    doc.text(doc.splitTextToSize(s.label, sw - 6), x + 3.5, 18.3);
+                });
+
+                // legend
+                let lx = M;
+                const legend = [[PC.nas, 'Public holiday'], [PC.cuti, 'Replacement holiday'], [PC.sat, 'Saturday'], [PC.nas, 'Sunday (red)']];
+                legend.forEach(([c, label], i) => {
+                    if (i < 2) { col('fill', c); doc.roundedRect(lx, 33.6, 3.6, 3.6, 1, 1, 'F'); }
+                    else { font('bold', 8); col('text', c); doc.text('1', lx + 1.8, 36.6, { align: 'center' }); }
+                    font('normal', 7.8); col('text', PC.muted); doc.text(label, lx + 5.2, 36.5);
+                    lx += 5.2 + doc.getTextWidth(label) + 7;
+                });
+                font('normal', 7.2); col('text', PC.muted);
+                doc.text('Source: Ministry of Manpower, Singapore (official release)', W - M, 36.5, { align: 'right' });
+
+                // 12 month cards
+                const gap = 4, cols = 4, top = 40, bottom = Hh - 12;
+                const cw = (W - 2 * M - gap * (cols - 1)) / cols;
+                const ch = (bottom - top - gap * 2) / 3;
+                for (let m = 0; m < 12; m++) {
+                    const x = M + (m % cols) * (cw + gap), y = top + Math.floor(m / cols) * (ch + gap);
+                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25);
+                    doc.roundedRect(x, y, cw, ch, 2.5, 2.5, 'FD');
+                    font('bold', 10); col('text', PC.ink); doc.text(MONTHS[m], x + 4, y + 7);
+                    const nw = doc.getTextWidth(MONTHS[m]);
+                    font('normal', 7.5); col('text', PC.muted); doc.text(String(YEAR), x + 4 + nw + 1.6, y + 7);
+                    const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+                    const cN = mh.filter(r => r[1] === 'n').length, cC = mh.filter(r => r[1] === 'c').length;
+                    let bx = x + cw - 4;
+                    if (cC) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.cutiBg, PC.cutiInk, String(cC), 6.5); bx -= 1.5; }
+                    if (cN) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.nasBg, PC.nasInk, String(cN), 6.5); }
+
+                    const gx = x + 2.5, cell = (cw - 5) / 7, y0 = y + 14, rh = (ch - 14 - 2) / 6;
+                    DAY_S.forEach((d, i) => {
+                        font('bold', 5.8); col('text', i === 0 ? PC.nas : PC.muted);
+                        doc.text(d.toUpperCase(), gx + cell * i + cell / 2, y + 12, { align: 'center' });
+                    });
+                    const first = new Date(YEAR, m, 1).getDay(), dim = new Date(YEAR, m + 1, 0).getDate(), prevDim = new Date(YEAR, m, 0).getDate();
+                    for (let i = 0; i < 42; i++) {
+                        const n = i - first + 1, cx = gx + (i % 7) * cell, cy = y0 + Math.floor(i / 7) * rh;
+                        const out = n < 1 || n > dim;
+                        const label = out ? (n < 1 ? prevDim + n : n - dim) : n;
+                        const dow = i % 7;
+                        const hs = out ? [] : (H[key(YEAR, m, n)] || []);
+                        const nas = hs.some(h => h.t === 'n'), cb = !nas && hs.length > 0;
+                        if (nas || cb) { col('fill', nas ? PC.nas : PC.cuti); doc.roundedRect(cx + 0.5, cy + 0.4, cell - 1, rh - 0.8, 1.4, 1.4, 'F'); }
+                        font(out ? 'normal' : 'bold', 7.4);
+                        col('text', nas || cb ? PC.white : out ? PC.faint : dow === 0 ? PC.nas : dow === 6 ? PC.sat : PC.ink);
+                        doc.text(String(label), cx + cell / 2, base(cy, rh, 7.4), { align: 'center' });
+                    }
+                }
+
+                /* ===== Page 2: holiday list, long weekends and notes ===== */
+                doc.addPage();
+                col('fill', PC.brand); doc.rect(0, 0, W, 16, 'F');
+                font('bold', 13); col('text', PC.white); doc.text(`Singapore Calendar ${YEAR}`, M, 10.4);
+                font('normal', 9); col('text', [214, 224, 255]); doc.text('Holidays, long weekends and notes', W - M, 10.2, { align: 'right' });
+
+                const rx = M, rw = W - 2 * M;
+                let ry = 28;
+
+                // holiday list
+                font('bold', 13); col('text', PC.ink); doc.text(`Public holidays ${YEAR}`, rx, ry);
+                ry += 5;
+                const hcols = 2, hgap = 5, hcw = (rw - hgap) / hcols, hrh = 7.2;
+                const perCol = Math.ceil(RAW.length / hcols);
+                RAW.forEach((r, i) => {
+                    const x = rx + Math.floor(i / perCol) * (hcw + hgap), y = ry + (i % perCol) * hrh;
+                    const dt = parse(r[0]);
+                    col('fill', r[1] === 'n' ? PC.nasBg : PC.cutiBg);
+                    doc.roundedRect(x, y, 27, hrh - 1.4, 1.6, 1.6, 'F');
+                    font('bold', 7.6); col('text', r[1] === 'n' ? PC.nasInk : PC.cutiInk);
+                    doc.text(`${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}`, x + 13.5, base(y, hrh - 1.4, 7.6), { align: 'center' });
+                    font('normal', 8.4); col('text', PC.ink);
+                    doc.text(r[2], x + 30, base(y, hrh - 1.4, 8.4));
+                });
+                ry += perCol * hrh + 6;
+
+                // long weekends
+                font('bold', 13); col('text', PC.ink); doc.text(`Long weekends ${YEAR}`, rx, ry);
+                font('normal', 8.4); col('text', PC.muted);
+                doc.text('Three or more consecutive days off (weekends and public holidays).', rx, ry + 6);
+                ry += 10;
+                const lcols = 3, lgap = 5, lcw = (rw - lgap * (lcols - 1)) / lcols, lch = 22;
+                const lw = getLongWeekends();
+                lw.forEach((r, i) => {
+                    const x = rx + (i % lcols) * (lcw + lgap), y = ry + Math.floor(i / lcols) * (lch + lgap);
+                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25); doc.roundedRect(x, y, lcw, lch, 2.5, 2.5, 'FD');
+                    font('bold', 22); col('text', PC.brand); doc.text(String(r.n), x + 5, y + 13.5);
+                    const nw = doc.getTextWidth(String(r.n));
+                    font('normal', 7); col('text', PC.muted); doc.text('days', x + 5 + nw + 1.5, y + 13.5);
+                    font('bold', 10); col('text', PC.ink); doc.text(r.rng, x + 32, y + 8.5);
+                    font('normal', 8); col('text', PC.muted);
+                    doc.text(doc.splitTextToSize(`${r.span} · ${r.names}`, lcw - 36), x + 32, y + 13.5);
+                });
+                ry += Math.ceil(lw.length / lcols) * (lch + lgap) + 2;
+
+                // notes
+                font('bold', 11); col('text', PC.ink); doc.text('Notes', rx, ry); ry += 3.5;
+                const notes = [...document.querySelectorAll('.note span')].map(s => s.textContent.replace(/\s+/g, ' ').replace(/^Note:\s*/, '').trim());
+                font('normal', 7.2);
+                const noteLines = notes.map(t => doc.splitTextToSize(t, rw - 8));
+                const nh = noteLines.reduce((a, l) => a + l.length * 3.2 + 2.2, 0) + 4;
+                col('fill', PC.soft); doc.roundedRect(rx, ry, rw, nh, 2.5, 2.5, 'F');
+                col('text', PC.muted);
+                let ny = ry + 6;
+                noteLines.forEach(l => { doc.text(l, rx + 4, ny); ny += l.length * 3.2 + 2.2; });
+
+                /* ===== Footer & page numbers ===== */
+                const total = doc.getNumberOfPages();
+                for (let p = 1; p <= total; p++) {
+                    doc.setPage(p);
+                    col('draw', PC.line); doc.setLineWidth(0.25); doc.line(M, Hh - 9.5, W - M, Hh - 9.5);
+                    font('normal', 7); col('text', PC.muted);
+                    doc.text(`Singapore Calendar ${YEAR} - Public Holidays (MOM)`, M, Hh - 5.5);
+                    doc.text(`Page ${p} of ${total}`, W - M, Hh - 5.5, { align: 'right' });
+                }
+                doc.setProperties({ title: `Singapore Calendar ${YEAR}`, subject: 'Singapore public holidays 2026 as announced by the Ministry of Manpower' });
+                doc.save(`singapore-calendar-${YEAR}.pdf`);
+            } catch (e) {
+                console.error(e);
+                alert('Failed to create the PDF: ' + e.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        $('#pdfBtn').onclick = exportPDF;
+
+        /* ---------- Events ---------- */
+        document.addEventListener('click', e => {
+            const t = e.target;
+            const dayBtn = t.closest('[data-k]');
+            if (dayBtn) {
+                if (dayBtn.dataset.go) {
+                    const m = parse(dayBtn.dataset.k).getMonth();
+                    if (dlg.open) dlg.close();
+                    cur = m;
+                    if (view === 'month') renderCal();
+                    $('#cal').scrollIntoView({ block: 'start' });
+                    if (view === 'year') $('#bln-' + m).scrollIntoView({ block: 'start' });
+                }
+                return openDay(dayBtn.dataset.k);
+            }
+            const chip = t.closest('.chip');
+            if (chip) return go(Number(chip.dataset.m), true);
+            const nav = t.closest('[data-nav]');
+            if (nav) return go(cur + Number(nav.dataset.nav), false);
+        });
+        $('#vYear').onclick = () => setView('year');
+        $('#vMonth').onclick = () => setView('month');
+        $('#themeBtn').onclick = () => { theme = THEMES[(THEMES.indexOf(theme) + 1) % 3]; store.set('kal-theme', theme); applyTheme(); };
+        if (inYear) {
+            const tb = $('#todayBtn');
+            tb.hidden = false;
+            tb.onclick = () => { go(todayMonth, true); openDay(todayKey); };
+        }
+
+        // keyboard: ← → change month in month view
+        document.addEventListener('keydown', e => {
+            if (dlg.open || view !== 'month' || e.target.closest('input,select,textarea')) return;
+            if (e.key === 'ArrowLeft' && cur > 0) go(cur - 1, false);
+            if (e.key === 'ArrowRight' && cur < 11) go(cur + 1, false);
+        });
+
+        // swipe left/right in month view
+        let sx = 0, sy = 0;
+        $('#cal').addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        $('#cal').addEventListener('touchend', e => {
+            if (view !== 'month') return;
+            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1), false);
+        }, { passive: true });
+
+        // highlight the visible month chip in year view
+        const io = new IntersectionObserver(es => {
+            if (view !== 'year') return;
+            es.forEach(en => {
+                if (en.isIntersecting) {
+                    const i = Number(en.target.id.slice(4));
+                    document.querySelectorAll('.chip').forEach(c => Number(c.dataset.m) === i ? c.setAttribute('aria-current', 'true') : c.removeAttribute('aria-current'));
+                }
+            });
+        }, { rootMargin: '-35% 0px -55% 0px' });
+        const observeMonths = () => document.querySelectorAll('.month').forEach(el => io.observe(el));
+        new MutationObserver(observeMonths).observe($('#cal'), { childList: true });
+
+        applyTheme(); renderHero(); renderChips(); renderCal(); renderHolList(); renderLong();
+        if (view === 'year' && todayMonth >= 0) setTimeout(() => $('#bln-' + todayMonth).scrollIntoView({ block: 'start' }), 60);
     </script>
 </body>
 

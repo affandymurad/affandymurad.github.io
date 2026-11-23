@@ -1,746 +1,1832 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malaysia National and State Holidays for 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Malaysia Calendar 2026</title>
+    <meta name="description" content="Malaysia Calendar 2026 with federal and state public holidays for all 16 states and federal territories, as published by the Cabinet of Malaysia.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="../icon.svg" type="image/svg+xml">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --ink: #1b2233;
+            --muted: #6b7489;
+            --line: #e5e8f0;
+            --soft: #f0f2f8;
+            --brand: #3b5bdb;
+            --brand-ink: #ffffff;
+            --fed: #e03131;
+            --fed-bg: #ffe3e3;
+            --fed-ink: #a61e1e;
+            --st: #7048e8;
+            --st-bg: #e5dbff;
+            --st-ink: #5028c6;
+            --sat: #4c6ef5;
+            --today: #12b886;
+            --shadow: 0 1px 2px rgba(20, 30, 60, .05), 0 6px 20px rgba(20, 30, 60, .06);
+            --radius: 16px;
         }
 
-        :root {
-            --bg-body: #f8f9fa;
-            --bg-card: white;
-            --text-primary: #2d3748;
-            --text-secondary: #718096;
-            --border-color: #e2e8f0;
-            --sunday: #e53e3e;
-            --holiday: #feb2b2;
-            --cuti: #fed7d7;
-            --today-bg: #c6f6d5;
-            --today-text: #2f855a;
-            --header-bg: #4a5568;
-            --header-text: white;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            --hover-bg: #f7fafc;
-            --info-bg: #f8fafc;
-            --info-border: #d1e4ff;
-            --datetime-bg: #f9fafb;
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0d1220;
+                --card: #161d2f;
+                --ink: #eef1f8;
+                --muted: #98a2bb;
+                --line: #263049;
+                --soft: #1d263b;
+                --brand: #748ffc;
+                --brand-ink: #0d1220;
+                --fed: #ff6b6b;
+                --fed-bg: #4a1e26;
+                --fed-ink: #ffa8a8;
+                --st: #9775fa;
+                --st-bg: #2e2350;
+                --st-ink: #d0bfff;
+                --sat: #91a7ff;
+                --today: #38d9a9;
+                --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+            }
         }
 
         :root[data-theme="dark"] {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border-color: #334155;
-            --hover-bg: #334155;
-            --info-bg: #1e293b;
-            --info-border: #334155;
-            --datetime-bg: #1e293b;
+            --bg: #0d1220;
+            --card: #161d2f;
+            --ink: #eef1f8;
+            --muted: #98a2bb;
+            --line: #263049;
+            --soft: #1d263b;
+            --brand: #748ffc;
+            --brand-ink: #0d1220;
+            --fed: #ff6b6b;
+            --fed-bg: #4a1e26;
+            --fed-ink: #ffa8a8;
+            --st: #9775fa;
+            --st-bg: #2e2350;
+            --st-ink: #d0bfff;
+            --sat: #91a7ff;
+            --today: #38d9a9;
+            --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 84px;
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--bg-body);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text-primary);
-            transition: background-color 0.3s;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.45;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        body.dark-theme {
-            color: var(--text-primary);
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            border: 0;
+            background: none;
         }
 
-        .container {
-            max-width: 1400px;
+        a {
+            color: var(--brand);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--brand);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        .wrap {
+            max-width: 1280px;
             margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding: 28px 0 8px;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1.1fr 1fr;
+            align-items: stretch;
+        }
+
+        .eyebrow {
+            font-size: .78rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
         }
 
         h1 {
-            text-align: center;
-            margin-bottom: 24px;
-            font-size: 2.2em;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: clamp(3rem, 9vw, 5.5rem);
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -.04em;
+            margin: 6px 0 10px;
+            background: linear-gradient(120deg, var(--brand), var(--fed));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .info {
-            background: var(--info-bg);
-            border: 1px solid var(--info-border);
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-            margin-bottom: 24px;
-            color: var(--text-primary);
-            font-size: 0.95em;
+        .lead {
+            color: var(--muted);
+            max-width: 56ch;
+            font-size: .95rem;
         }
 
-        .info a {
-            color: #3b82f6;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        body.dark-theme .info a {
-            color: #93c5fd;
-        }
-
-        .datetime-container {
-            display: flex;
-            justify-content: space-between;
+        .state-pick {
+            display: inline-flex;
             align-items: center;
-            background: var(--datetime-bg);
-            padding: 16px 24px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 20px;
-            color: var(--text-primary);
-            font-weight: 600;
-            border: 1px solid var(--border-color);
-        }
-
-        .control-buttons {
-            display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
+            margin-top: 14px;
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .08em;
         }
 
-        .control-btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
+        .state-pick select {
+            font: inherit;
+            font-size: .95rem;
             font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--ink);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 9px 12px;
+            min-width: 200px;
             cursor: pointer;
-            color: white;
-            transition: opacity 0.2s;
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 10px 14px;
+            min-width: 104px;
+            flex: 1 1 104px;
+        }
+
+        .stat b {
+            display: block;
+            font-size: 1.6rem;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        .stat span {
+            font-size: .76rem;
+            color: var(--muted);
+        }
+
+        .stat.fed b {
+            color: var(--fed);
+        }
+
+        .stat.st b {
+            color: var(--st);
+        }
+
+        .next {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .next::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 6px;
+            background: var(--fed);
+        }
+
+        .next.st::before {
+            background: var(--st);
+        }
+
+        .next small {
+            color: var(--muted);
+            font-weight: 600;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        .next h2 {
+            font-size: 1.35rem;
+            line-height: 1.25;
+        }
+
+        .next p {
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .count {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .count b {
+            font-size: 3rem;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .count span {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ---------- Toolbar ---------- */
+        .toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            margin-top: 16px;
+        }
+
+        .toolbar .wrap {
             display: flex;
             align-items: center;
+            gap: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .seg {
+            display: inline-flex;
+            background: var(--soft);
+            border-radius: 12px;
+            padding: 3px;
+            flex: none;
+        }
+
+        .seg button {
+            padding: 7px 14px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: .88rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .seg button[aria-pressed="true"] {
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+        }
+
+        .chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            flex: 1;
+            scrollbar-width: none;
+            padding: 2px;
+            scroll-snap-type: x proximity;
+        }
+
+        .chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            flex: none;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--muted);
+            border: 1px solid transparent;
+            scroll-snap-align: center;
+            position: relative;
+        }
+
+        .chip:hover {
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        .chip[aria-current="true"] {
+            background: var(--brand);
+            color: var(--brand-ink);
+        }
+
+        .chip.now:not([aria-current="true"]) {
+            border-color: var(--today);
+            color: var(--today);
+        }
+
+        .tool-btn {
+            flex: none;
+            height: 38px;
+            min-width: 38px;
+            padding: 0 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+            font-size: .86rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             gap: 6px;
         }
 
-        .back-home-btn {
-            background: #4a5568;
+        .tool-btn:hover {
+            background: var(--line);
         }
 
-        .scroll-today-btn {
-            background: #38a169;
+        .tool-btn[hidden] {
+            display: none;
         }
 
-        .country-btn {
-            background: #4a5568;
+        /* ---------- Legend ---------- */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            padding: 16px 0 4px;
+            font-size: .84rem;
+            color: var(--muted);
         }
 
-        .control-btn:hover {
-            opacity: 0.9;
+        .legend i {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 5px;
+            vertical-align: -2px;
+            margin-right: 6px;
         }
 
-        .theme-select {
-            padding: 10px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-size: 0.9em;
-            font-weight: 600;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            min-width: 140px;
+        .lg-fed {
+            background: var(--fed);
         }
 
-        body.dark-theme .theme-select {
-            background: var(--bg-body);
-            border-color: var(--border-color);
+        .lg-st {
+            background: var(--st);
         }
 
-        .calendar-grid {
+        .lg-today {
+            background: transparent;
+            box-shadow: inset 0 0 0 2px var(--today);
+        }
+
+        .lg-sat {
+            background: var(--sat);
+            opacity: .45;
+        }
+
+        /* ---------- Month cards ---------- */
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+            padding: 12px 0 8px;
         }
 
         .month {
-            background: var(--bg-card);
-            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .month:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .month-header {
-            background: var(--header-bg);
-            color: var(--header-text);
-            padding: 16px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.3em;
-        }
-
-        .legend {
+            padding: 14px 12px 12px;
             display: flex;
-            justify-content: center;
-            gap: 16px;
-            padding: 12px;
-            flex-wrap: wrap;
-            font-size: 0.85em;
-            border-bottom: 1px solid var(--border-color);
+            flex-direction: column;
+            min-width: 0;
         }
 
-        .legend-item {
+        .m-head {
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: space-between;
+            padding: 0 6px 10px;
+            gap: 8px;
+        }
+
+        .m-head h3 {
+            font-size: 1.12rem;
+            font-weight: 700;
+        }
+
+        .m-head h3 small {
+            color: var(--muted);
             font-weight: 500;
+            margin-left: 4px;
         }
 
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
+        .m-badges {
+            display: flex;
+            gap: 5px;
+            font-size: .72rem;
+            font-weight: 700;
         }
 
-        .legend-holiday {
-            background: var(--holiday);
+        .m-badges span {
+            padding: 2px 8px;
+            border-radius: 999px;
         }
 
-        .legend-cuti {
-            background: var(--cuti);
+        .b-fed {
+            background: var(--fed-bg);
+            color: var(--fed-ink);
         }
 
-        .legend-sunday {
-            background: var(--sunday);
+        .b-st {
+            background: var(--st-bg);
+            color: var(--st-ink);
         }
 
-        .legend-today {
-            background: var(--today-bg);
-        }
-
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            background: var(--hover-bg);
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.85em;
-            padding: 10px 0;
-        }
-
-        .weekday {
-            text-align: center;
-        }
-
+        .dow,
         .days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: var(--border-color);
+            gap: 3px;
         }
 
-        .day {
-            background: var(--bg-card);
-            padding: 12px 8px;
+        .dow span {
             text-align: center;
-            min-height: 42px;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 4px 0 6px;
+        }
+
+        .dow span.red {
+            color: var(--fed);
+        }
+
+        .d {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9em;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.2s;
-        }
-
-        .day:hover {
-            background: var(--hover-bg);
-        }
-
-        .day.other-month {
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
-
-        .day.sunday {
-            color: var(--sunday);
+            font-size: .92rem;
             font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            transition: background .15s, transform .12s;
+            min-width: 0;
         }
 
-        .day.holiday {
-            background: var(--holiday);
-            color: #9b2c2c;
-            font-weight: 600;
-            border-radius: 6px;
-            margin: 2px;
+        button.d:hover {
+            background: var(--soft);
+            transform: scale(1.06);
         }
 
-        .day.cuti-bersama {
-            background: var(--cuti);
-            color: #9b2c2c;
-            font-weight: 600;
-            border-radius: 6px;
-            margin: 2px;
-        }
-
-        .day.today {
-            background: var(--today-bg);
-            color: var(--today-text);
-            font-weight: 700;
-            border-radius: 6px;
-            margin: 2px;
-            box-shadow: 0 0 0 2px #48bb78;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 2px #48bb78;
-            }
-
-            50% {
-                box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.3);
-            }
-        }
-
-        .tooltip {
-            position: absolute;
-            background: #1a202c;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8em;
-            max-width: 220px;
-            text-align: center;
-            z-index: 1000;
+        .d.out {
+            color: var(--muted);
+            opacity: .38;
+            font-weight: 500;
             pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 6px;
-            white-space: normal;
-            line-height: 1.3;
         }
 
-        .day:hover .tooltip {
-            opacity: 1;
+        .d.sun {
+            color: var(--fed);
         }
 
-        .month-holidays {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.85em;
+        .d.sat {
+            color: var(--sat);
         }
 
-        .month-holidays h4 {
-            margin-bottom: 10px;
-            color: var(--text-secondary);
-            font-weight: 600;
+        .d.fed {
+            background: var(--fed);
+            color: #fff;
         }
 
-        .holiday-list {
+        .d.st {
+            background: var(--st);
+            color: #fff;
+        }
+
+        button.d.fed:hover {
+            background: var(--fed);
+            filter: brightness(1.1);
+        }
+
+        button.d.st:hover {
+            background: var(--st);
+            filter: brightness(1.1);
+        }
+
+        .d.both::after {
+            content: "";
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .d.today {
+            box-shadow: 0 0 0 2.5px var(--today);
+        }
+
+        .d.today:not(.fed):not(.st) {
+            background: color-mix(in srgb, var(--today) 16%, transparent);
+            color: var(--today);
+            font-weight: 800;
+        }
+
+        .d .lbl {
+            display: none;
+        }
+
+        .m-list {
             list-style: none;
-        }
-
-        .holiday-item {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .holiday-date {
-            font-weight: 600;
-            color: var(--sunday);
-            min-width: 30px;
-        }
-
-        .cuti-date {
-            font-weight: 600;
-            color: #dd6b20;
-            min-width: 30px;
-        }
-
-        .holiday-name {
-            color: var(--text-primary);
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--line);
+            display: grid;
+            gap: 6px;
+            align-content: start;
+            font-size: .84rem;
             flex: 1;
         }
 
-        .no-holidays {
-            color: var(--text-secondary);
-            font-style: italic;
-            text-align: center;
-            padding: 10px 0;
+        .m-list li {
+            display: grid;
+            grid-template-columns: 54px 1fr;
+            gap: 8px;
+            align-items: start;
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
+        .m-list .dt {
+            font-weight: 700;
+            font-size: .78rem;
+            padding: 1px 0;
+            text-align: center;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
 
-            .calendar-grid {
+        .m-list .none {
+            display: block;
+            color: var(--muted);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .m-list .dt.p {
+            background: var(--fed-bg);
+            color: var(--fed-ink);
+        }
+
+        .m-list .dt.s {
+            background: var(--st-bg);
+            color: var(--st-ink);
+        }
+
+        /* ---------- Month (large) view ---------- */
+        .grid.single {
+            grid-template-columns: 1fr;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .single .month {
+            padding: 18px;
+        }
+
+        .single .m-head h3 {
+            font-size: 1.6rem;
+        }
+
+        .single .m-head h3 small {
+            font-size: 1rem;
+        }
+
+        .single .m-head {
+            padding-bottom: 14px;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 6px;
+        }
+
+        .arrow {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .arrow:hover:not(:disabled) {
+            background: var(--line);
+        }
+
+        .arrow:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .single .dow,
+        .single .days {
+            gap: 6px;
+        }
+
+        .single .d {
+            aspect-ratio: auto;
+            min-height: 96px;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-direction: column;
+            padding: 8px 9px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            border: 1px solid var(--line);
+            background: var(--card);
+            gap: 4px;
+            text-align: left;
+        }
+
+        .single .d.out {
+            border-color: transparent;
+            background: transparent;
+            opacity: .35;
+        }
+
+        .single .d.fed {
+            background: var(--fed-bg);
+            border-color: transparent;
+            color: var(--fed-ink);
+        }
+
+        .single .d.st {
+            background: var(--st-bg);
+            border-color: transparent;
+            color: var(--st-ink);
+        }
+
+        .single .d.both::after {
+            background: var(--st);
+        }
+
+        .single .d.sat:not(.fed):not(.st) {
+            color: var(--sat);
+        }
+
+        .single .d .lbl {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: .72rem;
+            font-weight: 600;
+            line-height: 1.25;
+            color: inherit;
+        }
+
+        .single .d.today {
+            box-shadow: 0 0 0 2.5px var(--today);
+        }
+
+        .single .d.today:not(.fed):not(.st) {
+            background: color-mix(in srgb, var(--today) 12%, var(--card));
+        }
+
+        .single button.d:hover {
+            transform: none;
+            border-color: var(--brand);
+        }
+
+        /* ---------- Sections ---------- */
+        section.block {
+            margin-top: 36px;
+        }
+
+        section.block h2 {
+            font-size: 1.35rem;
+            margin-bottom: 4px;
+        }
+
+        section.block>p {
+            color: var(--muted);
+            font-size: .9rem;
+            margin-bottom: 14px;
+        }
+
+        .long {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+        }
+
+        .long button {
+            text-align: left;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            display: grid;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .long button:hover {
+            border-color: var(--brand);
+        }
+
+        .long b {
+            font-size: 1.5rem;
+            line-height: 1;
+            letter-spacing: -.02em;
+        }
+
+        .long b small {
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-left: 4px;
+        }
+
+        .long .rng {
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .long .why {
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        details.hol {
+            margin-top: 36px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        details.hol summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            border-radius: var(--radius);
+        }
+
+        details.hol summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.hol summary span {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        details.hol summary small {
+            color: var(--muted);
+            font-size: .85rem;
+            flex: 1;
+        }
+
+        details.hol summary::after {
+            content: "▾";
+            font-size: 1.2rem;
+            color: var(--muted);
+            transition: transform .2s;
+        }
+
+        details.hol[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .hol-list {
+            display: grid;
+            gap: 8px 18px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+            padding: 4px 18px 18px;
+        }
+
+        .hol-list button {
+            display: grid;
+            grid-template-columns: 84px 1fr auto;
+            gap: 10px;
+            align-items: center;
+            text-align: left;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-size: .88rem;
+        }
+
+        .hol-list button:hover {
+            outline: 1px solid var(--brand);
+        }
+
+        .hol-list .dt {
+            font-weight: 700;
+            font-size: .78rem;
+            padding: 3px 0;
+            text-align: center;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .hol-list .dt.p {
+            background: var(--fed-bg);
+            color: var(--fed-ink);
+        }
+
+        .hol-list .dt.s {
+            background: var(--st-bg);
+            color: var(--st-ink);
+        }
+
+        .hol-list .nm {
+            font-weight: 600;
+        }
+
+        .tag {
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .tag.p {
+            background: var(--fed-bg);
+            color: var(--fed-ink);
+        }
+
+        .tag.s {
+            background: var(--st-bg);
+            color: var(--st-ink);
+        }
+
+        .note {
+            margin: 36px 0 28px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: var(--soft);
+            font-size: .85rem;
+            color: var(--muted);
+            display: grid;
+            gap: 6px;
+        }
+
+        footer .f-left {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+        }
+
+        footer .f-left img {
+            vertical-align: -3px;
+        }
+
+        footer {
+            padding: 4px 0 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            font-size: .88rem;
+            justify-content: space-between;
+            color: var(--muted);
+        }
+
+        /* ---------- Dialog ---------- */
+        dialog {
+            border: 0;
+            border-radius: 20px;
+            padding: 0;
+            width: min(440px, calc(100vw - 24px));
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            margin: auto;
+        }
+
+        dialog::backdrop {
+            background: rgba(10, 14, 28, .55);
+            backdrop-filter: blur(3px);
+        }
+
+        .dlg {
+            padding: 22px 22px 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .dlg .big {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .dlg .num {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: var(--soft);
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            font-weight: 800;
+            flex: none;
+        }
+
+        .dlg .num.p {
+            background: var(--fed);
+            color: #fff;
+        }
+
+        .dlg .num.s {
+            background: var(--st);
+            color: #fff;
+        }
+
+        .dlg h3 {
+            font-size: 1.15rem;
+            line-height: 1.25;
+        }
+
+        .dlg .sub {
+            color: var(--muted);
+            font-size: .86rem;
+        }
+
+        .dlg ul {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .dlg li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+            font-size: .94rem;
+        }
+
+        .dlg li .tag {
+            margin-top: 2px;
+        }
+
+        .dlg .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            font-size: .8rem;
+            color: var(--muted);
+        }
+
+        .dlg .acts {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .dlg .acts button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            background: var(--soft);
+            font-weight: 600;
+        }
+
+        .dlg .acts button:hover:not(:disabled) {
+            background: var(--line);
+        }
+
+        .dlg .acts button:disabled {
+            opacity: .35;
+        }
+
+        .dlg .acts .primary {
+            background: var(--brand);
+            color: var(--brand-ink);
+        }
+
+        .dlg .acts .primary:hover {
+            background: var(--brand) !important;
+            filter: brightness(1.08);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 860px) {
+            .hero {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .datetime-container {
-                flex-direction: column;
-                text-align: center;
+        @media (max-width: 640px) {
+            .toolbar .wrap {
+                flex-wrap: wrap;
+                gap: 8px;
             }
 
-            .control-buttons {
-                width: 100%;
-                flex-direction: column;
+            .chips {
+                order: 3;
+                flex-basis: 100%;
             }
 
-            .control-btn,
-            .theme-select {
-                width: 100%;
+            .tool-btn.grow {
+                margin-left: auto;
+            }
+
+            .state-pick {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .state-pick select {
+                flex: 1;
+            }
+
+            .single .d {
+                min-height: 54px;
+                align-items: center;
                 justify-content: center;
+                padding: 4px;
+                font-size: .95rem;
+            }
+
+            .single .d .lbl {
+                display: none;
+            }
+
+            .single .d.fed::after,
+            .single .d.st::after {
+                content: "";
+                position: absolute;
+                bottom: 5px;
+                left: 50%;
+                width: 5px;
+                height: 5px;
+                margin-left: -2.5px;
+                border-radius: 50%;
+                background: currentColor;
+                top: auto;
+                right: auto;
+            }
+
+            .single .dow,
+            .single .days {
+                gap: 4px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media print {
+
+            .toolbar,
+            .hero .next,
+            .nav-arrows,
+            .state-pick,
+            dialog,
+            footer a[href="../"] {
+                display: none !important;
+            }
+
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            .month {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+
+            .grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px;
+            }
+
+            .d.fed,
+            .d.st {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            section.block {
+                break-before: page;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Malaysia National and State Holidays for 2026</h1>
-        <div class="info">
-            <strong>15 national holidays</strong> and <strong>34 state holidays</strong> according to <a
-                href="https://www.kabinet.gov.my/storage/2025/08/HKA-2026.pdf" target="_blank">Cabinet of Malaysia
-                official release</a>.
-            This calendar does not include replacement holidays.
-        </div>
-
-        <div class="datetime-container">
-            <div id="currentDateTime"></div>
-            <div class="control-buttons">
-                <button class="control-btn back-home-btn" id="backHomeBtn">
-                    🏠 Back to Affandy Murad
-                </button>
-                <button class="control-btn scroll-today-btn" id="scrollTodayBtn">
-                    📅 Scroll to Today
-                </button>
-                <select class="theme-select" id="themeSelect">
-                    <option value="system">💻 System</option>
-                    <option value="light">☀️ Light</option>
-                    <option value="dark">🌙 Dark</option>
-                </select>
-                <button class="control-btn country-btn" onclick="window.location.href='../'">
-                    <img src="../flag/indonesia.svg" alt="ID" style="width:20px;height:20px;">
-                    Indonesia
-                </button>
-                <button class="control-btn country-btn" onclick="window.location.href='../sg'">
-                    <img src="../flag/singapore.svg" alt="SG" style="width:20px;height:20px;">
-                    Singapore
-                </button>
+    <div class="wrap">
+        <header class="hero">
+            <div>
+                <div class="eyebrow">Malaysia Calendar</div>
+                <h1>2026</h1>
+                <p class="lead">All 365 days of 2026 with the federal and state public holidays from the
+                    <a href="https://www.kabinet.gov.my/storage/2025/08/HKA-2026.pdf" target="_blank" rel="noopener">Cabinet of Malaysia official release</a>.
+                    Choose your state or federal territory, then tap any date to see its details.</p>
+                <label class="state-pick">State <select id="stateSel" aria-label="Select state or federal territory"></select></label>
+                <div class="stats" id="stats"></div>
             </div>
-        </div>
-
-        <div class="calendar-grid" id="calendar"></div>
+            <aside class="next" id="next" aria-live="polite"></aside>
+        </header>
     </div>
 
+    <nav class="toolbar" aria-label="Calendar navigation">
+        <div class="wrap">
+            <div class="seg" role="group" aria-label="View">
+                <button type="button" id="vYear" aria-pressed="true">Year</button>
+                <button type="button" id="vMonth" aria-pressed="false">Month</button>
+            </div>
+            <div class="chips" id="chips"></div>
+            <button type="button" class="tool-btn grow" id="todayBtn" hidden>📍 Today</button>
+            <button type="button" class="tool-btn" id="pdfBtn" title="Save the calendar as a PDF file">⬇️ <span>PDF</span></button>
+            <button type="button" class="tool-btn" id="themeBtn" aria-label="Change theme">💻</button>
+        </div>
+    </nav>
+
+    <main class="wrap">
+        <div class="legend" id="legend"></div>
+
+        <div class="grid" id="cal"></div>
+
+        <details class="hol" id="holDetails">
+            <summary><span>Public holidays 2026</span><small id="holCount"></small></summary>
+            <div class="hol-list" id="holList"></div>
+        </details>
+
+        <section class="block" id="long-weekends">
+            <h2>Long weekends 2026</h2>
+            <p>Stretches of three or more consecutive days off (weekends and public holidays) for the selected state.</p>
+            <div class="long" id="long"></div>
+        </section>
+
+        <div class="note">
+            <span><strong>Note:</strong> This calendar does not include replacement holidays.</span>
+            <span>Kedah, Kelantan and Terengganu observe a Friday–Saturday weekend; all other states and federal territories observe Saturday–Sunday.</span>
+        </div>
+
+        <footer>
+            <span class="f-left">
+                <a href="../../">🏠 Back to Affandy Murad</a>
+                <a href="../"><img src="../flag/indonesia.svg" alt="" width="16" height="16"> Indonesia</a>
+                <a href="../sg"><img src="../flag/singapore.svg" alt="" width="16" height="16"> Singapore</a>
+            </span>
+            <span>Source: Cabinet of Malaysia (Federal and State Public Holidays 2026)</span>
+        </footer>
+    </main>
+
+    <dialog id="dlg" aria-label="Date details"></dialog>
+
+    <!-- PDF library (same as Wikirekap) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
-        // --- DATA ---
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        'use strict';
+        const YEAR = 2026;
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const DAY_S = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-        const holidays = {
-            '2026-02-17': 'Chinese New Year',
-            '2026-02-18': 'Chinese New Year (Day 2)',
-            '2026-03-21': 'Hari Raya Aidilfitri (Eid al-Fitr)',
-            '2026-03-22': 'Hari Raya Aidilfitri (Day 2)',
-            '2026-05-01': 'Labour Day',
-            '2026-05-27': 'Hari Raya Haji (Eid al-Adha)',
-            '2026-05-28': 'Hari Raya Haji (Day 2)',
-            '2026-05-31': 'Wesak Day',
-            '2026-06-01': 'Yang di-Pertuan Agong\'s Birthday',
-            '2026-06-17': 'Awal Muharram (Islamic New Year)',
-            '2026-08-25': 'Maulidur Rasul',
-            '2026-08-31': 'National Day',
-            '2026-09-16': 'Malaysia Day',
-            '2026-11-08': 'Deepavali (Diwali)',
-            '2026-12-25': 'Christmas Day'
+        const STATES = {
+            KUL: 'W.P. Kuala Lumpur', LBN: 'W.P. Labuan', PJY: 'W.P. Putrajaya', JHR: 'Johor', KDH: 'Kedah', KTN: 'Kelantan',
+            MLK: 'Melaka', NSN: 'Negeri Sembilan', PHG: 'Pahang', PRK: 'Perak', PLS: 'Perlis', PNG: 'Penang',
+            SBH: 'Sabah', SWK: 'Sarawak', SGR: 'Selangor', TRG: 'Terengganu'
+        };
+        const ALL = Object.keys(STATES);
+        const except = (...c) => ALL.filter(s => !c.includes(s));
+        const FRI_SAT = ['KDH', 'KTN', 'TRG']; // Friday–Saturday weekend
+
+        // [date, type (p = federal public holiday, s = state holiday), full name, short name, applicable states]
+        const ALLRAW = [
+            ['2026-01-01', 's', "New Year's Day", "New Year's Day", except('JHR', 'KDH', 'KTN', 'PLS', 'TRG')],
+            ['2026-01-14', 's', 'Birthday of the Yang di-Pertuan Besar of Negeri Sembilan', 'Yang di-Pertuan Besar\'s Birthday', ['NSN']],
+            ['2026-01-17', 's', 'Isra and Mi\'raj', 'Isra and Mi\'raj', ['KDH', 'NSN', 'PLS', 'TRG']],
+            ['2026-02-01', 's', 'Federal Territory Day', 'Federal Territory Day', ['KUL', 'LBN', 'PJY']],
+            ['2026-02-01', 's', 'Thaipusam', 'Thaipusam', ['JHR', 'KUL', 'NSN', 'PNG', 'PRK', 'PJY', 'SGR']],
+            ['2026-02-17', 'p', 'Chinese New Year', 'Chinese New Year', ALL],
+            ['2026-02-18', 'p', 'Chinese New Year (second day)', 'Chinese New Year', ALL],
+            ['2026-02-19', 's', 'First Day of Ramadan', 'Awal Ramadan', ['JHR', 'KDH']],
+            ['2026-02-20', 's', 'Declaration of Independence Anniversary', 'Independence Declaration', ['MLK']],
+            ['2026-03-04', 's', 'Anniversary of the Coronation of the Sultan of Terengganu', 'Sultan Coronation', ['TRG']],
+            ['2026-03-07', 's', 'Nuzul Al-Quran', 'Nuzul Al-Quran', ['KTN', 'PHG', 'PRK', 'PLS', 'PNG', 'SBH', 'SWK', 'SGR', 'TRG']],
+            ['2026-03-21', 'p', 'Hari Raya Aidilfitri (Eid al-Fitr)', 'Hari Raya Aidilfitri', ALL],
+            ['2026-03-22', 'p', 'Hari Raya Aidilfitri (second day)', 'Hari Raya Aidilfitri', ALL],
+            ['2026-03-23', 's', 'Birthday of the Sultan of Johor', 'Sultan of Johor\'s Birthday', ['JHR']],
+            ['2026-03-23', 's', 'Hari Raya Aidilfitri (third day)', 'Hari Raya Aidilfitri (3rd day)', ['KTN']],
+            ['2026-03-30', 's', 'Birthday of the Yang di-Pertua Negeri of Sabah', 'Governor\'s Birthday', ['SBH']],
+            ['2026-04-03', 's', 'Good Friday', 'Good Friday', ['SBH', 'SWK']],
+            ['2026-04-26', 's', 'Birthday of the Sultan of Terengganu', 'Sultan\'s Birthday', ['TRG']],
+            ['2026-05-01', 'p', 'Labour Day', 'Labour Day', ALL],
+            ['2026-05-17', 's', 'Birthday of the Raja of Perlis', 'Raja\'s Birthday', ['PLS']],
+            ['2026-05-22', 's', 'Hol of the late Sultan Ahmad Shah of Pahang', 'Sultan Hol', ['PHG']],
+            ['2026-05-26', 's', 'Day of Arafah', 'Arafah Day', ['KTN']],
+            ['2026-05-27', 'p', 'Hari Raya Haji (Eid al-Adha)', 'Hari Raya Haji', ALL],
+            ['2026-05-28', 'p', 'Hari Raya Haji (second day)', 'Hari Raya Haji', ALL],
+            ['2026-05-30', 's', 'Kaamatan Day (first day)', 'Kaamatan', ['SBH']],
+            ['2026-05-31', 'p', 'Wesak Day', 'Wesak Day', ALL],
+            ['2026-05-31', 's', 'Kaamatan Day (second day)', 'Kaamatan', ['SBH']],
+            ['2026-06-01', 'p', 'Official Birthday of the Yang di-Pertuan Agong', 'Agong\'s Birthday', ALL],
+            ['2026-06-01', 's', 'Gawai Dayak Day (first day)', 'Gawai Dayak', ['SWK']],
+            ['2026-06-02', 's', 'Gawai Dayak Day (second day)', 'Gawai Dayak', ['SWK']],
+            ['2026-06-17', 'p', 'Awal Muharram (Islamic New Year)', 'Awal Muharram', ALL],
+            ['2026-06-21', 's', 'Birthday of the Sultan of Kedah', 'Sultan\'s Birthday', ['KDH']],
+            ['2026-07-07', 's', 'George Town Heritage Day', 'George Town Heritage Day', ['PNG']],
+            ['2026-07-11', 's', 'Birthday of the Yang di-Pertua Negeri of Penang', 'Governor\'s Birthday', ['PNG']],
+            ['2026-07-21', 's', 'Hol of the late Sultan Iskandar of Johor', 'Sultan Hol', ['JHR']],
+            ['2026-07-22', 's', 'Sarawak Independence Day', 'Sarawak Independence', ['SWK']],
+            ['2026-07-31', 's', 'Birthday of the Sultan of Pahang', 'Sultan\'s Birthday', ['PHG']],
+            ['2026-08-24', 's', 'Birthday of the Yang di-Pertua Negeri of Melaka', 'Governor\'s Birthday', ['MLK']],
+            ['2026-08-25', 'p', 'Maulidur Rasul', 'Maulidur Rasul', ALL],
+            ['2026-08-31', 'p', 'National Day', 'National Day', ALL],
+            ['2026-09-16', 'p', 'Malaysia Day', 'Malaysia Day', ALL],
+            ['2026-09-29', 's', 'Birthday of the Sultan of Kelantan (first day)', 'Sultan\'s Birthday', ['KTN']],
+            ['2026-09-30', 's', 'Birthday of the Sultan of Kelantan (second day)', 'Sultan\'s Birthday', ['KTN']],
+            ['2026-10-10', 's', 'Birthday of the Yang di-Pertua Negeri of Sarawak', 'Governor\'s Birthday', ['SWK']],
+            ['2026-11-06', 's', 'Birthday of the Sultan of Perak', 'Sultan\'s Birthday', ['PRK']],
+            ['2026-11-08', 'p', 'Deepavali (Diwali)', 'Deepavali', ALL],
+            ['2026-12-11', 's', 'Birthday of the Sultan of Selangor', 'Sultan\'s Birthday', ['SGR']],
+            ['2026-12-24', 's', 'Christmas Eve', 'Christmas Eve', ['SBH']],
+            ['2026-12-25', 'p', 'Christmas Day', 'Christmas Day', ALL]
+        ];
+
+        const $ = (s, r = document) => r.querySelector(s);
+        const pad = n => String(n).padStart(2, '0');
+        const key = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
+        const keyOf = dt => key(dt.getFullYear(), dt.getMonth(), dt.getDate());
+        const parse = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+        const dayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
+        const fmtLong = dt => `${DAYS[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+        const isoWeek = dt => {
+            const d = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+            const n = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - n);
+            return Math.ceil(((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
+        };
+        const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+        const store = {
+            get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+            set(k, v) { try { localStorage.setItem(k, v); } catch { } }
         };
 
-        const cutiBersama = {
-            '2026-01-01': ['New Year\'s Day: National except Johor, Kedah, Kelantan, Perlis, Terengganu'],
-            '2026-01-14': ['Yang di-Pertuan Besar Birthday: Negeri Sembilan'],
-            '2026-01-17': ['Isra\' and Mi\'raj: Kedah, Negeri Sembilan, Perlis, Terengganu'],
-            '2026-02-01': [
-                'Federal Territory Day: KL, Labuan, Putrajaya',
-                'Thaipusam: Johor, KL, NS, Penang, Perak, Putrajaya, Selangor'
-            ],
-            '2026-02-19': ['First Day of Ramadan: Johor, Kedah'],
-            '2026-02-20': ['Declaration of Independence Anniversary: Melaka'],
-            '2026-03-04': ['Sultan of Terengganu Coronation Anniversary'],
-            '2026-03-07': ['Nuzul Al-Quran: Kelantan, Pahang, Perak, Perlis, Penang, Sabah, Sarawak, Selangor, Terengganu'],
-            '2026-03-23': [
-                'Sultan of Johor Birthday',
-                'Hari Raya Aidilfitri (Day 3): Kelantan'
-            ],
-            '2026-03-30': ['Yang di-Pertua Negeri of Sabah Birthday'],
-            '2026-04-03': ['Good Friday: Sabah, Sarawak'],
-            '2026-04-26': ['Sultan of Terengganu Birthday'],
-            '2026-05-17': ['Raja of Perlis Birthday'],
-            '2026-05-22': ['Late Sultan Ahmad Shah Hol Day: Pahang'],
-            '2026-05-26': ['Day of Arafah: Kelantan'],
-            '2026-05-30': ['Kaamatan Day 1: Sabah'],
-            '2026-05-31': ['Kaamatan Day 2: Sabah'],
-            '2026-06-01': ['Gawai Dayak Day 1: Sarawak'],
-            '2026-06-02': ['Gawai Dayak Day 2: Sarawak'],
-            '2026-06-21': ['Sultan of Kedah Birthday'],
-            '2026-07-07': ['George Town Heritage Day: Penang'],
-            '2026-07-11': ['Yang di-Pertua Negeri of Penang Birthday'],
-            '2026-07-21': ['Late Sultan Iskandar Hol Day: Johor'],
-            '2026-07-22': ['Sarawak Independence Day'],
-            '2026-07-31': ['Sultan of Pahang Birthday'],
-            '2026-08-24': ['Yang di-Pertua Negeri of Melaka Birthday'],
-            '2026-09-29': ['Sultan of Kelantan Birthday (Day 1)'],
-            '2026-09-30': ['Sultan of Kelantan Birthday (Day 2)'],
-            '2026-10-10': ['Yang di-Pertua Negeri of Sarawak Birthday'],
-            '2026-11-06': ['Sultan of Perak Birthday'],
-            '2026-12-11': ['Sultan of Selangor Birthday'],
-            '2026-12-24': ['Christmas Eve: Sabah']
-        };
+        /* ---------- State-dependent data ---------- */
+        let S = store.get('kal2026my-state');
+        if (!STATES[S]) S = 'KUL';
+        let RAW = [], H = {}, WK = [0, 6], RED = 0;
 
-        // --- UTILS ---
-        const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
-        const getFirstDayOfMonth = (y, m) => new Date(y, m, 1).getDay();
-        const formatDate = (y, m, d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        function applyState() {
+            RAW = ALLRAW.filter(r => r[4].includes(S)).map(r => r.slice(0, 4));
+            H = {};
+            RAW.forEach(([k, t, name, short]) => (H[k] ||= []).push({ k, t, name, short }));
+            WK = FRI_SAT.includes(S) ? [5, 6] : [0, 6];
+            RED = WK[0];
+        }
+        const isOff = dt => WK.includes(dt.getDay()) || !!H[keyOf(dt)];
+        const stateLabel = () => STATES[S];
 
-        // --- CALENDAR RENDER ---
-        function createMonth(year, month) {
-            const monthDiv = document.createElement('div');
-            monthDiv.className = 'month';
-            monthDiv.innerHTML = `
-                <div class="month-header">${months[month]} ${year}</div>
-                <div class="legend">
-                    <div class="legend-item"><div class="legend-color legend-holiday"></div><span>National Holiday</span></div>
-                    <div class="legend-item"><div class="legend-color legend-cuti"></div><span>State Holiday</span></div>
-                    <div class="legend-item"><div class="legend-color legend-sunday"></div><span>Sunday</span></div>
-                    <div class="legend-item"><div class="legend-color legend-today"></div><span>Today</span></div>
-                </div>
-                <div class="weekdays">${weekdays.map(w => `<div class="weekday">${w}</div>`).join('')}</div>
-                <div class="days"></div>
-            `;
+        const now = new Date();
+        const todayKey = keyOf(now);
+        const inYear = now.getFullYear() === YEAR;
+        const todayMonth = inYear ? now.getMonth() : -1;
 
-            const daysDiv = monthDiv.querySelector('.days');
-            const daysInMonth = getDaysInMonth(year, month);
-            const firstDay = getFirstDayOfMonth(year, month);
-            const daysInPrevMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
+        let view = store.get('kal2026my-view') || (matchMedia('(max-width: 640px)').matches ? 'month' : 'year');
+        let cur = todayMonth >= 0 ? todayMonth : 0;
 
-            for (let i = firstDay - 1; i >= 0; i--) {
-                const d = document.createElement('div');
-                d.className = 'day other-month';
-                d.textContent = daysInPrevMonth - i;
-                daysDiv.appendChild(d);
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const d = document.createElement('div');
-                d.className = 'day';
-                d.textContent = day;
-
-                const today = new Date();
-                const isToday = year === today.getFullYear() && month === today.getMonth() && day === today.getDate();
-                if (isToday) {
-                    d.classList.add('today');
-                    d.id = 'today-date';
-                    const t = document.createElement('div');
-                    t.className = 'tooltip';
-                    t.textContent = 'Today';
-                    d.appendChild(t);
-                }
-
-                const ds = formatDate(year, month, day);
-                const dow = new Date(year, month, day).getDay();
-                if (dow === 0) d.classList.add('sunday');
-
-                if (holidays[ds]) d.classList.add('holiday');
-                if (cutiBersama[ds]) d.classList.add('cuti-bersama');
-
-                if (holidays[ds] || cutiBersama[ds]) {
-                    const t = document.createElement('div');
-                    t.className = 'tooltip';
-                    let text = '';
-                    if (holidays[ds]) text += holidays[ds];
-                    if (cutiBersama[ds]) text += (text ? '<br><br>' : '') + cutiBersama[ds].join('<br>');
-                    t.innerHTML = text;
-                    d.appendChild(t);
-                }
-
-                daysDiv.appendChild(d);
-            }
-
-            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-            const remaining = totalCells - (firstDay + daysInMonth);
-            for (let i = 1; i <= remaining; i++) {
-                const d = document.createElement('div');
-                d.className = 'day other-month';
-                d.textContent = i;
-                daysDiv.appendChild(d);
-            }
-
-            monthDiv.appendChild(createMonthHolidaysList(year, month));
-            return monthDiv;
+        /* ---------- Hero: stats, legend & next holiday ---------- */
+        function getStats() {
+            const fed = RAW.filter(r => r[1] === 'p').length;
+            const st = RAW.filter(r => r[1] === 's').length;
+            const weekday = RAW.filter(r => !WK.includes(parse(r[0]).getDay())).length;
+            return [
+                { cls: 'fed', n: fed, label: 'Public holidays' },
+                { cls: 'st', n: st, label: 'State holidays' },
+                { cls: '', n: weekday, label: 'Weekday holidays' },
+                { cls: '', n: RAW.length - weekday, label: 'On weekends' }
+            ];
         }
 
-        function createMonthHolidaysList(year, month) {
-            const div = document.createElement('div');
-            div.className = 'month-holidays';
-            const title = document.createElement('h4');
-            title.textContent = 'National & State Holiday Information';
-            div.appendChild(title);
-
-            const list = document.createElement('ul');
-            list.className = 'holiday-list';
-            let has = false;
-
-            const addHoliday = (dateStr, names, isCuti = false) => {
-                const d = new Date(dateStr);
-                if (d.getFullYear() === year && d.getMonth() === month) {
-                    (Array.isArray(names) ? names : [names]).forEach(name => {
-                        const li = document.createElement('li');
-                        li.className = 'holiday-item';
-                        const span = document.createElement('span');
-                        span.className = isCuti ? 'cuti-date' : 'holiday-date';
-                        span.textContent = d.getDate();
-                        const nameSpan = document.createElement('span');
-                        nameSpan.className = 'holiday-name';
-                        nameSpan.textContent = name;
-                        li.appendChild(span);
-                        li.appendChild(nameSpan);
-                        list.appendChild(li);
-                        has = true;
-                    });
-                }
-            };
-
-            Object.entries(holidays).forEach(([d, n]) => addHoliday(d, n, false));
-            Object.entries(cutiBersama).forEach(([d, n]) => addHoliday(d, n, true));
-
-            if (has) {
-                const items = Array.from(list.children);
-                items.sort((a, b) => {
-                    const aD = parseInt(a.querySelector('.holiday-date, .cuti-date').textContent);
-                    const bD = parseInt(b.querySelector('.holiday-date, .cuti-date').textContent);
-                    return aD - bD;
-                });
-                list.innerHTML = '';
-                items.forEach(i => list.appendChild(i));
-                div.appendChild(list);
-            } else {
-                const no = document.createElement('div');
-                no.className = 'no-holidays';
-                no.textContent = 'There are no public holidays or replacement holidays';
-                div.appendChild(no);
-            }
-
-            return div;
+        function renderLegend() {
+            $('#legend').innerHTML = `
+                <span><i class="lg-fed"></i>Federal public holiday</span>
+                <span><i class="lg-st"></i>State holiday</span>
+                <span><i class="lg-sat"></i>Saturday</span>
+                <span><i class="lg-today"></i>Today</span>
+                <span style="color:var(--fed)">${DAYS[RED]}</span>`;
         }
 
-        function createCalendar() {
-            const cal = document.getElementById('calendar');
-            cal.innerHTML = '';
-            for (let m = 0; m < 12; m++) {
-                cal.appendChild(createMonth(2026, m));
-            }
-        }
+        function renderHero() {
+            $('#stats').innerHTML = getStats().map(s => `<div class="stat ${s.cls}"><b>${s.n}</b><span>${s.label}</span></div>`).join('');
 
-        // --- DATE & TIME ---
-        function updateDateTime() {
-            const now = new Date();
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const monthsFull = months;
-            const dayName = days[now.getDay()];
-            const date = now.getDate();
-            const monthName = monthsFull[now.getMonth()];
-            const year = now.getFullYear();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            const offset = -now.getTimezoneOffset();
-            const gmt = (offset >= 0 ? '+' : '-') + Math.abs(Math.floor(offset / 60)).toString().padStart(2, '0');
-            document.getElementById('currentDateTime').textContent =
-                `${dayName}, ${date} ${monthName} ${year} ${h}:${m}:${s} (GMT ${gmt})`;
-        }
-
-        // --- SCROLL TO TODAY ---
-        function setupScrollToday() {
-            const btn = document.getElementById('scrollTodayBtn');
-            if (new Date().getFullYear() !== 2026) {
-                btn.style.display = 'none';
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const nxt = RAW.find(r => dayDiff(ref, parse(r[0])) >= 0);
+            const box = $('#next');
+            if (!nxt) {
+                box.className = 'next';
+                box.innerHTML = `<small>Status</small><h2>All 2026 holidays have passed</h2><p>Thank you for using this calendar.</p>`;
                 return;
             }
-            btn.addEventListener('click', () => {
-                const el = document.getElementById('today-date');
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    el.style.transform = 'scale(1.2)';
-                    setTimeout(() => el.style.transform = 'scale(1)', 300);
+            const dt = parse(nxt[0]);
+            const diff = dayDiff(ref, dt);
+            const before = ref.getFullYear() < YEAR;
+            box.className = 'next' + (nxt[1] === 's' ? ' st' : '');
+            box.innerHTML = `
+                <small>${before ? 'First holiday of 2026' : 'Next holiday'} · ${esc(stateLabel())}</small>
+                <h2>${esc(nxt[2])}</h2>
+                <p>${fmtLong(dt)}</p>
+                <div class="count"><b>${diff === 0 ? 'Today' : diff}</b><span>${diff === 0 ? '🎉' : (diff === 1 ? 'day to go' : 'days to go')}</span></div>`;
+        }
+
+        /* ---------- Month cards ---------- */
+        function monthCard(m, big) {
+            const first = new Date(YEAR, m, 1).getDay();
+            const dim = new Date(YEAR, m + 1, 0).getDate();
+            const prevDim = new Date(YEAR, m, 0).getDate();
+            let cells = '';
+            for (let i = 0; i < 42; i++) {
+                const n = i - first + 1;
+                if (n < 1 || n > dim) {
+                    const o = n < 1 ? prevDim + n : n - dim;
+                    cells += `<span class="d out" aria-hidden="true">${o}</span>`;
+                    continue;
                 }
-            });
-        }
-
-        // --- THEME ---
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            document.body.classList.toggle('dark-theme', theme === 'dark');
-        }
-
-        function initTheme() {
-            const saved = localStorage.getItem('calendarTheme') || 'system';
-            const select = document.getElementById('themeSelect');
-            select.value = saved;
-
-            if (saved === 'system') {
-                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                applyTheme(isDark ? 'dark' : 'light');
-            } else {
-                applyTheme(saved);
+                const k = key(YEAR, m, n);
+                const dow = (first + n - 1) % 7;
+                const hs = H[k] || [];
+                const fed = hs.some(h => h.t === 'p');
+                const stt = hs.some(h => h.t === 's');
+                const cls = ['d', dow === RED ? 'sun' : dow === 6 ? 'sat' : '', fed ? 'fed' : stt ? 'st' : '',
+                    fed && stt ? 'both' : '', k === todayKey ? 'today' : ''].filter(Boolean).join(' ');
+                const label = `${DAYS[dow]}, ${n} ${MONTHS[m]} ${YEAR}` + (hs.length ? ': ' + hs.map(h => h.name).join('; ') : '') + (k === todayKey ? ' (today)' : '');
+                const lbl = hs.length ? `<span class="lbl">${esc(hs[0].short)}</span>` : '';
+                cells += `<button type="button" class="${cls}" data-k="${k}" aria-label="${esc(label)}"${hs.length ? ` title="${esc(hs.map(h => h.name).join(' • '))}"` : ''}>${n}${lbl}</button>`;
             }
+            const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+            const cP = mh.filter(r => r[1] === 'p').length, cS = mh.filter(r => r[1] === 's').length;
+            const list = mh.length ? mh.map(r => {
+                const dt = parse(r[0]);
+                return `<li><span class="dt ${r[1]}">${DAY_S[dt.getDay()]}, ${dt.getDate()}</span><span>${esc(r[2])}</span></li>`;
+            }).join('') : `<li class="none">No public holidays</li>`;
+            const arrows = big ? `<div class="nav-arrows">
+                    <button type="button" class="arrow" data-nav="-1" aria-label="Previous month" ${m === 0 ? 'disabled' : ''}>‹</button>
+                    <button type="button" class="arrow" data-nav="1" aria-label="Next month" ${m === 11 ? 'disabled' : ''}>›</button>
+                </div>` : `<div class="m-badges">${cP ? `<span class="b-fed" title="Federal public holidays">${cP}</span>` : ''}${cS ? `<span class="b-st" title="State holidays">${cS}</span>` : ''}</div>`;
+            const el = document.createElement('article');
+            el.className = 'month';
+            el.id = 'bln-' + m;
+            el.innerHTML = `
+                <div class="m-head"><h3>${MONTHS[m]}<small>${YEAR}</small></h3>${arrows}</div>
+                <div class="dow" aria-hidden="true">${DAY_S.map((d, i) => `<span${i === RED ? ' class="red"' : ''}>${d}</span>`).join('')}</div>
+                <div class="days">${cells}</div>
+                <ul class="m-list">${list}</ul>`;
+            return el;
+        }
 
-            select.addEventListener('change', (e) => {
-                const val = e.target.value;
-                localStorage.setItem('calendarTheme', val);
-                if (val === 'system') {
-                    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    applyTheme(isDark ? 'dark' : 'light');
-                } else {
-                    applyTheme(val);
-                }
-            });
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (select.value === 'system') {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
+        function renderCal() {
+            const grid = $('#cal');
+            grid.innerHTML = '';
+            grid.classList.toggle('single', view === 'month');
+            if (view === 'month') grid.appendChild(monthCard(cur, true));
+            else for (let m = 0; m < 12; m++) grid.appendChild(monthCard(m, false));
+            $('#vYear').setAttribute('aria-pressed', view === 'year');
+            $('#vMonth').setAttribute('aria-pressed', view === 'month');
+            document.querySelectorAll('.chip').forEach((c, i) => {
+                if (view === 'month' && i === cur) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current');
             });
         }
 
-        // --- NAVIGATION ---
-        document.getElementById('backHomeBtn').addEventListener('click', () => {
-            window.location.href = '../../';
+        function renderChips() {
+            $('#chips').innerHTML = MONTHS.map((n, i) =>
+                `<button type="button" class="chip${i === todayMonth ? ' now' : ''}" data-m="${i}">${MON_S[i]}</button>`).join('');
+        }
+
+        function go(m, scroll) {
+            cur = Math.max(0, Math.min(11, m));
+            if (view === 'month') {
+                renderCal();
+                if (scroll) $('#cal').scrollIntoView({ block: 'start' });
+            } else {
+                $('#bln-' + cur).scrollIntoView({ block: 'start' });
+            }
+            const chip = document.querySelector(`.chip[data-m="${cur}"]`);
+            if (chip) chip.scrollIntoView({ inline: 'center', block: 'nearest' });
+        }
+
+        function setView(v) {
+            view = v; store.set('kal2026my-view', v);
+            renderCal();
+            if (v === 'year') requestAnimationFrame(() => { if (cur !== 0 || todayMonth >= 0) $('#bln-' + cur)?.scrollIntoView({ block: 'start' }); });
+        }
+
+        /* ---------- Long weekends ---------- */
+        function getLongWeekends() {
+            const runs = [];
+            let run = [];
+            const flush = () => { if (run.length >= 3 && run.some(d => H[keyOf(d)])) runs.push(run); run = []; };
+            for (let dt = new Date(YEAR, 0, 1); dt.getFullYear() === YEAR; dt = new Date(YEAR, dt.getMonth(), dt.getDate() + 1)) {
+                if (isOff(dt)) run.push(dt); else flush();
+            }
+            flush();
+            return runs.map(r => {
+                const a = r[0], b = r[r.length - 1];
+                const names = [...new Set(r.flatMap(d => (H[keyOf(d)] || []).map(h => h.short)))];
+                const rng = a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}` : `${a.getDate()} ${MON_S[a.getMonth()]} – ${b.getDate()} ${MON_S[b.getMonth()]}`;
+                return { k: keyOf(a), n: r.length, rng, span: `${DAY_S[a.getDay()]} – ${DAY_S[b.getDay()]}`, names: names.join(', ') };
+            });
+        }
+
+        function renderLong() {
+            const lw = getLongWeekends();
+            $('#long').innerHTML = lw.length ? lw.map(r =>
+                `<button type="button" data-k="${r.k}" data-go="1"><b>${r.n}<small>days in a row</small></b>
+                    <span class="rng">${r.rng}</span><span class="why">${r.span} · ${esc(r.names)}</span></button>`).join('')
+                : '<p>No long weekends for this state.</p>';
+        }
+
+        /* ---------- Detail dialog ---------- */
+        const dlg = $('#dlg');
+        let dlgKey = null;
+        function openDay(k) {
+            dlgKey = k;
+            const dt = parse(k), hs = H[k] || [];
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const diff = dayDiff(ref, dt);
+            const rel = diff === 0 ? 'Today' : diff > 0 ? `in ${plural(diff, 'day')}` : `${plural(-diff, 'day')} ago`;
+            const doy = dayDiff(new Date(YEAR, 0, 1), dt) + 1;
+            const kind = hs.some(h => h.t === 'p') ? 'p' : hs.length ? 's' : '';
+            const weekend = WK.includes(dt.getDay());
+            const status = hs.length ? '' : weekend ? `${DAYS[dt.getDay()]} (weekend)` : 'Regular working day';
+            const list = hs.map(h => `<li><span class="tag ${h.t}">${h.t === 'p' ? 'Public holiday' : 'State holiday'}</span><span>${esc(h.name)}</span></li>`).join('');
+            dlg.innerHTML = `<div class="dlg">
+                <div class="big"><div class="num ${kind}">${dt.getDate()}</div>
+                    <div><h3>${fmtLong(dt)}</h3><div class="sub">${hs.length ? (weekend ? 'Falls on a weekend' : 'Weekday holiday') : status} · ${esc(stateLabel())}</div></div></div>
+                ${list ? `<ul>${list}</ul>` : ''}
+                <div class="meta"><span>📆 Day ${doy} of 365</span><span>🗓️ Week ${isoWeek(dt)}</span><span>⏱️ ${rel}</span></div>
+                <div class="acts">
+                    <button type="button" data-d="-1" ${k === key(YEAR, 0, 1) ? 'disabled' : ''}>‹ Previous</button>
+                    <button type="button" class="primary" data-close>Close</button>
+                    <button type="button" data-d="1" ${k === key(YEAR, 11, 31) ? 'disabled' : ''}>Next ›</button>
+                </div></div>`;
+            if (!dlg.open) dlg.showModal();
+        }
+        dlg.addEventListener('click', e => {
+            if (e.target === dlg || e.target.closest('[data-close]')) return dlg.close();
+            const b = e.target.closest('[data-d]');
+            if (b) { const dt = parse(dlgKey); dt.setDate(dt.getDate() + Number(b.dataset.d)); openDay(keyOf(dt)); }
+        });
+        dlg.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') { const b = dlg.querySelector('[data-d="-1"]:not(:disabled)'); b && b.click(); }
+            if (e.key === 'ArrowRight') { const b = dlg.querySelector('[data-d="1"]:not(:disabled)'); b && b.click(); }
         });
 
-        // --- INIT ---
-        createCalendar();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        setupScrollToday();
-        initTheme();
+        /* ---------- Theme ---------- */
+        const THEMES = ['system', 'light', 'dark'], ICON = { system: '💻', light: '☀️', dark: '🌙' };
+        let theme = store.get('kal-theme');
+        if (!THEMES.includes(theme)) theme = 'system';
+        function applyTheme() {
+            if (theme === 'system') document.documentElement.removeAttribute('data-theme');
+            else document.documentElement.dataset.theme = theme;
+            const b = $('#themeBtn');
+            b.textContent = ICON[theme];
+            b.title = 'Theme: ' + { system: 'follow system', light: 'light', dark: 'dark' }[theme];
+        }
+
+        /* ---------- PDF export (jsPDF, like Wikirekap) ---------- */
+        const PC = {
+            brand: [59, 91, 219], brand2: [86, 116, 232], ink: [27, 34, 51], muted: [107, 116, 137], line: [225, 229, 238],
+            soft: [240, 242, 248], white: [255, 255, 255], faint: [196, 202, 214],
+            fed: [224, 49, 49], fedBg: [255, 227, 227], fedInk: [166, 30, 30],
+            st: [112, 72, 232], stBg: [229, 219, 255], stInk: [80, 40, 198], sat: [76, 110, 245]
+        };
+        const PDF_FONT_FILES = { normal: 'pdf-fonts/Roboto-Regular.ttf', bold: 'pdf-fonts/Roboto-Bold.ttf' };
+        let pdfFontsPromise = null;
+
+        function b64(buf) {
+            const bytes = new Uint8Array(buf);
+            let bin = '';
+            for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+            return btoa(bin);
+        }
+        function loadPdfFonts() {
+            if (!pdfFontsPromise) {
+                pdfFontsPromise = Promise.all(Object.values(PDF_FONT_FILES).map(async url => {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Font ${url}: ${res.status}`);
+                    return b64(await res.arrayBuffer());
+                })).then(([normal, bold]) => ({ normal, bold })).catch(e => { pdfFontsPromise = null; throw e; });
+            }
+            return pdfFontsPromise;
+        }
+        async function registerPdfFonts(doc) {
+            try {
+                const f = await loadPdfFonts();
+                doc.addFileToVFS('Roboto-Regular.ttf', f.normal); doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+                doc.addFileToVFS('Roboto-Bold.ttf', f.bold); doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+                return 'Roboto';
+            } catch (e) {
+                console.warn('PDF font failed to load, using built-in font:', e);
+                return 'helvetica';
+            }
+        }
+
+        async function exportPDF() {
+            if (!window.jspdf) { alert('The PDF library has not loaded. Check your internet connection and try again.'); return; }
+            const btn = $('#pdfBtn');
+            btn.disabled = true;
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                const F = await registerPdfFonts(doc);
+                const W = doc.internal.pageSize.width, Hh = doc.internal.pageSize.height, M = 10;
+                const col = (kind, rgb) => doc[kind === 'fill' ? 'setFillColor' : kind === 'draw' ? 'setDrawColor' : 'setTextColor'](rgb[0], rgb[1], rgb[2]);
+                const font = (style, size) => { doc.setFont(F, style); doc.setFontSize(size); };
+                const base = (y, h, s) => y + h / 2 + s * 0.127; // baseline so text is vertically centred
+                const pill = (x, y, w, h, bg, ink, txt, size) => {
+                    col('fill', bg); doc.roundedRect(x, y, w, h, h / 2.4, h / 2.4, 'F');
+                    font('bold', size); col('text', ink); doc.text(txt, x + w / 2, base(y, h, size), { align: 'center' });
+                };
+
+                /* ===== Page 1: full-year calendar ===== */
+                col('fill', PC.brand); doc.rect(0, 0, W, 30, 'F');
+                font('bold', 9); col('text', [214, 224, 255]); doc.text(`MALAYSIA CALENDAR  ·  ${stateLabel().toUpperCase()}`, M, 9.5);
+                font('bold', 30); col('text', PC.white); doc.text(String(YEAR), M, 24.5);
+                const stats = getStats(), sw = 36, sg = 3;
+                stats.forEach((s, i) => {
+                    const x = W - M - (stats.length - i) * sw - (stats.length - i - 1) * sg;
+                    col('fill', PC.brand2); doc.roundedRect(x, 5.5, sw, 19, 2.5, 2.5, 'F');
+                    font('bold', 15); col('text', PC.white); doc.text(String(s.n), x + 3.5, 14.2);
+                    font('normal', 6.6); col('text', [226, 233, 255]);
+                    doc.text(doc.splitTextToSize(s.label, sw - 6), x + 3.5, 18.3);
+                });
+
+                // legend
+                let lx = M;
+                const legend = [[PC.fed, 'Federal public holiday'], [PC.st, 'State holiday'], [PC.sat, 'Saturday'], [PC.fed, DAYS[RED] + ' (red)']];
+                legend.forEach(([c, label], i) => {
+                    if (i < 2) { col('fill', c); doc.roundedRect(lx, 33.6, 3.6, 3.6, 1, 1, 'F'); }
+                    else { font('bold', 8); col('text', c); doc.text('1', lx + 1.8, 36.6, { align: 'center' }); }
+                    font('normal', 7.8); col('text', PC.muted); doc.text(label, lx + 5.2, 36.5);
+                    lx += 5.2 + doc.getTextWidth(label) + 7;
+                });
+                font('normal', 7.2); col('text', PC.muted);
+                doc.text("Source: Cabinet of Malaysia (Federal and State Public Holidays 2026)", W - M, 36.5, { align: 'right' });
+
+                // 12 month cards
+                const gap = 4, cols = 4, top = 40, bottom = Hh - 12;
+                const cw = (W - 2 * M - gap * (cols - 1)) / cols;
+                const ch = (bottom - top - gap * 2) / 3;
+                for (let m = 0; m < 12; m++) {
+                    const x = M + (m % cols) * (cw + gap), y = top + Math.floor(m / cols) * (ch + gap);
+                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25);
+                    doc.roundedRect(x, y, cw, ch, 2.5, 2.5, 'FD');
+                    font('bold', 10); col('text', PC.ink); doc.text(MONTHS[m], x + 4, y + 7);
+                    const nw = doc.getTextWidth(MONTHS[m]);
+                    font('normal', 7.5); col('text', PC.muted); doc.text(String(YEAR), x + 4 + nw + 1.6, y + 7);
+                    const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+                    const cP = mh.filter(r => r[1] === 'p').length, cS = mh.filter(r => r[1] === 's').length;
+                    let bx = x + cw - 4;
+                    if (cS) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.stBg, PC.stInk, String(cS), 6.5); bx -= 1.5; }
+                    if (cP) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.fedBg, PC.fedInk, String(cP), 6.5); }
+
+                    const gx = x + 2.5, cell = (cw - 5) / 7, y0 = y + 14, rh = (ch - 14 - 2) / 6;
+                    DAY_S.forEach((d, i) => {
+                        font('bold', 5.8); col('text', i === RED ? PC.fed : PC.muted);
+                        doc.text(d.toUpperCase(), gx + cell * i + cell / 2, y + 12, { align: 'center' });
+                    });
+                    const first = new Date(YEAR, m, 1).getDay(), dim = new Date(YEAR, m + 1, 0).getDate(), prevDim = new Date(YEAR, m, 0).getDate();
+                    for (let i = 0; i < 42; i++) {
+                        const n = i - first + 1, cx = gx + (i % 7) * cell, cy = y0 + Math.floor(i / 7) * rh;
+                        const out = n < 1 || n > dim;
+                        const label = out ? (n < 1 ? prevDim + n : n - dim) : n;
+                        const dow = i % 7;
+                        const hs = out ? [] : (H[key(YEAR, m, n)] || []);
+                        const fed = hs.some(h => h.t === 'p'), stt = !fed && hs.length > 0;
+                        if (fed || stt) { col('fill', fed ? PC.fed : PC.st); doc.roundedRect(cx + 0.5, cy + 0.4, cell - 1, rh - 0.8, 1.4, 1.4, 'F'); }
+                        font(out ? 'normal' : 'bold', 7.4);
+                        col('text', fed || stt ? PC.white : out ? PC.faint : dow === RED ? PC.fed : dow === 6 ? PC.sat : PC.ink);
+                        doc.text(String(label), cx + cell / 2, base(cy, rh, 7.4), { align: 'center' });
+                    }
+                }
+
+                /* ===== Page 2: holiday list, long weekends and notes ===== */
+                doc.addPage();
+                col('fill', PC.brand); doc.rect(0, 0, W, 16, 'F');
+                font('bold', 13); col('text', PC.white); doc.text(`Malaysia Calendar ${YEAR} – ${stateLabel()}`, M, 10.4);
+                font('normal', 9); col('text', [214, 224, 255]); doc.text('Holidays, long weekends and notes', W - M, 10.2, { align: 'right' });
+
+                const rx = M, rw = W - 2 * M;
+                let ry = 28;
+
+                // holiday list
+                font('bold', 13); col('text', PC.ink); doc.text(`Public holidays ${YEAR}`, rx, ry);
+                ry += 5;
+                const hcols = 2, hgap = 5, hcw = (rw - hgap) / hcols, hrh = 6;
+                const perCol = Math.ceil(RAW.length / hcols);
+                RAW.forEach((r, i) => {
+                    const x = rx + Math.floor(i / perCol) * (hcw + hgap), y = ry + (i % perCol) * hrh;
+                    const dt = parse(r[0]);
+                    col('fill', r[1] === 'p' ? PC.fedBg : PC.stBg);
+                    doc.roundedRect(x, y, 27, hrh - 1.2, 1.6, 1.6, 'F');
+                    font('bold', 7.6); col('text', r[1] === 'p' ? PC.fedInk : PC.stInk);
+                    doc.text(`${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}`, x + 13.5, base(y, hrh - 1.2, 7.6), { align: 'center' });
+                    font('normal', 8.2); col('text', PC.ink);
+                    doc.text(r[2], x + 30, base(y, hrh - 1.2, 8.2));
+                });
+                ry += perCol * hrh + 6;
+
+                // long weekends
+                const lw = getLongWeekends();
+                const lcols = 3, lgap = 4, lcw = (rw - lgap * (lcols - 1)) / lcols, lch = 19;
+                const lwRows = Math.ceil(lw.length / lcols);
+                if (ry + 10 + lwRows * (lch + lgap) > Hh - 14) { doc.addPage(); ry = 20; }
+                font('bold', 13); col('text', PC.ink); doc.text(`Long weekends ${YEAR}`, rx, ry);
+                font('normal', 8.4); col('text', PC.muted);
+                doc.text('Three or more consecutive days off (weekends and public holidays).', rx, ry + 6);
+                ry += 10;
+                lw.forEach((r, i) => {
+                    const x = rx + (i % lcols) * (lcw + lgap), y = ry + Math.floor(i / lcols) * (lch + lgap);
+                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25); doc.roundedRect(x, y, lcw, lch, 2.5, 2.5, 'FD');
+                    font('bold', 22); col('text', PC.brand); doc.text(String(r.n), x + 5, y + 12.5);
+                    const nw = doc.getTextWidth(String(r.n));
+                    font('normal', 7); col('text', PC.muted); doc.text('days', x + 5 + nw + 1.5, y + 12.5);
+                    font('bold', 10); col('text', PC.ink); doc.text(r.rng, x + 32, y + 7.5);
+                    font('normal', 7.6); col('text', PC.muted);
+                    doc.text(doc.splitTextToSize(`${r.span} · ${r.names}`, lcw - 36).slice(0, 3), x + 32, y + 12);
+                });
+                ry += lwRows * (lch + lgap) + 2;
+
+                // notes
+                const notes = [...document.querySelectorAll('.note span')].map(s => s.textContent.replace(/\s+/g, ' ').replace(/^Note:\s*/, '').trim());
+                font('normal', 7.2);
+                const noteLines = notes.map(t => doc.splitTextToSize(t, rw - 8));
+                const nh = noteLines.reduce((a, l) => a + l.length * 3.2 + 2.2, 0) + 4;
+                if (ry + nh + 8 > Hh - 12) { doc.addPage(); ry = 20; }
+                font('bold', 11); col('text', PC.ink); doc.text('Notes', rx, ry); ry += 3.5;
+                font('normal', 7.2);
+                col('fill', PC.soft); doc.roundedRect(rx, ry, rw, nh, 2.5, 2.5, 'F');
+                col('text', PC.muted);
+                let ny = ry + 6;
+                noteLines.forEach(l => { doc.text(l, rx + 4, ny); ny += l.length * 3.2 + 2.2; });
+
+                /* ===== Footer & page numbers ===== */
+                const total = doc.getNumberOfPages();
+                for (let p = 1; p <= total; p++) {
+                    doc.setPage(p);
+                    col('draw', PC.line); doc.setLineWidth(0.25); doc.line(M, Hh - 9.5, W - M, Hh - 9.5);
+                    font('normal', 7); col('text', PC.muted);
+                    doc.text(`Malaysia Calendar ${YEAR} - ${stateLabel()} - Public Holidays`, M, Hh - 5.5);
+                    doc.text(`Page ${p} of ${total}`, W - M, Hh - 5.5, { align: 'right' });
+                }
+                doc.setProperties({ title: `Malaysia Calendar ${YEAR} – ${stateLabel()}`, subject: 'Malaysia federal and state public holidays 2026' });
+                doc.save(`malaysia-calendar-${YEAR}-${S.toLowerCase()}.pdf`);
+            } catch (e) {
+                console.error(e);
+                alert('Failed to create the PDF: ' + e.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        $('#pdfBtn').onclick = exportPDF;
+
+        /* ---------- State selector ---------- */
+        function renderHolList() {
+            $('#holCount').textContent = `${RAW.length} days · ${stateLabel()}`;
+            $('#holList').innerHTML = RAW.map(r => {
+                const dt = parse(r[0]);
+                return `<button type="button" data-k="${r[0]}"><span class="dt ${r[1]}">${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}</span><span class="nm">${esc(r[2])}</span><span class="tag ${r[1]}">${r[1] === 'p' ? 'Federal' : 'State'}</span></button>`;
+            }).join('');
+        }
+        function renderAll() {
+            applyState();
+            renderLegend(); renderHero(); renderCal(); renderHolList(); renderLong();
+        }
+        $('#stateSel').innerHTML = ALL.map(c => `<option value="${c}">${esc(STATES[c])}</option>`).join('');
+        $('#stateSel').value = S;
+        $('#stateSel').onchange = e => {
+            S = e.target.value; store.set('kal2026my-state', S);
+            if (dlg.open) dlg.close();
+            renderAll();
+        };
+
+        /* ---------- Events ---------- */
+        document.addEventListener('click', e => {
+            const t = e.target;
+            const dayBtn = t.closest('[data-k]');
+            if (dayBtn) {
+                if (dayBtn.dataset.go) {
+                    const m = parse(dayBtn.dataset.k).getMonth();
+                    if (dlg.open) dlg.close();
+                    cur = m;
+                    if (view === 'month') renderCal();
+                    $('#cal').scrollIntoView({ block: 'start' });
+                    if (view === 'year') $('#bln-' + m).scrollIntoView({ block: 'start' });
+                }
+                return openDay(dayBtn.dataset.k);
+            }
+            const chip = t.closest('.chip');
+            if (chip) return go(Number(chip.dataset.m), true);
+            const nav = t.closest('[data-nav]');
+            if (nav) return go(cur + Number(nav.dataset.nav), false);
+        });
+        $('#vYear').onclick = () => setView('year');
+        $('#vMonth').onclick = () => setView('month');
+        $('#themeBtn').onclick = () => { theme = THEMES[(THEMES.indexOf(theme) + 1) % 3]; store.set('kal-theme', theme); applyTheme(); };
+        if (inYear) {
+            const tb = $('#todayBtn');
+            tb.hidden = false;
+            tb.onclick = () => { go(todayMonth, true); openDay(todayKey); };
+        }
+
+        // keyboard: ← → change month in month view
+        document.addEventListener('keydown', e => {
+            if (dlg.open || view !== 'month' || e.target.closest('input,select,textarea')) return;
+            if (e.key === 'ArrowLeft' && cur > 0) go(cur - 1, false);
+            if (e.key === 'ArrowRight' && cur < 11) go(cur + 1, false);
+        });
+
+        // swipe left/right in month view
+        let sx = 0, sy = 0;
+        $('#cal').addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        $('#cal').addEventListener('touchend', e => {
+            if (view !== 'month') return;
+            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1), false);
+        }, { passive: true });
+
+        // highlight the visible month chip in year view
+        const io = new IntersectionObserver(es => {
+            if (view !== 'year') return;
+            es.forEach(en => {
+                if (en.isIntersecting) {
+                    const i = Number(en.target.id.slice(4));
+                    document.querySelectorAll('.chip').forEach(c => Number(c.dataset.m) === i ? c.setAttribute('aria-current', 'true') : c.removeAttribute('aria-current'));
+                }
+            });
+        }, { rootMargin: '-35% 0px -55% 0px' });
+        const observeMonths = () => document.querySelectorAll('.month').forEach(el => io.observe(el));
+        new MutationObserver(observeMonths).observe($('#cal'), { childList: true });
+
+        applyTheme(); renderChips(); renderAll();
+        if (view === 'year' && todayMonth >= 0) setTimeout(() => $('#bln-' + todayMonth).scrollIntoView({ block: 'start' }), 60);
     </script>
 </body>
 
