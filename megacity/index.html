@@ -2463,10 +2463,19 @@
         item.phone ? '<div style="font-size:12px;margin-bottom:4px;">☏ ' + esc(item.phone) + '</div>' : '',
         item.description ? '<div style="font-size:12px;margin-bottom:8px;line-height:1.35;">' + esc(item.description.slice(0, 140)) + (item.description.length > 140 ? '...' : '') + '</div>' : '',
         '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;padding:4px 9px;background:#3366cc;color:#fff;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;">Open article ↗</a>',
+        ' <button type="button" class="wv-lb-pop-add" style="padding:4px 9px;border-radius:4px;border:1px solid ' + (isSaved(item.id) ? '#2e7d32' : '#d97706') + ';background:' + (isSaved(item.id) ? '#e8f5e9' : '#fff') + ';color:' + (isSaved(item.id) ? '#2e7d32' : '#b45309') + ';font-size:12px;font-weight:600;cursor:pointer;">' + (isSaved(item.id) ? '✓ Added' : '+ Add to plan') + '</button>',
         '</div>'
       ].join('');
 
       item._marker = addMapMarker(el, item.lat, item.lng, popupHtml);
+      item._marker.getPopup().on('open', function () {
+        var pe = item._marker.getPopup().getElement(), b = pe && pe.querySelector('.wv-lb-pop-add');
+        if (!b) return;
+        b.addEventListener('click', function () {
+          toggleTripItem(item); // redraws the pins; open the popup again so the button shows the new state
+          setTimeout(function () { openMarkerPopup(item._marker); }, 0);
+        });
+      });
     });
 
     updateMapLegend('explore');
