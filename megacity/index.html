@@ -64,6 +64,15 @@
       color: #2a4b8d;
     }
 
+    .mw-first-heading { position: relative; z-index: 3000; }
+    .flag-dd { position: relative; display: none; }
+    .flag-dd.ready { display: inline-block; }
+    .flag-dd-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #3366cc; border-radius: 4px; padding: 2px 8px; font-size: 12px; background: #fff; color: #202122; font-weight: 600; cursor: pointer; font-family: inherit; max-width: 100%; }
+    .flag-dd-list { position: absolute; z-index: 3001; top: calc(100% + 2px); left: 0; min-width: 100%; max-height: 300px; overflow: auto; background: #fff; border: 1px solid #3366cc; border-radius: 4px; box-shadow: 0 4px 14px rgba(0,0,0,.18); margin: 0; padding: 2px 0; list-style: none; display: none; white-space: nowrap; }
+    .flag-dd.open .flag-dd-list { display: block; }
+    .flag-dd-list li { display: flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .flag-dd-list li:hover, .flag-dd-list li[aria-selected="true"] { background: #eaf3ff; }
+    .flag-dd img { width: 20px; height: 15px; object-fit: cover; border: 1px solid rgba(0,0,0,.2); border-radius: 2px; flex: none; }
     .wiki-switcher select {
       border: 1px solid #3366cc;
       border-radius: 4px;
@@ -113,13 +122,12 @@
       background: #fff7ea; border: 1px solid #f3d29a; border-radius: 6px;
       padding: 8px 12px; font-size: 13px; margin: 10px 0;
     }
-    .mw-install-tabs { display: inline-flex; gap: 0; margin-bottom: 10px; }
+    .mw-install-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
     .mw-install-tabs button {
-      border: 1px solid #a2a9b1; background: #f8f9fa; padding: 4px 14px;
-      font-size: 13px; font-weight: 600; cursor: pointer; color: #54595d;
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 13px; cursor: pointer;
+      border: 1px solid #a2a9b1; background: #f8f9fa; color: #202122; border-radius: 4px; font-family: inherit;
     }
-    .mw-install-tabs button:first-child { border-radius: 4px 0 0 4px; }
-    .mw-install-tabs button:last-child { border-radius: 0 4px 4px 0; border-left: 0; }
+    .mw-install-tabs button img { width: 20px; height: 15px; object-fit: cover; border: 1px solid rgba(0,0,0,.2); border-radius: 2px; }
     .mw-install-tabs button.on { background: #3366cc; border-color: #3366cc; color: #fff; }
 
 
@@ -160,10 +168,22 @@
     <h1 class="mw-first-heading">
       <span>User:Affandy Murad/Megacity</span>
       <div class="wiki-switcher" title="Demo only. On a real wiki the edition is detected from the address (id.wikivoyage.org, en.wikivoyage.org, ...).">
-        <span>Wiki data source:</span>
+        <span>Wikivoyage data source:</span>
         <select id="sim-wiki-domain" title="Choose a Wikivoyage language edition">
-          <option value="en.wikivoyage.org" selected>en.wikivoyage.org (English – most complete)</option>
-          <option value="id.wikivoyage.org">id.wikivoyage.org (Indonesian, English fallback)</option>
+          <option value="en.wikivoyage.org" data-flag="us" selected>en.wikivoyage.org (English – most complete)</option>
+          <option value="id.wikivoyage.org" data-flag="id">id.wikivoyage.org (Indonesian, English fallback)</option>
+          <option value="de.wikivoyage.org" data-flag="de">de.wikivoyage.org (German, English fallback)</option>
+          <option value="fr.wikivoyage.org" data-flag="fr">fr.wikivoyage.org (French, English fallback)</option>
+          <option value="es.wikivoyage.org" data-flag="es">es.wikivoyage.org (Spanish, English fallback)</option>
+          <option value="it.wikivoyage.org" data-flag="it">it.wikivoyage.org (Italian, English fallback)</option>
+          <option value="pt.wikivoyage.org" data-flag="pt">pt.wikivoyage.org (Portuguese, English fallback)</option>
+          <option value="nl.wikivoyage.org" data-flag="nl">nl.wikivoyage.org (Dutch, English fallback)</option>
+          <option value="ru.wikivoyage.org" data-flag="ru">ru.wikivoyage.org (Russian, English fallback)</option>
+          <option value="zh.wikivoyage.org" data-flag="cn">zh.wikivoyage.org (Chinese, English fallback)</option>
+          <option value="ja.wikivoyage.org" data-flag="jp">ja.wikivoyage.org (Japanese, English fallback)</option>
+          <option value="sv.wikivoyage.org" data-flag="se">sv.wikivoyage.org (Swedish, English fallback)</option>
+          <option value="he.wikivoyage.org" data-flag="il">he.wikivoyage.org (Hebrew, English fallback)</option>
+          <option value="bn.wikivoyage.org" data-flag="bd">bn.wikivoyage.org (Bengali, English fallback)</option>
         </select>
       </div>
     </h1>
@@ -200,55 +220,224 @@
 
       <!-- ============================ Installation ============================ -->
       <div class="mw-install" id="installation">
-        <h2>Installation</h2>
+        <h2 id="install-title">Instalasi</h2>
         <div class="mw-install-tabs" role="tablist">
-          <button type="button" data-lang="id" class="on" role="tab">Bahasa Indonesia</button>
-          <button type="button" data-lang="en" role="tab">English</button>
+          <button type="button" data-lang="id" role="tab" class="on"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/id.png"><span>Bahasa Indonesia</span></button>
+          <button type="button" data-lang="en" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/us.png"><span>English</span></button>
+          <button type="button" data-lang="de" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/de.png"><span>Deutsch</span></button>
+          <button type="button" data-lang="fr" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/fr.png"><span>Français</span></button>
+          <button type="button" data-lang="es" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/es.png"><span>Español</span></button>
+          <button type="button" data-lang="it" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/it.png"><span>Italiano</span></button>
+          <button type="button" data-lang="pt" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/pt.png"><span>Português</span></button>
+          <button type="button" data-lang="nl" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/nl.png"><span>Nederlands</span></button>
+          <button type="button" data-lang="ru" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/ru.png"><span>Русский</span></button>
+          <button type="button" data-lang="zh" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/cn.png"><span>中文</span></button>
+          <button type="button" data-lang="ja" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/jp.png"><span>日本語</span></button>
+          <button type="button" data-lang="sv" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/se.png"><span>Svenska</span></button>
+          <button type="button" data-lang="he" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/il.png"><span>עברית</span></button>
+          <button type="button" data-lang="bn" role="tab"><img alt="" width="20" height="15" src="https://flagcdn.com/w40/bd.png"><span>বাংলা</span></button>
         </div>
 
-        <!-- Bahasa Indonesia -->
-        <div data-lang-block="id">
+        <div data-lang-block="id" lang="id">
           <h3>Daftar megacity</h3>
           <p>Daftar 85 kota terbesar dan urutan peringkatnya mengikuti artikel Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Angka populasi adalah perkiraan area perkotaan dan dapat berbeda dari artikel tersebut setelah diperbarui.</p>
           <h3>Rencana perjalanan disimpan lokal</h3>
           <p>Daftar <em>Trip Planner</em> disimpan di browser Anda (<code>localStorage</code>), terpisah untuk setiap browser dan setiap alamat wiki. Daftar ini tidak tersinkron antarperangkat dan hilang bila data situs browser dihapus. Gunakan selalu halaman <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> untuk melihat dan mengurutkan rencana Anda.</p>
           <p>Jika Anda hanya ingin <strong>menambah lokasi ke rencana</strong> dari artikel Wikivoyage biasa, pasang skrip terpisah <code>Megacity-AddToPlan.js</code> (simpan di <code>User:Affandy Murad/Megacity-AddToPlan.js</code>), lalu tambahkan baris ini ke <code>common.js</code> Anda di <em>en.wikivoyage.org</em>:</p>
-          <pre><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Skrip menambahkan tombol <strong>+ Plan</strong> di samping setiap item (See, Do, Eat, Sleep, ...) pada artikel; klik lagi untuk menghapus. Tempat yang ditambahkan muncul di halaman Megacity di atas. Pasang di <em>en.wikivoyage.org</em> karena penyimpanannya terpisah per alamat wiki.</p>
           <h3>Kredit</h3>
           <p>Alat ini terinspirasi oleh <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> karya <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Terima kasih banyak atas idenya dan karya beliau untuk komunitas Wikivoyage. Untuk menjelajahi sekitar rencana Anda, lihat juga <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
           <p><strong>Di luar wiki:</strong> simpan <code>Megacity.js</code> di folder yang sama dengan halaman HTML Anda lalu tambahkan <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> dan <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Di luar wiki, edisi data dipilih lewat atribut <code>data-wiki-host="id.wikivoyage.org"</code> pada div tersebut (default: <em>en.wikivoyage.org</em>).</p>
         </div>
 
-        <!-- English -->
-        <div data-lang-block="en" hidden>
+        <div data-lang-block="en" lang="en" hidden>
           <h3>The megacity list</h3>
           <p>The list of the 85 largest cities and their ranking follows the Wikipedia article <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Populations are urban-area estimates and may differ from that article once it is updated.</p>
           <h3>The trip plan is stored locally</h3>
           <p>The <em>Trip Planner</em> list is stored in your browser (<code>localStorage</code>), separately for each browser and each wiki address. It is not synced between devices and disappears if the browser's site data is cleared. Always use <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> to view and sort your plan.</p>
           <p>If you only want to <strong>add places to the plan</strong> from ordinary Wikivoyage articles, install the separate script <code>Megacity-AddToPlan.js</code> (save it as <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) and add this line to your <code>common.js</code> on <em>en.wikivoyage.org</em>:</p>
-          <pre><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>It adds a <strong>+ Plan</strong> button next to every listing (See, Do, Eat, Sleep, ...) in articles; click again to remove it. Places you add show up on the Megacity page above. Install it on <em>en.wikivoyage.org</em> because storage is separate for each wiki address.</p>
           <h3>Credits</h3>
           <p>This tool was inspired by <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> by <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Many thanks for the idea and for the work contributed to the Wikivoyage community. To explore the area around your plan, see also <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
           <p><strong>Outside a wiki:</strong> keep <code>Megacity.js</code> next to your HTML page and add <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> and <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Outside a wiki the data edition is chosen with the attribute <code>data-wiki-host="id.wikivoyage.org"</code> on that div (default: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="de" lang="de" hidden>
+          <h3>Die Megacity-Liste</h3>
+          <p>Die Liste der 85 größten Städte und ihre Rangfolge folgen dem Wikipedia-Artikel <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Die Einwohnerzahlen sind Schätzungen für den Ballungsraum und können nach einer Aktualisierung von diesem Artikel abweichen.</p>
+          <h3>Die Reiseplanung wird lokal gespeichert</h3>
+          <p>Die Liste des <em>Trip Planner</em> wird in Ihrem Browser gespeichert (<code>localStorage</code>), getrennt für jeden Browser und jede Wiki-Adresse. Sie wird nicht zwischen Geräten synchronisiert und geht verloren, wenn die Website-Daten des Browsers gelöscht werden. Verwenden Sie immer <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a>, um Ihren Plan anzusehen und zu sortieren.</p>
+          <p>Wenn Sie nur aus gewöhnlichen Wikivoyage-Artikeln <strong>Orte zum Plan hinzufügen</strong> möchten, installieren Sie das separate Skript <code>Megacity-AddToPlan.js</code> (speichern Sie es als <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) und fügen Sie diese Zeile in Ihre <code>common.js</code> auf <em>en.wikivoyage.org</em> ein:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Es fügt in Artikeln neben jedem Eintrag (See, Do, Eat, Sleep, ...) eine Schaltfläche <strong>+ Plan</strong> hinzu; erneutes Klicken entfernt den Ort wieder. Hinzugefügte Orte erscheinen oben auf der Megacity-Seite. Installieren Sie es auf <em>en.wikivoyage.org</em>, da der Speicher für jede Wiki-Adresse getrennt ist.</p>
+          <h3>Danksagung</h3>
+          <p>Dieses Werkzeug wurde von <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> von <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a> inspiriert. Vielen Dank für die Idee und für die Arbeit für die Wikivoyage-Gemeinschaft. Um die Umgebung Ihres Plans zu erkunden, sehen Sie sich auch <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a> an.</p>
+          <p><strong>Außerhalb eines Wikis:</strong> Legen Sie <code>Megacity.js</code> neben Ihre HTML-Seite und fügen Sie <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> und <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code> hinzu. Außerhalb eines Wikis wird die Datenedition über das Attribut <code>data-wiki-host="id.wikivoyage.org"</code> an diesem div gewählt (Standard: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="fr" lang="fr" hidden>
+          <h3>La liste des mégapoles</h3>
+          <p>La liste des 85 plus grandes villes et leur classement suivent l'article Wikipédia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Les populations sont des estimations pour l'agglomération et peuvent différer de cet article une fois celui-ci mis à jour.</p>
+          <h3>Le plan de voyage est enregistré localement</h3>
+          <p>La liste du <em>Trip Planner</em> est enregistrée dans votre navigateur (<code>localStorage</code>), séparément pour chaque navigateur et chaque adresse de wiki. Elle n'est pas synchronisée entre vos appareils et disparaît si les données du site sont effacées. Utilisez toujours <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> pour consulter et trier votre plan.</p>
+          <p>Si vous souhaitez seulement <strong>ajouter des lieux au plan</strong> depuis les articles Wikivoyage ordinaires, installez le script séparé <code>Megacity-AddToPlan.js</code> (enregistrez-le sous <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) et ajoutez cette ligne à votre <code>common.js</code> sur <em>en.wikivoyage.org</em> :</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Il ajoute un bouton <strong>+ Plan</strong> à côté de chaque fiche (See, Do, Eat, Sleep, ...) des articles ; un nouveau clic la retire. Les lieux ajoutés apparaissent sur la page Megacity ci-dessus. Installez-le sur <em>en.wikivoyage.org</em>, car le stockage est séparé pour chaque adresse de wiki.</p>
+          <h3>Remerciements</h3>
+          <p>Cet outil s'inspire de <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> d'<a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Un grand merci pour l'idée et pour le travail apporté à la communauté Wikivoyage. Pour explorer les environs de votre plan, voyez aussi <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>En dehors d'un wiki :</strong> placez <code>Megacity.js</code> à côté de votre page HTML et ajoutez <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> et <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. En dehors d'un wiki, l'édition des données se choisit avec l'attribut <code>data-wiki-host="id.wikivoyage.org"</code> de ce div (par défaut : <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="es" lang="es" hidden>
+          <h3>La lista de megaciudades</h3>
+          <p>La lista de las 85 ciudades más grandes y su clasificación siguen el artículo de Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Las poblaciones son estimaciones del área urbana y pueden diferir de ese artículo cuando se actualice.</p>
+          <h3>El plan de viaje se guarda localmente</h3>
+          <p>La lista del <em>Trip Planner</em> se guarda en su navegador (<code>localStorage</code>), por separado para cada navegador y cada dirección de wiki. No se sincroniza entre dispositivos y desaparece si se borran los datos del sitio del navegador. Use siempre <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> para ver y ordenar su plan.</p>
+          <p>Si solo quiere <strong>añadir lugares al plan</strong> desde artículos normales de Wikivoyage, instale el script independiente <code>Megacity-AddToPlan.js</code> (guárdelo como <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) y añada esta línea a su <code>common.js</code> en <em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Añade un botón <strong>+ Plan</strong> junto a cada ficha (See, Do, Eat, Sleep, ...) de los artículos; haga clic de nuevo para quitarla. Los lugares añadidos aparecen en la página de Megacity de arriba. Instálelo en <em>en.wikivoyage.org</em>, porque el almacenamiento es independiente para cada dirección de wiki.</p>
+          <h3>Créditos</h3>
+          <p>Esta herramienta se inspiró en <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> de <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Muchas gracias por la idea y por el trabajo aportado a la comunidad de Wikivoyage. Para explorar los alrededores de su plan, vea también <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Fuera de un wiki:</strong> guarde <code>Megacity.js</code> junto a su página HTML y añada <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> y <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Fuera de un wiki, la edición de los datos se elige con el atributo <code>data-wiki-host="id.wikivoyage.org"</code> de ese div (por defecto: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="it" lang="it" hidden>
+          <h3>L’elenco delle megalopoli</h3>
+          <p>L’elenco delle 85 città più grandi e la loro classifica seguono la voce di Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Le popolazioni sono stime dell’area urbana e possono differire da quella voce una volta aggiornata.</p>
+          <h3>Il piano di viaggio è salvato in locale</h3>
+          <p>L’elenco del <em>Trip Planner</em> è salvato nel browser (<code>localStorage</code>), separatamente per ogni browser e ogni indirizzo wiki. Non è sincronizzato tra i dispositivi e scompare se i dati del sito del browser vengono cancellati. Usate sempre <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> per vedere e ordinare il vostro piano.</p>
+          <p>Se volete solo <strong>aggiungere luoghi al piano</strong> dalle normali voci di Wikivoyage, installate lo script separato <code>Megacity-AddToPlan.js</code> (salvatelo come <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) e aggiungete questa riga al vostro <code>common.js</code> su <em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Aggiunge un pulsante <strong>+ Plan</strong> accanto a ogni scheda (See, Do, Eat, Sleep, ...) nelle voci; cliccate di nuovo per rimuoverla. I luoghi aggiunti compaiono nella pagina Megacity qui sopra. Installatelo su <em>en.wikivoyage.org</em>, perché l’archiviazione è separata per ogni indirizzo wiki.</p>
+          <h3>Ringraziamenti</h3>
+          <p>Questo strumento è ispirato a <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> di <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Grazie mille per l’idea e per il lavoro dato alla comunità di Wikivoyage. Per esplorare i dintorni del vostro piano, vedete anche <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Fuori da un wiki:</strong> tenete <code>Megacity.js</code> accanto alla vostra pagina HTML e aggiungete <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> e <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Fuori da un wiki l’edizione dei dati si sceglie con l’attributo <code>data-wiki-host="id.wikivoyage.org"</code> di quel div (predefinito: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="pt" lang="pt" hidden>
+          <h3>A lista de megacidades</h3>
+          <p>A lista das 85 maiores cidades e a sua classificação seguem o artigo da Wikipédia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. As populações são estimativas da área urbana e podem diferir desse artigo depois de atualizado.</p>
+          <h3>O plano de viagem é guardado localmente</h3>
+          <p>A lista do <em>Trip Planner</em> é guardada no seu navegador (<code>localStorage</code>), separadamente para cada navegador e cada endereço de wiki. Não é sincronizada entre dispositivos e desaparece se os dados do site do navegador forem apagados. Use sempre <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> para ver e ordenar o seu plano.</p>
+          <p>Se só quiser <strong>adicionar lugares ao plano</strong> a partir de artigos comuns do Wikivoyage, instale o script separado <code>Megacity-AddToPlan.js</code> (guarde-o como <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) e adicione esta linha ao seu <code>common.js</code> em <em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Adiciona um botão <strong>+ Plan</strong> ao lado de cada item (See, Do, Eat, Sleep, ...) nos artigos; clique de novo para o remover. Os lugares adicionados aparecem na página Megacity acima. Instale-o em <em>en.wikivoyage.org</em>, porque o armazenamento é separado para cada endereço de wiki.</p>
+          <h3>Créditos</h3>
+          <p>Esta ferramenta foi inspirada no <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> de <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Muito obrigado pela ideia e pelo trabalho dado à comunidade do Wikivoyage. Para explorar os arredores do seu plano, veja também o <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Fora de um wiki:</strong> guarde o <code>Megacity.js</code> junto da sua página HTML e adicione <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> e <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Fora de um wiki, a edição dos dados é escolhida com o atributo <code>data-wiki-host="id.wikivoyage.org"</code> nesse div (padrão: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="nl" lang="nl" hidden>
+          <h3>De megastedenlijst</h3>
+          <p>De lijst van de 85 grootste steden en hun rangorde volgen het Wikipedia-artikel <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. De bevolkingscijfers zijn schattingen voor het stedelijk gebied en kunnen na een update van dat artikel afwijken.</p>
+          <h3>Het reisplan wordt lokaal opgeslagen</h3>
+          <p>De lijst van de <em>Trip Planner</em> wordt in uw browser opgeslagen (<code>localStorage</code>), apart voor elke browser en elk wikiadres. Ze wordt niet tussen apparaten gesynchroniseerd en verdwijnt als de sitegegevens van de browser worden gewist. Gebruik altijd <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> om uw plan te bekijken en te sorteren.</p>
+          <p>Als u alleen <strong>plaatsen aan het plan wilt toevoegen</strong> vanuit gewone Wikivoyage-artikelen, installeer dan het aparte script <code>Megacity-AddToPlan.js</code> (sla het op als <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) en voeg deze regel toe aan uw <code>common.js</code> op <em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Het voegt in artikelen een knop <strong>+ Plan</strong> toe naast elk item (See, Do, Eat, Sleep, ...); klik nogmaals om het te verwijderen. Toegevoegde plaatsen verschijnen op de Megacity-pagina hierboven. Installeer het op <em>en.wikivoyage.org</em>, omdat de opslag voor elk wikiadres apart is.</p>
+          <h3>Dankbetuiging</h3>
+          <p>Dit hulpmiddel is geïnspireerd op <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> van <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Hartelijk dank voor het idee en voor het werk voor de Wikivoyage-gemeenschap. Bekijk voor de omgeving van uw plan ook <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Buiten een wiki:</strong> zet <code>Megacity.js</code> naast uw HTML-pagina en voeg <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> en <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code> toe. Buiten een wiki wordt de data-editie gekozen met het attribuut <code>data-wiki-host="id.wikivoyage.org"</code> op die div (standaard: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="ru" lang="ru" hidden>
+          <h3>Список мегаполисов</h3>
+          <p>Список 85 крупнейших городов и их рейтинг составлены по статье Википедии <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Численность населения — оценки по городской агломерации, после обновления статьи они могут отличаться.</p>
+          <h3>План поездки хранится локально</h3>
+          <p>Список <em>Trip Planner</em> хранится в вашем браузере (<code>localStorage</code>) отдельно для каждого браузера и каждого адреса вики. Он не синхронизируется между устройствами и пропадает при очистке данных сайтов в браузере. Всегда используйте <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a>, чтобы просматривать и сортировать свой план.</p>
+          <p>Если вы хотите только <strong>добавлять места в план</strong> из обычных статей Викигида, установите отдельный скрипт <code>Megacity-AddToPlan.js</code> (сохраните его как <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) и добавьте эту строку в свой <code>common.js</code> на <em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Он добавляет кнопку <strong>+ Plan</strong> рядом с каждой записью (See, Do, Eat, Sleep, ...) в статьях; повторный щелчок убирает её. Добавленные места появляются на странице Megacity выше. Устанавливайте его на <em>en.wikivoyage.org</em>, так как хранилище отдельное для каждого адреса вики.</p>
+          <h3>Благодарности</h3>
+          <p>Этот инструмент вдохновлён <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> от <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Большое спасибо за идею и за вклад в сообщество Викигида. Чтобы изучить окрестности вашего плана, посмотрите также <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Вне вики:</strong> положите <code>Megacity.js</code> рядом со своей HTML-страницей и добавьте <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> и <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Вне вики издание данных выбирается атрибутом <code>data-wiki-host="id.wikivoyage.org"</code> у этого div (по умолчанию: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="zh" lang="zh" hidden>
+          <h3>特大城市列表</h3>
+          <p>85 个最大城市的列表及其排名参考维基百科条目 <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>。人口为都市圈估算值，该条目更新后可能有所不同。</p>
+          <h3>行程计划保存在本地</h3>
+          <p><em>Trip Planner</em> 列表保存在您的浏览器中（<code>localStorage</code>），每个浏览器和每个维基地址各自独立。它不会在设备之间同步，清除浏览器的网站数据后会消失。请始终使用 <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> 查看和排序您的计划。</p>
+          <p>如果您只想从普通的维基导游条目中<strong>向计划添加地点</strong>，请安装单独的脚本 <code>Megacity-AddToPlan.js</code>（保存为 <code>User:Affandy Murad/Megacity-AddToPlan.js</code>），并把下面这一行添加到您在 <em>en.wikivoyage.org</em> 的 <code>common.js</code> 中：</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>它会在条目中的每个项目（See、Do、Eat、Sleep 等）旁添加 <strong>+ Plan</strong> 按钮；再次点击即可移除。添加的地点会显示在上方的 Megacity 页面。请安装在 <em>en.wikivoyage.org</em>，因为每个维基地址的存储是相互独立的。</p>
+          <h3>致谢</h3>
+          <p>本工具的灵感来自 <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a> 的 <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a>。感谢这个创意，以及对维基导游社区的贡献。若要探索您计划周边的区域，也可以看看 <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>。</p>
+          <p><strong>在维基之外：</strong>把 <code>Megacity.js</code> 放在您的 HTML 页面旁边，并添加 <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> 和 <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>。在维基之外，数据版本通过该 div 上的 <code>data-wiki-host="id.wikivoyage.org"</code> 属性选择（默认：<em>en.wikivoyage.org</em>）。</p>
+        </div>
+
+        <div data-lang-block="ja" lang="ja" hidden>
+          <h3>メガシティの一覧</h3>
+          <p>85の大都市の一覧と順位は、ウィキペディアの記事 <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a> に基づいています。人口は都市圏の推定値で、記事が更新されると異なる場合があります。</p>
+          <h3>旅行プランはローカルに保存されます</h3>
+          <p><em>Trip Planner</em> の一覧はお使いのブラウザ（<code>localStorage</code>）に、ブラウザごと・ウィキのアドレスごとに別々に保存されます。端末間では同期されず、ブラウザのサイトデータを消去すると失われます。プランの表示と並べ替えには、常に <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> を使ってください。</p>
+          <p>通常のウィキボヤージュの記事から<strong>プランに場所を追加</strong>するだけでよい場合は、別のスクリプト <code>Megacity-AddToPlan.js</code>（<code>User:Affandy Murad/Megacity-AddToPlan.js</code> として保存）をインストールし、<em>en.wikivoyage.org</em> のご自身の <code>common.js</code> に次の行を追加してください。</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>記事内の各項目（See、Do、Eat、Sleep など）の横に <strong>+ Plan</strong> ボタンが追加されます。もう一度クリックすると削除されます。追加した場所は上の Megacity ページに表示されます。ストレージはウィキのアドレスごとに別なので、<em>en.wikivoyage.org</em> にインストールしてください。</p>
+          <h3>クレジット</h3>
+          <p>このツールは <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a> さんの <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> に着想を得ました。アイデアと、ウィキボヤージュのコミュニティへの貢献に心から感謝します。プランの周辺を探索するには <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a> もご覧ください。</p>
+          <p><strong>ウィキの外で使う場合：</strong><code>Megacity.js</code> を HTML ページと同じ場所に置き、<code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> と <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code> を追加します。ウィキの外では、その div の <code>data-wiki-host="id.wikivoyage.org"</code> 属性でデータの版を選びます（既定：<em>en.wikivoyage.org</em>）。</p>
+        </div>
+
+        <div data-lang-block="sv" lang="sv" hidden>
+          <h3>Listan över megastäder</h3>
+          <p>Listan över de 85 största städerna och deras rangordning följer Wikipedia-artikeln <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Folkmängderna är uppskattningar för tätorten och kan skilja sig från den artikeln när den uppdateras.</p>
+          <h3>Reseplanen sparas lokalt</h3>
+          <p>Listan i <em>Trip Planner</em> sparas i din webbläsare (<code>localStorage</code>), separat för varje webbläsare och varje wikiadress. Den synkas inte mellan enheter och försvinner om webbläsarens webbplatsdata rensas. Använd alltid <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> för att se och sortera din plan.</p>
+          <p>Om du bara vill <strong>lägga till platser i planen</strong> från vanliga Wikivoyage-artiklar, installera det separata skriptet <code>Megacity-AddToPlan.js</code> (spara det som <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) och lägg till den här raden i din <code>common.js</code> på <em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>Det lägger till en <strong>+ Plan</strong>-knapp bredvid varje post (See, Do, Eat, Sleep, ...) i artiklarna; klicka igen för att ta bort den. Platser du lägger till visas på Megacity-sidan ovan. Installera det på <em>en.wikivoyage.org</em>, eftersom lagringen är separat för varje wikiadress.</p>
+          <h3>Tack</h3>
+          <p>Det här verktyget inspirerades av <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> av <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. Tack så mycket för idén och för arbetet för Wikivoyage-gemenskapen. Om du vill utforska området runt din plan, se också <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>Utanför en wiki:</strong> lägg <code>Megacity.js</code> bredvid din HTML-sida och lägg till <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> och <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. Utanför en wiki väljs dataupplagan med attributet <code>data-wiki-host="id.wikivoyage.org"</code> på den diven (standard: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="he" lang="he" dir="rtl" hidden>
+          <h3>רשימת המטרופולינים</h3>
+          <p>רשימת 85 הערים הגדולות ודירוגן מבוססות על הערך בוויקיפדיה <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. נתוני האוכלוסייה הם אומדנים לאזור העירוני ועשויים להיות שונים מהערך לאחר עדכונו.</p>
+          <h3>תוכנית הטיול נשמרת מקומית</h3>
+          <p>רשימת ה-<em>Trip Planner</em> נשמרת בדפדפן שלכם (<code>localStorage</code>), בנפרד לכל דפדפן ולכל כתובת ויקי. היא אינה מסונכרנת בין מכשירים ותיעלם אם נתוני האתרים בדפדפן יימחקו. השתמשו תמיד ב-<a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> כדי לצפות בתוכנית ולמיין אותה.</p>
+          <p>אם אתם רוצים רק <strong>להוסיף מקומות לתוכנית</strong> מערכים רגילים בוויקימסע, התקינו את הסקריפט הנפרד <code>Megacity-AddToPlan.js</code> (שמרו אותו בשם <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) והוסיפו את השורה הבאה לקובץ <code>common.js</code> שלכם ב-<em>en.wikivoyage.org</em>:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>הסקריפט מוסיף כפתור <strong>+ Plan</strong> ליד כל פריט (See, Do, Eat, Sleep, ...) בערכים; לחיצה נוספת מסירה אותו. מקומות שנוספו מופיעים בדף Megacity שלמעלה. התקינו אותו ב-<em>en.wikivoyage.org</em>, כי האחסון נפרד לכל כתובת ויקי.</p>
+          <h3>תודות</h3>
+          <p>הכלי הזה קיבל השראה מ-<a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> של <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>. תודה רבה על הרעיון ועל העבודה למען קהילת ויקימסע. כדי לחקור את סביבת התוכנית שלכם, ראו גם את <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>.</p>
+          <p><strong>מחוץ לוויקי:</strong> שימו את <code>Megacity.js</code> לצד דף ה-HTML שלכם והוסיפו <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> ו-<code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code>. מחוץ לוויקי בוחרים את מהדורת הנתונים באמצעות המאפיין <code>data-wiki-host="id.wikivoyage.org"</code> ב-div הזה (ברירת מחדל: <em>en.wikivoyage.org</em>).</p>
+        </div>
+
+        <div data-lang-block="bn" lang="bn" hidden>
+          <h3>মেগাসিটির তালিকা</h3>
+          <p>৮৫টি বৃহত্তম শহরের তালিকা ও তাদের র‍্যাঙ্কিং উইকিপিডিয়ার নিবন্ধ <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a> অনুসরণ করে। জনসংখ্যা নগর অঞ্চলের আনুমানিক হিসাব এবং নিবন্ধটি হালনাগাদ হলে তা ভিন্ন হতে পারে।</p>
+          <h3>ভ্রমণ পরিকল্পনা স্থানীয়ভাবে সংরক্ষিত হয়</h3>
+          <p><em>Trip Planner</em> তালিকা আপনার ব্রাউজারে (<code>localStorage</code>) সংরক্ষিত হয়, প্রতিটি ব্রাউজার ও প্রতিটি উইকি ঠিকানার জন্য আলাদাভাবে। এটি ডিভাইসগুলোর মধ্যে সিঙ্ক হয় না এবং ব্রাউজারের সাইট ডেটা মুছলে হারিয়ে যায়। আপনার পরিকল্পনা দেখতে ও সাজাতে সবসময় <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> ব্যবহার করুন।</p>
+          <p>আপনি যদি শুধু সাধারণ উইকিভ্রমণ নিবন্ধ থেকে <strong>পরিকল্পনায় স্থান যোগ করতে</strong> চান, তাহলে আলাদা স্ক্রিপ্ট <code>Megacity-AddToPlan.js</code> (এটি <code>User:Affandy Murad/Megacity-AddToPlan.js</code> নামে সংরক্ষণ করুন) ইনস্টল করুন এবং <em>en.wikivoyage.org</em>-এ আপনার <code>common.js</code>-এ এই লাইনটি যোগ করুন:</p>
+          <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
+          <p>এটি নিবন্ধের প্রতিটি আইটেমের (See, Do, Eat, Sleep, ...) পাশে একটি <strong>+ Plan</strong> বোতাম যোগ করে; আবার ক্লিক করলে সরে যায়। যোগ করা স্থানগুলো উপরের Megacity পাতায় দেখা যায়। এটি <em>en.wikivoyage.org</em>-এ ইনস্টল করুন, কারণ প্রতিটি উইকি ঠিকানার সংরক্ষণ আলাদা।</p>
+          <h3>কৃতজ্ঞতা</h3>
+          <p>এই টুলটি <a href="https://en.wikivoyage.org/wiki/User:Andree.sk" target="_blank" rel="noopener">Andree.sk</a>-এর <a href="https://en.wikivoyage.org/wiki/User:Andree.sk/ListingBrowser" target="_blank" rel="noopener">ListingBrowser</a> থেকে অনুপ্রাণিত। ধারণাটির জন্য এবং উইকিভ্রমণ সম্প্রদায়ে অবদানের জন্য অনেক ধন্যবাদ। আপনার পরিকল্পনার আশপাশ ঘুরে দেখতে <a href="https://wikilokal.web.app" target="_blank" rel="noopener">Wikilokal</a>-ও দেখুন।</p>
+          <p><strong>উইকির বাইরে:</strong> <code>Megacity.js</code> আপনার HTML পাতার পাশে রাখুন এবং <code>&lt;div id="megacity-root"&gt;&lt;/div&gt;</code> ও <code>&lt;script src="Megacity.js"&gt;&lt;/script&gt;</code> যোগ করুন। উইকির বাইরে ওই div-এর <code>data-wiki-host="id.wikivoyage.org"</code> অ্যাট্রিবিউট দিয়ে ডেটার সংস্করণ বেছে নেওয়া হয় (ডিফল্ট: <em>en.wikivoyage.org</em>)।</p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Installation section: language tabs + copy buttons
+    // Installation section: language tabs (also follow the data-source dropdown) + copy buttons
     (function () {
+      var titles = {id:"Instalasi",en:"Installation",de:"Installation",fr:"Installation",es:"Instalación",it:"Installazione",pt:"Instalação",nl:"Installatie",ru:"Установка",zh:"安装",ja:"インストール",sv:"Installation",he:"התקנה",bn:"ইনস্টলেশন"};
       var tabs = document.querySelectorAll('.mw-install-tabs button');
       var blocks = document.querySelectorAll('[data-lang-block]');
-      tabs.forEach(function (t) {
-        t.addEventListener('click', function () {
-          var lang = t.getAttribute('data-lang');
-          tabs.forEach(function (x) { x.classList.toggle('on', x === t); });
-          blocks.forEach(function (b) { b.hidden = b.getAttribute('data-lang-block') !== lang; });
-        });
-      });
+      function show(lang) {
+        tabs.forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-lang') === lang); });
+        blocks.forEach(function (b) { b.hidden = b.getAttribute('data-lang-block') !== lang; });
+        var h = document.getElementById('install-title');
+        if (h && titles[lang]) h.textContent = titles[lang];
+      }
+      tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.getAttribute('data-lang')); }); });
+      var sel = document.getElementById('sim-wiki-domain');
+      if (sel) sel.addEventListener('change', function () { show(sel.value.split('.')[0]); });
       document.querySelectorAll('.mw-install .copy').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var text = btn.parentNode.querySelector('.snippet').textContent;
@@ -261,6 +450,45 @@
   </script>
 
   <!-- Megacity.js (inlined so this page works as a single file; identical to the separate Megacity.js) -->
+  <script>
+  // Demo only: replace the edition <select> by a dropdown with small flag images (the <select> stays the source of truth)
+  (function () {
+    var sel = document.getElementById('sim-wiki-domain');
+    if (!sel) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'flag-dd';
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'flag-dd-btn'; btn.setAttribute('aria-haspopup', 'listbox');
+    var list = document.createElement('ul');
+    list.className = 'flag-dd-list'; list.setAttribute('role', 'listbox');
+    function flag(o) { return '<img alt="" loading="lazy" src="https://flagcdn.com/w40/' + o.getAttribute('data-flag') + '.png" width="20" height="15">'; }
+    function paint() {
+      var o = sel.options[sel.selectedIndex];
+      btn.innerHTML = flag(o) + '<span>' + o.textContent + '</span><span aria-hidden="true">▾</span>';
+      Array.prototype.forEach.call(list.children, function (li, i) { li.setAttribute('aria-selected', i === sel.selectedIndex ? 'true' : 'false'); });
+    }
+    Array.prototype.forEach.call(sel.options, function (o, i) {
+      var li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.innerHTML = flag(o) + '<span>' + o.textContent + '</span>';
+      li.addEventListener('click', function () {
+        wrap.classList.remove('open');
+        if (sel.selectedIndex === i) return;
+        sel.selectedIndex = i;
+        paint();
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      list.appendChild(li);
+    });
+    btn.addEventListener('click', function (e) { e.stopPropagation(); wrap.classList.toggle('open'); });
+    document.addEventListener('click', function () { wrap.classList.remove('open'); });
+    wrap.appendChild(btn); wrap.appendChild(list);
+    sel.style.display = 'none';
+    sel.parentNode.insertBefore(wrap, sel.nextSibling);
+    paint();
+    wrap.classList.add('ready');
+  })();
+  </script>
   <script>
 /**
  * Megacity.js
@@ -751,7 +979,19 @@
     ".wv-lb-addpanel .btns { display: flex; gap: 6px; flex-wrap: wrap; }",
     ".wv-lb-drag { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; color: #72777d; font-size: 18px; line-height: 1; padding: 2px 8px 2px 0; }",
     ".wv-lb-drag:active { cursor: grabbing; }",
-    ".wv-lb-dragging { opacity: 0.45; }",
+    ".wv-lb-dragging { opacity: 0.35; }",
+    ".wv-lb-days { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid #c8ccd1; border-radius: 4px; background: #fff; font-size: 12px; }",
+    ".wv-lb-days button { width: 24px; height: 24px; padding: 0; border: 1px solid #a2a9b1; border-radius: 4px; background: #f8f9fa; color: #202122; font-size: 15px; line-height: 1; cursor: pointer; }",
+    ".wv-lb-days button:disabled { opacity: 0.4; cursor: not-allowed; }",
+    ".wv-lb-days strong { min-width: 16px; text-align: center; }",
+    ".wv-lb-dayhead { display: flex; align-items: baseline; gap: 10px; margin: 10px 0 6px; padding: 5px 10px; border-left: 4px solid #d97706; background: #f4f6fa; border-radius: 0 4px 4px 0; font-size: 13px; }",
+    ".wv-lb-dayhead.wv-lb-dayhead-on { background: #e3ecff; outline: 2px solid #3366cc; }",
+    ".wv-lb-daymeta { color: #54595d; font-size: 12px; }",
+    ".wv-lb-modal-bg { position: fixed; inset: 0; z-index: 100001; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; padding: 16px; }",
+    ".wv-lb-modal { background: #fff; color: #202122; max-width: 380px; width: 100%; padding: 18px 20px; border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: sans-serif; }",
+    ".wv-lb-modal h4 { margin: 0 0 8px; font-size: 16px; color: #b45309; }",
+    ".wv-lb-modal p { margin: 0 0 14px; font-size: 13.5px; line-height: 1.5; }",
+    ".wv-lb-float { position: fixed; z-index: 100000; margin: 0; pointer-events: none; box-shadow: 0 10px 28px rgba(0,0,0,0.3); transform: scale(1.02) rotate(-0.6deg); opacity: 0.96; background: #fff; cursor: grabbing; }",
     ".wv-lb-drop-before { box-shadow: 0 -3px 0 #3366cc; }",
     ".wv-lb-drop-after { box-shadow: 0 3px 0 #3366cc; }",
     "",
@@ -908,9 +1148,55 @@
     article: { label: 'City guides', color: '#00af89', icon: '📖' }
   };
 
-  var TEMPLATE_NAMES = 'see|do|buy|eat|drink|sleep|go|listing';
-  var INFO_HEADING_RE = /tourism information|tourist information|tourist office|visitor information|visitor cent|tourist cent|informasi wisata|pusat informasi/i;
-  var INFO_NAME_RE = /tourism information|tourist information|tourist office|tourist cent|visitor information|visitor cent|information cent|information service|information kiosk|information booth|informasi wisata|pusat informasi/i;
+  // Listing templates of the Wikivoyage editions -> the English category they stand for
+  // (en/id/it/ru/zh/nl share the English names; the others are translated)
+  var TEMPLATE_ALIASES = {
+    see: 'see', do: 'do', buy: 'buy', eat: 'eat', drink: 'drink', sleep: 'sleep', go: 'go', listing: 'listing',
+    vcard: 'listing',                                                                    // de, ja
+    voir: 'see', faire: 'do', acheter: 'buy', manger: 'eat', sortir: 'drink',           // fr
+    'se loger': 'sleep', aller: 'go', circuler: 'go', 'représentation diplomatique': 'embassy',
+    ver: 'see', hacer: 'do', comprar: 'buy', comer: 'eat', beber: 'drink', dormir: 'sleep', listado: 'listing', // es
+    veja: 'see', 'faça': 'do', compre: 'buy', coma: 'eat', beba: 'drink', durma: 'sleep', outroitem: 'listing', // pt
+    'אתר': 'see', 'פעילויות': 'do', 'קניות': 'buy', 'אוכל': 'eat', 'שתייה': 'drink', 'לינה': 'sleep', 'רשימה': 'listing', 'בריאות': 'listing', // he
+    'দেখুন': 'see', 'করুন': 'do', 'কিনুন': 'buy', 'আহার করুন': 'eat', 'পান করুন': 'drink', 'রাত্রিযাপন করুন': 'sleep', 'তালিকাভুক্তকরণ': 'listing' // bn (sv uses listing)
+  };
+  var TEMPLATE_NAMES = Object.keys(TEMPLATE_ALIASES).map(function (n) {
+    return n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '[ _]');
+  }).join('|');
+
+  // Parameter names of other editions -> the English parameter name
+  var PARAM_ALIASES = {
+    name: ['nom', 'nome', 'nombre', 'namn', 'שם', 'নাম'],
+    address: ['adresse', 'dirección', 'indirizzo', 'endereço', 'adress', 'כתובת', 'ঠিকানা'],
+    content: ['description', 'descripción', 'descrizione', 'descrição', 'sobre', 'beskrivning', 'תיאור', 'বিবরণ'],
+    phone: ['téléphone', 'tel', 'tlf', 'telefon', 'טלפון', 'ফোন'],
+    hours: ['horaire', 'horario', 'orari', 'funcionamento', 'besökstid', 'שעות', 'সময়সূচী'],
+    url: ['sito', 'site', 'webbplats', 'האתר הרשמי', 'ইউআরএল'],
+    lat: ['latitude', 'latitud', 'অক্ষাংশ'],
+    long: ['longitude', 'longitud', 'lon', 'lng', 'দ্রাঘিমাংশ'],
+    type: ['tipo', 'typ', 'ধরন']
+  };
+
+  // `type=` values (de, ja, ru and others use one template for everything) -> category
+  var TYPE_CATEGORY = [
+    ['info', /^(info|tourist information|tourism information|touristeninformation|tourist office)$/],
+    ['embassy', /^(embassy|consulate|embassies|botschaft|konsulat)$/],
+    ['sleep', /^(sleep|hotel|hostel|motel|camping|campsite|guesthouse|apartment|resort|lodging|ryokan|bnb|b&b|pension|youth hostel)$/],
+    ['eat', /^(eat|restaurant|cafe|café|bakery|food|fastfood|food court|ramen|izakaya)$/],
+    ['drink', /^(drink|bar|pub|club|nightclub|disco|coffeeshop|teahouse|brewery|winery)$/],
+    ['buy', /^(buy|shop|mall|market|supermarket|store|department store|souvenir)$/],
+    ['go', /^(go|airport|train|station|bus|ferry|harbor|harbour|port|metro|subway|tram|taxi|transport|rail|boat|busstation|bike)$/],
+    ['do', /^(do|cinema|theater|theatre|stadium|festival|fair|music|entertainment|sport|spa|casino|tour|zoo|bath|amusement park|event|fitness|golf)$/],
+    ['see', /^(see|museum|monument|park|viewpoint|square|castle|church|temple|shrine|palace|garden|beach|tower|bridge|memorial|gallery|sight|attraction|quarter|city|settlement|unesco|mosque|cemetery|ruin|ruins)$/]
+  ];
+  function categoryFromType(t) {
+    t = String(t || '').toLowerCase().trim();
+    for (var i = 0; i < TYPE_CATEGORY.length; i++) if (TYPE_CATEGORY[i][1].test(t)) return TYPE_CATEGORY[i][0];
+    return '';
+  }
+
+  var INFO_HEADING_RE = /tourism information|tourist information|tourist office|visitor information|visitor cent|tourist cent|informasi wisata|pusat informasi|office de tourisme|informations? touristiques?|touristeninformation|touristen-information|oficina de turismo|informaci[oó]n tur[ií]stica|ufficio turistico|informazioni turistiche|posto de turismo|informa[cç][oõ]es tur[ií]sticas|turistinformation|turistbyrå|vvv|туристическ\S* информаци|旅游信息|観光案内|מרכז מידע לתיירים|পর্যটন তথ্য/i;
+  var INFO_NAME_RE = /tourism information|tourist information|tourist office|tourist cent|visitor information|visitor cent|information cent|information service|information kiosk|information booth|informasi wisata|pusat informasi|office de tourisme|touristeninformation|oficina de turismo|ufficio turistico|vvv /i;
 
   var state = {
     map: null,
@@ -923,6 +1209,7 @@
     filterText: '',
     items: [],
     tripPlan: loadTripPlan(),
+    days: loadDays(),
     activeTab: 'explore',
     searchToken: 0,
     primaryHost: CONFIG.FALLBACK_HOST,
@@ -936,6 +1223,69 @@
     } catch (e) {
       return [];
     }
+  }
+
+  var MAX_DAYS = 14;
+  var DAY_COLORS = ['#d97706', '#2563eb', '#16a34a', '#c026d3', '#dc2626', '#0891b2', '#7c3aed', '#ca8a04', '#db2777', '#4d7c0f'];
+
+  function loadDays() {
+    try {
+      var n = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY + '_days'), 10);
+      return n >= 1 && n <= MAX_DAYS ? n : 1;
+    } catch (e) { return 1; }
+  }
+
+  function saveDays() {
+    try { localStorage.setItem(CONFIG.STORAGE_KEY + '_days', String(state.days)); } catch (e) {}
+  }
+
+  function dayColor(d) { return DAY_COLORS[(d - 1) % DAY_COLORS.length]; }
+
+  // Every stop has a day (1..state.days) and the list is kept in day order. A stop without a day (for example one
+  // added by Megacity-AddToPlan.js) joins the day of the stop before it.
+  function normalizeDays() {
+    var prev = 1;
+    state.tripPlan.forEach(function (it, i) {
+      var d = parseInt(it.day, 10);
+      if (!(d >= 1)) d = prev;
+      it.day = Math.min(d, state.days);
+      it._ord = i;
+      prev = it.day;
+    });
+    state.tripPlan.sort(function (a, b) { return a.day - b.day || a._ord - b._ord; });
+    state.tripPlan.forEach(function (it) { delete it._ord; });
+  }
+
+  // [[stops of day 1], [stops of day 2], ...] (always state.days lists, some may be empty)
+  function dayGroups() {
+    normalizeDays();
+    var g = [];
+    for (var d = 1; d <= state.days; d++) g.push([]);
+    state.tripPlan.forEach(function (it) { g[it.day - 1].push(it); });
+    return g;
+  }
+
+  // Day that a newly added stop joins: the day of the last stop (day 1 for an empty plan)
+  function nextStopDay() {
+    var last = state.tripPlan[state.tripPlan.length - 1];
+    return last ? Math.min(Math.max(parseInt(last.day, 10) || 1, 1), state.days) : 1;
+  }
+
+  function showNotice(title, msg) {
+    var old = document.getElementById('wv-lb-modal');
+    if (old) old.parentNode.removeChild(old);
+    var bg = document.createElement('div');
+    bg.id = 'wv-lb-modal';
+    bg.className = 'wv-lb-modal-bg';
+    bg.innerHTML = '<div class="wv-lb-modal" role="alertdialog" aria-modal="true"><h4>' + esc(title) + '</h4><p>' + esc(msg) + '</p>' +
+      '<div style="text-align:right;"><button type="button" class="wv-lb-btn wv-lb-btn-primary">OK</button></div></div>';
+    function close() { document.removeEventListener('keydown', onKey); if (bg.parentNode) bg.parentNode.removeChild(bg); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    bg.addEventListener('click', function (e) { if (e.target === bg) close(); });
+    bg.querySelector('button').addEventListener('click', close);
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(bg);
+    bg.querySelector('button').focus();
   }
 
   function saveTripPlan() {
@@ -1090,7 +1440,7 @@
       }
       if (depth !== 0) break;
       found.push({
-        type: m[1].toLowerCase(),
+        type: TEMPLATE_ALIASES[m[1].toLowerCase().replace(/_/g, ' ')] || m[1].toLowerCase(),
         index: m.index,
         body: wikitext.slice(bodyStart, j - 2)
       });
@@ -1144,12 +1494,13 @@
 
   function pickCategory(rawType, params, name, heading, isEmbassy) {
     if (isEmbassy) return 'embassy';
+    if (categoryFromType(params.type) === 'embassy') return 'embassy';
     if (INFO_HEADING_RE.test(heading) || INFO_NAME_RE.test(name)) return 'info';
     if (rawType !== 'listing' && CATEGORIES[rawType]) return rawType;
     var t = (params.type || '').toLowerCase().trim();
     if (t === 'info' || t === 'tourist information' || t === 'tourism information') return 'info';
     if (CATEGORIES[t] && t !== 'all' && t !== 'article' && t !== 'embassy') return t;
-    return 'see';
+    return categoryFromType(t) || 'see';
   }
 
   function parseListingsFromWikitext(host, pageTitle, wikitext, pageCoord, maxRadiusKm, centerLat, centerLng) {
@@ -1167,6 +1518,10 @@
           var v = part.slice(eqIdx + 1).trim();
           if (k) params[k] = v;
         }
+      });
+      Object.keys(PARAM_ALIASES).forEach(function (canon) {
+        if (params[canon]) return;
+        PARAM_ALIASES[canon].some(function (a) { if (params[a]) { params[canon] = params[a]; return true; } return false; });
       });
 
       var rawName = cleanWikiText(params.name || params.alt || '');
@@ -1233,7 +1588,7 @@
 
   // Articles linked from the "Cities / Other destinations / Regions" sections of a region article
   function fetchChildDestinations(host, label, extraProp, extraParams) {
-    var re = /^(cities|other destinations|regions|destinations)$/i;
+    var re = /^(cities|other destinations|regions|destinations|villes|autres destinations|régions|orte|weitere ziele|regionen|ciudades|otros destinos|regiones|città|altre destinazioni|cidades|outros destinos|steden|overige bestemmingen|города|другие места|城市|其他目的地|都市|その他の行き先|kota|tujuan lain|städer|andra resmål|regioner|ערים|יעדים נוספים|אזורים|শহর|শহরসমূহ|অন্যান্য গন্তব্য|অঞ্চল)$/i;
     return apiGet(host, { action: 'parse', page: label, prop: 'sections', redirects: 1, format: 'json' }).then(function (d) {
       var secs = (d.parse && d.parse.sections) || [];
       var picked = secs.filter(function (x) { return String(x.toclevel) === '1' && re.test(String(x.line).replace(/<[^>]*>/g, '').trim()); });
@@ -1530,6 +1885,7 @@
       var cleanCopy = Object.assign({}, item);
       delete cleanCopy._marker;
       delete cleanCopy._tripMarker;
+      cleanCopy.day = nextStopDay();
       state.tripPlan.push(cleanCopy);
     }
     saveTripPlan();
@@ -1643,23 +1999,46 @@
     return order;
   }
 
+  // Length of the route; each day is a separate route, so the way from one day to the next is not counted
   function currentPlanLength() {
-    if (state.tripPlan.length < 2) return 0;
-    var D = buildDistanceMatrix(state.tripPlan);
-    var order = state.tripPlan.map(function (_, i) { return i; });
-    return pathLength(order, D);
+    var total = 0;
+    dayGroups().forEach(function (g) {
+      if (g.length < 2) return;
+      total += pathLength(g.map(function (_, i) { return i; }), buildDistanceMatrix(g));
+    });
+    return total;
   }
 
   function optimizeTripOrder() {
-    if (state.tripPlan.length < 3) return;
+    var n = state.tripPlan.length, days = state.days;
+    if (days === 1 && n < 3) return;
+    if (days > 1 && n < days) {
+      var empty = [];
+      for (var d = n + 1; d <= days; d++) empty.push('Day ' + d);
+      showNotice('There is an empty day',
+        n + (n === 1 ? ' stop is' : ' stops are') + ' not enough for ' + days + ' days: ' + empty.join(', ') + ' would have no stops. Add more stops or reduce the number of days.');
+      return;
+    }
     var before = currentPlanLength();
     var order = computeOptimizedOrder(state.tripPlan);
     var reordered = order.map(function (i) { return state.tripPlan[i]; });
+    if (days > 1) {
+      // One efficient tour, cut into consecutive parts with (almost) the same number of stops per day
+      var base = Math.floor(n / days), extra = n % days, at = 0;
+      for (var dd = 1; dd <= days; dd++) {
+        var size = base + (dd <= extra ? 1 : 0);
+        for (var k = 0; k < size; k++) reordered[at++].day = dd;
+      }
+    }
     state.tripPlan = reordered;
     saveTripPlan();
     var after = currentPlanLength();
     renderCurrentView();
     var saved = before - after;
+    if (days > 1) {
+      setStatus('Stops sorted into ' + days + ' days (' + formatKm(after) + ' km in total, ' + Math.floor(n / days) + '–' + Math.ceil(n / days) + ' stops per day). Each day starts at its first stop.', false);
+      return;
+    }
     setStatus(
       saved > 0.05
         ? 'Route optimised: ' + formatKm(before) + ' km → ' + formatKm(after) + ' km (saved ' + formatKm(saved) + ' km). The first stop was kept as the starting point.'
@@ -1821,7 +2200,7 @@
         map.addLayer({
           id: 'route-line', type: 'line', source: 'route',
           layout: { 'line-cap': 'round', 'line-join': 'round' },
-          paint: { 'line-color': '#d97706', 'line-width': 3, 'line-opacity': 0.85, 'line-dasharray': [2, 2] }
+          paint: { 'line-color': ['coalesce', ['get', 'color'], '#d97706'], 'line-width': 3, 'line-opacity': 0.85, 'line-dasharray': [2, 2] }
         });
         state.mapReady = true;
         initExtraLayers(map);
@@ -1877,7 +2256,7 @@
       layerState.demReady = true;
       map.addSource('roadroute', { type: 'geojson', data: state.geo.roadroute || EMPTY_FC });
       map.addLayer({ id: 'roadroute-casing', type: 'line', source: 'roadroute', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fff', 'line-width': 7, 'line-opacity': 0.9 } }, 'route-line');
-      map.addLayer({ id: 'roadroute-line', type: 'line', source: 'roadroute', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#d97706', 'line-width': 4 } }, 'route-line');
+      map.addLayer({ id: 'roadroute-line', type: 'line', source: 'roadroute', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['coalesce', ['get', 'color'], '#d97706'], 'line-width': 4 } }, 'route-line');
       if (!state.mapBasic && map.getSource('openmaptiles')) {
         map.addLayer({ id: 'buildings-3d', type: 'fill-extrusion', source: 'openmaptiles', 'source-layer': 'building', minzoom: 13,
           layout: { visibility: 'none' },
@@ -1953,20 +2332,27 @@
 
   function fmtDur(sec) { var m = Math.round(sec / 60); return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60) + ' min' : m + ' min'; }
 
-  function routeLegs(coords) {
+  // groups: [{ day, color, coords: [[lng, lat], ...] }, ...], one route per day
+  function routeLegs(groups) {
     var token = layerState.routeTok = (layerState.routeTok || 0) + 1;
-    state.planCoords = coords;
+    state.planCoords = groups;
     var mode = 'foot', base = CONFIG.ROUTING + ROUTE_MODES[mode].path + '/route/v1/driving/';
-    setGeo('roadroute', EMPTY_FC);
-    setGeo('route', coords.length > 1 ? { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } } : EMPTY_FC);
-    if (coords.length < 2 || !layerState.walk) { layerStatus(''); return; }
-    layerStatus('Finding walking route…');
     var legs = [];
-    for (var i = 0; i < coords.length - 1 && i < 30; i++) legs.push([coords[i], coords[i + 1]]);
-    Promise.all(legs.map(function (l) {
-      var key = mode + '|' + l[0].join(',') + '|' + l[1].join(',');
+    groups.forEach(function (g) {
+      for (var i = 0; i < g.coords.length - 1; i++) legs.push({ a: g.coords[i], b: g.coords[i + 1], day: g.day, color: g.color });
+    });
+    var line = function (l) { return { type: 'Feature', properties: { color: l.color }, geometry: { type: 'LineString', coordinates: [l.a, l.b] } }; };
+    setGeo('roadroute', EMPTY_FC);
+    setGeo('route', legs.length ? { type: 'FeatureCollection', features: groups.filter(function (g) { return g.coords.length > 1; }).map(function (g) {
+      return { type: 'Feature', properties: { color: g.color }, geometry: { type: 'LineString', coordinates: g.coords } };
+    }) } : EMPTY_FC);
+    if (!legs.length || !layerState.walk) { layerStatus(''); return; }
+    layerStatus('Finding walking route…');
+    var fetched = legs.slice(0, 30);
+    Promise.all(fetched.map(function (l) {
+      var key = mode + '|' + l.a.join(',') + '|' + l.b.join(',');
       if (legCache[key]) return legCache[key];
-      return (legCache[key] = fetch(base + l[0][0] + ',' + l[0][1] + ';' + l[1][0] + ',' + l[1][1] + '?overview=full&geometries=geojson')
+      return (legCache[key] = fetch(base + l.a[0] + ',' + l.a[1] + ';' + l.b[0] + ',' + l.b[1] + '?overview=full&geometries=geojson')
         .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function (d) {
           var rt = d.code === 'Ok' && d.routes && d.routes[0];
@@ -1977,15 +2363,27 @@
         .catch(function () { delete legCache[key]; return { ok: false }; }));
     })).then(function (res) {
       if (token !== layerState.routeTok) return;
-      var roads = [], gaps = [], dist = 0, dur = 0;
+      var roads = [], gaps = [], dist = 0, dur = 0, per = {};
       res.forEach(function (r, i) {
-        if (r.ok) { roads.push({ type: 'Feature', properties: {}, geometry: r.geom }); dist += r.dist; dur += r.dur; }
-        else gaps.push([legs[i][0], legs[i][1]]);
+        var l = fetched[i];
+        if (r.ok) {
+          roads.push({ type: 'Feature', properties: { color: l.color }, geometry: r.geom });
+          dist += r.dist; dur += r.dur;
+          var p = per[l.day] || (per[l.day] = { dist: 0, dur: 0 });
+          p.dist += r.dist; p.dur += r.dur;
+        } else gaps.push(line(l));
       });
-      for (var j = 30; j < coords.length - 1; j++) gaps.push([coords[j], coords[j + 1]]);
+      for (var j = 30; j < legs.length; j++) gaps.push(line(legs[j]));
       setGeo('roadroute', { type: 'FeatureCollection', features: roads });
-      setGeo('route', gaps.length ? { type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: gaps } } : EMPTY_FC);
-      layerStatus(roads.length ? (dist / 1000).toFixed(1) + ' km · ' + fmtDur(dur) + (gaps.length ? ' · ' + gaps.length + ' leg(s) dashed (no road link)' : '') : 'No road route found, dashed straight lines shown');
+      setGeo('route', gaps.length ? { type: 'FeatureCollection', features: gaps } : EMPTY_FC);
+      var txt = '';
+      if (roads.length) {
+        txt = groups.length > 1
+          ? groups.filter(function (g) { return per[g.day]; }).map(function (g) { return 'Day ' + g.day + ' ' + (per[g.day].dist / 1000).toFixed(1) + ' km · ' + fmtDur(per[g.day].dur); }).join('  |  ')
+          : (dist / 1000).toFixed(1) + ' km · ' + fmtDur(dur);
+        if (gaps.length) txt += ' · ' + gaps.length + ' leg(s) dashed (no road link)';
+      } else txt = 'No road route found, dashed straight lines shown';
+      layerStatus(txt);
     });
   }
 
@@ -2083,30 +2481,35 @@
       return;
     }
 
-    var coords = [];
+    var coords = [], byDay = {}, groups = [];
+    dayGroups(); // keeps the list in day order
 
-    state.tripPlan.forEach(function (item, index) {
-      var stepNumber = index + 1;
+    state.tripPlan.forEach(function (item) {
+      var day = item.day, color = dayColor(day);
+      var g = byDay[day];
+      if (!g) { g = byDay[day] = { day: day, color: color, coords: [] }; groups.push(g); }
+      g.coords.push([item.lng, item.lat]);
       coords.push([item.lng, item.lat]);
+      var stepNumber = g.coords.length;
 
-      var el = makePin(stepNumber, '#d97706');
-      el.title = item.name;
+      var el = makePin(stepNumber, color);
+      el.title = (state.days > 1 ? 'Day ' + day + ' · ' : '') + item.name;
 
       var url = item.custom ? '' : itemUrl(item);
       var popupHtml =
         '<div style="min-width:200px;font-family:sans-serif;">' +
-          '<div style="font-size:11px;font-weight:700;color:#d97706;">🎒 STOP #' + stepNumber + (item.custom ? ' · 📌 CUSTOM' : '') + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:' + color + ';">🎒 ' + (state.days > 1 ? 'DAY ' + day + ' · ' : '') + 'STOP #' + stepNumber + (item.custom ? ' · 📌 CUSTOM' : '') + '</div>' +
           '<div style="font-weight:700;font-size:14px;margin:2px 0;">' + esc(item.name) + '</div>' +
           (item.custom
             ? '<div style="font-size:12px;color:#54595d;">' + (item.area ? esc(item.area) + '<br>' : '') + item.lat.toFixed(5) + ', ' + item.lng.toFixed(5) + '</div>'
             : '<div style="font-size:12px;color:#54595d;margin-bottom:6px;">Guide: <a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(item.article) + '</a></div>' +
-              '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;padding:4px 9px;background:#d97706;color:#fff;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;">Open article ↗</a>') +
+              '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;padding:4px 9px;background:' + color + ';color:#fff;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;">Open article ↗</a>') +
         '</div>';
 
       item._tripMarker = addMapMarker(el, item.lat, item.lng, popupHtml);
     });
 
-    routeLegs(coords);
+    routeLegs(groups);
 
     if (coords.length === 1) {
       viewTo(state.tripPlan[0].lat, state.tripPlan[0].lng, 14);
@@ -2124,7 +2527,7 @@
     if (mode === 'planner') {
       legendEl.innerHTML =
         '<strong>Map legend (Trip Planner):</strong><br>' +
-        '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#d97706;margin-right:6px;vertical-align:middle;"></span>Numbered orange pin = visiting order &amp; route';
+        '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#d97706;margin-right:6px;vertical-align:middle;"></span>Numbered pin = visiting order &amp; route (one colour per day)';
     } else if (mode === 'explore') {
       legendEl.innerHTML =
         '<strong>Map legend (Search Results):</strong><br>' +
@@ -2235,7 +2638,8 @@
   function addManualStop(name, pos) {
     var item = {
       id: 'custom-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      custom: true, category: 'custom', name: name, article: '', lat: pos.lat, lng: pos.lng, area: '', areaPending: true
+      custom: true, category: 'custom', name: name, article: '', lat: pos.lat, lng: pos.lng, area: '', areaPending: true,
+      day: nextStopDay()
     };
     state.tripPlan.push(item);
     saveTripPlan();
@@ -2289,29 +2693,50 @@
       try { handle.setPointerCapture(ev.pointerId); } catch (e) {}
       var cards = [].slice.call(listEl.querySelectorAll('.wv-lb-card[data-plan-idx]'));
       var others = cards.filter(function (c) { return c !== card; });
-      var target = idx;
+      var heads = [].slice.call(listEl.querySelectorAll('.wv-lb-dayhead'));
+      var target = idx, newDay = state.tripPlan[idx].day || 1;
       card.classList.add('wv-lb-dragging');
+      // A floating copy of the card follows the pointer; the original stays in the list as a dimmed placeholder
+      var cr = card.getBoundingClientRect(), offY = ev.clientY - cr.top, offX = ev.clientX - cr.left;
+      var ghost = card.cloneNode(true);
+      ghost.classList.remove('wv-lb-dragging');
+      ghost.classList.add('wv-lb-float');
+      ghost.removeAttribute('id');
+      ghost.style.width = cr.width + 'px';
+      ghost.style.left = cr.left + 'px';
+      ghost.style.top = cr.top + 'px';
+      document.body.appendChild(ghost);
       function mark() {
         cards.forEach(function (c) { c.classList.remove('wv-lb-drop-before', 'wv-lb-drop-after'); });
+        heads.forEach(function (h) { h.classList.toggle('wv-lb-dayhead-on', Number(h.getAttribute('data-day')) === newDay); });
         if (target < others.length) others[target].classList.add('wv-lb-drop-before');
         else if (others.length) others[others.length - 1].classList.add('wv-lb-drop-after');
       }
       function move(e) {
+        ghost.style.top = (e.clientY - offY) + 'px';
+        ghost.style.left = (e.clientX - offX) + 'px';
         var y = e.clientY, lr = listEl.getBoundingClientRect();
         if (y < lr.top + 36) listEl.scrollTop -= 14; else if (y > lr.bottom - 36) listEl.scrollTop += 14;
         var n = 0;
         others.forEach(function (c) { var r = c.getBoundingClientRect(); if (y > r.top + r.height / 2) n++; });
         target = n;
+        // the day is the last day header above the pointer (stops can be dropped on another day, even an empty one)
+        newDay = 1;
+        heads.forEach(function (h) { var r = h.getBoundingClientRect(); if (y > r.top + r.height / 2) newDay = Number(h.getAttribute('data-day')); });
         mark();
       }
       function up() {
         handle.removeEventListener('pointermove', move);
         handle.removeEventListener('pointerup', up);
         handle.removeEventListener('pointercancel', up);
+        if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
         cards.forEach(function (c) { c.classList.remove('wv-lb-dragging', 'wv-lb-drop-before', 'wv-lb-drop-after'); });
-        if (target !== idx) {
+        heads.forEach(function (h) { h.classList.remove('wv-lb-dayhead-on'); });
+        if (target !== idx || newDay !== state.tripPlan[idx].day) {
           var it = state.tripPlan.splice(idx, 1)[0];
+          it.day = newDay;
           state.tripPlan.splice(target, 0, it);
+          normalizeDays();
           saveTripPlan();
           renderCurrentView();
         }
@@ -2328,15 +2753,30 @@
     bar.style.display = 'flex';
     var has = state.tripPlan.length > 0;
     bar.innerHTML =
-      '<span>' + (has ? '🧭 <strong>' + state.tripPlan.length + '</strong> stops • ~<strong>' + formatKm(currentPlanLength()) + ' km</strong> straight-line route' : '🧭 No stops yet') + '</span>' +
+      '<span>' + (has ? '🧭 <strong>' + state.tripPlan.length + '</strong> stops' + (state.days > 1 ? ' • <strong>' + state.days + '</strong> days' : '') + ' • ~<strong>' + formatKm(currentPlanLength()) + ' km</strong> straight-line route' : '🧭 No stops yet') + '</span>' +
       '<span class="wv-lb-bar-btns">' +
-        (has ? '<button type="button" class="wv-lb-btn wv-lb-btn-accent" id="wv-lb-optimize-btn" title="Reorder stops to shorten the total route (the first stop stays as the starting point)"' +
-          (state.tripPlan.length < 3 ? ' disabled' : '') + '>⚡ Sort stops efficiently</button>' +
+        '<span class="wv-lb-days" title="Number of days of the trip (at least 1). Sorting splits the stops over the days."><span>📅 Days</span>' +
+          '<button type="button" id="wv-lb-days-minus" aria-label="One day less"' + (state.days <= 1 ? ' disabled' : '') + '>−</button>' +
+          '<strong id="wv-lb-days-n">' + state.days + '</strong>' +
+          '<button type="button" id="wv-lb-days-plus" aria-label="One day more"' + (state.days >= MAX_DAYS ? ' disabled' : '') + '>+</button></span>' +
+        (has ? '<button type="button" class="wv-lb-btn wv-lb-btn-accent" id="wv-lb-optimize-btn" title="' + (state.days > 1 ? 'Reorder the stops and split them over the days' : 'Reorder stops to shorten the total route (the first stop stays as the starting point)') + '"' +
+          ((state.days > 1 ? state.tripPlan.length < 1 : state.tripPlan.length < 3) ? ' disabled' : '') + '>⚡ Sort stops efficiently</button>' +
         '<button type="button" class="wv-lb-btn" id="wv-lb-pdf-btn" title="Save the trip plan as a PDF (map + table)">📄 PDF</button>' : '') +
         '<button type="button" class="wv-lb-btn" id="wv-lb-addmanual-btn" title="Add a stop by typing its name and coordinates">➕ Add manually</button>' +
         (has ? '<button type="button" class="wv-lb-btn" id="wv-lb-reset-btn" title="Remove all stops from the plan">↺ Reset</button>' : '') +
       '</span>';
     bar.querySelector('#wv-lb-addmanual-btn').addEventListener('click', function () { setAddPanelOpen(!state.addOpen); });
+    function changeDays(delta) {
+      var nd = Math.min(Math.max(state.days + delta, 1), MAX_DAYS);
+      if (nd === state.days) return;
+      state.days = nd;
+      saveDays();
+      normalizeDays(); // stops of removed days join the last remaining day
+      saveTripPlan();
+      renderCurrentView();
+    }
+    bar.querySelector('#wv-lb-days-minus').addEventListener('click', function () { changeDays(-1); });
+    bar.querySelector('#wv-lb-days-plus').addEventListener('click', function () { changeDays(1); });
     if (!has) return;
     bar.querySelector('#wv-lb-optimize-btn').addEventListener('click', optimizeTripOrder);
     var pdfBtn = bar.querySelector('#wv-lb-pdf-btn');
@@ -2353,6 +2793,8 @@
       }
       clearTimeout(resetTimer);
       state.tripPlan = [];
+      state.days = 1;
+      saveDays();
       saveTripPlan();
       renderCurrentView();
       setStatus('Trip Planner cleared.', false);
@@ -2401,7 +2843,22 @@
         return;
       }
 
+      var groupsNow = dayGroups(), dayNo = {}, lastDay = 0;
+      function addDayHead(d) {
+        var g = groupsNow[d - 1], km = g.length > 1 ? pathLength(g.map(function (_, i) { return i; }), buildDistanceMatrix(g)) : 0;
+        var head = document.createElement('div');
+        head.className = 'wv-lb-dayhead';
+        head.setAttribute('data-day', d);
+        head.style.borderLeftColor = dayColor(d);
+        head.innerHTML = '<strong style="color:' + dayColor(d) + ';">Day ' + d + '</strong>' +
+          (g.length ? '<span class="wv-lb-daymeta">' + g.length + (g.length === 1 ? ' stop' : ' stops') + (g.length > 1 ? ' • ~' + formatKm(km) + ' km' : '') + '</span>'
+                    : '<span class="wv-lb-daymeta"><em>No stops yet — drag a stop here or use Sort</em></span>');
+        listEl.appendChild(head);
+      }
+
       state.tripPlan.forEach(function (item, idx) {
+        if (state.days > 1) { while (lastDay < item.day) addDayHead(++lastDay); }
+        var stopNo = dayNo[item.day] = (dayNo[item.day] || 0) + 1;
         var catInfo = item.custom ? { icon: '📌', label: 'Custom', color: '#7b3fe4' } : (CATEGORIES[item.category] || CATEGORIES.see);
         var url = item.custom ? '' : itemUrl(item);
         var card = document.createElement('div');
@@ -2415,8 +2872,8 @@
         card.innerHTML =
           '<div class="wv-lb-card-header">' +
             '<h4 class="wv-lb-card-title" style="display:flex;align-items:center;">' +
-              '<span class="wv-lb-drag" title="Drag to reorder" aria-label="Drag to reorder stop #' + (idx + 1) + '">⠿</span>' +
-              '<span class="wv-lb-order-badge">' + (idx + 1) + '</span>' +
+              '<span class="wv-lb-drag" title="Drag to reorder" aria-label="Drag to reorder stop #' + stopNo + '">⠿</span>' +
+              '<span class="wv-lb-order-badge" style="background:' + dayColor(item.day) + ';">' + stopNo + '</span>' +
               '<span>' + esc(item.name) + '</span>' +
             '</h4>' +
             '<span class="wv-lb-badge" style="background:' + catInfo.color + ';">' + catInfo.icon + ' ' + catInfo.label + '</span>' +
@@ -2425,7 +2882,7 @@
           (item.custom ? '' : buildDetailsHtml(item)) +
           (!item.custom && item.description ? '<div class="wv-lb-card-desc">' + esc(item.description) + '</div>' : '') +
           '<div class="wv-lb-card-actions">' +
-            '<button type="button" class="wv-lb-card-btn btn-zoom">📍 Focus stop #' + (idx + 1) + '</button>' +
+            '<button type="button" class="wv-lb-card-btn btn-zoom">📍 Focus stop #' + stopNo + '</button>' +
             '<button type="button" class="wv-lb-card-btn saved btn-remove">✕ Remove</button>' +
             (item.custom ? '' : '<a class="wv-lb-card-btn" href="' + esc(url) + '" target="_blank" rel="noopener">Read guide ↗</a>') +
           '</div>';
@@ -2444,6 +2901,7 @@
         enablePlanDrag(listEl, card, card.querySelector('.wv-lb-drag'), idx);
         listEl.appendChild(card);
       });
+      if (state.days > 1) { while (lastDay < state.days) addDayHead(++lastDay); } // days without stops
       return;
     }
 
@@ -2894,18 +3352,29 @@
       await drawn;
       var P = function (ll) { var p = m.project(ll); return [p.x * k, p.y * k]; };
       cx.lineJoin = 'round'; cx.lineCap = 'round';
-      if (pts.length > 1) {
-        var path = function () { cx.beginPath(); pts.forEach(function (c, i) { var q = P(c); if (i) cx.lineTo(q[0], q[1]); else cx.moveTo(q[0], q[1]); }); cx.stroke(); };
-        cx.strokeStyle = '#fff'; cx.globalAlpha = 0.9; cx.lineWidth = 8 * k; cx.setLineDash([12 * k, 10 * k]); path();
-        cx.strokeStyle = '#d97706'; cx.lineWidth = 5 * k; path();
-        cx.setLineDash([]); cx.globalAlpha = 1;
-      }
-      plan.forEach(function (p, i) {
-        var q = P([p.lng, p.lat]), r = 13 * k;
-        cx.beginPath(); cx.arc(q[0], q[1], r, 0, 7); cx.fillStyle = '#d97706'; cx.fill();
-        cx.lineWidth = 2.5 * k; cx.strokeStyle = '#fff'; cx.stroke();
-        cx.fillStyle = '#fff'; cx.font = '700 ' + (r * 1.05) + 'px Arial,sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
-        cx.fillText(String(i + 1), q[0], q[1] + k);
+      var byDay = {}, dayList = [];
+      plan.forEach(function (p) {
+        var d = p.day || 1;
+        if (!byDay[d]) { byDay[d] = []; dayList.push(d); }
+        byDay[d].push(p);
+      });
+      dayList.forEach(function (d) {
+        var g = byDay[d], col = dayColor(d);
+        if (g.length > 1) {
+          var path = function () { cx.beginPath(); g.forEach(function (p, i) { var q = P([p.lng, p.lat]); if (i) cx.lineTo(q[0], q[1]); else cx.moveTo(q[0], q[1]); }); cx.stroke(); };
+          cx.strokeStyle = '#fff'; cx.globalAlpha = 0.9; cx.lineWidth = 8 * k; cx.setLineDash([12 * k, 10 * k]); path();
+          cx.strokeStyle = col; cx.lineWidth = 5 * k; path();
+          cx.setLineDash([]); cx.globalAlpha = 1;
+        }
+      });
+      dayList.forEach(function (d) {
+        byDay[d].forEach(function (p, i) {
+          var q = P([p.lng, p.lat]), r = 13 * k;
+          cx.beginPath(); cx.arc(q[0], q[1], r, 0, 7); cx.fillStyle = dayColor(d); cx.fill();
+          cx.lineWidth = 2.5 * k; cx.strokeStyle = '#fff'; cx.stroke();
+          cx.fillStyle = '#fff'; cx.font = '700 ' + (r * 1.05) + 'px Arial,sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+          cx.fillText(String(i + 1), q[0], q[1] + k);
+        });
       });
       var at = state.mapBasic ? '© OpenStreetMap contributors · Wikimedia Maps' : '© OpenStreetMap contributors · OpenFreeMap © OpenMapTiles';
       cx.font = (11 * k) + 'px Arial,sans-serif'; cx.textAlign = 'right'; cx.textBaseline = 'alphabetic';
@@ -2920,7 +3389,7 @@
   }
 
   async function buildPdf() {
-    var plan = state.tripPlan.slice();
+    var groups = dayGroups(), plan = state.tripPlan.slice();
     var C = PDF_C;
     var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
     var W = doc.internal.pageSize.width, H = doc.internal.pageSize.height, M = 14;
@@ -2932,7 +3401,7 @@
     fill(C.brand); doc.rect(0, 0, W, 34, 'F');
     txt(C.white); fnt('bold', 20); doc.text('Megacity trip plan', M, 16);
     fnt('normal', 10);
-    doc.text(plan.length + ' stops  ·  ~' + formatKm(currentPlanLength()) + ' km straight-line route  ·  ' + today, M, 25);
+    doc.text(plan.length + ' stops  ·  ' + (state.days > 1 ? state.days + ' days  ·  ' : '') + '~' + formatKm(currentPlanLength()) + ' km straight-line route  ·  ' + today, M, 25);
     var y = 44;
 
     var shot = null;
@@ -2944,12 +3413,23 @@
       y += h + 12;
     }
 
-    var body = plan.map(function (it, k) {
-      var cat = it.custom ? { label: 'Custom' } : (CATEGORIES[it.category] || CATEGORIES.see);
-      var meta = it.custom ? ['Custom', it.area, it.lat.toFixed(5) + ', ' + it.lng.toFixed(5)].filter(Boolean).join(' · ') : [cat.label, it.section, it.article].filter(Boolean).join(' · ');
-      var details = [it.address && it.category !== 'article' ? it.address : '', it.phone, it.hours, it.description ? it.description.slice(0, 220) + (it.description.length > 220 ? '…' : '') : ''].filter(Boolean).join('\n');
-      var next = k < plan.length - 1 ? formatKm(getDistanceKm(it.lat, it.lng, plan[k + 1].lat, plan[k + 1].lng)) + ' km' : '';
-      return [String(k + 1), it.name + '\n' + meta, details, next];
+    var body = [], rowItems = [];
+    groups.forEach(function (g, gi) {
+      if (state.days > 1) {
+        var km = g.length > 1 ? pathLength(g.map(function (_, i) { return i; }), buildDistanceMatrix(g)) : 0;
+        var rgb = dayColor(gi + 1).match(/[0-9a-f]{2}/gi).map(function (h) { return parseInt(h, 16); });
+        body.push([{ content: 'Day ' + (gi + 1) + '  ·  ' + (g.length ? g.length + (g.length === 1 ? ' stop' : ' stops') + (g.length > 1 ? '  ·  ~' + formatKm(km) + ' km' : '') : 'no stops'),
+          colSpan: 4, styles: { fillColor: rgb, textColor: C.white, fontStyle: 'bold', fontSize: 10 } }]);
+        rowItems.push(null);
+      }
+      g.forEach(function (it, k) {
+        var cat = it.custom ? { label: 'Custom' } : (CATEGORIES[it.category] || CATEGORIES.see);
+        var meta = it.custom ? ['Custom', it.area, it.lat.toFixed(5) + ', ' + it.lng.toFixed(5)].filter(Boolean).join(' · ') : [cat.label, it.section, it.article].filter(Boolean).join(' · ');
+        var details = [it.address && it.category !== 'article' ? it.address : '', it.phone, it.hours, it.description ? it.description.slice(0, 220) + (it.description.length > 220 ? '…' : '') : ''].filter(Boolean).join('\n');
+        var next = k < g.length - 1 ? formatKm(getDistanceKm(it.lat, it.lng, g[k + 1].lat, g[k + 1].lng)) + ' km' : '';
+        body.push([String(k + 1), it.name + '\n' + meta, details, next]);
+        rowItems.push(it);
+      });
     });
 
     doc.autoTable({
@@ -2958,19 +3438,18 @@
       body: body,
       styles: { font: 'helvetica', fontSize: 9.5, textColor: C.ink, cellPadding: 2.4, lineColor: C.line, lineWidth: 0, valign: 'top' },
       headStyles: { fillColor: C.brand, textColor: C.white, fontStyle: 'bold', fontSize: 9 },
-      alternateRowStyles: { fillColor: C.zebra },
       columnStyles: { 0: { cellWidth: 10, halign: 'center' }, 1: { cellWidth: 62 }, 2: { cellWidth: 'auto' }, 3: { cellWidth: 22, textColor: C.muted } },
       didParseCell: function (h) {
-        if (h.section === 'body' && NONLATIN.test(String(h.cell.raw || ''))) h.cell.nonlatin = true;
+        if (h.section === 'body' && rowItems[h.row.index] && NONLATIN.test(String(h.cell.raw || ''))) h.cell.nonlatin = true;
       },
       willDrawCell: function (h) {
         if (h.cell.nonlatin && h.section === 'body') { h.cell.nl = h.cell.text.slice(); h.cell.text = ['']; }
       },
       didDrawCell: function (h) {
         if (h.section !== 'body') return;
-        if (h.cell.nonlatin && h.cell.nl) canvasText(doc, h.cell, h.cell.nl, h.row.index % 2 ? C.zebra : C.white);
+        if (h.cell.nonlatin && h.cell.nl) canvasText(doc, h.cell, h.cell.nl, C.white);
         if (h.column.index === 1) {
-          var it = plan[h.row.index];
+          var it = rowItems[h.row.index];
           if (it && !it.custom) doc.link(h.cell.x, h.cell.y, h.cell.width, h.cell.height, { url: itemUrl(it) });
         }
       }
