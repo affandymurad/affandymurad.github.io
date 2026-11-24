@@ -1,75 +1,130 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Kalender Indonesia 2027</title>
-    <meta name="description" content="Kalender Indonesia 2027 lengkap dengan hari libur nasional dan cuti bersama berdasarkan SKB Tiga Menteri.">
+    <title>2027 Holiday Calendar — Southeast Asia (All 11 Countries)</title>
+    <meta name="description" content="A unified, macOS-inspired 2027 holiday calendar for all 11 Southeast Asian nations (Brunei, Cambodia, Indonesia, Laos, Malaysia [all 16 states & federal territories], Myanmar, Philippines, Singapore, Thailand, Timor-Leste, and Vietnam) with long weekends and PDF export.">
     <meta name="color-scheme" content="light dark">
-    <link rel="icon" href="../icon.svg" type="image/svg+xml">
     <style>
+        /* ==========================================================================
+           Apple / macOS Sonoma-Sequoia Design System Tokens
+           - No gradients, no bold text on holiday labels/types
+           - Crisp 1px hairline borders, frosted glass toolbar, calm neutral hierarchy
+           ========================================================================== */
         :root {
-            --bg: #f5f6fa;
-            --card: #ffffff;
-            --ink: #1b2233;
-            --muted: #6b7489;
-            --line: #e5e8f0;
-            --soft: #f0f2f8;
-            --brand: #3b5bdb;
-            --brand-ink: #ffffff;
-            --nas: #e03131;
-            --nas-bg: #ffe3e3;
-            --nas-ink: #a61e1e;
-            --cuti: #7048e8;
-            --cuti-bg: #e5dbff;
-            --cuti-ink: #5f3dc4;
-            --sat: #4c6ef5;
-            --today: #12b886;
-            --shadow: 0 1px 2px rgba(20, 30, 60, .05), 0 6px 20px rgba(20, 30, 60, .06);
-            --radius: 16px;
+            --bg-canvas: #f5f5f7;
+            --bg-elevated: #ffffff;
+            --bg-subtle: #ededf0;
+            --bg-hover: #e5e5ea;
+            --bg-glass: rgba(245, 245, 247, 0.78);
+
+            --ink-primary: #1d1d1f;
+            --ink-secondary: #6e6e73;
+            --ink-tertiary: #98989d;
+
+            --hairline: rgba(0, 0, 0, 0.08);
+            --hairline-strong: rgba(0, 0, 0, 0.14);
+
+            --accent: #007aff;
+            --accent-tint: rgba(0, 122, 255, 0.12);
+            --accent-ink: #ffffff;
+
+            /* Holiday Type 1: National / Federal / Regular Public Holiday (Apple Crimson) */
+            --t1-solid: #ff3b30;
+            --t1-tint: #ffebe9;
+            --t1-ink: #c92a22;
+            --t1-border: rgba(255, 59, 48, 0.22);
+
+            /* Holiday Type 2: Joint Leave / State / Special / Substitute Holiday (Apple Indigo) */
+            --t2-solid: #5856d6;
+            --t2-tint: #eeedfc;
+            --t2-ink: #3f3db5;
+            --t2-border: rgba(88, 86, 214, 0.22);
+
+            /* Secondary Weekend Day (e.g. Saturday in Sun-Sat, or Sat in Fri-Sat) */
+            --wknd-sec: #5e5ce6;
+            --today-ring: #007aff;
+
+            --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+            --shadow-popover: 0 18px 48px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06);
+
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root:not([data-theme="light"]) {
-                --bg: #0d1220;
-                --card: #161d2f;
-                --ink: #eef1f8;
-                --muted: #98a2bb;
-                --line: #263049;
-                --soft: #1d263b;
-                --brand: #748ffc;
-                --brand-ink: #0d1220;
-                --nas: #ff6b6b;
-                --nas-bg: #4a1e26;
-                --nas-ink: #ffa8a8;
-                --cuti: #b197fc;
-                --cuti-bg: #3b2a66;
-                --cuti-ink: #d0bfff;
-                --sat: #91a7ff;
-                --today: #38d9a9;
-                --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+                --bg-canvas: #000000;
+                --bg-elevated: #1c1c1e;
+                --bg-subtle: #2c2c2e;
+                --bg-hover: #3a3a3c;
+                --bg-glass: rgba(28, 28, 30, 0.78);
+
+                --ink-primary: #f5f5f7;
+                --ink-secondary: #98989d;
+                --ink-tertiary: #636366;
+
+                --hairline: rgba(255, 255, 255, 0.1);
+                --hairline-strong: rgba(255, 255, 255, 0.18);
+
+                --accent: #0a84ff;
+                --accent-tint: rgba(10, 132, 255, 0.18);
+                --accent-ink: #ffffff;
+
+                --t1-solid: #ff453a;
+                --t1-tint: rgba(255, 69, 58, 0.18);
+                --t1-ink: #ff8982;
+                --t1-border: rgba(255, 69, 58, 0.3);
+
+                --t2-solid: #5e5ce6;
+                --t2-tint: rgba(94, 92, 230, 0.22);
+                --t2-ink: #a5a4ff;
+                --t2-border: rgba(94, 92, 230, 0.34);
+
+                --wknd-sec: #7d7aff;
+                --today-ring: #0a84ff;
+
+                --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.3);
+                --shadow-popover: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12);
             }
         }
 
         :root[data-theme="dark"] {
-            --bg: #0d1220;
-            --card: #161d2f;
-            --ink: #eef1f8;
-            --muted: #98a2bb;
-            --line: #263049;
-            --soft: #1d263b;
-            --brand: #748ffc;
-            --brand-ink: #0d1220;
-            --nas: #ff6b6b;
-            --nas-bg: #4a1e26;
-            --nas-ink: #ffa8a8;
-            --cuti: #b197fc;
-            --cuti-bg: #3b2a66;
-            --cuti-ink: #d0bfff;
-            --sat: #91a7ff;
-            --today: #38d9a9;
-            --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+            --bg-canvas: #000000;
+            --bg-elevated: #1c1c1e;
+            --bg-subtle: #2c2c2e;
+            --bg-hover: #3a3a3c;
+            --bg-glass: rgba(28, 28, 30, 0.78);
+
+            --ink-primary: #f5f5f7;
+            --ink-secondary: #98989d;
+            --ink-tertiary: #636366;
+
+            --hairline: rgba(255, 255, 255, 0.1);
+            --hairline-strong: rgba(255, 255, 255, 0.18);
+
+            --accent: #0a84ff;
+            --accent-tint: rgba(10, 132, 255, 0.18);
+            --accent-ink: #ffffff;
+
+            --t1-solid: #ff453a;
+            --t1-tint: rgba(255, 69, 58, 0.18);
+            --t1-ink: #ff8982;
+            --t1-border: rgba(255, 69, 58, 0.3);
+
+            --t2-solid: #5e5ce6;
+            --t2-tint: rgba(94, 92, 230, 0.22);
+            --t2-ink: #a5a4ff;
+            --t2-border: rgba(94, 92, 230, 0.34);
+
+            --wknd-sec: #7d7aff;
+            --today-ring: #0a84ff;
+
+            --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.3);
+            --shadow-popover: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
 
         * {
@@ -80,185 +135,315 @@
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 84px;
+            scroll-padding-top: 76px;
             -webkit-text-size-adjust: 100%;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--ink);
-            line-height: 1.45;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--ink-primary);
+            line-height: 1.47;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             padding-bottom: env(safe-area-inset-bottom);
+            overflow-x: hidden;
+        }
+
+        button,
+        select {
+            font: inherit;
+            color: inherit;
         }
 
         button {
-            font: inherit;
-            color: inherit;
             cursor: pointer;
             border: 0;
             background: none;
         }
 
         a {
-            color: var(--brand);
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         :focus-visible {
-            outline: 3px solid var(--brand);
+            outline: 2.5px solid var(--accent);
             outline-offset: 2px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
         }
 
         .wrap {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 0 20px;
         }
 
-        /* ---------- Hero ---------- */
+        /* ==========================================================================
+           Hero & Region Selector Header
+           ========================================================================== */
         .hero {
-            padding: 28px 0 8px;
+            padding: 32px 0 12px;
             display: grid;
-            gap: 20px;
-            grid-template-columns: 1.1fr 1fr;
+            gap: 24px;
+            grid-template-columns: 1.2fr 0.9fr;
             align-items: stretch;
         }
 
-        .eyebrow {
-            font-size: .78rem;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            color: var(--muted);
-            font-weight: 600;
+        .region-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
-        h1 {
-            font-size: clamp(3rem, 9vw, 5.5rem);
+        .mac-select-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline-strong);
+            border-radius: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .mac-select-wrap:hover {
+            border-color: var(--ink-tertiary);
+        }
+
+        .mac-select-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-tint);
+        }
+
+        .mac-select-icon {
+            padding-left: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             line-height: 1;
-            font-weight: 800;
-            letter-spacing: -.04em;
-            margin: 6px 0 10px;
-            background: linear-gradient(120deg, var(--brand), var(--nas));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .flag-svg {
+            width: 20px;
+            height: 14px;
+            border-radius: 2.5px;
+            display: block;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+        }
+
+        .mac-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: 0;
+            padding: 8px 32px 8px 9px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: var(--ink-primary);
+            cursor: pointer;
+            outline: none;
+            min-height: 36px;
+        }
+
+        .mac-select-chevron {
+            position: absolute;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            color: var(--ink-secondary);
+            pointer-events: none;
+        }
+
+        .state-selector-container {
+            display: inline-flex;
+            align-items: center;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .state-selector-container[hidden] {
+            display: none;
+        }
+
+        .eyebrow {
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-secondary);
+            font-weight: 500;
+        }
+
+        h1.year-title {
+            font-size: clamp(2.8rem, 7vw, 4.6rem);
+            line-height: 1.02;
+            font-weight: 600;
+            letter-spacing: -0.035em;
+            margin: 4px 0 10px;
+            color: var(--ink-primary);
         }
 
         .lead {
-            color: var(--muted);
-            max-width: 52ch;
-            font-size: .95rem;
+            color: var(--ink-secondary);
+            max-width: 60ch;
+            font-size: 0.94rem;
+            font-weight: 400;
         }
 
         .stats {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 10px;
-            margin-top: 18px;
+            margin-top: 20px;
         }
 
         .stat {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 10px 14px;
-            min-width: 104px;
-            flex: 1 1 104px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            box-shadow: var(--shadow-card);
         }
 
-        .stat b {
+        .stat .stat-num {
             display: block;
-            font-size: 1.6rem;
-            line-height: 1.1;
-            font-weight: 800;
+            font-size: 1.55rem;
+            line-height: 1.15;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink-primary);
+        }
+
+        .stat.t1 .stat-num {
+            color: var(--t1-solid);
+        }
+
+        .stat.t2 .stat-num {
+            color: var(--t2-solid);
         }
 
         .stat span {
-            font-size: .76rem;
-            color: var(--muted);
+            display: block;
+            margin-top: 2px;
+            font-size: 0.76rem;
+            color: var(--ink-secondary);
+            font-weight: 400;
         }
 
-        .stat.nas b {
-            color: var(--nas);
-        }
-
-        .stat.cuti b {
-            color: var(--cuti);
-        }
-
-        .next {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
+        /* Upcoming Holiday Card (Apple Widget Style) */
+        .next-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            padding: 22px 24px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 6px;
+            justify-content: space-between;
+            gap: 12px;
             position: relative;
-            overflow: hidden;
         }
 
-        .next::before {
-            content: "";
-            position: absolute;
-            inset: 0 auto 0 0;
+        .next-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .next-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--t1-tint);
+            color: var(--t1-ink);
+        }
+
+        .next-card.t2 .next-badge {
+            background: var(--t2-tint);
+            color: var(--t2-ink);
+        }
+
+        .next-dot {
             width: 6px;
-            background: var(--nas);
+            height: 6px;
+            border-radius: 50%;
+            background: var(--t1-solid);
         }
 
-        .next.cuti::before {
-            background: var(--cuti);
+        .next-card.t2 .next-dot {
+            background: var(--t2-solid);
         }
 
-        .next small {
-            color: var(--muted);
+        .next-sub {
+            font-size: 0.78rem;
+            color: var(--ink-secondary);
+            font-weight: 400;
+        }
+
+        .next-card h2 {
+            font-size: 1.3rem;
             font-weight: 600;
-            font-size: .78rem;
-            text-transform: uppercase;
-            letter-spacing: .1em;
+            letter-spacing: -0.015em;
+            line-height: 1.3;
+            color: var(--ink-primary);
+            margin-top: 4px;
         }
 
-        .next h2 {
-            font-size: 1.35rem;
-            line-height: 1.25;
+        .next-date {
+            color: var(--ink-secondary);
+            font-size: 0.9rem;
+            margin-top: 2px;
         }
 
-        .next p {
-            color: var(--muted);
-            font-size: .92rem;
-        }
-
-        .count {
+        .countdown-row {
             display: flex;
             align-items: baseline;
             gap: 8px;
-            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid var(--hairline);
         }
 
-        .count b {
-            font-size: 3rem;
+        .countdown-row .cd-num {
+            font-size: 2.35rem;
             line-height: 1;
-            font-weight: 800;
-            letter-spacing: -.03em;
-        }
-
-        .count span {
-            color: var(--muted);
             font-weight: 600;
+            letter-spacing: -0.03em;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink-primary);
         }
 
-        /* ---------- Toolbar ---------- */
+        .countdown-row span {
+            color: var(--ink-secondary);
+            font-size: 0.88rem;
+            font-weight: 400;
+        }
+
+        /* ==========================================================================
+           Frosted Glass macOS Toolbar
+           ========================================================================== */
         .toolbar {
             position: sticky;
             top: 0;
-            z-index: 20;
-            background: color-mix(in srgb, var(--bg) 88%, transparent);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--line);
+            z-index: 30;
+            background: var(--bg-glass);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
             margin-top: 16px;
         }
 
@@ -266,36 +451,38 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            padding-top: 9px;
+            padding-bottom: 9px;
         }
 
         .seg {
             display: inline-flex;
-            background: var(--soft);
-            border-radius: 12px;
-            padding: 3px;
+            background: var(--bg-subtle);
+            border-radius: 9px;
+            padding: 2px;
             flex: none;
+            border: 1px solid var(--hairline);
         }
 
         .seg button {
-            padding: 7px 14px;
-            border-radius: 9px;
-            font-weight: 600;
-            font-size: .88rem;
-            color: var(--muted);
+            padding: 5px 14px;
+            border-radius: 7px;
+            font-weight: 500;
+            font-size: 0.84rem;
+            color: var(--ink-secondary);
             white-space: nowrap;
+            transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
         }
 
         .seg button[aria-pressed="true"] {
-            background: var(--card);
-            color: var(--ink);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+            background: var(--bg-elevated);
+            color: var(--ink-primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 0.5px var(--hairline);
         }
 
         .chips {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             overflow-x: auto;
             flex: 1;
             scrollbar-width: none;
@@ -309,105 +496,122 @@
 
         .chip {
             flex: none;
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-size: .84rem;
-            font-weight: 600;
-            color: var(--muted);
+            padding: 5px 11px;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ink-secondary);
             border: 1px solid transparent;
             scroll-snap-align: center;
-            position: relative;
+            transition: background 0.14s ease, color 0.14s ease;
         }
 
         .chip:hover {
-            background: var(--soft);
-            color: var(--ink);
+            background: var(--bg-subtle);
+            color: var(--ink-primary);
         }
 
         .chip[aria-current="true"] {
-            background: var(--brand);
-            color: var(--brand-ink);
+            background: var(--accent);
+            color: var(--accent-ink);
         }
 
         .chip.now:not([aria-current="true"]) {
-            border-color: var(--today);
-            color: var(--today);
+            color: var(--accent);
+            background: var(--accent-tint);
         }
 
         .tool-btn {
             flex: none;
-            height: 38px;
-            min-width: 38px;
-            padding: 0 12px;
-            border-radius: 12px;
-            background: var(--soft);
-            font-weight: 600;
-            font-size: .86rem;
+            height: 32px;
+            min-width: 32px;
+            padding: 0 11px;
+            border-radius: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline-strong);
+            font-weight: 500;
+            font-size: 0.82rem;
+            color: var(--ink-primary);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+            transition: background 0.14s ease, border-color 0.14s ease;
         }
 
         .tool-btn:hover {
-            background: var(--line);
+            background: var(--bg-subtle);
         }
 
         .tool-btn[hidden] {
             display: none;
         }
 
-        /* ---------- Legend ---------- */
+        /* ==========================================================================
+           Clean Legend (No Bold Text, Clean Tinted Swatches)
+           ========================================================================== */
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px 18px;
-            padding: 16px 0 4px;
-            font-size: .84rem;
-            color: var(--muted);
+            align-items: center;
+            gap: 10px 20px;
+            padding: 18px 0 6px;
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--ink-secondary);
         }
 
-        .legend i {
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .swatch {
             display: inline-block;
-            width: 14px;
-            height: 14px;
-            border-radius: 5px;
-            vertical-align: -2px;
-            margin-right: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            flex: none;
         }
 
-        .lg-nas {
-            background: var(--nas);
+        .swatch.t1 {
+            background: var(--t1-tint);
+            border: 1px solid var(--t1-solid);
         }
 
-        .lg-cuti {
-            background: var(--cuti);
+        .swatch.t2 {
+            background: var(--t2-tint);
+            border: 1px solid var(--t2-solid);
         }
 
-        .lg-today {
+        .swatch.wknd-sec {
             background: transparent;
-            box-shadow: inset 0 0 0 2px var(--today);
+            border: 1px solid var(--wknd-sec);
         }
 
-        .lg-sat {
-            background: var(--sat);
-            opacity: .45;
+        .swatch.today {
+            background: var(--accent);
+            border-radius: 50%;
         }
 
-        /* ---------- Month cards ---------- */
+        /* ==========================================================================
+           Calendar Grid & Month Cards
+           ========================================================================== */
         .grid {
             display: grid;
-            gap: 18px;
-            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 296px), 1fr));
             padding: 12px 0 8px;
         }
 
         .month {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 14px 12px 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            padding: 16px 14px 14px;
             display: flex;
             flex-direction: column;
             min-width: 0;
@@ -417,41 +621,46 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 6px 10px;
+            padding: 0 4px 10px;
             gap: 8px;
         }
 
         .m-head h3 {
-            font-size: 1.12rem;
-            font-weight: 700;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--ink-primary);
         }
 
         .m-head h3 small {
-            color: var(--muted);
-            font-weight: 500;
-            margin-left: 4px;
+            color: var(--ink-secondary);
+            font-weight: 400;
+            margin-left: 5px;
         }
 
         .m-badges {
             display: flex;
             gap: 5px;
-            font-size: .72rem;
-            font-weight: 700;
+            font-size: 0.74rem;
+            font-weight: 400;
         }
 
         .m-badges span {
-            padding: 2px 8px;
+            padding: 1px 8px;
             border-radius: 999px;
+            font-variant-numeric: tabular-nums;
         }
 
-        .b-nas {
-            background: var(--nas-bg);
-            color: var(--nas-ink);
+        .b-t1 {
+            background: var(--t1-tint);
+            color: var(--t1-ink);
+            border: 1px solid var(--t1-border);
         }
 
-        .b-cuti {
-            background: var(--cuti-bg);
-            color: var(--cuti-ink);
+        .b-t2 {
+            background: var(--t2-tint);
+            color: var(--t2-ink);
+            border: 1px solid var(--t2-border);
         }
 
         .dow,
@@ -463,70 +672,84 @@
 
         .dow span {
             text-align: center;
-            font-size: .7rem;
-            font-weight: 700;
-            letter-spacing: .04em;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
-            color: var(--muted);
+            color: var(--ink-secondary);
             padding: 4px 0 6px;
         }
 
-        .dow span:first-child {
-            color: var(--nas);
+        .dow span.rest {
+            color: var(--t1-solid);
         }
 
         .d {
             position: relative;
             aspect-ratio: 1;
-            border-radius: 10px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: .92rem;
-            font-weight: 600;
+            font-size: 0.88rem;
+            font-weight: 400;
             font-variant-numeric: tabular-nums;
-            transition: background .15s, transform .12s;
+            transition: background 0.12s ease, transform 0.1s ease;
             min-width: 0;
+            color: var(--ink-primary);
         }
 
         button.d:hover {
-            background: var(--soft);
-            transform: scale(1.06);
+            background: var(--bg-subtle);
+        }
+
+        button.d:active {
+            transform: scale(0.95);
         }
 
         .d.out {
-            color: var(--muted);
-            opacity: .38;
-            font-weight: 500;
+            color: var(--ink-tertiary);
+            opacity: 0.45;
             pointer-events: none;
         }
 
-        .d.sun {
-            color: var(--nas);
+        .d.rest {
+            color: var(--t1-solid);
         }
 
-        .d.sat {
-            color: var(--sat);
+        .d.sec-wknd {
+            color: var(--wknd-sec);
         }
 
-        .d.nas {
-            background: var(--nas);
-            color: #fff;
+        .d.t1 {
+            background: var(--t1-tint);
+            color: var(--t1-ink);
+            border: 1px solid var(--t1-border);
+            font-weight: 500;
         }
 
-        .d.cuti {
-            background: var(--cuti);
-            color: #fff;
+        .d.t2 {
+            background: var(--t2-tint);
+            color: var(--t2-ink);
+            border: 1px solid var(--t2-border);
+            font-weight: 500;
         }
 
-        button.d.nas:hover {
-            background: var(--nas);
-            filter: brightness(1.1);
+        button.d.t1:hover,
+        button.d.t2:hover {
+            filter: brightness(0.96);
         }
 
-        button.d.cuti:hover {
-            background: var(--cuti);
-            filter: brightness(1.1);
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) button.d.t1:hover,
+            :root:not([data-theme="light"]) button.d.t2:hover {
+                filter: brightness(1.15);
+            }
+        }
+
+        :root[data-theme="dark"] button.d.t1:hover,
+        :root[data-theme="dark"] button.d.t2:hover {
+            filter: brightness(1.15);
         }
 
         .d.both::after {
@@ -534,20 +757,20 @@
             position: absolute;
             right: 4px;
             top: 4px;
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background: #fff;
+            background: var(--t2-solid);
         }
 
         .d.today {
-            box-shadow: 0 0 0 2.5px var(--today);
+            box-shadow: 0 0 0 1.5px var(--today-ring);
         }
 
-        .d.today:not(.nas):not(.cuti) {
-            background: color-mix(in srgb, var(--today) 16%, transparent);
-            color: var(--today);
-            font-weight: 800;
+        .d.today:not(.t1):not(.t2) {
+            background: var(--accent);
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .d .lbl {
@@ -558,64 +781,65 @@
             list-style: none;
             margin-top: 12px;
             padding-top: 10px;
-            border-top: 1px dashed var(--line);
+            border-top: 1px solid var(--hairline);
             display: grid;
             gap: 6px;
             align-content: start;
-            font-size: .84rem;
+            font-size: 0.81rem;
+            font-weight: 400;
             flex: 1;
         }
 
         .m-list li {
             display: grid;
-            grid-template-columns: 54px 1fr;
+            grid-template-columns: 56px 1fr;
             gap: 8px;
-            align-items: start;
+            align-items: baseline;
+            color: var(--ink-primary);
         }
 
         .m-list .dt {
-            font-weight: 700;
-            font-size: .78rem;
-            padding: 1px 0;
+            font-weight: 400;
+            font-size: 0.75rem;
+            padding: 1px 4px;
             text-align: center;
-            border-radius: 6px;
+            border-radius: 5px;
             white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .m-list .dt.t1 {
+            background: var(--t1-tint);
+            color: var(--t1-ink);
+        }
+
+        .m-list .dt.t2 {
+            background: var(--t2-tint);
+            color: var(--t2-ink);
         }
 
         .m-list .none {
             display: block;
-            color: var(--muted);
-            font-style: italic;
+            color: var(--ink-tertiary);
             text-align: center;
+            padding: 4px 0;
         }
 
-        .m-list .none::before {
-            content: none;
-        }
-
-        .m-list .dt.n {
-            background: var(--nas-bg);
-            color: var(--nas-ink);
-        }
-
-        .m-list .dt.c {
-            background: var(--cuti-bg);
-            color: var(--cuti-ink);
-        }
-
-        /* ---------- Month (large) view ---------- */
+        /* ==========================================================================
+           Single Month Large View (macOS Calendar Desktop Canvas)
+           ========================================================================== */
         .grid.single {
             grid-template-columns: 1fr;
-            max-width: 980px;
+            max-width: 1020px;
             margin: 0 auto;
         }
 
         .single .month {
-            padding: 18px;
+            padding: 22px;
         }
 
         .single .m-head h3 {
-            font-size: 1.6rem;
+            font-size: 1.45rem;
         }
 
         .single .m-head h3 small {
@@ -632,20 +856,24 @@
         }
 
         .arrow {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            background: var(--soft);
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--hairline);
             font-size: 1.1rem;
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-primary);
         }
 
         .arrow:hover:not(:disabled) {
-            background: var(--line);
+            background: var(--bg-hover);
         }
 
         .arrow:disabled {
-            opacity: .35;
+            opacity: 0.35;
             cursor: default;
         }
 
@@ -656,43 +884,39 @@
 
         .single .d {
             aspect-ratio: auto;
-            min-height: 96px;
+            min-height: 98px;
             align-items: flex-start;
             justify-content: flex-start;
             flex-direction: column;
-            padding: 8px 9px;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            border: 1px solid var(--line);
-            background: var(--card);
-            gap: 4px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.96rem;
+            border: 1px solid var(--hairline);
+            background: var(--bg-elevated);
+            gap: 5px;
             text-align: left;
         }
 
         .single .d.out {
             border-color: transparent;
             background: transparent;
-            opacity: .35;
+            opacity: 0.35;
         }
 
-        .single .d.nas {
-            background: var(--nas-bg);
-            border-color: transparent;
-            color: var(--nas-ink);
+        .single .d.t1 {
+            background: var(--t1-tint);
+            border-color: var(--t1-border);
+            color: var(--t1-ink);
         }
 
-        .single .d.cuti {
-            background: var(--cuti-bg);
-            border-color: transparent;
-            color: var(--cuti-ink);
+        .single .d.t2 {
+            background: var(--t2-tint);
+            border-color: var(--t2-border);
+            color: var(--t2-ink);
         }
 
-        .single .d.both::after {
-            background: var(--cuti);
-        }
-
-        .single .d.sat:not(.nas):not(.cuti) {
-            color: var(--sat);
+        .single .d.sec-wknd:not(.t1):not(.t2) {
+            color: var(--wknd-sec);
         }
 
         .single .d .lbl {
@@ -700,224 +924,275 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            font-size: .72rem;
-            font-weight: 600;
-            line-height: 1.25;
+            font-size: 0.74rem;
+            font-weight: 400;
+            line-height: 1.3;
             color: inherit;
+            width: 100%;
         }
 
         .single .d.today {
-            box-shadow: 0 0 0 2.5px var(--today);
+            box-shadow: 0 0 0 2px var(--today-ring);
         }
 
-        .single .d.today:not(.nas):not(.cuti) {
-            background: color-mix(in srgb, var(--today) 12%, var(--card));
+        .single .d.today:not(.t1):not(.t2) {
+            background: var(--accent-tint);
+            color: var(--accent);
         }
 
         .single button.d:hover {
-            transform: none;
-            border-color: var(--brand);
+            border-color: var(--accent);
         }
 
-        /* ---------- Sections ---------- */
-        section.block {
-            margin-top: 36px;
-        }
-
-        section.block h2 {
-            font-size: 1.35rem;
-            margin-bottom: 4px;
-        }
-
-        section.block>p {
-            color: var(--muted);
-            font-size: .9rem;
-            margin-bottom: 14px;
-        }
-
-        .long {
-            display: grid;
-            gap: 12px;
-            grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-        }
-
-        .long button {
-            text-align: left;
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 14px;
-            display: grid;
-            gap: 4px;
-            box-shadow: var(--shadow);
-        }
-
-        .long button:hover {
-            border-color: var(--brand);
-        }
-
-        .long b {
-            font-size: 1.5rem;
-            line-height: 1;
-            letter-spacing: -.02em;
-        }
-
-        .long b small {
-            font-size: .85rem;
-            font-weight: 600;
-            color: var(--muted);
-            margin-left: 4px;
-        }
-
-        .long .rng {
-            font-weight: 700;
-            font-size: .9rem;
-        }
-
-        .long .why {
-            color: var(--muted);
-            font-size: .8rem;
-        }
-
-        .tools {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .tools button {
-            padding: 6px 14px;
-            border-radius: 999px;
-            border: 1px solid var(--line);
-            background: var(--card);
-            font-weight: 600;
-            font-size: .84rem;
-            color: var(--muted);
-        }
-
-        .tools button[aria-pressed="true"] {
-            background: var(--ink);
-            color: var(--bg);
-            border-color: var(--ink);
-        }
-
-        .table {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
+        /* ==========================================================================
+           Collapsible Holiday List & Long Weekends Section
+           ========================================================================== */
+        details.hol-panel {
+            margin-top: 28px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
             overflow: hidden;
-            box-shadow: var(--shadow);
         }
 
-        .row {
+        details.hol-panel summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            user-select: none;
+            color: var(--ink-primary);
+        }
+
+        details.hol-panel summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.hol-panel summary:hover {
+            background: var(--bg-subtle);
+        }
+
+        .summary-left {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .summary-pill {
+            font-size: 0.78rem;
+            font-weight: 400;
+            background: var(--bg-subtle);
+            color: var(--ink-secondary);
+            padding: 2px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--hairline);
+        }
+
+        .summary-chevron {
+            color: var(--ink-secondary);
+            font-size: 0.9rem;
+            transition: transform 0.2s ease;
+        }
+
+        details.hol-panel[open] .summary-chevron {
+            transform: rotate(180deg);
+        }
+
+        .hol-table {
+            border-top: 1px solid var(--hairline);
+        }
+
+        .hol-row {
             display: grid;
-            grid-template-columns: 150px 1fr auto;
+            grid-template-columns: 155px 1fr auto;
             gap: 12px;
             align-items: center;
             width: 100%;
             text-align: left;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--line);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--hairline);
+            transition: background 0.12s ease;
         }
 
-        .row:last-child {
+        .hol-row:last-child {
             border-bottom: 0;
         }
 
-        .row:hover {
-            background: var(--soft);
+        .hol-row:hover {
+            background: var(--bg-subtle);
         }
 
-        .row .when b {
-            display: block;
-            font-size: .95rem;
+        .hol-row .when {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--ink-primary);
         }
 
-        .row .when span {
-            font-size: .78rem;
-            color: var(--muted);
+        .hol-row .when span {
+            font-size: 0.76rem;
+            font-weight: 400;
+            color: var(--ink-secondary);
         }
 
-        .row .what {
-            font-weight: 600;
+        .hol-row .what {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--ink-primary);
         }
 
-        .tag {
-            font-size: .72rem;
-            font-weight: 700;
+        .hol-row.past .when,
+        .hol-row.past .what {
+            opacity: 0.52;
+        }
+
+        .type-tag {
+            font-size: 0.75rem;
+            font-weight: 400;
             padding: 3px 10px;
             border-radius: 999px;
             white-space: nowrap;
         }
 
-        .tag.n {
-            background: var(--nas-bg);
-            color: var(--nas-ink);
+        .type-tag.t1 {
+            background: var(--t1-tint);
+            color: var(--t1-ink);
+            border: 1px solid var(--t1-border);
         }
 
-        .tag.c {
-            background: var(--cuti-bg);
-            color: var(--cuti-ink);
+        .type-tag.t2 {
+            background: var(--t2-tint);
+            color: var(--t2-ink);
+            border: 1px solid var(--t2-border);
         }
 
-        .row.past .what,
-        .row.past .when {
-            opacity: .5;
+        section.block {
+            margin-top: 34px;
         }
 
-        .note {
-            margin: 36px 0 28px;
-            padding: 16px 18px;
-            border-radius: 14px;
-            background: var(--soft);
-            font-size: .85rem;
-            color: var(--muted);
+        section.block h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            margin-bottom: 4px;
+        }
+
+        section.block > p {
+            color: var(--ink-secondary);
+            font-size: 0.88rem;
+            margin-bottom: 14px;
+        }
+
+        .long-grid {
             display: grid;
-            gap: 6px;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 265px), 1fr));
         }
 
-        footer .f-left {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 18px;
+        .long-card {
+            text-align: left;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-md);
+            padding: 15px 16px;
+            display: grid;
+            gap: 4px;
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.14s ease, transform 0.12s ease;
         }
 
-        footer .f-left img {
-            vertical-align: -3px;
+        .long-card:hover {
+            border-color: var(--accent);
+        }
+
+        .long-card .lw-days {
+            font-size: 1.45rem;
+            line-height: 1.1;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--ink-primary);
+        }
+
+        .long-card .lw-days small {
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--ink-secondary);
+            margin-left: 5px;
+        }
+
+        .long-card .rng {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--ink-primary);
+            margin-top: 2px;
+        }
+
+        .long-card .why {
+            color: var(--ink-secondary);
+            font-size: 0.8rem;
+            font-weight: 400;
+        }
+
+        .note-box {
+            margin: 34px 0 24px;
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline);
+            font-size: 0.83rem;
+            color: var(--ink-secondary);
+            display: grid;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .note-box span strong {
+            font-weight: 500;
+            color: var(--ink-primary);
         }
 
         footer {
-            padding: 4px 0 40px;
+            padding: 8px 0 40px;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px 18px;
-            font-size: .88rem;
+            gap: 10px 20px;
+            font-size: 0.82rem;
             justify-content: space-between;
-            color: var(--muted);
+            color: var(--ink-secondary);
         }
 
-        /* ---------- Dialog ---------- */
+        /* ==========================================================================
+           macOS Sheet / Popover Detail Dialog
+           ========================================================================== */
         dialog {
             border: 0;
-            border-radius: 20px;
+            border-radius: 18px;
             padding: 0;
-            width: min(440px, calc(100vw - 24px));
-            background: var(--card);
-            color: var(--ink);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            width: min(440px, calc(100vw - 28px));
+            background: var(--bg-elevated);
+            color: var(--ink-primary);
+            box-shadow: var(--shadow-popover);
             margin: auto;
         }
 
         dialog::backdrop {
-            background: rgba(10, 14, 28, .55);
-            backdrop-filter: blur(3px);
+            background: rgba(0, 0, 0, 0.38);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
         }
 
         .dlg {
             padding: 22px 22px 18px;
             display: grid;
-            gap: 12px;
+            gap: 14px;
         }
 
         .dlg .big {
@@ -927,35 +1202,41 @@
         }
 
         .dlg .num {
-            width: 64px;
-            height: 64px;
-            border-radius: 18px;
-            background: var(--soft);
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--hairline);
             display: grid;
             place-items: center;
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 1.75rem;
+            font-weight: 500;
             flex: none;
+            font-variant-numeric: tabular-nums;
         }
 
-        .dlg .num.n {
-            background: var(--nas);
-            color: #fff;
+        .dlg .num.t1 {
+            background: var(--t1-tint);
+            color: var(--t1-ink);
+            border-color: var(--t1-border);
         }
 
-        .dlg .num.c {
-            background: var(--cuti);
-            color: #fff;
+        .dlg .num.t2 {
+            background: var(--t2-tint);
+            color: var(--t2-ink);
+            border-color: var(--t2-border);
         }
 
         .dlg h3 {
-            font-size: 1.15rem;
+            font-size: 1.12rem;
+            font-weight: 600;
             line-height: 1.25;
         }
 
         .dlg .sub {
-            color: var(--muted);
-            font-size: .86rem;
+            color: var(--ink-secondary);
+            font-size: 0.84rem;
+            margin-top: 2px;
         }
 
         .dlg ul {
@@ -969,22 +1250,25 @@
             gap: 10px;
             align-items: flex-start;
             padding: 10px 12px;
-            border-radius: 12px;
-            background: var(--soft);
-            font-weight: 600;
-            font-size: .94rem;
+            border-radius: 10px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--hairline);
+            font-weight: 400;
+            font-size: 0.9rem;
         }
 
-        .dlg li .tag {
-            margin-top: 2px;
+        .dlg li .type-tag {
+            margin-top: 1px;
         }
 
         .dlg .meta {
             display: flex;
             flex-wrap: wrap;
             gap: 6px 14px;
-            font-size: .8rem;
-            color: var(--muted);
+            font-size: 0.8rem;
+            color: var(--ink-secondary);
+            padding-top: 4px;
+            border-top: 1px solid var(--hairline);
         }
 
         .dlg .acts {
@@ -995,38 +1279,75 @@
 
         .dlg .acts button {
             flex: 1;
-            padding: 10px;
-            border-radius: 12px;
-            background: var(--soft);
-            font-weight: 600;
+            padding: 9px 10px;
+            border-radius: 10px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--hairline);
+            font-weight: 500;
+            font-size: 0.86rem;
         }
 
         .dlg .acts button:hover:not(:disabled) {
-            background: var(--line);
+            background: var(--bg-hover);
         }
 
         .dlg .acts button:disabled {
-            opacity: .35;
+            opacity: 0.35;
+            cursor: default;
         }
 
         .dlg .acts .primary {
-            background: var(--brand);
-            color: var(--brand-ink);
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--accent-ink);
         }
 
         .dlg .acts .primary:hover {
-            background: var(--brand) !important;
-            filter: brightness(1.08);
+            filter: brightness(1.06);
+            background: var(--accent);
         }
 
-        /* ---------- Responsive ---------- */
-        @media (max-width: 860px) {
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            background: var(--bg-elevated);
+            color: var(--ink-primary);
+            border: 1px solid var(--hairline-strong);
+            box-shadow: var(--shadow-popover);
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==========================================================================
+           Responsive Breakpoints
+           ========================================================================== */
+        @media (max-width: 900px) {
             .hero {
                 grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 640px) {
+            .wrap {
+                padding: 0 14px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
             .toolbar .wrap {
                 flex-wrap: wrap;
                 gap: 8px;
@@ -1041,20 +1362,32 @@
                 margin-left: auto;
             }
 
+            .region-bar {
+                width: 100%;
+            }
+
+            .mac-select-wrap {
+                flex: 1 1 auto;
+            }
+
+            .mac-select {
+                width: 100%;
+            }
+
             .single .d {
                 min-height: 54px;
                 align-items: center;
                 justify-content: center;
                 padding: 4px;
-                font-size: .95rem;
+                font-size: 0.92rem;
             }
 
             .single .d .lbl {
                 display: none;
             }
 
-            .single .d.nas::after,
-            .single .d.cuti::after {
+            .single .d.t1::after,
+            .single .d.t2::after {
                 content: "";
                 position: absolute;
                 bottom: 5px;
@@ -1073,71 +1406,17 @@
                 gap: 4px;
             }
 
-            .row {
+            .hol-row {
                 grid-template-columns: 1fr auto;
+                padding: 12px 16px;
             }
 
-            .row .when {
+            .hol-row .when {
                 grid-column: 1 / -1;
-                display: flex;
+                flex-direction: row;
                 gap: 8px;
                 align-items: baseline;
             }
-
-            .row .when b {
-                display: inline;
-            }
-        }
-
-        details.daftar {
-            margin-top: 28px;
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        details.daftar summary {
-            list-style: none;
-            cursor: pointer;
-            padding: 16px 18px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            user-select: none;
-        }
-
-        details.daftar summary::-webkit-details-marker { display: none; }
-
-        details.daftar summary::after {
-            content: "▾";
-            color: var(--muted);
-            transition: transform .2s;
-        }
-
-        details.daftar[open] summary::after { transform: rotate(180deg); }
-        details.daftar summary:hover { background: var(--soft); }
-
-        details.daftar summary em {
-            font-style: normal;
-            font-size: .78rem;
-            font-weight: 700;
-            background: var(--soft);
-            color: var(--muted);
-            padding: 2px 10px;
-            border-radius: 999px;
-            margin-left: 6px;
-        }
-
-        details.daftar .table {
-            border: 0;
-            border-top: 1px solid var(--line);
-            border-radius: 0;
-            box-shadow: none;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1148,13 +1427,11 @@
         }
 
         @media print {
-
             .toolbar,
-            .hero .next,
-            .tools,
+            .hero .next-card,
             .nav-arrows,
-            dialog,
-            footer a[href="../"] {
+            .region-bar,
+            dialog {
                 display: none !important;
             }
 
@@ -1164,7 +1441,7 @@
             }
 
             .month,
-            .table {
+            .hol-panel {
                 box-shadow: none;
                 break-inside: avoid;
             }
@@ -1174,14 +1451,10 @@
                 gap: 8px;
             }
 
-            .d.nas,
-            .d.cuti {
+            .d.t1,
+            .d.t2 {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-            }
-
-            section.block {
-                break-before: page;
             }
         }
     </style>
@@ -1191,122 +1464,466 @@
     <div class="wrap">
         <header class="hero">
             <div>
-                <div class="eyebrow">Kalender Nasional Indonesia</div>
-                <h1>2027</h1>
-                <p class="lead">Seluruh 365 tanggal beserta hari libur nasional dan cuti bersama menurut
-                    <a href="https://www.kemenkopmk.go.id/sites/default/files/pengumuman/2026-09/SKB%20Libur%20Nasional%20dan%20Cuti%20Bersama%20Tahun%202027.pdf"
-                        target="_blank" rel="noopener">SKB Tiga Menteri</a> (No. 1205/2026, 3/2026, 2/2026; ditetapkan 15 September 2026).
-                    Ketuk tanggal mana pun untuk melihat detailnya.</p>
+                <!-- Country & Conditional Malaysia State Selectors -->
+                <div class="region-bar" role="region" aria-label="Country and state selection">
+                    <div class="mac-select-wrap">
+                        <span class="mac-select-icon" id="countryFlag" aria-hidden="true"></span>
+                        <select id="countrySel" class="mac-select" aria-label="Select Southeast Asian country">
+                            <option value="BN">Brunei</option>
+                            <option value="KH">Cambodia</option>
+                            <option value="ID">Indonesia</option>
+                            <option value="LA">Laos</option>
+                            <option value="MY">Malaysia</option>
+                            <option value="MM">Myanmar</option>
+                            <option value="PH">Philippines</option>
+                            <option value="SG">Singapore</option>
+                            <option value="TH">Thailand</option>
+                            <option value="TL">Timor-Leste</option>
+                            <option value="VN">Vietnam</option>
+                        </select>
+                        <svg class="mac-select-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 4.5L6 7.5L9 4.5" />
+                        </svg>
+                    </div>
+
+                    <div class="state-selector-container" id="stateWrap" hidden>
+                        <div class="mac-select-wrap">
+                            <span class="mac-select-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-secondary)"><path d="M8 14.5s4.5-4.1 4.5-8a4.5 4.5 0 1 0-9 0c0 3.9 4.5 8 4.5 8z"/><circle cx="8" cy="6.5" r="1.5"/></svg></span>
+                            <select id="stateSel" class="mac-select" aria-label="Select Malaysian state or federal territory"></select>
+                            <svg class="mac-select-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 4.5L6 7.5L9 4.5" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="eyebrow" id="heroEyebrow">Indonesia National Calendar</div>
+                <h1 class="year-title">2027</h1>
+                <p class="lead" id="heroLead"></p>
                 <div class="stats" id="stats"></div>
             </div>
-            <aside class="next" id="next" aria-live="polite"></aside>
+
+            <aside class="next-card" id="nextCard" aria-live="polite"></aside>
         </header>
     </div>
 
-    <nav class="toolbar" aria-label="Navigasi kalender">
+    <nav class="toolbar" aria-label="Calendar navigation">
         <div class="wrap">
-            <div class="seg" role="group" aria-label="Tampilan">
-                <button type="button" id="vYear" aria-pressed="true">Setahun</button>
-                <button type="button" id="vMonth" aria-pressed="false">Per bulan</button>
+            <div class="seg" role="group" aria-label="Calendar view mode">
+                <button type="button" id="vYear" aria-pressed="true">Year</button>
+                <button type="button" id="vMonth" aria-pressed="false">Month</button>
             </div>
             <div class="chips" id="chips"></div>
-            <button type="button" class="tool-btn grow" id="todayBtn" hidden>📍 Hari ini</button>
-            <button type="button" class="tool-btn" id="pdfBtn" title="Simpan kalender sebagai berkas PDF">⬇️ <span>PDF</span></button>
-            <button type="button" class="tool-btn" id="themeBtn" aria-label="Ganti tema">💻</button>
+            <button type="button" class="tool-btn grow" id="todayBtn" hidden>Today</button>
+            <button type="button" class="tool-btn" id="pdfBtn" title="Export calendar as A4 landscape PDF">
+                <span>Export PDF</span>
+            </button>
+            <button type="button" class="tool-btn" id="themeBtn" aria-label="Cycle color theme" title="Theme: System">
+                System
+            </button>
         </div>
     </nav>
 
     <main class="wrap">
-        <div class="legend" aria-hidden="true">
-            <span><i class="lg-nas"></i>Libur nasional</span>
-            <span><i class="lg-cuti"></i>Cuti bersama</span>
-            <span><i class="lg-sat"></i>Sabtu</span>
-            <span><i class="lg-today"></i>Hari ini</span>
-            <span style="color:var(--nas)">Minggu</span>
-        </div>
+        <div class="legend" id="legend" aria-hidden="true"></div>
 
         <div class="grid" id="cal"></div>
 
-        <details class="daftar" id="daftar">
-            <summary><span>Daftar libur &amp; cuti bersama <em id="daftarCount"></em></span></summary>
-            <div class="table" id="table"></div>
+        <details class="hol-panel" id="holPanel">
+            <summary>
+                <span class="summary-left">
+                    <span>Public Holidays 2027</span>
+                    <span class="summary-pill" id="holCount"></span>
+                </span>
+                <span class="summary-chevron" aria-hidden="true">▾</span>
+            </summary>
+            <div class="hol-table" id="holTable"></div>
         </details>
 
-        <section class="block" id="panjang">
-            <h2>Libur panjang 2027</h2>
-            <p>Rentang tiga hari berturut-turut atau lebih yang bebas kerja (akhir pekan, libur nasional, dan cuti bersama).</p>
-            <div class="long" id="long"></div>
+        <section class="block" id="longWeekendsSec">
+            <h2>Long Weekends 2027</h2>
+            <p id="longDesc">Stretches of three or more consecutive non-working days (weekends and holidays).</p>
+            <div class="long-grid" id="longGrid"></div>
         </section>
 
-        <div class="note">
-            <span><strong>Catatan:</strong> sesuai Diktum KEDUA SKB, tanggal 1 Ramadan 1448 H, Idul Fitri 1448 H, dan Idul Adha 1448 H
-                ditetapkan lebih lanjut dengan Keputusan Menteri Agama, sehingga dapat bergeser dari yang tertera.</span>
-            <span>Pelaksanaan cuti bersama bagi ASN mengikuti peraturan perundang-undangan, dan bagi swasta diatur oleh pimpinan masing-masing;
-                cuti bersama mengurangi hak cuti tahunan.</span>
-        </div>
+        <div class="note-box" id="noteBox"></div>
 
         <footer>
-            <span class="f-left">
-                <a href="../">🏠 Kembali ke Affandy Murad</a>
-                <a href="my"><img src="../2026/flag/malaysia.svg" alt="" width="16" height="16"> Malaysia</a>
-                <a href="sg"><img src="../2026/flag/singapore.svg" alt="" width="16" height="16"> Singapura</a>
-            </span>
-            <span>Sumber: Kemenko PMK, Kemenag, Kemnaker, dan KemenPAN-RB (SKB Tiga Menteri)</span>
+            <span id="footerRegion">2027 Holiday Calendar · Southeast Asia (All 11 Countries)</span>
+            <span id="footerSource"></span>
         </footer>
     </main>
 
-    <dialog id="dlg" aria-label="Detail tanggal"></dialog>
+    <dialog id="dlg" aria-label="Date details"></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <!-- Library PDF (sama dengan Wikirekap) -->
+    <!-- jsPDF for clean multi-page landscape A4 PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
         'use strict';
+
         const YEAR = 2027;
-        const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        const MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const DAY_S = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const DAY_S = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-        // [tanggal, jenis (n = libur nasional, c = cuti bersama), nama lengkap, nama singkat]
-        const RAW = [
-            ['2027-01-01', 'n', 'Tahun Baru 2027 Masehi', 'Tahun Baru'],
-            ['2027-01-05', 'n', 'Isra Mikraj Nabi Muhammad S.A.W. 1448 Hijriah', 'Isra Mikraj'],
-            ['2027-02-05', 'c', 'Cuti Bersama Tahun Baru Imlek 2578 Kongzili', 'Cuti Imlek'],
-            ['2027-02-06', 'n', 'Tahun Baru Imlek 2578 Kongzili', 'Imlek'],
-            ['2027-03-08', 'n', 'Hari Suci Nyepi (Tahun Baru Saka 1949)', 'Nyepi'],
-            ['2027-03-09', 'c', 'Cuti Bersama Idul Fitri 1448 Hijriah', 'Cuti Idul Fitri'],
-            ['2027-03-10', 'n', 'Idul Fitri 1448 Hijriah (hari pertama)', 'Idul Fitri'],
-            ['2027-03-11', 'n', 'Idul Fitri 1448 Hijriah (hari kedua)', 'Idul Fitri'],
-            ['2027-03-12', 'c', 'Cuti Bersama Idul Fitri 1448 Hijriah', 'Cuti Idul Fitri'],
-            ['2027-03-15', 'c', 'Cuti Bersama Idul Fitri 1448 Hijriah', 'Cuti Idul Fitri'],
-            ['2027-03-25', 'c', 'Cuti Bersama Wafat Yesus Kristus', 'Cuti Jumat Agung'],
-            ['2027-03-26', 'n', 'Wafat Yesus Kristus', 'Jumat Agung'],
-            ['2027-03-28', 'n', 'Kebangkitan Yesus Kristus (Paskah)', 'Paskah'],
-            ['2027-05-01', 'n', 'Hari Buruh Internasional', 'Hari Buruh'],
-            ['2027-05-06', 'n', 'Kenaikan Yesus Kristus', 'Kenaikan Yesus'],
-            ['2027-05-17', 'n', 'Idul Adha 1448 Hijriah', 'Idul Adha'],
-            ['2027-05-18', 'c', 'Cuti Bersama Idul Adha 1448 Hijriah', 'Cuti Idul Adha'],
-            ['2027-05-19', 'c', 'Cuti Bersama Hari Raya Waisak 2571 BE', 'Cuti Waisak'],
-            ['2027-05-20', 'n', 'Hari Raya Waisak 2571 BE', 'Waisak'],
-            ['2027-06-01', 'n', 'Hari Lahir Pancasila', 'Hari Pancasila'],
-            ['2027-06-06', 'n', '1 Muharam Tahun Baru Islam 1449 Hijriah', 'Tahun Baru Islam'],
-            ['2027-08-15', 'n', 'Maulid Nabi Muhammad S.A.W.', 'Maulid Nabi'],
-            ['2027-08-17', 'n', 'Proklamasi Kemerdekaan', 'HUT RI'],
-            ['2027-12-24', 'c', 'Cuti Bersama Kelahiran Yesus Kristus', 'Cuti Natal'],
-            ['2027-12-25', 'n', 'Kelahiran Yesus Kristus (Natal)', 'Natal'],
-            ['2027-12-26', 'n', 'Isra Mikraj Nabi Muhammad S.A.W. 1449 Hijriah', 'Isra Mikraj']
+        /* ==========================================================================
+           Complete 2027 Official Datasets for All 11 Southeast Asian Countries
+           - type: 't1' = Primary Public / National / Federal / Regular Holiday
+           - type: 't2' = Secondary Holiday (Joint Leave / State / Special / Substitute / In Lieu)
+           ========================================================================== */
+
+        // 1. Brunei Darussalam — Surat Keliling Jabatan Perdana Menteri Bil: 4/2026 (10 Nov 2026)
+        // Note: Brunei observes Friday & Sunday as government rest days (Saturday is a working day)
+        const BN_DATA = [
+            ['2027-01-02', 't2', "New Year's Day (In Lieu of Fri, 1 Jan)", "New Year's Day (In Lieu)"],
+            ['2027-01-06', 't1', "Isra' and Mi'raj (27 Rejab 1448)", "Isra' and Mi'raj"],
+            ['2027-02-06', 't1', 'Chinese New Year', 'Chinese New Year'],
+            ['2027-02-08', 't1', 'Awal Ramadan (1 Ramadan 1448)*', 'Awal Ramadan'],
+            ['2027-02-23', 't1', '43rd National Day of Brunei Darussalam', 'National Day'],
+            ['2027-02-24', 't1', "Nuzul Al-Qur'an (17 Ramadan 1448)*", "Nuzul Al-Qur'an"],
+            ['2027-03-10', 't1', 'Hari Raya Aidilfitri (1 Syawal 1448)*', 'Hari Raya Aidilfitri'],
+            ['2027-03-11', 't1', 'Hari Raya Aidilfitri (2 Syawal 1448)*', 'Hari Raya Aidilfitri'],
+            ['2027-03-13', 't2', 'Hari Raya Aidilfitri (In Lieu of Fri, 12 Mar / 3 Syawal)*', 'Aidilfitri (In Lieu)'],
+            ['2027-05-17', 't1', 'Hari Raya Aidiladha (10 Zulhijjah 1448)*', 'Hari Raya Aidiladha'],
+            ['2027-05-31', 't1', 'Royal Brunei Armed Forces Anniversary', 'RBAF Anniversary'],
+            ['2027-06-07', 't2', 'Awal Tahun Hijrah 1449 (In Lieu of Sun, 6 Jun)', 'Islamic New Year (In Lieu)'],
+            ['2027-07-15', 't1', "His Majesty the Sultan's 81st Birthday", "Sultan's Birthday"],
+            ['2027-08-16', 't2', 'Maulud Nabi Muhammad S.A.W. (In Lieu of Sun, 15 Aug)', 'Maulud Nabi (In Lieu)'],
+            ['2027-12-25', 't1', 'Christmas Day', 'Christmas Day'],
+            ['2027-12-27', 't2', "Isra' and Mi'raj 1449 (In Lieu of Sun, 26 Dec)", "Isra' Mi'raj (In Lieu)"]
         ];
-        const kindLabel = h => h.t === 'c' ? 'Cuti bersama' : 'Libur nasional';
 
+        // 2. Cambodia — Royal Government Sub-Decree No. 198 (signed 16 September 2026)
+        const KH_DATA = [
+            ['2027-01-01', 't1', "International New Year's Day", "New Year's Day"],
+            ['2027-01-07', 't1', 'Victory Day over the Genocide Regime', 'Victory Day'],
+            ['2027-03-08', 't1', "International Women's Day", "Women's Day"],
+            ['2027-04-14', 't1', 'Khmer New Year (Day 1 — Maha Songkran)', 'Khmer New Year'],
+            ['2027-04-15', 't1', 'Khmer New Year (Day 2 — Virak Vanabat)', 'Khmer New Year'],
+            ['2027-04-16', 't1', 'Khmer New Year (Day 3 — Virak Loeung Sak)', 'Khmer New Year'],
+            ['2027-05-01', 't1', 'International Labour Day', 'Labour Day'],
+            ['2027-05-14', 't1', "His Majesty King Norodom Sihamoni's Birthday", "King's Birthday"],
+            ['2027-05-20', 't1', 'Visak Bochea Day', 'Visak Bochea'],
+            ['2027-05-24', 't1', 'Royal Ploughing Ceremony', 'Royal Ploughing'],
+            ['2027-06-18', 't1', "Her Majesty Queen Mother Norodom Monineath's Birthday", "Queen Mother's Birthday"],
+            ['2027-09-24', 't1', 'Constitutional Day', 'Constitution Day'],
+            ['2027-09-29', 't1', 'Pchum Ben Festival (Day 1)', 'Pchum Ben'],
+            ['2027-09-30', 't1', 'Pchum Ben Festival (Day 2)', 'Pchum Ben'],
+            ['2027-10-01', 't1', 'Pchum Ben Festival (Day 3)', 'Pchum Ben'],
+            ['2027-10-15', 't1', 'Commemoration Day of King Father Norodom Sihanouk', 'King Father Memorial'],
+            ['2027-10-29', 't1', "His Majesty King Norodom Sihamoni's Coronation Day", 'Coronation Day'],
+            ['2027-11-09', 't1', 'National Independence Day', 'Independence Day'],
+            ['2027-11-12', 't1', 'Water Festival (Bon Om Touk — Day 1)', 'Water Festival'],
+            ['2027-11-13', 't1', 'Water Festival (Bon Om Touk — Day 2)', 'Water Festival'],
+            ['2027-11-14', 't1', 'Water Festival (Bon Om Touk — Day 3)', 'Water Festival'],
+            ['2027-12-29', 't1', 'Peace Day in Cambodia', 'Peace Day']
+        ];
+
+        // 3. Indonesia — SKB Tiga Menteri No. 1205/2026, 3/2026, and 2/2026 (15 September 2026)
+        const ID_DATA = [
+            ['2027-01-01', 't1', "New Year's Day 2027", "New Year's Day"],
+            ['2027-01-05', 't1', "Isra Mi'raj of Prophet Muhammad S.A.W. 1448 AH", "Isra Mi'raj"],
+            ['2027-02-05', 't2', 'Joint Leave for Chinese New Year 2578', 'Joint Leave (CNY)'],
+            ['2027-02-06', 't1', 'Chinese New Year 2578', 'Chinese New Year'],
+            ['2027-03-08', 't1', 'Bali Hindu New Year (Nyepi, Saka 1949)', 'Nyepi'],
+            ['2027-03-09', 't2', 'Joint Leave for Eid al-Fitr 1448 AH', 'Joint Leave (Eid)'],
+            ['2027-03-10', 't1', 'Eid al-Fitr 1448 AH (Day 1)', 'Eid al-Fitr'],
+            ['2027-03-11', 't1', 'Eid al-Fitr 1448 AH (Day 2)', 'Eid al-Fitr'],
+            ['2027-03-12', 't2', 'Joint Leave for Eid al-Fitr 1448 AH', 'Joint Leave (Eid)'],
+            ['2027-03-15', 't2', 'Joint Leave for Eid al-Fitr 1448 AH', 'Joint Leave (Eid)'],
+            ['2027-03-25', 't2', 'Joint Leave for Good Friday', 'Joint Leave (Good Friday)'],
+            ['2027-03-26', 't1', 'Good Friday', 'Good Friday'],
+            ['2027-03-28', 't1', 'Easter Sunday', 'Easter Sunday'],
+            ['2027-05-01', 't1', 'International Labour Day', 'Labour Day'],
+            ['2027-05-06', 't1', 'Ascension Day of Jesus Christ', 'Ascension Day'],
+            ['2027-05-17', 't1', 'Eid al-Adha 1448 AH', 'Eid al-Adha'],
+            ['2027-05-18', 't2', 'Joint Leave for Eid al-Adha 1448 AH', 'Joint Leave (Eid al-Adha)'],
+            ['2027-05-19', 't2', 'Joint Leave for Vesak Day 2571 BE', 'Joint Leave (Vesak)'],
+            ['2027-05-20', 't1', 'Vesak Day 2571 BE', 'Vesak Day'],
+            ['2027-06-01', 't1', 'Pancasila Day', 'Pancasila Day'],
+            ['2027-06-06', 't1', 'Islamic New Year 1449 AH (1 Muharram)', 'Islamic New Year'],
+            ['2027-08-15', 't1', "Prophet Muhammad's Birthday (Maulid)", 'Maulid'],
+            ['2027-08-17', 't1', 'Indonesian Independence Day', 'Independence Day'],
+            ['2027-12-24', 't2', 'Joint Leave for Christmas Day', 'Joint Leave (Christmas)'],
+            ['2027-12-25', 't1', 'Christmas Day', 'Christmas Day'],
+            ['2027-12-26', 't1', "Isra Mi'raj of Prophet Muhammad S.A.W. 1449 AH", "Isra Mi'raj"]
+        ];
+
+        // 4. Laos — Lao PDR Labour Law & Prime Minister's Office Official Public Holiday Schedule 2027
+        const LA_DATA = [
+            ['2027-01-01', 't1', "International New Year's Day", "New Year's Day"],
+            ['2027-03-08', 't1', "International Women's Day", "Women's Day"],
+            ['2027-04-14', 't1', 'Boun Pi Mai Lao (Lao New Year — Day 1)', 'Lao New Year'],
+            ['2027-04-15', 't1', 'Boun Pi Mai Lao (Lao New Year — Day 2)', 'Lao New Year'],
+            ['2027-04-16', 't1', 'Boun Pi Mai Lao (Lao New Year — Day 3)', 'Lao New Year'],
+            ['2027-05-01', 't1', 'International Labour Day', 'Labour Day'],
+            ['2027-05-03', 't2', 'International Labour Day (Substitute Holiday)', 'Labour Day (Sub)'],
+            ['2027-05-20', 't1', 'Visakhabousa Day', 'Visakhabousa Day'],
+            ['2027-07-20', 't1', "Lao Women's Union Establishment Day", "Lao Women's Day"],
+            ['2027-10-15', 't1', 'Boun Ok Phansa (End of Buddhist Lent)', 'Boun Ok Phansa'],
+            ['2027-10-16', 't1', 'Boun Suang Heua (Boat Racing Festival)', 'Boat Racing Festival'],
+            ['2027-11-13', 't1', 'Boun That Luang Festival', 'That Luang Festival'],
+            ['2027-12-02', 't1', 'Lao National Day', 'National Day']
+        ];
+
+        // 5. Malaysia — Cabinet, Constitution and Inter-Governmental Relations Division (16 States & Federal Territories)
+        const MY_STATES = {
+            KUL: 'W.P. Kuala Lumpur',
+            LBN: 'W.P. Labuan',
+            PJY: 'W.P. Putrajaya',
+            JHR: 'Johor',
+            KDH: 'Kedah',
+            KTN: 'Kelantan',
+            MLK: 'Melaka',
+            NSN: 'Negeri Sembilan',
+            PHG: 'Pahang',
+            PRK: 'Perak',
+            PLS: 'Perlis',
+            PNG: 'Penang',
+            SBH: 'Sabah',
+            SWK: 'Sarawak',
+            SGR: 'Selangor',
+            TRG: 'Terengganu'
+        };
+        const MY_ALL = Object.keys(MY_STATES);
+        const myExcept = (...codes) => MY_ALL.filter(s => !codes.includes(s));
+        const MY_FRI_SAT = ['KDH', 'KTN', 'TRG'];
+
+        const MY_ALL_DATA = [
+            ['2027-01-01', 't2', "New Year's Day", "New Year's Day", ['KUL', 'LBN', 'PJY', 'MLK', 'NSN', 'PHG', 'PRK', 'PNG', 'SBH', 'SWK', 'SGR']],
+            ['2027-01-06', 't2', "Isra and Mi'raj", "Isra and Mi'raj", ['KDH', 'NSN', 'PLS', 'TRG']],
+            ['2027-01-14', 't2', 'Birthday of the Yang di-Pertuan Besar of Negeri Sembilan', "Yang di-Pertuan Besar's Birthday", ['NSN']],
+            ['2027-01-22', 't2', 'Thaipusam', 'Thaipusam', ['KUL', 'PJY', 'JHR', 'NSN', 'PRK', 'PNG', 'SGR']],
+            ['2027-02-01', 't2', 'Federal Territory Day', 'Federal Territory Day', ['KUL', 'LBN', 'PJY']],
+            ['2027-02-06', 't1', 'Chinese New Year (First Day)', 'Chinese New Year', MY_ALL],
+            ['2027-02-07', 't1', 'Chinese New Year (Second Day)', 'Chinese New Year', myExcept('KTN', 'TRG')],
+            ['2027-02-07', 't2', 'Chinese New Year (Second Day)', 'Chinese New Year', ['KTN', 'TRG']],
+            ['2027-02-08', 't2', 'Awal Ramadan*', 'Awal Ramadan', ['JHR', 'KDH']],
+            ['2027-02-20', 't2', 'Declaration of Independence Day', 'Independence Declaration', ['MLK']],
+            ['2027-02-24', 't2', 'Nuzul Al-Quran', 'Nuzul Al-Quran', ['KUL', 'LBN', 'PJY', 'KTN', 'PHG', 'PRK', 'PLS', 'PNG', 'SGR', 'TRG']],
+            ['2027-03-04', 't2', 'Anniversary of the Coronation of the Sultan of Terengganu', 'Sultan Coronation', ['TRG']],
+            ['2027-03-10', 't1', 'Hari Raya Puasa (Eid al-Fitr)*', 'Hari Raya Puasa', MY_ALL],
+            ['2027-03-11', 't1', 'Hari Raya Puasa (Second Day)*', 'Hari Raya Puasa', MY_ALL],
+            ['2027-03-12', 't2', 'Hari Raya Puasa (Third Day)', 'Hari Raya Puasa (3rd Day)', ['MLK']],
+            ['2027-03-23', 't2', 'Birthday of the Sultan of Johor', "Sultan of Johor's Birthday", ['JHR']],
+            ['2027-03-26', 't2', 'Good Friday', 'Good Friday', ['SBH', 'SWK']],
+            ['2027-03-30', 't2', 'Birthday of the Governor of Sabah', "Governor's Birthday", ['SBH']],
+            ['2027-04-26', 't2', 'Birthday of the Sultan of Terengganu', "Sultan's Birthday", ['TRG']],
+            ['2027-05-01', 't1', 'Labour Day', 'Labour Day', MY_ALL],
+            ['2027-05-16', 't2', 'Arafah Day', 'Arafah Day', ['KTN', 'TRG']],
+            ['2027-05-17', 't1', 'Hari Raya Qurban (Eid al-Adha)*', 'Hari Raya Qurban', MY_ALL],
+            ['2027-05-17', 't2', 'Birthday of the Raja of Perlis', "Raja's Birthday", ['PLS']],
+            ['2027-05-18', 't1', 'Hari Raya Qurban (Second Day)*', 'Hari Raya Qurban', ['KTN', 'TRG']],
+            ['2027-05-18', 't2', 'Hari Raya Qurban (Second Day)*', 'Hari Raya Qurban', ['KDH', 'PLS']],
+            ['2027-05-20', 't1', 'Wesak Day', 'Wesak Day', MY_ALL],
+            ['2027-05-22', 't2', 'Hol of the late Sultan Ahmad Shah of Pahang', 'Sultan Hol', ['PHG']],
+            ['2027-05-30', 't2', 'Pesta Kaamatan (Harvest Festival)', 'Pesta Kaamatan', ['LBN', 'SBH']],
+            ['2027-05-31', 't2', 'Pesta Kaamatan (Harvest Festival)', 'Pesta Kaamatan', ['LBN', 'SBH']],
+            ['2027-06-01', 't2', 'Gawai Dayak Festival', 'Gawai Dayak', ['SWK']],
+            ['2027-06-02', 't2', 'Gawai Dayak Festival', 'Gawai Dayak', ['SWK']],
+            ['2027-06-06', 't1', 'Awal Muharram (Maal Hijrah)', 'Awal Muharram', MY_ALL],
+            ['2027-06-07', 't1', 'Official Birthday of the Yang di-Pertuan Agong', "Agong's Birthday", MY_ALL],
+            ['2027-06-20', 't2', 'Birthday of the Sultan of Kedah', "Sultan's Birthday", ['KDH']],
+            ['2027-07-07', 't2', 'Anniversary of the Declaration of the World Heritage Site', 'World Heritage Day', ['PNG']],
+            ['2027-07-10', 't2', 'Birthday of the Governor of Penang', "Governor's Birthday", ['PNG']],
+            ['2027-07-11', 't2', 'Hol of the late Sultan Iskandar', 'Sultan Hol', ['JHR']],
+            ['2027-07-22', 't2', 'Sarawak Independence Day', 'Sarawak Independence', ['SWK']],
+            ['2027-07-30', 't2', 'Birthday of the Sultan of Pahang', "Sultan's Birthday", ['PHG']],
+            ['2027-08-15', 't1', "Maulidur Rasul (Prophet Muhammad's Birthday)", 'Maulidur Rasul', MY_ALL],
+            ['2027-08-24', 't2', 'Birthday of the Governor of Melaka', "Governor's Birthday", ['MLK']],
+            ['2027-08-31', 't1', 'National Day', 'National Day', MY_ALL],
+            ['2027-09-16', 't1', 'Malaysia Day', 'Malaysia Day', MY_ALL],
+            ['2027-09-29', 't2', 'Birthday of the Sultan of Kelantan', "Sultan's Birthday", ['KTN']],
+            ['2027-09-30', 't2', 'Birthday of the Sultan of Kelantan', "Sultan's Birthday", ['KTN']],
+            ['2027-10-09', 't2', 'Birthday of the Governor of Sarawak', "Governor's Birthday", ['SWK']],
+            ['2027-10-28', 't1', 'Deepavali*', 'Deepavali', myExcept('SWK')],
+            ['2027-11-05', 't2', 'Birthday of the Sultan of Perak', "Sultan's Birthday", ['PRK']],
+            ['2027-12-11', 't2', 'Birthday of the Sultan of Selangor', "Sultan's Birthday", ['SGR']],
+            ['2027-12-24', 't2', 'Christmas Eve', 'Christmas Eve', ['SBH']],
+            ['2027-12-25', 't1', 'Christmas Day', 'Christmas Day', MY_ALL],
+            ['2027-12-26', 't2', "Isra and Mi'raj", "Isra and Mi'raj", ['KDH', 'NSN', 'PLS', 'TRG']]
+        ];
+
+        // 6. Myanmar — State Gazette Announcement (31 October 2026) under Negotiable Instruments Act
+        const MM_DATA = [
+            ['2027-01-01', 't1', "International New Year's Day", "New Year's Day"],
+            ['2027-01-04', 't1', 'Independence Day', 'Independence Day'],
+            ['2027-01-08', 't1', 'Kayin (Karen) New Year Day', 'Karen New Year'],
+            ['2027-02-07', 't1', 'Chinese New Year', 'Chinese New Year'],
+            ['2027-02-12', 't1', 'Union Day', 'Union Day'],
+            ['2027-03-01', 't2', "Peasants' Day Holiday", "Peasants' Day Hol."],
+            ['2027-03-02', 't1', "Peasants' Day", "Peasants' Day"],
+            ['2027-03-22', 't1', 'Full Moon Day of Tabaung', 'Full Moon of Tabaung'],
+            ['2027-03-27', 't1', 'Armed Forces Day', 'Armed Forces Day'],
+            ['2027-04-10', 't2', 'Myanmar New Year (Thingyan Holiday)', 'Thingyan Holiday'],
+            ['2027-04-11', 't2', 'Myanmar New Year (Thingyan Holiday)', 'Thingyan Holiday'],
+            ['2027-04-12', 't2', 'Myanmar New Year (Thingyan Holiday)', 'Thingyan Holiday'],
+            ['2027-04-13', 't1', 'Myanmar New Year (Thingyan — Maha Thingyan)', 'Thingyan'],
+            ['2027-04-14', 't1', 'Myanmar New Year (Thingyan — Akyat Day)', 'Thingyan'],
+            ['2027-04-15', 't1', 'Myanmar New Year (Thingyan — Atat Day)', 'Thingyan'],
+            ['2027-04-16', 't1', 'Myanmar New Year (Thingyan — Upone Day)', 'Thingyan'],
+            ['2027-04-17', 't1', 'Myanmar New Year Day', 'Myanmar New Year'],
+            ['2027-04-18', 't2', 'Myanmar New Year Holiday', 'Thingyan Holiday'],
+            ['2027-05-01', 't1', 'Labour Day', 'Labour Day'],
+            ['2027-05-17', 't1', 'Eid al-Adha Day*', 'Eid al-Adha'],
+            ['2027-05-20', 't1', 'Full Moon Day of Kason', 'Full Moon of Kason'],
+            ['2027-05-21', 't2', 'Full Moon Day of Kason Holiday', 'Kason Holiday'],
+            ['2027-07-18', 't1', 'Full Moon Day of Waso (Beginning of Buddhist Lent)', 'Full Moon of Waso'],
+            ['2027-07-19', 't1', "Martyrs' Day", "Martyrs' Day"],
+            ['2027-10-14', 't2', 'Thadingyut Holiday (Pre-Full Moon)', 'Thadingyut Holiday'],
+            ['2027-10-15', 't1', 'Full Moon Day of Thadingyut (End of Buddhist Lent)', 'Thadingyut'],
+            ['2027-10-16', 't2', 'Thadingyut Holiday (Post-Full Moon)', 'Thadingyut Holiday'],
+            ['2027-10-28', 't1', 'Deepavali Day*', 'Deepavali'],
+            ['2027-11-13', 't1', 'Full Moon Day of Tazaungmone', 'Full Moon of Tazaungmone'],
+            ['2027-11-22', 't2', 'National Victory Day Holiday', 'National Day Hol.'],
+            ['2027-11-23', 't1', 'National Victory Day', 'National Victory Day'],
+            ['2027-12-25', 't1', 'Christmas Day', 'Christmas Day'],
+            ['2027-12-27', 't2', 'Kayin (Karen) New Year Holiday', 'Karen New Year Hol.'],
+            ['2027-12-28', 't1', 'Kayin (Karen) New Year Day', 'Karen New Year']
+        ];
+
+        // 7. Philippines — Malacañang Proclamation No. 1427 (signed 8 September 2026)
+        // t1 = Regular Holidays, t2 = Special (Non-Working) Days
+        const PH_DATA = [
+            ['2027-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2027-02-06', 't2', 'Chinese New Year (Additional Special Non-Working Day)', 'Chinese New Year'],
+            ['2027-03-10', 't1', "Eid'l Fitr (Feast of Ramadhan)*", "Eid'l Fitr"],
+            ['2027-03-25', 't1', 'Maundy Thursday', 'Maundy Thursday'],
+            ['2027-03-26', 't1', 'Good Friday', 'Good Friday'],
+            ['2027-03-27', 't2', 'Black Saturday (Additional Special Non-Working Day)', 'Black Saturday'],
+            ['2027-04-09', 't1', 'Araw ng Kagitingan (Day of Valor)', 'Araw ng Kagitingan'],
+            ['2027-05-01', 't1', 'Labor Day', 'Labor Day'],
+            ['2027-05-17', 't1', "Eid'l Adha (Feast of Sacrifice)*", "Eid'l Adha"],
+            ['2027-06-12', 't1', 'Independence Day', 'Independence Day'],
+            ['2027-08-21', 't2', 'Ninoy Aquino Day (Special Non-Working Day)', 'Ninoy Aquino Day'],
+            ['2027-08-30', 't1', 'National Heroes Day', 'National Heroes Day'],
+            ['2027-11-01', 't2', "All Saints' Day (Special Non-Working Day)", "All Saints' Day"],
+            ['2027-11-02', 't2', "All Souls' Day (Additional Special Non-Working Day)", "All Souls' Day"],
+            ['2027-11-30', 't1', 'Bonifacio Day', 'Bonifacio Day'],
+            ['2027-12-08', 't2', 'Feast of the Immaculate Conception of Mary', 'Immaculate Conception'],
+            ['2027-12-24', 't2', 'Christmas Eve (Additional Special Non-Working Day)', 'Christmas Eve'],
+            ['2027-12-25', 't1', 'Christmas Day', 'Christmas Day'],
+            ['2027-12-30', 't1', 'Rizal Day', 'Rizal Day'],
+            ['2027-12-31', 't2', 'Last Day of the Year (Special Non-Working Day)', 'New Year\'s Eve']
+        ];
+
+        // 8. Singapore — Ministry of Manpower Press Release (18 June 2026)
+        const SG_DATA = [
+            ['2027-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2027-02-06', 't1', 'Chinese New Year (First Day)', 'Chinese New Year'],
+            ['2027-02-07', 't1', 'Chinese New Year (Second Day)', 'Chinese New Year'],
+            ['2027-02-08', 't2', 'Holiday in Lieu of Chinese New Year (Second Day, Sunday)', 'CNY (In Lieu)'],
+            ['2027-03-10', 't1', 'Hari Raya Puasa', 'Hari Raya Puasa'],
+            ['2027-03-26', 't1', 'Good Friday', 'Good Friday'],
+            ['2027-05-01', 't1', 'Labour Day', 'Labour Day'],
+            ['2027-05-17', 't1', 'Hari Raya Haji', 'Hari Raya Haji'],
+            ['2027-05-20', 't1', 'Vesak Day', 'Vesak Day'],
+            ['2027-08-09', 't1', 'National Day', 'National Day'],
+            ['2027-10-28', 't1', 'Deepavali', 'Deepavali'],
+            ['2027-12-25', 't1', 'Christmas Day', 'Christmas Day']
+        ];
+
+        // 9. Thailand — Royal Thai Cabinet & Bank of Thailand Official 2027 Holiday Schedule (27 August 2026)
+        const TH_DATA = [
+            ['2027-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2027-02-21', 't1', 'Makha Bucha Day', 'Makha Bucha'],
+            ['2027-02-22', 't2', 'Substitution for Makha Bucha Day (Sun, 21 Feb)', 'Makha Bucha (Sub)'],
+            ['2027-04-06', 't1', 'Chakri Memorial Day', 'Chakri Day'],
+            ['2027-04-13', 't1', 'Songkran Festival (Thai New Year — Day 1)', 'Songkran'],
+            ['2027-04-14', 't1', 'Songkran Festival (Thai New Year — Day 2)', 'Songkran'],
+            ['2027-04-15', 't1', 'Songkran Festival (Thai New Year — Day 3)', 'Songkran'],
+            ['2027-05-01', 't1', 'National Labour Day', 'Labour Day'],
+            ['2027-05-03', 't2', 'Substitution for National Labour Day (Sat, 1 May)', 'Labour Day (Sub)'],
+            ['2027-05-04', 't1', 'Coronation Day', 'Coronation Day'],
+            ['2027-05-20', 't1', 'Visakha Bucha Day', 'Visakha Bucha'],
+            ['2027-06-03', 't1', "H.M. Queen Suthida's Birthday", "Queen's Birthday"],
+            ['2027-07-18', 't1', 'Asarnha Bucha Day', 'Asarnha Bucha'],
+            ['2027-07-19', 't2', 'Substitution for Asarnha Bucha Day (Sun, 18 Jul)', 'Asarnha Bucha (Sub)'],
+            ['2027-07-28', 't1', "H.M. King Maha Vajiralongkorn's Birthday", "King's Birthday"],
+            ['2027-08-12', 't1', "H.M. Queen Sirikit the Queen Mother's Birthday & Mother's Day", "Queen Mother's Birthday"],
+            ['2027-10-13', 't1', 'H.M. King Bhumibol Adulyadej the Great Memorial Day', 'Navamindra Maharaj Day'],
+            ['2027-10-23', 't1', 'H.M. King Chulalongkorn the Great Memorial Day', 'Chulalongkorn Day'],
+            ['2027-10-25', 't2', 'Substitution for Chulalongkorn Day (Sat, 23 Oct)', 'Chulalongkorn Day (Sub)'],
+            ['2027-12-05', 't1', "H.M. King Bhumibol's Birthday, National Day & Father's Day", "National & Father's Day"],
+            ['2027-12-06', 't2', "Substitution for National Day & Father's Day (Sun, 5 Dec)", "National Day (Sub)"],
+            ['2027-12-10', 't1', 'Constitution Day', 'Constitution Day'],
+            ['2027-12-31', 't1', "New Year's Eve", "New Year's Eve"]
+        ];
+
+        // 10. Timor-Leste — Law No. 10/2005 & Law No. 3/2016 (Official National Holidays & Commemorative Dates)
+        const TL_DATA = [
+            ['2027-01-01', 't1', "New Year's Day (Dia de Ano Novo)", "New Year's Day"],
+            ['2027-03-03', 't1', 'Veterans Day (Dia Nacional dos Veteranos)', 'Veterans Day'],
+            ['2027-03-10', 't1', 'Eid al-Fitr (Idul Fitri)*', 'Eid al-Fitr'],
+            ['2027-03-25', 't2', 'Maundy Thursday (Quinta-Feira Santa)', 'Maundy Thursday'],
+            ['2027-03-26', 't1', 'Good Friday (Sexta-Feira Santa)', 'Good Friday'],
+            ['2027-05-01', 't1', 'International Labour Day (Dia Mundial do Trabalhador)', 'Labour Day'],
+            ['2027-05-17', 't1', 'Eid al-Adha (Idul Adha)*', 'Eid al-Adha'],
+            ['2027-05-20', 't1', 'Restoration of Independence Day (Dia da Restauração da Independência)', 'Independence Restoration'],
+            ['2027-05-27', 't1', 'Corpus Christi (Festa do Corpo de Deus)', 'Corpus Christi'],
+            ['2027-08-30', 't1', 'Popular Consultation Day (Dia da Consulta Popular)', 'Popular Consultation'],
+            ['2027-11-01', 't1', "All Saints' Day (Dia de Todos os Santos)", "All Saints' Day"],
+            ['2027-11-02', 't1', "All Souls' Day (Dia de Todos os Fiéis Defuntos)", "All Souls' Day"],
+            ['2027-11-03', 't1', "National Women's Day (Dia Nacional da Mulher)", "National Women's Day"],
+            ['2027-11-12', 't1', 'National Youth Day (Dia Nacional da Juventude)', 'National Youth Day'],
+            ['2027-11-28', 't1', 'Proclamation of Independence Day (Dia da Proclamação da Independência)', 'Independence Day'],
+            ['2027-12-07', 't1', 'National Heroes / Memorial Day (Dia dos Heróis Nacionais)', 'Memorial Day'],
+            ['2027-12-08', 't1', 'Immaculate Conception (Dia da Imaculada Conceição)', 'Immaculate Conception'],
+            ['2027-12-25', 't1', 'Christmas Day (Dia de Natal)', 'Christmas Day'],
+            ['2027-12-31', 't1', 'Liberation of the Nation Day (Dia da Libertação da Pátria)', 'Liberation Day']
+        ];
+
+        // 11. Vietnam — Government Office Schedule (Oct 2026) & National Assembly Amended Labor Code (21 Nov 2026)
+        const VN_DATA = [
+            ['2027-01-01', 't1', "International New Year's Day (Tết Dương lịch)", "New Year's Day"],
+            ['2027-02-04', 't1', 'Lunar New Year Holiday (Tết Nguyên Đán — 28th of 12th Lunar Month)', 'Tết Holiday'],
+            ['2027-02-05', 't1', "Vietnamese New Year's Eve (Giao thừa)", "Tết Eve"],
+            ['2027-02-06', 't1', 'Vietnamese Lunar New Year (Mùng 1 Tết Đinh Mùi)', 'Tết (Day 1)'],
+            ['2027-02-07', 't1', 'Lunar New Year (Mùng 2 Tết)', 'Tết (Day 2)'],
+            ['2027-02-08', 't1', 'Lunar New Year (Mùng 3 Tết)', 'Tết (Day 3)'],
+            ['2027-02-09', 't2', 'Lunar New Year Compensatory Day Off (for Sat, 6 Feb)', 'Tết (Compensatory)'],
+            ['2027-02-10', 't2', 'Lunar New Year Compensatory Day Off (for Sun, 7 Feb)', 'Tết (Compensatory)'],
+            ['2027-04-16', 't1', "Hung Kings' Commemoration Day (Giỗ Tổ Hùng Vương)", "Hung Kings' Day"],
+            ['2027-04-30', 't1', 'Reunification Day (Ngày Giải phóng miền Nam)', 'Reunification Day'],
+            ['2027-05-01', 't1', 'International Workers\' Day (Ngày Quốc tế Lao động)', 'Labour Day'],
+            ['2027-05-03', 't2', 'International Workers\' Day Compensatory Day Off (for Sat, 1 May)', 'Labour Day (Comp.)'],
+            ['2027-07-27', 't1', "War Invalids and Martyrs' Day (Ngày Thương binh - Liệt sĩ)", "Invalids & Martyrs' Day"],
+            ['2027-09-02', 't1', 'National Day (Ngày Quốc khánh)', 'National Day'],
+            ['2027-09-03', 't1', 'National Day Holiday (Additional Statutory Day)', 'National Day Holiday'],
+            ['2027-11-24', 't1', 'Vietnam Culture Day (Ngày Văn hóa Việt Nam)', 'Vietnam Culture Day']
+        ];
+
+        /* Crisp Cross-Platform SVG Country Flags (All 11 Southeast Asian Nations) */
+        const COUNTRY_FLAGS_SVG = {
+            BN: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#F7E017"/><polygon points="0,0 28,11.5 28,16 0,4.5" fill="#FFFFFF"/><polygon points="0,4.5 28,16 28,20 0,8.5" fill="#1E1E1E"/><g transform="translate(14,10)" fill="#CF1126"><path d="M-3.5,-1.5 A3.8,3.8 0 1,0 3.5,-1.5 A3.1,3.1 0 1,1 -3.5,-1.5 Z"/><rect x="-0.6" y="-3.8" width="1.2" height="6.2"/><rect x="-4.5" y="-0.6" width="9" height="1.1"/><path d="M-3.8,1.8 Q0,3.4 3.8,1.8" fill="none" stroke="#CF1126" stroke-width="1"/></g></svg>`,
+            KH: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#032EA1"/><rect y="5" width="28" height="10" fill="#E00025"/><g fill="#FFFFFF" transform="translate(14,10)"><rect x="-5.5" y="2" width="11" height="1.6"/><rect x="-4.5" y="0.4" width="9" height="1.6"/><path d="M-3.6,0.4 L-3.6,-1.8 L-2.8,-2.8 L-2,-1.8 L-2,0.4 Z M-0.9,0.4 L-0.9,-2.8 L0,-4.2 L0.9,-2.8 L0.9,0.4 Z M2,0.4 L2,-1.8 L2.8,-2.8 L3.6,-1.8 L3.6,0.4 Z"/></g></svg>`,
+            ID: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="10" fill="#CE1126"/><rect y="10" width="28" height="10" fill="#FFFFFF"/></svg>`,
+            LA: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#CE1126"/><rect y="5" width="28" height="10" fill="#002868"/><circle cx="14" cy="10" r="3.6" fill="#FFFFFF"/></svg>`,
+            MY: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#FFFFFF"/><g fill="#CC0001"><rect y="0" width="28" height="1.43"/><rect y="2.86" width="28" height="1.43"/><rect y="5.71" width="28" height="1.43"/><rect y="8.57" width="28" height="1.43"/><rect y="11.43" width="28" height="1.43"/><rect y="14.29" width="28" height="1.43"/><rect y="17.14" width="28" height="1.43"/></g><rect width="14" height="11.43" fill="#010066"/><circle cx="6.2" cy="5.7" r="3.3" fill="#FFCC00"/><circle cx="7.2" cy="5.7" r="2.7" fill="#010066"/><polygon points="10.2,3.1 10.7,4.7 12.2,4.1 11.2,5.4 12.6,6.2 11.0,6.4 11.4,8.0 10.2,6.9 9.0,8.0 9.4,6.4 7.8,6.2 9.2,5.4 8.2,4.1 9.7,4.7" fill="#FFCC00"/></svg>`,
+            MM: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="6.67" fill="#FECB00"/><rect y="6.67" width="28" height="6.67" fill="#34B233"/><rect y="13.33" width="28" height="6.67" fill="#EA2839"/><polygon points="14,3.8 15.6,8.6 20.6,8.6 16.5,11.6 18.1,16.4 14,13.4 9.9,16.4 11.5,11.6 7.4,8.6 12.4,8.6" fill="#FFFFFF"/></svg>`,
+            PH: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="10" fill="#0038A8"/><rect y="10" width="28" height="10" fill="#CE1126"/><polygon points="0,0 13.5,10 0,20" fill="#FFFFFF"/><circle cx="4.8" cy="10" r="1.9" fill="#FCD116"/><g stroke="#FCD116" stroke-width="0.65" stroke-linecap="round"><line x1="4.8" y1="6.6" x2="4.8" y2="13.4"/><line x1="1.4" y1="10" x2="8.2" y2="10"/><line x1="2.4" y1="7.6" x2="7.2" y2="12.4"/><line x1="7.2" y1="7.6" x2="2.4" y2="12.4"/></g><circle cx="1.6" cy="3.1" r="0.65" fill="#FCD116"/><circle cx="1.6" cy="16.9" r="0.65" fill="#FCD116"/><circle cx="10.8" cy="10" r="0.65" fill="#FCD116"/></svg>`,
+            SG: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="10" fill="#EF3340"/><rect y="10" width="28" height="10" fill="#FFFFFF"/><circle cx="6.8" cy="5" r="3.2" fill="#FFFFFF"/><circle cx="8.1" cy="5" r="2.7" fill="#EF3340"/><g fill="#FFFFFF"><circle cx="9.6" cy="3.1" r="0.55"/><circle cx="11.3" cy="4.3" r="0.55"/><circle cx="10.7" cy="6.4" r="0.55"/><circle cx="8.5" cy="6.4" r="0.55"/><circle cx="7.9" cy="4.3" r="0.55"/></g></svg>`,
+            TH: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#A51931"/><rect y="3.33" width="28" height="13.34" fill="#F4F5F8"/><rect y="6.67" width="28" height="6.66" fill="#2D2A4A"/></svg>`,
+            TL: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#DC241F"/><polygon points="0,0 14.5,10 0,20" fill="#FFC726"/><polygon points="0,0 10,10 0,20" fill="#000000"/><polygon points="3.6,7.4 4.4,9.3 6.4,9.1 4.9,10.5 5.6,12.4 3.8,11.4 2.2,12.7 2.7,10.7 1.0,9.6 3.0,9.4" fill="#FFFFFF"/></svg>`,
+            VN: `<svg class="flag-svg" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="20" fill="#DA251D"/><polygon points="14,4.2 15.4,8.5 19.9,8.5 16.3,11.1 17.7,15.4 14,12.8 10.3,15.4 11.7,11.1 8.1,8.5 12.6,8.5" fill="#FFFF00"/></svg>`
+        };
+
+        /* ==========================================================================
+           Utilities & State Management
+           ========================================================================== */
         const $ = (s, r = document) => r.querySelector(s);
         const pad = n => String(n).padStart(2, '0');
         const key = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
         const keyOf = dt => key(dt.getFullYear(), dt.getMonth(), dt.getDate());
-        const parse = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+        const parse = k => {
+            const [y, m, d] = k.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        };
         const dayDiff = (a, b) => Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5);
         const fmtLong = dt => `${DAYS[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
-        const fmtShort = dt => `${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}`;
         const isoWeek = dt => {
             const d = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
             const n = d.getUTCDay() || 7;
@@ -1314,67 +1931,391 @@
             return Math.ceil(((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
         };
         const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-        // peta tanggal -> daftar entri
-        const H = {};
-        RAW.forEach(([k, t, name, short]) => (H[k] ||= []).push({ k, t, name, short }));
-        const isOff = dt => dt.getDay() === 0 || dt.getDay() === 6 || !!H[keyOf(dt)];
+        const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
         const store = {
             get(k) { try { return localStorage.getItem(k); } catch { return null; } },
             set(k, v) { try { localStorage.setItem(k, v); } catch { } }
         };
 
+        let toastTimer = null;
+        function showToast(msg) {
+            const el = $('#toast');
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+        }
+
         const now = new Date();
         const todayKey = keyOf(now);
         const inYear = now.getFullYear() === YEAR;
         const todayMonth = inYear ? now.getMonth() : -1;
 
-        let view = store.get('kal2027-view') || (matchMedia('(max-width: 640px)').matches ? 'month' : 'year');
+        const VALID_COUNTRIES = ['BN', 'KH', 'ID', 'LA', 'MY', 'MM', 'PH', 'SG', 'TH', 'TL', 'VN'];
+        let country = store.get('cal2027-sea-country');
+        if (!VALID_COUNTRIES.includes(country)) country = 'ID';
+
+        let myState = store.get('cal2027-my-state');
+        if (!MY_STATES[myState]) myState = 'KUL';
+
+        let view = store.get('cal2027-view') || (matchMedia('(max-width: 640px)').matches ? 'month' : 'year');
         let cur = todayMonth >= 0 ? todayMonth : 0;
 
-        /* ---------- Hero: statistik & hari libur berikutnya ---------- */
+        /* Active Country Configuration & Filtered Holiday Map */
+        let CFG = {};
+        let RAW = [];
+        let H = {};
+
+        function configureRegion() {
+            if (country === 'BN') {
+                RAW = BN_DATA.slice();
+                CFG = {
+                    code: 'BN',
+                    flag: '🇧🇳',
+                    name: 'Brunei',
+                    regionTitle: 'Brunei Darussalam',
+                    eyebrow: 'Brunei Darussalam Public Calendar',
+                    lead: `All 365 days of 2027 with official public holidays and substitute days gazetted by the <a href="https://www.jpm.gov.bn/wp-content/uploads/2026/11/jpmsk04-2026.pdf" target="_blank" rel="noopener">Prime Minister's Office (Surat Keliling Bil. 4/2026)</a>, issued 10 November 2026. Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Substitute holiday',
+                    t2Plural: 'Substitute holidays',
+                    wk: [5, 0],
+                    restDay: 0,
+                    secWkndDay: 5,
+                    notes: [
+                        `<span><strong>Government Weekend Schedule:</strong> In Brunei Darussalam, government offices observe Friday and Sunday as weekly rest days (Saturday is a regular working day). When a public holiday falls on a Friday or Sunday, a replacement holiday is granted on the following Saturday or Monday.</span>`,
+                        `<span><strong>Islamic Lunar Dates &amp; Dual Isra' Mi'raj:</strong> Dates marked with * are subject to official moon-sighting (rukyah) confirmation. Because the Hijri year is 11 days shorter than the Gregorian year, Isra' and Mi'raj occurs twice in 2027 (6 January for 1448 AH and 27 December in lieu for 1449 AH).</span>`
+                    ],
+                    source: `Source: <a href="https://www.jpm.gov.bn/wp-content/uploads/2026/11/jpmsk04-2026.pdf" target="_blank" rel="noopener">Prime Minister's Office, Brunei Darussalam (Surat Keliling Bil: 4/2026)</a>`,
+                    pdfFile: `brunei-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'KH') {
+                RAW = KH_DATA.slice();
+                CFG = {
+                    code: 'KH',
+                    flag: '🇰🇭',
+                    name: 'Cambodia',
+                    regionTitle: 'Cambodia',
+                    eyebrow: 'Kingdom of Cambodia Official Calendar',
+                    lead: `All 365 days of 2027 with the 22 paid public holidays established by <a href="https://www.manhattansez.com/en/cambodian-public-holidays/" target="_blank" rel="noopener">Royal Government Sub-Decree No. 198</a> (signed 16 September 2026). Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Observance',
+                    t2Plural: 'Observances',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>22 Statutory Holidays in 2027:</strong> Sub-Decree No. 198 establishes 22 public holidays for civil servants, employees, and workers—one more than in 2026 because Visak Bochea (20 May) falls separately from International Labour Day (1 May).</span>`,
+                        `<span><strong>Major Three-Day Festivals:</strong> The calendar features three consecutive three-day national breaks: Khmer New Year (14–16 April), Pchum Ben (29 September–1 October), and the Royal Water Festival / Bon Om Touk (12–14 November).</span>`
+                    ],
+                    source: `Source: <a href="https://www.manhattansez.com/en/cambodian-public-holidays/" target="_blank" rel="noopener">Royal Government of Cambodia (Sub-Decree No. 198, Sept 2026)</a>`,
+                    pdfFile: `cambodia-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'ID') {
+                RAW = ID_DATA.slice();
+                CFG = {
+                    code: 'ID',
+                    flag: '🇮🇩',
+                    name: 'Indonesia',
+                    regionTitle: 'Indonesia',
+                    eyebrow: 'Indonesia National Calendar',
+                    lead: `All 365 days of 2027 with official national holidays and joint leave days (Cuti Bersama) established by the <a href="https://www.kemenkopmk.go.id/sites/default/files/pengumuman/2026-09/SKB%20Libur%20Nasional%20dan%20Cuti%20Bersama%20Tahun%202027.pdf" target="_blank" rel="noopener">Joint Ministerial Decree (SKB Tiga Menteri)</a> No. 1205/2026, 3/2026, and 2/2026 (issued 15 September 2026). Select any date to inspect details.`,
+                    t1Label: 'National holiday',
+                    t1Plural: 'National holidays',
+                    t2Label: 'Joint leave',
+                    t2Plural: 'Joint leave days',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Islamic Lunar Dates:</strong> In accordance with the Second Dictum of the Joint Ministerial Decree, the exact dates for 1 Ramadan 1448 AH, Eid al-Fitr 1448 AH, and Eid al-Adha 1448 AH will be confirmed by the Minister of Religious Affairs and may shift depending on moon sighting.</span>`,
+                        `<span><strong>Joint Leave (Cuti Bersama):</strong> Implementation for civil servants (ASN) follows government regulations, while private-sector implementation is determined by respective employers; joint leave days are deducted from annual leave entitlement.</span>`
+                    ],
+                    source: `Source: <a href="https://www.kemenkopmk.go.id/sites/default/files/pengumuman/2026-09/SKB%20Libur%20Nasional%20dan%20Cuti%20Bersama%20Tahun%202027.pdf" target="_blank" rel="noopener">Coordinating Ministry for Human Development &amp; Cultural Affairs (SKB Tiga Menteri)</a>`,
+                    pdfFile: `indonesia-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'LA') {
+                RAW = LA_DATA.slice();
+                CFG = {
+                    code: 'LA',
+                    flag: '🇱🇦',
+                    name: 'Laos',
+                    regionTitle: 'Lao PDR',
+                    eyebrow: 'Lao PDR National Calendar',
+                    lead: `All 365 days of 2027 with official public holidays and substitute rest days observed across the <a href="https://www.officeholidays.com/calendars/planners/lao/2027" target="_blank" rel="noopener">Lao People's Democratic Republic</a> under the Lao Labour Law and Prime Minister's Office notifications. Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Substitute day',
+                    t2Plural: 'Substitute days',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Substitute Rest Days:</strong> Under the Lao Labour Law, when a statutory public holiday falls on a weekly rest day (Saturday or Sunday), workers are granted a compensatory day off on the following Monday (such as Monday, 3 May 2027 for International Labour Day).</span>`,
+                        `<span><strong>Lunar Buddhist Festivals:</strong> Visakhabousa Day (20 May), Boun Ok Phansa (15 October), and Boun That Luang (13 November) follow the traditional Lao Buddhist lunar calendar; Lao Women's Union Day (20 July) is an official statutory holiday for women employees.</span>`
+                    ],
+                    source: `Source: <a href="https://www.officeholidays.com/calendars/planners/lao/2027" target="_blank" rel="noopener">Prime Minister's Office &amp; Ministry of Labour and Social Welfare, Lao PDR</a>`,
+                    pdfFile: `laos-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'MY') {
+                RAW = MY_ALL_DATA.filter(r => r[4].includes(myState)).map(r => r.slice(0, 4));
+                const isFriSat = MY_FRI_SAT.includes(myState);
+                const stName = MY_STATES[myState];
+                CFG = {
+                    code: 'MY',
+                    flag: '🇲🇾',
+                    name: 'Malaysia',
+                    regionTitle: `Malaysia (${stName})`,
+                    eyebrow: `Malaysia Calendar · ${stName}`,
+                    lead: `All 365 days of 2027 with federal and state public holidays published by the <a href="https://www.kabinet.gov.my/hari-kelepasan-am/" target="_blank" rel="noopener">Cabinet, Constitution and Inter-Governmental Relations Division, Prime Minister's Department</a>. Currently showing ${esc(stName)}; select any date to view details.`,
+                    t1Label: 'Federal holiday',
+                    t1Plural: 'Federal holidays',
+                    t2Label: 'State holiday',
+                    t2Plural: 'State holidays',
+                    wk: isFriSat ? [5, 6] : [0, 6],
+                    restDay: isFriSat ? 5 : 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Subject to Confirmation:</strong> Holidays marked with * (Hari Raya Puasa, Hari Raya Qurban, Awal Ramadan, and Deepavali) are subject to official moon-sighting confirmation. When a public holiday falls on a weekly rest day, replacement holidays are gazetted separately.</span>`,
+                        `<span><strong>Regional Weekend &amp; Federal Scope:</strong> Kedah, Kelantan, and Terengganu observe a Friday–Saturday weekend; all other states and federal territories observe Saturday–Sunday. The second day of Chinese New Year is a state holiday in Kelantan and Terengganu, the second day of Hari Raya Qurban is a federal holiday only in Kelantan and Terengganu, and Deepavali is not observed in Sarawak.</span>`
+                    ],
+                    source: `Source: <a href="https://www.kabinet.gov.my/hari-kelepasan-am/" target="_blank" rel="noopener">Prime Minister's Department, Malaysia (Federal &amp; State Public Holidays 2027)</a>`,
+                    pdfFile: `malaysia-calendar-${YEAR}-${myState.toLowerCase()}.pdf`
+                };
+            } else if (country === 'MM') {
+                RAW = MM_DATA.slice();
+                CFG = {
+                    code: 'MM',
+                    flag: '🇲🇲',
+                    name: 'Myanmar',
+                    regionTitle: 'Myanmar',
+                    eyebrow: 'Republic of the Union of Myanmar Calendar',
+                    lead: `All 365 days of 2027 with the 34 official public holidays gazetted by the <a href="https://elevenmyanmar.com/news/myanmar-to-have-34-public-holidays-in-2027-including-nine-day-thingyan-break" target="_blank" rel="noopener">Union Government in the State Gazette</a> (31 October 2026) under Section 25 of the Negotiable Instruments Act. Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Extended holiday',
+                    t2Plural: 'Extended holidays',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Nine-Day Thingyan Break:</strong> The 2027 State Gazette designates nine consecutive days off for Myanmar New Year (Thingyan) from Saturday, 10 April through Sunday, 18 April 2027, alongside extended multi-day breaks for Peasants' Day (1–2 March), Kason (20–21 May), Thadingyut (14–16 October), National Victory Day (22–23 November), and Kayin New Year (27–28 December).</span>`,
+                        `<span><strong>Movable Religious Holidays:</strong> One public holiday each is granted for Eid al-Adha and Deepavali (marked with *), with exact dates confirmed separately by government notification.</span>`
+                    ],
+                    source: `Source: <a href="https://elevenmyanmar.com/news/myanmar-to-have-34-public-holidays-in-2027-including-nine-day-thingyan-break" target="_blank" rel="noopener">Union Government of Myanmar State Gazette (31 October 2026)</a>`,
+                    pdfFile: `myanmar-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'PH') {
+                RAW = PH_DATA.slice();
+                CFG = {
+                    code: 'PH',
+                    flag: '🇵🇭',
+                    name: 'Philippines',
+                    regionTitle: 'Philippines',
+                    eyebrow: 'Republic of the Philippines Calendar',
+                    lead: `All 365 days of 2027 with Regular Holidays and Special (Non-Working) Days declared under <a href="https://pia.gov.ph/news/pbbm-declares-2027-regular-and-special-holidays/" target="_blank" rel="noopener">Malacañang Proclamation No. 1427</a> (signed 8 September 2026). Select any date to inspect details.`,
+                    t1Label: 'Regular holiday',
+                    t1Plural: 'Regular holidays',
+                    t2Label: 'Special non-working',
+                    t2Plural: 'Special non-working',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Regular vs. Special Non-Working Days:</strong> Proclamation No. 1427 sets 10 fixed Regular Holidays plus Eid'l Fitr and Eid'l Adha (12 total), and 8 Special (Non-Working) Days (including Chinese New Year on 6 Feb, Black Saturday on 27 Mar, All Souls' Day on 2 Nov, and Christmas Eve on 24 Dec). The EDSA People Power Revolution Anniversary on Thursday, 25 February 2027 is designated a Special (Working) Day.</span>`,
+                        `<span><strong>Islamic Holiday Proclamations:</strong> Dates marked with * (Eid'l Fitr and Eid'l Adha) are based on astronomical estimates and will be formally proclaimed by the Office of the President upon recommendation of the National Commission on Muslim Filipinos (NCMF).</span>`
+                    ],
+                    source: `Source: <a href="https://pia.gov.ph/news/pbbm-declares-2027-regular-and-special-holidays/" target="_blank" rel="noopener">Office of the President of the Philippines (Proclamation No. 1427)</a>`,
+                    pdfFile: `philippines-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'SG') {
+                RAW = SG_DATA.slice();
+                CFG = {
+                    code: 'SG',
+                    flag: '🇸🇬',
+                    name: 'Singapore',
+                    regionTitle: 'Singapore',
+                    eyebrow: 'Singapore Public Calendar',
+                    lead: `All 365 days of 2027 with the 11 gazetted public holidays and holiday in lieu announced by the <a href="https://www.mom.gov.sg/newsroom/press-releases/2026/0618-public-holidays-for-2027" target="_blank" rel="noopener">Ministry of Manpower</a> (press release of 18 June 2026). Select any date to view details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Holiday in lieu',
+                    t2Plural: 'Holiday in lieu',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Holiday in Lieu:</strong> Chinese New Year falls on Saturday 6 February and Sunday 7 February 2027; consequently, Monday 8 February 2027 is designated as a public holiday in lieu. Labour Day (1 May) and Christmas Day (25 December) fall on Saturdays.</span>`,
+                        `<span><strong>Employment Act Entitlement:</strong> Employees covered by the Employment Act are entitled to 11 paid public holidays per year. Employees required to work on a public holiday are entitled to an extra day's salary at the basic rate of pay, or a mutually agreed substituted working day off.</span>`
+                    ],
+                    source: `Source: <a href="https://www.mom.gov.sg/newsroom/press-releases/2026/0618-public-holidays-for-2027" target="_blank" rel="noopener">Ministry of Manpower, Singapore (Gazetted Public Holidays 2027)</a>`,
+                    pdfFile: `singapore-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'TH') {
+                RAW = TH_DATA.slice();
+                CFG = {
+                    code: 'TH',
+                    flag: '🇹🇭',
+                    name: 'Thailand',
+                    regionTitle: 'Thailand',
+                    eyebrow: 'Kingdom of Thailand Official Calendar',
+                    lead: `All 365 days of 2027 with official national holidays and substitute holidays confirmed by the <a href="https://www.nationthailand.com/news/general/40070369" target="_blank" rel="noopener">Royal Thai Cabinet and Bank of Thailand</a> (announced 27 August 2026). Select any date to inspect details.`,
+                    t1Label: 'National holiday',
+                    t1Plural: 'National holidays',
+                    t2Label: 'Substitute holiday',
+                    t2Plural: 'Substitute holidays',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Substitute Holidays &amp; Four-Day May Break:</strong> When a Thai national holiday falls on a Saturday or Sunday, a substitute holiday is observed on the following Monday (22 Feb for Makha Bucha, 3 May for Labour Day, 19 Jul for Asarnha Bucha, 25 Oct for Chulalongkorn Day, and 6 Dec for National/Father's Day). Combining Labour Day substitution (3 May) with Coronation Day (4 May) creates a four-day weekend from 1–4 May 2027.</span>`,
+                        `<span><strong>Regional &amp; Sectoral Observances:</strong> Financial institutions and government branches in Narathiwat, Pattani, Yala, Satun, and Songkhla observe extra holidays for Eid al-Fitr, Eid al-Adha, and Chinese New Year.</span>`
+                    ],
+                    source: `Source: <a href="https://www.nationthailand.com/news/general/40070369" target="_blank" rel="noopener">Royal Thai Cabinet &amp; Bank of Thailand (2027 Official Holiday Schedule)</a>`,
+                    pdfFile: `thailand-calendar-${YEAR}.pdf`
+                };
+            } else if (country === 'TL') {
+                RAW = TL_DATA.slice();
+                CFG = {
+                    code: 'TL',
+                    flag: '🇹🇱',
+                    name: 'Timor-Leste',
+                    regionTitle: 'Timor-Leste',
+                    eyebrow: 'Democratic Republic of Timor-Leste Calendar',
+                    lead: `All 365 days of 2027 with official national holidays and commemorative dates established under <a href="https://en.wikipedia.org/wiki/2027_in_Timor-Leste" target="_blank" rel="noopener">Law No. 10/2005 and Law No. 3/2016</a> of the Democratic Republic of Timor-Leste. Select any date to inspect details.`,
+                    t1Label: 'National holiday',
+                    t1Plural: 'National holidays',
+                    t2Label: 'Commemorative day',
+                    t2Plural: 'Commemorative days',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Statutory &amp; Religious Holidays:</strong> Under Law No. 10/2005 (as amended by Law No. 3/2016), Timor-Leste observes fixed national liberation milestones alongside Catholic feast days (Good Friday, Corpus Christi, All Saints' Day, All Souls' Day, Immaculate Conception, Christmas) and Islamic holidays (Eid al-Fitr and Eid al-Adha, marked with * and subject to official confirmation).</span>`,
+                        `<span><strong>Tolerância de Ponto:</strong> The Council of Ministers periodically grants additional half-day or full-day official time off (Tolerância de Ponto) prior to major religious observances such as Maundy Thursday (25 March) and Carnival.</span>`
+                    ],
+                    source: `Source: <a href="https://en.wikipedia.org/wiki/2027_in_Timor-Leste" target="_blank" rel="noopener">Government of Timor-Leste (Law No. 10/2005 &amp; Law No. 3/2016)</a>`,
+                    pdfFile: `timor-leste-calendar-${YEAR}.pdf`
+                };
+            } else {
+                // Vietnam (VN)
+                RAW = VN_DATA.slice();
+                CFG = {
+                    code: 'VN',
+                    flag: '🇻🇳',
+                    name: 'Vietnam',
+                    regionTitle: 'Vietnam',
+                    eyebrow: 'Socialist Republic of Vietnam Calendar',
+                    lead: `All 365 days of 2027 with the 13 statutory paid public holidays and compensatory days off approved by the <a href="https://news.tuoitre.vn/vietnam-to-have-23-days-off-across-public-holiday-periods-in-2027-10326112320593612.htm" target="_blank" rel="noopener">Government Office and National Assembly</a> (amended Labor Code, 21 November 2026). Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Compensatory day',
+                    t2Plural: 'Compensatory days',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Expanded 13 Statutory Paid Holidays in 2027:</strong> Following National Assembly amendments to the Labor Code passed on 21 November 2026, Vietnam expanded its annual paid public holidays from 11 to 13 days by adding War Invalids and Martyrs' Day (27 July) and Vietnam Culture Day (24 November).</span>`,
+                        `<span><strong>Tết Đinh Mùi &amp; Compensatory Days:</strong> Civil servants and public employees observe a 7-day Lunar New Year break from Thursday, 4 February through Wednesday, 10 February 2027 (including compensatory days on 9–10 Feb for Tết falling on Saturday and Sunday), plus Monday, 3 May in lieu of International Workers' Day (Saturday, 1 May).</span>`
+                    ],
+                    source: `Source: <a href="https://news.tuoitre.vn/vietnam-to-have-23-days-off-across-public-holiday-periods-in-2027-10326112320593612.htm" target="_blank" rel="noopener">Government Office &amp; National Assembly of Vietnam (2027 Holiday Schedule)</a>`,
+                    pdfFile: `vietnam-calendar-${YEAR}.pdf`
+                };
+            }
+
+            H = {};
+            RAW.forEach(([k, t, name, short]) => {
+                (H[k] ||= []).push({ k, t, name, short });
+            });
+        }
+
+        const isOff = dt => CFG.wk.includes(dt.getDay()) || !!H[keyOf(dt)];
+        const typeLabel = t => (t === 't1' ? CFG.t1Label : CFG.t2Label);
+
+        /* ==========================================================================
+           Render Hero, Stats & Upcoming Holiday Card
+           ========================================================================== */
         function getStats() {
-            // SKB menghitung Idul Fitri 10–11 Maret sebagai satu butir libur nasional
-            const nas = RAW.filter(r => r[1] === 'n' && r[0] !== '2027-03-11').length;
-            const cuti = RAW.filter(r => r[1] === 'c').length;
-            const workdayOff = RAW.filter(r => { const g = parse(r[0]).getDay(); return g !== 0 && g !== 6; }).length;
+            const t1Count = country === 'ID'
+                ? RAW.filter(r => r[1] === 't1' && r[0] !== '2027-03-11').length
+                : RAW.filter(r => r[1] === 't1').length;
+            const t2Count = RAW.filter(r => r[1] === 't2').length;
+            const weekdayOff = RAW.filter(r => !CFG.wk.includes(parse(r[0]).getDay())).length;
+            const weekendOff = RAW.length - weekdayOff;
+
             return [
-                { cls: 'nas', n: nas, label: 'Libur nasional' },
-                { cls: 'cuti', n: cuti, label: 'Cuti bersama' },
-                { cls: '', n: workdayOff, label: 'Hari kerja yang libur' },
-                { cls: '', n: RAW.length - workdayOff, label: 'Libur jatuh di akhir pekan' }
+                { cls: 't1', n: t1Count, label: CFG.t1Plural },
+                { cls: 't2', n: t2Count, label: CFG.t2Plural },
+                { cls: '', n: weekdayOff, label: 'Weekday holidays' },
+                { cls: '', n: weekendOff, label: 'On weekends' }
             ];
         }
 
         function renderHero() {
-            $('#stats').innerHTML = getStats().map(s => `<div class="stat ${s.cls}"><b>${s.n}</b><span>${s.label}</span></div>`).join('');
+            $('#countryFlag').innerHTML = COUNTRY_FLAGS_SVG[CFG.code] || '';
+            $('#stateWrap').hidden = country !== 'MY';
+            $('#heroEyebrow').textContent = CFG.eyebrow;
+            $('#heroLead').innerHTML = CFG.lead;
+
+            $('#stats').innerHTML = getStats()
+                .map(s => `<div class="stat ${s.cls}"><span class="stat-num">${s.n}</span><span>${esc(s.label)}</span></div>`)
+                .join('');
 
             const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const nxt = RAW.find(r => dayDiff(ref, parse(r[0])) >= 0);
-            const box = $('#next');
+            const card = $('#nextCard');
+
             if (!nxt) {
-                box.className = 'next';
-                box.innerHTML = `<small>Status</small><h2>Seluruh hari libur 2027 telah berlalu</h2><p>Terima kasih sudah memakai kalender ini.</p>`;
+                card.className = 'next-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="next-top"><span class="next-sub">Calendar Status</span></div>
+                        <h2>All 2027 holidays have passed</h2>
+                        <p class="next-date">Showing complete archive for ${esc(CFG.regionTitle)}.</p>
+                    </div>`;
                 return;
             }
+
             const dt = parse(nxt[0]);
             const diff = dayDiff(ref, dt);
             const before = ref.getFullYear() < YEAR;
-            box.className = 'next' + (nxt[1] === 'c' ? ' cuti' : '');
-            box.innerHTML = `
-                <small>${before ? 'Libur pertama tahun 2027' : 'Libur berikutnya'}</small>
-                <h2>${esc(nxt[2])}</h2>
-                <p>${fmtLong(dt)}</p>
-                <div class="count"><b>${diff === 0 ? 'Hari ini' : diff}</b><span>${diff === 0 ? '🎉' : 'hari lagi'}</span></div>`;
+            card.className = 'next-card' + (nxt[1] === 't2' ? ' t2' : '');
+            card.innerHTML = `
+                <div>
+                    <div class="next-top">
+                        <span class="next-badge"><span class="next-dot"></span>${esc(typeLabel(nxt[1]))}</span>
+                        <span class="next-sub">${before ? 'First holiday of 2027' : 'Upcoming holiday'}</span>
+                    </div>
+                    <h2>${esc(nxt[2])}</h2>
+                    <p class="next-date">${fmtLong(dt)}</p>
+                </div>
+                <div class="countdown-row">
+                    <span class="cd-num">${diff === 0 ? 'Today' : diff}</span>
+                    <span>${diff === 0 ? 'Happening today' : (diff === 1 ? 'day remaining' : 'days remaining')}</span>
+                </div>`;
         }
 
-        /* ---------- Kartu bulan ---------- */
+        function renderLegend() {
+            $('#legend').innerHTML = `
+                <span class="legend-item"><i class="swatch t1"></i>${esc(CFG.t1Label)}</span>
+                <span class="legend-item"><i class="swatch t2"></i>${esc(CFG.t2Label)}</span>
+                <span class="legend-item"><i class="swatch wknd-sec"></i>${DAYS[CFG.secWkndDay]}</span>
+                <span class="legend-item"><i class="swatch today"></i>Today</span>
+                <span class="legend-item" style="color:var(--t1-solid)">${DAYS[CFG.restDay]} (Rest day)</span>`;
+        }
+
+        /* ==========================================================================
+           Render Calendar Cards (Year Grid & Single Month View)
+           ========================================================================== */
         function monthCard(m, big) {
             const first = new Date(YEAR, m, 1).getDay();
             const dim = new Date(YEAR, m + 1, 0).getDate();
             const prevDim = new Date(YEAR, m, 0).getDate();
             let cells = '';
+
             for (let i = 0; i < 42; i++) {
                 const n = i - first + 1;
                 if (n < 1 || n > dim) {
@@ -1385,30 +2326,52 @@
                 const k = key(YEAR, m, n);
                 const dow = (first + n - 1) % 7;
                 const hs = H[k] || [];
-                const nasional = hs.some(h => h.t === 'n');
-                const cb = hs.some(h => h.t === 'c');
-                const cls = ['d', dow === 0 ? 'sun' : dow === 6 ? 'sat' : '', nasional ? 'nas' : cb ? 'cuti' : '',
-                    nasional && cb ? 'both' : '', k === todayKey ? 'today' : ''].filter(Boolean).join(' ');
-                const label = `${DAYS[dow]}, ${n} ${MONTHS[m]} ${YEAR}` + (hs.length ? ': ' + hs.map(h => h.name).join('; ') : '') + (k === todayKey ? ' (hari ini)' : '');
+                const hasT1 = hs.some(h => h.t === 't1');
+                const hasT2 = hs.some(h => h.t === 't2');
+
+                const cls = [
+                    'd',
+                    dow === CFG.restDay ? 'rest' : dow === CFG.secWkndDay ? 'sec-wknd' : '',
+                    hasT1 ? 't1' : hasT2 ? 't2' : '',
+                    hasT1 && hasT2 ? 'both' : '',
+                    k === todayKey ? 'today' : ''
+                ].filter(Boolean).join(' ');
+
+                const label = `${DAYS[dow]}, ${n} ${MONTHS[m]} ${YEAR}`
+                    + (hs.length ? ': ' + hs.map(h => `${h.name} (${typeLabel(h.t)})`).join('; ') : '')
+                    + (k === todayKey ? ' (Today)' : '');
+
                 const lbl = hs.length ? `<span class="lbl">${esc(hs[0].short)}</span>` : '';
                 cells += `<button type="button" class="${cls}" data-k="${k}" aria-label="${esc(label)}"${hs.length ? ` title="${esc(hs.map(h => h.name).join(' • '))}"` : ''}>${n}${lbl}</button>`;
             }
+
             const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
-            const cN = mh.filter(r => r[1] === 'n').length, cC = mh.filter(r => r[1] === 'c').length;
-            const list = mh.length ? mh.map(r => {
-                const dt = parse(r[0]);
-                return `<li><span class="dt ${r[1]}">${DAY_S[dt.getDay()]}, ${dt.getDate()}</span><span>${esc(r[2])}</span></li>`;
-            }).join('') : `<li class="none">Tidak ada hari libur</li>`;
-            const arrows = big ? `<div class="nav-arrows">
-                    <button type="button" class="arrow" data-nav="-1" aria-label="Bulan sebelumnya" ${m === 0 ? 'disabled' : ''}>‹</button>
-                    <button type="button" class="arrow" data-nav="1" aria-label="Bulan berikutnya" ${m === 11 ? 'disabled' : ''}>›</button>
-                </div>` : `<div class="m-badges">${cN ? `<span class="b-nas" title="Libur nasional">${cN}</span>` : ''}${cC ? `<span class="b-cuti" title="Cuti bersama">${cC}</span>` : ''}</div>`;
+            const c1 = mh.filter(r => r[1] === 't1').length;
+            const c2 = mh.filter(r => r[1] === 't2').length;
+
+            const list = mh.length
+                ? mh.map(r => {
+                    const dt = parse(r[0]);
+                    return `<li><span class="dt ${r[1]}">${DAY_S[dt.getDay()]}, ${dt.getDate()}</span><span>${esc(r[2])}</span></li>`;
+                }).join('')
+                : `<li class="none">No public holidays</li>`;
+
+            const headerRight = big
+                ? `<div class="nav-arrows">
+                        <button type="button" class="arrow" data-nav="-1" aria-label="Previous month" ${m === 0 ? 'disabled' : ''}>‹</button>
+                        <button type="button" class="arrow" data-nav="1" aria-label="Next month" ${m === 11 ? 'disabled' : ''}>›</button>
+                   </div>`
+                : `<div class="m-badges">
+                        ${c1 ? `<span class="b-t1" title="${esc(CFG.t1Plural)}">${c1}</span>` : ''}
+                        ${c2 ? `<span class="b-t2" title="${esc(CFG.t2Plural)}">${c2}</span>` : ''}
+                   </div>`;
+
             const el = document.createElement('article');
             el.className = 'month';
             el.id = 'bln-' + m;
             el.innerHTML = `
-                <div class="m-head"><h3>${MONTHS[m]}<small>${YEAR}</small></h3>${arrows}</div>
-                <div class="dow" aria-hidden="true">${DAY_S.map(d => `<span>${d}</span>`).join('')}</div>
+                <div class="m-head"><h3>${MONTHS[m]}<small>${YEAR}</small></h3>${headerRight}</div>
+                <div class="dow" aria-hidden="true">${DAY_S.map((d, i) => `<span${i === CFG.restDay ? ' class="rest"' : ''}>${d}</span>`).join('')}</div>
                 <div class="days">${cells}</div>
                 <ul class="m-list">${list}</ul>`;
             return el;
@@ -1418,18 +2381,25 @@
             const grid = $('#cal');
             grid.innerHTML = '';
             grid.classList.toggle('single', view === 'month');
-            if (view === 'month') grid.appendChild(monthCard(cur, true));
-            else for (let m = 0; m < 12; m++) grid.appendChild(monthCard(m, false));
+            if (view === 'month') {
+                grid.appendChild(monthCard(cur, true));
+            } else {
+                for (let m = 0; m < 12; m++) {
+                    grid.appendChild(monthCard(m, false));
+                }
+            }
             $('#vYear').setAttribute('aria-pressed', view === 'year');
             $('#vMonth').setAttribute('aria-pressed', view === 'month');
             document.querySelectorAll('.chip').forEach((c, i) => {
-                if (view === 'month' && i === cur) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current');
+                if (view === 'month' && i === cur) c.setAttribute('aria-current', 'true');
+                else c.removeAttribute('aria-current');
             });
         }
 
         function renderChips() {
             $('#chips').innerHTML = MONTHS.map((n, i) =>
-                `<button type="button" class="chip${i === todayMonth ? ' now' : ''}" data-m="${i}">${MON_S[i]}</button>`).join('');
+                `<button type="button" class="chip${i === todayMonth ? ' now' : ''}" data-m="${i}">${MON_S[i]}</button>`
+            ).join('');
         }
 
         function go(m, scroll) {
@@ -1438,293 +2408,505 @@
                 renderCal();
                 if (scroll) $('#cal').scrollIntoView({ block: 'start' });
             } else {
-                $('#bln-' + cur).scrollIntoView({ block: 'start' });
+                $('#bln-' + cur)?.scrollIntoView({ block: 'start' });
             }
             const chip = document.querySelector(`.chip[data-m="${cur}"]`);
             if (chip) chip.scrollIntoView({ inline: 'center', block: 'nearest' });
         }
 
         function setView(v) {
-            view = v; store.set('kal2027-view', v);
+            view = v;
+            store.set('cal2027-view', v);
             renderCal();
-            if (v === 'year') requestAnimationFrame(() => { if (cur !== 0 || todayMonth >= 0) $('#bln-' + cur)?.scrollIntoView({ block: 'start' }); });
+            if (v === 'year') {
+                requestAnimationFrame(() => {
+                    if (cur !== 0 || todayMonth >= 0) {
+                        $('#bln-' + cur)?.scrollIntoView({ block: 'start' });
+                    }
+                });
+            }
         }
 
-        /* ---------- Libur panjang ---------- */
+        /* ==========================================================================
+           Render Collapsible Holiday Table & Long Weekends
+           ========================================================================== */
+        function renderHolTable() {
+            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const stats = getStats();
+            const pillParts = [`${stats[0].n} ${CFG.t1Plural.toLowerCase()}`];
+            if (stats[1].n > 0) pillParts.push(`${stats[1].n} ${CFG.t2Plural.toLowerCase()}`);
+            $('#holCount').textContent = pillParts.join(' · ');
+
+            $('#holTable').innerHTML = RAW.map(r => {
+                const dt = parse(r[0]);
+                const past = dayDiff(ref, dt) < 0;
+                return `<button type="button" class="hol-row${past ? ' past' : ''}" data-k="${r[0]}" data-go="1">
+                    <span class="when">${dt.getDate()} ${MONTHS[dt.getMonth()]}<span>${DAYS[dt.getDay()]}</span></span>
+                    <span class="what">${esc(r[2])}</span>
+                    <span class="type-tag ${r[1]}">${esc(typeLabel(r[1]))}</span>
+                </button>`;
+            }).join('');
+        }
+
         function getLongWeekends() {
             const runs = [];
             let run = [];
-            const flush = () => { if (run.length >= 3 && run.some(d => H[keyOf(d)])) runs.push(run); run = []; };
+            const flush = () => {
+                if (run.length >= 3 && run.some(d => H[keyOf(d)])) runs.push(run);
+                run = [];
+            };
             for (let dt = new Date(YEAR, 0, 1); dt.getFullYear() === YEAR; dt = new Date(YEAR, dt.getMonth(), dt.getDate() + 1)) {
-                if (isOff(dt)) run.push(dt); else flush();
+                if (isOff(dt)) run.push(dt);
+                else flush();
             }
             flush();
+
             return runs.map(r => {
                 const a = r[0], b = r[r.length - 1];
-                const names = [...new Set(r.flatMap(d => (H[keyOf(d)] || []).map(h => h.short.replace(/^Cuti /, ''))))];
-                const rng = a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}` : `${a.getDate()} ${MON_S[a.getMonth()]} – ${b.getDate()} ${MON_S[b.getMonth()]}`;
-                return { k: keyOf(a), n: r.length, rng, span: `${DAY_S[a.getDay()]} – ${DAY_S[b.getDay()]}`, names: names.join(', ') };
+                const names = [...new Set(r.flatMap(d => (H[keyOf(d)] || []).map(h =>
+                    h.short
+                        .replace(/^Joint Leave \(|\)$/g, '')
+                        .replace(/ \(In Lieu\)$/, '')
+                        .replace(/ \(Sub\)$/, '')
+                        .replace(/ \(Comp\.\)$/, '')
+                        .replace(/ \(Compensatory\)$/, '')
+                        .replace(/^CNY$/, 'Chinese New Year')
+                )))];
+                const rng = a.getMonth() === b.getMonth()
+                    ? `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}`
+                    : `${a.getDate()} ${MON_S[a.getMonth()]} – ${b.getDate()} ${MON_S[b.getMonth()]}`;
+                return {
+                    k: keyOf(a),
+                    n: r.length,
+                    rng,
+                    span: `${DAY_S[a.getDay()]} – ${DAY_S[b.getDay()]}`,
+                    names: names.join(', ')
+                };
             });
         }
 
         function renderLong() {
-            $('#long').innerHTML = getLongWeekends().map(r =>
-                `<button type="button" data-k="${r.k}" data-go="1"><b>${r.n}<small>hari berturut-turut</small></b>
-                    <span class="rng">${r.rng}</span><span class="why">${r.span} · ${esc(r.names)}</span></button>`).join('');
+            const lw = getLongWeekends();
+            $('#longDesc').textContent = `Stretches of three or more consecutive non-working days (weekends and holidays) in ${CFG.regionTitle}.`;
+            $('#longGrid').innerHTML = lw.length
+                ? lw.map(r => `<button type="button" class="long-card" data-k="${r.k}" data-go="1">
+                    <span class="lw-days">${r.n}<small>consecutive days</small></span>
+                    <span class="rng">${esc(r.rng)}</span>
+                    <span class="why">${esc(r.span)} · ${esc(r.names)}</span>
+                </button>`).join('')
+                : `<p style="color:var(--ink-secondary);font-size:0.9rem;">No 3+ day consecutive holiday stretches found.</p>`;
         }
 
-        /* ---------- Daftar (collapsible) ---------- */
-        function renderTable() {
-            const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            $('#table').innerHTML = RAW.map(r => {
-                const dt = parse(r[0]);
-                const past = dayDiff(ref, dt) < 0;
-                const h = { t: r[1] };
-                return `<button type="button" class="row${past ? ' past' : ''}" data-k="${r[0]}" data-go="1">
-                    <span class="when"><b>${dt.getDate()} ${MONTHS[dt.getMonth()]}</b><span>${DAYS[dt.getDay()]}</span></span>
-                    <span class="what">${esc(r[2])}</span>
-                    <span class="tag ${r[1]}">${kindLabel(h)}</span></button>`;
-            }).join('');
-            const s = getStats();
-            $('#daftarCount').textContent = `${s[0].n} libur nasional + ${s[1].n} cuti bersama`;
+        function renderNotesAndFooter() {
+            $('#noteBox').innerHTML = CFG.notes.join('');
+            $('#footerSource').innerHTML = CFG.source;
         }
 
-        /* ---------- Dialog detail ---------- */
+        /* ==========================================================================
+           Date Detail Modal (<dialog>)
+           ========================================================================== */
         const dlg = $('#dlg');
         let dlgKey = null;
+
         function openDay(k) {
             dlgKey = k;
-            const dt = parse(k), hs = H[k] || [];
+            const dt = parse(k);
+            const hs = H[k] || [];
             const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const diff = dayDiff(ref, dt);
-            const rel = diff === 0 ? 'Hari ini' : diff > 0 ? `${diff} hari lagi` : `${-diff} hari yang lalu`;
+            const rel = diff === 0 ? 'Today' : diff > 0 ? `In ${plural(diff, 'day')}` : `${plural(-diff, 'day')} ago`;
             const doy = dayDiff(new Date(YEAR, 0, 1), dt) + 1;
-            const kind = hs.some(h => h.t === 'n') ? 'n' : hs.length ? 'c' : '';
-            const status = hs.length ? '' : dt.getDay() === 0 ? 'Hari Minggu' : dt.getDay() === 6 ? 'Hari Sabtu' : 'Hari kerja biasa';
-            const list = hs.map(h => `<li><span class="tag ${h.t}">${kindLabel(h)}</span><span>${esc(h.name)}</span></li>`).join('');
-            const idx = RAW.findIndex(r => r[0] >= k);
+            const kind = hs.some(h => h.t === 't1') ? 't1' : hs.length ? 't2' : '';
+            const isWknd = CFG.wk.includes(dt.getDay());
+            const status = hs.length
+                ? (isWknd ? 'Falls on a weekend' : 'Weekday holiday')
+                : (isWknd ? `${DAYS[dt.getDay()]} (Weekend)` : 'Regular working day');
+
+            const list = hs.map(h =>
+                `<li><span class="type-tag ${h.t}">${esc(typeLabel(h.t))}</span><span>${esc(h.name)}</span></li>`
+            ).join('');
+
             dlg.innerHTML = `<div class="dlg">
-                <div class="big"><div class="num ${kind}">${dt.getDate()}</div>
-                    <div><h3>${fmtLong(dt)}</h3><div class="sub">${hs.length ? (dt.getDay() === 0 || dt.getDay() === 6 ? 'Bertepatan dengan akhir pekan' : 'Hari kerja yang libur') : status}</div></div></div>
+                <div class="big">
+                    <div class="num ${kind}">${dt.getDate()}</div>
+                    <div>
+                        <h3>${fmtLong(dt)}</h3>
+                        <div class="sub">${esc(status)} · ${esc(CFG.regionTitle)}</div>
+                    </div>
+                </div>
                 ${list ? `<ul>${list}</ul>` : ''}
-                <div class="meta"><span>📆 Hari ke-${doy} dari 365</span><span>🗓️ Minggu ke-${isoWeek(dt)}</span><span>⏱️ ${rel}</span></div>
+                <div class="meta">
+                    <span>Day ${doy} of 365</span>
+                    <span>·</span>
+                    <span>Week ${isoWeek(dt)}</span>
+                    <span>·</span>
+                    <span>${rel}</span>
+                </div>
                 <div class="acts">
-                    <button type="button" data-d="-1" ${k === key(YEAR, 0, 1) ? 'disabled' : ''}>‹ Sebelumnya</button>
-                    <button type="button" class="primary" data-close>Tutup</button>
-                    <button type="button" data-d="1" ${k === key(YEAR, 11, 31) ? 'disabled' : ''}>Berikutnya ›</button>
-                </div></div>`;
+                    <button type="button" data-d="-1" ${k === key(YEAR, 0, 1) ? 'disabled' : ''}>‹ Previous</button>
+                    <button type="button" class="primary" data-close>Done</button>
+                    <button type="button" data-d="1" ${k === key(YEAR, 11, 31) ? 'disabled' : ''}>Next ›</button>
+                </div>
+            </div>`;
             if (!dlg.open) dlg.showModal();
         }
+
         dlg.addEventListener('click', e => {
             if (e.target === dlg || e.target.closest('[data-close]')) return dlg.close();
             const b = e.target.closest('[data-d]');
-            if (b) { const dt = parse(dlgKey); dt.setDate(dt.getDate() + Number(b.dataset.d)); openDay(keyOf(dt)); }
-        });
-        dlg.addEventListener('keydown', e => {
-            if (e.key === 'ArrowLeft') { const b = dlg.querySelector('[data-d="-1"]:not(:disabled)'); b && b.click(); }
-            if (e.key === 'ArrowRight') { const b = dlg.querySelector('[data-d="1"]:not(:disabled)'); b && b.click(); }
+            if (b) {
+                const dt = parse(dlgKey);
+                dt.setDate(dt.getDate() + Number(b.dataset.d));
+                openDay(keyOf(dt));
+            }
         });
 
-        /* ---------- Tema ---------- */
-        const THEMES = ['system', 'light', 'dark'], ICON = { system: '💻', light: '☀️', dark: '🌙' };
-        let theme = store.get('kal-theme');
+        dlg.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') dlg.querySelector('[data-d="-1"]:not(:disabled)')?.click();
+            if (e.key === 'ArrowRight') dlg.querySelector('[data-d="1"]:not(:disabled)')?.click();
+        });
+
+        /* ==========================================================================
+           Theme Switcher (System / Light / Dark)
+           ========================================================================== */
+        const THEMES = ['system', 'light', 'dark'];
+        const THEME_LABELS = { system: 'System', light: 'Light', dark: 'Dark' };
+        let theme = store.get('cal2027-theme');
         if (!THEMES.includes(theme)) theme = 'system';
+
         function applyTheme() {
             if (theme === 'system') document.documentElement.removeAttribute('data-theme');
             else document.documentElement.dataset.theme = theme;
-            const b = $('#themeBtn');
-            b.textContent = ICON[theme];
-            b.title = 'Tema: ' + { system: 'ikuti sistem', light: 'terang', dark: 'gelap' }[theme];
+            const btn = $('#themeBtn');
+            btn.textContent = THEME_LABELS[theme];
+            btn.title = `Appearance: ${THEME_LABELS[theme]}`;
         }
 
-        /* ---------- Ekspor PDF (jsPDF, seperti Wikirekap) ---------- */
-        const PC = {
-            brand: [59, 91, 219], brand2: [86, 116, 232], ink: [27, 34, 51], muted: [107, 116, 137], line: [225, 229, 238],
-            soft: [240, 242, 248], white: [255, 255, 255], faint: [196, 202, 214],
-            nas: [224, 49, 49], nasBg: [255, 227, 227], nasInk: [166, 30, 30],
-            cuti: [112, 72, 232], cutiBg: [229, 219, 255], cutiInk: [95, 61, 196], sat: [76, 110, 245]
-        };
-        const PDF_FONT_FILES = { normal: 'pdf-fonts/Roboto-Regular.ttf', bold: 'pdf-fonts/Roboto-Bold.ttf' };
-        let pdfFontsPromise = null;
-
-        function b64(buf) {
-            const bytes = new Uint8Array(buf);
-            let bin = '';
-            for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-            return btoa(bin);
-        }
-        function loadPdfFonts() {
-            if (!pdfFontsPromise) {
-                pdfFontsPromise = Promise.all(Object.values(PDF_FONT_FILES).map(async url => {
-                    const res = await fetch(url);
-                    if (!res.ok) throw new Error(`Font ${url}: ${res.status}`);
-                    return b64(await res.arrayBuffer());
-                })).then(([normal, bold]) => ({ normal, bold })).catch(e => { pdfFontsPromise = null; throw e; });
-            }
-            return pdfFontsPromise;
-        }
-        async function registerPdfFonts(doc) {
-            try {
-                const f = await loadPdfFonts();
-                doc.addFileToVFS('Roboto-Regular.ttf', f.normal); doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-                doc.addFileToVFS('Roboto-Bold.ttf', f.bold); doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
-                return 'Roboto';
-            } catch (e) {
-                console.warn('Font PDF gagal dimuat, memakai font bawaan:', e);
-                return 'helvetica';
-            }
-        }
-
+        /* ==========================================================================
+           Clean Landscape A4 PDF Export (jsPDF)
+           ========================================================================== */
         async function exportPDF() {
-            if (!window.jspdf) { alert('Library PDF belum termuat. Periksa koneksi internet lalu coba lagi.'); return; }
+            if (!window.jspdf) {
+                showToast('PDF library is still loading. Please check your connection and try again.');
+                return;
+            }
             const btn = $('#pdfBtn');
             btn.disabled = true;
+            showToast('Generating A4 landscape PDF…');
+
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-                const F = await registerPdfFonts(doc);
-                const W = doc.internal.pageSize.width, Hh = doc.internal.pageSize.height, M = 10;
-                const col = (kind, rgb) => doc[kind === 'fill' ? 'setFillColor' : kind === 'draw' ? 'setDrawColor' : 'setTextColor'](rgb[0], rgb[1], rgb[2]);
-                const font = (style, size) => { doc.setFont(F, style); doc.setFontSize(size); };
-                const base = (y, h, s) => y + h / 2 + s * 0.127; // baseline agar teks rata tengah vertikal
-                const pill = (x, y, w, h, bg, ink, txt, size) => {
-                    col('fill', bg); doc.roundedRect(x, y, w, h, h / 2.4, h / 2.4, 'F');
-                    font('bold', size); col('text', ink); doc.text(txt, x + w / 2, base(y, h, size), { align: 'center' });
+                const W = doc.internal.pageSize.width;
+                const Hh = doc.internal.pageSize.height;
+                const M = 10;
+
+                const PAL = {
+                    headerBg: [29, 29, 31],
+                    headerCard: [44, 44, 46],
+                    ink: [29, 29, 31],
+                    muted: [110, 110, 115],
+                    line: [224, 224, 228],
+                    soft: [245, 245, 247],
+                    white: [255, 255, 255],
+                    faint: [195, 195, 200],
+                    t1Solid: [220, 48, 40],
+                    t1Bg: [255, 235, 233],
+                    t1Ink: [185, 35, 28],
+                    t2Solid: [88, 86, 214],
+                    t2Bg: [238, 237, 252],
+                    t2Ink: [63, 61, 181],
+                    secWknd: [94, 92, 230]
                 };
 
-                /* ===== Halaman 1: kalender setahun ===== */
-                col('fill', PC.brand); doc.rect(0, 0, W, 30, 'F');
-                font('bold', 9); col('text', [214, 224, 255]); doc.text('KALENDER NASIONAL INDONESIA', M, 9.5);
-                font('bold', 30); col('text', PC.white); doc.text(String(YEAR), M, 24.5);
-                const stats = getStats(), sw = 36, sg = 3;
+                const col = (kind, rgb) => doc[kind === 'fill' ? 'setFillColor' : kind === 'draw' ? 'setDrawColor' : 'setTextColor'](rgb[0], rgb[1], rgb[2]);
+                const font = (style, size) => { doc.setFont('helvetica', style); doc.setFontSize(size); };
+                const base = (y, h, s) => y + h / 2 + s * 0.127;
+                const pill = (x, y, w, h, bg, ink, txt, size) => {
+                    col('fill', bg);
+                    doc.roundedRect(x, y, w, h, h / 2.3, h / 2.3, 'F');
+                    font('normal', size);
+                    col('text', ink);
+                    doc.text(txt, x + w / 2, base(y, h, size), { align: 'center' });
+                };
+
+                /* Page 1: Full Year Calendar Grid */
+                col('fill', PAL.headerBg);
+                doc.rect(0, 0, W, 29, 'F');
+
+                font('normal', 8.5);
+                col('text', [180, 180, 186]);
+                doc.text(`${CFG.regionTitle.toUpperCase()}  ·  HOLIDAY CALENDAR`, M, 9.5);
+
+                font('bold', 28);
+                col('text', PAL.white);
+                doc.text(String(YEAR), M, 23.5);
+
+                const stats = getStats();
+                const sw = 36, sg = 3;
                 stats.forEach((s, i) => {
                     const x = W - M - (stats.length - i) * sw - (stats.length - i - 1) * sg;
-                    col('fill', PC.brand2); doc.roundedRect(x, 5.5, sw, 19, 2.5, 2.5, 'F');
-                    font('bold', 15); col('text', PC.white); doc.text(String(s.n), x + 3.5, 14.2);
-                    font('normal', 6.6); col('text', [226, 233, 255]);
-                    doc.text(doc.splitTextToSize(s.label, sw - 6), x + 3.5, 18.3);
+                    col('fill', PAL.headerCard);
+                    doc.roundedRect(x, 5.5, sw, 18, 2.2, 2.2, 'F');
+                    font('bold', 14);
+                    col('text', PAL.white);
+                    doc.text(String(s.n), x + 3.5, 13.8);
+                    font('normal', 6.5);
+                    col('text', [195, 195, 202]);
+                    doc.text(doc.splitTextToSize(s.label, sw - 6), x + 3.5, 17.8);
                 });
 
-                // legenda
+                // Legend row
                 let lx = M;
-                const legend = [[PC.nas, 'Libur nasional'], [PC.cuti, 'Cuti bersama'], [PC.sat, 'Sabtu'], [PC.nas, 'Minggu (angka merah)']];
-                legend.forEach(([c, label], i) => {
-                    if (i < 2) { col('fill', c); doc.roundedRect(lx, 33.6, 3.6, 3.6, 1, 1, 'F'); }
-                    else { font('bold', 8); col('text', c); doc.text('1', lx + 1.8, 36.6, { align: 'center' }); }
-                    font('normal', 7.8); col('text', PC.muted); doc.text(label, lx + 5.2, 36.5);
+                const legendItems = [
+                    [PAL.t1Bg, PAL.t1Ink, CFG.t1Label, true],
+                    [PAL.t2Bg, PAL.t2Ink, CFG.t2Label, true],
+                    [null, PAL.secWknd, DAYS[CFG.secWkndDay], false],
+                    [null, PAL.t1Solid, `${DAYS[CFG.restDay]} (Rest day)`, false]
+                ];
+                legendItems.forEach(([bg, ink, label, isBox]) => {
+                    if (isBox) {
+                        col('fill', bg);
+                        doc.roundedRect(lx, 32.8, 3.6, 3.6, 0.9, 0.9, 'F');
+                    } else {
+                        font('normal', 8);
+                        col('text', ink);
+                        doc.text('1', lx + 1.8, 35.8, { align: 'center' });
+                    }
+                    font('normal', 7.6);
+                    col('text', PAL.muted);
+                    doc.text(label, lx + 5.2, 35.7);
                     lx += 5.2 + doc.getTextWidth(label) + 7;
                 });
 
-                // 12 kartu bulan
-                const gap = 4, cols = 4, top = 40, bottom = Hh - 12;
+                // 12 Month Cards (4x3)
+                const gap = 4, cols = 4, top = 39, bottom = Hh - 11;
                 const cw = (W - 2 * M - gap * (cols - 1)) / cols;
                 const ch = (bottom - top - gap * 2) / 3;
-                for (let m = 0; m < 12; m++) {
-                    const x = M + (m % cols) * (cw + gap), y = top + Math.floor(m / cols) * (ch + gap);
-                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25);
-                    doc.roundedRect(x, y, cw, ch, 2.5, 2.5, 'FD');
-                    font('bold', 10); col('text', PC.ink); doc.text(MONTHS[m], x + 4, y + 7);
-                    const nw = doc.getTextWidth(MONTHS[m]);
-                    font('normal', 7.5); col('text', PC.muted); doc.text(String(YEAR), x + 4 + nw + 1.6, y + 7);
-                    const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
-                    const cN = mh.filter(r => r[1] === 'n').length, cC = mh.filter(r => r[1] === 'c').length;
-                    let bx = x + cw - 4;
-                    if (cC) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.cutiBg, PC.cutiInk, String(cC), 6.5); bx -= 1.5; }
-                    if (cN) { bx -= 6.5; pill(bx, y + 3.2, 6.5, 4.4, PC.nasBg, PC.nasInk, String(cN), 6.5); }
 
-                    const gx = x + 2.5, cell = (cw - 5) / 7, y0 = y + 14, rh = (ch - 14 - 2) / 6;
+                for (let m = 0; m < 12; m++) {
+                    const x = M + (m % cols) * (cw + gap);
+                    const y = top + Math.floor(m / cols) * (ch + gap);
+
+                    col('fill', PAL.white);
+                    col('draw', PAL.line);
+                    doc.setLineWidth(0.25);
+                    doc.roundedRect(x, y, cw, ch, 2.5, 2.5, 'FD');
+
+                    font('bold', 9.8);
+                    col('text', PAL.ink);
+                    doc.text(MONTHS[m], x + 4, y + 6.8);
+
+                    const nw = doc.getTextWidth(MONTHS[m]);
+                    font('normal', 7.5);
+                    col('text', PAL.muted);
+                    doc.text(String(YEAR), x + 4 + nw + 1.6, y + 6.8);
+
+                    const mh = RAW.filter(r => r[0].startsWith(`${YEAR}-${pad(m + 1)}-`));
+                    const c1 = mh.filter(r => r[1] === 't1').length;
+                    const c2 = mh.filter(r => r[1] === 't2').length;
+                    let bx = x + cw - 4;
+                    if (c2) { bx -= 6.2; pill(bx, y + 3.1, 6.2, 4.2, PAL.t2Bg, PAL.t2Ink, String(c2), 6.4); bx -= 1.4; }
+                    if (c1) { bx -= 6.2; pill(bx, y + 3.1, 6.2, 4.2, PAL.t1Bg, PAL.t1Ink, String(c1), 6.4); }
+
+                    const gx = x + 2.5, cell = (cw - 5) / 7, y0 = y + 13.8, rh = (ch - 14 - 2) / 6;
                     DAY_S.forEach((d, i) => {
-                        font('bold', 5.8); col('text', i === 0 ? PC.nas : PC.muted);
-                        doc.text(d.toUpperCase(), gx + cell * i + cell / 2, y + 12, { align: 'center' });
+                        font('normal', 5.8);
+                        col('text', i === CFG.restDay ? PAL.t1Solid : PAL.muted);
+                        doc.text(d.toUpperCase(), gx + cell * i + cell / 2, y + 11.6, { align: 'center' });
                     });
-                    const first = new Date(YEAR, m, 1).getDay(), dim = new Date(YEAR, m + 1, 0).getDate(), prevDim = new Date(YEAR, m, 0).getDate();
+
+                    const first = new Date(YEAR, m, 1).getDay();
+                    const dim = new Date(YEAR, m + 1, 0).getDate();
+                    const prevDim = new Date(YEAR, m, 0).getDate();
+
                     for (let i = 0; i < 42; i++) {
-                        const n = i - first + 1, cx = gx + (i % 7) * cell, cy = y0 + Math.floor(i / 7) * rh;
+                        const n = i - first + 1;
+                        const cx = gx + (i % 7) * cell;
+                        const cy = y0 + Math.floor(i / 7) * rh;
                         const out = n < 1 || n > dim;
                         const label = out ? (n < 1 ? prevDim + n : n - dim) : n;
                         const dow = i % 7;
                         const hs = out ? [] : (H[key(YEAR, m, n)] || []);
-                        const nas = hs.some(h => h.t === 'n'), cb = !nas && hs.length > 0;
-                        if (nas || cb) { col('fill', nas ? PC.nas : PC.cuti); doc.roundedRect(cx + 0.5, cy + 0.4, cell - 1, rh - 0.8, 1.4, 1.4, 'F'); }
-                        font(out ? 'normal' : 'bold', 7.4);
-                        col('text', nas || cb ? PC.white : out ? PC.faint : dow === 0 ? PC.nas : dow === 6 ? PC.sat : PC.ink);
-                        doc.text(String(label), cx + cell / 2, base(cy, rh, 7.4), { align: 'center' });
+                        const isT1 = hs.some(h => h.t === 't1');
+                        const isT2 = !isT1 && hs.length > 0;
+
+                        if (isT1 || isT2) {
+                            col('fill', isT1 ? PAL.t1Bg : PAL.t2Bg);
+                            doc.roundedRect(cx + 0.5, cy + 0.4, cell - 1, rh - 0.8, 1.3, 1.3, 'F');
+                        }
+                        font('normal', 7.3);
+                        col('text', isT1 ? PAL.t1Ink : isT2 ? PAL.t2Ink : out ? PAL.faint : dow === CFG.restDay ? PAL.t1Solid : dow === CFG.secWkndDay ? PAL.secWknd : PAL.ink);
+                        doc.text(String(label), cx + cell / 2, base(cy, rh, 7.3), { align: 'center' });
                     }
                 }
 
-                /* ===== Halaman 2: daftar libur, libur panjang, catatan ===== */
+                /* Page 2: Complete Holiday Schedule, Long Weekends & Notes */
                 doc.addPage();
-                col('fill', PC.brand); doc.rect(0, 0, W, 16, 'F');
-                font('bold', 13); col('text', PC.white); doc.text(`Kalender Indonesia ${YEAR}`, M, 10.4);
-                font('normal', 9); col('text', [214, 224, 255]); doc.text('Daftar libur nasional dan cuti bersama', W - M, 10.2, { align: 'right' });
+                col('fill', PAL.headerBg);
+                doc.rect(0, 0, W, 15, 'F');
+                font('bold', 12);
+                col('text', PAL.white);
+                doc.text(`${CFG.regionTitle} Calendar ${YEAR}`, M, 9.8);
+                font('normal', 8.5);
+                col('text', [195, 195, 202]);
+                doc.text('Public Holidays, Long Weekends & Official Notes', W - M, 9.8, { align: 'right' });
 
-                // kiri: daftar libur & cuti bersama (warna sesuai kategori)
-                const lw = 168, rx = M + lw + 9, rw = W - M - rx;
-                font('bold', 11); col('text', PC.ink); doc.text('Daftar libur & cuti bersama', M, 25);
-                const rowH = 6.5, ty = 29;
+                const rx = M, rw = W - 2 * M;
+                let ry = 24;
+
+                font('bold', 11.5);
+                col('text', PAL.ink);
+                doc.text(`Public Holidays ${YEAR}`, rx, ry);
+                ry += 4.5;
+
+                const hcols = 2, hgap = 5, hcw = (rw - hgap) / hcols, hrh = 5.8;
+                const perCol = Math.ceil(RAW.length / hcols);
                 RAW.forEach((r, i) => {
-                    const y = ty + i * rowH, dt = parse(r[0]), isN = r[1] === 'n';
-                    if (i % 2 === 0) { col('fill', PC.soft); doc.rect(M, y, lw, rowH, 'F'); }
-                                        font('bold', 8.6); col('text', PC.ink); doc.text(`${dt.getDate()} ${MONTHS[dt.getMonth()]}`, M + 3, base(y, rowH, 8.6));
-                    font('normal', 8); col('text', PC.muted); doc.text(DAYS[dt.getDay()], M + 30, base(y, rowH, 8));
-                    font('normal', 8.6); col('text', PC.ink); doc.text(r[2], M + 50, base(y, rowH, 8.6));
-                    const label = kindLabel({ t: r[1] });
-                    font('bold', 6.4);
-                    const pw = Math.max(24, doc.getTextWidth(label) + 6);
-                    const px = M + lw - pw - 2, py = y + 1.1, ph = rowH - 2.2;
-                    col('fill', isN ? PC.nasBg : PC.cutiBg); doc.roundedRect(px, py, pw, ph, ph / 2.4, ph / 2.4, 'F');
-                    col('text', isN ? PC.nasInk : PC.cutiInk);
-                    doc.text(label, px + pw / 2, base(py, ph, 6.4), { align: 'center' });
+                    const x = rx + Math.floor(i / perCol) * (hcw + hgap);
+                    const y = ry + (i % perCol) * hrh;
+                    const dt = parse(r[0]);
+                    const isT1 = r[1] === 't1';
+
+                    col('fill', isT1 ? PAL.t1Bg : PAL.t2Bg);
+                    doc.roundedRect(x, y, 27, hrh - 1.1, 1.4, 1.4, 'F');
+                    font('normal', 7.3);
+                    col('text', isT1 ? PAL.t1Ink : PAL.t2Ink);
+                    doc.text(`${DAY_S[dt.getDay()]}, ${dt.getDate()} ${MON_S[dt.getMonth()]}`, x + 13.5, base(y, hrh - 1.1, 7.3), { align: 'center' });
+
+                    font('normal', 7.9);
+                    col('text', PAL.ink);
+                    doc.text(doc.splitTextToSize(r[2], hcw - 31)[0], x + 29.5, base(y, hrh - 1.1, 7.9));
+                });
+                ry += perCol * hrh + 6;
+
+                // Long Weekends Section
+                const lw = getLongWeekends();
+                const lcols = 3, lgap = 4, lcw = (rw - lgap * (lcols - 1)) / lcols, lch = 17.5;
+                const lwRows = Math.ceil(lw.length / lcols);
+                if (ry + 10 + lwRows * (lch + lgap) > Hh - 14) {
+                    doc.addPage();
+                    ry = 20;
+                }
+
+                font('bold', 11.5);
+                col('text', PAL.ink);
+                doc.text(`Long Weekends ${YEAR}`, rx, ry);
+                ry += 4.5;
+
+                lw.forEach((r, i) => {
+                    const x = rx + (i % lcols) * (lcw + lgap);
+                    const y = ry + Math.floor(i / lcols) * (lch + lgap);
+                    col('fill', PAL.white);
+                    col('draw', PAL.line);
+                    doc.setLineWidth(0.25);
+                    doc.roundedRect(x, y, lcw, lch, 2.2, 2.2, 'FD');
+
+                    font('bold', 18);
+                    col('text', PAL.ink);
+                    doc.text(String(r.n), x + 4.5, y + 11);
+                    const nw = doc.getTextWidth(String(r.n));
+                    font('normal', 6.8);
+                    col('text', PAL.muted);
+                    doc.text('days', x + 4.5 + nw + 1.4, y + 11);
+
+                    font('bold', 9.2);
+                    col('text', PAL.ink);
+                    doc.text(r.rng, x + 28, y + 6.8);
+
+                    font('normal', 7.2);
+                    col('text', PAL.muted);
+                    doc.text(doc.splitTextToSize(`${r.span} · ${r.names}`, lcw - 31).slice(0, 2), x + 28, y + 11.2);
+                });
+                ry += lwRows * (lch + lgap) + 4;
+
+                // Notes
+                const plainNotes = [...document.querySelectorAll('#noteBox span')].map(s => s.textContent.replace(/\s+/g, ' ').trim());
+                font('normal', 7.1);
+                const noteLines = plainNotes.map(t => doc.splitTextToSize(t, rw - 8));
+                const nh = noteLines.reduce((a, l) => a + l.length * 3.1 + 2, 0) + 4;
+
+                if (ry + nh + 8 > Hh - 12) {
+                    doc.addPage();
+                    ry = 20;
+                }
+                font('bold', 10.5);
+                col('text', PAL.ink);
+                doc.text('Notes', rx, ry);
+                ry += 3;
+
+                col('fill', PAL.soft);
+                doc.roundedRect(rx, ry, rw, nh, 2.2, 2.2, 'F');
+                col('text', PAL.muted);
+                font('normal', 7.1);
+                let ny = ry + 5.5;
+                noteLines.forEach(l => {
+                    doc.text(l, rx + 4, ny);
+                    ny += l.length * 3.1 + 2;
                 });
 
-                // kanan: libur panjang + catatan
-                let ry = 25;
-                font('bold', 11); col('text', PC.ink); doc.text(`Libur panjang ${YEAR}`, rx, ry);
-                font('normal', 7.4); col('text', PC.muted);
-                const intro = doc.splitTextToSize('Tiga hari berturut-turut atau lebih yang bebas kerja (akhir pekan, libur nasional, dan cuti bersama).', rw);
-                doc.text(intro, rx, ry + 5); ry += 5 + intro.length * 3.2 + 2;
-                getLongWeekends().forEach(r => {
-                    const why = doc.splitTextToSize(`${r.span} · ${r.names}`, rw - 26);
-                    const h = Math.max(11, 7.2 + why.length * 3.3);
-                    col('fill', PC.white); col('draw', PC.line); doc.setLineWidth(0.25); doc.roundedRect(rx, ry, rw, h, 2, 2, 'FD');
-                    font('bold', 15); col('text', PC.brand); doc.text(String(r.n), rx + 4, ry + h / 2 + 2);
-                    font('normal', 6.4); col('text', PC.muted); doc.text('hari', rx + 13.5, ry + h / 2 + 1.9);
-                    font('bold', 8.6); col('text', PC.ink); doc.text(r.rng, rx + 24, ry + 5);
-                    font('normal', 7.4); col('text', PC.muted); doc.text(why, rx + 24, ry + 8.8);
-                    ry += h + 2.4;
-                });
-                ry += 4;
-                font('bold', 11); col('text', PC.ink); doc.text('Catatan', rx, ry); ry += 3.5;
-                const notes = [...document.querySelectorAll('.note span')].map(s => s.textContent.replace(/\s+/g, ' ').replace(/^Catatan:\s*/, '').trim());
-                font('normal', 7.4);
-                const noteLines = notes.map(t => doc.splitTextToSize(t, rw - 8));
-                const nh = noteLines.reduce((a, l) => a + l.length * 3.3 + 2.4, 0) + 4;
-                col('fill', PC.soft); doc.roundedRect(rx, ry, rw, nh, 2.5, 2.5, 'F');
-                col('text', PC.muted);
-                let ny = ry + 6;
-                noteLines.forEach(l => { doc.text(l, rx + 4, ny); ny += l.length * 3.3 + 2.4; });
-
-                /* ===== Footer & halaman ===== */
+                // Footer & Page Numbers
                 const total = doc.getNumberOfPages();
                 for (let p = 1; p <= total; p++) {
                     doc.setPage(p);
-                    col('draw', PC.line); doc.setLineWidth(0.25); doc.line(M, Hh - 9.5, W - M, Hh - 9.5);
-                    font('normal', 7); col('text', PC.muted);
-                    doc.text(`Kalender Indonesia ${YEAR} - affandymurad.github.io/2027`, M, Hh - 5.5);
-                    doc.text(`Halaman ${p} dari ${total}`, W - M, Hh - 5.5, { align: 'right' });
+                    col('draw', PAL.line);
+                    doc.setLineWidth(0.25);
+                    doc.line(M, Hh - 9, W - M, Hh - 9);
+                    font('normal', 6.8);
+                    col('text', PAL.muted);
+                    doc.text(`${CFG.regionTitle} Holiday Calendar ${YEAR}`, M, Hh - 5);
+                    doc.text(`Page ${p} of ${total}`, W - M, Hh - 5, { align: 'right' });
                 }
-                doc.setProperties({ title: `Kalender Indonesia ${YEAR}`, subject: 'Hari libur nasional dan cuti bersama berdasarkan SKB Tiga Menteri' });
-                doc.save(`kalender-indonesia-${YEAR}.pdf`);
-            } catch (e) {
-                console.error(e);
-                alert('Gagal membuat PDF: ' + e.message);
+
+                doc.setProperties({
+                    title: `${CFG.regionTitle} Holiday Calendar ${YEAR}`,
+                    subject: `Official 2027 Holiday Schedule for ${CFG.regionTitle}`
+                });
+                doc.save(CFG.pdfFile);
+                showToast(`Saved ${CFG.pdfFile}`);
+            } catch (err) {
+                console.error(err);
+                showToast('Unable to generate PDF: ' + err.message);
             } finally {
                 btn.disabled = false;
             }
         }
-        $('#pdfBtn').onclick = exportPDF;
 
-        /* ---------- Event ---------- */
+        /* ==========================================================================
+           Master Render & Event Listeners
+           ========================================================================== */
+        function renderAll() {
+            configureRegion();
+            document.title = `${CFG.regionTitle} Calendar ${YEAR}`;
+            renderHero();
+            renderLegend();
+            renderCal();
+            renderHolTable();
+            renderLong();
+            renderNotesAndFooter();
+        }
+
+        // Populate dropdowns
+        $('#countrySel').value = country;
+        $('#stateSel').innerHTML = MY_ALL.map(code =>
+            `<option value="${code}">${esc(MY_STATES[code])}</option>`
+        ).join('');
+        $('#stateSel').value = myState;
+
+        $('#countrySel').addEventListener('change', e => {
+            country = e.target.value;
+            store.set('cal2027-sea-country', country);
+            if (dlg.open) dlg.close();
+            renderAll();
+        });
+
+        $('#stateSel').addEventListener('change', e => {
+            myState = e.target.value;
+            store.set('cal2027-my-state', myState);
+            if (dlg.open) dlg.close();
+            renderAll();
+        });
+
         document.addEventListener('click', e => {
             const t = e.target;
             const dayBtn = t.closest('[data-k]');
@@ -1735,7 +2917,7 @@
                     cur = m;
                     if (view === 'month') renderCal();
                     $('#cal').scrollIntoView({ block: 'start' });
-                    if (view === 'year') $('#bln-' + m).scrollIntoView({ block: 'start' });
+                    if (view === 'year') $('#bln-' + m)?.scrollIntoView({ block: 'start' });
                 }
                 return openDay(dayBtn.dataset.k);
             }
@@ -1744,46 +2926,73 @@
             const nav = t.closest('[data-nav]');
             if (nav) return go(cur + Number(nav.dataset.nav), false);
         });
+
         $('#vYear').onclick = () => setView('year');
         $('#vMonth').onclick = () => setView('month');
-        $('#themeBtn').onclick = () => { theme = THEMES[(THEMES.indexOf(theme) + 1) % 3]; store.set('kal-theme', theme); applyTheme(); };
+        $('#pdfBtn').onclick = exportPDF;
+        $('#themeBtn').onclick = () => {
+            theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+            store.set('cal2027-theme', theme);
+            applyTheme();
+        };
+
         if (inYear) {
             const tb = $('#todayBtn');
             tb.hidden = false;
-            tb.onclick = () => { go(todayMonth, true); openDay(todayKey); };
+            tb.onclick = () => {
+                go(todayMonth, true);
+                openDay(todayKey);
+            };
         }
 
-        // keyboard: ← → pindah bulan pada tampilan per bulan
+        // Keyboard arrow navigation in single-month view
         document.addEventListener('keydown', e => {
             if (dlg.open || view !== 'month' || e.target.closest('input,select,textarea')) return;
             if (e.key === 'ArrowLeft' && cur > 0) go(cur - 1, false);
             if (e.key === 'ArrowRight' && cur < 11) go(cur + 1, false);
         });
 
-        // swipe: geser kiri/kanan pada tampilan per bulan
+        // Touch swipe support in single-month view
         let sx = 0, sy = 0;
-        $('#cal').addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-        $('#cal').addEventListener('touchend', e => {
-            if (view !== 'month') return;
-            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1), false);
+        $('#cal').addEventListener('touchstart', e => {
+            sx = e.touches[0].clientX;
+            sy = e.touches[0].clientY;
         }, { passive: true });
 
-        // tandai bulan yang sedang terlihat pada tampilan setahun
-        const io = new IntersectionObserver(es => {
+        $('#cal').addEventListener('touchend', e => {
+            if (view !== 'month') return;
+            const dx = e.changedTouches[0].clientX - sx;
+            const dy = e.changedTouches[0].clientY - sy;
+            if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                go(cur + (dx < 0 ? 1 : -1), false);
+            }
+        }, { passive: true });
+
+        // Highlight visible month pill during Year View scroll
+        const io = new IntersectionObserver(entries => {
             if (view !== 'year') return;
-            es.forEach(en => {
-                if (en.isIntersecting) {
-                    const i = Number(en.target.id.slice(4));
-                    document.querySelectorAll('.chip').forEach(c => Number(c.dataset.m) === i ? c.setAttribute('aria-current', 'true') : c.removeAttribute('aria-current'));
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = Number(entry.target.id.slice(4));
+                    document.querySelectorAll('.chip').forEach(c => {
+                        if (Number(c.dataset.m) === idx) c.setAttribute('aria-current', 'true');
+                        else c.removeAttribute('aria-current');
+                    });
                 }
             });
         }, { rootMargin: '-35% 0px -55% 0px' });
-        const observeMonths = () => document.querySelectorAll('.month').forEach(el => io.observe(el));
-        new MutationObserver(observeMonths).observe($('#cal'), { childList: true });
 
-        applyTheme(); renderHero(); renderChips(); renderCal(); renderLong(); renderTable();
-        if (view === 'year' && todayMonth >= 0) setTimeout(() => $('#bln-' + todayMonth).scrollIntoView({ block: 'start' }), 60);
+        new MutationObserver(() => {
+            document.querySelectorAll('.month').forEach(el => io.observe(el));
+        }).observe($('#cal'), { childList: true });
+
+        // Initialize application
+        applyTheme();
+        renderChips();
+        renderAll();
+        if (view === 'year' && todayMonth >= 0) {
+            setTimeout(() => $('#bln-' + todayMonth)?.scrollIntoView({ block: 'start' }), 60);
+        }
     </script>
 </body>
 
