@@ -1231,6 +1231,40 @@
     return { items: [], titleMap: {}, hasLabel: false };
   }
 
+  // Articles linked from the "Cities / Other destinations / Regions" sections of a region article
+  function fetchChildDestinations(host, label, extraProp, extraParams) {
+    var re = /^(cities|other destinations|regions|destinations)$/i;
+    return apiGet(host, { action: 'parse', page: label, prop: 'sections', redirects: 1, format: 'json' }).then(function (d) {
+      var secs = (d.parse && d.parse.sections) || [];
+      var picked = secs.filter(function (x) { return String(x.toclevel) === '1' && re.test(String(x.line).replace(/<[^>]*>/g, '').trim()); });
+      return Promise.all(picked.slice(0, 3).map(function (x) {
+        return apiGet(host, { action: 'parse', page: label, prop: 'links', section: x.index, redirects: 1, format: 'json' })
+          .then(function (r) { return (r.parse && r.parse.links) || []; }, function () { return []; });
+      }));
+    }).then(function (lists) {
+      var seen = {}, titles = [];
+      lists.forEach(function (l) {
+        l.forEach(function (ln) {
+          var t = ln['*'];
+          if (ln.ns === 0 && ln.exists !== undefined && !seen[t]) { seen[t] = 1; titles.push(t); }
+        });
+      });
+      titles = titles.slice(0, 100);
+      var batches = [];
+      for (var i = 0; i < titles.length; i += 40) batches.push(titles.slice(i, i + 40));
+      return Promise.all(batches.map(function (b) {
+        return apiGet(host, Object.assign({
+          action: 'query', titles: b.join('|'), redirects: 1, prop: 'coordinates|extracts' + extraProp,
+          exintro: 1, explaintext: 1, exsentences: 2, exlimit: 'max', colimit: 'max', format: 'json'
+        }, extraParams)).then(function (r) {
+          return (r.query && r.query.pages) ? Object.values(r.query.pages) : [];
+        }, function () { return []; });
+      })).then(function (arrs) {
+        return [].concat.apply([], arrs).filter(function (p) { return p.coordinates && p.coordinates[0]; });
+      });
+    }).catch(function () { return []; });
+  }
+
   /**
    * Read the nearby articles and listings from ONE Wikivoyage edition.
    * opts.includeLabel     force-include the article named like the searched city (default true)
@@ -1293,6 +1327,14 @@
           pages.push(labelPage);
           hasLabel = true;
         }
+        // Regions (e.g. a state) list their cities and destinations in sections; those lie far outside the radius
+        return (hasLabel ? fetchChildDestinations(host, label, extraProp, extraParams) : Promise.resolve([])).then(function (kids) {
+          kids.forEach(function (k) {
+            if (!pages.some(function (p) { return p.title === k.title; })) { k._child = true; pages.push(k); }
+          });
+          return labelPage;
+        });
+      }).then(function () {
 
         var collected = [];
         var pageCoords = {};
@@ -1310,7 +1352,7 @@
           pageCoords[p.title] = { lat: pLat, lng: pLng };
           var isLabel = p.title.toLowerCase() === labelLc;
           entries.push({ title: p.title, dist: dist, isLabel: isLabel });
-          if (dist <= radiusKm || isLabel) {
+          if (dist <= radiusKm || isLabel || p._child) {
             collected.push({
               id: host + '::article::' + p.title,
               name: p.title,
