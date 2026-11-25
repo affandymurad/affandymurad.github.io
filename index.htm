@@ -341,11 +341,15 @@
             padding-top: 28px;
         }
 
-        .hero-bento {
+        .hero {
             display: grid;
-            grid-template-columns: 1.65fr 1fr;
-            gap: 16px;
-            margin-bottom: 64px;
+            grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 56px;
+            overflow: hidden;
         }
 
         .bento-card {
@@ -360,31 +364,31 @@
         .hero-main {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            gap: 24px;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 36px;
         }
 
-        .hero-top {
+        .hero-id {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
+            gap: 18px;
         }
 
-        .avatar-group {
+        .hero-id-text {
             display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            min-width: 0;
         }
 
         .avatar {
-            width: 68px;
-            height: 68px;
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--bg-surface);
+            border: 3px solid var(--bg-surface);
             box-shadow: 0 0 0 1px var(--border-strong);
             background: var(--bg-subtle);
             flex-shrink: 0;
@@ -394,7 +398,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px;
+            padding: 5px 12px;
             border-radius: var(--radius-pill);
             background: var(--status-bg);
             color: var(--status-green);
@@ -410,18 +414,17 @@
             box-shadow: 0 0 0 3px var(--status-bg);
         }
 
-        .hero-copy h1 {
-            font-size: clamp(2rem, 4vw, 2.75rem);
+        .hero-main h1 {
+            font-size: clamp(2rem, 4.4vw, 2.9rem);
             font-weight: 800;
             letter-spacing: -0.035em;
-            line-height: 1.1;
-            margin-bottom: 10px;
+            line-height: 1.05;
         }
 
         .hero-tagline {
-            font-size: 1.02rem;
+            font-size: 1.05rem;
             color: var(--text-secondary);
-            max-width: 54ch;
+            max-width: 52ch;
             line-height: 1.6;
         }
 
@@ -435,20 +438,20 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
-            padding-top: 4px;
         }
 
         .btn-primary {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            height: 44px;
-            padding: 0 20px;
+            height: 46px;
+            padding: 0 22px;
             border-radius: var(--radius-md);
             background: var(--accent);
             color: #FFFFFF;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             transition: background-color 0.15s ease, transform 0.1s ease;
         }
 
@@ -465,15 +468,16 @@
         .btn-secondary {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            height: 44px;
-            padding: 0 18px;
+            height: 46px;
+            padding: 0 20px;
             border-radius: var(--radius-md);
             background: var(--bg-subtle);
             color: var(--text-primary);
             border: 1px solid var(--border-hairline);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             transition: all 0.15s ease;
         }
 
@@ -482,55 +486,13 @@
             background: var(--bg-surface);
         }
 
-        .hero-side {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .fact-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .fact-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--border-hairline);
-        }
-
-        .fact-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .fact-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-tertiary);
-        }
-
-        .fact-value {
-            font-size: 0.925rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .fact-sub {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-        }
-
         .social-row {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-hairline);
+            width: 100%;
         }
 
         .social-pill {
@@ -553,11 +515,51 @@
             background: var(--bg-surface);
         }
 
+        .hero-facts {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 12px 28px;
+            background: var(--bg-subtle);
+            border-left: 1px solid var(--border-hairline);
+        }
+
+        .fact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-hairline);
+        }
+
+        .fact-item:last-child {
+            border-bottom: none;
+        }
+
+        .fact-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+        }
+
+        .fact-value {
+            font-size: 0.975rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .fact-sub {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
         /* ==========================================================================
            5. SECTION HEADERS & LAYOUT
            ========================================================================== */
         .section {
-            margin-bottom: 72px;
+            margin-bottom: 64px;
         }
 
         .section-header {
@@ -627,11 +629,12 @@
            ========================================================================== */
         .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
         }
 
         .project-card {
+            position: relative;
             background: var(--bg-surface);
             border: 1px solid var(--border-hairline);
             border-radius: var(--radius-lg);
@@ -653,12 +656,35 @@
             display: none;
         }
 
+        /* Featured card: full width, copy on the left, quick links on the right */
+        .project-card.featured {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+            align-items: center;
+            gap: 28px;
+        }
+
+        /* A card with a single link is clickable as a whole */
+        .project-links > .link-chip:only-child::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-lg);
+        }
+
+        .project-card:has(.project-links > .link-chip:only-child):hover .link-chip {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #FFFFFF;
+        }
+
         .project-head {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .project-icon {
@@ -683,14 +709,14 @@
         }
 
         .project-title {
-            font-size: 1.125rem;
+            font-size: 1.15rem;
             font-weight: 700;
             letter-spacing: -0.015em;
             margin-bottom: 6px;
         }
 
         .project-desc {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             color: var(--text-secondary);
             line-height: 1.55;
         }
@@ -699,18 +725,17 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            padding-top: 4px;
         }
 
         .link-chip {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 7px 12px;
+            padding: 8px 14px;
             border-radius: var(--radius-sm);
             background: var(--bg-subtle);
             border: 1px solid var(--border-hairline);
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-primary);
             transition: all 0.15s ease;
@@ -728,39 +753,342 @@
             border-radius: 2px;
         }
 
+        /* Calendar picker: country dropdown with search + one photo button */
+        .project-card.featured {
+            z-index: 5;
+        }
+
+        .cal-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .cp-combo {
+            position: relative;
+        }
+
+        .cp-btn {
+            width: 100%;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-strong);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: left;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .cp-btn:hover,
+        .cp-btn[aria-expanded="true"] {
+            border-color: var(--accent);
+        }
+
+        .cp-btn[aria-expanded="true"] {
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .cp-btn .cp-label {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cp-btn .cp-chev {
+            color: var(--text-tertiary);
+            transition: transform 0.2s var(--ease-spring);
+        }
+
+        .cp-btn[aria-expanded="true"] .cp-chev {
+            transform: rotate(180deg);
+        }
+
+        .cp-flag {
+            width: 24px;
+            height: 17px;
+            border-radius: 3px;
+            object-fit: cover;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+            flex-shrink: 0;
+        }
+
+        .cp-panel {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 6px);
+            z-index: 30;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-float);
+            overflow: hidden;
+        }
+
+        .cp-panel[hidden] {
+            display: none;
+        }
+
+        .cp-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 14px;
+            height: 44px;
+            border-bottom: 1px solid var(--border-hairline);
+            color: var(--text-tertiary);
+        }
+
+        .cp-input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font: inherit;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+        }
+
+        .cp-input::-webkit-search-cancel-button {
+            display: none;
+        }
+
+        .cp-list {
+            list-style: none;
+            max-height: 264px;
+            overflow-y: auto;
+            padding: 6px;
+        }
+
+        .cp-group {
+            padding: 10px 10px 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .cp-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.92rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .cp-item.active {
+            background: var(--bg-subtle);
+        }
+
+        .cp-item.selected {
+            color: var(--accent-text);
+            font-weight: 600;
+        }
+
+        .cp-item.selected::after {
+            content: "✓";
+            margin-left: auto;
+        }
+
+        .cp-empty {
+            padding: 14px 10px;
+            font-size: 0.88rem;
+            color: var(--text-tertiary);
+        }
+
+        .cp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cp-row .cp-combo {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cp-go {
+            flex: none;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s var(--ease-spring), background-color 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .cp-go:hover {
+            background: var(--accent-hover);
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.36);
+        }
+
+        .cp-go:active {
+            transform: scale(0.96);
+        }
+
+        .cp-go:focus-visible {
+            outline-color: #FFFFFF;
+        }
+
+        .cp-go svg {
+            width: 18px;
+            height: 18px;
+            margin-left: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        /* The photo fills the whole featured card */
+        .cp-bgwrap {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            overflow: hidden;
+            background: #1f3a63;
+        }
+
+        .cp-bgwrap::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(8, 20, 44, 0.86) 0%, rgba(8, 20, 44, 0.6) 50%, rgba(8, 20, 44, 0.34) 100%);
+        }
+
+        .cp-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.35s ease, transform 0.8s var(--ease-spring);
+        }
+
+        .cp-bg.fade {
+            opacity: 0;
+        }
+
+        .project-card.featured:hover .cp-bg {
+            transform: scale(1.03);
+        }
+
+        .project-card.featured .project-title {
+            color: #FFFFFF;
+        }
+
+        .project-card.featured .project-desc {
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        .project-card.featured .project-tag,
+        .project-card.featured .project-icon {
+            background: rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+        }
+
+        .cp-credit {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.82);
+            text-align: right;
+            line-height: 1.4;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .cp-credit a {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .cp-credit a:hover {
+            color: #FFFFFF;
+        }
+
         /* ==========================================================================
            7. EDITORIAL EXPERIENCE TIMELINE
            ========================================================================== */
         .timeline-list {
+            position: relative;
             display: flex;
             flex-direction: column;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-hairline);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
+            gap: 12px;
+            padding-left: 30px;
+        }
+
+        .timeline-list::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 24px;
+            bottom: 24px;
+            width: 2px;
+            border-radius: 2px;
+            background: var(--border-strong);
         }
 
         .timeline-row {
+            position: relative;
             display: grid;
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 190px 1fr;
             gap: 24px;
-            padding: 28px 32px;
-            border-bottom: 1px solid var(--border-hairline);
-            transition: background-color 0.15s ease;
+            padding: 22px 26px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-lg);
+            transition: background-color 0.15s ease, border-color 0.15s ease;
         }
 
-        .timeline-row:last-child {
-            border-bottom: none;
+        .timeline-row::before {
+            content: "";
+            position: absolute;
+            left: -29px;
+            top: 28px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--bg-canvas);
+            border: 2px solid var(--border-strong);
         }
 
-        /* Zebra: tint every even row subtly */
-        .timeline-row:nth-child(even) {
+        .timeline-list > .timeline-row:first-child::before {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        /* Zebra: tint every even row subtly (the collapsed group restarts its count) */
+        .timeline-list > .timeline-row:nth-child(even),
+        .timeline-more > .timeline-row:nth-child(odd) {
             background: color-mix(in srgb, var(--bg-subtle) 55%, var(--bg-surface));
         }
 
-        .timeline-row:hover,
-        .timeline-row:nth-child(even):hover {
-            background: color-mix(in srgb, var(--bg-subtle) 100%, transparent);
+        .timeline-row:hover {
+            border-color: var(--border-strong);
         }
 
         .timeline-meta {
@@ -793,6 +1121,57 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+        }
+
+        /* Older roles: collapsed until asked for */
+        .earlier > summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-pill);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-strong);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+
+        .earlier > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .earlier > summary:hover {
+            color: var(--accent-text);
+            border-color: var(--accent);
+        }
+
+        .earlier > summary svg {
+            transition: transform 0.2s var(--ease-spring);
+        }
+
+        .earlier[open] > summary svg {
+            transform: rotate(180deg);
+        }
+
+        .earlier .when-open,
+        .earlier[open] .when-closed {
+            display: none;
+        }
+
+        .earlier[open] .when-open {
+            display: inline;
+        }
+
+        .timeline-more {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
         }
 
         .role-header {
@@ -1009,16 +1388,34 @@
            10. RESPONSIVE BREAKPOINTS
            ========================================================================== */
         @media (max-width: 860px) {
-            .hero-bento {
+            .hero {
                 grid-template-columns: 1fr;
+            }
+            .hero-facts {
+                border-left: none;
+                border-top: 1px solid var(--border-hairline);
+                padding: 8px 24px;
             }
             .dual-grid {
                 grid-template-columns: 1fr;
             }
+            .project-card.featured {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .cp-bgwrap::after {
+                background: linear-gradient(180deg, rgba(8, 20, 44, 0.82) 0%, rgba(8, 20, 44, 0.55) 100%);
+            }
             .timeline-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
-                padding: 24px;
+                padding: 20px;
+            }
+            .timeline-meta {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px 14px;
             }
         }
 
@@ -1029,14 +1426,54 @@
             .mobile-menu-btn {
                 display: inline-flex;
             }
-            .skills-grid {
+            .skills-grid,
+            .portfolio-grid {
                 grid-template-columns: 1fr;
+            }
+            .hero-main {
+                padding: 24px;
             }
             .bento-card {
                 padding: 24px;
             }
             .contact-banner {
                 padding: 28px 24px;
+            }
+            .section-header .filter-group {
+                width: 100%;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .filter-btn {
+                flex: 1;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .hero-actions > .btn-primary,
+            .hero-actions > .btn-secondary {
+                flex: 1 1 100%;
+            }
+            .avatar {
+                width: 72px;
+                height: 72px;
+            }
+            .timeline-list {
+                padding-left: 24px;
+            }
+            .timeline-list::before {
+                left: 5px;
+            }
+            .timeline-row::before {
+                left: -23px;
+            }
+            .contact-buttons,
+            .contact-buttons > * {
+                width: 100%;
+            }
+            .contact-buttons > * {
+                justify-content: center;
             }
         }
 
@@ -1112,25 +1549,23 @@
     </nav>
 
     <main class="container">
-        <!-- Bento Hero Section -->
-        <section class="hero-bento" aria-label="Introduction">
-            <div class="bento-card hero-main">
-                <div class="hero-top">
-                    <div class="avatar-group">
-                        <img src="images/profile.jpeg" alt="Affandy Murad" class="avatar" width="68" height="68" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230066FF%22/><text x=%2250%22 y=%2264%22 font-family=%22sans-serif%22 font-weight=%22700%22 font-size=%2240%22 fill=%22white%22 text-anchor=%22middle%22>AM</text></svg>'">
+        <!-- Hero -->
+        <section class="hero" aria-label="Introduction">
+            <div class="hero-main">
+                <div class="hero-id">
+                    <img src="images/profile.jpeg" alt="Affandy Murad" class="avatar" width="88" height="88" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230066FF%22/><text x=%2250%22 y=%2264%22 font-family=%22sans-serif%22 font-weight=%22700%22 font-size=%2240%22 fill=%22white%22 text-anchor=%22middle%22>AM</text></svg>'">
+                    <div class="hero-id-text">
                         <div class="status-pill">
                             <span class="status-dot" aria-hidden="true"></span>
                             <span data-i18n="statusBadge">Available for opportunities</span>
                         </div>
+                        <h1>Affandy Murad</h1>
                     </div>
                 </div>
 
-                <div class="hero-copy">
-                    <h1>Affandy Murad</h1>
-                    <p class="hero-tagline" data-i18n="heroBio">
-                        <strong>The App Crafter.</strong> Building native iOS &amp; Android experiences, enterprise digital workflows, and AI-powered tools from Jakarta, Indonesia.
-                    </p>
-                </div>
+                <p class="hero-tagline" data-i18n="heroBio">
+                    <strong>The App Crafter.</strong> Building native iOS &amp; Android experiences, enterprise digital workflows, and AI-powered tools from Jakarta, Indonesia.
+                </p>
 
                 <div class="hero-actions">
                     <a href="https://drive.google.com/file/d/1IWWUQyVv-PfUjuVwbNaaInTKt_AQO2eg/view?usp=sharing" id="resume-link" class="btn-primary" target="_blank" rel="noopener noreferrer">
@@ -1141,37 +1576,29 @@
                         <span data-i18n="ctaContact">Get in touch</span>
                     </a>
                 </div>
-            </div>
-
-            <aside class="bento-card hero-side" aria-label="Quick Facts">
-                <div class="fact-list">
-                    <div class="fact-item">
-                        <span class="fact-label" data-i18n="factNowLabel">Current Role</span>
-                        <span class="fact-value">IT Supervisor</span>
-                        <span class="fact-sub">Korindo Group · Jakarta</span>
-                    </div>
-                    <div class="fact-item">
-                        <span class="fact-label" data-i18n="factFocusLabel">Core Focus</span>
-                        <span class="fact-value" data-i18n="factFocusVal">Mobile Apps, Cloud &amp; AI</span>
-                        <span class="fact-sub">Swift · Kotlin · Azure AI</span>
-                    </div>
-                    <div class="fact-item">
-                        <span class="fact-label" data-i18n="factEduLabel">Education</span>
-                        <span class="fact-value">Universitas Gunadarma</span>
-                        <span class="fact-sub">S.Kom · GPA 3.89 (Cum Laude)</span>
-                    </div>
-                </div>
 
                 <div class="social-row">
-                    <a href="https://www.linkedin.com/in/affandy-murad/" class="social-pill" target="_blank" rel="noopener noreferrer">
-                        LinkedIn ↗
-                    </a>
-                    <a href="https://github.com/affandymurad" class="social-pill" target="_blank" rel="noopener noreferrer">
-                        GitHub ↗
-                    </a>
-                    <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" class="social-pill" target="_blank" rel="noopener noreferrer">
-                        Wikimedia ↗
-                    </a>
+                    <a href="https://www.linkedin.com/in/affandy-murad/" class="social-pill" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                    <a href="https://github.com/affandymurad" class="social-pill" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                    <a href="https://meta.wikimedia.org/wiki/User:Affandy_Murad" class="social-pill" target="_blank" rel="noopener noreferrer">Wikimedia ↗</a>
+                </div>
+            </div>
+
+            <aside class="hero-facts" aria-label="Quick Facts">
+                <div class="fact-item">
+                    <span class="fact-label" data-i18n="factNowLabel">Current Role</span>
+                    <span class="fact-value">IT Supervisor</span>
+                    <span class="fact-sub">Korindo Group · Jakarta</span>
+                </div>
+                <div class="fact-item">
+                    <span class="fact-label" data-i18n="factFocusLabel">Core Focus</span>
+                    <span class="fact-value" data-i18n="factFocusVal">Mobile Apps, Cloud &amp; AI</span>
+                    <span class="fact-sub">Swift · Kotlin · Azure AI</span>
+                </div>
+                <div class="fact-item">
+                    <span class="fact-label" data-i18n="factEduLabel">Education</span>
+                    <span class="fact-value">Universitas Gunadarma</span>
+                    <span class="fact-sub">S.Kom · GPA 3.89 (Cum Laude)</span>
                 </div>
             </aside>
         </section>
@@ -1194,7 +1621,8 @@
 
             <div class="portfolio-grid" id="portfolio-grid">
                 <!-- 1. Public Holiday Calendar -->
-                <article class="project-card" data-category="civic">
+                <article class="project-card featured" data-category="civic">
+                    <div class="cp-bgwrap" aria-hidden="true"><span class="cp-bg" id="cpBg"></span></div>
                     <div>
                         <div class="project-head">
                             <div class="project-icon" aria-hidden="true">
@@ -1203,15 +1631,30 @@
                             <span class="project-tag">Civic Utility</span>
                         </div>
                         <h3 class="project-title" data-i18n="p1Title">Public Holiday Calendar</h3>
-                        <p class="project-desc" data-i18n="p1Desc">Interactive public holiday calendar and observance tracker for Indonesia, Malaysia, and Singapore.</p>
+                        <p class="project-desc" data-i18n="p1Desc">Interactive public holiday calendar for 17 countries across ASEAN and East Asia, with long weekends and PDF export.</p>
                     </div>
-                    <div class="project-links">
-                        <a href="2026" class="link-chip"><img src="2026/flag/indonesia.svg" alt="" width="16" height="16"> ID 2026</a>
-                        <a href="2026/my" class="link-chip"><img src="2026/flag/malaysia.svg" alt="" width="16" height="16"> MY 2026</a>
-                        <a href="2026/sg" class="link-chip"><img src="2026/flag/singapore.svg" alt="" width="16" height="16"> SG 2026</a>
-                        <a href="2027" class="link-chip"><img src="2026/flag/indonesia.svg" alt="" width="16" height="16"> ID 2027</a>
-                        <a href="2027/my" class="link-chip"><img src="2026/flag/malaysia.svg" alt="" width="16" height="16"> MY 2027</a>
-                        <a href="2027/sg" class="link-chip"><img src="2026/flag/singapore.svg" alt="" width="16" height="16"> SG 2027</a>
+                    <div class="cal-picker" id="calPicker">
+                        <div class="cp-row">
+                            <div class="cp-combo">
+                                <button type="button" class="cp-btn" id="cpBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="cpPanel" aria-label="Select country">
+                                    <img class="cp-flag" id="cpFlag" src="https://flagcdn.com/w40/id.png" alt="" width="24" height="17">
+                                    <span class="cp-label" id="cpLabel">Indonesia</span>
+                                    <svg class="cp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                                </button>
+                                <div class="cp-panel" id="cpPanel" hidden>
+                                    <div class="cp-search">
+                                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14"/></svg>
+                                        <input type="search" class="cp-input" id="cpInput" placeholder="Search…" autocomplete="off" spellcheck="false" role="combobox" aria-controls="cpList" aria-expanded="true">
+                                    </div>
+                                    <ul class="cp-list" id="cpList" role="listbox"></ul>
+                                </div>
+                            </div>
+                            <a class="cp-go" id="cpGo" href="2026/?country=ID" title="Open Indonesia calendar 2026">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.6v14.8a1 1 0 0 0 1.5.86l12-7.4a1 1 0 0 0 0-1.72l-12-7.4A1 1 0 0 0 7 4.6z"/></svg>
+                                <span class="cp-go-text sr-only" id="cpGoText">Open Indonesia calendar 2026</span>
+                            </a>
+                        </div>
+                        <p class="cp-credit" id="cpCredit"></p>
                     </div>
                 </article>
 
@@ -1335,7 +1778,7 @@
                 <article class="timeline-row">
                     <div class="timeline-meta">
                         <span class="timeline-period" data-i18n="korindoDate">Jul 2023 – Present</span>
-                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
+                        <span class="timeline-location"><img src="about/assets/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
                     </div>
                     <div class="timeline-content">
                         <div class="role-header">
@@ -1353,7 +1796,7 @@
                 <article class="timeline-row">
                     <div class="timeline-meta">
                         <span class="timeline-period">Sep 2022 – Jun 2023</span>
-                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
+                        <span class="timeline-location"><img src="about/assets/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
                     </div>
                     <div class="timeline-content">
                         <div class="role-header">
@@ -1371,7 +1814,7 @@
                 <article class="timeline-row">
                     <div class="timeline-meta">
                         <span class="timeline-period">Nov 2020 – Sep 2022</span>
-                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Indonesia</span>
+                        <span class="timeline-location"><img src="about/assets/flag/indonesia.svg" alt=""> Indonesia</span>
                     </div>
                     <div class="timeline-content">
                         <div class="role-header">
@@ -1389,7 +1832,7 @@
                 <article class="timeline-row">
                     <div class="timeline-meta">
                         <span class="timeline-period">Dec 2017 – Nov 2020</span>
-                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
+                        <span class="timeline-location"><img src="about/assets/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
                     </div>
                     <div class="timeline-content">
                         <div class="role-header">
@@ -1403,41 +1846,50 @@
                     </div>
                 </article>
 
-                <!-- Hitachi eBworx -->
-                <article class="timeline-row">
-                    <div class="timeline-meta">
-                        <span class="timeline-period">Nov 2016 – Oct 2017</span>
-                        <span class="timeline-location"><img src="2026/flag/malaysia.svg" alt=""> Petaling Jaya, Malaysia</span>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="role-header">
-                            <div class="company-badge"><img src="images/company/logo_hitachi.svg" alt="Hitachi eBworx" onerror="this.style.display='none'"></div>
-                            <div>
-                                <h3 class="role-title">Associate Mobile Engineer</h3>
-                                <div class="company-title">Hitachi eBworx Sdn. Bhd.</div>
-                            </div>
+                <details class="earlier">
+                    <summary>
+                        <span class="when-closed" data-i18n="expMore">Show 2 earlier roles</span>
+                        <span class="when-open" data-i18n="expLess">Hide earlier roles</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </summary>
+                    <div class="timeline-more">
+                    <!-- Hitachi eBworx -->
+                    <article class="timeline-row">
+                        <div class="timeline-meta">
+                            <span class="timeline-period">Nov 2016 – Oct 2017</span>
+                            <span class="timeline-location"><img src="about/assets/flag/malaysia.svg" alt=""> Petaling Jaya, Malaysia</span>
                         </div>
-                        <p class="role-desc" data-i18n="hitachiMYDesc">Developed mobile banking solutions for RHB Bank Malaysia (Cambodia Branch) and supported Maybank mobile banking systems; awarded Foreign Knowledge Worker Employment Pass (MDEC).</p>
-                    </div>
-                </article>
+                        <div class="timeline-content">
+                            <div class="role-header">
+                                <div class="company-badge"><img src="images/company/logo_hitachi.svg" alt="Hitachi eBworx" onerror="this.style.display='none'"></div>
+                                <div>
+                                    <h3 class="role-title">Associate Mobile Engineer</h3>
+                                    <div class="company-title">Hitachi eBworx Sdn. Bhd.</div>
+                                </div>
+                            </div>
+                            <p class="role-desc" data-i18n="hitachiMYDesc">Developed mobile banking solutions for RHB Bank Malaysia (Cambodia Branch) and supported Maybank mobile banking systems; awarded Foreign Knowledge Worker Employment Pass (MDEC).</p>
+                        </div>
+                    </article>
 
-                <!-- Bank DKI -->
-                <article class="timeline-row">
-                    <div class="timeline-meta">
-                        <span class="timeline-period">Oct 2015 – Oct 2016</span>
-                        <span class="timeline-location"><img src="2026/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="role-header">
-                            <div class="company-badge"><img src="images/company/logo_bank_jakarta.svg" alt="Bank DKI" onerror="this.style.display='none'"></div>
-                            <div>
-                                <h3 class="role-title" data-i18n="bankRole">Customer Service Assistant</h3>
-                                <div class="company-title">PT Bank DKI</div>
-                            </div>
+                    <!-- Bank DKI -->
+                    <article class="timeline-row">
+                        <div class="timeline-meta">
+                            <span class="timeline-period">Oct 2015 – Oct 2016</span>
+                            <span class="timeline-location"><img src="about/assets/flag/indonesia.svg" alt=""> Jakarta, Indonesia</span>
                         </div>
-                        <p class="role-desc" data-i18n="bankDesc">Front-line banking operations at Matraman Branch covering account onboarding, financial transactions, and product advisory; certified in Graphonomy by LPPI.</p>
+                        <div class="timeline-content">
+                            <div class="role-header">
+                                <div class="company-badge"><img src="images/company/logo_bank_jakarta.svg" alt="Bank DKI" onerror="this.style.display='none'"></div>
+                                <div>
+                                    <h3 class="role-title" data-i18n="bankRole">Customer Service Assistant</h3>
+                                    <div class="company-title">PT Bank DKI</div>
+                                </div>
+                            </div>
+                            <p class="role-desc" data-i18n="bankDesc">Front-line banking operations at Matraman Branch covering account onboarding, financial transactions, and product advisory; certified in Graphonomy by LPPI.</p>
+                        </div>
+                    </article>
                     </div>
-                </article>
+                </details>
             </div>
         </section>
 
@@ -1608,7 +2060,7 @@
                 filterAI: "AI & Tools",
                 filterCivic: "Civic & Culture",
                 p1Title: "Public Holiday Calendar",
-                p1Desc: "Interactive public holiday calendar and observance tracker for Indonesia, Malaysia, and Singapore.",
+                p1Desc: "Interactive public holiday calendar for 17 countries across ASEAN and East Asia, with long weekends and PDF export.",
                 p2Title: "Kurs Saldo",
                 p2Desc: "Real-time Indonesian Rupiah exchange rate aggregator paired with curated daily economic headlines.",
                 p3Title: "Wikilokal",
@@ -1622,6 +2074,8 @@
                 p7Title: "Kongkow",
                 p7Desc: "Contextual local tourism radar transforming mood, location, and budget into curated destination ideas.",
                 expTitle: "Experience",
+                expMore: "Show 2 earlier roles",
+                expLess: "Hide earlier roles",
                 expLead: "Over 10 years shipping mobile apps, enterprise systems, and payment integrations.",
                 korindoDate: "Jul 2023 – Present",
                 korindoDesc: "Overseeing internal software architecture and maintenance; spearheading Payroll systems, Electronic Document Signer, e-Meterai integration, and internal mobile apps across a multi-industry conglomerate.",
@@ -1670,7 +2124,7 @@
                 filterAI: "AI & Perangkat",
                 filterCivic: "Publik & Budaya",
                 p1Title: "Kalender Hari Libur Nasional",
-                p1Desc: "Kalender hari libur nasional dan hari besar interaktif untuk Indonesia, Malaysia, dan Singapura.",
+                p1Desc: "Kalender hari libur nasional interaktif untuk 17 negara ASEAN dan Asia Timur, lengkap dengan long weekend dan ekspor PDF.",
                 p2Title: "Kurs Saldo",
                 p2Desc: "Agregator nilai tukar Rupiah real-time yang dipadukan dengan berita ekonomi harian terkurasi.",
                 p3Title: "Wikilokal",
@@ -1684,6 +2138,8 @@
                 p7Title: "Kongkow",
                 p7Desc: "Radar wisata lokal kontekstual yang mengubah suasana hati, lokasi, dan anggaran menjadi rekomendasi destinasi terkurasi.",
                 expTitle: "Pengalaman",
+                expMore: "Tampilkan 2 peran sebelumnya",
+                expLess: "Sembunyikan peran sebelumnya",
                 expLead: "Lebih dari 10 tahun mengembangkan aplikasi mobile, sistem enterprise, dan integrasi pembayaran.",
                 korindoDate: "Jul 2023 – Sekarang",
                 korindoDesc: "Mengawasi arsitektur dan pemeliharaan perangkat lunak internal; memimpin pengembangan sistem Payroll, Penandatangan Dokumen Elektronik, integrasi e-Meterai, dan aplikasi mobile internal konglomerat multi-industri.",
@@ -1891,6 +2347,244 @@
                 window.scrollTo({ top: 0, behavior: "smooth" });
             });
         });
+    </script>
+
+    <script>
+        /* Calendar picker: country dropdown + search, with a photo button that follows the selection */
+        (function () {
+            const COUNTRIES = [
+                ['BN', 'Brunei', 'sea', 'Brunei Darussalam'], ['KH', 'Cambodia', 'sea', 'Kamboja Kingdom of Cambodia'],
+                ['ID', 'Indonesia', 'sea', 'Indo'], ['LA', 'Laos', 'sea', 'Lao PDR'],
+                ['MY', 'Malaysia', 'sea', 'states negeri'], ['MM', 'Myanmar', 'sea', 'Burma'],
+                ['PH', 'Philippines', 'sea', 'Filipina'], ['SG', 'Singapore', 'sea', 'Singapura'],
+                ['TH', 'Thailand', 'sea', 'Thai Siam'], ['TL', 'Timor-Leste', 'sea', 'East Timor Timor Leste'],
+                ['VN', 'Vietnam', 'sea', 'Viet Nam'],
+                ['CN', 'China', 'ea', 'Tiongkok Cina Zhongguo PRC Hong Kong Macau Macao'], ['JP', 'Japan', 'ea', 'Jepang Nippon Nihon'],
+                ['MN', 'Mongolia', 'ea', 'Ulaanbaatar'], ['KP', 'North Korea', 'ea', 'Korea Utara DPRK Pyongyang'],
+                ['KR', 'South Korea', 'ea', 'Korea Selatan Republic of Korea Seoul'], ['TW', 'Taiwan', 'ea', 'Taipei ROC Republic of China']
+            ];
+            const PHOTOS = {
+                "BN": {
+                        "a": "Yu Chu Chin",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Kampong_Ayer,_Brunei_in_January_2026_(DSCF1416).jpg"
+                },
+                "KH": {
+                        "a": "Diego Delso",
+                        "l": "CC BY-SA 3.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/3.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Bayon,_Angkor_Thom,_Camboya,_2013-08-17,_DD_37.JPG"
+                },
+                "ID": {
+                        "a": "Jakub Hałun",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Mount_Bromo,_Java,_Indonesia,_20220820_0611_9485.jpg"
+                },
+                "LA": {
+                        "a": "Basile Morin",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Water_reflection_of_karst_mountains_at_golden_hour_in_Vang_Vieng_Laos_(panoramic).jpg"
+                },
+                "MY": {
+                        "a": "kallerna",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:St._John%27s_Peak_Mount_Kinabalu_3.jpg"
+                },
+                "MM": {
+                        "a": "Vyacheslav Argenberg",
+                        "l": "CC BY 4.0",
+                        "u": "https://creativecommons.org/licenses/by/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Old_Bagan,_Myanmar,_Landscape_of_ancient_Bagan_city.jpg"
+                },
+                "PH": {
+                        "a": "Vyacheslav Argenberg",
+                        "l": "CC BY 4.0",
+                        "u": "https://creativecommons.org/licenses/by/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:El_Nido_Bay,_Desert_tropical_island,_Coastline,_Palawan_Island,_Philippines.jpg"
+                },
+                "SG": {
+                        "a": "Bijay Chaurasia",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Marina_Bay_Singapore-3499.jpg"
+                },
+                "TH": {
+                        "a": "Diego Delso",
+                        "l": "CC BY-SA 3.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/3.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Templo_Wat_Arun,_Bangkok,_Tailandia,_2013-08-22,_DD_30.jpg"
+                },
+                "TL": {
+                        "a": "Bahnfrend",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Cristo_Rei_beach,_Dili,_2018_(04).jpg"
+                },
+                "VN": {
+                        "a": "Jakub Hałun",
+                        "l": "CC BY 4.0",
+                        "u": "https://creativecommons.org/licenses/by/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:View_of_sea_from_Titov_Island,_Ha_Long_Bay,_Vietnam,_20240128_1337_3732.jpg"
+                },
+                "CN": {
+                        "a": "chensiyuan",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:1_li_jiang_guilin_yangshuo_2011.jpg"
+                },
+                "JP": {
+                        "a": "Romain Guy from San Francisco, USA",
+                        "l": "CC0",
+                        "u": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                        "p": "https://commons.wikimedia.org/wiki/File:Mount_Fuji_at_sunset,_March_2025.jpg"
+                },
+                "MN": {
+                        "a": "Bernard Gagnon",
+                        "l": "CC0",
+                        "u": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                        "p": "https://commons.wikimedia.org/wiki/File:Landscape_of_Mongolia_01.jpg"
+                },
+                "KP": {
+                        "a": "Jan Engelhardt",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:View_of_Ryugyong_Hotel_from_Potonggang_Canal.jpg"
+                },
+                "KR": {
+                        "a": "kallerna",
+                        "l": "CC BY-SA 4.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/4.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Seoraksan_National_Park_panorama_3.jpg"
+                },
+                "TW": {
+                        "a": "CEphoto, Uwe Aranas",
+                        "l": "CC BY-SA 3.0",
+                        "u": "https://creativecommons.org/licenses/by-sa/3.0",
+                        "p": "https://commons.wikimedia.org/wiki/File:Taipei_Taiwan_Taipei-101-Tower-01.jpg"
+                }
+        };
+            const TEXT = {
+                EN: { open: 'Open {c} calendar {y}', search: 'Search…', none: 'No match found', sea: 'Southeast Asia (ASEAN)', ea: 'East Asia', photo: 'Photo', label: 'Select country' },
+                ID: { open: 'Buka kalender {c} {y}', search: 'Cari…', none: 'Tidak ditemukan', sea: 'Asia Tenggara (ASEAN)', ea: 'Asia Timur', photo: 'Foto', label: 'Pilih negara' }
+            };
+            const YEAR = Math.min(2027, Math.max(2026, new Date().getFullYear()));
+            const $ = id => document.getElementById(id);
+            const norm = x => (x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+            const flag = c => `https://flagcdn.com/w40/${c.toLowerCase()}.png`;
+            const lang = () => (document.documentElement.lang === 'id' ? 'ID' : 'EN');
+            let cur = 'ID';
+            try { const v = localStorage.getItem('homeCountry'); if (COUNTRIES.some(c => c[0] === v)) cur = v; } catch (_) {}
+
+            const btn = $('cpBtn'), panel = $('cpPanel'), input = $('cpInput'), list = $('cpList'), bg = $('cpBg');
+            let items = [], active = -1, shown = null;
+
+            function paint() {
+                const t = TEXT[lang()], c = COUNTRIES.find(x => x[0] === cur), ph = PHOTOS[cur];
+                $('cpFlag').src = flag(cur);
+                $('cpLabel').textContent = c[1];
+                btn.setAttribute('aria-label', t.label);
+                input.placeholder = t.search;
+                $('cpGoText').textContent = t.open.replace('{c}', c[1]).replace('{y}', YEAR);
+                $('cpGo').href = `${YEAR}/?country=${cur}`;
+                $('cpGo').title = $('cpGoText').textContent;
+                $('cpCredit').innerHTML = ph
+                    ? `${t.photo}: <a href="${esc(ph.p)}" target="_blank" rel="noopener noreferrer">${esc(ph.a)}</a> · <a href="${esc(ph.u)}" target="_blank" rel="noopener noreferrer">${esc(ph.l)}</a> · Wikimedia Commons`
+                    : '';
+                if (shown !== cur) {
+                    const want = cur, img = new Image();
+                    bg.classList.add('fade');
+                    img.onload = img.onerror = () => {
+                        if (want !== cur) return;
+                        bg.style.backgroundImage = `url("photos/${want}.jpg")`;
+                        shown = want;
+                        bg.classList.remove('fade');
+                    };
+                    img.src = `photos/${want}.jpg`;
+                }
+            }
+
+            function setActive(i) {
+                const lis = [...list.querySelectorAll('.cp-item')];
+                if (!lis.length) { active = -1; return; }
+                active = (i + lis.length) % lis.length;
+                lis.forEach((li, k) => li.classList.toggle('active', k === active));
+                lis[active].scrollIntoView({ block: 'nearest' });
+            }
+
+            function render(q) {
+                const t = TEXT[lang()], nq = norm(q.trim());
+                items = COUNTRIES.filter(c => !nq || norm(c[1] + ' ' + c[3] + ' ' + c[0]).includes(nq));
+                let html = '', last = null;
+                items.forEach((c, i) => {
+                    if (c[2] !== last) html += `<li class="cp-group" role="presentation">${esc(t[c[2]])}</li>`;
+                    last = c[2];
+                    html += `<li class="cp-item${c[0] === cur ? ' selected' : ''}" role="option" data-i="${i}" aria-selected="${c[0] === cur}"><img class="cp-flag" src="${flag(c[0])}" alt="" width="24" height="17" loading="lazy"><span>${esc(c[1])}</span></li>`;
+                });
+                list.innerHTML = html || `<li class="cp-empty" role="presentation">${esc(t.none)}</li>`;
+                const idx = nq ? 0 : Math.max(0, items.findIndex(c => c[0] === cur));
+                setActive(Math.min(idx, items.length - 1));
+            }
+
+            function open(seed) {
+                if (!panel.hidden) return;
+                panel.hidden = false;
+                btn.setAttribute('aria-expanded', 'true');
+                input.value = seed || '';
+                render(input.value);
+                input.focus();
+            }
+
+            function close(refocus) {
+                if (panel.hidden) return;
+                panel.hidden = true;
+                btn.setAttribute('aria-expanded', 'false');
+                if (refocus) btn.focus();
+            }
+
+            function choose(i) {
+                const c = items[i];
+                if (!c) return;
+                cur = c[0];
+                try { localStorage.setItem('homeCountry', cur); } catch (_) {}
+                paint();
+                close(true);
+            }
+
+            btn.addEventListener('click', () => (panel.hidden ? open() : close(true)));
+            btn.addEventListener('keydown', e => {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(); }
+                else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && e.key !== ' ') { e.preventDefault(); open(e.key); }
+            });
+            input.addEventListener('input', () => render(input.value));
+            input.addEventListener('keydown', e => {
+                if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); }
+                else if (e.key === 'Enter') { e.preventDefault(); const li = list.querySelectorAll('.cp-item')[active]; if (li) choose(Number(li.dataset.i)); }
+                else if (e.key === 'Escape') { e.preventDefault(); close(true); }
+                else if (e.key === 'Tab') close(false);
+            });
+            list.addEventListener('mousemove', e => {
+                const li = e.target.closest('.cp-item');
+                if (li) setActive([...list.querySelectorAll('.cp-item')].indexOf(li));
+            });
+            list.addEventListener('click', e => {
+                const li = e.target.closest('.cp-item');
+                if (li) choose(Number(li.dataset.i));
+            });
+            document.addEventListener('pointerdown', e => { if (!$('calPicker').contains(e.target)) close(false); });
+            /* Build ?country= from the current selection at the moment of the click (also covers middle-click / open in new tab) */
+            ['click', 'auxclick', 'contextmenu'].forEach(ev => $('cpGo').addEventListener(ev, () => { $('cpGo').href = `${YEAR}/?country=${encodeURIComponent(cur)}`; }));
+
+            /* Re-label after the page language changes (the main script updates <html lang> on click) */
+            document.querySelectorAll('[data-lang-btn]').forEach(b => b.addEventListener('click', () => setTimeout(() => { paint(); if (!panel.hidden) render(input.value); }, 0)));
+            document.addEventListener('DOMContentLoaded', paint);
+            paint();
+        })();
     </script>
 </body>
 </html>
