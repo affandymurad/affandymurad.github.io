@@ -273,6 +273,36 @@
         .state-selector-container[hidden] {
             display: none;
         }
+        /* Home / author button */
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 36px;
+            padding: 0 14px 0 11px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: var(--accent-ink);
+            font-size: 0.92rem;
+            font-weight: 500;
+            text-decoration: none;
+            box-shadow: 0 1px 2px rgba(0, 60, 140, 0.18);
+            transition: filter 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .home-btn:hover {
+            filter: brightness(1.08);
+        }
+
+        .home-btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-tint);
+        }
+
+        .home-btn svg {
+            flex: none;
+        }
+
         /* ==========================================================================
            Searchable Combobox (replaces native <select> for country / region)
            ========================================================================== */
@@ -1630,6 +1660,10 @@
                             </svg>
                         </div>
                     </div>
+                    <a class="home-btn" href="https://affandymurad.github.io/" aria-label="Back to Affandy Murad's homepage" title="Back to affandymurad.github.io">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.7"/><path d="M2.8 14c.5-2.6 2.6-4.1 5.2-4.1s4.7 1.5 5.2 4.1"/></svg>
+                        <span>Affandy Murad</span>
+                    </a>
                 </div>
 
                 <div class="eyebrow" id="heroEyebrow">Indonesia National Calendar</div>
@@ -2305,6 +2339,13 @@
         if (qCountry) country = qCountry;
         if (country === 'MY') { const r = qsFind(Object.entries(MY_STATES), urlQ.get('region')); if (r) myState = r; }
         if (country === 'CN') { const r = qsFind(Object.entries(CN_REGIONS), urlQ.get('region')); if (r) cnRegion = r; }
+
+        function calUrl() {
+            const p = new URLSearchParams({ country });
+            if (country === 'MY') p.set('region', myState);
+            else if (country === 'CN') p.set('region', cnRegion);
+            return `https://affandymurad.github.io/${YEAR}/?${p}`;
+        }
 
         function syncUrl() {
             try {
@@ -3369,7 +3410,12 @@
                     doc.line(M, Hh - 9, W - M, Hh - 9);
                     font('normal', 6.8);
                     col('text', PAL.muted);
-                    doc.text(`${CFG.regionTitle} Holiday Calendar ${YEAR}`, M, Hh - 5);
+                    const credit = `${CFG.regionTitle} Holiday Calendar ${YEAR}  ·  Created by Affandy Murad`;
+                    doc.text(credit, M, Hh - 5);
+                    col('text', [0, 102, 204]);
+                    const link = calUrl();
+                    doc.textWithLink(link, W / 2 - doc.getTextWidth(link) / 2 + 22, Hh - 5, { url: link });
+                    col('text', PAL.muted);
                     doc.text(`Page ${p} of ${total}`, W - M, Hh - 5, { align: 'right' });
                 }
 
