@@ -514,6 +514,48 @@
             font-weight: 500;
         }
 
+        /* Year switcher: dropdown in the region bar + prev/next arrows beside the title */
+        .year-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+        }
+
+        .year-nav-group {
+            display: inline-flex;
+            gap: 6px;
+        }
+
+        .year-nav {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline-strong);
+            color: var(--ink-secondary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .year-nav svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .year-nav:hover:not(:disabled) {
+            background: var(--bg-hover);
+            color: var(--ink-primary);
+        }
+
+        .year-nav:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
         h1.year-title {
             font-size: clamp(2.8rem, 7vw, 4.6rem);
             line-height: 1.02;
@@ -1691,6 +1733,7 @@
             .toolbar,
             .hero .next-col,
             .nav-arrows,
+            .year-nav-group,
             .region-bar,
             dialog {
                 display: none !important;
@@ -1766,6 +1809,13 @@
                             </svg>
                         </div>
                     </div>
+                    <div class="mac-select-wrap">
+                        <span class="mac-select-icon" aria-hidden="true"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="2.2"/><path d="M2 6.6h12M5.4 1.8v2.4M10.6 1.8v2.4"/></svg></span>
+                        <select id="yearSel" class="mac-select" aria-label="Select year"></select>
+                        <svg class="mac-select-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 4.5L6 7.5L9 4.5" />
+                        </svg>
+                    </div>
                     <button type="button" class="pdf-btn" id="pdfBtn" title="Export calendar as A4 landscape PDF">
                         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v7.5M4.8 6.7L8 9.9l3.2-3.2M2.8 12.5h10.4"/></svg>
                         <span>Export PDF</span>
@@ -1773,7 +1823,13 @@
                 </div>
 
                 <div class="eyebrow" id="heroEyebrow">Indonesia National Calendar</div>
-                <h1 class="year-title">2027</h1>
+                <div class="year-row">
+                    <h1 class="year-title">2027</h1>
+                    <div class="year-nav-group" role="group" aria-label="Switch calendar year">
+                        <button type="button" class="year-nav" id="yearPrev" aria-label="Previous year"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5L4 6l3.5 3.5" /></svg></button>
+                        <button type="button" class="year-nav" id="yearNext" aria-label="Next year"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5L8 6l-3.5 3.5" /></svg></button>
+                    </div>
+                </div>
                 <p class="lead" id="heroLead"></p>
                 <div class="stats" id="stats"></div>
             </div>
@@ -3973,6 +4029,39 @@ const PHOTOS = {
             refresh();
             return sel._combo;
         }
+
+/* Year switcher: every year is its own page (../2027/), so carry the current selection over */
+        const AVAILABLE_YEARS = [2026, 2027];
+
+        function goToYear(y) {
+            if (y === YEAR || !AVAILABLE_YEARS.includes(y)) return;
+            store.set(`cal${y}-country`, country);
+            store.set(`cal${y}-my-state`, myState);
+            store.set(`cal${y}-cn-region`, cnRegion);
+            store.set(`cal${y}-view`, view);
+            const t = store.get(`cal${YEAR}-theme`);
+            if (t) store.set(`cal${y}-theme`, t);
+            const p = new URLSearchParams({ country });
+            if (country === 'MY') p.set('region', myState);
+            else if (country === 'CN') p.set('region', cnRegion);
+            location.href = `../${y}/?${p}`;
+        }
+
+        (() => {
+            const sel = $('#yearSel');
+            sel.innerHTML = AVAILABLE_YEARS.map(y => `<option value="${y}"${y === YEAR ? ' selected' : ''}>${y}</option>`).join('');
+            sel.addEventListener('change', () => goToYear(Number(sel.value)));
+            const i = AVAILABLE_YEARS.indexOf(YEAR);
+            const prev = AVAILABLE_YEARS[i - 1], next = AVAILABLE_YEARS[i + 1];
+            const wire = (btn, y, word) => {
+                btn.disabled = !y;
+                btn.setAttribute('aria-label', y ? `${word} year (${y})` : `${word} year (none available)`);
+                btn.title = y ? `${y} calendar` : `No ${word.toLowerCase()} calendar yet`;
+                if (y) btn.addEventListener('click', () => goToYear(y));
+            };
+            wire($('#yearPrev'), prev, 'Previous');
+            wire($('#yearNext'), next, 'Next');
+        })();
 
         makeCombo($('#countrySel'), v => COUNTRY_FLAGS_SVG[v]);
         makeCombo($('#stateSel'));
