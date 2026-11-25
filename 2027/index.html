@@ -287,16 +287,21 @@
             font-weight: 500;
             text-decoration: none;
             box-shadow: 0 1px 2px rgba(0, 60, 140, 0.18);
-            transition: filter 0.15s ease, box-shadow 0.15s ease;
+            transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
         }
 
-        .home-btn:hover {
-            filter: brightness(1.08);
+        a.home-btn:hover,
+        a.home-btn:focus-visible {
+            text-decoration: none;
+            filter: brightness(1.1) saturate(1.05);
+            box-shadow: 0 4px 12px rgba(10, 100, 220, 0.32);
+            transform: translateY(-1px);
         }
 
-        .home-btn:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 3px var(--accent-tint);
+        a.home-btn:active {
+            transform: translateY(0);
+            filter: brightness(0.96);
+            box-shadow: 0 1px 2px rgba(0, 60, 140, 0.18);
         }
 
         .home-btn svg {
@@ -3158,8 +3163,8 @@
                 const M = 10;
 
                 const PAL = {
-                    headerBg: [29, 29, 31],
-                    headerCard: [44, 44, 46],
+                    headerBg: [46, 108, 190],
+                    headerCard: [74, 132, 208],
                     ink: [29, 29, 31],
                     muted: [110, 110, 115],
                     line: [224, 224, 228],
@@ -3191,7 +3196,7 @@
                 doc.rect(0, 0, W, 29, 'F');
 
                 font('normal', 8.5);
-                col('text', [180, 180, 186]);
+                col('text', [214, 230, 250]);
                 doc.text(`${CFG.regionTitle.toUpperCase()}  ·  HOLIDAY CALENDAR`, M, 9.5);
 
                 font('bold', 28);
@@ -3208,7 +3213,7 @@
                     col('text', PAL.white);
                     doc.text(String(s.n), x + 3.5, 13.8);
                     font('normal', 6.5);
-                    col('text', [195, 195, 202]);
+                    col('text', [224, 236, 252]);
                     doc.text(doc.splitTextToSize(s.label, sw - 6), x + 3.5, 17.8);
                 });
 
@@ -3305,7 +3310,7 @@
                 col('text', PAL.white);
                 doc.text(`${CFG.regionTitle} Calendar ${YEAR}`, M, 9.8);
                 font('normal', 8.5);
-                col('text', [195, 195, 202]);
+                col('text', [224, 236, 252]);
                 doc.text('Public Holidays, Long Weekends & Official Notes', W - M, 9.8, { align: 'right' });
 
                 const rx = M, rw = W - 2 * M;
