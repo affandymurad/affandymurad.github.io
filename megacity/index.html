@@ -152,6 +152,14 @@
     }
     .wl-card .wl-btn:hover { border-color: #3366cc; color: #3366cc; }
 
+    .site-links { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+    .site-links a {
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #a2a9b1; border-radius: 8px;
+      background: #fff; color: #202122; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap;
+    }
+    .site-links a:hover { border-color: #3366cc; color: #3366cc; }
+    .site-links svg { flex: none; }
+
     @media (max-width: 768px) {
       .mw-page-container { padding: 12px; }
       .mw-first-heading { font-size: 1.4rem; word-break: break-word; }
@@ -189,6 +197,10 @@
     </h1>
     <div class="mw-subtitle">
       <span>From Wikivoyage — the free worldwide travel guide (default radius: <strong>10 km</strong>)</span>
+      <div class="site-links">
+        <a href="https://affandymurad.github.io/2026/?country=ID" target="_blank" rel="noopener" title="Holiday calendar 2026 &ndash; 2027"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2.2"/><path d="M2 6.6h12M5.4 1.8v2.4M10.6 1.8v2.4"/></svg><span>Calendar</span></a>
+        <a href="https://time-fids.web.app/" target="_blank" rel="noopener" title="World clock"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.4V8l2.4 1.6"/></svg><span>World clock</span></a>
+      </div>
     </div>
 
     <div class="mw-parser-output" style="max-width: 1200px; margin: 0 auto;">

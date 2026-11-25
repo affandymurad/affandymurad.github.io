@@ -334,6 +334,13 @@
             flex: none;
         }
 
+        .site-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: none;
+        }
+
         /* Export PDF button (beside author button) */
         .pdf-btn {
             display: inline-flex;
@@ -1653,11 +1660,11 @@
                 margin-left: auto;
             }
 
-            .home-btn.icon-only {
+            .site-links {
                 margin-left: auto;
             }
 
-            .home-btn.icon-only + .tool-btn.grow {
+            .site-links + .tool-btn.grow {
                 margin-left: 8px;
             }
 
@@ -1844,9 +1851,17 @@
                 <button type="button" id="vMonth" aria-pressed="false">Month</button>
             </div>
             <div class="chips" id="chips"></div>
-            <a class="home-btn icon-only" href="https://affandymurad.github.io/" aria-label="Back to Affandy Murad's homepage" title="Affandy Murad — back to affandymurad.github.io">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.7"/><path d="M2.8 14c.5-2.6 2.6-4.1 5.2-4.1s4.7 1.5 5.2 4.1"/></svg>
-            </a>
+            <div class="site-links">
+                <a class="home-btn icon-only" href="https://affandymurad.github.io/" aria-label="Back to Affandy Murad's homepage" title="Affandy Murad — back to affandymurad.github.io">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.7"/><path d="M2.8 14c.5-2.6 2.6-4.1 5.2-4.1s4.7 1.5 5.2 4.1"/></svg>
+                </a>
+                <a class="home-btn icon-only" href="https://time-fids.web.app/" target="_blank" rel="noopener" aria-label="World clock" title="World clock — time-fids.web.app">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.4V8l2.4 1.6"/></svg>
+                </a>
+                <a class="home-btn icon-only" href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener" aria-label="Travel guide (Megacity)" title="Travel — Megacity guide">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M10.9 5.1L9.3 9.3 5.1 10.9l1.6-4.2z"/></svg>
+                </a>
+            </div>
             <button type="button" class="tool-btn grow" id="todayBtn" hidden>Today</button>
             <button type="button" class="tool-btn" id="themeBtn" aria-label="Cycle color theme" title="Theme: System">
                 System
