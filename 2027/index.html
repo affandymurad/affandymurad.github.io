@@ -19,6 +19,7 @@
             --bg-subtle: #ededf0;
             --bg-hover: #e5e5ea;
             --bg-glass: rgba(245, 245, 247, 0.78);
+            --photo-veil: rgba(255, 255, 255, 0.88);
 
             --ink-primary: #1d1d1f;
             --ink-secondary: #6e6e73;
@@ -62,6 +63,7 @@
                 --bg-subtle: #2c2c2e;
                 --bg-hover: #3a3a3c;
                 --bg-glass: rgba(28, 28, 30, 0.78);
+                --photo-veil: rgba(28, 28, 30, 0.84);
 
                 --ink-primary: #f5f5f7;
                 --ink-secondary: #98989d;
@@ -98,6 +100,7 @@
             --bg-subtle: #2c2c2e;
             --bg-hover: #3a3a3c;
             --bg-glass: rgba(28, 28, 30, 0.78);
+            --photo-veil: rgba(28, 28, 30, 0.84);
 
             --ink-primary: #f5f5f7;
             --ink-secondary: #98989d;
@@ -149,6 +152,26 @@
             -moz-osx-font-smoothing: grayscale;
             padding-bottom: env(safe-area-inset-bottom);
             overflow-x: hidden;
+        }
+
+        .next-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .next-col .next-card {
+            flex: 1;
+        }
+
+        .photo-credit {
+            font-size: 0.74rem;
+            color: var(--ink-tertiary);
+            text-align: right;
+        }
+
+        .photo-credit:empty {
+            display: none;
         }
 
         button,
@@ -288,6 +311,16 @@
             text-decoration: none;
             box-shadow: 0 1px 2px rgba(0, 60, 140, 0.18);
             transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .home-btn.icon-only {
+            flex: none;
+            width: 32px;
+            height: 32px;
+            min-height: 0;
+            padding: 0;
+            justify-content: center;
+            border-radius: 8px;
         }
 
         a.home-btn:hover,
@@ -550,6 +583,27 @@
             justify-content: space-between;
             gap: 12px;
             position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        /* Country photo (Wikimedia Commons) behind the card, softened by a flat veil so the text stays readable */
+        .next-card::before,
+        .next-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .next-card::before {
+            z-index: -2;
+            background: var(--photo, none) center / cover no-repeat;
+        }
+
+        .next-card::after {
+            z-index: -1;
+            background: var(--photo-veil);
         }
 
         .next-top {
@@ -1561,6 +1615,14 @@
                 margin-left: auto;
             }
 
+            .home-btn.icon-only {
+                margin-left: auto;
+            }
+
+            .home-btn.icon-only + .tool-btn.grow {
+                margin-left: 8px;
+            }
+
             .region-bar {
                 width: 100%;
             }
@@ -1627,7 +1689,7 @@
 
         @media print {
             .toolbar,
-            .hero .next-card,
+            .hero .next-col,
             .nav-arrows,
             .region-bar,
             dialog {
@@ -1704,10 +1766,6 @@
                             </svg>
                         </div>
                     </div>
-                    <a class="home-btn" href="https://affandymurad.github.io/" aria-label="Back to Affandy Murad's homepage" title="Back to affandymurad.github.io">
-                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.7"/><path d="M2.8 14c.5-2.6 2.6-4.1 5.2-4.1s4.7 1.5 5.2 4.1"/></svg>
-                        <span>Affandy Murad</span>
-                    </a>
                     <button type="button" class="pdf-btn" id="pdfBtn" title="Export calendar as A4 landscape PDF">
                         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v7.5M4.8 6.7L8 9.9l3.2-3.2M2.8 12.5h10.4"/></svg>
                         <span>Export PDF</span>
@@ -1720,7 +1778,10 @@
                 <div class="stats" id="stats"></div>
             </div>
 
-            <aside class="next-card" id="nextCard" aria-live="polite"></aside>
+            <div class="next-col">
+                <aside class="next-card" id="nextCard" aria-live="polite"></aside>
+                <p class="photo-credit" id="photoCredit"></p>
+            </div>
         </header>
     </div>
 
@@ -1731,6 +1792,9 @@
                 <button type="button" id="vMonth" aria-pressed="false">Month</button>
             </div>
             <div class="chips" id="chips"></div>
+            <a class="home-btn icon-only" href="https://affandymurad.github.io/" aria-label="Back to Affandy Murad's homepage" title="Affandy Murad — back to affandymurad.github.io">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.7"/><path d="M2.8 14c.5-2.6 2.6-4.1 5.2-4.1s4.7 1.5 5.2 4.1"/></svg>
+            </a>
             <button type="button" class="tool-btn grow" id="todayBtn" hidden>Today</button>
             <button type="button" class="tool-btn" id="themeBtn" aria-label="Cycle color theme" title="Theme: System">
                 System
@@ -2854,6 +2918,271 @@
             ];
         }
 
+const PHOTOS = {
+            "BN": {
+                "artist": "Yu Chu Chin",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Kampong_Ayer,_Brunei_in_January_2026_(DSCF1416).jpg"
+            },
+            "KH": {
+                "artist": "Diego Delso",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Bayon,_Angkor_Thom,_Camboya,_2013-08-17,_DD_37.JPG",
+                "fy": 0.25
+            },
+            "ID": {
+                "artist": "Jakub Hałun",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Mount_Bromo,_Java,_Indonesia,_20220820_0611_9485.jpg",
+                "fy": 0.2
+            },
+            "LA": {
+                "artist": "Basile Morin",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Water_reflection_of_karst_mountains_at_golden_hour_in_Vang_Vieng_Laos_(panoramic).jpg",
+                "fy": 0.2
+            },
+            "MY": {
+                "artist": "kallerna",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:St._John%27s_Peak_Mount_Kinabalu_3.jpg",
+                "fy": 0.4
+            },
+            "MM": {
+                "artist": "Vyacheslav Argenberg",
+                "license": "CC BY 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Old_Bagan,_Myanmar,_Landscape_of_ancient_Bagan_city.jpg"
+            },
+            "PH": {
+                "artist": "Vyacheslav Argenberg",
+                "license": "CC BY 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:El_Nido_Bay,_Desert_tropical_island,_Coastline,_Palawan_Island,_Philippines.jpg",
+                "fy": 0.85
+            },
+            "SG": {
+                "artist": "Bijay Chaurasia",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Marina_Bay_Singapore-3499.jpg"
+            },
+            "TH": {
+                "artist": "Diego Delso",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Templo_Wat_Arun,_Bangkok,_Tailandia,_2013-08-22,_DD_30.jpg"
+            },
+            "TL": {
+                "artist": "Bahnfrend",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Cristo_Rei_beach,_Dili,_2018_(04).jpg"
+            },
+            "VN": {
+                "artist": "Jakub Hałun",
+                "license": "CC BY 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:View_of_sea_from_Titov_Island,_Ha_Long_Bay,_Vietnam,_20240128_1337_3732.jpg"
+            },
+            "CN": {
+                "artist": "chensiyuan",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:1_li_jiang_guilin_yangshuo_2011.jpg"
+            },
+            "HK": {
+                "artist": "Wilfredor",
+                "license": "CC0",
+                "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                "page": "https://commons.wikimedia.org/wiki/File:International_Commerce_Centre_on_Victoria_Harbour.jpg"
+            },
+            "MO": {
+                "artist": "Diego Delso",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Restos_de_la_Catedral_de_San_Pablo,_Macao,_2013-08-08,_DD_41.jpg"
+            },
+            "JP": {
+                "artist": "Romain Guy from San Francisco, USA",
+                "license": "CC0",
+                "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                "page": "https://commons.wikimedia.org/wiki/File:Mount_Fuji_at_sunset,_March_2025.jpg"
+            },
+            "MN": {
+                "artist": "Bernard Gagnon",
+                "license": "CC0",
+                "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                "page": "https://commons.wikimedia.org/wiki/File:Landscape_of_Mongolia_01.jpg"
+            },
+            "KP": {
+                "artist": "Jan Engelhardt",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:View_of_Ryugyong_Hotel_from_Potonggang_Canal.jpg"
+            },
+            "KR": {
+                "artist": "kallerna",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Seoraksan_National_Park_panorama_3.jpg",
+                "fy": 0.2
+            },
+            "TW": {
+                "artist": "CEphoto, Uwe Aranas",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Taipei_Taiwan_Taipei-101-Tower-01.jpg",
+                "fy": 0.35
+            },
+            "MY-KUL": {
+                "artist": "James Kerwin from Tbilisi",
+                "license": "CC BY 2.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+                "page": "https://commons.wikimedia.org/wiki/File:The_Twins_SE_Asia_2019_(49171985716).jpg"
+            },
+            "MY-LBN": {
+                "artist": "CEphoto, Uwe Aranas",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Labuan_Malaysia_Clock-Tower-03.jpg"
+            },
+            "MY-PJY": {
+                "artist": "Dominic Nelson",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Putrajaya_-_view_from_Tangga_Putrajaya_1_-_Jul_2024.jpg"
+            },
+            "MY-JHR": {
+                "artist": "Lionel Lim",
+                "license": "CC BY 2.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Johor_Bahru_skyline_at_night.jpg"
+            },
+            "MY-KDH": {
+                "artist": "CEphoto, Uwe Aranas",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Langkawi_Malaysia_Rice-Paddy-01.jpg"
+            },
+            "MY-KTN": {
+                "artist": "Neponenpasila",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Street_view_of_the_Muhammadi_Mosque.jpg"
+            },
+            "MY-MLK": {
+                "artist": "CEphoto, Uwe Aranas",
+                "license": "CC BY-SA 3.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Melaka_Malaysia_Stadthuys-01.jpg"
+            },
+            "MY-NSN": {
+                "artist": "AyyanD",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Saujana_Beach,_Port_Dickson_(4).jpg"
+            },
+            "MY-PHG": {
+                "artist": "Jakub Hałun",
+                "license": "CC BY 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Cameron_Bharat_Tea_Plantation,_Cameron_Highlands,_Malaysia,_20250829_1535_4120.jpg"
+            },
+            "MY-PRK": {
+                "artist": "Mszf 92",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Kellie%27s_Castle_Batu_Gajah.jpg"
+            },
+            "MY-PLS": {
+                "artist": "Derek T's Photos",
+                "license": "CC BY 2.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Padi_Field_in_Kangar,_Perlis_(5834859142).jpg"
+            },
+            "MY-PNG": {
+                "artist": "HundenvonPenang",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Skyline_of_George_Town,_Penang_at_dusk_May_2025.jpg"
+            },
+            "MY-SBH": {
+                "artist": "CEphoto, Uwe Aranas",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:KotaKinabalu_Sabah_CityMosque-00.jpg"
+            },
+            "MY-SWK": {
+                "artist": "Nur Nafis Naim",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Mulu_Pinnacles.jpg"
+            },
+            "MY-SGR": {
+                "artist": "PulauKakatua19",
+                "license": "CC0",
+                "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                "page": "https://commons.wikimedia.org/wiki/File:Sultan_Salahuddin_Abdul_Aziz_Shah_Mosque_and_Alinea_Suites.jpg"
+            },
+            "MY-TRG": {
+                "artist": "Dominic Nelson",
+                "license": "CC BY-SA 4.0",
+                "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+                "page": "https://commons.wikimedia.org/wiki/File:Kuala_Terengganu_-_drawbridge_at_sunrise_-_May_2024.jpg"
+            }
+        };
+
+        function photoKey() {
+            if (CFG.code === 'CN') return (cnRegion === 'HK' || cnRegion === 'MO') ? cnRegion : 'CN';
+            if (CFG.code === 'MY' && PHOTOS['MY-' + myState]) return 'MY-' + myState;
+            return CFG.code;
+        }
+
+        function applyPhoto() {
+            const k = photoKey(), p = PHOTOS[k], root = document.documentElement;
+            if (!p) { root.style.removeProperty('--photo'); $('#photoCredit').innerHTML = ''; return; }
+            root.style.setProperty('--photo', `url("../photos/${k}.jpg")`);
+            const lic = p.licenseUrl ? `<a href="${p.licenseUrl}" target="_blank" rel="noopener">${esc(p.license)}</a>` : esc(p.license);
+            $('#photoCredit').innerHTML = `Background photo: <a href="${p.page}" target="_blank" rel="noopener">${esc(p.artist)}</a> · ${lic} · Wikimedia Commons`;
+        }
+
+        /* PDF header strips are pre-cut and embedded in photos/strips.js (loaded on first export), so export also works from file:// */
+        function loadStrips() {
+            if (window.PHOTO_STRIPS) return Promise.resolve();
+            return new Promise(resolve => {
+                const s = document.createElement('script');
+                s.src = '../photos/strips.js';
+                s.onload = s.onerror = () => resolve();
+                document.head.appendChild(s);
+            });
+        }
+
+        /* Header image for the PDF (wMm x hMm), center-cropped from the country strip, or null if unavailable */
+        async function pdfHeaderPhoto(wMm, hMm) {
+            try {
+                await loadStrips();
+                const src = window.PHOTO_STRIPS && window.PHOTO_STRIPS[photoKey()];
+                if (!src) return null;
+                const img = new Image();
+                img.src = src;
+                await img.decode();
+                const cw = img.naturalWidth, ch = Math.round(cw * hMm / wMm);
+                if (ch >= img.naturalHeight - 1) return src;
+                const c = document.createElement('canvas');
+                c.width = cw; c.height = ch;
+                c.getContext('2d').drawImage(img, 0, (ch - img.naturalHeight) / 2);
+                return c.toDataURL('image/jpeg', 0.88);
+            } catch (e) { return null; }
+        }
+
+        const pdfAscii = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l').replace(/[^\x20-\x7e]/g, '');
+
         function renderHero() {
             $('#countryFlag').innerHTML = COUNTRY_FLAGS_SVG[CFG.code] || '';
             $('#stateWrap').hidden = country !== 'MY' && country !== 'CN';
@@ -3101,6 +3430,7 @@
         function renderNotesAndFooter() {
             $('#noteBox').innerHTML = CFG.notes.join('');
             $('#footerSource').innerHTML = CFG.source;
+            applyPhoto();
         }
 
         /* ==========================================================================
@@ -3232,8 +3562,9 @@
                 };
 
                 /* Page 1: Full Year Calendar Grid */
-                col('fill', PAL.headerBg);
-                doc.rect(0, 0, W, 29, 'F');
+                const hdr1 = await pdfHeaderPhoto(W, 29);
+                if (hdr1) doc.addImage(hdr1, 'JPEG', 0, 0, W, 29);
+                else { col('fill', PAL.headerBg); doc.rect(0, 0, W, 29, 'F'); console.warn('PDF header photo unavailable (photos/strips.js not loaded?)'); showToast('Header photo not found, using the blue header. Check that photos/strips.js is deployed.'); }
 
                 font('normal', 8.5);
                 col('text', [214, 230, 250]);
@@ -3343,15 +3674,19 @@
                 }
 
                 /* Page 2: Complete Holiday Schedule, Long Weekends & Notes */
+                const hdr2 = await pdfHeaderPhoto(W, 15);
+                const drawHdr2 = () => {
+                    if (hdr2) doc.addImage(hdr2, 'JPEG', 0, 0, W, 15);
+                    else { col('fill', PAL.headerBg); doc.rect(0, 0, W, 15, 'F'); }
+                    font('bold', 12);
+                    col('text', PAL.white);
+                    doc.text(`${CFG.regionTitle} Calendar ${YEAR}`, M, 9.8);
+                    font('normal', 8.5);
+                    col('text', [224, 236, 252]);
+                    doc.text('Public Holidays, Long Weekends & Official Notes', W - M, 9.8, { align: 'right' });
+                };
                 doc.addPage();
-                col('fill', PAL.headerBg);
-                doc.rect(0, 0, W, 15, 'F');
-                font('bold', 12);
-                col('text', PAL.white);
-                doc.text(`${CFG.regionTitle} Calendar ${YEAR}`, M, 9.8);
-                font('normal', 8.5);
-                col('text', [224, 236, 252]);
-                doc.text('Public Holidays, Long Weekends & Official Notes', W - M, 9.8, { align: 'right' });
+                drawHdr2();
 
                 const rx = M, rw = W - 2 * M;
                 let ry = 24;
@@ -3387,7 +3722,8 @@
                 const lwRows = Math.ceil(lw.length / lcols);
                 if (ry + 10 + lwRows * (lch + lgap) > Hh - 14) {
                     doc.addPage();
-                    ry = 20;
+                    drawHdr2();
+                    ry = 24;
                 }
 
                 font('bold', 11.5);
@@ -3429,7 +3765,8 @@
 
                 if (ry + nh + 8 > Hh - 12) {
                     doc.addPage();
-                    ry = 20;
+                    drawHdr2();
+                    ry = 24;
                 }
                 font('bold', 10.5);
                 col('text', PAL.ink);
@@ -3462,6 +3799,12 @@
                     doc.textWithLink(link, W / 2 - doc.getTextWidth(link) / 2 + 22, Hh - 5, { url: link });
                     col('text', PAL.muted);
                     doc.text(`Page ${p} of ${total}`, W - M, Hh - 5, { align: 'right' });
+                    const ph = PHOTOS[photoKey()];
+                    if (ph) {
+                        font('normal', 5.6);
+                        col('text', PAL.muted);
+                        doc.textWithLink(`Header photo: ${pdfAscii(ph.artist)}, ${pdfAscii(ph.license)}, via Wikimedia Commons`, M, Hh - 2, { url: ph.page });
+                    }
                 }
 
                 doc.setProperties({
