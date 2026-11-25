@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>2026 ASEAN Holiday Calendar — All 11 Southeast Asian Nations</title>
-    <meta name="description" content="A unified, macOS-inspired 2026 holiday calendar for all 11 ASEAN member states (Brunei, Cambodia, Indonesia, Laos, Malaysia [16 states], Myanmar, Philippines, Singapore, Thailand, Timor-Leste, Vietnam) with long weekends and PDF export.">
+    <title>2026 Holiday Calendar — ASEAN &amp; East Asia (17 Countries)</title>
+    <meta name="description" content="A unified, macOS-inspired 2026 holiday calendar for 17 countries across Southeast and East Asia (Brunei, Cambodia, Indonesia, Laos, Malaysia [16 states], Myanmar, Philippines, Singapore, Thailand, Timor-Leste, Vietnam, China [with Hong Kong and Macao], Japan, Mongolia, North Korea, South Korea, Taiwan) with searchable dropdowns, long weekends and PDF export.">
     <meta name="color-scheme" content="light dark">
     <style>
         /* ==========================================================================
@@ -265,6 +265,131 @@
 
         .state-selector-container[hidden] {
             display: none;
+        }
+        /* ==========================================================================
+           Searchable Combobox (replaces native <select> for country / region)
+           ========================================================================== */
+        .combo-native {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            width: 1px;
+            height: 1px;
+        }
+
+        .combo-btn {
+            display: inline-flex;
+            align-items: center;
+            text-align: left;
+            min-width: 150px;
+            max-width: 250px;
+            font-family: inherit;
+        }
+
+        .combo-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mac-select-wrap.open {
+            z-index: 60;
+        }
+
+        .combo-panel {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: max(100%, 280px);
+            background: var(--bg-elevated);
+            border: 1px solid var(--hairline-strong);
+            border-radius: 12px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .combo-panel[hidden] {
+            display: none;
+        }
+
+        .combo-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink-secondary);
+        }
+
+        .combo-input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            background: transparent;
+            outline: none;
+            font: inherit;
+            font-size: 0.92rem;
+            color: var(--ink-primary);
+        }
+
+        .combo-input::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+        }
+
+        .combo-list {
+            list-style: none;
+            margin: 0;
+            padding: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .combo-group {
+            padding: 8px 8px 4px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--ink-tertiary);
+        }
+
+        .combo-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 9px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--ink-primary);
+            cursor: pointer;
+        }
+
+        .combo-item.active {
+            background: var(--accent-tint);
+        }
+
+        .combo-item.selected {
+            font-weight: 600;
+        }
+
+        .combo-item.selected::after {
+            content: "✓";
+            margin-left: auto;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .combo-ico {
+            display: inline-flex;
+            flex: none;
+        }
+
+        .combo-empty {
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 0.86rem;
+            color: var(--ink-secondary);
         }
 
         .eyebrow {
@@ -1464,18 +1589,28 @@
                 <div class="region-bar" role="region" aria-label="Country and state selection">
                     <div class="mac-select-wrap">
                         <span class="mac-select-icon" id="countryFlag" aria-hidden="true"><svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="10" fill="#CE1126"/><rect y="10" width="28" height="10" fill="#FFFFFF"/></svg></span>
-                        <select id="countrySel" class="mac-select" aria-label="Select Southeast Asian country">
-                            <option value="BN">Brunei</option>
-                            <option value="KH">Cambodia</option>
-                            <option value="ID">Indonesia</option>
-                            <option value="LA">Laos</option>
-                            <option value="MY">Malaysia</option>
-                            <option value="MM">Myanmar</option>
-                            <option value="PH">Philippines</option>
-                            <option value="SG">Singapore</option>
-                            <option value="TH">Thailand</option>
-                            <option value="TL">Timor-Leste</option>
-                            <option value="VN">Vietnam</option>
+                        <select id="countrySel" class="mac-select" aria-label="Select country">
+                            <optgroup label="Southeast Asia (ASEAN)">
+                                <option value="BN" data-alias="Brunei Darussalam">Brunei</option>
+                                <option value="KH" data-alias="Kamboja Kingdom of Cambodia">Cambodia</option>
+                                <option value="ID" data-alias="Indo">Indonesia</option>
+                                <option value="LA" data-alias="Lao PDR">Laos</option>
+                                <option value="MY" data-alias="Malaysia states negeri">Malaysia</option>
+                                <option value="MM" data-alias="Burma">Myanmar</option>
+                                <option value="PH" data-alias="Filipina">Philippines</option>
+                                <option value="SG" data-alias="Singapura">Singapore</option>
+                                <option value="TH" data-alias="Thai Siam">Thailand</option>
+                                <option value="TL" data-alias="East Timor Timor Leste">Timor-Leste</option>
+                                <option value="VN" data-alias="Viet Nam">Vietnam</option>
+                            </optgroup>
+                            <optgroup label="East Asia">
+                                <option value="CN" data-alias="Tiongkok Cina Zhongguo PRC Hong Kong Macau Macao">China</option>
+                                <option value="JP" data-alias="Jepang Nippon Nihon">Japan</option>
+                                <option value="MN" data-alias="Ulaanbaatar">Mongolia</option>
+                                <option value="KP" data-alias="Korea Utara DPRK Pyongyang">North Korea</option>
+                                <option value="KR" data-alias="Korea Selatan Republic of Korea Seoul">South Korea</option>
+                                <option value="TW" data-alias="Taipei ROC Republic of China">Taiwan</option>
+                            </optgroup>
                         </select>
                         <svg class="mac-select-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M3 4.5L6 7.5L9 4.5" />
@@ -1485,7 +1620,7 @@
                     <div class="state-selector-container" id="stateWrap" hidden>
                         <div class="mac-select-wrap">
                             <span class="mac-select-icon" aria-hidden="true"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-secondary)"><path d="M8 14.5s4.5-4.1 4.5-8a4.5 4.5 0 1 0-9 0c0 3.9 4.5 8 4.5 8Z"/><circle cx="8" cy="6.5" r="1.5"/></svg></span>
-                            <select id="stateSel" class="mac-select" aria-label="Select Malaysian state or federal territory"></select>
+                            <select id="stateSel" class="mac-select" aria-label="Select region"></select>
                             <svg class="mac-select-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M3 4.5L6 7.5L9 4.5" />
                             </svg>
@@ -1545,7 +1680,7 @@
         <div class="note-box" id="noteBox"></div>
 
         <footer>
-            <span id="footerRegion">2026 ASEAN Holiday Calendar · All 11 Member States</span>
+            <span id="footerRegion">2026 Holiday Calendar · ASEAN &amp; East Asia (17 Countries)</span>
             <span id="footerSource"></span>
         </footer>
     </main>
@@ -1890,6 +2025,202 @@
         ];
 
         /* ==========================================================================
+           East Asia datasets — China (Mainland / Hong Kong SAR / Macao SAR), Japan,
+           Mongolia, North Korea, South Korea, Taiwan
+           ========================================================================== */
+
+        // 12. China — General Office of the State Council (Mainland), HKSAR Government, Macao SAR DSAL
+        const CN_REGIONS = {
+            CN: 'Mainland China',
+            HK: 'Hong Kong SAR',
+            MO: 'Macao SAR'
+        };
+        const CN_ALL = Object.keys(CN_REGIONS);
+        const CN_ALL_DATA = [
+            ['2026-01-01', 't1', "New Year's Day", "New Year's Day", ['CN']],
+            ['2026-01-02', 't2', "New Year Holiday (adjusted day off)", "New Year Holiday", ['CN']],
+            ['2026-01-03', 't2', "New Year Holiday (adjusted day off)", "New Year Holiday", ['CN']],
+            ['2026-02-15', 't2', "Spring Festival Holiday (adjusted day off)", "Spring Festival Break", ['CN']],
+            ['2026-02-16', 't1', "Spring Festival: Chinese New Year's Eve", "CNY Eve", ['CN']],
+            ['2026-02-17', 't1', "Spring Festival: Chinese New Year (First Day)", "Chinese New Year", ['CN']],
+            ['2026-02-18', 't1', "Spring Festival: Second Day", "Spring Festival", ['CN']],
+            ['2026-02-19', 't1', "Spring Festival: Third Day", "Spring Festival", ['CN']],
+            ['2026-02-20', 't2', "Spring Festival Holiday (adjusted day off)", "Spring Festival Break", ['CN']],
+            ['2026-02-21', 't2', "Spring Festival Holiday (adjusted day off)", "Spring Festival Break", ['CN']],
+            ['2026-02-22', 't2', "Spring Festival Holiday (adjusted day off)", "Spring Festival Break", ['CN']],
+            ['2026-02-23', 't2', "Spring Festival Holiday (adjusted day off)", "Spring Festival Break", ['CN']],
+            ['2026-04-04', 't2', "Qingming Holiday (adjusted day off)", "Qingming Break", ['CN']],
+            ['2026-04-05', 't1', "Qingming Festival (Tomb-Sweeping Day)", "Qingming Festival", ['CN']],
+            ['2026-04-06', 't2', "Qingming Holiday (adjusted day off)", "Qingming Break", ['CN']],
+            ['2026-05-01', 't1', "Labour Day", "Labour Day", ['CN']],
+            ['2026-05-02', 't1', "Labour Day (Second Day)", "Labour Day", ['CN']],
+            ['2026-05-03', 't2', "Labour Day Holiday (adjusted day off)", "Labour Day Break", ['CN']],
+            ['2026-05-04', 't2', "Labour Day Holiday (adjusted day off)", "Labour Day Break", ['CN']],
+            ['2026-05-05', 't2', "Labour Day Holiday (adjusted day off)", "Labour Day Break", ['CN']],
+            ['2026-06-19', 't1', "Dragon Boat Festival (Duanwu)", "Dragon Boat Festival", ['CN']],
+            ['2026-06-20', 't2', "Dragon Boat Festival Holiday", "Dragon Boat Break", ['CN']],
+            ['2026-06-21', 't2', "Dragon Boat Festival Holiday", "Dragon Boat Break", ['CN']],
+            ['2026-09-25', 't1', "Mid-Autumn Festival", "Mid-Autumn Festival", ['CN']],
+            ['2026-09-26', 't2', "Mid-Autumn Festival Holiday", "Mid-Autumn Break", ['CN']],
+            ['2026-09-27', 't2', "Mid-Autumn Festival Holiday", "Mid-Autumn Break", ['CN']],
+            ['2026-10-01', 't1', "National Day (Day 1)", "National Day", ['CN']],
+            ['2026-10-02', 't1', "National Day (Day 2)", "National Day", ['CN']],
+            ['2026-10-03', 't1', "National Day (Day 3)", "National Day", ['CN']],
+            ['2026-10-04', 't2', "National Day Holiday (adjusted day off)", "National Day Break", ['CN']],
+            ['2026-10-05', 't2', "National Day Holiday (adjusted day off)", "National Day Break", ['CN']],
+            ['2026-10-06', 't2', "National Day Holiday (adjusted day off)", "National Day Break", ['CN']],
+            ['2026-10-07', 't2', "National Day Holiday (adjusted day off)", "National Day Break", ['CN']],
+            ['2026-01-01', 't1', "The first day of January", "New Year's Day", ['HK']],
+            ['2026-02-17', 't1', "Lunar New Year's Day", "Lunar New Year", ['HK']],
+            ['2026-02-18', 't1', "The second day of Lunar New Year", "Lunar New Year", ['HK']],
+            ['2026-02-19', 't1', "The third day of Lunar New Year", "Lunar New Year", ['HK']],
+            ['2026-04-03', 't1', "Good Friday", "Good Friday", ['HK']],
+            ['2026-04-04', 't1', "The day following Good Friday", "Day after Good Friday", ['HK']],
+            ['2026-04-06', 't1', "Easter Monday", "Easter Monday", ['HK']],
+            ['2026-04-07', 't2', "The day following Ching Ming Festival", "Ching Ming (Observed)", ['HK']],
+            ['2026-05-01', 't1', "Labour Day", "Labour Day", ['HK']],
+            ['2026-05-25', 't2', "The day following the Birthday of the Buddha", "Buddha's Birthday (Obs.)", ['HK']],
+            ['2026-06-19', 't1', "Tuen Ng Festival", "Tuen Ng Festival", ['HK']],
+            ['2026-07-01', 't1', "HKSAR Establishment Day", "HKSAR Day", ['HK']],
+            ['2026-09-26', 't1', "The day following the Chinese Mid-Autumn Festival", "Mid-Autumn (Day After)", ['HK']],
+            ['2026-10-01', 't1', "National Day", "National Day", ['HK']],
+            ['2026-10-19', 't2', "The day following Chung Yeung Festival", "Chung Yeung (Observed)", ['HK']],
+            ['2026-12-25', 't1', "Christmas Day", "Christmas Day", ['HK']],
+            ['2026-12-26', 't1', "The first weekday after Christmas Day", "Boxing Day", ['HK']],
+            ['2026-01-01', 't1', "New Year's Day", "New Year's Day", ['MO']],
+            ['2026-02-17', 't1', "Lunar New Year (First Day)", "Lunar New Year", ['MO']],
+            ['2026-02-18', 't1', "Lunar New Year (Second Day)", "Lunar New Year", ['MO']],
+            ['2026-02-19', 't1', "Lunar New Year (Third Day)", "Lunar New Year", ['MO']],
+            ['2026-04-03', 't1', "Good Friday", "Good Friday", ['MO']],
+            ['2026-04-04', 't1', "The day before Easter (Holy Saturday)", "Holy Saturday", ['MO']],
+            ['2026-04-05', 't1', "Ching Ming Festival", "Ching Ming Festival", ['MO']],
+            ['2026-05-01', 't1', "Labour Day", "Labour Day", ['MO']],
+            ['2026-05-24', 't1', "The Birthday of the Buddha", "Buddha's Birthday", ['MO']],
+            ['2026-06-19', 't1', "Tuen Ng (Dragon Boat) Festival", "Tuen Ng Festival", ['MO']],
+            ['2026-09-26', 't1', "The day following the Mid-Autumn Festival", "Mid-Autumn (Day After)", ['MO']],
+            ['2026-10-01', 't1', "National Day of the People's Republic of China", "National Day", ['MO']],
+            ['2026-10-02', 't1', "National Day Holiday", "National Day", ['MO']],
+            ['2026-10-18', 't1', "Chung Yeung Festival", "Chung Yeung Festival", ['MO']],
+            ['2026-11-02', 't1', "All Souls' Day", "All Souls' Day", ['MO']],
+            ['2026-12-08', 't1', "Feast of the Immaculate Conception", "Immaculate Conception", ['MO']],
+            ['2026-12-20', 't1', "Macao SAR Establishment Day", "Macao SAR Day", ['MO']],
+            ['2026-12-22', 't1', "Winter Solstice", "Winter Solstice", ['MO']],
+            ['2026-12-24', 't1', "Christmas Eve", "Christmas Eve", ['MO']],
+            ['2026-12-25', 't1', "Christmas Day", "Christmas Day", ['MO']]
+        ];
+
+        // 13. Japan — Cabinet Office (National Holidays Act)
+        const JP_DATA = [
+            ['2026-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2026-01-12', 't1', "Coming of Age Day", "Coming of Age Day"],
+            ['2026-02-11', 't1', "National Foundation Day", "Foundation Day"],
+            ['2026-02-23', 't1', "The Emperor's Birthday", "Emperor's Birthday"],
+            ['2026-03-20', 't1', "Vernal Equinox Day", "Vernal Equinox"],
+            ['2026-04-29', 't1', "Showa Day", "Showa Day"],
+            ['2026-05-03', 't1', "Constitution Memorial Day", "Constitution Day"],
+            ['2026-05-04', 't1', "Greenery Day", "Greenery Day"],
+            ['2026-05-05', 't1', "Children's Day", "Children's Day"],
+            ['2026-05-06', 't2', "Substitute Holiday (for Constitution Memorial Day)", "Substitute Holiday"],
+            ['2026-07-20', 't1', "Marine Day", "Marine Day"],
+            ['2026-08-11', 't1', "Mountain Day", "Mountain Day"],
+            ['2026-09-21', 't1', "Respect for the Aged Day", "Respect for Aged Day"],
+            ['2026-09-22', 't2', "Citizens' Holiday", "Citizens' Holiday"],
+            ['2026-09-23', 't1', "Autumnal Equinox Day", "Autumnal Equinox"],
+            ['2026-10-12', 't1', "Sports Day", "Sports Day"],
+            ['2026-11-03', 't1', "Culture Day", "Culture Day"],
+            ['2026-11-23', 't1', "Labor Thanksgiving Day", "Labor Thanksgiving"]
+        ];
+
+        // 14. Mongolia — Labour Law & Law on Public Holidays and Days of Observance
+        const MN_DATA = [
+            ['2026-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2026-02-17', 't2', "Bituun (Lunar New Year's Eve)", "Bituun"],
+            ['2026-02-18', 't1', "Tsagaan Sar (Lunar New Year, Day 1)", "Tsagaan Sar"],
+            ['2026-02-19', 't1', "Tsagaan Sar (Day 2)", "Tsagaan Sar"],
+            ['2026-02-20', 't1', "Tsagaan Sar (Day 3)", "Tsagaan Sar"],
+            ['2026-03-08', 't1', "International Women's Day", "Women's Day"],
+            ['2026-05-31', 't1', "Buddha Day (Buddha's Birthday)", "Buddha Day"],
+            ['2026-06-01', 't1', "Children's Day", "Children's Day"],
+            ['2026-07-11', 't1', "Naadam Festival (National Day, Day 1)", "Naadam Festival"],
+            ['2026-07-12', 't2', "Naadam Festival Holiday (Day 2)", "Naadam Holiday"],
+            ['2026-07-13', 't2', "Naadam Festival Holiday (Day 3)", "Naadam Holiday"],
+            ['2026-07-14', 't2', "Naadam Festival Holiday (Day 4)", "Naadam Holiday"],
+            ['2026-07-15', 't2', "Naadam Festival Holiday (Day 5)", "Naadam Holiday"],
+            ['2026-11-10', 't1', "Chinggis Khaan's Birthday (Day of Mongolian National Pride)", "Chinggis Khaan's Birthday"],
+            ['2026-11-26', 't1', "Republic Day", "Republic Day"],
+            ['2026-12-29', 't1', "Independence Day", "Independence Day"]
+        ];
+
+        // 15. North Korea — compiled from secondary sources (no official English-language publication)
+        const KP_DATA = [
+            ['2026-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2026-01-02', 't2', "New Year Holiday (Second Day)", "New Year Holiday"],
+            ['2026-02-08', 't1', "Day of the Korean People's Army (Army Founding Day)", "Army Day"],
+            ['2026-02-16', 't1', "Day of the Shining Star (Kim Jong Il's Birthday)", "Day of the Shining Star"],
+            ['2026-02-17', 't2', "Seollal (Lunar New Year)", "Lunar New Year"],
+            ['2026-04-15', 't1', "Day of the Sun (Kim Il Sung's Birthday)", "Day of the Sun"],
+            ['2026-05-01', 't1', "International Workers' Day", "Workers' Day"],
+            ['2026-07-27', 't1', "Victory Day (Armistice Anniversary)", "Victory Day"],
+            ['2026-08-15', 't1', "Liberation Day", "Liberation Day"],
+            ['2026-09-09', 't1', "Foundation Day (Founding of the DPRK)", "Foundation Day"],
+            ['2026-09-25', 't2', "Chuseok (Harvest Festival)", "Chuseok"],
+            ['2026-10-10', 't1', "Party Foundation Day (Workers' Party of Korea)", "Party Foundation Day"],
+            ['2026-12-27', 't1', "Constitution Day", "Constitution Day"]
+        ];
+
+        // 16. South Korea — Presidential Decree on Holidays of Government Offices (KASI almanac)
+        const KR_DATA = [
+            ['2026-01-01', 't1', "New Year's Day", "New Year's Day"],
+            ['2026-02-16', 't1', "Seollal (Lunar New Year) Holiday", "Seollal"],
+            ['2026-02-17', 't1', "Seollal (Lunar New Year's Day)", "Seollal"],
+            ['2026-02-18', 't1', "Seollal (Lunar New Year) Holiday", "Seollal"],
+            ['2026-03-01', 't1', "Independence Movement Day (Samiljeol)", "Independence Movement Day"],
+            ['2026-03-02', 't2', "Substitute Holiday (for Independence Movement Day)", "Substitute Holiday"],
+            ['2026-05-01', 't1', "Labour Day", "Labour Day"],
+            ['2026-05-05', 't1', "Children's Day", "Children's Day"],
+            ['2026-05-24', 't1', "Buddha's Birthday", "Buddha's Birthday"],
+            ['2026-05-25', 't2', "Substitute Holiday (for Buddha's Birthday)", "Substitute Holiday"],
+            ['2026-06-03', 't1', "Local Elections Day", "Local Elections Day"],
+            ['2026-06-06', 't1', "Memorial Day", "Memorial Day"],
+            ['2026-08-15', 't1', "Liberation Day", "Liberation Day"],
+            ['2026-08-17', 't2', "Substitute Holiday (for Liberation Day)", "Substitute Holiday"],
+            ['2026-09-24', 't1', "Chuseok Holiday", "Chuseok"],
+            ['2026-09-25', 't1', "Chuseok (Korean Thanksgiving)", "Chuseok"],
+            ['2026-09-26', 't1', "Chuseok Holiday", "Chuseok"],
+            ['2026-10-03', 't1', "National Foundation Day (Gaecheonjeol)", "Foundation Day"],
+            ['2026-10-05', 't2', "Substitute Holiday (for National Foundation Day)", "Substitute Holiday"],
+            ['2026-10-09', 't1', "Hangul Day", "Hangul Day"],
+            ['2026-12-25', 't1', "Christmas Day", "Christmas Day"]
+        ];
+
+        // 17. Taiwan — Executive Yuan, Directorate-General of Personnel Administration
+        const TW_DATA = [
+            ['2026-01-01', 't1', "Republic of China Founding Day (New Year's Day)", "Founding Day"],
+            ['2026-02-16', 't1', "Lunar New Year's Eve", "CNY Eve"],
+            ['2026-02-17', 't1', "Lunar New Year (First Day)", "Lunar New Year"],
+            ['2026-02-18', 't1', "Lunar New Year (Second Day)", "Lunar New Year"],
+            ['2026-02-19', 't1', "Lunar New Year (Third Day)", "Lunar New Year"],
+            ['2026-02-20', 't2', "Lunar New Year Holiday (in lieu of the day before Eve, 15 Feb)", "CNY (Adjusted)"],
+            ['2026-02-27', 't2', "Peace Memorial Day Holiday (observed, 28 Feb falls on Saturday)", "Peace Memorial (Obs.)"],
+            ['2026-02-28', 't1', "228 Peace Memorial Day", "Peace Memorial Day"],
+            ['2026-04-03', 't2', "Children's Day Holiday (observed, 4 Apr falls on Saturday)", "Children's Day (Obs.)"],
+            ['2026-04-04', 't1', "Children's Day", "Children's Day"],
+            ['2026-04-05', 't1', "Tomb-Sweeping Day (Qingming)", "Tomb-Sweeping Day"],
+            ['2026-04-06', 't2', "Tomb-Sweeping Day Holiday (observed, 5 Apr falls on Sunday)", "Tomb-Sweeping (Obs.)"],
+            ['2026-05-01', 't1', "Labor Day", "Labor Day"],
+            ['2026-06-19', 't1', "Dragon Boat Festival", "Dragon Boat Festival"],
+            ['2026-09-25', 't1', "Mid-Autumn Festival", "Mid-Autumn Festival"],
+            ['2026-09-28', 't1', "Teachers' Day (Confucius's Birthday)", "Teachers' Day"],
+            ['2026-10-09', 't2', "National Day Holiday (observed, 10 Oct falls on Saturday)", "National Day (Obs.)"],
+            ['2026-10-10', 't1', "National Day (Double Ten Day)", "National Day"],
+            ['2026-10-25', 't1', "Taiwan Retrocession and Commemoration Day", "Retrocession Day"],
+            ['2026-10-26', 't2', "Retrocession Day Holiday (observed, 25 Oct falls on Sunday)", "Retrocession (Obs.)"],
+            ['2026-12-25', 't1', "Constitution Day", "Constitution Day"]
+        ];
+
+
+
+        /* ==========================================================================
            Utilities & State Management
            ========================================================================== */
         const $ = (s, r = document) => r.querySelector(s);
@@ -1930,12 +2261,35 @@
         const inYear = now.getFullYear() === YEAR;
         const todayMonth = inYear ? now.getMonth() : -1;
 
-        const VALID_COUNTRIES = ['BN', 'KH', 'ID', 'LA', 'MY', 'MM', 'PH', 'SG', 'TH', 'TL', 'VN'];
+        const VALID_COUNTRIES = ['BN', 'KH', 'ID', 'LA', 'MY', 'MM', 'PH', 'SG', 'TH', 'TL', 'VN', 'CN', 'JP', 'MN', 'KP', 'KR', 'TW'];
         let country = store.get('cal2026-country');
         if (!VALID_COUNTRIES.includes(country)) country = 'ID';
 
         let myState = store.get('cal2026-my-state');
         if (!MY_STATES[myState]) myState = 'KUL';
+
+        let cnRegion = store.get('cal2026-cn-region');
+        if (!CN_REGIONS[cnRegion]) cnRegion = 'CN';
+
+        /* URL query override: ?country=JP  |  ?country=CN&region=HK  |  ?country=malaysia&region=SGR (codes or names, case-insensitive) */
+        const qsNorm = v => String(v || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const qsFind = (pairs, v) => { const n = qsNorm(v); return n ? (pairs.find(([c, t]) => qsNorm(c) === n || qsNorm(t) === n) || [])[0] : undefined; };
+        const urlQ = new URLSearchParams(location.search);
+        const qCountry = qsFind([...document.querySelectorAll('#countrySel option')].map(o => [o.value, o.textContent]), urlQ.get('country'));
+        if (qCountry) country = qCountry;
+        if (country === 'MY') { const r = qsFind(Object.entries(MY_STATES), urlQ.get('region')); if (r) myState = r; }
+        if (country === 'CN') { const r = qsFind(Object.entries(CN_REGIONS), urlQ.get('region')); if (r) cnRegion = r; }
+
+        function syncUrl() {
+            try {
+                const p = new URLSearchParams(location.search);
+                p.set('country', country);
+                if (country === 'MY') p.set('region', myState);
+                else if (country === 'CN') p.set('region', cnRegion);
+                else p.delete('region');
+                history.replaceState(null, '', '?' + p + location.hash);
+            } catch { }
+        }
 
         let view = store.get('cal2026-view') || (matchMedia('(max-width: 640px)').matches ? 'month' : 'year');
         let cur = todayMonth >= 0 ? todayMonth : 0;
@@ -1957,7 +2311,13 @@
             SG: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="10" fill="#EF3340"/><rect y="10" width="28" height="10" fill="#FFFFFF"/><circle cx="6.8" cy="5.2" r="3" fill="#FFFFFF"/><circle cx="8" cy="5.2" r="2.5" fill="#EF3340"/><g fill="#FFFFFF"><circle cx="9.6" cy="3.5" r="0.65"/><circle cx="11.3" cy="4.7" r="0.65"/><circle cx="10.7" cy="6.7" r="0.65"/><circle cx="8.5" cy="6.7" r="0.65"/><circle cx="7.9" cy="4.7" r="0.65"/></g></svg>`,
             TH: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#A51931"/><rect y="3.33" width="28" height="13.34" fill="#F4F5F8"/><rect y="6.67" width="28" height="6.66" fill="#2D2A4A"/></svg>`,
             TL: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#DC241F"/><polygon points="0,0 14,10 0,20" fill="#FFC726"/><polygon points="0,0 9.5,10 0,20" fill="#1D1D1F"/><polygon points="3.6,7.6 4.4,9.3 6.2,9.1 4.9,10.4 5.5,12.1 3.8,11.2 2.4,12.3 2.8,10.5 1.3,9.5 3.1,9.3" fill="#FFFFFF"/></svg>`,
-            VN: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#DA251D"/><polygon points="14,4.2 15.4,8.5 19.9,8.5 16.3,11.1 17.7,15.4 14,12.8 10.3,15.4 11.7,11.1 8.1,8.5 12.6,8.5" fill="#FFFF00"/></svg>`
+            VN: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#DA251D"/><polygon points="14,4.2 15.4,8.5 19.9,8.5 16.3,11.1 17.7,15.4 14,12.8 10.3,15.4 11.7,11.1 8.1,8.5 12.6,8.5" fill="#FFFF00"/></svg>`,
+            CN: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#DE2910"/><polygon points="5.00,2.40 5.71,4.43 7.85,4.47 6.14,5.77 6.76,7.83 5.00,6.60 3.24,7.83 3.86,5.77 2.15,4.47 4.29,4.43" fill="#FFDE00"/><circle cx="9.8" cy="2.2" r="0.75" fill="#FFDE00"/><circle cx="11.4" cy="4.1" r="0.75" fill="#FFDE00"/><circle cx="11.4" cy="6.5" r="0.75" fill="#FFDE00"/><circle cx="9.8" cy="8.4" r="0.75" fill="#FFDE00"/></svg>`,
+            JP: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#FFFFFF"/><circle cx="14" cy="10" r="6" fill="#BC002D"/></svg>`,
+            KR: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#FFFFFF"/><path d="M9.5 10a4.5 4.5 0 0 1 9 0z" fill="#CD2E3A"/><path d="M9.5 10a4.5 4.5 0 0 0 9 0z" fill="#0047A0"/><circle cx="11.75" cy="10" r="2.25" fill="#CD2E3A"/><circle cx="16.25" cy="10" r="2.25" fill="#0047A0"/><g fill="#111"><rect x="2" y="2" width="4.5" height=".8"/><rect x="2" y="3.4" width="4.5" height=".8"/><rect x="2" y="4.8" width="4.5" height=".8"/><rect x="21.5" y="14.4" width="4.5" height=".8"/><rect x="21.5" y="15.8" width="4.5" height=".8"/><rect x="21.5" y="17.2" width="4.5" height=".8"/><rect x="21.5" y="2" width="4.5" height=".8"/><rect x="21.5" y="4.8" width="4.5" height=".8"/><rect x="2" y="14.4" width="4.5" height=".8"/><rect x="2" y="17.2" width="4.5" height=".8"/></g></svg>`,
+            KP: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#024FA2"/><rect y="3.4" width="28" height="13.2" fill="#FFFFFF"/><rect y="4.2" width="28" height="11.6" fill="#ED1C27"/><circle cx="10" cy="10" r="3.9" fill="#FFFFFF"/><polygon points="10.00,7.00 10.76,9.15 13.04,9.21 11.24,10.60 11.88,12.79 10.00,11.50 8.12,12.79 8.76,10.60 6.96,9.21 9.24,9.15" fill="#ED1C27"/></svg>`,
+            TW: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#FE0000"/><rect width="14" height="10" fill="#000095"/><polygon points="7.00,1.40 7.60,2.78 8.80,1.88 8.63,3.37 10.12,3.20 9.22,4.40 10.60,5.00 9.22,5.60 10.12,6.80 8.63,6.63 8.80,8.12 7.60,7.22 7.00,8.60 6.40,7.22 5.20,8.12 5.37,6.63 3.88,6.80 4.78,5.60 3.40,5.00 4.78,4.40 3.88,3.20 5.37,3.37 5.20,1.88 6.40,2.78" fill="#FFFFFF"/><circle cx="7" cy="5" r="2.1" fill="#000095"/><circle cx="7" cy="5" r="1.7" fill="#FFFFFF"/></svg>`,
+            MN: `<svg viewBox="0 0 28 20" width="20" height="14" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,0.12)"><rect width="28" height="20" fill="#C4272F"/><rect x="9.33" width="9.34" height="20" fill="#015197"/><g fill="#F9CF02"><circle cx="4.7" cy="6" r="1.1"/><rect x="3.3" y="7.4" width="2.8" height=".9"/><rect x="3.9" y="3.2" width="1.6" height="1.2"/><rect x="3.2" y="9" width="0.8" height="5.4"/><rect x="5.4" y="9" width="0.8" height="5.4"/><rect x="3.2" y="14.4" width="3" height=".9"/></g></svg>`
         };
 
         function configureRegion() {
@@ -2193,6 +2553,162 @@
                     source: `Source: <a href="https://timor-leste.gov.tl/?p=46595&lang=en" target="_blank" rel="noopener">Government of Timor-Leste (Presidency of the Council of Ministers, 22 Dec 2025)</a>`,
                     pdfFile: `timor-leste-calendar-${YEAR}.pdf`
                 };
+            } else if (country === 'CN') {
+                RAW = CN_ALL_DATA.filter(r => r[4].includes(cnRegion)).map(r => r.slice(0, 4));
+                const rgName = CN_REGIONS[cnRegion];
+                const CN_INFO = {
+                    CN: {
+                        t1: 'Statutory holiday', t1p: 'Statutory holidays', t2: 'Adjusted day off', t2p: 'Adjusted days off',
+                        lead: `All 365 days of 2026 with statutory public holidays and shifted days off announced by the <a href="https://www.gov.cn/" target="_blank" rel="noopener">General Office of the State Council of the People's Republic of China</a>. Currently showing Mainland China; select Hong Kong or Macao SAR above.`,
+                        notes: ["<span><strong>Adjusted Days Off:</strong> Statutory holidays are New Year's Day (1 Jan), Spring Festival (16–19 Feb), Qingming (5 Apr), Labour Day (1–2 May), Dragon Boat (19 Jun), Mid-Autumn (25 Sep) and National Day (1–3 Oct). Surrounding days are shifted holidays announced by the General Office of the State Council.</span>", "<span><strong>Make-up Working Days:</strong> Sunday 4 Jan, Saturday 14 Feb, Saturday 28 Feb, Saturday 9 May, Sunday 20 Sep and Saturday 10 Oct 2026 are official working days, so the long breaks (Spring Festival 15–23 Feb, Labour Day 1–5 May, National Day 1–7 Oct) have no other net effect.</span>"],
+                        source: `Source: <a href="https://www.gov.cn/" target="_blank" rel="noopener">General Office of the State Council, PRC (Holiday Arrangements 2026)</a>`
+                    },
+                    HK: {
+                        t1: 'General holiday', t1p: 'General holidays', t2: 'Holiday in lieu', t2p: 'Holidays in lieu',
+                        lead: `All 365 days of 2026 with the general holidays gazetted by the <a href="https://www.gov.hk/en/about/abouthk/holiday/2026.htm" target="_blank" rel="noopener">Hong Kong SAR Government</a>. Currently showing Hong Kong SAR; select Mainland China or Macao SAR above.`,
+                        notes: ["<span><strong>General Holidays:</strong> Hong Kong observes 17 general holidays in 2026 under the Public Holidays Ordinance. Holidays falling on a Sunday are replaced by the following day that is not itself a holiday (Ching Ming, Buddha's Birthday and Chung Yeung in 2026).</span>", "<span><strong>Bank &amp; Statutory Holidays:</strong> Statutory holidays for employees (a subset of general holidays) may differ from the schedule observed by banks and government offices.</span>"],
+                        source: `Source: <a href="https://www.gov.hk/en/about/abouthk/holiday/2026.htm" target="_blank" rel="noopener">Hong Kong SAR Government (General Holidays 2026)</a>`
+                    },
+                    MO: {
+                        t1: 'Public holiday', t1p: 'Public holidays', t2: 'Additional day', t2p: 'Additional days',
+                        lead: `All 365 days of 2026 with the mandatory public holidays and gazetted days off published by the <a href="https://www.dsal.gov.mo/" target="_blank" rel="noopener">Macao SAR Labour Affairs Bureau (DSAL)</a>. Currently showing Macao SAR; select Mainland China or Hong Kong SAR above.`,
+                        notes: ["<span><strong>Mandatory Holidays:</strong> Macao SAR observes the mandatory public holidays listed in Law No. 7/2008 (Labour Relations Law) plus Government-gazetted additional days off such as the Day After Mid-Autumn, Winter Solstice and Christmas Eve.</span>", "<span><strong>Verification:</strong> Holidays falling on a Sunday are not always carried over to Monday in Macao; please verify with the official DSAL notice published by the Macao SAR Government.</span>"],
+                        source: `Source: <a href="https://www.dsal.gov.mo/" target="_blank" rel="noopener">Macao SAR Labour Affairs Bureau (Public Holidays 2026)</a>`
+                    }
+                }[cnRegion];
+                CFG = {
+                    code: 'CN',
+                    flag: '🇨🇳',
+                    name: 'China',
+                    regionTitle: cnRegion === 'CN' ? 'China' : `China (${rgName})`,
+                    eyebrow: `China Calendar · ${rgName}`,
+                    lead: CN_INFO.lead,
+                    t1Label: CN_INFO.t1,
+                    t1Plural: CN_INFO.t1p,
+                    t2Label: CN_INFO.t2,
+                    t2Plural: CN_INFO.t2p,
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: CN_INFO.notes,
+                    source: CN_INFO.source,
+                    pdfFile: `china-calendar-2026-${cnRegion.toLowerCase()}.pdf`
+                };
+            } else if (country === 'JP') {
+                RAW = JP_DATA.slice();
+                CFG = {
+                    code: 'JP',
+                    flag: '🇯🇵',
+                    name: 'Japan',
+                    regionTitle: 'Japan',
+                    eyebrow: 'Japan National Calendar',
+                    lead: `All 365 days of 2026 with national holidays, substitute holidays and Citizens' Holidays designated under the <a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noopener">Act on National Holidays (Cabinet Office of Japan)</a>. Select any date to inspect details.`,
+                    t1Label: 'National holiday',
+                    t1Plural: 'National holidays',
+                    t2Label: 'Substitute holiday',
+                    t2Plural: 'Substitute holidays',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Substitute &amp; Citizens' Holidays:</strong> When a national holiday falls on Sunday, the next non-holiday weekday becomes a substitute holiday (Wed 6 May 2026). A day sandwiched between two national holidays becomes a Citizens' Holiday (Tue 22 Sep 2026).</span>`,
+                        `<span><strong>Year-End &amp; Golden Week:</strong> Most banks and government offices also close 29 Dec – 3 Jan, and Golden Week (29 Apr – 6 May) forms a near-continuous break; these closures are customary and not statutory.</span>`
+                    ],
+                    source: `Source: <a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noopener">Cabinet Office of Japan (National Holidays 2026)</a>`,
+                    pdfFile: `japan-calendar-2026.pdf`
+                };
+            } else if (country === 'MN') {
+                RAW = MN_DATA.slice();
+                CFG = {
+                    code: 'MN',
+                    flag: '🇲🇳',
+                    name: 'Mongolia',
+                    regionTitle: 'Mongolia',
+                    eyebrow: 'Mongolia National Calendar',
+                    lead: `All 365 days of 2026 with public holidays and Naadam / Tsagaan Sar breaks observed under the <a href="https://www.mlsp.gov.mn/" target="_blank" rel="noopener">Law on Public Holidays and Days of Observance of Mongolia</a>. Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Additional holiday',
+                    t2Plural: 'Additional holidays',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Lunar Dates:</strong> Tsagaan Sar, Buddha Day and Naadam follow the Mongolian lunar and traditional calendars. Dates may be adjusted by Government resolution; Bituun (the eve) is shown as an additional holiday.</span>`,
+                        `<span><strong>Verification:</strong> Official working-day transfers are announced annually by the Government of Mongolia; confirm against the Ministry of Labour and Social Protection notice.</span>`
+                    ],
+                    source: `Source: <a href="https://www.mlsp.gov.mn/" target="_blank" rel="noopener">Government of Mongolia (Public Holidays 2026)</a>`,
+                    pdfFile: `mongolia-calendar-2026.pdf`
+                };
+            } else if (country === 'KP') {
+                RAW = KP_DATA.slice();
+                CFG = {
+                    code: 'KP',
+                    flag: '🇰🇵',
+                    name: 'North Korea',
+                    regionTitle: 'North Korea (DPRK)',
+                    eyebrow: 'Democratic People\'s Republic of Korea Calendar',
+                    lead: `All 365 days of 2026 with the commemorative days, national holidays and traditional festivals observed in the Democratic People's Republic of Korea, compiled from secondary sources (the DPRK publishes no official English schedule). Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Additional holiday',
+                    t2Plural: 'Additional holidays',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Unofficial Compilation:</strong> The DPRK does not publish an English-language holiday schedule. Dates shown are compiled from secondary sources and may differ from actual observance.</span>`,
+                        `<span><strong>Lunar Festivals:</strong> Seollal (Lunar New Year) and Chuseok were restored as public holidays and are marked as additional days. Sunday is the main weekly rest day; Saturday is commonly a shorter or alternating working day.</span>`
+                    ],
+                    source: `Source: Compiled from secondary sources; not an official DPRK publication`,
+                    pdfFile: `north-korea-calendar-2026.pdf`
+                };
+            } else if (country === 'KR') {
+                RAW = KR_DATA.slice();
+                CFG = {
+                    code: 'KR',
+                    flag: '🇰🇷',
+                    name: 'South Korea',
+                    regionTitle: 'South Korea',
+                    eyebrow: 'Republic of Korea National Calendar',
+                    lead: `All 365 days of 2026 with statutory public holidays and substitute holidays under the Presidential Decree on Holidays of Government Offices, based on the <a href="https://astro.kasi.re.kr/" target="_blank" rel="noopener">Korea Astronomy and Space Science Institute (KASI) almanac</a>. Select any date to inspect details.`,
+                    t1Label: 'Public holiday',
+                    t1Plural: 'Public holidays',
+                    t2Label: 'Substitute holiday',
+                    t2Plural: 'Substitute holidays',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Substitute Holidays:</strong> Seollal and Chuseok get substitute days when they overlap Sunday or another holiday; since 2021 most other holidays falling on a weekend (Independence Movement, Buddha's Birthday, Liberation, Foundation Day, Children's Day) also receive a substitute holiday.</span>`,
+                        `<span><strong>Recent Changes:</strong> Labour Day (1 May) became a statutory public holiday in 2026, and 3 Jun 2026 is a public holiday for the nationwide local elections. Please verify against the official KASI almanac.</span>`
+                    ],
+                    source: `Source: <a href="https://astro.kasi.re.kr/" target="_blank" rel="noopener">Korea Astronomy and Space Science Institute (Holidays 2026)</a>`,
+                    pdfFile: `south-korea-calendar-2026.pdf`
+                };
+            } else if (country === 'TW') {
+                RAW = TW_DATA.slice();
+                CFG = {
+                    code: 'TW',
+                    flag: '🇹🇼',
+                    name: 'Taiwan',
+                    regionTitle: 'Taiwan',
+                    eyebrow: 'Taiwan (Republic of China) Calendar',
+                    lead: `All 365 days of 2026 with national holidays and observed days off published by the <a href="https://www.dgpa.gov.tw/" target="_blank" rel="noopener">Directorate-General of Personnel Administration, Executive Yuan</a>. Select any date to inspect details.`,
+                    t1Label: 'National holiday',
+                    t1Plural: 'National holidays',
+                    t2Label: 'Observed day off',
+                    t2Plural: 'Observed days off',
+                    wk: [0, 6],
+                    restDay: 0,
+                    secWkndDay: 6,
+                    notes: [
+                        `<span><strong>Observed Days Off:</strong> Since 2026 the government replaces make-up workdays with observed days off: a holiday on Saturday is observed on the previous Friday and a holiday on Sunday on the following Monday (e.g. 27 Feb, 3 Apr, 6 Apr, 9 Oct, 26 Oct 2026).</span>`,
+                        `<span><strong>Scope:</strong> The calendar published by the Directorate-General of Personnel Administration applies to public servants and state-run enterprises; private employers follow the Labor Standards Act and may differ on some days.</span>`
+                    ],
+                    source: `Source: <a href="https://www.dgpa.gov.tw/" target="_blank" rel="noopener">Directorate-General of Personnel Administration, Executive Yuan (Calendar 2026)</a>`,
+                    pdfFile: `taiwan-calendar-2026.pdf`
+                };
             } else {
                 // Vietnam (VN)
                 RAW = VN_DATA.slice();
@@ -2250,7 +2766,8 @@
 
         function renderHero() {
             $('#countryFlag').innerHTML = FLAG_SVGS[CFG.code] || '';
-            $('#stateWrap').hidden = country !== 'MY';
+            $('#stateWrap').hidden = country !== 'MY' && country !== 'CN';
+            fillSub();
             $('#heroEyebrow').textContent = CFG.eyebrow;
             $('#heroLead').innerHTML = CFG.lead;
 
@@ -2627,7 +3144,7 @@
 
                 font('normal', 8.5);
                 col('text', [180, 180, 186]);
-                doc.text(`${CFG.regionTitle.toUpperCase()}  ·  ASEAN HOLIDAY CALENDAR`, M, 9.5);
+                doc.text(`${CFG.regionTitle.toUpperCase()}  ·  ASEAN & EAST ASIA HOLIDAY CALENDAR`, M, 9.5);
 
                 font('bold', 28);
                 col('text', PAL.white);
@@ -2875,14 +3392,149 @@
             renderHolTable();
             renderLong();
             renderNotesAndFooter();
+            syncUrl();
         }
 
         // Populate dropdowns
         $('#countrySel').value = country;
-        $('#stateSel').innerHTML = MY_ALL.map(code =>
-            `<option value="${code}">${esc(MY_STATES[code])}</option>`
-        ).join('');
-        $('#stateSel').value = myState;
+
+        function fillSub() {
+            const sel = $('#stateSel');
+            if (country === 'MY') {
+                sel.innerHTML = MY_ALL.map(code => `<option value="${code}">${esc(MY_STATES[code])}</option>`).join('');
+                sel.value = myState;
+                sel.setAttribute('aria-label', 'Select Malaysian state or federal territory');
+            } else if (country === 'CN') {
+                sel.innerHTML = CN_ALL.map(code => `<option value="${code}">${esc(CN_REGIONS[code])}</option>`).join('');
+                sel.value = cnRegion;
+                sel.setAttribute('aria-label', 'Select China region (Mainland, Hong Kong or Macao)');
+            }
+            if (sel._combo) sel._combo.refresh();
+        }
+
+        /* ==========================================================================
+           Searchable Combobox — progressive enhancement over a native <select>
+           ========================================================================== */
+        function makeCombo(sel, iconFn) {
+            const wrap = sel.closest('.mac-select-wrap');
+            const norm = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            sel.classList.add('combo-native');
+            sel.tabIndex = -1;
+            sel.setAttribute('aria-hidden', 'true');
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'mac-select combo-btn';
+            btn.setAttribute('aria-haspopup', 'listbox');
+            btn.setAttribute('aria-expanded', 'false');
+            const label = document.createElement('span');
+            label.className = 'combo-label';
+            btn.appendChild(label);
+            sel.after(btn);
+
+            const panel = document.createElement('div');
+            panel.className = 'combo-panel';
+            panel.hidden = true;
+            panel.innerHTML = `<div class="combo-search"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14"/></svg><input type="search" class="combo-input" placeholder="Search…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true"></div><ul class="combo-list" role="listbox"></ul>`;
+            wrap.appendChild(panel);
+            const input = panel.querySelector('.combo-input');
+            const list = panel.querySelector('.combo-list');
+            let items = [], active = -1;
+
+            const readOptions = () => {
+                const out = [];
+                [...sel.children].forEach(ch => {
+                    if (ch.tagName === 'OPTGROUP') [...ch.children].forEach(o => out.push({ o, group: ch.label }));
+                    else out.push({ o: ch, group: '' });
+                });
+                return out.map(({ o, group }) => ({ value: o.value, text: o.textContent, group, hay: norm(o.textContent + ' ' + (o.dataset.alias || '') + ' ' + o.value) }));
+            };
+
+            const setActive = i => {
+                const lis = [...list.querySelectorAll('.combo-item')];
+                if (!lis.length) { active = -1; return; }
+                active = (i + lis.length) % lis.length;
+                lis.forEach((li, k) => li.classList.toggle('active', k === active));
+                lis[active].scrollIntoView({ block: 'nearest' });
+            };
+
+            const render = q => {
+                const nq = norm(q.trim());
+                items = readOptions().filter(it => !nq || it.hay.includes(nq));
+                let html = '', lastGroup = null;
+                items.forEach((it, i) => {
+                    if (it.group && it.group !== lastGroup) html += `<li class="combo-group" role="presentation">${esc(it.group)}</li>`;
+                    lastGroup = it.group;
+                    html += `<li class="combo-item${it.value === sel.value ? ' selected' : ''}" role="option" data-i="${i}" aria-selected="${it.value === sel.value}">${iconFn ? `<span class="combo-ico">${iconFn(it.value) || ''}</span>` : ''}<span>${esc(it.text)}</span></li>`;
+                });
+                list.innerHTML = html || '<li class="combo-empty" role="presentation">No match found</li>';
+                const lis = [...list.querySelectorAll('.combo-item')];
+                const selIdx = nq ? 0 : Math.max(0, items.findIndex(it => it.value === sel.value));
+                setActive(Math.min(selIdx, lis.length - 1));
+            };
+
+            const open = seed => {
+                if (!panel.hidden) return;
+                panel.hidden = false;
+                wrap.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+                input.value = seed || '';
+                render(input.value);
+                input.focus();
+            };
+            const close = refocus => {
+                if (panel.hidden) return;
+                panel.hidden = true;
+                wrap.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+                if (refocus) btn.focus();
+            };
+            const choose = i => {
+                const it = items[i];
+                if (!it) return;
+                const changed = sel.value !== it.value;
+                sel.value = it.value;
+                refresh();
+                close(true);
+                if (changed) sel.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            const refresh = () => {
+                const o = sel.options[sel.selectedIndex];
+                label.textContent = o ? o.textContent : '';
+                const a = sel.getAttribute('aria-label');
+                if (a) btn.setAttribute('aria-label', a);
+            };
+
+            btn.addEventListener('click', () => (panel.hidden ? open() : close(true)));
+            btn.addEventListener('keydown', e => {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(); }
+                else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && e.key !== ' ') { e.preventDefault(); open(e.key); }
+            });
+            input.addEventListener('input', () => render(input.value));
+            input.addEventListener('keydown', e => {
+                if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); }
+                else if (e.key === 'Enter') { e.preventDefault(); if (active >= 0) choose(Number(list.querySelectorAll('.combo-item')[active].dataset.i)); }
+                else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(true); }
+                else if (e.key === 'Tab') close(false);
+            });
+            list.addEventListener('mousemove', e => {
+                const li = e.target.closest('.combo-item');
+                if (li) setActive([...list.querySelectorAll('.combo-item')].indexOf(li));
+            });
+            list.addEventListener('click', e => {
+                const li = e.target.closest('.combo-item');
+                if (li) choose(Number(li.dataset.i));
+            });
+            document.addEventListener('pointerdown', e => { if (!wrap.contains(e.target)) close(false); });
+
+            sel._combo = { refresh };
+            refresh();
+            return sel._combo;
+        }
+
+        makeCombo($('#countrySel'), v => FLAG_SVGS[v]);
+        makeCombo($('#stateSel'));
 
         $('#countrySel').addEventListener('change', e => {
             country = e.target.value;
@@ -2892,8 +3544,13 @@
         });
 
         $('#stateSel').addEventListener('change', e => {
-            myState = e.target.value;
-            store.set('cal2026-my-state', myState);
+            if (country === 'CN') {
+                cnRegion = e.target.value;
+                store.set('cal2026-cn-region', cnRegion);
+            } else {
+                myState = e.target.value;
+                store.set('cal2026-my-state', myState);
+            }
             if (dlg.open) dlg.close();
             renderAll();
         });
