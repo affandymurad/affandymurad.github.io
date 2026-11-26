@@ -14,8 +14,8 @@ try{var t=localStorage.getItem('koran-theme');if(t==='dark'||t==='light')documen
 <style>
 :root{
   color-scheme:light dark;
-  --paper:#f5f0e4; --ink:#1b1a17; --muted:#5d584d; --rule:#2a2823; --soft:#cfc7b3; --accent:#8a1c1c;
-  --page:#e6dfcd; --skel:#e9e2d0; --hover:rgba(138,28,28,.08); --imgf:grayscale(.85) contrast(1.05);
+  --paper:#fbfbf9; --ink:#1a1a1a; --muted:#5a5a58; --rule:#2a2a28; --soft:#dcdcd7; --accent:#8a1c1c;
+  --page:#eceeef; --skel:#ececea; --hover:rgba(138,28,28,.08); --imgf:none;
   --head:"Playfair Display","Times New Roman",serif;
   --body:"Libre Baskerville",Georgia,"Times New Roman",serif;
 }
@@ -23,13 +23,13 @@ try{var t=localStorage.getItem('koran-theme');if(t==='dark'||t==='light')documen
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --paper:#1d1c19; --ink:#ebe6da; --muted:#a8a191; --rule:#5c574c; --soft:#38352e; --accent:#e58f7f;
-    --page:#11100e; --skel:#46423a; --hover:rgba(229,143,127,.14); --imgf:grayscale(.85) contrast(1.05) brightness(.88);
+    --page:#11100e; --skel:#46423a; --hover:rgba(229,143,127,.14); --imgf:brightness(.92);
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
   --paper:#1d1c19; --ink:#ebe6da; --muted:#a8a191; --rule:#5c574c; --soft:#38352e; --accent:#e58f7f;
-  --page:#11100e; --skel:#46423a; --hover:rgba(229,143,127,.14); --imgf:grayscale(.85) contrast(1.05) brightness(.88);
+  --page:#11100e; --skel:#46423a; --hover:rgba(229,143,127,.14); --imgf:brightness(.92);
 }
 :root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
@@ -1569,7 +1569,7 @@ function mostReadData(html){
 }
 
 /* Palet koran: sama dengan tampilan layar (kertas krem, tinta hitam hangat, aksen merah tua) */
-const PDF_N = {paper:[245,240,228], ink:[27,26,23], muted:[93,88,77], soft:[207,199,179], accent:[138,28,28]};
+const PDF_N = {paper:[251,251,249], ink:[26,26,26], muted:[90,90,88], soft:[220,220,215], accent:[138,28,28]};
 
 /* ---------- PDF mode gambar untuk aksara yang tidak ada di Roboto (Korea, Jepang, Mandarin, Arab, Thai, Tamil, Ibrani) ----------
    jsPDF tidak bisa membentuk huruf bersambung (Arab, Tamil), mengurutkan teks kanan-ke-kiri, atau memuat font CJK ringan.
@@ -1724,9 +1724,9 @@ async function makePdf(L,R,dateText,dateKey,step=()=>{}){
   step(4,'gambar');
   const lead = {dyk:R.dyk?leadImgData(R.dyk.html):null, otd:R.otd?leadImgData(R.otd.html):null, news:R.news?leadImgData(R.news.html):null};
   const [tfaImg,potdImg,dykImg,otdImg,newsImg] = await Promise.all([
-    tfa && tfa.img ? fetchPdfImage(tfa.img,900,true) : null,
-    potd && potd.img ? fetchPdfImage(potd.img,1000,true) : null,
-    ...['dyk','otd','news'].map(k=>lead[k] ? fetchPdfImage(lead[k].img,700,true) : null)
+    tfa && tfa.img ? fetchPdfImage(tfa.img,900,false) : null,
+    potd && potd.img ? fetchPdfImage(potd.img,1000,false) : null,
+    ...['dyk','otd','news'].map(k=>lead[k] ? fetchPdfImage(lead[k].img,700,false) : null)
   ]);
   const leadImgs = {dyk:dykImg, otd:otdImg, news:newsImg};
 
