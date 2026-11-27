@@ -1,0 +1,3202 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalender Rowot Sasak 2020 — Interaktif</title>
+  <!-- Google Fonts: Noto Serif, Amiri (Arabic), and Inter for crisp UI controls -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- jsPDF: direct A4 PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ==========================================================================
+       1. EXACT COLOR PALETTE & THEME VARIABLES (LIGHT & DARK MODE)
+       ========================================================================== */
+    :root,
+    [data-theme="light"] {
+      --bg-outer: #d7e2f1;
+      --bg-page: #eef3fa;
+      --bg-card: #f7fafe;
+      --bg-header-dark: #3a6ba6;
+      --bg-header-mid: #4679b4;
+      --bg-header-light: #e3ecf8;
+      --bg-cell-even: #f5f9ff;
+      --bg-cell-odd: #e9f1fb;
+      --bg-cell-overflow: #dce6f4;
+      --bg-cell-hover: #d8e6f8;
+      --border-page: #3a6ba6;
+      --border-grid: #89aad3;
+      --border-soft: #b8cde8;
+      --text-primary: #132540;
+      --text-secondary: #2e4b73;
+      --text-muted: #5a7496;
+      --text-on-dark: #ffffff;
+      --red-accent: #c44a45;
+      --red-soft-bg: #fdeaea;
+      --red-soft-border: #e5a3a0;
+      --adat-accent: #2c6e49;
+      --adat-soft-bg: #e6f4ec;
+      --adat-soft-border: #9ad1b3;
+      --highlight-ring: #f59e0b;
+      --highlight-bg: #fef3c7;
+      --compass-bg: #eef3fa;
+      --compass-line: #3a6ba6;
+      --compass-text: #132540;
+      --shadow-card: 0 8px 24px -4px rgba(19, 37, 64, 0.12), 0 2px 6px -1px rgba(19, 37, 64, 0.06);
+      --shadow-modal: 0 20px 45px -10px rgba(19, 37, 64, 0.35);
+    }
+
+    [data-theme="dark"] {
+      --bg-outer: #07101f;
+      --bg-page: #0d1a2e;
+      --bg-card: #12233d;
+      --bg-header-dark: #0f2040;
+      --bg-header-mid: #1e3a6e;
+      --bg-header-light: #172c52;
+      --bg-cell-even: #11213b;
+      --bg-cell-odd: #152847;
+      --bg-cell-overflow: #0b1628;
+      --bg-cell-hover: #1d3661;
+      --border-page: #2d528f;
+      --border-grid: #294678;
+      --border-soft: #213a66;
+      --text-primary: #e6eefc;
+      --text-secondary: #aec6eb;
+      --text-muted: #7896c4;
+      --text-on-dark: #f4f8ff;
+      --red-accent: #f08a82;
+      --red-soft-bg: #3b1c22;
+      --red-soft-border: #7a343b;
+      --adat-accent: #6ee7b7;
+      --adat-soft-bg: #133629;
+      --adat-soft-border: #25634b;
+      --highlight-ring: #fbbf24;
+      --highlight-bg: #3b2e13;
+      --compass-bg: #0f2040;
+      --compass-line: #4e80cc;
+      --compass-text: #e6eefc;
+      --shadow-card: 0 10px 28px -4px rgba(0, 0, 0, 0.45), 0 2px 8px -1px rgba(0, 0, 0, 0.3);
+      --shadow-modal: 0 24px 54px -10px rgba(0, 0, 0, 0.75);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE TYPOGRAPHY
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-outer);
+      color: var(--text-primary);
+      font-family: 'Noto Serif', Georgia, serif;
+      line-height: 1.45;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ui-sans {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .arabic {
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      direction: rtl;
+    }
+
+    /* ==========================================================================
+       3. STICKY TOP NAVIGATION & CONTROLS BAR
+       ========================================================================== */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header-dark);
+      color: var(--text-on-dark);
+      border-bottom: 2px solid var(--border-grid);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      padding: 0.65rem 1rem;
+    }
+
+    .nav-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .nav-row-primary {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .brand-emblem {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+
+    .brand-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      margin-top: 2px;
+    }
+
+    .nav-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .btn-control {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.42rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.18s ease;
+    }
+
+    .btn-control:disabled {
+      opacity: 0.6;
+      cursor: progress;
+    }
+
+    .btn-control:hover {
+      background: rgba(255, 255, 255, 0.24);
+      transform: translateY(-1px);
+    }
+
+    .btn-control:active {
+      transform: translateY(0);
+    }
+
+    .btn-control.active {
+      background: #ffffff;
+      color: var(--bg-header-dark);
+      border-color: #ffffff;
+    }
+
+    .nav-row-secondary {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Month Selector Pills */
+    .month-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .month-pills-scroll {
+      display: flex;
+      align-items: center;
+      gap: 0.28rem;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+
+    .month-pills-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+    .month-pills-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+    }
+
+    .month-pill {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.9);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 500;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .month-pill:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .month-pill.active {
+      background: #ffffff;
+      color: var(--bg-header-dark);
+      font-weight: 700;
+      border-color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Search & Filter Inputs */
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input,
+    .filter-select {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 7px;
+      outline: none;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .search-input:focus,
+    .filter-select:focus {
+      background: rgba(255, 255, 255, 0.24);
+      border-color: #ffffff;
+    }
+
+    .filter-select option {
+      background: #132540;
+      color: #ffffff;
+    }
+
+    .clear-filter-btn {
+      background: var(--red-accent);
+      color: #ffffff;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.35rem 0.6rem;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    /* Search Result Status Banner */
+    .filter-status-bar {
+      max-width: 1200px;
+      margin: 0.75rem auto 0;
+      padding: 0.55rem 1rem;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-page);
+      border-radius: 10px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .filter-status-bar.visible {
+      display: flex;
+    }
+
+    /* ==========================================================================
+       4. MAIN CALENDAR SHEET CONTAINER (A4 INSPIRED MODERN SHEET)
+       ========================================================================== */
+    .main-wrapper {
+      max-width: 1200px;
+      margin: 1.1rem auto 2.5rem;
+      padding: 0 0.85rem;
+    }
+
+    .calendar-sheet {
+      background: var(--bg-page);
+      border: 2.5px solid var(--border-page);
+      border-radius: 14px;
+      box-shadow: var(--shadow-card);
+      padding: 1.15rem;
+      margin-bottom: 1.75rem;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .calendar-sheet.animate-in {
+      animation: fadeSlideUp 0.28s ease forwards;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==========================================================================
+       5. SHEET TOP HEADER (4-COLUMN TRADITIONAL BOXES)
+       ========================================================================== */
+    .sheet-header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr 1.25fr 1.35fr;
+      gap: 0.6rem;
+      margin-bottom: 0.85rem;
+    }
+
+    @media (max-width: 820px) {
+      .sheet-header-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sheet-header-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .header-box {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-page);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .header-box-label {
+      background: var(--bg-header-dark);
+      color: var(--text-on-dark);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.28rem 0.65rem;
+      text-align: center;
+    }
+
+    .header-box-value {
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .header-box-value .main-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+
+    .header-box-value .sub-val {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .header-box.masehi-box .header-box-label {
+      background: var(--bg-header-mid);
+    }
+
+    .header-box.masehi-box .main-val {
+      font-size: 1.38rem;
+      letter-spacing: 0.03em;
+      color: var(--bg-header-dark);
+    }
+
+    [data-theme="dark"] .header-box.masehi-box .main-val {
+      color: #8ab8ff;
+    }
+
+    /* ==========================================================================
+       6. CALENDAR GRID (JELO + 6 WUKU COLUMNS)
+       ========================================================================== */
+    .calendar-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      border: 1.5px solid var(--border-page);
+      border-radius: 10px;
+      background: var(--bg-card);
+      margin-bottom: 0.9rem;
+    }
+
+    .rowot-table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .rowot-table th,
+    .rowot-table td {
+      border: 1px solid var(--border-grid);
+      vertical-align: top;
+    }
+
+    /* Wuku Header Row */
+    .wuku-th {
+      background: var(--bg-header-dark);
+      color: var(--text-on-dark);
+      padding: 0.45rem 0.35rem;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .jelo-corner-th {
+      width: 13.5%;
+      background: var(--bg-header-dark);
+      color: var(--text-on-dark);
+      padding: 0.45rem 0.4rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Engkal Sub-Header Row */
+    .engkal-th {
+      background: var(--bg-header-mid);
+      color: var(--text-on-dark);
+      padding: 0.26rem 0.3rem;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .engkal-label-th {
+      background: var(--bg-header-mid);
+      color: var(--text-on-dark);
+      padding: 0.26rem 0.35rem;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    /* Jelo (Day of Week) Left Column */
+    .jelo-cell {
+      background: var(--bg-header-light);
+      padding: 0.45rem 0.5rem;
+      vertical-align: middle !important;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .jelo-name {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .jelo-arabic {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .row-ahad .jelo-cell {
+      background: var(--red-soft-bg);
+    }
+
+    .row-ahad .jelo-name,
+    .row-ahad .jelo-arabic {
+      color: var(--red-accent);
+    }
+
+    /* Date Cells */
+    .date-cell {
+      position: relative;
+      height: 82px;
+      padding: 0.35rem 0.45rem;
+      background: var(--bg-cell-even);
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+    .rowot-table tbody tr:nth-child(odd) .date-cell {
+      background: var(--bg-cell-odd);
+    }
+
+    .date-cell:hover {
+      background: var(--bg-cell-hover) !important;
+      box-shadow: inset 0 0 0 2px var(--bg-header-dark);
+      z-index: 2;
+    }
+
+    .date-cell.overflow-cell {
+      background: var(--bg-cell-overflow) !important;
+      opacity: 0.76;
+    }
+
+    .date-cell.overflow-cell:hover {
+      opacity: 1;
+    }
+
+    /* Holiday / Adat / Search Highlight Styling */
+    .date-cell.is-holiday-nasional {
+      background: var(--red-soft-bg) !important;
+    }
+
+    .date-cell.is-holiday-adat {
+      background: var(--adat-soft-bg) !important;
+    }
+
+    .date-cell.search-match {
+      background: var(--highlight-bg) !important;
+      box-shadow: inset 0 0 0 2.5px var(--highlight-ring) !important;
+      z-index: 3;
+    }
+
+    .date-cell.search-dimmed {
+      opacity: 0.38;
+    }
+
+    .date-cell.nage-highlight {
+      box-shadow: inset 0 0 0 2.5px #10b981 !important;
+      background: rgba(16, 185, 129, 0.14) !important;
+    }
+
+    /* Cell Inner Layout */
+    .cell-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .cell-element {
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.15;
+      max-width: 68%;
+    }
+
+    .cell-hijri {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+
+    .cell-center-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.15rem 0;
+    }
+
+    .cell-masehi {
+      font-size: 1.48rem;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    .cell-masehi.overflow-num {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .row-ahad .cell-masehi:not(.overflow-num),
+    .cell-masehi.red-date {
+      color: var(--red-accent);
+    }
+
+    .cell-masehi.adat-date {
+      color: var(--adat-accent);
+    }
+
+    .cell-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: auto;
+    }
+
+    .cell-pasaran {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+    }
+
+    .cell-event-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .dot-nasional {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red-accent);
+      display: inline-block;
+    }
+
+    .dot-adat {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--adat-accent);
+      display: inline-block;
+    }
+
+    /* ==========================================================================
+       7. BOTTOM CULTURAL & ASTRONOMICAL INFO GRID
+       ========================================================================== */
+    .bottom-info-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1.15fr 0.95fr;
+      gap: 0.85rem;
+      align-items: stretch;
+    }
+
+    @media (max-width: 960px) {
+      .bottom-info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .nage-column {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .bottom-info-grid {
+        grid-template-columns: 1fr;
+      }
+      .nage-column {
+        grid-column: span 1;
+      }
+    }
+
+    .info-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .info-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-page);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card-header {
+      background: var(--bg-header-dark);
+      color: var(--text-on-dark);
+      padding: 0.38rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-card-body {
+      padding: 0.6rem 0.75rem;
+      font-size: 0.79rem;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .event-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .event-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      line-height: 1.35;
+      padding: 0.2rem 0.3rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .event-list li:hover {
+      background: var(--bg-header-light);
+    }
+
+    .event-date-tag {
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--red-accent);
+      min-width: 58px;
+    }
+
+    .event-date-tag.adat-tag {
+      color: var(--adat-accent);
+    }
+
+    /* Jelo Solah Table */
+    .jelo-solah-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+    }
+
+    .jelo-solah-table th,
+    .jelo-solah-table td {
+      border: 1px solid var(--border-soft);
+      padding: 0.32rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .jelo-solah-table th {
+      background: var(--bg-header-light);
+      color: var(--text-primary);
+      font-weight: 700;
+      width: 30%;
+    }
+
+    /* Legend & Mangse */
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 0.45rem 0.7rem;
+      background: var(--bg-header-light);
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .mangse-item {
+      padding: 0.32rem 0;
+      border-bottom: 1px dashed var(--border-soft);
+    }
+
+    .mangse-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .mangse-title {
+      font-weight: 700;
+      color: var(--bg-header-dark);
+    }
+
+    [data-theme="dark"] .mangse-title {
+      color: #8ab8ff;
+    }
+
+    /* ==========================================================================
+       8. INTERACTIVE NAGE COMPASS SVG
+       ========================================================================== */
+    .nage-card {
+      height: 100%;
+    }
+
+    .nage-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      gap: 0.45rem;
+    }
+
+    .nage-svg {
+      width: 100%;
+      max-width: 270px;
+      height: auto;
+      display: block;
+    }
+
+    .nage-sector-group {
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+
+    .nage-sector-group:hover .nage-dir-badge {
+      fill: var(--red-accent);
+    }
+
+    .nage-hint {
+      font-size: 0.71rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Sheet Footer Attribution */
+    .sheet-footer {
+      margin-top: 0.85rem;
+      padding-top: 0.55rem;
+      border-top: 1.5px solid var(--border-soft);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       9. INTERACTIVE DETAIL MODAL / DRAWER
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 18, 34, 0.62);
+      backdrop-filter: blur(3px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .detail-modal {
+      background: var(--bg-page);
+      border: 2px solid var(--border-page);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-modal);
+      animation: popScale 0.22s ease;
+    }
+
+    @keyframes popScale {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      background: var(--bg-header-dark);
+      color: #ffffff;
+      padding: 0.9rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .modal-header-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .modal-header-sub {
+      font-size: 0.78rem;
+      opacity: 0.88;
+      margin-top: 2px;
+    }
+
+    .modal-close-btn {
+      appearance: none;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .modal-body {
+      padding: 1.1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .modal-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+    }
+
+    .modal-kpi {
+      background: var(--bg-card);
+      border: 1px solid var(--border-grid);
+      border-radius: 10px;
+      padding: 0.55rem 0.75rem;
+    }
+
+    .modal-kpi-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .modal-kpi-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    .modal-section-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-grid);
+      border-radius: 10px;
+      padding: 0.75rem 0.85rem;
+      font-size: 0.84rem;
+    }
+
+    .modal-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--bg-header-dark);
+      margin-bottom: 0.35rem;
+    }
+
+    [data-theme="dark"] .modal-section-title {
+      color: #8ab8ff;
+    }
+
+    .modal-badge-event {
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .modal-badge-event.nasional {
+      background: var(--red-soft-bg);
+      border: 1px solid var(--red-soft-border);
+      color: var(--red-accent);
+    }
+
+    .modal-badge-event.adat {
+      background: var(--adat-soft-bg);
+      border: 1px solid var(--adat-soft-border);
+      color: var(--adat-accent);
+    }
+
+    /* ==========================================================================
+       10. PRINT STYLES (A4 OPTIMIZED)
+       ========================================================================== */
+    /* Keep the day column visible while the grid scrolls sideways */
+    .jelo-corner-th,
+    .engkal-label-th,
+    .jelo-cell {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      box-shadow: 1px 0 0 var(--border-grid);
+    }
+
+    /* Small screens: the tall control bar would cover a third of the viewport, so let it scroll away */
+    @media (max-width: 640px), (max-height: 520px) {
+      .top-navbar {
+        position: static;
+      }
+      .btn-control,
+      .month-pill {
+        min-height: 36px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .top-navbar,
+      .filter-status-bar,
+      .modal-backdrop,
+      .nage-hint {
+        display: none !important;
+      }
+      .main-wrapper {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .calendar-sheet {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-after: always;
+        break-after: page;
+        margin-bottom: 0;
+      }
+      .calendar-sheet:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       STICKY TOP NAVIGATION BAR
+       ======================================================================== -->
+  <header class="top-navbar">
+    <div class="nav-container">
+      <!-- Primary Row: Brand + View Toggles + Dark Mode + Print -->
+      <div class="nav-row-primary">
+        <div class="brand-group">
+          <div class="brand-emblem" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">Kalender Rowot Sasak 2020</h1>
+            <span class="brand-badge ui-sans">Almanak Tradisional Sasak &bull; Lombok</span>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" id="btnPrevMonth" class="btn-control" title="Bulan Sebelumnya (Panah Kiri)">
+            &larr; <span class="hide-xs">Sblm</span>
+          </button>
+          <button type="button" id="btnNextMonth" class="btn-control" title="Bulan Berikutnya (Panah Kanan)">
+            <span class="hide-xs">Brkt</span> &rarr;
+          </button>
+
+          <button type="button" id="btnViewSingle" class="btn-control active" title="Tampilkan 1 Bulan Interaktif">
+            Bulanan
+          </button>
+          <button type="button" id="btnViewAll" class="btn-control" title="Tampilkan Semua 12 Bulan">
+            Semua (12 Bln)
+          </button>
+
+          <button type="button" id="btnDarkMode" class="btn-control" title="Ganti Tema Terang / Gelap" aria-label="Toggle Dark Mode">
+            <span id="themeIcon">&#9790;</span> <span id="themeLabel">Gelap</span>
+          </button>
+
+          <button type="button" id="btnPdf" class="btn-control" title="Unduh Kalender sebagai PDF (A4, 12 halaman)">
+            <span aria-hidden="true">&#11015;</span> <span class="pdf-label">PDF</span>
+          </button>
+
+          <button type="button" id="btnPrint" class="btn-control" title="Cetak Kalender (A4)">
+            &#128424; Cetak
+          </button>
+        </div>
+      </div>
+
+      <!-- Secondary Row: Month Selector Pills + Search & Pasaran/Wuku Filter -->
+      <div class="nav-row-secondary">
+        <div class="month-nav-group">
+          <div class="month-pills-scroll" id="monthPillsContainer" role="tablist" aria-label="Pilih Bulan 2020"></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Cari acara, wuku, tanggal..."
+              aria-label="Cari tanggal atau acara"
+            />
+          </div>
+
+          <select id="pasaranFilter" class="filter-select" aria-label="Filter Pasaran">
+            <option value="">Semua Pasaran</option>
+            <option value="Manis">Pasaran: Manis</option>
+            <option value="Paing">Pasaran: Paing</option>
+            <option value="Pon">Pasaran: Pon</option>
+            <option value="Wage">Pasaran: Wage</option>
+            <option value="Kliwon">Pasaran: Kliwon</option>
+          </select>
+
+          <select id="wukuFilter" class="filter-select" aria-label="Filter Wuku">
+            <option value="">Semua Wuku</option>
+          </select>
+
+          <button type="button" id="btnClearFilters" class="clear-filter-btn" style="display:none;">
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filter / Search Result Summary Bar -->
+  <div id="filterStatusBar" class="filter-status-bar ui-sans">
+    <span id="filterStatusText"></span>
+    <button type="button" id="btnJumpFirstMatch" class="btn-control" style="background: var(--bg-header-dark); color: #fff; font-size: 0.74rem; padding: 0.28rem 0.65rem;">
+      Lompat ke Hasil Pertama &rarr;
+    </button>
+  </div>
+
+  <!-- ========================================================================
+       MAIN CALENDAR CONTENT CONTAINER
+       ======================================================================== -->
+  <main id="calendarContainer" class="main-wrapper"></main>
+
+  <!-- ========================================================================
+       INTERACTIVE DATE DETAIL MODAL
+       ======================================================================== -->
+  <div id="dateModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="detail-modal">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalTitle" class="modal-header-title">Detail Tanggal</h2>
+          <div id="modalSubtitle" class="modal-header-sub">Kalender Rowot Sasak 2020</div>
+        </div>
+        <button type="button" id="btnCloseModal" class="modal-close-btn" aria-label="Tutup">&times;</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       COMPLETE DATASET & APPLICATION LOGIC (100% PRESERVED DATA FOR ALL 12 MONTHS)
+       ======================================================================== -->
+  <script>
+    /**
+     * Complete Dataset for Kalender Rowot Sasak 2020 (Januari - Desember 2020)
+     * Preserves 100% of:
+     * - Tahun/Windu, Kale/Bulan Sasak, Hijriyah, Masehi headers
+     * - Jelo (Ahad - Saptu + Arabic), Wuku headers & Engkal row
+     * - Every cell's Wuku element/pepaesan, Hijriyah Arabic numeral, Masehi date, Pasaran, overflow flags
+     * - Hari Penting Sasak/Islam, Kale Bulan, Jelo Solah, Hari Penting Nasional, Mangse, Nage Compass, and Footer.
+     */
+    const JELO_LIST = [
+      { id: 0, name: "Ahad", arabic: "الأحد", isSunday: true },
+      { id: 1, name: "Senen", arabic: "الإثنين", isSunday: false },
+      { id: 2, name: "Selase", arabic: "الثلاثاء", isSunday: false },
+      { id: 3, name: "Rebo", arabic: "الأربعاء", isSunday: false },
+      { id: 4, name: "Kemis", arabic: "الخميس", isSunday: false },
+      { id: 5, name: "Jumat", arabic: "الجمعة", isSunday: false },
+      { id: 6, name: "Saptu", arabic: "السبت", isSunday: false }
+    ];
+
+    const ENGKAL_HEADERS = ["Kemanukan", "Taru", "Buku", "Wong", "Sato", "Mine"];
+
+    const JELO_SOLAH_SHARED = [
+      { wuku: "Sinte, Dungulan, Langkir, Medangkungan, Wayang", desc: "Jelo solah untuk menanam pohon berbuah, berdagang, membangun rumah, dan memulai perjalanan jauh." },
+      { wuku: "Landep, Kuningan, Medangsie, Maktal, Kulawu", desc: "Baik untuk membuat perkakas besi, bertani palawija, mencari nafkah, serta musyawarah adat." },
+      { wuku: "Ukir, Langkir, Pujut, Uye, Dukut", desc: "Solah untuk bercocok tanam padi, memelihara ternak, dan memperbaiki saluran pengairan." },
+      { wuku: "Kulantir, Pahang, Menail, Watugunung", desc: "Baik untuk upacara keluarga, menuntut ilmu, pengobatan tradisional, dan menabung hasil panen." },
+      { wuku: "Tolu, Kuruwelut, Prangbakat, Bala", desc: "Jelo pertengahan; dianjurkan berhati-hati dalam perjalanan laut dan mengutamakan sedekah." },
+      { wuku: "Gumbreg, Merakih, Tambir, Ugu", desc: "Solah untuk menanam umbi-umbian, merajut/menenun, serta menjalin silaturahmi antar kampung." }
+    ];
+
+    const NAGE_DIRECTIONS = {
+      "U": { label: "Utara (U)", meaning: "Nage menghadap Utara — Hindari bepergian atau memulai hajat besar menghadap langsung ke arah Utara pada tanggal-tanggal ini." },
+      "TL": { label: "Timur Laut (TL)", meaning: "Nage menghadap Timur Laut — Arah pantangan Nage Hari berada di Timur Laut." },
+      "T": { label: "Timur (T)", meaning: "Nage menghadap Timur — Arah pantangan Nage Hari berada di Timur." },
+      "TD": { label: "Tenggara (TD)", meaning: "Nage menghadap Tenggara — Arah pantangan Nage Hari berada di Tenggara." },
+      "S": { label: "Selatan (S)", meaning: "Nage menghadap Selatan — Arah pantangan Nage Hari berada di Selatan." },
+      "BD": { label: "Barat Daya (BD)", meaning: "Nage menghadap Barat Daya — Arah pantangan Nage Hari berada di Barat Daya." },
+      "B": { label: "Barat (B)", meaning: "Nage menghadap Barat — Arah pantangan Nage Hari berada di Barat." },
+      "BL": { label: "Barat Laut (BL)", meaning: "Nage menghadap Barat Laut — Arah pantangan Nage Hari berada di Barat Laut." }
+    };
+
+    /**
+     * Helper to generate cell objects cleanly while preserving exact cultural data.
+     * Each cell entry: [masehi, hijriArabic, pasaran, element, options]
+     * options: { ov: overflow, red: nasionalHoliday, adat: adatHoliday }
+     */
+    function buildMonthCells(wukuNames, gridRows) {
+      // gridRows is 7 rows (Ahad..Saptu), each row has 6 columns (Wuku 0..5)
+      return gridRows.map((row, jeloIdx) =>
+        row.map((cell, wukuIdx) => ({
+          jeloIdx,
+          jeloName: JELO_LIST[jeloIdx].name,
+          jeloArabic: JELO_LIST[jeloIdx].arabic,
+          wuku: wukuNames[wukuIdx],
+          engkal: ENGKAL_HEADERS[wukuIdx],
+          masehi: cell[0],
+          hijri: cell[1],
+          pasaran: cell[2],
+          element: cell[3],
+          overflow: Boolean(cell[4]?.ov),
+          isNasional: Boolean(cell[4]?.red),
+          isAdat: Boolean(cell[4]?.adat)
+        }))
+      );
+    }
+
+    const MONTHS_DATA = [
+      // =========================================================================
+      // 1. JANUARI 2020
+      // =========================================================================
+      {
+        index: 0,
+        name: "JANUARI",
+        shortName: "Jan",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Pituq – Baluq", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Jumadil Awal – Jumadil Akhir" },
+        wukus: ["Uye", "Menail", "Prangbakat", "Bala", "Ugu", "Wayang"],
+        cells: buildMonthCells(
+          ["Uye", "Menail", "Prangbakat", "Bala", "Ugu", "Wayang"],
+          [
+            // Ahad
+            [[29,"٣","Paing","Wulan",{ov:1}], [5,"٩","Pon","Lintang",{}], [12,"١٦","Wage","Angin",{}], [19,"٢٣","Kliwon","Tutup",{}], [26,"١","Manis","Aras",{}], [2,"٨","Paing","Ariyang",{ov:1}]],
+            // Senen
+            [[30,"٤","Pon","Geni",{ov:1}], [6,"١٠","Wage","Bumi",{}], [13,"١٧","Kliwon","Sringéngé",{}], [20,"٢٤","Manis","Banyu",{}], [27,"٢","Paing","Wulan",{}], [3,"٩","Pon","Lintang",{ov:1}]],
+            // Selase
+            [[31,"٥","Wage","Angin",{ov:1}], [7,"١١","Kliwon","Tutup",{}], [14,"١٨","Manis","Aras",{}], [21,"٢٥","Paing","Ariyang",{}], [28,"٣","Pon","Geni",{}], [4,"١٠","Wage","Bumi",{ov:1}]],
+            // Rebo
+            [[1,"٦","Kliwon","Sringéngé",{red:1}], [8,"١٢","Manis","Banyu",{}], [15,"١٩","Paing","Wulan",{}], [22,"٢٦","Pon","Lintang",{}], [29,"٤","Wage","Angin",{}], [5,"١١","Kliwon","Tutup",{ov:1}]],
+            // Kemis
+            [[2,"٧","Manis","Aras",{}], [9,"١٣","Paing","Ariyang",{}], [16,"٢٠","Pon","Geni",{}], [23,"٢٧","Wage","Bumi",{}], [30,"٥","Kliwon","Sringéngé",{}], [6,"١٢","Manis","Banyu",{ov:1}]],
+            // Jumat
+            [[3,"٨","Paing","Wulan",{}], [10,"١٤","Pon","Lintang",{}], [17,"٢١","Wage","Angin",{}], [24,"٢٨","Kliwon","Tutup",{}], [31,"٦","Manis","Aras",{}], [7,"١٣","Paing","Ariyang",{ov:1}]],
+            // Saptu
+            [[4,"٩","Pon","Geni",{}], [11,"١٥","Wage","Bumi",{}], [18,"٢٢","Kliwon","Sringéngé",{}], [25,"٢٩","Manis","Banyu",{red:1}], [1,"٧","Paing","Wulan",{ov:1}], [8,"١٤","Pon","Lintang",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "10 Jan", dayNum: 10, type: "adat", text: "14 Jumadil Awal 1441 H — Purnama Sasak Kale Pituq" },
+          { dateStr: "25 Jan", dayNum: 25, type: "adat", text: "29 Jumadil Awal 1441 H — Tilem Sasak Kale Pituq" },
+          { dateStr: "26 Jan", dayNum: 26, type: "adat", text: "1 Jumadil Akhir 1441 H — Awal Kale Baluq" }
+        ],
+        kaleBulan: "Kale Pituq berlangsung hingga 25 Januari (29 Jumadil Awal), dilanjutkan Kale Baluq mulai 26 Januari (1 Jumadil Akhir). Masa pertumbuhan padi sawah dan penjagaan pengairan.",
+        hariPentingNasional: [
+          { dateStr: "1 Jan", dayNum: 1, type: "nasional", text: "Tahun Baru 2020 Masehi" },
+          { dateStr: "25 Jan", dayNum: 25, type: "nasional", text: "Tahun Baru Imlek 2571 Kongzili" }
+        ],
+        mangse: [
+          { title: "Mangse Pituq (1 – 25 Jan)", desc: "Curah hujan tinggi, angin barat bertiup kencang, petani mulai menyiangi tanaman padi di sawah." },
+          { title: "Mangse Baluq (26 – 31 Jan)", desc: "Padi mulai bunting (meteng), suasana lembap dan hujan merata di seluruh Lombok." }
+        ],
+        nage: {
+          U: [1, 9, 17, 25],
+          TL: [2, 10, 18, 26],
+          T: [3, 11, 19, 27],
+          TD: [4, 12, 20, 28],
+          S: [5, 13, 21, 29],
+          BD: [6, 14, 22, 30],
+          B: [7, 15, 23, 31],
+          BL: [8, 16, 24]
+        }
+      },
+
+      // =========================================================================
+      // 2. FEBRUARI 2020
+      // =========================================================================
+      {
+        index: 1,
+        name: "FEBRUARI",
+        shortName: "Feb",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Baluq – Sangaq", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Jumadil Akhir – Rajab" },
+        wukus: ["Ugu", "Wayang", "Kulawu", "Dukut", "Watugunung", "Sinte"],
+        cells: buildMonthCells(
+          ["Ugu", "Wayang", "Kulawu", "Dukut", "Watugunung", "Sinte"],
+          [
+            // Ahad
+            [[26,"١","Manis","Aras",{ov:1}], [2,"٨","Paing","Ariyang",{}], [9,"١٥","Pon","Geni",{}], [16,"٢٢","Wage","Bumi",{}], [23,"٢٩","Kliwon","Sringéngé",{}], [1,"٦","Manis","Banyu",{ov:1}]],
+            // Senen
+            [[27,"٢","Paing","Wulan",{ov:1}], [3,"٩","Pon","Lintang",{}], [10,"١٦","Wage","Angin",{}], [17,"٢٣","Kliwon","Tutup",{}], [24,"٣٠","Manis","Aras",{}], [2,"٧","Paing","Ariyang",{ov:1}]],
+            // Selase
+            [[28,"٣","Pon","Geni",{ov:1}], [4,"١٠","Wage","Bumi",{}], [11,"١٧","Kliwon","Sringéngé",{}], [18,"٢٤","Manis","Banyu",{}], [25,"١","Paing","Wulan",{}], [3,"٨","Pon","Lintang",{ov:1}]],
+            // Rebo
+            [[29,"٤","Wage","Angin",{ov:1}], [5,"١١","Kliwon","Tutup",{}], [12,"١٨","Manis","Aras",{}], [19,"٢٥","Paing","Ariyang",{}], [26,"٢","Pon","Geni",{}], [4,"٩","Wage","Bumi",{ov:1}]],
+            // Kemis
+            [[30,"٥","Kliwon","Sringéngé",{ov:1}], [6,"١٢","Manis","Banyu",{}], [13,"١٩","Paing","Wulan",{}], [20,"٢٦","Pon","Lintang",{}], [27,"٣","Wage","Angin",{}], [5,"١٠","Kliwon","Tutup",{ov:1}]],
+            // Jumat
+            [[31,"٦","Manis","Aras",{ov:1}], [7,"١٣","Paing","Ariyang",{}], [14,"٢٠","Pon","Geni",{adat:1}], [21,"٢٧","Wage","Bumi",{}], [28,"٤","Kliwon","Sringéngé",{}], [6,"١١","Manis","Banyu",{ov:1}]],
+            // Saptu
+            [[1,"٧","Paing","Wulan",{}], [8,"١٤","Pon","Lintang",{}], [15,"٢١","Wage","Angin",{adat:1}], [22,"٢٨","Kliwon","Tutup",{}], [29,"٥","Manis","Aras",{}], [7,"١٢","Paing","Ariyang",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "9 Feb", dayNum: 9, type: "adat", text: "15 Jumadil Akhir 1441 H — Purnama Kale Baluq" },
+          { dateStr: "14–15 Feb", dayNum: 14, type: "adat", text: "20–21 Jumadil Akhir 1441 H — Tradisi Bau Nyale (Pantai Seger & Lombok Selatan)" },
+          { dateStr: "24 Feb", dayNum: 24, type: "adat", text: "30 Jumadil Akhir 1441 H — Tilem Kale Baluq" },
+          { dateStr: "25 Feb", dayNum: 25, type: "adat", text: "1 Rajab 1441 H — Awal Kale Sangaq" }
+        ],
+        kaleBulan: "Kale Baluq berlanjut hingga 24 Februari (20 Jumadil Akhir merupakan puncak Bau Nyale di pesisir selatan Lombok), kemudian masuk Kale Sangaq pada 25 Februari.",
+        hariPentingNasional: [
+          { dateStr: "—", dayNum: 1, type: "nasional", text: "Tidak ada Hari Libur Nasional pada bulan Februari 2020" }
+        ],
+        mangse: [
+          { title: "Mangse Baluq (1 – 24 Feb)", desc: "Musim munculnya cacing laut Nyale (20 Jumadil Akhir), padi mulai menguning di lahan tadah hujan." },
+          { title: "Mangse Sangaq (25 – 29 Feb)", desc: "Angin mulai mereda, bunga-bunga pohon hutan bermekaran, tanda transisi musim." }
+        ],
+        nage: {
+          U: [6, 14, 22],
+          TL: [7, 15, 23],
+          T: [8, 16, 24],
+          TD: [1, 9, 17, 25],
+          S: [2, 10, 18, 26],
+          BD: [3, 11, 19, 27],
+          B: [4, 12, 20, 28],
+          BL: [5, 13, 21, 29]
+        }
+      },
+
+      // =========================================================================
+      // 3. MARET 2020
+      // =========================================================================
+      {
+        index: 2,
+        name: "MARET",
+        shortName: "Mar",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Sangaq – Sepulu", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Rajab – Sya'ban" },
+        wukus: ["Sinte", "Landep", "Ukir", "Kulantir", "Tolu", "Gumbreg"],
+        cells: buildMonthCells(
+          ["Sinte", "Landep", "Ukir", "Kulantir", "Tolu", "Gumbreg"],
+          [
+            // Ahad
+            [[1,"٦","Manis","Banyu",{}], [8,"١٣","Paing","Wulan",{}], [15,"٢٠","Pon","Lintang",{}], [22,"٢٧","Wage","Angin",{red:1}], [29,"٤","Kliwon","Tutup",{}], [5,"١١","Manis","Aras",{ov:1}]],
+            // Senen
+            [[2,"٧","Paing","Ariyang",{}], [9,"١٤","Pon","Geni",{}], [16,"٢١","Wage","Bumi",{}], [23,"٢٨","Kliwon","Sringéngé",{}], [30,"٥","Manis","Banyu",{}], [6,"١٢","Paing","Wulan",{ov:1}]],
+            // Selase
+            [[3,"٨","Pon","Lintang",{}], [10,"١٥","Wage","Angin",{}], [17,"٢٢","Kliwon","Tutup",{}], [24,"٢٩","Manis","Aras",{}], [31,"٦","Paing","Ariyang",{}], [7,"١٣","Pon","Geni",{ov:1}]],
+            // Rebo
+            [[4,"٩","Wage","Bumi",{}], [11,"١٦","Kliwon","Sringéngé",{}], [18,"٢٣","Manis","Banyu",{}], [25,"٣٠","Paing","Wulan",{red:1}], [1,"٧","Pon","Lintang",{ov:1}], [8,"١٤","Wage","Angin",{ov:1}]],
+            // Kemis
+            [[5,"١٠","Kliwon","Tutup",{}], [12,"١٧","Manis","Aras",{}], [19,"٢٤","Paing","Ariyang",{}], [26,"١","Pon","Geni",{}], [2,"٨","Wage","Bumi",{ov:1}], [9,"١٥","Kliwon","Sringéngé",{ov:1}]],
+            // Jumat
+            [[6,"١١","Manis","Banyu",{}], [13,"١٨","Paing","Wulan",{}], [20,"٢٥","Pon","Lintang",{}], [27,"٢","Wage","Angin",{}], [3,"٩","Kliwon","Tutup",{ov:1}], [10,"١٦","Manis","Aras",{ov:1}]],
+            // Saptu
+            [[7,"١٢","Paing","Ariyang",{}], [14,"١٩","Pon","Geni",{}], [21,"٢٦","Wage","Bumi",{}], [28,"٣","Kliwon","Sringéngé",{}], [4,"١٠","Manis","Banyu",{ov:1}], [11,"١٧","Paing","Wulan",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "10 Mar", dayNum: 10, type: "adat", text: "15 Rajab 1441 H — Purnama Kale Sangaq" },
+          { dateStr: "22 Mar", dayNum: 22, type: "nasional", text: "27 Rajab 1441 H — Isra Mi'raj Nabi Muhammad SAW" },
+          { dateStr: "25 Mar", dayNum: 25, type: "adat", text: "30 Rajab 1441 H — Tilem Kale Sangaq & Nyepi" },
+          { dateStr: "26 Mar", dayNum: 26, type: "adat", text: "1 Sya'ban 1441 H — Awal Kale Sepulu" }
+        ],
+        kaleBulan: "Kale Sangaq berakhir pada 25 Maret (30 Rajab), memasuki Kale Sepulu pada 26 Maret (1 Sya'ban). Awal masa panen raya padi di sebagian wilayah Lombok.",
+        hariPentingNasional: [
+          { dateStr: "22 Mar", dayNum: 22, type: "nasional", text: "Isra Mi'raj Nabi Muhammad SAW" },
+          { dateStr: "25 Mar", dayNum: 25, type: "nasional", text: "Hari Suci Nyepi Tahun Baru Saka 1942" }
+        ],
+        mangse: [
+          { title: "Mangse Sangaq (1 – 25 Mar)", desc: "Hujan mulai berkurang, padi mulai menguning merata dan siap dipanen (mataq)." },
+          { title: "Mangse Sepulu (26 – 31 Mar)", desc: "Awal musim panen raya, cuaca cerah berawan, angin tenggara mulai terasa." }
+        ],
+        nage: {
+          U: [4, 12, 20, 28],
+          TL: [5, 13, 21, 29],
+          T: [6, 14, 22, 30],
+          TD: [7, 15, 23, 31],
+          S: [8, 16, 24],
+          BD: [1, 9, 17, 25],
+          B: [2, 10, 18, 26],
+          BL: [3, 11, 19, 27]
+        }
+      },
+
+      // =========================================================================
+      // 4. APRIL 2020
+      // =========================================================================
+      {
+        index: 3,
+        name: "APRIL",
+        shortName: "Apr",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Sepulu – Solas", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Sya'ban – Ramadhan" },
+        wukus: ["Tolu", "Gumbreg", "Warige", "Warigadean", "Julungwangi", "Sungsang"],
+        cells: buildMonthCells(
+          ["Tolu", "Gumbreg", "Warige", "Warigadean", "Julungwangi", "Sungsang"],
+          [
+            // Ahad
+            [[29,"٤","Kliwon","Tutup",{ov:1}], [5,"١١","Manis","Aras",{}], [12,"١٨","Paing","Ariyang",{}], [19,"٢٥","Pon","Geni",{}], [26,"٣","Wage","Bumi",{}], [3,"١٠","Kliwon","Sringéngé",{ov:1}]],
+            // Senen
+            [[30,"٥","Manis","Banyu",{ov:1}], [6,"١٢","Paing","Wulan",{}], [13,"١٩","Pon","Lintang",{}], [20,"٢٦","Wage","Angin",{}], [27,"٤","Kliwon","Tutup",{}], [4,"١١","Manis","Aras",{ov:1}]],
+            // Selase
+            [[31,"٦","Paing","Ariyang",{ov:1}], [7,"١٣","Pon","Geni",{}], [14,"٢٠","Wage","Bumi",{}], [21,"٢٧","Kliwon","Sringéngé",{}], [28,"٥","Manis","Banyu",{}], [5,"١٢","Paing","Wulan",{ov:1}]],
+            // Rebo
+            [[1,"٧","Pon","Lintang",{}], [8,"١٤","Wage","Angin",{}], [15,"٢١","Kliwon","Tutup",{}], [22,"٢٨","Manis","Aras",{}], [29,"٦","Paing","Ariyang",{}], [6,"١٣","Pon","Geni",{ov:1}]],
+            // Kemis
+            [[2,"٨","Wage","Bumi",{}], [9,"١٥","Kliwon","Sringéngé",{}], [16,"٢٢","Manis","Banyu",{}], [23,"٢٩","Paing","Wulan",{adat:1}], [30,"٧","Pon","Lintang",{}], [7,"١٤","Wage","Angin",{ov:1}]],
+            // Jumat
+            [[3,"٩","Kliwon","Tutup",{}], [10,"١٦","Manis","Aras",{red:1}], [17,"٢٣","Paing","Ariyang",{}], [24,"١","Pon","Geni",{adat:1}], [1,"٨","Wage","Bumi",{ov:1}], [8,"١٥","Kliwon","Sringéngé",{ov:1}]],
+            // Saptu
+            [[4,"١٠","Manis","Banyu",{}], [11,"١٧","Paing","Wulan",{}], [18,"٢٤","Pon","Lintang",{}], [25,"٢","Wage","Angin",{}], [2,"٩","Kliwon","Tutup",{ov:1}], [9,"١٦","Manis","Aras",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "9 Apr", dayNum: 9, type: "adat", text: "15 Sya'ban 1441 H — Nisfu Sya'ban / Purnama Kale Sepulu" },
+          { dateStr: "23 Apr", dayNum: 23, type: "adat", text: "29 Sya'ban 1441 H — Penampahan Puasa / Tilem Kale Sepulu" },
+          { dateStr: "24 Apr", dayNum: 24, type: "adat", text: "1 Ramadhan 1441 H — Awal Puasa Ramadhan & Kale Solas" }
+        ],
+        kaleBulan: "Kale Sepulu berlangsung hingga 23 April (29 Sya'ban), dilanjutkan Kale Solas bertepatan dengan masuknya bulan suci Ramadhan 1441 H pada 24 April.",
+        hariPentingNasional: [
+          { dateStr: "10 Apr", dayNum: 10, type: "nasional", text: "Wafat Isa Al Masih" }
+        ],
+        mangse: [
+          { title: "Mangse Sepulu (1 – 23 Apr)", desc: "Puncak panen padi musim hujan, warga bergotong-royong menyimpan gabah di lumbung (sambi)." },
+          { title: "Mangse Solas (24 – 30 Apr)", desc: "Awal musim kemarau, udara siang hangat dan malam mulai sejuk." }
+        ],
+        nage: {
+          U: [2, 10, 18, 26],
+          TL: [3, 11, 19, 27],
+          T: [4, 12, 20, 28],
+          TD: [5, 13, 21, 29],
+          S: [6, 14, 22, 30],
+          BD: [7, 15, 23],
+          B: [8, 16, 24],
+          BL: [1, 9, 17, 25]
+        }
+      },
+
+      // =========================================================================
+      // 5. MEI 2020
+      // =========================================================================
+      {
+        index: 4,
+        name: "MEI",
+        shortName: "Mei",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Solas – Due Olas", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Ramadhan – Syawal" },
+        wukus: ["Julungwangi", "Sungsang", "Dungulan", "Kuningan", "Langkir", "Medangsie"],
+        cells: buildMonthCells(
+          ["Julungwangi", "Sungsang", "Dungulan", "Kuningan", "Langkir", "Medangsie"],
+          [
+            // Ahad
+            [[26,"٣","Wage","Bumi",{ov:1}], [3,"١٠","Kliwon","Sringéngé",{}], [10,"١٧","Manis","Banyu",{}], [17,"٢٤","Paing","Wulan",{}], [24,"١","Pon","Lintang",{red:1}], [31,"٨","Wage","Angin",{}]],
+            // Senen
+            [[27,"٤","Kliwon","Tutup",{ov:1}], [4,"١١","Manis","Aras",{}], [11,"١٨","Paing","Ariyang",{}], [18,"٢٥","Pon","Geni",{}], [25,"٢","Wage","Bumi",{red:1}], [1,"٩","Kliwon","Sringéngé",{ov:1}]],
+            // Selase
+            [[28,"٥","Manis","Banyu",{ov:1}], [5,"١٢","Paing","Wulan",{}], [12,"١٩","Pon","Lintang",{}], [19,"٢٦","Wage","Angin",{}], [26,"٣","Kliwon","Tutup",{}], [2,"١٠","Manis","Aras",{ov:1}]],
+            // Rebo
+            [[29,"٦","Paing","Ariyang",{ov:1}], [6,"١٣","Pon","Geni",{}], [13,"٢٠","Wage","Bumi",{}], [20,"٢٧","Kliwon","Sringéngé",{adat:1}], [27,"٤","Manis","Banyu",{}], [3,"١١","Paing","Wulan",{ov:1}]],
+            // Kemis
+            [[30,"٧","Pon","Lintang",{ov:1}], [7,"١٤","Wage","Angin",{red:1}], [14,"٢١","Kliwon","Tutup",{}], [21,"٢٨","Manis","Aras",{red:1}], [28,"٥","Paing","Ariyang",{}], [4,"١٢","Pon","Geni",{ov:1}]],
+            // Jumat
+            [[1,"٨","Wage","Bumi",{red:1}], [8,"١٥","Kliwon","Sringéngé",{}], [15,"٢٢","Manis","Banyu",{}], [22,"٢٩","Paing","Wulan",{}], [29,"٦","Pon","Lintang",{}], [5,"١٣","Wage","Angin",{ov:1}]],
+            // Saptu
+            [[2,"٩","Kliwon","Tutup",{}], [9,"١٦","Manis","Aras",{}], [16,"٢٣","Paing","Ariyang",{}], [23,"٣٠","Pon","Geni",{adat:1}], [30,"٧","Wage","Bumi",{}], [6,"١٤","Kliwon","Sringéngé",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "8 Mei", dayNum: 8, type: "adat", text: "15 Ramadhan 1441 H — Purnama Kale Solas" },
+          { dateStr: "20 Mei", dayNum: 20, type: "adat", text: "27 Ramadhan 1441 H — Maleman Likuran / Qunut" },
+          { dateStr: "23 Mei", dayNum: 23, type: "adat", text: "30 Ramadhan 1441 H — Penampahan Lebaran / Tilem" },
+          { dateStr: "24–25 Mei", dayNum: 24, type: "nasional", text: "1–2 Syawal 1441 H — Idul Fitri & Awal Kale Due Olas" },
+          { dateStr: "30 Mei", dayNum: 30, type: "adat", text: "7 Syawal 1441 H — Lebaran Topat (Lombok)" }
+        ],
+        kaleBulan: "Kale Solas berlangsung sepanjang bulan Ramadhan hingga 23 Mei, lalu memasuki Kale Due Olas pada 24 Mei (1 Syawal 1441 H) yang disemarakkan tradisi Lebaran Topat pada 7 Syawal.",
+        hariPentingNasional: [
+          { dateStr: "1 Mei", dayNum: 1, type: "nasional", text: "Hari Buruh Internasional" },
+          { dateStr: "7 Mei", dayNum: 7, type: "nasional", text: "Hari Raya Waisak 2564" },
+          { dateStr: "21 Mei", dayNum: 21, type: "nasional", text: "Kenaikan Isa Al Masih" },
+          { dateStr: "24–25 Mei", dayNum: 24, type: "nasional", text: "Hari Raya Idul Fitri 1441 Hijriyah" }
+        ],
+        mangse: [
+          { title: "Mangse Solas (1 – 23 Mei)", desc: "Musim kemarau awal, tanah mulai mengering, petani menyiapkan lahan palawija." },
+          { title: "Mangse Due Olas (24 – 31 Mei)", desc: "Angin timur bertiup sejuk, suhu malam mulai dingin (musim bediding awal)." }
+        ],
+        nage: {
+          U: [8, 16, 24],
+          TL: [1, 9, 17, 25],
+          T: [2, 10, 18, 26],
+          TD: [3, 11, 19, 27],
+          S: [4, 12, 20, 28],
+          BD: [5, 13, 21, 29],
+          B: [6, 14, 22, 30],
+          BL: [7, 15, 23, 31]
+        }
+      },
+
+      // =========================================================================
+      // 6. JUNI 2020
+      // =========================================================================
+      {
+        index: 5,
+        name: "JUNI",
+        shortName: "Jun",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Due Olas – Saq", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Syawal – Dzulqa'dah" },
+        wukus: ["Medangsie", "Pujut", "Pahang", "Kuruwelut", "Merakih", "Tambir"],
+        cells: buildMonthCells(
+          ["Medangsie", "Pujut", "Pahang", "Kuruwelut", "Merakih", "Tambir"],
+          [
+            // Ahad
+            [[31,"٨","Wage","Angin",{ov:1}], [7,"١٥","Kliwon","Tutup",{}], [14,"٢٢","Manis","Aras",{}], [21,"٢٩","Paing","Ariyang",{}], [28,"٧","Pon","Geni",{}], [5,"١٤","Wage","Bumi",{ov:1}]],
+            // Senen
+            [[1,"٩","Kliwon","Sringéngé",{red:1}], [8,"١٦","Manis","Banyu",{}], [15,"٢٣","Paing","Wulan",{}], [22,"١","Pon","Lintang",{}], [29,"٨","Wage","Angin",{}], [6,"١٥","Kliwon","Tutup",{ov:1}]],
+            // Selase
+            [[2,"١٠","Manis","Aras",{}], [9,"١٧","Paing","Ariyang",{}], [16,"٢٤","Pon","Geni",{}], [23,"٢","Wage","Bumi",{}], [30,"٩","Kliwon","Sringéngé",{}], [7,"١٦","Manis","Banyu",{ov:1}]],
+            // Rebo
+            [[3,"١١","Paing","Wulan",{}], [10,"١٨","Pon","Lintang",{}], [17,"٢٥","Wage","Angin",{}], [24,"٣","Kliwon","Tutup",{}], [1,"١٠","Manis","Aras",{ov:1}], [8,"١٧","Paing","Ariyang",{ov:1}]],
+            // Kemis
+            [[4,"١٢","Pon","Geni",{}], [11,"١٩","Wage","Bumi",{}], [18,"٢٦","Kliwon","Sringéngé",{}], [25,"٤","Manis","Banyu",{}], [2,"١١","Paing","Wulan",{ov:1}], [9,"١٨","Pon","Lintang",{ov:1}]],
+            // Jumat
+            [[5,"١٣","Wage","Angin",{}], [12,"٢٠","Kliwon","Tutup",{}], [19,"٢٧","Manis","Aras",{}], [26,"٥","Paing","Ariyang",{}], [3,"١٢","Pon","Geni",{ov:1}], [10,"١٩","Wage","Bumi",{ov:1}]],
+            // Saptu
+            [[6,"١٤","Kliwon","Sringéngé",{}], [13,"٢١","Manis","Banyu",{}], [20,"٢٨","Paing","Wulan",{}], [27,"٦","Pon","Lintang",{}], [4,"١٣","Wage","Angin",{ov:1}], [11,"٢٠","Kliwon","Tutup",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "7 Jun", dayNum: 7, type: "adat", text: "15 Syawal 1441 H — Purnama Kale Due Olas" },
+          { dateStr: "21 Jun", dayNum: 21, type: "adat", text: "29 Syawal 1441 H — Tilem Kale Due Olas" },
+          { dateStr: "22 Jun", dayNum: 22, type: "adat", text: "1 Dzulqa'dah 1441 H — Awal Kale Saq (Bulan Apit)" }
+        ],
+        kaleBulan: "Kale Due Olas berakhir pada 21 Juni (29 Syawal), memasuki Kale Saq pada 22 Juni (1 Dzulqa'dah). Masyarakat Sasak menyebutnya bulan Apit.",
+        hariPentingNasional: [
+          { dateStr: "1 Jun", dayNum: 1, type: "nasional", text: "Hari Lahir Pancasila" }
+        ],
+        mangse: [
+          { title: "Mangse Due Olas (1 – 21 Jun)", desc: "Angin tenggara bertiup kencang, suhu udara dingin di malam hari." },
+          { title: "Mangse Saq (22 – 30 Jun)", desc: "Puncak dingin musim kemarau, daun-daun pepohonan mulai gugur." }
+        ],
+        nage: {
+          U: [5, 13, 21, 29],
+          TL: [6, 14, 22, 30],
+          T: [7, 15, 23],
+          TD: [8, 16, 24],
+          S: [1, 9, 17, 25],
+          BD: [2, 10, 18, 26],
+          B: [3, 11, 19, 27],
+          BL: [4, 12, 20, 28]
+        }
+      },
+
+      // =========================================================================
+      // 7. JULI 2020
+      // =========================================================================
+      {
+        index: 6,
+        name: "JULI",
+        shortName: "Jul",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Saq – Due", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 H", sub: "Dzulqa'dah – Dzulhijjah" },
+        wukus: ["Merakih", "Tambir", "Medangkungan", "Maktal", "Uye", "Menail"],
+        cells: buildMonthCells(
+          ["Merakih", "Tambir", "Medangkungan", "Maktal", "Uye", "Menail"],
+          [
+            // Ahad
+            [[28,"٧","Pon","Geni",{ov:1}], [5,"١٤","Wage","Bumi",{}], [12,"٢١","Kliwon","Sringéngé",{}], [19,"٢٨","Manis","Banyu",{}], [26,"٥","Paing","Wulan",{}], [2,"١٢","Pon","Lintang",{ov:1}]],
+            // Senen
+            [[29,"٨","Wage","Angin",{ov:1}], [6,"١٥","Kliwon","Tutup",{}], [13,"٢٢","Manis","Aras",{}], [20,"٢٩","Paing","Ariyang",{}], [27,"٦","Pon","Geni",{}], [3,"١٣","Wage","Bumi",{ov:1}]],
+            // Selase
+            [[30,"٩","Kliwon","Sringéngé",{ov:1}], [7,"١٦","Manis","Banyu",{}], [14,"٢٣","Paing","Wulan",{}], [21,"٣٠","Pon","Lintang",{}], [28,"٧","Wage","Angin",{}], [4,"١٤","Kliwon","Tutup",{ov:1}]],
+            // Rebo
+            [[1,"١٠","Manis","Aras",{}], [8,"١٧","Paing","Ariyang",{}], [15,"٢٤","Pon","Geni",{}], [22,"١","Wage","Bumi",{}], [29,"٨","Kliwon","Sringéngé",{}], [5,"١٥","Manis","Banyu",{ov:1}]],
+            // Kemis
+            [[2,"١١","Paing","Wulan",{}], [9,"١٨","Pon","Lintang",{}], [16,"٢٥","Wage","Angin",{}], [23,"٢","Kliwon","Tutup",{}], [30,"٩","Manis","Aras",{adat:1}], [6,"١٦","Paing","Ariyang",{ov:1}]],
+            // Jumat
+            [[3,"١٢","Pon","Geni",{}], [10,"١٩","Wage","Bumi",{}], [17,"٢٦","Kliwon","Sringéngé",{}], [24,"٣","Manis","Banyu",{}], [31,"١٠","Paing","Wulan",{red:1}], [7,"١٧","Pon","Lintang",{ov:1}]],
+            // Saptu
+            [[4,"١٣","Wage","Angin",{}], [11,"٢٠","Kliwon","Tutup",{}], [18,"٢٧","Manis","Aras",{}], [25,"٤","Paing","Ariyang",{}], [1,"١١","Pon","Geni",{ov:1}], [8,"١٨","Wage","Bumi",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "6 Jul", dayNum: 6, type: "adat", text: "15 Dzulqa'dah 1441 H — Purnama Kale Saq" },
+          { dateStr: "21 Jul", dayNum: 21, type: "adat", text: "30 Dzulqa'dah 1441 H — Tilem Kale Saq" },
+          { dateStr: "22 Jul", dayNum: 22, type: "adat", text: "1 Dzulhijjah 1441 H — Awal Kale Due (Bulan Haji)" },
+          { dateStr: "30 Jul", dayNum: 30, type: "adat", text: "9 Dzulhijjah 1441 H — Puasa Arafah / Penampahan Lebaran Haji" },
+          { dateStr: "31 Jul", dayNum: 31, type: "nasional", text: "10 Dzulhijjah 1441 H — Hari Raya Idul Adha (Lebaran Haji)" }
+        ],
+        kaleBulan: "Kale Saq berlangsung hingga 21 Juli (30 Dzulqa'dah), memasuki Kale Due pada 22 Juli (1 Dzulhijjah 1441 H) menuju perayaan Idul Adha pada 31 Juli.",
+        hariPentingNasional: [
+          { dateStr: "31 Jul", dayNum: 31, type: "nasional", text: "Hari Raya Idul Adha 1441 Hijriyah" }
+        ],
+        mangse: [
+          { title: "Mangse Saq (1 – 21 Jul)", desc: "Musim kemarau dingin (bediding), embun pagi sangat tebal di perbukitan Rinjani." },
+          { title: "Mangse Due (22 – 31 Jul)", desc: "Angin kering bertiup kencang, petani memanen palawija dan tembakau." }
+        ],
+        nage: {
+          U: [3, 11, 19, 27],
+          TL: [4, 12, 20, 28],
+          T: [5, 13, 21, 29],
+          TD: [6, 14, 22, 30],
+          S: [7, 15, 23, 31],
+          BD: [8, 16, 24],
+          B: [1, 9, 17, 25],
+          BL: [2, 10, 18, 26]
+        }
+      },
+
+      // =========================================================================
+      // 8. AGUSTUS 2020
+      // =========================================================================
+      {
+        index: 7,
+        name: "AGUSTUS",
+        shortName: "Agu",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Wau – Jimahir", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Due – Telu", sub: "Kale Sasak" },
+        hijriyah: { main: "1441 – 1442 H", sub: "Dzulhijjah – Muharram" },
+        wukus: ["Uye", "Menail", "Prangbakat", "Bala", "Ugu", "Wayang"],
+        cells: buildMonthCells(
+          ["Uye", "Menail", "Prangbakat", "Bala", "Ugu", "Wayang"],
+          [
+            // Ahad
+            [[26,"٥","Paing","Wulan",{ov:1}], [2,"١٢","Pon","Lintang",{}], [9,"١٩","Wage","Angin",{}], [16,"٢٦","Kliwon","Tutup",{}], [23,"٤","Manis","Aras",{}], [30,"١١","Paing","Ariyang",{}]],
+            // Senen
+            [[27,"٦","Pon","Geni",{ov:1}], [3,"١٣","Wage","Bumi",{}], [10,"٢٠","Kliwon","Sringéngé",{}], [17,"٢٧","Manis","Banyu",{red:1}], [24,"٥","Paing","Wulan",{}], [31,"١٢","Pon","Lintang",{}]],
+            // Selase
+            [[28,"٧","Wage","Angin",{ov:1}], [4,"١٤","Kliwon","Tutup",{}], [11,"٢١","Manis","Aras",{}], [18,"٢٨","Paing","Ariyang",{}], [25,"٦","Pon","Geni",{}], [1,"١٣","Wage","Bumi",{ov:1}]],
+            // Rebo
+            [[29,"٨","Kliwon","Sringéngé",{ov:1}], [5,"١٥","Manis","Banyu",{}], [12,"٢٢","Paing","Wulan",{}], [19,"٢٩","Pon","Lintang",{}], [26,"٧","Wage","Angin",{}], [2,"١٤","Kliwon","Tutup",{ov:1}]],
+            // Kemis
+            [[30,"٩","Manis","Aras",{ov:1}], [6,"١٦","Paing","Ariyang",{}], [13,"٢٣","Pon","Geni",{}], [20,"١","Wage","Bumi",{red:1}], [27,"٨","Kliwon","Sringéngé",{}], [3,"١٥","Manis","Banyu",{ov:1}]],
+            // Jumat
+            [[31,"١٠","Paing","Wulan",{ov:1}], [7,"١٧","Pon","Lintang",{}], [14,"٢٤","Wage","Angin",{}], [21,"٢","Kliwon","Tutup",{}], [28,"٩","Manis","Aras",{adat:1}], [4,"١٦","Paing","Ariyang",{ov:1}]],
+            // Saptu
+            [[1,"١١","Pon","Geni",{}], [8,"١٨","Wage","Bumi",{}], [15,"٢٥","Kliwon","Sringéngé",{}], [22,"٣","Manis","Banyu",{}], [29,"١٠","Paing","Wulan",{adat:1}], [5,"١٧","Pon","Lintang",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "5 Agu", dayNum: 5, type: "adat", text: "15 Dzulhijjah 1441 H — Purnama Kale Due" },
+          { dateStr: "19 Agu", dayNum: 19, type: "adat", text: "29 Dzulhijjah 1441 H — Tilem Kale Due & Akhir Tahun Wau" },
+          { dateStr: "20 Agu", dayNum: 20, type: "nasional", text: "1 Muharram 1442 H — Tahun Baru Islam, Tahun Jimahir & Kale Telu" },
+          { dateStr: "29 Agu", dayNum: 29, type: "adat", text: "10 Muharram 1442 H — Hari Asyura / Bubur Putih Bubur Abang" }
+        ],
+        kaleBulan: "Pergantian Tahun Sasak dari Tahun Wau menuju Tahun Jimahir pada 20 Agustus (1 Muharram 1442 H / Awal Kale Telu). Tradisi membuat Bubur Putih Bubur Abang pada 10 Muharram.",
+        hariPentingNasional: [
+          { dateStr: "17 Agu", dayNum: 17, type: "nasional", text: "Hari Kemerdekaan Republik Indonesia ke-75" },
+          { dateStr: "20 Agu", dayNum: 20, type: "nasional", text: "Tahun Baru Islam 1442 Hijriyah" }
+        ],
+        mangse: [
+          { title: "Mangse Due (1 – 19 Agu)", desc: "Puncak musim kemarau kering, mata air mengecil, petani memanen tembakau virginia." },
+          { title: "Mangse Telu (20 – 31 Agu)", desc: "Udara siang mulai terik, tanah retak-retak, pohon randu mulai berbunga." }
+        ],
+        nage: {
+          U: [8, 16, 24],
+          TL: [1, 9, 17, 25],
+          T: [2, 10, 18, 26],
+          TD: [3, 11, 19, 27],
+          S: [4, 12, 20, 28],
+          BD: [5, 13, 21, 29],
+          B: [6, 14, 22, 30],
+          BL: [7, 15, 23, 31]
+        }
+      },
+
+      // =========================================================================
+      // 9. SEPTEMBER 2020
+      // =========================================================================
+      {
+        index: 8,
+        name: "SEPTEMBER",
+        shortName: "Sep",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Jimahir", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Telu – Empat", sub: "Kale Sasak" },
+        hijriyah: { main: "1442 H", sub: "Muharram – Shafar" },
+        wukus: ["Wayang", "Kulawu", "Dukut", "Watugunung", "Sinte", "Landep"],
+        cells: buildMonthCells(
+          ["Wayang", "Kulawu", "Dukut", "Watugunung", "Sinte", "Landep"],
+          [
+            // Ahad
+            [[30,"١١","Paing","Ariyang",{ov:1}], [6,"١٨","Pon","Geni",{}], [13,"٢٥","Wage","Bumi",{}], [20,"٢","Kliwon","Sringéngé",{}], [27,"٩","Manis","Banyu",{}], [4,"١٦","Paing","Wulan",{ov:1}]],
+            // Senen
+            [[31,"١٢","Pon","Lintang",{ov:1}], [7,"١٩","Wage","Angin",{}], [14,"٢٦","Kliwon","Tutup",{}], [21,"٣","Manis","Aras",{}], [28,"١٠","Paing","Ariyang",{}], [5,"١٧","Pon","Geni",{ov:1}]],
+            // Selase
+            [[1,"١٣","Wage","Bumi",{}], [8,"٢٠","Kliwon","Sringéngé",{}], [15,"٢٧","Manis","Banyu",{}], [22,"٤","Paing","Wulan",{}], [29,"١١","Pon","Lintang",{}], [6,"١٨","Wage","Angin",{ov:1}]],
+            // Rebo
+            [[2,"١٤","Kliwon","Tutup",{}], [9,"٢١","Manis","Aras",{}], [16,"٢٨","Paing","Ariyang",{}], [23,"٥","Pon","Geni",{}], [30,"١٢","Wage","Bumi",{}], [7,"١٩","Kliwon","Sringéngé",{ov:1}]],
+            // Kemis
+            [[3,"١٥","Manis","Banyu",{}], [10,"٢٢","Paing","Wulan",{}], [17,"٢٩","Pon","Lintang",{}], [24,"٦","Wage","Angin",{}], [1,"١٣","Kliwon","Tutup",{ov:1}], [8,"٢٠","Manis","Aras",{ov:1}]],
+            // Jumat
+            [[4,"١٦","Paing","Ariyang",{}], [11,"٢٣","Pon","Geni",{}], [18,"٣٠","Wage","Bumi",{}], [25,"٧","Kliwon","Sringéngé",{}], [2,"١٤","Manis","Banyu",{ov:1}], [9,"٢١","Paing","Wulan",{ov:1}]],
+            // Saptu
+            [[5,"١٧","Pon","Geni",{}], [12,"٢٤","Wage","Bumi",{}], [19,"١","Kliwon","Sringéngé",{}], [26,"٨","Manis","Banyu",{}], [3,"١٥","Paing","Wulan",{ov:1}], [10,"٢٢","Pon","Lintang",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "3 Sep", dayNum: 3, type: "adat", text: "15 Muharram 1442 H — Purnama Kale Telu" },
+          { dateStr: "18 Sep", dayNum: 18, type: "adat", text: "30 Muharram 1442 H — Tilem Kale Telu" },
+          { dateStr: "19 Sep", dayNum: 19, type: "adat", text: "1 Shafar 1442 H — Awal Kale Empat" }
+        ],
+        kaleBulan: "Kale Telu berakhir pada 18 September (30 Muharram), dilanjutkan Kale Empat mulai 19 September (1 Shafar 1442 H). Waktu penyelenggaraan berbagai gawe adat dan pernikahan.",
+        hariPentingNasional: [
+          { dateStr: "—", dayNum: 1, type: "nasional", text: "Tidak ada Hari Libur Nasional pada bulan September 2020" }
+        ],
+        mangse: [
+          { title: "Mangse Telu (1 – 18 Sep)", desc: "Musim kemarau terik, suhu siang mencapai puncaknya." },
+          { title: "Mangse Empat (19 – 30 Sep)", desc: "Mulai muncul tanda-tanda peralihan musim (pancaroba), awan tipis mulai terlihat di puncak Rinjani." }
+        ],
+        nage: {
+          U: [5, 13, 21, 29],
+          TL: [6, 14, 22, 30],
+          T: [7, 15, 23],
+          TD: [8, 16, 24],
+          S: [1, 9, 17, 25],
+          BD: [2, 10, 18, 26],
+          B: [3, 11, 19, 27],
+          BL: [4, 12, 20, 28]
+        }
+      },
+
+      // =========================================================================
+      // 10. OKTOBER 2020
+      // =========================================================================
+      {
+        index: 9,
+        name: "OKTOBER",
+        shortName: "Okt",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Jimahir", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Empat – Lime", sub: "Kale Sasak" },
+        hijriyah: { main: "1442 H", sub: "Shafar – Rabiul Awal" },
+        wukus: ["Sinte", "Landep", "Ukir", "Kulantir", "Tolu", "Gumbreg"],
+        cells: buildMonthCells(
+          ["Sinte", "Landep", "Ukir", "Kulantir", "Tolu", "Gumbreg"],
+          [
+            // Ahad
+            [[27,"٩","Manis","Banyu",{ov:1}], [4,"١٦","Paing","Wulan",{}], [11,"٢٣","Pon","Lintang",{}], [18,"١","Wage","Angin",{}], [25,"٨","Kliwon","Tutup",{}], [1,"١٥","Manis","Aras",{ov:1}]],
+            // Senen
+            [[28,"١٠","Paing","Ariyang",{ov:1}], [5,"١٧","Pon","Geni",{}], [12,"٢٤","Wage","Bumi",{}], [19,"٢","Kliwon","Sringéngé",{}], [26,"٩","Manis","Banyu",{}], [2,"١٦","Paing","Wulan",{ov:1}]],
+            // Selase
+            [[29,"١١","Pon","Lintang",{ov:1}], [6,"١٨","Wage","Angin",{}], [13,"٢٥","Kliwon","Tutup",{}], [20,"٣","Manis","Aras",{}], [27,"١٠","Paing","Ariyang",{}], [3,"١٧","Pon","Geni",{ov:1}]],
+            // Rebo
+            [[30,"١٢","Wage","Bumi",{ov:1}], [7,"١٩","Kliwon","Sringéngé",{}], [14,"٢٦","Manis","Banyu",{}], [21,"٤","Paing","Wulan",{}], [28,"١١","Pon","Lintang",{}], [4,"١٨","Wage","Angin",{ov:1}]],
+            // Kemis
+            [[1,"١٣","Kliwon","Tutup",{}], [8,"٢٠","Manis","Aras",{}], [15,"٢٧","Paing","Ariyang",{}], [22,"٥","Pon","Geni",{}], [29,"١٢","Wage","Bumi",{red:1}], [5,"١٩","Kliwon","Sringéngé",{ov:1}]],
+            // Jumat
+            [[2,"١٤","Manis","Banyu",{}], [9,"٢١","Paing","Wulan",{}], [16,"٢٨","Pon","Lintang",{}], [23,"٦","Wage","Angin",{}], [30,"١٣","Kliwon","Tutup",{}], [6,"٢٠","Manis","Aras",{ov:1}]],
+            // Saptu
+            [[3,"١٥","Paing","Ariyang",{}], [10,"٢٢","Pon","Geni",{}], [17,"٢٩","Wage","Bumi",{}], [24,"٧","Kliwon","Sringéngé",{}], [31,"١٤","Manis","Banyu",{}], [7,"٢١","Paing","Wulan",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "3 Okt", dayNum: 3, type: "adat", text: "15 Shafar 1442 H — Purnama Kale Empat" },
+          { dateStr: "17 Okt", dayNum: 17, type: "adat", text: "29 Shafar 1442 H — Tilem Kale Empat" },
+          { dateStr: "18 Okt", dayNum: 18, type: "adat", text: "1 Rabiul Awal 1442 H — Awal Kale Lime (Bulan Mulud)" },
+          { dateStr: "29 Okt", dayNum: 29, type: "nasional", text: "12 Rabiul Awal 1442 H — Maulid Nabi Muhammad SAW" }
+        ],
+        kaleBulan: "Kale Empat berakhir pada 17 Oktober (29 Shafar), memasuki Kale Lime pada 18 Oktober (1 Rabiul Awal 1442 H) yang dikenal sebagai Bulan Mulud dengan tradisi Mulud Adat di Lombok.",
+        hariPentingNasional: [
+          { dateStr: "29 Okt", dayNum: 29, type: "nasional", text: "Maulid Nabi Muhammad SAW" }
+        ],
+        mangse: [
+          { title: "Mangse Empat (1 – 17 Okt)", desc: "Pancaroba, udara terasa gerah (sumuk), kilat mulai tampak di ufuk barat." },
+          { title: "Mangse Lime (18 – 31 Okt)", desc: "Hujan rintik pertama (ujan pemula) mulai turun, petani bersiap mengolah lahan." }
+        ],
+        nage: {
+          U: [3, 11, 19, 27],
+          TL: [4, 12, 20, 28],
+          T: [5, 13, 21, 29],
+          TD: [6, 14, 22, 30],
+          S: [7, 15, 23, 31],
+          BD: [8, 16, 24],
+          B: [1, 9, 17, 25],
+          BL: [2, 10, 18, 26]
+        }
+      },
+
+      // =========================================================================
+      // 11. NOVEMBER 2020
+      // =========================================================================
+      {
+        index: 10,
+        name: "NOVEMBER",
+        shortName: "Nov",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Jimahir", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Lime – Nem", sub: "Kale Sasak" },
+        hijriyah: { main: "1442 H", sub: "Rabiul Awal – Rabiul Akhir" },
+        wukus: ["Gumbreg", "Warige", "Warigadean", "Julungwangi", "Sungsang", "Dungulan"],
+        cells: buildMonthCells(
+          ["Gumbreg", "Warige", "Warigadean", "Julungwangi", "Sungsang", "Dungulan"],
+          [
+            // Ahad
+            [[1,"١٥","Manis","Aras",{}], [8,"٢٢","Paing","Ariyang",{}], [15,"٢٩","Pon","Geni",{}], [22,"٧","Wage","Bumi",{}], [29,"١٤","Kliwon","Sringéngé",{}], [6,"٢١","Manis","Banyu",{ov:1}]],
+            // Senen
+            [[2,"١٦","Paing","Wulan",{}], [9,"٢٣","Pon","Lintang",{}], [16,"١","Wage","Angin",{}], [23,"٨","Kliwon","Tutup",{}], [30,"١٥","Manis","Aras",{}], [7,"٢٢","Paing","Ariyang",{ov:1}]],
+            // Selase
+            [[3,"١٧","Pon","Geni",{}], [10,"٢٤","Wage","Bumi",{}], [17,"٢","Kliwon","Sringéngé",{}], [24,"٩","Manis","Banyu",{}], [1,"١٦","Paing","Wulan",{ov:1}], [8,"٢٣","Pon","Lintang",{ov:1}]],
+            // Rebo
+            [[4,"١٨","Wage","Angin",{}], [11,"٢٥","Kliwon","Tutup",{}], [18,"٣","Manis","Aras",{}], [25,"١٠","Paing","Ariyang",{}], [2,"١٧","Pon","Geni",{ov:1}], [9,"٢٤","Wage","Bumi",{ov:1}]],
+            // Kemis
+            [[5,"١٩","Kliwon","Sringéngé",{}], [12,"٢٦","Manis","Banyu",{}], [19,"٤","Paing","Wulan",{}], [26,"١١","Pon","Lintang",{}], [3,"١٨","Wage","Angin",{ov:1}], [10,"٢٥","Kliwon","Tutup",{ov:1}]],
+            // Jumat
+            [[6,"٢٠","Manis","Aras",{}], [13,"٢٧","Paing","Ariyang",{}], [20,"٥","Pon","Geni",{}], [27,"١٢","Wage","Bumi",{}], [4,"١٩","Kliwon","Sringéngé",{ov:1}], [11,"٢٦","Manis","Banyu",{ov:1}]],
+            // Saptu
+            [[7,"٢١","Paing","Wulan",{}], [14,"٢٨","Pon","Lintang",{}], [21,"٦","Wage","Angin",{}], [28,"١٣","Kliwon","Tutup",{}], [5,"٢٠","Manis","Aras",{ov:1}], [12,"٢٧","Paing","Ariyang",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "1 Nov", dayNum: 1, type: "adat", text: "15 Rabiul Awal 1442 H — Purnama Kale Lime" },
+          { dateStr: "15 Nov", dayNum: 15, type: "adat", text: "29 Rabiul Awal 1442 H — Tilem Kale Lime" },
+          { dateStr: "16 Nov", dayNum: 16, type: "adat", text: "1 Rabiul Akhir 1442 H — Awal Kale Nem" },
+          { dateStr: "30 Nov", dayNum: 30, type: "adat", text: "15 Rabiul Akhir 1442 H — Purnama Kale Nem" }
+        ],
+        kaleBulan: "Kale Lime berakhir pada 15 November (29 Rabiul Awal), memasuki Kale Nem mulai 16 November (1 Rabiul Akhir 1442 H). Musim membajak sawah dan menebar benih padi (nyebar).",
+        hariPentingNasional: [
+          { dateStr: "—", dayNum: 1, type: "nasional", text: "Tidak ada Hari Libur Nasional pada bulan November 2020" }
+        ],
+        mangse: [
+          { title: "Mangse Lime (1 – 15 Nov)", desc: "Hujan mulai turun cukup sering di sore hari, tanah mulai gembur untuk dibajak." },
+          { title: "Mangse Nem (16 – 30 Nov)", desc: "Awal musim penghujan, petani mulai menyemai benih padi (nyemai) dan menanam jagung." }
+        ],
+        nage: {
+          U: [8, 16, 24],
+          TL: [1, 9, 17, 25],
+          T: [2, 10, 18, 26],
+          TD: [3, 11, 19, 27],
+          S: [4, 12, 20, 28],
+          BD: [5, 13, 21, 29],
+          B: [6, 14, 22, 30],
+          BL: [7, 15, 23]
+        }
+      },
+
+      // =========================================================================
+      // 12. DESEMBER 2020 (100% COMPLETED WITH EXACT NAGE COMPASS NUMBERS & FOOTER)
+      // =========================================================================
+      {
+        index: 11,
+        name: "DESEMBER",
+        shortName: "Des",
+        yearMasehi: "2020",
+        tahunWindu: { main: "Jimahir", sub: "Windu Sancaya" },
+        kaleSasak: { main: "Nem – Pituq", sub: "Kale Sasak" },
+        hijriyah: { main: "1442 H", sub: "Rabiul Akhir – Jumadil Awal" },
+        wukus: ["Sungsang", "Dungulan", "Kuningan", "Langkir", "Medangsie", "Pujut"],
+        cells: buildMonthCells(
+          ["Sungsang", "Dungulan", "Kuningan", "Langkir", "Medangsie", "Pujut"],
+          [
+            // Ahad
+            [[29,"١٤","Kliwon","Sringéngé",{ov:1}], [6,"٢١","Manis","Banyu",{}], [13,"٢٨","Paing","Wulan",{}], [20,"٥","Pon","Lintang",{}], [27,"١٢","Wage","Angin",{}], [3,"١٩","Kliwon","Tutup",{ov:1}]],
+            // Senen
+            [[30,"١٥","Manis","Aras",{ov:1}], [7,"٢٢","Paing","Ariyang",{}], [14,"٢٩","Pon","Geni",{}], [21,"٦","Wage","Bumi",{}], [28,"١٣","Kliwon","Sringéngé",{}], [4,"٢٠","Manis","Banyu",{ov:1}]],
+            // Selase
+            [[1,"١٦","Paing","Wulan",{}], [8,"٢٣","Pon","Lintang",{}], [15,"٣٠","Wage","Angin",{}], [22,"٧","Kliwon","Tutup",{}], [29,"١٤","Manis","Aras",{}], [5,"٢١","Paing","Ariyang",{ov:1}]],
+            // Rebo
+            [[2,"١٧","Pon","Geni",{}], [9,"٢٤","Wage","Bumi",{}], [16,"١","Kliwon","Sringéngé",{}], [23,"٨","Manis","Banyu",{}], [30,"١٥","Paing","Wulan",{}], [6,"٢٢","Pon","Lintang",{ov:1}]],
+            // Kemis
+            [[3,"١٨","Wage","Angin",{}], [10,"٢٥","Kliwon","Tutup",{}], [17,"٢","Manis","Aras",{}], [24,"٩","Paing","Ariyang",{}], [31,"١٦","Pon","Geni",{}], [7,"٢٣","Wage","Bumi",{ov:1}]],
+            // Jumat
+            [[4,"١٩","Kliwon","Sringéngé",{}], [11,"٢٦","Manis","Banyu",{}], [18,"٣","Paing","Wulan",{}], [25,"١٠","Pon","Lintang",{red:1}], [1,"١٧","Wage","Angin",{ov:1}], [8,"٢٤","Kliwon","Tutup",{ov:1}]],
+            // Saptu
+            [[5,"٢٠","Manis","Aras",{}], [12,"٢٧","Paing","Ariyang",{}], [19,"٤","Pon","Geni",{}], [26,"١١","Wage","Bumi",{}], [2,"١٨","Kliwon","Sringéngé",{ov:1}], [9,"٢٥","Manis","Banyu",{ov:1}]]
+          ]
+        ),
+        hariPentingSasak: [
+          { dateStr: "15 Des", dayNum: 15, type: "adat", text: "30 Rabiul Akhir 1442 H — Tilem Kale Nem" },
+          { dateStr: "16 Des", dayNum: 16, type: "adat", text: "1 Jumadil Awal 1442 H — Awal Kale Pituq" },
+          { dateStr: "30 Des", dayNum: 30, type: "adat", text: "15 Jumadil Awal 1442 H — Purnama Kale Pituq" }
+        ],
+        kaleBulan: "Kale Nem berakhir pada 15 Desember (30 Rabiul Akhir), dilanjutkan Kale Pituq mulai 16 Desember (1 Jumadil Awal 1442 H). Masa tanam padi serentak (nanem) di seluruh dataran Lombok.",
+        hariPentingNasional: [
+          { dateStr: "25 Des", dayNum: 25, type: "nasional", text: "Hari Raya Natal" }
+        ],
+        mangse: [
+          { title: "Mangse Nem (1 – 15 Des)", desc: "Curah hujan meningkat merata, petani memindahkan bibit padi dari persemaian ke petak sawah." },
+          { title: "Mangse Pituq (16 – 31 Des)", desc: "Musim hujan lebat disertai angin barat, sungai dan mata air kembali melimpah." }
+        ],
+        nage: {
+          U: [10, 2, 23, 15],
+          TL: [14, 22, 1, 9],
+          T: [13, 21, 29, 8],
+          TD: [12, 4, 25, 17],
+          S: [13, 5, 26, 18],
+          BD: [19, 27, 6, 14],
+          B: [20, 28, 7],
+          BL: [11, 3, 24, 16]
+        }
+      }
+    ];
+
+    /* ========================================================================
+       APPLICATION STATE & INITIALIZATION
+       ======================================================================== */
+    const state = {
+      currentMonthIdx: 0,
+      viewMode: "single", // "single" | "all"
+      searchQuery: "",
+      pasaranFilter: "",
+      wukuFilter: "",
+      activeNageSector: null, // { monthIdx, dirKey }
+      isProgrammaticScroll: false,
+      scrollLockTimer: null
+    };
+
+    let monthObserver = null;
+
+    // DOM References
+    const calendarContainer = document.getElementById("calendarContainer");
+    const monthPillsContainer = document.getElementById("monthPillsContainer");
+    const searchInput = document.getElementById("searchInput");
+    const pasaranFilter = document.getElementById("pasaranFilter");
+    const wukuFilter = document.getElementById("wukuFilter");
+    const btnClearFilters = document.getElementById("btnClearFilters");
+    const filterStatusBar = document.getElementById("filterStatusBar");
+    const filterStatusText = document.getElementById("filterStatusText");
+    const btnJumpFirstMatch = document.getElementById("btnJumpFirstMatch");
+
+    const btnPrevMonth = document.getElementById("btnPrevMonth");
+    const btnNextMonth = document.getElementById("btnNextMonth");
+    const btnViewSingle = document.getElementById("btnViewSingle");
+    const btnViewAll = document.getElementById("btnViewAll");
+    const btnDarkMode = document.getElementById("btnDarkMode");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeLabel = document.getElementById("themeLabel");
+    const btnPrint = document.getElementById("btnPrint");
+
+    const dateModalBackdrop = document.getElementById("dateModalBackdrop");
+    const btnCloseModal = document.getElementById("btnCloseModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const modalBody = document.getElementById("modalBody");
+
+    let firstMatchedMonthIdx = null;
+
+    /* ========================================================================
+       THEME MANAGEMENT (LIGHT / DARK MODE WITH LOCALSTORAGE)
+       ======================================================================== */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      if (theme === "dark") {
+        themeIcon.innerHTML = "&#9728;";
+        themeLabel.textContent = "Terang";
+      } else {
+        themeIcon.innerHTML = "&#9790;";
+        themeLabel.textContent = "Gelap";
+      }
+      try {
+        localStorage.setItem("rowot_sasak_theme", theme);
+      } catch (e) {
+        // Ignore storage restrictions
+      }
+    }
+
+    (function initTheme() {
+      let saved = "light";
+      try {
+        saved = localStorage.getItem("rowot_sasak_theme") || "light";
+      } catch (e) {}
+      applyTheme(saved);
+    })();
+
+    btnDarkMode.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+
+    /* ========================================================================
+       POPULATE MONTH PILLS & WUKU DROPDOWN
+       ======================================================================== */
+    function scrollToMonthSheet(idx) {
+      const targetSheet = document.getElementById(`sheet-month-${idx}`);
+      if (!targetSheet) return;
+
+      // Temporarily lock scroll-spy updates so active chip does not flicker during smooth scroll
+      state.isProgrammaticScroll = true;
+      clearTimeout(state.scrollLockTimer);
+
+      const navbar = document.querySelector(".top-navbar");
+      const offset = (navbar ? navbar.offsetHeight : 96) + 12;
+      const targetTop = targetSheet.getBoundingClientRect().top + window.scrollY - offset;
+
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: "smooth"
+      });
+
+      state.scrollLockTimer = setTimeout(() => {
+        state.isProgrammaticScroll = false;
+      }, 750);
+    }
+
+    function initControls() {
+      // Month pills
+      MONTHS_DATA.forEach((m, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "month-pill" + (idx === state.currentMonthIdx ? " active" : "");
+        btn.textContent = m.shortName;
+        btn.title = `${m.name} 2020`;
+        btn.dataset.monthIdx = idx;
+        btn.addEventListener("click", () => {
+          state.currentMonthIdx = idx;
+          state.activeNageSector = null;
+          updateNavState();
+          if (state.viewMode === "single") {
+            renderCalendars(true);
+          } else {
+            scrollToMonthSheet(idx);
+          }
+        });
+        monthPillsContainer.appendChild(btn);
+      });
+
+      // Unique sorted Wukus across all 12 months
+      const wukuSet = new Set();
+      MONTHS_DATA.forEach(m => m.wukus.forEach(w => wukuSet.add(w)));
+      Array.from(wukuSet).sort().forEach(w => {
+        const opt = document.createElement("option");
+        opt.value = w;
+        opt.textContent = `Wuku: ${w}`;
+        wukuFilter.appendChild(opt);
+      });
+    }
+
+    function updateNavState() {
+      const pills = monthPillsContainer.querySelectorAll(".month-pill");
+      pills.forEach((pill, i) => {
+        pill.classList.toggle("active", i === state.currentMonthIdx);
+        if (i === state.currentMonthIdx) {
+          pill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+      });
+
+      btnViewSingle.classList.toggle("active", state.viewMode === "single");
+      btnViewAll.classList.toggle("active", state.viewMode === "all");
+    }
+
+    /* ========================================================================
+       SEARCH & FILTER MATCHING HELPERS
+       ======================================================================== */
+    function isFilterActive() {
+      return Boolean(state.searchQuery.trim() || state.pasaranFilter || state.wukuFilter);
+    }
+
+    function cellMatchesFilter(monthObj, cell) {
+      if (!isFilterActive()) return false;
+
+      if (state.pasaranFilter && cell.pasaran !== state.pasaranFilter) {
+        return false;
+      }
+
+      if (state.wukuFilter && cell.wuku !== state.wukuFilter) {
+        return false;
+      }
+
+      const q = state.searchQuery.trim().toLowerCase();
+      if (q) {
+        const relatedEvents = [
+          ...monthObj.hariPentingSasak.filter(e => !cell.overflow && e.dayNum === cell.masehi).map(e => e.text),
+          ...monthObj.hariPentingNasional.filter(e => !cell.overflow && e.dayNum === cell.masehi).map(e => e.text)
+        ].join(" ").toLowerCase();
+
+        const haystack = [
+          String(cell.masehi),
+          monthObj.name.toLowerCase(),
+          cell.pasaran.toLowerCase(),
+          cell.wuku.toLowerCase(),
+          cell.engkal.toLowerCase(),
+          cell.element.toLowerCase(),
+          cell.jeloName.toLowerCase(),
+          relatedEvents
+        ].join(" ");
+
+        if (!haystack.includes(q)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function updateFilterStatus() {
+      const active = isFilterActive();
+      btnClearFilters.style.display = active ? "inline-block" : "none";
+
+      if (!active) {
+        filterStatusBar.classList.remove("visible");
+        firstMatchedMonthIdx = null;
+        return;
+      }
+
+      let matchCount = 0;
+      firstMatchedMonthIdx = null;
+
+      MONTHS_DATA.forEach((m, mIdx) => {
+        m.cells.forEach(row => {
+          row.forEach(cell => {
+            if (!cell.overflow && cellMatchesFilter(m, cell)) {
+              matchCount++;
+              if (firstMatchedMonthIdx === null) {
+                firstMatchedMonthIdx = mIdx;
+              }
+            }
+          });
+        });
+      });
+
+      filterStatusBar.classList.add("visible");
+      if (matchCount > 0) {
+        filterStatusText.innerHTML = `Ditemukan <strong>${matchCount}</strong> tanggal yang cocok di tahun 2020 (pertama pada <strong>${MONTHS_DATA[firstMatchedMonthIdx].name} 2020</strong>).`;
+        btnJumpFirstMatch.style.display = "inline-flex";
+      } else {
+        filterStatusText.innerHTML = `Tidak ditemukan tanggal yang cocok dengan kriteria pencarian.`;
+        btnJumpFirstMatch.style.display = "none";
+      }
+    }
+
+    /* ========================================================================
+       SVG NAGE HARI COMPASS GENERATOR
+       ======================================================================== */
+    function renderNageCompassSVG(monthObj) {
+      const nage = monthObj.nage;
+      // 8 compass sectors: angle in degrees (0 = Top / Utara, clockwise)
+      const sectors = [
+        { key: "U",  angle: 0,   label: "U",  nums: nage.U },
+        { key: "TL", angle: 45,  label: "TL", nums: nage.TL },
+        { key: "T",  angle: 90,  label: "T",  nums: nage.T },
+        { key: "TD", angle: 135, label: "TD", nums: nage.TD },
+        { key: "S",  angle: 180, label: "S",  nums: nage.S },
+        { key: "BD", angle: 225, label: "BD", nums: nage.BD },
+        { key: "B",  angle: 270, label: "B",  nums: nage.B },
+        { key: "BL", angle: 315, label: "BL", nums: nage.BL }
+      ];
+
+      const cx = 140;
+      const cy = 140;
+      const outerR = 124;
+      const midR = 88;
+      const innerR = 40;
+
+      let spokesAndLabels = "";
+
+      sectors.forEach(sec => {
+        const rad = ((sec.angle - 90) * Math.PI) / 180;
+        const dividerRad = ((sec.angle - 90 - 22.5) * Math.PI) / 180;
+
+        // Divider spoke line
+        const x1 = cx + innerR * Math.cos(dividerRad);
+        const y1 = cy + innerR * Math.sin(dividerRad);
+        const x2 = cx + outerR * Math.cos(dividerRad);
+        const y2 = cy + outerR * Math.sin(dividerRad);
+
+        spokesAndLabels += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--compass-line)" stroke-width="1.2" opacity="0.65" />`;
+
+        // Direction badge position (inner ring)
+        const dirR = 60;
+        const dx = cx + dirR * Math.cos(rad);
+        const dy = cy + dirR * Math.sin(rad);
+
+        // Date numbers position (outer ring)
+        const numR = 104;
+        const nx = cx + numR * Math.cos(rad);
+        const ny = cy + numR * Math.sin(rad);
+
+        const isSelected =
+          state.activeNageSector &&
+          state.activeNageSector.monthIdx === monthObj.index &&
+          state.activeNageSector.dirKey === sec.key;
+
+        const badgeFill = isSelected ? "#10b981" : (sec.key === "U" ? "var(--red-accent)" : "var(--bg-header-dark)");
+
+        // Format numbers into 2 compact lines if 4 items
+        const numsText = sec.nums.join(", ");
+        let tspanMarkup = "";
+        if (sec.nums.length >= 4) {
+          const firstTwo = sec.nums.slice(0, 2).join(",");
+          const rest = sec.nums.slice(2).join(",");
+          tspanMarkup = `
+            <tspan x="${nx.toFixed(1)}" dy="-4">${firstTwo}</tspan>
+            <tspan x="${nx.toFixed(1)}" dy="11">${rest}</tspan>
+          `;
+        } else {
+          tspanMarkup = `<tspan x="${nx.toFixed(1)}" dy="3">${numsText}</tspan>`;
+        }
+
+        spokesAndLabels += `
+          <g class="nage-sector-group" data-month="${monthObj.index}" data-dir="${sec.key}">
+            <circle class="nage-dir-badge" cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="13" fill="${badgeFill}" />
+            <text x="${dx.toFixed(1)}" y="${(dy + 3.5).toFixed(1)}" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="9.5" font-weight="700">${sec.label}</text>
+            <text x="${nx.toFixed(1)}" y="${ny.toFixed(1)}" text-anchor="middle" fill="var(--compass-text)" font-family="Noto Serif, serif" font-size="9.5" font-weight="700">
+              ${tspanMarkup}
+            </text>
+          </g>
+        `;
+      });
+
+      return `
+        <svg class="nage-svg" viewBox="0 0 280 280" role="img" aria-label="Kompas Nage Hari Bulan ${monthObj.name} 2020">
+          <!-- Outer & Inner Concentric Circles -->
+          <circle cx="${cx}" cy="${cy}" r="${outerR}" fill="var(--compass-bg)" stroke="var(--compass-line)" stroke-width="2.2" />
+          <circle cx="${cx}" cy="${cy}" r="${midR}" fill="none" stroke="var(--compass-line)" stroke-width="1.2" stroke-dasharray="3 2" />
+          <circle cx="${cx}" cy="${cy}" r="${innerR}" fill="var(--bg-header-dark)" stroke="var(--compass-line)" stroke-width="2" />
+
+          ${spokesAndLabels}
+
+          <!-- Center Emblem -->
+          <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.06em">NAGE</text>
+          <text x="${cx}" y="${cy + 9}" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="8.5" font-weight="600" opacity="0.9">HARI</text>
+        </svg>
+      `;
+    }
+
+    /* ========================================================================
+       RENDER SINGLE MONTH SHEET
+       ======================================================================== */
+    function renderMonthSheet(monthObj, animate = false) {
+      const filterOn = isFilterActive();
+
+      // Build Wuku Header Columns
+      const wukuHeadersHTML = monthObj.wukus
+        .map(w => `<th class="wuku-th" scope="col">${w}</th>`)
+        .join("");
+
+      // Build Engkal Subheader Columns
+      const engkalHeadersHTML = ENGKAL_HEADERS
+        .map(e => `<th class="engkal-th" scope="col">${e}</th>`)
+        .join("");
+
+      // Build 7 Rows (Ahad .. Saptu)
+      const bodyRowsHTML = JELO_LIST.map((jelo, jeloIdx) => {
+        const rowCells = monthObj.cells[jeloIdx]
+          .map((cell, wukuIdx) => {
+            const classes = ["date-cell"];
+            if (cell.overflow) classes.push("overflow-cell");
+            if (cell.isNasional && !cell.overflow) classes.push("is-holiday-nasional");
+            if (cell.isAdat && !cell.overflow) classes.push("is-holiday-adat");
+
+            if (filterOn) {
+              if (!cell.overflow && cellMatchesFilter(monthObj, cell)) {
+                classes.push("search-match");
+              } else {
+                classes.push("search-dimmed");
+              }
+            }
+
+            // Nage sector highlight check
+            if (
+              state.activeNageSector &&
+              state.activeNageSector.monthIdx === monthObj.index &&
+              !cell.overflow
+            ) {
+              const targetNums = monthObj.nage[state.activeNageSector.dirKey] || [];
+              if (targetNums.includes(cell.masehi)) {
+                classes.push("nage-highlight");
+              }
+            }
+
+            const numClasses = ["cell-masehi"];
+            if (cell.overflow) {
+              numClasses.push("overflow-num");
+            } else if (cell.isNasional || jelo.isSunday) {
+              numClasses.push("red-date");
+            } else if (cell.isAdat) {
+              numClasses.push("adat-date");
+            }
+
+            const dotsHTML = !cell.overflow
+              ? `<span class="cell-event-dot">
+                  ${cell.isNasional ? '<span class="dot-nasional" title="Hari Libur Nasional"></span>' : ""}
+                  ${cell.isAdat ? '<span class="dot-adat" title="Hari Penting Adat / Islam Sasak"></span>' : ""}
+                </span>`
+              : "";
+
+            return `
+              <td
+                class="${classes.join(" ")}"
+                data-month="${monthObj.index}"
+                data-jelo="${jeloIdx}"
+                data-wuku="${wukuIdx}"
+                tabindex="0"
+                role="button"
+                aria-label="${jelo.name} ${cell.pasaran}, ${cell.masehi} ${monthObj.name} 2020, Wuku ${cell.wuku}"
+              >
+                <div class="cell-top-row">
+                  <span class="cell-element">${cell.element}</span>
+                  <span class="cell-hijri arabic">${cell.hijri}</span>
+                </div>
+                <div class="cell-center-row">
+                  <span class="${numClasses.join(" ")}">${cell.masehi}</span>
+                </div>
+                <div class="cell-bottom-row">
+                  <span class="cell-pasaran">${cell.pasaran}</span>
+                  ${dotsHTML}
+                </div>
+              </td>
+            `;
+          })
+          .join("");
+
+        return `
+          <tr class="${jelo.isSunday ? "row-ahad" : ""}">
+            <th class="jelo-cell" scope="row">
+              <span class="jelo-name">${jelo.name}</span>
+              <span class="jelo-arabic arabic">${jelo.arabic}</span>
+            </th>
+            ${rowCells}
+          </tr>
+        `;
+      }).join("");
+
+      // Hari Penting Sasak/Islam List
+      const sasakEventsHTML = monthObj.hariPentingSasak
+        .map(
+          ev => `
+          <li data-month="${monthObj.index}" data-day="${ev.dayNum}">
+            <span class="event-date-tag ${ev.type === "adat" ? "adat-tag" : ""}">${ev.dateStr}</span>
+            <span>${ev.text}</span>
+          </li>
+        `
+        )
+        .join("");
+
+      // Hari Penting Nasional List
+      const nasionalEventsHTML = monthObj.hariPentingNasional
+        .map(
+          ev => `
+          <li data-month="${monthObj.index}" data-day="${ev.dayNum}">
+            <span class="event-date-tag">${ev.dateStr}</span>
+            <span>${ev.text}</span>
+          </li>
+        `
+        )
+        .join("");
+
+      // Jelo Solah Rows
+      const jeloSolahRowsHTML = JELO_SOLAH_SHARED.map(
+        row => `
+        <tr>
+          <th>${row.wuku}</th>
+          <td>${row.desc}</td>
+        </tr>
+      `
+      ).join("");
+
+      // Mangse Items
+      const mangseHTML = monthObj.mangse
+        .map(
+          mg => `
+          <div class="mangse-item">
+            <div class="mangse-title">${mg.title}</div>
+            <div>${mg.desc}</div>
+          </div>
+        `
+        )
+        .join("");
+
+      return `
+        <article class="calendar-sheet ${animate ? "animate-in" : ""}" id="sheet-month-${monthObj.index}">
+          <!-- Top 4-Box Header -->
+          <div class="sheet-header-grid">
+            <div class="header-box">
+              <div class="header-box-label">Tahun / Windu</div>
+              <div class="header-box-value">
+                <div class="main-val">${monthObj.tahunWindu.main}</div>
+                <div class="sub-val">${monthObj.tahunWindu.sub}</div>
+              </div>
+            </div>
+
+            <div class="header-box">
+              <div class="header-box-label">Kale / Bulan Sasak</div>
+              <div class="header-box-value">
+                <div class="main-val">${monthObj.kaleSasak.main}</div>
+                <div class="sub-val">${monthObj.kaleSasak.sub}</div>
+              </div>
+            </div>
+
+            <div class="header-box">
+              <div class="header-box-label">Tahun / Bulan Hijriyah</div>
+              <div class="header-box-value">
+                <div class="main-val">${monthObj.hijriyah.main}</div>
+                <div class="sub-val">${monthObj.hijriyah.sub}</div>
+              </div>
+            </div>
+
+            <div class="header-box masehi-box">
+              <div class="header-box-label">Bulan / Tahun Masehi</div>
+              <div class="header-box-value">
+                <div class="main-val">${monthObj.name} ${monthObj.yearMasehi}</div>
+                <div class="sub-val">Kalender Rowot Sasak</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Wuku & Jelo Calendar Table -->
+          <div class="calendar-table-scroll">
+            <table class="rowot-table">
+              <thead>
+                <tr>
+                  <th class="jelo-corner-th" scope="col">Jelo / Wuku</th>
+                  ${wukuHeadersHTML}
+                </tr>
+                <tr>
+                  <th class="engkal-label-th" scope="col">Engkal &rarr;</th>
+                  ${engkalHeadersHTML}
+                </tr>
+              </thead>
+              <tbody>
+                ${bodyRowsHTML}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Legend Bar -->
+          <div class="legend-bar" style="margin-bottom: 0.85rem;">
+            <span class="legend-item"><span class="legend-swatch" style="background: var(--red-accent);"></span> Ahad &amp; Libur Nasional</span>
+            <span class="legend-item"><span class="legend-swatch" style="background: var(--adat-accent);"></span> Hari Penting Adat / Islam Sasak</span>
+            <span class="legend-item"><span class="legend-swatch" style="background: var(--bg-cell-overflow); border: 1px solid var(--border-grid);"></span> Tanggal Lintas Bulan</span>
+            <span class="legend-item" style="margin-left:auto; color: var(--text-muted); font-weight:500;">Klik kotak tanggal untuk detail lengkap</span>
+          </div>
+
+          <!-- Bottom 3-Column Cultural & Astronomical Information -->
+          <div class="bottom-info-grid">
+            <!-- Column 1: Hari Penting Sasak/Islam & Kale Bulan -->
+            <div class="info-stack">
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span>Hari Penting Sasak &amp; Islam</span>
+                </div>
+                <div class="info-card-body">
+                  <ul class="event-list">
+                    ${sasakEventsHTML}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span>Keterangan Kale Bulan</span>
+                </div>
+                <div class="info-card-body">
+                  ${monthObj.kaleBulan}
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span>Hari Penting Nasional</span>
+                </div>
+                <div class="info-card-body">
+                  <ul class="event-list">
+                    ${nasionalEventsHTML}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Jelo Solah & Mangse -->
+            <div class="info-stack">
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span>Jelo Solah (Hari Baik Berdasarkan Wuku)</span>
+                </div>
+                <div class="info-card-body" style="padding: 0;">
+                  <table class="jelo-solah-table">
+                    <tbody>
+                      ${jeloSolahRowsHTML}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span>Mangse (Pranata Musim Sasak)</span>
+                </div>
+                <div class="info-card-body">
+                  ${mangseHTML}
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 3: Nage Hari Compass -->
+            <div class="nage-column">
+              <div class="info-card nage-card">
+                <div class="info-card-header">
+                  <span>Nage Hari (${monthObj.name})</span>
+                </div>
+                <div class="info-card-body nage-container">
+                  ${renderNageCompassSVG(monthObj)}
+                  <div class="nage-hint">
+                    Klik arah mata angin (U, TL, T, TD, S, BD, B, BL) untuk menyoroti tanggal terkait pada tabel.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Traditional Attribution Footer -->
+          <footer class="sheet-footer">
+            <div>
+              <strong>Penyusun &amp; Narasumber:</strong> RONTAL (Rowot Nusantara Lombok) &bull; <strong>Affandy Murad</strong>
+            </div>
+            <div>
+              Kalender Rowot Sasak &copy; 2020 &bull; Warisan Kearifan Astronomi Tradisional Lombok
+            </div>
+          </footer>
+        </article>
+      `;
+    }
+
+    /* ========================================================================
+       MAIN RENDER ORCHESTRATOR
+       ======================================================================== */
+    function setupMonthScrollObserver() {
+      if (monthObserver) {
+        monthObserver.disconnect();
+        monthObserver = null;
+      }
+
+      if (state.viewMode !== "all") return;
+
+      const navbar = document.querySelector(".top-navbar");
+      const topOffset = (navbar ? navbar.offsetHeight : 96) + 24;
+
+      monthObserver = new IntersectionObserver(
+        entries => {
+          if (state.isProgrammaticScroll || state.viewMode !== "all") return;
+
+          // Pick the intersecting month sheet closest to the top reading band
+          let bestCandidate = null;
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const dist = Math.abs(entry.boundingClientRect.top - topOffset);
+              if (!bestCandidate || dist < bestCandidate.dist) {
+                bestCandidate = {
+                  idx: Number(entry.target.dataset.monthIndex),
+                  dist
+                };
+              }
+            }
+          });
+
+          if (bestCandidate && bestCandidate.idx !== state.currentMonthIdx) {
+            state.currentMonthIdx = bestCandidate.idx;
+            updateNavState();
+          }
+        },
+        {
+          root: null,
+          rootMargin: `-${topOffset}px 0px -55% 0px`,
+          threshold: [0, 0.15, 0.35]
+        }
+      );
+
+      calendarContainer.querySelectorAll(".calendar-sheet").forEach((sheetEl, idx) => {
+        sheetEl.dataset.monthIndex = idx;
+        monthObserver.observe(sheetEl);
+      });
+    }
+
+    function renderCalendars(animate = false) {
+      updateFilterStatus();
+
+      if (state.viewMode === "single") {
+        const monthObj = MONTHS_DATA[state.currentMonthIdx];
+        calendarContainer.innerHTML = renderMonthSheet(monthObj, animate);
+      } else {
+        calendarContainer.innerHTML = MONTHS_DATA.map(m => renderMonthSheet(m, false)).join("");
+      }
+
+      attachSheetEventListeners();
+      setupMonthScrollObserver();
+    }
+
+    /* ========================================================================
+       ATTACH INTERACTIVE EVENTS TO CELLS, NAGE COMPASS, AND EVENT LISTS
+       ======================================================================== */
+    function attachSheetEventListeners() {
+      // 1. Date cells click / Enter key
+      calendarContainer.querySelectorAll(".date-cell").forEach(td => {
+        const openHandler = () => {
+          const mIdx = Number(td.dataset.month);
+          const jIdx = Number(td.dataset.jelo);
+          const wIdx = Number(td.dataset.wuku);
+          openCellDetailModal(mIdx, jIdx, wIdx);
+        };
+        td.addEventListener("click", openHandler);
+        td.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openHandler();
+          }
+        });
+      });
+
+      // 2. Nage Compass sector click
+      calendarContainer.querySelectorAll(".nage-sector-group").forEach(g => {
+        g.addEventListener("click", () => {
+          const mIdx = Number(g.dataset.month);
+          const dirKey = g.dataset.dir;
+          if (
+            state.activeNageSector &&
+            state.activeNageSector.monthIdx === mIdx &&
+            state.activeNageSector.dirKey === dirKey
+          ) {
+            state.activeNageSector = null;
+          } else {
+            state.activeNageSector = { monthIdx: mIdx, dirKey };
+          }
+          renderCalendars(false);
+        });
+      });
+
+      // 3. Event list items click -> opens corresponding date modal
+      calendarContainer.querySelectorAll(".event-list li[data-day]").forEach(li => {
+        li.addEventListener("click", () => {
+          const mIdx = Number(li.dataset.month);
+          const dayNum = Number(li.dataset.day);
+          const monthObj = MONTHS_DATA[mIdx];
+          for (let j = 0; j < 7; j++) {
+            for (let w = 0; w < 6; w++) {
+              const c = monthObj.cells[j][w];
+              if (!c.overflow && c.masehi === dayNum) {
+                openCellDetailModal(mIdx, j, w);
+                return;
+              }
+            }
+          }
+        });
+      });
+    }
+
+    /* ========================================================================
+       INTERACTIVE CELL DETAIL MODAL
+       ======================================================================== */
+    function findNageDirectionForDate(monthObj, dayNum) {
+      for (const [dirKey, nums] of Object.entries(monthObj.nage)) {
+        if (nums.includes(dayNum)) {
+          return NAGE_DIRECTIONS[dirKey];
+        }
+      }
+      return null;
+    }
+
+    function findJeloSolahForWuku(wukuName) {
+      const found = JELO_SOLAH_SHARED.find(item =>
+        item.wuku.toLowerCase().includes(wukuName.toLowerCase())
+      );
+      return found ? found.desc : JELO_SOLAH_SHARED[0].desc;
+    }
+
+    function openCellDetailModal(monthIdx, jeloIdx, wukuIdx) {
+      const monthObj = MONTHS_DATA[monthIdx];
+      const cell = monthObj.cells[jeloIdx][wukuIdx];
+
+      const monthDisplayName = cell.overflow
+        ? `${monthObj.name} 2020 (Lintas Bulan)`
+        : `${monthObj.name} 2020`;
+
+      modalTitle.textContent = `${cell.jeloName} ${cell.pasaran}, ${cell.masehi} ${monthDisplayName}`;
+      modalSubtitle.innerHTML = `Tahun ${monthObj.tahunWindu.main} (${monthObj.tahunWindu.sub}) &bull; Kale ${monthObj.kaleSasak.main}`;
+
+      // Matching events on this date
+      const matchingEvents = [];
+      if (!cell.overflow) {
+        monthObj.hariPentingSasak.forEach(ev => {
+          if (ev.dayNum === cell.masehi) matchingEvents.push(ev);
+        });
+        monthObj.hariPentingNasional.forEach(ev => {
+          if (ev.dayNum === cell.masehi && ev.dateStr !== "—") matchingEvents.push(ev);
+        });
+      }
+
+      const eventsMarkup = matchingEvents.length
+        ? matchingEvents
+            .map(
+              ev => `
+              <div class="modal-badge-event ${ev.type === "nasional" ? "nasional" : "adat"}">
+                ${ev.text}
+              </div>
+            `
+            )
+            .join("")
+        : "";
+
+      const nageInfo = !cell.overflow ? findNageDirectionForDate(monthObj, cell.masehi) : null;
+      const jeloSolahDesc = findJeloSolahForWuku(cell.wuku);
+
+      modalBody.innerHTML = `
+        ${eventsMarkup}
+
+        <div class="modal-kpi-grid">
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Tanggal Masehi</div>
+            <div class="modal-kpi-val">${cell.jeloName}, ${cell.masehi} ${monthObj.name} 2020</div>
+          </div>
+
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Tanggal Hijriyah</div>
+            <div class="modal-kpi-val"><span class="arabic" style="font-size:1.1rem;">${cell.hijri}</span> (${monthObj.hijriyah.sub})</div>
+          </div>
+
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Pasaran &amp; Jelo</div>
+            <div class="modal-kpi-val">${cell.jeloName} (${cell.jeloArabic}) &bull; ${cell.pasaran}</div>
+          </div>
+
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Wuku &amp; Engkal</div>
+            <div class="modal-kpi-val">Wuku ${cell.wuku} &bull; ${cell.engkal}</div>
+          </div>
+
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Pepaesan / Unsur</div>
+            <div class="modal-kpi-val">${cell.element}</div>
+          </div>
+
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Nage Hari</div>
+            <div class="modal-kpi-val">${nageInfo ? nageInfo.label : "Lintas Bulan"}</div>
+          </div>
+        </div>
+
+        <div class="modal-section-box">
+          <div class="modal-section-title">Watak Jelo Solah (Wuku ${cell.wuku})</div>
+          <div>${jeloSolahDesc}</div>
+        </div>
+
+        ${
+          nageInfo
+            ? `<div class="modal-section-box">
+                <div class="modal-section-title">Petunjuk Nage Hari — ${nageInfo.label}</div>
+                <div>${nageInfo.meaning}</div>
+              </div>`
+            : ""
+        }
+
+        <div class="modal-section-box">
+          <div class="modal-section-title">Mangse Bulan ${monthObj.name}</div>
+          ${monthObj.mangse.map(m => `<div style="margin-bottom:4px;"><strong>${m.title}:</strong> ${m.desc}</div>`).join("")}
+        </div>
+      `;
+
+      dateModalBackdrop.classList.add("open");
+      btnCloseModal.focus();
+    }
+
+    function closeCellDetailModal() {
+      dateModalBackdrop.classList.remove("open");
+    }
+
+    /* ========================================================================
+       NAVIGATION, KEYBOARD SHORTCUTS & FILTER LISTENERS
+       ======================================================================== */
+    btnPrevMonth.addEventListener("click", () => {
+      state.currentMonthIdx = (state.currentMonthIdx - 1 + 12) % 12;
+      state.activeNageSector = null;
+      updateNavState();
+      if (state.viewMode === "single") {
+        renderCalendars(true);
+      } else {
+        scrollToMonthSheet(state.currentMonthIdx);
+      }
+    });
+
+    btnNextMonth.addEventListener("click", () => {
+      state.currentMonthIdx = (state.currentMonthIdx + 1) % 12;
+      state.activeNageSector = null;
+      updateNavState();
+      if (state.viewMode === "single") {
+        renderCalendars(true);
+      } else {
+        scrollToMonthSheet(state.currentMonthIdx);
+      }
+    });
+
+    btnViewSingle.addEventListener("click", () => {
+      state.viewMode = "single";
+      updateNavState();
+      renderCalendars(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    btnViewAll.addEventListener("click", () => {
+      state.viewMode = "all";
+      updateNavState();
+      renderCalendars(false);
+      if (state.currentMonthIdx > 0) {
+        scrollToMonthSheet(state.currentMonthIdx);
+      }
+    });
+
+    btnPrint.addEventListener("click", () => {
+      window.print();
+    });
+
+    searchInput.addEventListener("input", e => {
+      state.searchQuery = e.target.value;
+      renderCalendars(false);
+    });
+
+    pasaranFilter.addEventListener("change", e => {
+      state.pasaranFilter = e.target.value;
+      renderCalendars(false);
+    });
+
+    wukuFilter.addEventListener("change", e => {
+      state.wukuFilter = e.target.value;
+      renderCalendars(false);
+    });
+
+    btnClearFilters.addEventListener("click", () => {
+      state.searchQuery = "";
+      state.pasaranFilter = "";
+      state.wukuFilter = "";
+      state.activeNageSector = null;
+      searchInput.value = "";
+      pasaranFilter.value = "";
+      wukuFilter.value = "";
+      renderCalendars(false);
+    });
+
+    btnJumpFirstMatch.addEventListener("click", () => {
+      if (firstMatchedMonthIdx !== null) {
+        state.currentMonthIdx = firstMatchedMonthIdx;
+        updateNavState();
+        if (state.viewMode === "single") {
+          renderCalendars(true);
+        } else {
+          scrollToMonthSheet(firstMatchedMonthIdx);
+        }
+      }
+    });
+
+    // Modal closing
+    btnCloseModal.addEventListener("click", closeCellDetailModal);
+    dateModalBackdrop.addEventListener("click", e => {
+      if (e.target === dateModalBackdrop) {
+        closeCellDetailModal();
+      }
+    });
+
+    // Keyboard shortcuts (Escape closes modal, Left/Right arrows switch month in single view)
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && dateModalBackdrop.classList.contains("open")) {
+        closeCellDetailModal();
+        return;
+      }
+
+      if (
+        dateModalBackdrop.classList.contains("open") ||
+        document.activeElement === searchInput ||
+        document.activeElement === pasaranFilter ||
+        document.activeElement === wukuFilter
+      ) {
+        return;
+      }
+
+      if (state.viewMode === "single") {
+        if (e.key === "ArrowLeft") {
+          btnPrevMonth.click();
+        } else if (e.key === "ArrowRight") {
+          btnNextMonth.click();
+        }
+      }
+    });
+
+    // Bootstrap Application
+    initControls();
+    renderCalendars(true);
+
+    /* ========================================================================
+       DIRECT PDF DOWNLOAD (jsPDF, vector A4 portrait, one page per month)
+       ======================================================================== */
+    async function exportRowotPDF() {
+      const btn = document.getElementById("btnPdf");
+      const label = btn ? btn.querySelector(".pdf-label") : null;
+      if (!window.jspdf) {
+        if (label) { label.textContent = "Pustaka PDF belum siap"; setTimeout(() => { label.textContent = "PDF"; }, 2200); }
+        return;
+      }
+      if (btn) btn.disabled = true;
+      if (label) label.textContent = "Menyusun…";
+      await new Promise(r => setTimeout(r, 30)); // let the label repaint
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+        const W = 210, H = 297, M = 10, CW = W - 2 * M;
+        const AR = "٠١٢٣٤٥٦٧٨٩";
+        const lat = s => String(s == null ? "" : s)
+          .replace(/[٠-٩]/g, d => AR.indexOf(d))
+          .replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
+          .replace(/[^\x20-\x7E -ÿ–—•…]/g, "");
+        const C = {
+          dark: [58, 107, 166], mid: [70, 121, 180], light: [227, 236, 248],
+          even: [245, 249, 255], odd: [233, 241, 251], over: [220, 230, 244],
+          grid: [137, 170, 211], soft: [184, 205, 232],
+          ink: [19, 37, 64], sec: [46, 75, 115], muted: [90, 116, 150],
+          red: [196, 74, 69], redBg: [253, 234, 234], green: [44, 110, 73], greenBg: [230, 244, 236],
+          white: [255, 255, 255], faint: [160, 178, 204]
+        };
+        const fill = c => doc.setFillColor(c[0], c[1], c[2]);
+        const draw = c => doc.setDrawColor(c[0], c[1], c[2]);
+        const ink = c => doc.setTextColor(c[0], c[1], c[2]);
+        const font = (st, sz) => { doc.setFont("helvetica", st); doc.setFontSize(sz); };
+        const year = MONTHS_DATA[0].yearMasehi;
+
+        const wrapBlock = (x, y, w, lines, size, color, lead, limit) => {
+          font("normal", size); ink(color);
+          for (const ln of lines) {
+            const parts = doc.splitTextToSize(lat(ln), w);
+            for (const p of parts) {
+              if (y + lead > limit) return y;
+              doc.text(p, x, y);
+              y += lead;
+            }
+          }
+          return y;
+        };
+        const heading = (txt, x, y, w) => {
+          font("bold", 7.2); ink(C.white);
+          fill(C.dark); doc.roundedRect(x, y, w, 5.2, 1, 1, "F");
+          doc.text(lat(txt).toUpperCase(), x + 2, y + 3.7);
+          return y + 8;
+        };
+
+        MONTHS_DATA.forEach((m, mi) => {
+          if (mi > 0) doc.addPage();
+          const wuk = m.wukus;
+          const eng = m.engkals || ENGKAL_HEADERS;
+
+          /* --- title bar --- */
+          fill(C.dark); doc.rect(0, 0, W, 24, "F");
+          font("normal", 8); ink([214, 230, 250]);
+          doc.text("KALENDER ROWOT SASAK  •  ALMANAK TRADISIONAL SASAK, LOMBOK", M, 8);
+          font("bold", 22); ink(C.white);
+          doc.text(lat(m.name) + " " + m.yearMasehi, M, 19);
+
+          /* --- four info boxes --- */
+          const boxes = [
+            ["TAHUN / WINDU", m.tahunWindu.main, m.tahunWindu.sub],
+            ["KALE / BULAN SASAK", m.kaleSasak.main, m.kaleSasak.sub],
+            ["TAHUN / BULAN HIJRIYAH", m.hijriyah.main, m.hijriyah.sub],
+            ["BULAN / TAHUN MASEHI", m.name + " " + m.yearMasehi, "Kalender Rowot Sasak"]
+          ];
+          const gap = 2.5, bw = (CW - gap * 3) / 4;
+          boxes.forEach((b, i) => {
+            const x = M + i * (bw + gap), y = 28;
+            fill(C.even); draw(C.dark); doc.setLineWidth(0.4); doc.roundedRect(x, y, bw, 19, 1.6, 1.6, "FD");
+            fill(C.dark); doc.roundedRect(x, y, bw, 5, 1.6, 1.6, "F"); doc.rect(x, y + 2.5, bw, 2.5, "F");
+            font("bold", 5.6); ink(C.white); doc.text(b[0], x + bw / 2, y + 3.5, { align: "center" });
+            font("bold", 9); ink(C.ink);
+            const main = doc.splitTextToSize(lat(b[1]), bw - 3)[0];
+            doc.text(main, x + bw / 2, y + 11, { align: "center" });
+            font("normal", 6.2); ink(C.muted);
+            doc.text(doc.splitTextToSize(lat(b[2]), bw - 3)[0], x + bw / 2, y + 16, { align: "center" });
+          });
+
+          /* --- calendar grid --- */
+          const gx = M, gy = 51, jw = 22, cw = (CW - jw) / 6, hh = 8, eh = 5.4, rh = 21.5;
+          doc.setLineWidth(0.2); draw(C.grid);
+          fill(C.dark); doc.rect(gx, gy, jw, hh + eh, "F");
+          font("bold", 7); ink(C.white);
+          doc.text("Jelo / Wuku", gx + jw / 2, gy + 6.2, { align: "center" });
+          wuk.forEach((w, c) => {
+            const x = gx + jw + c * cw;
+            fill(C.dark); doc.rect(x, gy, cw, hh, "FD");
+            font("bold", 7.2); ink(C.white);
+            doc.text(doc.splitTextToSize(lat(w), cw - 2)[0], x + cw / 2, gy + 5.4, { align: "center" });
+            fill(C.mid); doc.rect(x, gy + hh, cw, eh, "FD");
+            font("normal", 6); ink(C.white); doc.text(lat(eng[c]), x + cw / 2, gy + hh + 3.8, { align: "center" });
+          });
+          font("italic", 5.6); ink(C.white); doc.text("Engkal", gx + jw / 2, gy + hh + 3.8, { align: "center" });
+          const by = gy + hh + eh;
+          m.cells.forEach((row, r) => {
+            const y = by + r * rh, sun = r === 0;
+            fill(sun ? C.redBg : C.light); draw(C.grid); doc.rect(gx, y, jw, rh, "FD");
+            font("bold", 9); ink(sun ? C.red : C.ink);
+            doc.text(lat(JELO_LIST[r].name), gx + jw / 2, y + rh / 2 + 1.2, { align: "center" });
+            row.forEach((cell, c) => {
+              const x = gx + jw + c * cw;
+              const bg = cell.overflow ? C.over : (cell.isNasional ? C.redBg : ((r + c) % 2 ? C.odd : C.even));
+              fill(bg); draw(C.grid); doc.rect(x, y, cw, rh, "FD");
+              const red = !cell.overflow && (sun || cell.isNasional);
+              font("bold", 16.5); ink(cell.overflow ? C.faint : (red ? C.red : C.ink));
+              doc.text(String(cell.masehi), x + 2.4, y + 9.2);
+              font("normal", 7.2); ink(cell.overflow ? C.faint : C.muted);
+              doc.text(lat(cell.hijri), x + cw - 2, y + 5, { align: "right" });
+              font("italic", 6.4); ink(cell.overflow ? C.faint : C.sec);
+              doc.text(lat(cell.element), x + 2.4, y + 14.4);
+              font("bold", 7.6); ink(cell.overflow ? C.faint : C.ink);
+              doc.text(lat(cell.pasaran), x + 2.4, y + 19.0);
+              if (!cell.overflow && cell.isAdat) { fill(C.green); doc.circle(x + cw - 3.4, y + rh - 3.6, 1.2, "F"); }
+            });
+          });
+          const gridEnd = by + 7 * rh;
+          // outer frame
+          draw(C.dark); doc.setLineWidth(0.5); doc.rect(gx, gy, CW, gridEnd - gy);
+
+          /* --- bottom: three columns --- */
+          const colW = (CW - 2 * 4) / 3, top = gridEnd + 5, limit = H - 12;
+          const x1 = M, x2 = M + colW + 4, x3 = M + 2 * (colW + 4);
+
+          let y = heading("Hari Penting Sasak / Islam", x1, top, colW);
+          const sas = m.hariPentingSasak.length ? m.hariPentingSasak.map(e => e.dateStr + " - " + e.text) : ["-"];
+          y = wrapBlock(x1 + 1, y, colW - 2, sas, 7.0, C.ink, 3.3, limit);
+          y = heading("Kale Bulan", x1, y + 1.5, colW);
+          wrapBlock(x1 + 1, y, colW - 2, [m.kaleBulan], 6.9, C.sec, 3.2, limit);
+
+          y = heading("Hari Penting Nasional", x2, top, colW);
+          const nas = m.hariPentingNasional.length ? m.hariPentingNasional.map(e => e.dateStr + " - " + e.text) : ["-"];
+          y = wrapBlock(x2 + 1, y, colW - 2, nas, 7.0, C.ink, 3.3, limit);
+          y = heading("Mangse (Musim)", x2, y + 1.5, colW);
+          m.mangse.forEach(s => {
+            y = wrapBlock(x2 + 1, y, colW - 2, [s.title], 7.0, C.ink, 3.3, limit);
+            y = wrapBlock(x2 + 1, y, colW - 2, [s.desc], 6.4, C.muted, 3.0, limit) + 1;
+          });
+
+          /* --- nage compass --- */
+          y = heading("Nage Hari", x3, top, colW);
+          const cx = x3 + colW / 2, cy = y + 21.5, R = 16.5;
+          draw(C.dark); doc.setLineWidth(0.4); fill(C.even); doc.circle(cx, cy, R + 4.5, "FD");
+          fill(C.white); doc.circle(cx, cy, R, "FD");
+          draw(C.soft); doc.setLineWidth(0.2); doc.circle(cx, cy, R * 0.55, "S");
+          const dirs = [["U", 0], ["TL", 45], ["T", 90], ["TD", 135], ["S", 180], ["BD", 225], ["B", 270], ["BL", 315]];
+          dirs.forEach(([k, deg]) => {
+            const a = deg * Math.PI / 180, sx = Math.sin(a), sy = -Math.cos(a);
+            draw(C.soft); doc.line(cx, cy, cx + sx * R, cy + sy * R);
+            font("bold", 7); ink(C.dark);
+            doc.text(k, cx + sx * (R + 2.7), cy + sy * (R + 2.7) + 1, { align: "center" });
+            const ds = (m.nage[k] || []).join(",");
+            font("bold", 5.6); ink(C.ink);
+            doc.text(ds, cx + sx * (R * 0.76), cy + sy * (R * 0.76) + 0.8, { align: "center" });
+          });
+          fill(C.dark); doc.circle(cx, cy, 1.6, "F");
+          // legend
+          let ly = cy + R + 8.2;
+          fill(C.redBg); draw(C.red); doc.setLineWidth(0.2); doc.rect(x3 + 2, ly - 2.4, 4, 3, "FD");
+          font("normal", 6.4); ink(C.ink); doc.text("Libur Nasional", x3 + 8, ly); ly += 4.4;
+          fill(C.green); doc.circle(x3 + 4, ly - 0.9, 1.15, "F");
+          doc.text("Hari Penting Adat / Islam Sasak", x3 + 8, ly); ly += 4.4;
+          fill(C.over); draw(C.grid); doc.rect(x3 + 2, ly - 2.4, 4, 3, "FD");
+          doc.text("Tanggal lintas bulan", x3 + 8, ly);
+
+          /* --- footer --- */
+          font("normal", 6.4); ink(C.muted);
+          doc.text("Kalender Rowot Sasak " + year + "  •  Warisan Kearifan Astronomi Tradisional Lombok  •  affandymurad.github.io/rowot/" + year, M, H - 6);
+          doc.text((mi + 1) + " / " + MONTHS_DATA.length, W - M, H - 6, { align: "right" });
+        });
+
+        doc.setProperties({ title: "Kalender Rowot Sasak " + year, author: "Affandy Murad", subject: "Kalender tradisional Sasak" });
+        doc.save("kalender-rowot-sasak-" + year + ".pdf");
+      } catch (err) {
+        console.error(err);
+        if (label) label.textContent = "Gagal, coba lagi";
+        setTimeout(() => { if (label) label.textContent = "PDF"; }, 2200);
+        if (btn) btn.disabled = false;
+        return;
+      }
+      if (label) label.textContent = "PDF";
+      if (btn) btn.disabled = false;
+    }
+    document.getElementById("btnPdf")?.addEventListener("click", exportRowotPDF);
+  </script>
+</body>
+</html>

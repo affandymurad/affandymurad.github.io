@@ -1410,6 +1410,61 @@
             transform: translateY(0) scale(0.97);
         }
 
+        .cp-select {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            color: var(--accent-text);
+            cursor: pointer;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        .cp-select:hover,
+        .cp-select:focus-within {
+            background: var(--bg-surface);
+            border-color: var(--accent);
+        }
+
+        .cp-select:focus-within {
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .cp-select select {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0 40px 0 42px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .cp-select select option {
+            color: #111827;
+        }
+
+        .cp-select .cp-chev {
+            margin-left: auto;
+            color: var(--text-tertiary);
+            pointer-events: none;
+        }
+
         .wa-actions {
             display: flex;
             flex-wrap: wrap;
@@ -2451,20 +2506,37 @@
                     </div>
                 </article>
 
-                <!-- 7. Pariwara -->
-                <article class="project-card" data-category="ai">
+                <!-- 7. Kalender Rowot Sasak -->
+                <article class="project-card" data-category="civic" id="rwCard">
                     <div>
                         <div class="project-head">
                             <div class="project-icon" aria-hidden="true">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg>
                             </div>
-                            <span class="project-tag">AI Marketing</span>
+                            <span class="project-tag">Cultural Heritage</span>
                         </div>
-                        <h3 class="project-title" data-i18n="p6Title">Pariwara</h3>
-                        <p class="project-desc" data-i18n="p6Desc">AI-powered advertising strategy and campaign advisor tailored for Indonesian creative economy MSMEs.</p>
+                        <h3 class="project-title" data-i18n="p4Title">Rowot Sasak Calendar</h3>
+                        <p class="project-desc" data-i18n="p4Desc">Interactive traditional Sasak calendar from Lombok, anchored on the rising of the Pleiades (Rowot): Hijri dates, the 12 mangse seasons, the 30-wuku cycle, and daily nage directions.</p>
                     </div>
-                    <div class="project-links">
-                        <a href="https://pariwara.netlify.app" class="link-chip" target="_blank" rel="noopener noreferrer">Launch App ↗</a>
+                    <div>
+                        <div class="cp-row">
+                            <label class="cp-select">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                <select id="rwYear" aria-label="Calendar year">
+                                    <option value="2020">2020</option>
+                                    <option value="2026" selected>2026</option>
+                                    <option value="2027">2027</option>
+                                </select>
+                                <svg class="cp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                            </label>
+                            <a class="wk-go cp-go" id="rwGo" href="rowot/2026/" target="_blank" rel="noopener" title="Open 2026 calendar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                                <span class="sr-only">Open calendar</span>
+                            </a>
+                        </div>
+                        <div class="wa-chips">
+                            <a class="link-chip" href="https://id.wikipedia.org/wiki/Kalender_Rowot_Sasak" target="_blank" rel="noopener noreferrer">Wikipedia ↗</a>
+                        </div>
                     </div>
                 </article>
 
@@ -2502,21 +2574,20 @@
                     </div>
                 </article>
 
-                <!-- 7. Kalender Rowot Sasak -->
-                <article class="project-card" data-category="civic">
+                <!-- 8. Pariwara (swapped with Rowot) -->
+                <article class="project-card" data-category="ai">
                     <div>
                         <div class="project-head">
                             <div class="project-icon" aria-hidden="true">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
                             </div>
-                            <span class="project-tag">Cultural Heritage</span>
+                            <span class="project-tag">AI Marketing</span>
                         </div>
-                        <h3 class="project-title" data-i18n="p4Title">Kalender Rowot Sasak</h3>
-                        <p class="project-desc" data-i18n="p4Desc">Digital preservation of traditional Sasak Wariga astronomy covering seasons, wuku cycles, and day-character interpretation.</p>
+                        <h3 class="project-title" data-i18n="p6Title">Pariwara</h3>
+                        <p class="project-desc" data-i18n="p6Desc">AI-powered advertising strategy and campaign advisor tailored for Indonesian creative economy MSMEs.</p>
                     </div>
                     <div class="project-links">
-                        <a href="2020/rowot/" class="link-chip">2020 Edition</a>
-                        <a href="2026/rowot/" class="link-chip">2026 Edition</a>
+                        <a href="https://pariwara.netlify.app" class="link-chip" target="_blank" rel="noopener noreferrer">Launch App ↗</a>
                     </div>
                 </article>
             </div>
@@ -2876,7 +2947,7 @@
                 p9Title: "World Time (300+ cities and time zones)",
                 p3Desc: "Location-based explorer surfacing nearby Wikipedia, Wikidata, Wikivoyage, Wiktionary, and OpenStreetMap entries within 3 km.",
                 p4Title: "Rowot Sasak Calendar",
-                p4Desc: "Digital preservation of traditional Sasak Wariga astronomy covering seasons, wuku cycles, and day-character interpretation.",
+                p4Desc: "Interactive traditional Sasak calendar from Lombok, anchored on the rising of the Pleiades (Rowot): Hijri dates, the 12 mangse seasons, the 30-wuku cycle, and daily nage directions.",
                 p5Title: "Retrokarir",
                 p5Desc: "In-depth AI CV analyzer and career gap advisor aligned with Indonesian competency standards (SKKNI).",
                 p6Title: "Pariwara",
@@ -2965,7 +3036,7 @@
                 p9Title: "Jam Dunia (300+ kota dan zona waktu)",
                 p3Desc: "Penjelajah berbasis lokasi untuk menemukan artikel Wikipedia, Wikidata, Wikivoyage, Wiktionary, dan OpenStreetMap dalam radius 3 km.",
                 p4Title: "Kalender Rowot Sasak",
-                p4Desc: "Pelestarian digital astronomi tradisional Wariga Sasak yang mencakup mangsa, siklus wuku, dan tafsir watak hari.",
+                p4Desc: "Kalender tradisional Sasak dari Lombok yang berpatokan pada kemunculan gugus bintang Pleiades (Rowot): tanggal Hijriah, 12 mangse (musim), siklus 30 wuku, dan arah nage harian.",
                 p5Title: "Retrokarir",
                 p5Desc: "Penganalisis CV berbasis AI mendalam dan penasihat celah karier yang selaras dengan standar kompetensi Indonesia (SKKNI).",
                 p6Title: "Pariwara",
@@ -3788,6 +3859,15 @@
                     out.appendChild(s2);
                 } catch (_) { if (my === token) out.replaceChildren(el('p', 'wa-state', T('p10Err'))); }
             });
+        })();
+
+        /* Rowot Sasak: the open button follows the selected year */
+        (function () {
+            const y = document.getElementById('rwYear'), go = document.getElementById('rwGo');
+            if (!y || !go) return;
+            const sync = () => { go.href = 'rowot/' + y.value + '/'; go.title = 'Open ' + y.value + ' calendar'; };
+            y.addEventListener('change', sync);
+            sync();
         })();
     </script>
 </body>
