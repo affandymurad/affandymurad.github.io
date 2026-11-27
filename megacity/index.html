@@ -152,14 +152,6 @@
     }
     .wl-card .wl-btn:hover { border-color: #3366cc; color: #3366cc; }
 
-    .site-links { display: inline-flex; gap: 8px; flex-wrap: wrap; }
-    .site-links a {
-      display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #a2a9b1; border-radius: 8px;
-      background: #fff; color: #202122; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap;
-    }
-    .site-links a:hover { border-color: #3366cc; color: #3366cc; }
-    .site-links svg { flex: none; }
-
     @media (max-width: 768px) {
       .mw-page-container { padding: 12px; }
       .mw-first-heading { font-size: 1.4rem; word-break: break-word; }
@@ -197,10 +189,6 @@
     </h1>
     <div class="mw-subtitle">
       <span>From Wikivoyage — the free worldwide travel guide (default radius: <strong>10 km</strong>)</span>
-      <div class="site-links">
-        <a href="https://affandymurad.github.io/2026/?country=ID" target="_blank" rel="noopener" title="Holiday calendar 2026 &ndash; 2027"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2.2"/><path d="M2 6.6h12M5.4 1.8v2.4M10.6 1.8v2.4"/></svg><span>Calendar</span></a>
-        <a href="https://time-fids.web.app/" target="_blank" rel="noopener" title="World clock"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.4V8l2.4 1.6"/></svg><span>World clock</span></a>
-      </div>
     </div>
 
     <div class="mw-parser-output" style="max-width: 1200px; margin: 0 auto;">
@@ -218,6 +206,19 @@
         </div>
       </div>
 
+
+      <!-- URL query -->
+      <div style="background: #f8f9fa; border: 1px solid #eaecf0; border-radius: 8px; padding: 12px 18px; margin: 16px 0; font-size: 13px;">
+        <strong>URL query</strong> &mdash; the address follows the map, so any view can be shared or bookmarked:
+        <code>?wiki=id.wikivoyage.org&amp;q=Jakarta&amp;lat=-6.17540&amp;lng=106.82720&amp;cat=see&amp;radius=5&amp;filter=museum&amp;tab=plan</code>
+        <ul style="margin: 6px 0 0 18px; padding: 0;">
+          <li><code>wiki</code>: data source (edition), e.g. <code>en.wikivoyage.org</code>, <code>id</code>, <code>de</code></li>
+          <li><code>q</code>, <code>lat</code>, <code>lng</code>: searched place (<code>q</code> alone is looked up by name)</li>
+          <li><code>cat</code>: <code>all</code>, <code>see</code>, <code>do</code>, <code>buy</code>, <code>eat</code>, <code>drink</code>, <code>sleep</code>, <code>go</code>, <code>info</code>, <code>embassy</code>, <code>article</code></li>
+          <li><code>radius</code>: <code>2</code>, <code>5</code> or <code>10</code> (km)</li>
+          <li><code>filter</code>: text filter; <code>tab=plan</code>: open the Trip Planner</li>
+        </ul>
+      </div>
 
       <!-- Wikilokal -->
       <div class="wl-card">
@@ -254,7 +255,7 @@
           <h3>Daftar megacity</h3>
           <p>Daftar 85 kota terbesar dan urutan peringkatnya mengikuti artikel Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Angka populasi adalah perkiraan area perkotaan dan dapat berbeda dari artikel tersebut setelah diperbarui.</p>
           <h3>Rencana perjalanan disimpan lokal</h3>
-          <p>Daftar <em>Trip Planner</em> disimpan di browser Anda (<code>localStorage</code>), terpisah untuk setiap browser dan setiap alamat wiki. Daftar ini tidak tersinkron antarperangkat dan hilang bila data situs browser dihapus. Gunakan selalu halaman <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> untuk melihat dan mengurutkan rencana Anda.</p>
+          <p>Daftar <em>Trip Planner</em> disimpan di browser Anda (<code>localStorage</code>), terpisah untuk setiap browser dan setiap alamat wiki. Daftar ini tidak tersinkron antarperangkat dan hilang bila data situs browser dihapus. Gunakan selalu halaman <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> untuk melihat dan mengurutkan rencana Anda.</p>
           <p>Jika Anda hanya ingin <strong>menambah lokasi ke rencana</strong> dari artikel Wikivoyage biasa, pasang skrip terpisah <code>Megacity-AddToPlan.js</code> (simpan di <code>User:Affandy Murad/Megacity-AddToPlan.js</code>), lalu tambahkan baris ini ke <code>common.js</code> Anda di <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Skrip menambahkan tombol <strong>+ Plan</strong> di samping setiap item (See, Do, Eat, Sleep, ...) pada artikel; klik lagi untuk menghapus. Tempat yang ditambahkan muncul di halaman Megacity di atas. Pasang di <em>en.wikivoyage.org</em> karena penyimpanannya terpisah per alamat wiki.</p>
@@ -267,7 +268,7 @@
           <h3>The megacity list</h3>
           <p>The list of the 85 largest cities and their ranking follows the Wikipedia article <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Populations are urban-area estimates and may differ from that article once it is updated.</p>
           <h3>The trip plan is stored locally</h3>
-          <p>The <em>Trip Planner</em> list is stored in your browser (<code>localStorage</code>), separately for each browser and each wiki address. It is not synced between devices and disappears if the browser's site data is cleared. Always use <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> to view and sort your plan.</p>
+          <p>The <em>Trip Planner</em> list is stored in your browser (<code>localStorage</code>), separately for each browser and each wiki address. It is not synced between devices and disappears if the browser's site data is cleared. Always use <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> to view and sort your plan.</p>
           <p>If you only want to <strong>add places to the plan</strong> from ordinary Wikivoyage articles, install the separate script <code>Megacity-AddToPlan.js</code> (save it as <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) and add this line to your <code>common.js</code> on <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>It adds a <strong>+ Plan</strong> button next to every listing (See, Do, Eat, Sleep, ...) in articles; click again to remove it. Places you add show up on the Megacity page above. Install it on <em>en.wikivoyage.org</em> because storage is separate for each wiki address.</p>
@@ -280,7 +281,7 @@
           <h3>Die Megacity-Liste</h3>
           <p>Die Liste der 85 größten Städte und ihre Rangfolge folgen dem Wikipedia-Artikel <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Die Einwohnerzahlen sind Schätzungen für den Ballungsraum und können nach einer Aktualisierung von diesem Artikel abweichen.</p>
           <h3>Die Reiseplanung wird lokal gespeichert</h3>
-          <p>Die Liste des <em>Trip Planner</em> wird in Ihrem Browser gespeichert (<code>localStorage</code>), getrennt für jeden Browser und jede Wiki-Adresse. Sie wird nicht zwischen Geräten synchronisiert und geht verloren, wenn die Website-Daten des Browsers gelöscht werden. Verwenden Sie immer <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a>, um Ihren Plan anzusehen und zu sortieren.</p>
+          <p>Die Liste des <em>Trip Planner</em> wird in Ihrem Browser gespeichert (<code>localStorage</code>), getrennt für jeden Browser und jede Wiki-Adresse. Sie wird nicht zwischen Geräten synchronisiert und geht verloren, wenn die Website-Daten des Browsers gelöscht werden. Verwenden Sie immer <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a>, um Ihren Plan anzusehen und zu sortieren.</p>
           <p>Wenn Sie nur aus gewöhnlichen Wikivoyage-Artikeln <strong>Orte zum Plan hinzufügen</strong> möchten, installieren Sie das separate Skript <code>Megacity-AddToPlan.js</code> (speichern Sie es als <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) und fügen Sie diese Zeile in Ihre <code>common.js</code> auf <em>en.wikivoyage.org</em> ein:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Es fügt in Artikeln neben jedem Eintrag (See, Do, Eat, Sleep, ...) eine Schaltfläche <strong>+ Plan</strong> hinzu; erneutes Klicken entfernt den Ort wieder. Hinzugefügte Orte erscheinen oben auf der Megacity-Seite. Installieren Sie es auf <em>en.wikivoyage.org</em>, da der Speicher für jede Wiki-Adresse getrennt ist.</p>
@@ -293,7 +294,7 @@
           <h3>La liste des mégapoles</h3>
           <p>La liste des 85 plus grandes villes et leur classement suivent l'article Wikipédia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Les populations sont des estimations pour l'agglomération et peuvent différer de cet article une fois celui-ci mis à jour.</p>
           <h3>Le plan de voyage est enregistré localement</h3>
-          <p>La liste du <em>Trip Planner</em> est enregistrée dans votre navigateur (<code>localStorage</code>), séparément pour chaque navigateur et chaque adresse de wiki. Elle n'est pas synchronisée entre vos appareils et disparaît si les données du site sont effacées. Utilisez toujours <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> pour consulter et trier votre plan.</p>
+          <p>La liste du <em>Trip Planner</em> est enregistrée dans votre navigateur (<code>localStorage</code>), séparément pour chaque navigateur et chaque adresse de wiki. Elle n'est pas synchronisée entre vos appareils et disparaît si les données du site sont effacées. Utilisez toujours <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> pour consulter et trier votre plan.</p>
           <p>Si vous souhaitez seulement <strong>ajouter des lieux au plan</strong> depuis les articles Wikivoyage ordinaires, installez le script séparé <code>Megacity-AddToPlan.js</code> (enregistrez-le sous <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) et ajoutez cette ligne à votre <code>common.js</code> sur <em>en.wikivoyage.org</em> :</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Il ajoute un bouton <strong>+ Plan</strong> à côté de chaque fiche (See, Do, Eat, Sleep, ...) des articles ; un nouveau clic la retire. Les lieux ajoutés apparaissent sur la page Megacity ci-dessus. Installez-le sur <em>en.wikivoyage.org</em>, car le stockage est séparé pour chaque adresse de wiki.</p>
@@ -306,7 +307,7 @@
           <h3>La lista de megaciudades</h3>
           <p>La lista de las 85 ciudades más grandes y su clasificación siguen el artículo de Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Las poblaciones son estimaciones del área urbana y pueden diferir de ese artículo cuando se actualice.</p>
           <h3>El plan de viaje se guarda localmente</h3>
-          <p>La lista del <em>Trip Planner</em> se guarda en su navegador (<code>localStorage</code>), por separado para cada navegador y cada dirección de wiki. No se sincroniza entre dispositivos y desaparece si se borran los datos del sitio del navegador. Use siempre <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> para ver y ordenar su plan.</p>
+          <p>La lista del <em>Trip Planner</em> se guarda en su navegador (<code>localStorage</code>), por separado para cada navegador y cada dirección de wiki. No se sincroniza entre dispositivos y desaparece si se borran los datos del sitio del navegador. Use siempre <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> para ver y ordenar su plan.</p>
           <p>Si solo quiere <strong>añadir lugares al plan</strong> desde artículos normales de Wikivoyage, instale el script independiente <code>Megacity-AddToPlan.js</code> (guárdelo como <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) y añada esta línea a su <code>common.js</code> en <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Añade un botón <strong>+ Plan</strong> junto a cada ficha (See, Do, Eat, Sleep, ...) de los artículos; haga clic de nuevo para quitarla. Los lugares añadidos aparecen en la página de Megacity de arriba. Instálelo en <em>en.wikivoyage.org</em>, porque el almacenamiento es independiente para cada dirección de wiki.</p>
@@ -319,7 +320,7 @@
           <h3>L’elenco delle megalopoli</h3>
           <p>L’elenco delle 85 città più grandi e la loro classifica seguono la voce di Wikipedia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Le popolazioni sono stime dell’area urbana e possono differire da quella voce una volta aggiornata.</p>
           <h3>Il piano di viaggio è salvato in locale</h3>
-          <p>L’elenco del <em>Trip Planner</em> è salvato nel browser (<code>localStorage</code>), separatamente per ogni browser e ogni indirizzo wiki. Non è sincronizzato tra i dispositivi e scompare se i dati del sito del browser vengono cancellati. Usate sempre <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> per vedere e ordinare il vostro piano.</p>
+          <p>L’elenco del <em>Trip Planner</em> è salvato nel browser (<code>localStorage</code>), separatamente per ogni browser e ogni indirizzo wiki. Non è sincronizzato tra i dispositivi e scompare se i dati del sito del browser vengono cancellati. Usate sempre <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> per vedere e ordinare il vostro piano.</p>
           <p>Se volete solo <strong>aggiungere luoghi al piano</strong> dalle normali voci di Wikivoyage, installate lo script separato <code>Megacity-AddToPlan.js</code> (salvatelo come <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) e aggiungete questa riga al vostro <code>common.js</code> su <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Aggiunge un pulsante <strong>+ Plan</strong> accanto a ogni scheda (See, Do, Eat, Sleep, ...) nelle voci; cliccate di nuovo per rimuoverla. I luoghi aggiunti compaiono nella pagina Megacity qui sopra. Installatelo su <em>en.wikivoyage.org</em>, perché l’archiviazione è separata per ogni indirizzo wiki.</p>
@@ -332,7 +333,7 @@
           <h3>A lista de megacidades</h3>
           <p>A lista das 85 maiores cidades e a sua classificação seguem o artigo da Wikipédia <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. As populações são estimativas da área urbana e podem diferir desse artigo depois de atualizado.</p>
           <h3>O plano de viagem é guardado localmente</h3>
-          <p>A lista do <em>Trip Planner</em> é guardada no seu navegador (<code>localStorage</code>), separadamente para cada navegador e cada endereço de wiki. Não é sincronizada entre dispositivos e desaparece se os dados do site do navegador forem apagados. Use sempre <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> para ver e ordenar o seu plano.</p>
+          <p>A lista do <em>Trip Planner</em> é guardada no seu navegador (<code>localStorage</code>), separadamente para cada navegador e cada endereço de wiki. Não é sincronizada entre dispositivos e desaparece se os dados do site do navegador forem apagados. Use sempre <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> para ver e ordenar o seu plano.</p>
           <p>Se só quiser <strong>adicionar lugares ao plano</strong> a partir de artigos comuns do Wikivoyage, instale o script separado <code>Megacity-AddToPlan.js</code> (guarde-o como <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) e adicione esta linha ao seu <code>common.js</code> em <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Adiciona um botão <strong>+ Plan</strong> ao lado de cada item (See, Do, Eat, Sleep, ...) nos artigos; clique de novo para o remover. Os lugares adicionados aparecem na página Megacity acima. Instale-o em <em>en.wikivoyage.org</em>, porque o armazenamento é separado para cada endereço de wiki.</p>
@@ -345,7 +346,7 @@
           <h3>De megastedenlijst</h3>
           <p>De lijst van de 85 grootste steden en hun rangorde volgen het Wikipedia-artikel <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. De bevolkingscijfers zijn schattingen voor het stedelijk gebied en kunnen na een update van dat artikel afwijken.</p>
           <h3>Het reisplan wordt lokaal opgeslagen</h3>
-          <p>De lijst van de <em>Trip Planner</em> wordt in uw browser opgeslagen (<code>localStorage</code>), apart voor elke browser en elk wikiadres. Ze wordt niet tussen apparaten gesynchroniseerd en verdwijnt als de sitegegevens van de browser worden gewist. Gebruik altijd <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> om uw plan te bekijken en te sorteren.</p>
+          <p>De lijst van de <em>Trip Planner</em> wordt in uw browser opgeslagen (<code>localStorage</code>), apart voor elke browser en elk wikiadres. Ze wordt niet tussen apparaten gesynchroniseerd en verdwijnt als de sitegegevens van de browser worden gewist. Gebruik altijd <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> om uw plan te bekijken en te sorteren.</p>
           <p>Als u alleen <strong>plaatsen aan het plan wilt toevoegen</strong> vanuit gewone Wikivoyage-artikelen, installeer dan het aparte script <code>Megacity-AddToPlan.js</code> (sla het op als <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) en voeg deze regel toe aan uw <code>common.js</code> op <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Het voegt in artikelen een knop <strong>+ Plan</strong> toe naast elk item (See, Do, Eat, Sleep, ...); klik nogmaals om het te verwijderen. Toegevoegde plaatsen verschijnen op de Megacity-pagina hierboven. Installeer het op <em>en.wikivoyage.org</em>, omdat de opslag voor elk wikiadres apart is.</p>
@@ -358,7 +359,7 @@
           <h3>Список мегаполисов</h3>
           <p>Список 85 крупнейших городов и их рейтинг составлены по статье Википедии <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Численность населения — оценки по городской агломерации, после обновления статьи они могут отличаться.</p>
           <h3>План поездки хранится локально</h3>
-          <p>Список <em>Trip Planner</em> хранится в вашем браузере (<code>localStorage</code>) отдельно для каждого браузера и каждого адреса вики. Он не синхронизируется между устройствами и пропадает при очистке данных сайтов в браузере. Всегда используйте <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a>, чтобы просматривать и сортировать свой план.</p>
+          <p>Список <em>Trip Planner</em> хранится в вашем браузере (<code>localStorage</code>) отдельно для каждого браузера и каждого адреса вики. Он не синхронизируется между устройствами и пропадает при очистке данных сайтов в браузере. Всегда используйте <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a>, чтобы просматривать и сортировать свой план.</p>
           <p>Если вы хотите только <strong>добавлять места в план</strong> из обычных статей Викигида, установите отдельный скрипт <code>Megacity-AddToPlan.js</code> (сохраните его как <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) и добавьте эту строку в свой <code>common.js</code> на <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Он добавляет кнопку <strong>+ Plan</strong> рядом с каждой записью (See, Do, Eat, Sleep, ...) в статьях; повторный щелчок убирает её. Добавленные места появляются на странице Megacity выше. Устанавливайте его на <em>en.wikivoyage.org</em>, так как хранилище отдельное для каждого адреса вики.</p>
@@ -371,7 +372,7 @@
           <h3>特大城市列表</h3>
           <p>85 个最大城市的列表及其排名参考维基百科条目 <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>。人口为都市圈估算值，该条目更新后可能有所不同。</p>
           <h3>行程计划保存在本地</h3>
-          <p><em>Trip Planner</em> 列表保存在您的浏览器中（<code>localStorage</code>），每个浏览器和每个维基地址各自独立。它不会在设备之间同步，清除浏览器的网站数据后会消失。请始终使用 <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> 查看和排序您的计划。</p>
+          <p><em>Trip Planner</em> 列表保存在您的浏览器中（<code>localStorage</code>），每个浏览器和每个维基地址各自独立。它不会在设备之间同步，清除浏览器的网站数据后会消失。请始终使用 <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> 查看和排序您的计划。</p>
           <p>如果您只想从普通的维基导游条目中<strong>向计划添加地点</strong>，请安装单独的脚本 <code>Megacity-AddToPlan.js</code>（保存为 <code>User:Affandy Murad/Megacity-AddToPlan.js</code>），并把下面这一行添加到您在 <em>en.wikivoyage.org</em> 的 <code>common.js</code> 中：</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>它会在条目中的每个项目（See、Do、Eat、Sleep 等）旁添加 <strong>+ Plan</strong> 按钮；再次点击即可移除。添加的地点会显示在上方的 Megacity 页面。请安装在 <em>en.wikivoyage.org</em>，因为每个维基地址的存储是相互独立的。</p>
@@ -384,7 +385,7 @@
           <h3>メガシティの一覧</h3>
           <p>85の大都市の一覧と順位は、ウィキペディアの記事 <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a> に基づいています。人口は都市圏の推定値で、記事が更新されると異なる場合があります。</p>
           <h3>旅行プランはローカルに保存されます</h3>
-          <p><em>Trip Planner</em> の一覧はお使いのブラウザ（<code>localStorage</code>）に、ブラウザごと・ウィキのアドレスごとに別々に保存されます。端末間では同期されず、ブラウザのサイトデータを消去すると失われます。プランの表示と並べ替えには、常に <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> を使ってください。</p>
+          <p><em>Trip Planner</em> の一覧はお使いのブラウザ（<code>localStorage</code>）に、ブラウザごと・ウィキのアドレスごとに別々に保存されます。端末間では同期されず、ブラウザのサイトデータを消去すると失われます。プランの表示と並べ替えには、常に <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> を使ってください。</p>
           <p>通常のウィキボヤージュの記事から<strong>プランに場所を追加</strong>するだけでよい場合は、別のスクリプト <code>Megacity-AddToPlan.js</code>（<code>User:Affandy Murad/Megacity-AddToPlan.js</code> として保存）をインストールし、<em>en.wikivoyage.org</em> のご自身の <code>common.js</code> に次の行を追加してください。</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>記事内の各項目（See、Do、Eat、Sleep など）の横に <strong>+ Plan</strong> ボタンが追加されます。もう一度クリックすると削除されます。追加した場所は上の Megacity ページに表示されます。ストレージはウィキのアドレスごとに別なので、<em>en.wikivoyage.org</em> にインストールしてください。</p>
@@ -397,7 +398,7 @@
           <h3>Listan över megastäder</h3>
           <p>Listan över de 85 största städerna och deras rangordning följer Wikipedia-artikeln <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. Folkmängderna är uppskattningar för tätorten och kan skilja sig från den artikeln när den uppdateras.</p>
           <h3>Reseplanen sparas lokalt</h3>
-          <p>Listan i <em>Trip Planner</em> sparas i din webbläsare (<code>localStorage</code>), separat för varje webbläsare och varje wikiadress. Den synkas inte mellan enheter och försvinner om webbläsarens webbplatsdata rensas. Använd alltid <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> för att se och sortera din plan.</p>
+          <p>Listan i <em>Trip Planner</em> sparas i din webbläsare (<code>localStorage</code>), separat för varje webbläsare och varje wikiadress. Den synkas inte mellan enheter och försvinner om webbläsarens webbplatsdata rensas. Använd alltid <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> för att se och sortera din plan.</p>
           <p>Om du bara vill <strong>lägga till platser i planen</strong> från vanliga Wikivoyage-artiklar, installera det separata skriptet <code>Megacity-AddToPlan.js</code> (spara det som <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) och lägg till den här raden i din <code>common.js</code> på <em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>Det lägger till en <strong>+ Plan</strong>-knapp bredvid varje post (See, Do, Eat, Sleep, ...) i artiklarna; klicka igen för att ta bort den. Platser du lägger till visas på Megacity-sidan ovan. Installera det på <em>en.wikivoyage.org</em>, eftersom lagringen är separat för varje wikiadress.</p>
@@ -410,7 +411,7 @@
           <h3>רשימת המטרופולינים</h3>
           <p>רשימת 85 הערים הגדולות ודירוגן מבוססות על הערך בוויקיפדיה <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a>. נתוני האוכלוסייה הם אומדנים לאזור העירוני ועשויים להיות שונים מהערך לאחר עדכונו.</p>
           <h3>תוכנית הטיול נשמרת מקומית</h3>
-          <p>רשימת ה-<em>Trip Planner</em> נשמרת בדפדפן שלכם (<code>localStorage</code>), בנפרד לכל דפדפן ולכל כתובת ויקי. היא אינה מסונכרנת בין מכשירים ותיעלם אם נתוני האתרים בדפדפן יימחקו. השתמשו תמיד ב-<a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> כדי לצפות בתוכנית ולמיין אותה.</p>
+          <p>רשימת ה-<em>Trip Planner</em> נשמרת בדפדפן שלכם (<code>localStorage</code>), בנפרד לכל דפדפן ולכל כתובת ויקי. היא אינה מסונכרנת בין מכשירים ותיעלם אם נתוני האתרים בדפדפן יימחקו. השתמשו תמיד ב-<a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> כדי לצפות בתוכנית ולמיין אותה.</p>
           <p>אם אתם רוצים רק <strong>להוסיף מקומות לתוכנית</strong> מערכים רגילים בוויקימסע, התקינו את הסקריפט הנפרד <code>Megacity-AddToPlan.js</code> (שמרו אותו בשם <code>User:Affandy Murad/Megacity-AddToPlan.js</code>) והוסיפו את השורה הבאה לקובץ <code>common.js</code> שלכם ב-<em>en.wikivoyage.org</em>:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>הסקריפט מוסיף כפתור <strong>+ Plan</strong> ליד כל פריט (See, Do, Eat, Sleep, ...) בערכים; לחיצה נוספת מסירה אותו. מקומות שנוספו מופיעים בדף Megacity שלמעלה. התקינו אותו ב-<em>en.wikivoyage.org</em>, כי האחסון נפרד לכל כתובת ויקי.</p>
@@ -423,7 +424,7 @@
           <h3>মেগাসিটির তালিকা</h3>
           <p>৮৫টি বৃহত্তম শহরের তালিকা ও তাদের র‍্যাঙ্কিং উইকিপিডিয়ার নিবন্ধ <a href="https://en.wikipedia.org/wiki/List_of_largest_cities" target="_blank" rel="noopener">List of largest cities</a> অনুসরণ করে। জনসংখ্যা নগর অঞ্চলের আনুমানিক হিসাব এবং নিবন্ধটি হালনাগাদ হলে তা ভিন্ন হতে পারে।</p>
           <h3>ভ্রমণ পরিকল্পনা স্থানীয়ভাবে সংরক্ষিত হয়</h3>
-          <p><em>Trip Planner</em> তালিকা আপনার ব্রাউজারে (<code>localStorage</code>) সংরক্ষিত হয়, প্রতিটি ব্রাউজার ও প্রতিটি উইকি ঠিকানার জন্য আলাদাভাবে। এটি ডিভাইসগুলোর মধ্যে সিঙ্ক হয় না এবং ব্রাউজারের সাইট ডেটা মুছলে হারিয়ে যায়। আপনার পরিকল্পনা দেখতে ও সাজাতে সবসময় <a href="https://en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity" target="_blank" rel="noopener">en.wikivoyage.org/wiki/User:Affandy_Murad/Megacity</a> ব্যবহার করুন।</p>
+          <p><em>Trip Planner</em> তালিকা আপনার ব্রাউজারে (<code>localStorage</code>) সংরক্ষিত হয়, প্রতিটি ব্রাউজার ও প্রতিটি উইকি ঠিকানার জন্য আলাদাভাবে। এটি ডিভাইসগুলোর মধ্যে সিঙ্ক হয় না এবং ব্রাউজারের সাইট ডেটা মুছলে হারিয়ে যায়। আপনার পরিকল্পনা দেখতে ও সাজাতে সবসময় <a href="https://affandymurad.github.io/megacity/" target="_blank" rel="noopener">affandymurad.github.io/megacity</a> ব্যবহার করুন।</p>
           <p>আপনি যদি শুধু সাধারণ উইকিভ্রমণ নিবন্ধ থেকে <strong>পরিকল্পনায় স্থান যোগ করতে</strong> চান, তাহলে আলাদা স্ক্রিপ্ট <code>Megacity-AddToPlan.js</code> (এটি <code>User:Affandy Murad/Megacity-AddToPlan.js</code> নামে সংরক্ষণ করুন) ইনস্টল করুন এবং <em>en.wikivoyage.org</em>-এ আপনার <code>common.js</code>-এ এই লাইনটি যোগ করুন:</p>
           <pre dir="ltr"><button type="button" class="copy">Copy</button><span class="snippet">mw.loader.load('https://en.wikivoyage.org/w/index.php?title=User:Affandy_Murad/Megacity-AddToPlan.js&amp;action=raw&amp;ctype=text/javascript');</span></pre>
           <p>এটি নিবন্ধের প্রতিটি আইটেমের (See, Do, Eat, Sleep, ...) পাশে একটি <strong>+ Plan</strong> বোতাম যোগ করে; আবার ক্লিক করলে সরে যায়। যোগ করা স্থানগুলো উপরের Megacity পাতায় দেখা যায়। এটি <em>en.wikivoyage.org</em>-এ ইনস্টল করুন, কারণ প্রতিটি উইকি ঠিকানার সংরক্ষণ আলাদা।</p>
@@ -450,6 +451,16 @@
       tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.getAttribute('data-lang')); }); });
       var sel = document.getElementById('sim-wiki-domain');
       if (sel) sel.addEventListener('change', function () { show(sel.value.split('.')[0]); });
+      // ?wiki=id (or id.wikivoyage.org) preselects the data source
+      try {
+        var qw = (new URLSearchParams(location.search).get('wiki') || '').trim().toLowerCase();
+        if (/^[a-z][a-z-]*$/.test(qw)) qw += '.wikivoyage.org';
+        if (sel && qw) {
+          for (var i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].value === qw) { sel.selectedIndex = i; show(qw.split('.')[0]); break; }
+          }
+        }
+      } catch (e) {}
       document.querySelectorAll('.mw-install .copy').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var text = btn.parentNode.querySelector('.snippet').textContent;
@@ -1347,6 +1358,8 @@
     var sel = document.getElementById('sim-wiki-domain');
     var m;
     if (sel && sel.value && (m = HOST_RE.exec(sel.value))) return m[1].toLowerCase() + '.wikivoyage.org';
+    var qw = queryWiki();
+    if (qw) return qw;
     var root = document.getElementById(ROOT_ID);
     var attr = root && root.getAttribute('data-wiki-host');
     if (attr && (m = HOST_RE.exec(attr))) return m[1].toLowerCase() + '.wikivoyage.org';
@@ -1357,6 +1370,104 @@
   function getHosts() {
     var primary = getPrimaryHost();
     return primary === CONFIG.FALLBACK_HOST ? [primary] : [primary, CONFIG.FALLBACK_HOST];
+  }
+
+  /* ------------------------------------------------------------------
+   * URL query (shareable state) and plan hand-over from Megacity-AddToPlan.js
+   *
+   *   ?wiki=id.wikivoyage.org   data source (edition; "id" also works)
+   *   ?q=Jakarta&lat=-6.17&lng=106.82   the searched place
+   *   ?cat=all|see|do|buy|eat|drink|sleep|go|info|embassy|article   category filter
+   *   ?radius=2|5|10            radius in km
+   *   ?filter=museum            text filter
+   *   ?tab=plan                 open the Trip Planner tab
+   *   #plan=...                 places sent by Megacity-AddToPlan.js (merged into the plan, then removed)
+   * ------------------------------------------------------------------ */
+
+  var urlSync = false; // the address bar follows the state only after the start-up query has been applied
+
+  function queryWiki() {
+    try {
+      var w = (new URLSearchParams(window.location.search).get('wiki') || '').trim().toLowerCase();
+      if (/^[a-z][a-z-]*$/.test(w)) w += '.wikivoyage.org';
+      var m = HOST_RE.exec(w);
+      return m ? m[1].toLowerCase() + '.wikivoyage.org' : '';
+    } catch (e) { return ''; }
+  }
+
+  function readQuery() {
+    var out = {};
+    try {
+      var sp = new URLSearchParams(window.location.search);
+      var radius = parseInt(sp.get('radius'), 10);
+      if (radius === 2 || radius === 5 || radius === 10) out.radius = radius;
+      var cat = (sp.get('cat') || '').toLowerCase();
+      if (CATEGORIES[cat]) out.cat = cat;
+      var f = (sp.get('filter') || '').trim();
+      if (f) out.filter = f.slice(0, 100);
+      var lat = parseFloat(sp.get('lat')), lng = parseFloat(sp.get('lng'));
+      if (isFinite(lat) && isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) { out.lat = lat; out.lng = lng; }
+      var q = (sp.get('q') || '').trim();
+      if (q) out.q = q.slice(0, 200);
+      var tab = (sp.get('tab') || '').toLowerCase();
+      if (tab === 'plan' || tab === 'planner') out.tab = 'planner';
+    } catch (e) {}
+    return out;
+  }
+
+  function syncUrl() {
+    if (!urlSync || !window.history || !history.replaceState) return;
+    try {
+      var sp = new URLSearchParams(window.location.search);
+      ['wiki', 'q', 'lat', 'lng', 'cat', 'radius', 'filter', 'tab'].forEach(function (k) { sp.delete(k); });
+      if (document.getElementById('sim-wiki-domain')) sp.set('wiki', getPrimaryHost());
+      if (state.center) {
+        sp.set('q', state.center.label);
+        sp.set('lat', state.center.lat.toFixed(5));
+        sp.set('lng', state.center.lng.toFixed(5));
+      }
+      if (state.activeCategory && state.activeCategory !== 'all') sp.set('cat', state.activeCategory);
+      sp.set('radius', String(state.radiusKm));
+      if (state.filterText) sp.set('filter', state.filterText);
+      if (state.activeTab === 'planner') sp.set('tab', 'plan');
+      var qs = sp.toString();
+      history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+    } catch (e) {}
+  }
+
+  // Places sent in the address (#plan=<base64url JSON>) by Megacity-AddToPlan.js are merged into the saved plan
+  function importPlanFromHash() {
+    var m = /[#&]plan=([A-Za-z0-9_-]+)/.exec(window.location.hash || '');
+    if (!m) return 0;
+    var added = 0;
+    try {
+      var b = m[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (b.length % 4) b += '=';
+      var arr = JSON.parse(decodeURIComponent(escape(atob(b))));
+      var ids = {};
+      state.tripPlan.forEach(function (x) { ids[x.id] = true; });
+      (Array.isArray(arr) ? arr : []).forEach(function (it) {
+        if (!it || !it.id || ids[it.id] || !isFinite(it.lat) || !isFinite(it.lng)) return;
+        it.name = String(it.name || it.rawName || 'Place');
+        it.rawName = it.rawName || it.name;
+        it.category = CATEGORIES[it.category] ? it.category : 'see';
+        it.approx = !!it.approx;
+        it.distanceKm = it.distanceKm || 0;
+        ['address', 'phone', 'hours', 'url', 'description', 'section', 'article', 'host'].forEach(function (k) { it[k] = it[k] || ''; });
+        state.tripPlan.push(it);
+        ids[it.id] = true;
+        added++;
+      });
+      if (added) saveTripPlan();
+    } catch (e) {}
+    try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) {}
+    return added;
+  }
+
+  function setChipActive(key) {
+    document.querySelectorAll('#wv-lb-filters .wv-lb-chip').forEach(function (c) {
+      c.classList.toggle('active', c.getAttribute('data-cat') === key);
+    });
   }
 
   function hostLang(host) {
@@ -2126,7 +2237,8 @@
   }
 
   function openMarkerPopup(marker) {
-    if (marker && marker.getPopup() && !marker.getPopup().isOpen()) marker.togglePopup();
+    if (!marker || !marker.getPopup()) return;
+    if (!marker.getPopup().isOpen()) marker.togglePopup(); // the popup's 'open' handler closes the others
   }
 
   function mapReadyForMarkers() {
@@ -2159,6 +2271,14 @@
       .setPopup(popup)
       .addTo(state.map);
     state.markers.push(marker);
+    // One popup at a time; the selected pin is drawn above pins at the same spot
+    popup.on('open', function () {
+      state.markers.forEach(function (m) {
+        var p = m.getPopup();
+        if (m !== marker && p && p.isOpen()) p.remove();
+        m.getElement().style.zIndex = m === marker ? '5' : '';
+      });
+    });
     return marker;
   }
 
@@ -2609,12 +2729,7 @@
     state.activeCategory = 'all';
     resetFilterField();
 
-    var filtersEl = document.getElementById('wv-lb-filters');
-    if (filtersEl) {
-      filtersEl.querySelectorAll('.wv-lb-chip').forEach(function (c, idx) {
-        c.classList.toggle('active', idx === 0);
-      });
-    }
+    setChipActive('all');
 
     if (state.map) {
       viewTo(CONFIG.WORLD_VIEW.lat, CONFIG.WORLD_VIEW.lng, CONFIG.WORLD_VIEW.zoom);
@@ -2622,6 +2737,7 @@
 
     setStatus('Showing the 85 largest cities in the world. Click a city to explore places within ' + state.radiusKm + ' km.', false);
     renderCurrentView();
+    syncUrl();
   }
 
   // Sticky bar above the stop list: stop count, total distance and the sort button
@@ -3012,16 +3128,18 @@
     });
   }
 
-  function executeSearchAt(lat, lng, label) {
+  // keep = true: leave the category and text filter as they are (used when the state comes from the URL query)
+  function executeSearchAt(lat, lng, label, keep) {
     state.activeTab = 'explore';
     document.querySelectorAll('#' + ROOT_ID + ' .wv-lb-tab').forEach(function (t) {
       t.classList.toggle('active', t.getAttribute('data-tab') === 'explore');
     });
 
-    resetFilterField();
-    state.activeCategory = 'all';
-    var chips = document.querySelectorAll('#wv-lb-filters .wv-lb-chip');
-    chips.forEach(function (c, idx) { c.classList.toggle('active', idx === 0); });
+    if (!keep) {
+      resetFilterField();
+      state.activeCategory = 'all';
+      setChipActive('all');
+    }
 
     setSidebarCollapsed(false);
     state.primaryHost = getHosts()[0];
@@ -3031,6 +3149,7 @@
     state.notes = [];
     fitRadius(lat, lng, state.radiusKm);
     renderCurrentView();
+    syncUrl();
 
     var token = ++state.searchToken;
     fetchNearbyListings(lat, lng, state.radiusKm, label)
@@ -3185,11 +3304,12 @@
       chip.type = 'button';
       chip.className = 'wv-lb-chip' + (key === state.activeCategory ? ' active' : '');
       chip.textContent = cat.icon + ' ' + cat.label;
+      chip.setAttribute('data-cat', key);
       chip.addEventListener('click', function () {
         state.activeCategory = key;
-        filtersEl.querySelectorAll('.wv-lb-chip').forEach(function (c) { c.classList.remove('active'); });
-        chip.classList.add('active');
+        setChipActive(key);
         renderCurrentView();
+        syncUrl();
       });
       filtersEl.appendChild(chip);
     });
@@ -3198,11 +3318,13 @@
       state.filterText = filterInput.value.trim();
       updateFilterClear();
       renderCurrentView();
+      syncUrl();
     });
 
     document.getElementById('wv-lb-filter-clear').addEventListener('click', function () {
       resetFilterField();
       renderCurrentView();
+      syncUrl();
       filterInput.focus();
     });
 
@@ -3247,9 +3369,10 @@
     document.getElementById('wv-lb-radius').addEventListener('change', function (e) {
       state.radiusKm = parseInt(e.target.value, 10) || CONFIG.DEFAULT_RADIUS_KM;
       if (state.center) {
-        executeSearchAt(state.center.lat, state.center.lng, state.center.label);
+        executeSearchAt(state.center.lat, state.center.lng, state.center.label, true);
       } else {
         setStatus('Showing the 85 largest cities in the world. Click a city to explore places within ' + state.radiusKm + ' km.', false);
+        syncUrl();
       }
     });
 
@@ -3268,6 +3391,7 @@
           setStatus('Showing the 85 largest cities in the world. Click a city to explore places within ' + state.radiusKm + ' km.', false);
         }
         renderCurrentView();
+        syncUrl();
       });
     });
 
@@ -3280,7 +3404,8 @@
     if (sim) {
       sim.addEventListener('change', function () {
         state.primaryHost = getHosts()[0];
-        if (state.center) executeSearchAt(state.center.lat, state.center.lng, state.center.label);
+        if (state.center) executeSearchAt(state.center.lat, state.center.lng, state.center.label, true);
+        else syncUrl();
       });
     }
   }
@@ -3572,10 +3697,15 @@
   function init() {
     var root = document.getElementById(ROOT_ID);
     if (!root || root.querySelector('#wv-lb-app')) return; // not a Megacity page, or already built
+    var Q = readQuery();
+    var imported = importPlanFromHash();
+    if (Q.radius) state.radiusKm = Q.radius;
     try {
       injectStyles();
       state.primaryHost = getHosts()[0];
       buildUI(root);
+      var radiusSel = document.getElementById('wv-lb-radius');
+      if (radiusSel) radiusSel.value = String(state.radiusKm);
       wireLayerControls();
       wireAddPanel();
     } catch (e) {
@@ -3586,11 +3716,51 @@
 
     // Start in default mode (list of the largest cities) right away; the map joins in when its library has loaded
     resetToDefaultState();
+
+    // Category and text filter from the query
+    if (Q.cat) { state.activeCategory = Q.cat; setChipActive(Q.cat); }
+    if (Q.filter) {
+      state.filterText = Q.filter;
+      var fi = document.getElementById('wv-lb-filter-input');
+      if (fi) fi.value = Q.filter;
+      updateFilterClear();
+    }
+
+    function applyQueryPlace() {
+      var inputEl = document.getElementById('wv-lb-search-input');
+      if (Q.lat !== undefined) {
+        var label = Q.q || (Q.lat.toFixed(4) + ', ' + Q.lng.toFixed(4));
+        if (inputEl) { inputEl.value = label; updateClearButtonVisibility(); }
+        executeSearchAt(Q.lat, Q.lng, label, true);
+      } else if (Q.q) {
+        if (inputEl) { inputEl.value = Q.q; updateClearButtonVisibility(); }
+        return searchLocation(Q.q).then(function (loc) {
+          if (loc) executeSearchAt(loc.lat, loc.lng, loc.label, true);
+          else setStatus('Location "' + Q.q + '" was not found. Try a more general city name.', false);
+        }, function (err) { setStatus('Search failed (' + err.message + ').', false); });
+      }
+    }
+
+    function finishStartup() {
+      var done = applyQueryPlace();
+      var openPlanner = function () {
+        urlSync = true;
+        if (Q.tab === 'planner' || imported) {
+          var t = document.querySelector('#' + ROOT_ID + ' .wv-lb-tab[data-tab="planner"]');
+          if (t) t.click();
+          if (imported) setStatus(imported + ' place' + (imported === 1 ? '' : 's') + ' added to your Trip Planner from Wikivoyage.', false);
+        }
+        syncUrl();
+      };
+      // wait for the place lookup so that the tab and the status are not overwritten by it
+      Promise.resolve(done).then(openPlanner, openPlanner);
+    }
+
     ensureMapLibre().then(function (ok) {
       return ok ? initMap() : mapFail('maplibre-gl failed to load (CDN blocked/offline)');
     }).then(function () {
       renderCurrentView(); // draw the pins now that the map exists
-    });
+    }).then(finishStartup, finishStartup);
   }
 
   if (window.console) console.info('[Megacity] script loaded');
