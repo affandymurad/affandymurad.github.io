@@ -1296,6 +1296,17 @@
             color: var(--accent-text);
         }
 
+        .wa-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .wa-chips .link-chip {
+            cursor: pointer;
+        }
+
         .wa-actions {
             display: flex;
             flex-wrap: wrap;
@@ -2260,6 +2271,12 @@
                             <span class="sr-only">Search</span>
                         </button>
                     </form>
+                    <div class="wa-chips" id="waChips" role="group" aria-label="ASEAN capitals">
+                        <button type="button" class="link-chip" data-q="Jakarta">Jakarta</button>
+                        <button type="button" class="link-chip" data-q="Kuala Lumpur">Kuala Lumpur</button>
+                        <button type="button" class="link-chip" data-q="Singapore" data-i18n="wtSg">Singapore</button>
+                        <button type="button" class="link-chip" data-q="Manila">Manila</button>
+                    </div>
                 </article>
 
                 <!-- 6. Pariwara -->
@@ -3407,6 +3424,12 @@
             const clr = document.getElementById('waClear');
             const syncClr = () => { clr.hidden = !i.value; };
             i.addEventListener('input', syncClr);
+            document.getElementById('waChips').addEventListener('click', e => {
+                const c = e.target.closest('[data-q]');
+                if (!c) return;
+                i.value = c.dataset.q; syncClr();
+                f.requestSubmit();
+            });
             clr.addEventListener('click', () => { i.value = ''; syncClr(); i.focus(); });
             i.addEventListener('keydown', e => { if (e.key === 'Escape' && i.value) { e.preventDefault(); i.value = ''; syncClr(); } });
             const openModal = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; dlg.focus(); };
