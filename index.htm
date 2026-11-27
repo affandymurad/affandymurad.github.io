@@ -1028,6 +1028,44 @@
             color: #FFFFFF;
         }
 
+        /* Featured calendar card: tidy header, frosted picker, aligned credit */
+        .project-card.featured .project-head {
+            justify-content: flex-start;
+        }
+
+        .project-card.featured .project-tag {
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .project-card.featured .cal-picker {
+            max-width: 460px;
+            width: 100%;
+            justify-self: end;
+            gap: 8px;
+        }
+
+        .project-card.featured .cp-btn {
+            background: rgba(255, 255, 255, 0.94);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.4);
+            color: #111827;
+        }
+
+        .project-card.featured .cp-btn .cp-chev {
+            color: #6B7280;
+        }
+
+        .project-card.featured .cp-go {
+            box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.25);
+        }
+
+        .project-card.featured .cp-credit {
+            text-align: left;
+            padding-left: 2px;
+            font-size: 0.7rem;
+        }
+
         .cp-credit {
             font-size: 0.72rem;
             color: rgba(255, 255, 255, 0.82);
@@ -1061,6 +1099,392 @@
             letter-spacing: 0.06em;
             text-transform: uppercase;
             color: var(--text-tertiary);
+        }
+
+        /* Language picker + action button (Wikikoran, Wikilokal) */
+        .cp-btn .cp-lang {
+            flex: none;
+            color: var(--accent-text);
+            opacity: 0.9;
+        }
+
+        .cp-row:has(.wk-go) .cp-btn {
+            background: var(--bg-subtle);
+            border-color: var(--border-hairline);
+        }
+
+        .wk-go.cp-go {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius-md);
+            background: var(--accent);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 4px 10px -2px rgba(0, 102, 255, 0.35);
+            transition: transform 0.18s var(--ease-spring), background-color 0.15s ease, box-shadow 0.18s ease;
+        }
+
+        .wk-go.cp-go:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 8px 16px -4px rgba(0, 102, 255, 0.45);
+        }
+
+        .wk-go.cp-go:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .wk-go.cp-go svg {
+            width: 20px;
+            height: 20px;
+            margin-left: 0;
+            transition: transform 0.18s var(--ease-spring);
+        }
+
+        .wk-go.cp-go:hover svg {
+            transform: translateX(2px);
+        }
+
+        .cp-row:has(.wk-go) .cp-btn:hover,
+        .cp-row:has(.wk-go) .cp-btn[aria-expanded="true"] {
+            background: var(--bg-surface);
+        }
+
+        /* World Time card: live readout + zone chips */
+        .wt-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .wt-readout {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            min-width: 0;
+        }
+
+        .wt-canvas {
+            display: block;
+            max-width: 100%;
+        }
+
+        .wt-date {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+        }
+
+        .wt-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .wt-chip {
+            cursor: pointer;
+        }
+
+        .wt-chip.active {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent-text);
+        }
+
+        .wt-chip.active:hover {
+            background: var(--accent);
+            color: #FFFFFF;
+        }
+
+        /* Wikiabstrak search field */
+        .wa-form {
+            margin: 0;
+        }
+
+        .wa-field {
+            flex: 1;
+            min-width: 0;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            color: var(--text-tertiary);
+            cursor: text;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        .wa-field:hover {
+            background: var(--bg-surface);
+            border-color: var(--accent);
+        }
+
+        .wa-field:focus-within {
+            background: var(--bg-surface);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .wa-input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .wa-clear {
+            flex: none;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: none;
+            background: var(--border-strong, rgba(0, 0, 0, 0.18));
+            color: var(--bg-surface);
+            cursor: pointer;
+            transition: background-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .wa-clear[hidden] {
+            display: none;
+        }
+
+        .wa-clear:hover {
+            background: var(--text-tertiary);
+        }
+
+        .wa-clear:active {
+            transform: scale(0.92);
+        }
+
+        .wa-tabs {
+            display: inline-flex;
+            gap: 4px;
+            padding: 3px;
+            border-radius: 10px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            align-self: flex-start;
+        }
+
+        .wa-tab {
+            padding: 4px 12px;
+            border-radius: 7px;
+            border: none;
+            background: transparent;
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            cursor: pointer;
+        }
+
+        .wa-tab[aria-pressed="true"] {
+            background: var(--accent-soft);
+            color: var(--accent-text);
+        }
+
+        .wa-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .wa-input::placeholder {
+            font-weight: 500;
+            color: var(--text-tertiary);
+        }
+
+        button.cp-go {
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Wikiabstrak + Wikigaleri results */
+        .wa-results {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .wa-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .wa-modal[hidden] {
+            display: none;
+        }
+
+        .wa-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 12, 24, 0.55);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            animation: waFade 0.18s ease;
+        }
+
+        .wa-dialog {
+            position: relative;
+            width: min(480px, 100%);
+            max-height: min(88vh, 720px);
+            overflow-y: auto;
+            padding: 18px;
+            border-radius: var(--radius-lg, 20px);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hairline);
+            box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.45);
+            outline: none;
+            animation: waPop 0.22s var(--ease-spring);
+        }
+
+        .wa-dialog-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .wa-dialog-head h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .wa-close {
+            flex: none;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: var(--bg-subtle);
+            color: var(--text-secondary, var(--text-tertiary));
+            border: 1px solid var(--border-hairline);
+            cursor: pointer;
+        }
+
+        .wa-close:hover {
+            background: var(--accent-soft);
+            color: var(--accent-text);
+        }
+
+        @keyframes waFade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes waPop { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+        .wa-sec {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .wa-sec-h {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .wa-item-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .wa-item-title small {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-left: 6px;
+        }
+
+        .wa-meta {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-secondary, var(--text-tertiary));
+        }
+
+        .wa-meta b {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .wa-photos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .wa-photos a {
+            display: block;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--border-hairline);
+        }
+
+        .wa-photos a {
+            position: relative;
+        }
+
+        .wa-badge {
+            position: absolute;
+            left: 6px;
+            bottom: 6px;
+            padding: 1px 6px;
+            border-radius: 6px;
+            background: rgba(8, 12, 24, 0.72);
+            color: #FFFFFF;
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .wa-photos img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s var(--ease-spring);
+        }
+
+        .wa-photos a:hover img {
+            transform: scale(1.06);
+        }
+
+        .wa-state {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+        }
+
+        .wa-load {
+            align-self: flex-start;
         }
 
         /* Fixed check slot on the right so every code lines up, selected or not */
@@ -1663,7 +2087,7 @@
                 </div>
 
                 <div class="filter-group" role="tablist" aria-label="Filter projects">
-                    <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">All (7)</button>
+                    <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">All (9)</button>
                     <button type="button" class="filter-btn" data-filter="ai" data-i18n="filterAI">AI &amp; Tools</button>
                     <button type="button" class="filter-btn" data-filter="civic" data-i18n="filterCivic">Civic &amp; Culture</button>
                 </div>
@@ -1699,8 +2123,8 @@
                                     <ul class="cp-list" id="cpList" role="listbox"></ul>
                                 </div>
                             </div>
-                            <a class="cp-go" id="cpGo" href="2026/?country=ID" title="Open Indonesia calendar 2026">
-                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.6v14.8a1 1 0 0 0 1.5.86l12-7.4a1 1 0 0 0 0-1.72l-12-7.4A1 1 0 0 0 7 4.6z"/></svg>
+                            <a class="wk-go cp-go" id="cpGo" href="2026/?country=ID" title="Open Indonesia calendar 2026" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                                 <span class="cp-go-text sr-only" id="cpGoText">Open Indonesia calendar 2026</span>
                             </a>
                         </div>
@@ -1724,6 +2148,7 @@
                         <div class="cp-row">
                             <div class="cp-combo">
                                 <button type="button" class="cp-btn" id="wkBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="wkPanel" aria-label="Interface language">
+                                    <svg class="cp-lang" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
                                     <span class="cp-label" id="wkLabel">Bahasa Indonesia</span>
                                     <svg class="cp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                                 </button>
@@ -1736,7 +2161,7 @@
                                 </div>
                             </div>
                             <a class="wk-go cp-go" id="wkGo" href="wikikoran/#id" title="Wikikoran" target="_blank" rel="noopener">
-                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.6v14.8a1 1 0 0 0 1.5.86l12-7.4a1 1 0 0 0 0-1.72l-12-7.4A1 1 0 0 0 7 4.6z"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                                 <span class="sr-only" id="wkGoText">Open Wikikoran</span>
                             </a>
                         </div>
@@ -1764,6 +2189,7 @@
                         <div class="cp-row">
                             <div class="cp-combo">
                                 <button type="button" class="cp-btn" id="wlBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="wlPanel" aria-label="Interface language">
+                                    <svg class="cp-lang" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
                                     <span class="cp-label" id="wlLabel">Bahasa Indonesia</span>
                                     <svg class="cp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                                 </button>
@@ -1776,14 +2202,67 @@
                                 </div>
                             </div>
                             <a class="wk-go cp-go" id="wlGo" href="https://wikilokal.web.app/location?ui=id&amp;wiki=en" title="Wikilokal" target="_blank" rel="noopener noreferrer">
-                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.6v14.8a1 1 0 0 0 1.5.86l12-7.4a1 1 0 0 0 0-1.72l-12-7.4A1 1 0 0 0 7 4.6z"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                                 <span class="sr-only" id="wlGoText">Open Wikilokal</span>
                             </a>
                         </div>
                     </div>
                 </article>
 
-                <!-- 4. Pariwara -->
+                <!-- 4. World Time -->
+                <article class="project-card" data-category="ai" id="wtCard">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            </div>
+                            <span class="project-tag">Time Utility</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p9Title">World Time (300+ cities and time zones)</h3>
+                    </div>
+                    <div class="wt-picker">
+                        <div class="wt-readout" aria-live="off">
+                            <canvas class="wt-canvas" id="wtCanvas" role="img" aria-label="World clock"></canvas>
+                            <span class="wt-date" id="wtDate"></span>
+                        </div>
+                        <div class="wt-chips" role="group" aria-label="Time zone">
+                            <button type="button" class="link-chip wt-chip active" data-tz="Asia/Jakarta" data-lbl="Jakarta" aria-pressed="true">Jakarta</button>
+                            <button type="button" class="link-chip wt-chip" data-tz="Asia/Singapore" data-lbl="Singapore" data-i18n="wtSg" aria-pressed="false">Singapore</button>
+                            <button type="button" class="link-chip wt-chip" data-tz="UTC" data-lbl="UTC" aria-pressed="false">UTC</button>
+                            <button type="button" class="link-chip wt-chip" data-tz="Etc/GMT+12" data-lbl="AoE" aria-pressed="false">AoE</button>
+                            <a class="link-chip wt-more" href="https://time-fids.web.app/?view=clock&amp;lang=en" target="_blank" rel="noopener noreferrer"><span data-i18n="wtMore">More</span> ↗</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 5. Wikiabstrak + Wikigaleri -->
+                <article class="project-card" data-category="civic" id="waCard">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+                            </div>
+                            <span class="project-tag">Open Knowledge</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="p10Title">Wikiabstrak &amp; Wikigaleri</h3>
+                        <p class="project-desc" data-i18n="p10Desc">Search anything: get the top Wikidata item and a few Wikimedia Commons photos, then open it in Wikiabstrak (abstracts and tools for contributing to Abstract Wikipedia) or Wikigaleri (photo gallery).</p>
+                    </div>
+                    <form class="cp-row wa-form" id="waForm" role="search" autocomplete="off">
+                        <label class="wa-field">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14"/></svg>
+                            <input type="text" id="waInput" class="wa-input" placeholder="Search anything, e.g. Jakarta" data-ph="p10Ph" spellcheck="false" aria-label="Search" maxlength="120">
+                            <button type="button" class="wa-clear" id="waClear" aria-label="Clear" title="Clear" hidden>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                            </button>
+                        </label>
+                        <button type="submit" class="wk-go cp-go" id="waGo" title="Search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                            <span class="sr-only">Search</span>
+                        </button>
+                    </form>
+                </article>
+
+                <!-- 6. Pariwara -->
                 <article class="project-card" data-category="ai">
                     <div>
                         <div class="project-head">
@@ -2124,6 +2603,19 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
     </button>
 
+    <div class="wa-modal" id="waModal" hidden>
+        <div class="wa-backdrop" data-close></div>
+        <div class="wa-dialog" role="dialog" aria-modal="true" aria-labelledby="waModalTitle" tabindex="-1">
+            <div class="wa-dialog-head">
+                <h3 id="waModalTitle">Wikiabstrak &amp; Wikigaleri</h3>
+                <button type="button" class="wa-close" data-close aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+            </div>
+            <div class="wa-results" id="waResults" aria-live="polite"></div>
+        </div>
+    </div>
+
     <script src="js/b.min.js" defer></script>
 
     <script>
@@ -2147,7 +2639,7 @@
                 factEduLabel: "Education",
                 portfolioTitle: "Portfolio",
                 portfolioLead: "Products, civic tools, and AI experiments crafted for real-world utility.",
-                filterAll: "All (7)",
+                filterAll: "All (9)",
                 filterAI: "AI & Tools",
                 filterCivic: "Civic & Culture",
                 p1Title: "Public Holiday Calendar",
@@ -2155,6 +2647,24 @@
                 p2Title: "Kurs Saldo",
                 p2Desc: "Real-time Indonesian Rupiah exchange rate aggregator paired with curated daily economic headlines.",
                 p3Title: "Wikilokal",
+                wtSg: "Singapore",
+                wtMore: "More",
+                p10Title: "Wikiabstrak & Wikigaleri",
+                p10Desc: "Search anything: get the top Wikidata item and a few Wikimedia Commons photos, then open it in Wikiabstrak (abstracts and tools for contributing to Abstract Wikipedia) or Wikigaleri (photo gallery).",
+                p10Ph: "Search anything, e.g. Jakarta",
+                p10Item: "Top item",
+                p10Photos: "360° photos from Commons",
+                p10Inst: "Instance of / Description",
+                p10LoadWa: "Load on Wikiabstrak",
+                p10LoadWg: "Load on Wikigaleri",
+                p10Pano: "360° Panorama on Wikigaleri",
+                p10All: "All",
+                p10360: "360°",
+                p10No360: "No 360° panoramas found.",
+                p10Load: "Searching…",
+                p10None: "Nothing found.",
+                p10Err: "Could not load results. Try again.",
+                p9Title: "World Time (300+ cities and time zones)",
                 p3Desc: "Location-based explorer surfacing nearby Wikipedia, Wikidata, Wikivoyage, Wiktionary, and OpenStreetMap entries within 3 km.",
                 p4Title: "Rowot Sasak Calendar",
                 p4Desc: "Digital preservation of traditional Sasak Wariga astronomy covering seasons, wuku cycles, and day-character interpretation.",
@@ -2211,7 +2721,7 @@
                 factEduLabel: "Pendidikan",
                 portfolioTitle: "Portofolio",
                 portfolioLead: "Produk digital, perangkat publik, dan eksperimen AI yang dirancang untuk kegunaan nyata.",
-                filterAll: "Semua (7)",
+                filterAll: "Semua (9)",
                 filterAI: "AI & Perangkat",
                 filterCivic: "Publik & Budaya",
                 p1Title: "Kalender Hari Libur Nasional",
@@ -2219,6 +2729,24 @@
                 p2Title: "Kurs Saldo",
                 p2Desc: "Agregator nilai tukar Rupiah real-time yang dipadukan dengan berita ekonomi harian terkurasi.",
                 p3Title: "Wikilokal",
+                wtSg: "Singapura",
+                wtMore: "Lainnya",
+                p10Title: "Wikiabstrak & Wikigaleri",
+                p10Desc: "Cari apa saja: tampilkan butir Wikidata teratas dan beberapa foto Wikimedia Commons, lalu buka di Wikiabstrak (abstrak dan alat bantu kontribusi Abstract Wikipedia) atau Wikigaleri (galeri foto).",
+                p10Ph: "Cari apa saja, mis. Jakarta",
+                p10Item: "Butir teratas",
+                p10Photos: "Foto 360° dari Commons",
+                p10Inst: "Instance of / Deskripsi",
+                p10LoadWa: "Buka di Wikiabstrak",
+                p10LoadWg: "Buka di Wikigaleri",
+                p10Pano: "Panorama 360° di Wikigaleri",
+                p10All: "Semua",
+                p10360: "360°",
+                p10No360: "Panorama 360° tidak ditemukan.",
+                p10Load: "Mencari…",
+                p10None: "Tidak ditemukan.",
+                p10Err: "Gagal memuat hasil. Coba lagi.",
+                p9Title: "Jam Dunia (300+ kota dan zona waktu)",
                 p3Desc: "Penjelajah berbasis lokasi untuk menemukan artikel Wikipedia, Wikidata, Wikivoyage, Wiktionary, dan OpenStreetMap dalam radius 3 km.",
                 p4Title: "Kalender Rowot Sasak",
                 p4Desc: "Pelestarian digital astronomi tradisional Wariga Sasak yang mencakup mangsa, siklus wuku, dan tafsir watak hari.",
@@ -2311,6 +2839,10 @@
                 currentLang = lang;
                 html.lang = lang.toLowerCase();
 
+                document.querySelectorAll("[data-ph]").forEach(el => {
+                    const v = dict[el.getAttribute("data-ph")];
+                    if (v) el.placeholder = v;
+                });
                 document.querySelectorAll("[data-i18n]").forEach(el => {
                     const key = el.getAttribute("data-i18n");
                     if (dict[key]) {
@@ -2774,6 +3306,176 @@
             });
             /* Wikilokal: only the ui= parameter changes; title and description stay as they are */
             picker('wl', 'wikilokalLang', c => 'https://wikilokal.web.app/location?ui=' + encodeURIComponent(c) + '&wiki=en', (w) => 'Open Wikilokal · ' + w[1]);
+        })();
+
+        /* World Time card: dot-matrix clock (5x7 font on canvas) with FIDS-style scramble when a cell changes */
+        (function () {
+            const card = document.getElementById('wtCard');
+            if (!card) return;
+            const cv = document.getElementById('wtCanvas'), dEl = document.getElementById('wtDate'), ctx = cv.getContext('2d');
+            const F = {
+                '0':[14,17,19,21,25,17,14],'1':[4,12,4,4,4,4,14],'2':[14,17,1,2,4,8,31],'3':[30,1,1,14,1,1,30],'4':[2,6,10,18,31,2,2],'5':[31,16,30,1,1,17,14],'6':[6,8,16,30,17,17,14],'7':[31,1,2,4,8,8,8],'8':[14,17,17,14,17,17,14],'9':[14,17,17,15,1,2,12],
+                ':':[0,4,4,0,4,4,0],' ':[0,0,0,0,0,0,0],'-':[0,0,0,31,0,0,0],
+                A:[14,17,17,31,17,17,17],B:[30,17,17,30,17,17,30],C:[14,17,16,16,16,17,14],D:[30,17,17,17,17,17,30],E:[31,16,16,30,16,16,31],F:[31,16,16,30,16,16,16],G:[14,17,16,23,17,17,15],H:[17,17,17,31,17,17,17],I:[14,4,4,4,4,4,14],J:[7,2,2,2,2,18,12],K:[17,18,20,24,20,18,17],L:[16,16,16,16,16,16,31],M:[17,27,21,21,17,17,17],N:[17,17,25,21,19,17,17],O:[14,17,17,17,17,17,14],P:[30,17,17,30,16,16,16],Q:[14,17,17,17,21,18,13],R:[30,17,17,30,20,18,17],S:[15,16,16,14,1,1,30],T:[31,4,4,4,4,4,4],U:[17,17,17,17,17,17,14],V:[17,17,17,17,17,10,4],W:[17,17,17,21,21,27,17],X:[17,17,10,4,10,17,17],Y:[17,17,10,4,4,4,4],Z:[31,1,2,4,8,16,31]
+            };
+            const POOL = '0123456789ABCDEFGHJKLMNPRSTUWXYZ';
+            const rows = [
+                { n: 8, pitch: 6.2, r: 2.3, cells: [] },
+                { n: 14, pitch: 3.7, r: 1.35, cells: [] }
+            ];
+            const GAP = 1, W = 5, H = 7;
+            const wLogical = Math.ceil(Math.max(...rows.map(r => (r.n * (W + GAP) - GAP) * r.pitch)));
+            const hLogical = Math.ceil(H * rows[0].pitch + 12 + H * rows[1].pitch);
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            cv.width = wLogical * dpr; cv.height = hLogical * dpr;
+            cv.style.width = wLogical + 'px'; cv.style.height = hLogical + 'px';
+            rows.forEach(r => { for (let i = 0; i < r.n; i++) r.cells.push({ tgt: ' ', shown: ' ', until: 0, nextSwap: 0 }); });
+
+            let tz = 'Asia/Jakarta', lbl = 'JAKARTA', animating = false;
+            const timeStr = () => { try { return new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()); } catch (_) { return '--:--:--'; } };
+            const pad = (t, n) => (t.toUpperCase() + ' '.repeat(n)).slice(0, n);
+
+            function setTargets(t, l, big) {
+                const now = performance.now();
+                const apply = (row, str, base, stagger) => {
+                    [...str].forEach((ch, i) => {
+                        const c = row.cells[i];
+                        if (c.tgt !== ch) { c.tgt = ch; c.until = now + base + i * stagger; c.nextSwap = 0; }
+                    });
+                };
+                apply(rows[0], t, big ? 380 : 0, big ? 55 : 0);
+                apply(rows[1], pad(l, 14), big ? 420 : 0, big ? 45 : 0);
+                if (!animating) { animating = true; requestAnimationFrame(frame); }
+            }
+
+            function dots(row, y0, now, lit, dim) {
+                let busy = false;
+                row.cells.forEach((c, i) => {
+                    if (now < c.until) {
+                        busy = true;
+                        if (now >= c.nextSwap) { c.shown = POOL[(Math.random() * POOL.length) | 0]; c.nextSwap = now + 55; }
+                    } else { c.shown = c.tgt; }
+                    const g = F[c.shown] || F[' '];
+                    const x0 = i * (W + GAP) * row.pitch;
+                    for (let ry = 0; ry < H; ry++) for (let rx = 0; rx < W; rx++) {
+                        ctx.fillStyle = (g[ry] >> (W - 1 - rx)) & 1 ? lit : dim;
+                        ctx.beginPath();
+                        ctx.arc((x0 + rx * row.pitch + row.pitch / 2) * dpr, (y0 + ry * row.pitch + row.pitch / 2) * dpr, row.r * dpr, 0, 6.2832);
+                        ctx.fill();
+                    }
+                });
+                return busy;
+            }
+
+            function draw(now) {
+                const lit = getComputedStyle(card).getPropertyValue('--text-primary').trim() || '#111827';
+                const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+                const dim = dark ? 'rgba(255,255,255,0.07)' : 'rgba(17,24,39,0.09)';
+                ctx.clearRect(0, 0, cv.width, cv.height);
+                const b1 = dots(rows[0], 0, now, lit, dim);
+                const b2 = dots(rows[1], H * rows[0].pitch + 12, now, lit, dim);
+                return b1 || b2;
+            }
+
+            function frame(now) { animating = draw(now); if (animating) requestAnimationFrame(frame); }
+
+            function dateText() {
+                const loc = document.documentElement.lang === 'id' ? 'id-ID' : 'en-GB';
+                try { dEl.textContent = new Intl.DateTimeFormat(loc, { timeZone: tz, weekday: 'long', day: 'numeric', month: 'short' }).format(new Date()); } catch (_) {}
+            }
+
+            const chips = [...card.querySelectorAll('.wt-chip')];
+            chips.forEach(c => c.addEventListener('click', () => {
+                if (c.dataset.tz === tz) return;
+                tz = c.dataset.tz; lbl = c.dataset.lbl.toUpperCase();
+                chips.forEach(x => { const on = x === c; x.classList.toggle('active', on); x.setAttribute('aria-pressed', on); });
+                setTargets(timeStr(), lbl, true);
+                dateText();
+            }));
+            const tb = document.getElementById('theme-toggle');
+            if (tb) tb.addEventListener('click', () => setTimeout(() => draw(performance.now()), 0));
+            setTargets(timeStr(), lbl, true); dateText();
+            setInterval(() => { const t = timeStr(); cv.setAttribute('aria-label', t + ' ' + lbl); setTargets(t, lbl, false); dateText(); }, 1000);
+        })();
+        /* Wikiabstrak + Wikigaleri: top Wikidata item and Commons photos for a query, each with a button to the full app (new tab) */
+        (function () {
+            const f = document.getElementById('waForm'), i = document.getElementById('waInput'), out = document.getElementById('waResults');
+            let token = 0;
+            const modal = document.getElementById('waModal');
+            if (!f || !modal) return;
+            const dlg = modal.querySelector('.wa-dialog');
+            const clr = document.getElementById('waClear');
+            const syncClr = () => { clr.hidden = !i.value; };
+            i.addEventListener('input', syncClr);
+            clr.addEventListener('click', () => { i.value = ''; syncClr(); i.focus(); });
+            i.addEventListener('keydown', e => { if (e.key === 'Escape' && i.value) { e.preventDefault(); i.value = ''; syncClr(); } });
+            const openModal = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; dlg.focus(); };
+            const closeModal = () => { modal.hidden = true; document.body.style.overflow = ''; token++; i.focus(); };
+            modal.addEventListener('click', e => { if (e.target.closest('[data-close]')) closeModal(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+            const T = k => { const L = document.documentElement.lang === 'id' ? 'ID' : 'EN'; return (i18n[L] && i18n[L][k]) || i18n.EN[k] || ''; };
+            const el = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+            const sec = (h) => { const d = el('div', 'wa-sec'); d.appendChild(el('div', 'wa-sec-h', h)); return d; };
+            const btn = (txt, href) => { const a = el('a', 'link-chip wa-load', txt + ' ↗'); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; };
+
+            f.addEventListener('submit', async e => {
+                e.preventDefault();
+                const q = i.value.trim();
+                if (!q) { i.focus(); return; }
+                const my = ++token;
+                openModal();
+                out.replaceChildren(el('p', 'wa-state', T('p10Load')));
+                try {
+                    const [wd, pn] = await Promise.all([
+                        fetch('https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&origin=*&language=en&uselang=en&limit=1&search=' + encodeURIComponent(q)).then(r => r.json()),
+                        fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=6&gsrsearch=' + encodeURIComponent(q + ' incategory:"360° panoramas"') + '&prop=imageinfo&iiprop=url&iiurlwidth=240').then(r => r.json()).catch(() => ({}))
+                    ]);
+                    if (my !== token) return;
+                    out.replaceChildren();
+
+                    const top = wd.search && wd.search[0];
+                    const s1 = sec(T('p10Item'));
+                    if (top) {
+                        const t = el('div', 'wa-item-title', top.label || top.id);
+                        t.appendChild(el('small', '', top.id));
+                        s1.appendChild(t);
+                        const m = el('div', 'wa-meta');
+                        m.append(el('b', '', T('p10Inst') + ': '), document.createTextNode(top.description || '—'));
+                        s1.appendChild(m);
+                        s1.appendChild(btn(T('p10LoadWa'), 'https://wikiabstrak.web.app/?lang=en&id=' + encodeURIComponent(top.id)));
+                    } else {
+                        s1.appendChild(el('p', 'wa-state', T('p10None')));
+                    }
+                    out.appendChild(s1);
+
+                    const pages = pn && pn.query ? Object.values(pn.query.pages).sort((x, y) => x.index - y.index) : [];
+                    const s2 = sec(T('p10Photos'));
+                    if (pages.length) {
+                        const g = el('div', 'wa-photos');
+                        pages.forEach(pg => {
+                            const ii = pg.imageinfo && pg.imageinfo[0];
+                            if (!ii) return;
+                            const name = pg.title.replace(/^File:/, '').replace(/ /g, '_');
+                            const a = document.createElement('a');
+                            a.href = 'https://wikigaleri.web.app/file/' + encodeURIComponent(name).replace(/%2C/g, ',');
+                            a.target = '_blank'; a.rel = 'noopener noreferrer'; a.title = name.replace(/_/g, ' ');
+                            const im = document.createElement('img');
+                            im.src = ii.thumburl || ii.url; im.alt = a.title; im.loading = 'lazy';
+                            a.append(im, el('span', 'wa-badge', '360°'));
+                            g.appendChild(a);
+                        });
+                        s2.appendChild(g);
+                    } else {
+                        s2.appendChild(el('p', 'wa-state', T('p10No360')));
+                    }
+                    const acts = el('div', 'wa-actions');
+                    acts.appendChild(btn(T('p10Pano'), 'https://wikigaleri.web.app/?q=' + encodeURIComponent(q) + '&type=panorama'));
+                    s2.appendChild(acts);
+                    out.appendChild(s2);
+                } catch (err) {
+                    if (my === token) out.replaceChildren(el('p', 'wa-state', T('p10Err')));
+                }
+            });
         })();
     </script>
 </body>
