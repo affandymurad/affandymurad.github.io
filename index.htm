@@ -624,6 +624,38 @@
             box-shadow: var(--shadow-sm);
         }
 
+        .filter-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            white-space: nowrap;
+        }
+
+        .filter-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .filter-count {
+            min-width: 20px;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: var(--border-hairline);
+            font-size: 0.7rem;
+            font-weight: 700;
+            line-height: 1.5;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-variant-numeric: tabular-nums;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .filter-btn.active .filter-count {
+            background: var(--accent-soft);
+            color: var(--accent-text);
+        }
+
         /* ==========================================================================
            6. POLYMORPHIC PORTFOLIO GRID
            ========================================================================== */
@@ -1307,6 +1339,77 @@
             cursor: pointer;
         }
 
+        .mc-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mc-list a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .mc-list a:hover {
+            background: var(--accent-soft);
+            color: var(--accent-text);
+        }
+
+        .mc-list small {
+            flex: none;
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        .mc-sum {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: var(--text-secondary, var(--text-tertiary));
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .link-chip .br-ico {
+            flex: none;
+        }
+
+        .cp-side {
+            flex: none;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            color: #3DDC84;
+            transition: transform 0.18s var(--ease-spring), background-color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .cp-side:hover {
+            background: var(--bg-surface);
+            border-color: #3DDC84;
+            transform: translateY(-1px);
+        }
+
+        .cp-side:active {
+            transform: translateY(0) scale(0.97);
+        }
+
         .wa-actions {
             display: flex;
             flex-wrap: wrap;
@@ -1872,6 +1975,23 @@
         /* ==========================================================================
            10. RESPONSIVE BREAKPOINTS
            ========================================================================== */
+        /* Wide desktop screens: roomier container and a three-column portfolio grid; tablet and phone layouts are unchanged */
+        @media (min-width: 1200px) {
+            :root {
+                --container-max: 1200px;
+            }
+            .portfolio-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            :root {
+                --container-max: 1360px;
+            }
+        }
+
         @media (max-width: 860px) {
             .hero {
                 grid-template-columns: 1fr;
@@ -2097,10 +2217,10 @@
                     <p class="section-desc" data-i18n="portfolioLead">Products, civic tools, and AI experiments crafted for real-world utility.</p>
                 </div>
 
-                <div class="filter-group" role="tablist" aria-label="Filter projects">
-                    <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">All (9)</button>
-                    <button type="button" class="filter-btn" data-filter="ai" data-i18n="filterAI">AI &amp; Tools</button>
-                    <button type="button" class="filter-btn" data-filter="civic" data-i18n="filterCivic">Civic &amp; Culture</button>
+                <div class="filter-group" role="group" aria-label="Filter projects">
+                    <button type="button" class="filter-btn active" data-filter="all" aria-pressed="true"><span data-i18n="filterAll">All</span><span class="filter-count" aria-hidden="true"></span></button>
+                    <button type="button" class="filter-btn" data-filter="ai" aria-pressed="false"><span data-i18n="filterAI">AI &amp; Tools</span><span class="filter-count" aria-hidden="true"></span></button>
+                    <button type="button" class="filter-btn" data-filter="civic" aria-pressed="false"><span data-i18n="filterCivic">Civic &amp; Culture</span><span class="filter-count" aria-hidden="true"></span></button>
                 </div>
             </div>
 
@@ -2143,39 +2263,21 @@
                     </div>
                 </article>
 
-                <!-- 2. Wikikoran -->
-                <article class="project-card" data-category="civic" id="wkCard">
+                <!-- 2. Wikipindai -->
+                <article class="project-card" data-category="ai">
                     <div>
                         <div class="project-head">
                             <div class="project-icon" aria-hidden="true">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 14.9 21 13.3a2 2 0 0 0 0-2.8l-1.6-1.6a1 1 0 0 0-1.4 0l-.6.6a2 2 0 0 1-3.4-1.4V7a1 1 0 0 0-1-1h-2.3a1 1 0 0 0-1 1v.2a2 2 0 0 1-3.4 1.4l-.6-.6a1 1 0 0 0-1.4 0L3.7 10.2a1 1 0 0 0 0 1.4l.6.6A2 2 0 0 1 2.9 15.6H2.7a1 1 0 0 0-1 1v2.3a1 1 0 0 0 1 1h.2a2 2 0 0 1 1.4 3.4"/><circle cx="17" cy="17" r="3.5"/><path d="m22 22-2.6-2.6"/></svg>
                             </div>
-                            <span class="project-tag">Open Knowledge</span>
+                            <span class="project-tag">Browser Extension</span>
                         </div>
-                        <h3 class="project-title" id="wkTitle" lang="id">Koran Wikipedia</h3>
-                        <p class="project-desc" id="wkDesc" lang="id">Bacaan harian dari ensiklopedia bebas</p>
+                        <h3 class="project-title">Wikipindai</h3>
+                        <p class="project-desc" data-i18n="p12Desc">Browser extension to search seven Wikimedia projects without leaving the page: select text on any site, right-click, and the results appear in a side panel. Available in 30 interface languages, with no AI and no tracking.</p>
                     </div>
-                    <div class="cal-picker" id="wkPicker">
-                        <div class="cp-row">
-                            <div class="cp-combo">
-                                <button type="button" class="cp-btn" id="wkBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="wkPanel" aria-label="Interface language">
-                                    <svg class="cp-lang" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
-                                    <span class="cp-label" id="wkLabel">Bahasa Indonesia</span>
-                                    <svg class="cp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-                                </button>
-                                <div class="cp-panel" id="wkPanel" hidden>
-                                    <div class="cp-search">
-                                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14"/></svg>
-                                        <input type="search" class="cp-input" id="wkInput" placeholder="Search language…" autocomplete="off" spellcheck="false" role="combobox" aria-controls="wkList" aria-expanded="true">
-                                    </div>
-                                    <ul class="cp-list" id="wkList" role="listbox" aria-label="Interface language"></ul>
-                                </div>
-                            </div>
-                            <a class="wk-go cp-go" id="wkGo" href="wikikoran/#id" title="Wikikoran" target="_blank" rel="noopener">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
-                                <span class="sr-only" id="wkGoText">Open Wikikoran</span>
-                            </a>
-                        </div>
+                    <div class="project-links">
+                        <a href="https://chromewebstore.google.com/detail/wikipindai/glcobijbpcbmoafkildiogicojdbdnkg" class="link-chip" target="_blank" rel="noopener noreferrer"><svg class="br-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 12 22.39 6A12 12 0 0 0 1.61 6Z"/><path fill="#34A853" d="M12 12 1.61 6A12 12 0 0 0 12 24Z"/><path fill="#FBBC04" d="M12 12 12 24A12 12 0 0 0 22.39 6Z"/><circle cx="12" cy="12" r="5.4" fill="#fff"/><circle cx="12" cy="12" r="4.1" fill="#4285F4"/></svg>Chrome Web Store ↗</a>
+                        <a href="https://addons.mozilla.org/en-US/firefox/addon/wikipindai/" class="link-chip" target="_blank" rel="noopener noreferrer"><svg class="br-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="ffG" x1="18" y1="2" x2="5" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFE226"/><stop offset=".45" stop-color="#FF7139"/><stop offset="1" stop-color="#E31587"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#ffG)"/><circle cx="12.4" cy="13" r="6.6" fill="#592ACB"/><path fill="#FF9500" d="M4.2 8.2C5.6 4.9 8.6 3 12 3c3.8 0 6.6 2.2 7.9 5.2-1.7-1.5-3.6-2.1-5.6-1.9 1.4.9 2.2 2.1 2.2 3.5-1.1-1-2.3-1.5-3.6-1.4-3.2.2-5.4 2.4-5.8 5.4-1-2.3-1.2-5.1-.9-7.6Z"/></svg>Firefox Add-ons ↗</a>
                     </div>
                 </article>
 
@@ -2187,9 +2289,6 @@
                                 <div class="project-icon" aria-hidden="true">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                                 </div>
-                                <a class="project-icon project-icon-link" href="https://play.google.com/store/apps/details?id=kmt.commuterline.am&amp;hl=id" target="_blank" rel="noopener noreferrer" aria-label="Android app on Google Play" title="Android app on Google Play">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-2.86-1.21-6.08-1.21-8.94 0L5.65 5.67c-.19-.29-.58-.38-.87-.2-.28.18-.37.54-.22.83L6.4 9.48C3.3 11.25 1.28 14.44 1 18h22c-.28-3.56-2.3-6.75-5.4-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
-                                </a>
                             </div>
                             <span class="project-tag">Open Knowledge</span>
                         </div>
@@ -2212,6 +2311,9 @@
                                     <ul class="cp-list" id="wlList" role="listbox" aria-label="Interface language"></ul>
                                 </div>
                             </div>
+                            <a class="cp-side" href="https://play.google.com/store/apps/details?id=kmt.commuterline.am&amp;hl=id" target="_blank" rel="noopener noreferrer" aria-label="Android app on Google Play" title="Android app on Google Play">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-2.86-1.21-6.08-1.21-8.94 0L5.65 5.67c-.19-.29-.58-.38-.87-.2-.28.18-.37.54-.22.83L6.4 9.48C3.3 11.25 1.28 14.44 1 18h22c-.28-3.56-2.3-6.75-5.4-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+                            </a>
                             <a class="wk-go cp-go" id="wlGo" href="https://wikilokal.web.app/location?ui=id&amp;wiki=en" title="Wikilokal" target="_blank" rel="noopener noreferrer">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                                 <span class="sr-only" id="wlGoText">Open Wikilokal</span>
@@ -2238,7 +2340,6 @@
                         </div>
                         <div class="wt-chips" role="group" aria-label="Time zone">
                             <button type="button" class="link-chip wt-chip active" data-tz="Asia/Jakarta" data-lbl="Jakarta" aria-pressed="true">Jakarta</button>
-                            <button type="button" class="link-chip wt-chip" data-tz="Asia/Singapore" data-lbl="Singapore" data-i18n="wtSg" aria-pressed="false">Singapore</button>
                             <button type="button" class="link-chip wt-chip" data-tz="UTC" data-lbl="UTC" aria-pressed="false">UTC</button>
                             <button type="button" class="link-chip wt-chip" data-tz="Etc/GMT+12" data-lbl="AoE" aria-pressed="false">AoE</button>
                             <a class="link-chip wt-more" href="https://time-fids.web.app/?view=clock&amp;lang=en" target="_blank" rel="noopener noreferrer"><span data-i18n="wtMore">More</span> ↗</a>
@@ -2279,7 +2380,78 @@
                     </div>
                 </article>
 
-                <!-- 6. Pariwara -->
+                <!-- 6. Megacity -->
+                <article class="project-card" data-category="civic" id="mcCard">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l6-3v16"/><path d="M11 21V11h8v10"/><path d="M8 11v.01M8 15v.01M15 14v.01M15 18v.01"/></svg>
+                            </div>
+                            <span class="project-tag">Open Knowledge</span>
+                        </div>
+                        <h3 class="project-title">Megacity</h3>
+                        <p class="project-desc" data-i18n="p11Desc">Explore any city through Wikivoyage: type a city, preview its travel guide and nearby places, then dive into the interactive map.</p>
+                    </div>
+                    <div>
+                    <form class="cp-row wa-form" id="mcForm" role="search" autocomplete="off">
+                        <label class="wa-field">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14"/></svg>
+                            <input type="text" id="mcInput" class="wa-input" placeholder="Try a city, e.g. Jakarta" data-ph="p11Ph" spellcheck="false" aria-label="Search a city" maxlength="120">
+                            <button type="button" class="wa-clear" id="mcClear" aria-label="Clear" title="Clear" hidden>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                            </button>
+                        </label>
+                        <button type="submit" class="wk-go cp-go" title="Search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                            <span class="sr-only">Search</span>
+                        </button>
+                    </form>
+                    <div class="wa-chips" id="mcChips" role="group" aria-label="Popular cities">
+                        <button type="button" class="link-chip" data-q="Jakarta">Jakarta</button>
+                        <button type="button" class="link-chip" data-q="Kuala Lumpur">Kuala Lumpur</button>
+                        <button type="button" class="link-chip" data-q="Singapore" data-i18n="wtSg">Singapore</button>
+                        <button type="button" class="link-chip" data-q="Manila">Manila</button>
+                    </div>
+                    </div>
+                </article>
+
+                <!-- 2. Wikikoran -->
+                <article class="project-card" data-category="civic" id="wkCard">
+                    <div>
+                        <div class="project-head">
+                            <div class="project-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+                            </div>
+                            <span class="project-tag">Open Knowledge</span>
+                        </div>
+                        <h3 class="project-title" id="wkTitle" lang="id">Koran Wikipedia</h3>
+                        <p class="project-desc" id="wkDesc" lang="id">Bacaan harian dari ensiklopedia bebas</p>
+                    </div>
+                    <div class="cal-picker" id="wkPicker">
+                        <div class="cp-row">
+                            <div class="cp-combo">
+                                <button type="button" class="cp-btn" id="wkBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="wkPanel" aria-label="Interface language">
+                                    <svg class="cp-lang" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+                                    <span class="cp-label" id="wkLabel">Bahasa Indonesia</span>
+                                    <svg class="cp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                                </button>
+                                <div class="cp-panel" id="wkPanel" hidden>
+                                    <div class="cp-search">
+                                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14"/></svg>
+                                        <input type="search" class="cp-input" id="wkInput" placeholder="Search language…" autocomplete="off" spellcheck="false" role="combobox" aria-controls="wkList" aria-expanded="true">
+                                    </div>
+                                    <ul class="cp-list" id="wkList" role="listbox" aria-label="Interface language"></ul>
+                                </div>
+                            </div>
+                            <a class="wk-go cp-go" id="wkGo" href="wikikoran/#id" title="Wikikoran" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                                <span class="sr-only" id="wkGoText">Open Wikikoran</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 7. Pariwara -->
                 <article class="project-card" data-category="ai">
                     <div>
                         <div class="project-head">
@@ -2633,6 +2805,19 @@
         </div>
     </div>
 
+    <div class="wa-modal" id="mcModal" hidden>
+        <div class="wa-backdrop" data-close></div>
+        <div class="wa-dialog" role="dialog" aria-modal="true" aria-labelledby="mcModalTitle" tabindex="-1">
+            <div class="wa-dialog-head">
+                <h3 id="mcModalTitle">Megacity</h3>
+                <button type="button" class="wa-close" data-close aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+            </div>
+            <div class="wa-results" id="mcResults" aria-live="polite"></div>
+        </div>
+    </div>
+
     <script src="js/b.min.js" defer></script>
 
     <script>
@@ -2656,7 +2841,7 @@
                 factEduLabel: "Education",
                 portfolioTitle: "Portfolio",
                 portfolioLead: "Products, civic tools, and AI experiments crafted for real-world utility.",
-                filterAll: "All (9)",
+                filterAll: "All",
                 filterAI: "AI & Tools",
                 filterCivic: "Civic & Culture",
                 p1Title: "Public Holiday Calendar",
@@ -2674,6 +2859,13 @@
                 p10Inst: "Instance of / Description",
                 p10LoadWa: "Load on Wikiabstrak",
                 p10LoadWg: "Load on Wikigaleri",
+                p12Desc: "Browser extension to search seven Wikimedia projects without leaving the page: select text on any site, right-click, and the results appear in a side panel. Available in 30 interface languages, with no AI and no tracking.",
+                p11Desc: "Explore any city through Wikivoyage: type a city, preview its travel guide and nearby places, then dive into the interactive map.",
+                p11Ph: "Try a city, e.g. Jakarta",
+                p11About: "Travel guide",
+                p11Near: "Nearby guides",
+                p11Go: "Explore in Megacity",
+                p11None: "No city guide found.",
                 p10Pano: "360° Panorama on Wikigaleri",
                 p10All: "All",
                 p10360: "360°",
@@ -2738,7 +2930,7 @@
                 factEduLabel: "Pendidikan",
                 portfolioTitle: "Portofolio",
                 portfolioLead: "Produk digital, perangkat publik, dan eksperimen AI yang dirancang untuk kegunaan nyata.",
-                filterAll: "Semua (9)",
+                filterAll: "Semua",
                 filterAI: "AI & Perangkat",
                 filterCivic: "Publik & Budaya",
                 p1Title: "Kalender Hari Libur Nasional",
@@ -2756,6 +2948,13 @@
                 p10Inst: "Instance of / Deskripsi",
                 p10LoadWa: "Buka di Wikiabstrak",
                 p10LoadWg: "Buka di Wikigaleri",
+                p12Desc: "Ekstensi browser untuk mencari di tujuh proyek Wikimedia tanpa meninggalkan halaman: blok teks di situs mana pun, klik kanan, dan hasilnya tampil di panel samping. Tersedia dalam 30 bahasa antarmuka, tanpa AI dan tanpa pelacakan.",
+                p11Desc: "Jelajahi kota mana pun lewat Wikivoyage: ketik nama kota, lihat pratinjau panduan wisata dan tempat di sekitarnya, lalu lanjut ke peta interaktif.",
+                p11Ph: "Coba nama kota, mis. Jakarta",
+                p11About: "Panduan wisata",
+                p11Near: "Panduan di sekitar",
+                p11Go: "Jelajahi di Megacity",
+                p11None: "Panduan kota tidak ditemukan.",
                 p10Pano: "Panorama 360° di Wikigaleri",
                 p10All: "Semua",
                 p10360: "360°",
@@ -2894,11 +3093,18 @@
             const filterBtns = document.querySelectorAll(".filter-btn");
             const projectCards = document.querySelectorAll(".project-card");
 
+            /* Per-tab counts come from the cards themselves, so they never go stale */
+            filterBtns.forEach(btn => {
+                const f = btn.getAttribute("data-filter");
+                const n = [...projectCards].filter(c => f === "all" || c.getAttribute("data-category") === f).length;
+                const badge = btn.querySelector(".filter-count");
+                if (badge) badge.textContent = n;
+            });
+
             filterBtns.forEach(btn => {
                 btn.addEventListener("click", () => {
                     const filter = btn.getAttribute("data-filter");
-                    filterBtns.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
+                    filterBtns.forEach(b => { const on = b === btn; b.classList.toggle("active", on); b.setAttribute("aria-pressed", on); });
 
                     projectCards.forEach(card => {
                         const cat = card.getAttribute("data-category");
@@ -3498,6 +3704,89 @@
                 } catch (err) {
                     if (my === token) out.replaceChildren(el('p', 'wa-state', T('p10Err')));
                 }
+            });
+        })();
+
+        /* Megacity: city search -> Wikivoyage preview (summary + nearby guides within a radius) -> open Megacity in a new tab */
+        (function () {
+            const f = document.getElementById('mcForm'), i = document.getElementById('mcInput'), out = document.getElementById('mcResults'), modal = document.getElementById('mcModal');
+            if (!f || !modal) return;
+            const dlg = modal.querySelector('.wa-dialog'), clr = document.getElementById('mcClear');
+            const T = k => { const L = document.documentElement.lang === 'id' ? 'ID' : 'EN'; return (i18n[L] && i18n[L][k]) || i18n.EN[k] || ''; };
+            const el = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+            const API = 'https://en.wikivoyage.org/w/api.php?format=json&origin=*&';
+            const mcUrl = (q, r) => 'megacity/?wiki=en.wikivoyage.org&q=' + encodeURIComponent(q) + '&radius=' + r;
+            const fmt = m => m < 1000 ? Math.round(m) + ' m' : (m / 1000).toFixed(1) + ' km';
+            let token = 0, radius = 10, city = null;
+
+            const syncClr = () => { clr.hidden = !i.value; };
+            i.addEventListener('input', syncClr);
+            clr.addEventListener('click', () => { i.value = ''; syncClr(); i.focus(); });
+            i.addEventListener('keydown', e => { if (e.key === 'Escape' && i.value) { e.preventDefault(); i.value = ''; syncClr(); } });
+            const open = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; dlg.focus(); };
+            const close = () => { modal.hidden = true; document.body.style.overflow = ''; token++; i.focus(); };
+            modal.addEventListener('click', e => { if (e.target.closest('[data-close]')) close(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) close(); });
+            document.getElementById('mcChips').addEventListener('click', e => {
+                const c = e.target.closest('[data-q]'); if (!c) return;
+                i.value = c.dataset.q; syncClr(); f.requestSubmit();
+            });
+
+            async function nearby(my, box) {
+                box.replaceChildren(el('p', 'wa-state', T('p10Load')));
+                try {
+                    const d = await fetch(API + 'action=query&list=geosearch&gslimit=8&gsradius=' + radius * 1000 + '&gscoord=' + city.lat + '%7C' + city.lon).then(r => r.json());
+                    if (my !== token) return;
+                    const items = (d.query ? d.query.geosearch : []).filter(x => x.title !== city.title);
+                    if (!items.length) { box.replaceChildren(el('p', 'wa-state', T('p10None'))); return; }
+                    const ul = el('ul', 'mc-list');
+                    items.forEach(x => {
+                        const li = document.createElement('li'), a = el('a', '', x.title);
+                        a.href = mcUrl(x.title, radius); a.target = '_blank'; a.rel = 'noopener';
+                        a.appendChild(el('small', '', fmt(x.dist)));
+                        li.appendChild(a); ul.appendChild(li);
+                    });
+                    box.replaceChildren(ul);
+                } catch (_) { if (my === token) box.replaceChildren(el('p', 'wa-state', T('p10Err'))); }
+            }
+
+            f.addEventListener('submit', async e => {
+                e.preventDefault();
+                const q = i.value.trim();
+                if (!q) { i.focus(); return; }
+                const my = ++token;
+                open();
+                out.replaceChildren(el('p', 'wa-state', T('p10Load')));
+                try {
+                    const d = await fetch(API + 'action=query&generator=search&gsrlimit=1&gsrsearch=' + encodeURIComponent(q) + '&prop=extracts%7Ccoordinates&exintro=1&explaintext=1&exsentences=3').then(r => r.json());
+                    if (my !== token) return;
+                    const pg = d.query && Object.values(d.query.pages)[0];
+                    out.replaceChildren();
+                    if (!pg) { const s0 = el('div', 'wa-sec'); s0.appendChild(el('p', 'wa-state', T('p11None'))); out.appendChild(s0); return; }
+                    const co = pg.coordinates && pg.coordinates[0];
+                    city = { title: pg.title, lat: co && co.lat, lon: co && co.lon };
+
+                    const s1 = el('div', 'wa-sec');
+                    s1.appendChild(el('div', 'wa-sec-h', T('p11About')));
+                    s1.appendChild(el('div', 'wa-item-title', pg.title));
+                    if (pg.extract) s1.appendChild(el('p', 'mc-sum', pg.extract));
+                    out.appendChild(s1);
+
+                    const s2 = el('div', 'wa-sec');
+                    s2.appendChild(el('div', 'wa-sec-h', T('p11Near')));
+                    const tabs = el('div', 'wa-tabs'), box = el('div', 'wa-body'), go = el('a', 'link-chip wa-load');
+                    const setGo = () => { go.textContent = T('p11Go') + ' ↗'; go.href = mcUrl(city.title, radius); go.target = '_blank'; go.rel = 'noopener'; };
+                    [3, 5, 10].forEach(r => {
+                        const b = el('button', 'wa-tab', r + ' km'); b.type = 'button'; b.setAttribute('aria-pressed', r === radius);
+                        b.addEventListener('click', () => { radius = r; tabs.querySelectorAll('.wa-tab').forEach(t => t.setAttribute('aria-pressed', t === b)); setGo(); nearby(my, box); });
+                        tabs.appendChild(b);
+                    });
+                    s2.append(tabs, box);
+                    if (city.lat != null) nearby(my, box); else box.appendChild(el('p', 'wa-state', T('p10None')));
+                    setGo();
+                    s2.appendChild(go);
+                    out.appendChild(s2);
+                } catch (_) { if (my === token) out.replaceChildren(el('p', 'wa-state', T('p10Err'))); }
             });
         })();
     </script>
