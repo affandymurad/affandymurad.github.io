@@ -1180,6 +1180,27 @@
             background: var(--bg-surface);
         }
 
+        /* Featured photo card: frosted button must win over the generic .wk-go row style in both themes */
+        .project-card.featured .cp-row:has(.wk-go) .cp-btn,
+        .project-card.featured .cp-row:has(.wk-go) .cp-btn:hover,
+        .project-card.featured .cp-row:has(.wk-go) .cp-btn[aria-expanded="true"] {
+            background: rgba(255, 255, 255, 0.94);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #111827;
+        }
+
+        [data-theme="dark"] .project-card.featured .cp-row:has(.wk-go) .cp-btn,
+        [data-theme="dark"] .project-card.featured .cp-row:has(.wk-go) .cp-btn:hover,
+        [data-theme="dark"] .project-card.featured .cp-row:has(.wk-go) .cp-btn[aria-expanded="true"] {
+            background: rgba(20, 23, 28, 0.88);
+            border-color: rgba(255, 255, 255, 0.16);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .project-card.featured .cp-btn .cp-chev {
+            color: var(--text-secondary);
+        }
+
         /* World Time card: live readout + zone chips */
         .wt-picker {
             display: flex;
